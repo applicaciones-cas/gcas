@@ -96,7 +96,7 @@
 /* DRAWER CSS END*/
 
 /*BODY CSS*/
-
+    
 .footer {
   -fx-background-color: #d9d9d9;
 }
@@ -106,7 +106,7 @@
  *                                                                             *
  ******************************************************************************/
 .button_process_nav {
-    -fx-background-color: #FF8201;
+    -fx-background-color: #4C4C4C;
     -fx-text-fill: white;
     -fx-cursor: hand;
 }
@@ -176,8 +176,8 @@
 }
 
 .tab-pane {
-  -fx-tab-min-height:30px;
-  -fx-tab-max-height:30px;
+  -fx-tab-min-height:20px;
+  -fx-tab-max-height:20px;
 }
 .tab {
     -fx-tab-min-height:30px;
