@@ -46,6 +46,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.base.GRider;
@@ -57,9 +58,19 @@ public class DashboardController implements Initializable {
 
     private GRider oApp;
     private String lastClickedButton = "";
+    private String lastClickedBtnRighNav = "";
     private ToggleGroup toggleGroup;
-    private static ToggleButton[] navButtons;    
+    private static ToggleButton[] navButtons;
     private static Tooltip[] navTooltip;
+
+    private ToggleGroup toggleGroupLowerBtn;
+    private static ToggleButton[] navButtonsLowerBtn;
+    private static Tooltip[] navTooltipLowerBtn;
+
+    private ToggleGroup toggleGroupRightNav;
+    private static ToggleButton[] navButtonsRightNav;
+    private static Tooltip[] navTooltipRightNav;
+
     private int targetTabIndex = -1;
     private int intIndex = -1;
     List<String> tabName = new ArrayList<>();
@@ -67,20 +78,35 @@ public class DashboardController implements Initializable {
     @FXML
     private TabPane tabpane;
     @FXML
-    private AnchorPane anchorSubMenu,anchorSpace,MainAnchor;
+    private AnchorPane anchorSubMenu, anchorSpace, MainAnchor, anchorSubMenuNotif;
     @FXML
     private TreeView<String> tvChild;
+    @FXML
+    private TreeView<String> tvChild1;
     @FXML
     StackPane workingSpace;
     @FXML
     private Button btnClose, btnMinimize;
     @FXML
-    private ToggleButton btnDashboard, btnItemManagement, btnOrder, btnWayBill, btnPickup, btnClient, btnQA, btnRatings, btnReports;
+    private ToggleButton btnInventory,
+            btnPurchasing,
+            btnSales,
+            btnServiceRepair,
+            btnAccountsPayable,
+            btnAccountsReceivable,
+            btnGeneralAccounting,
+            btnParameters,
+            btnHelp,
+            btnLogout,
+            btnNotification,
+            btnAddToCart;
+    @FXML
+    private Circle badgeNotification, badgeAddtoCart;
     @FXML
     private Pane pane;
     @FXML
-    private Label DateAndTime;
-    
+    private Label DateAndTime, AppUser;
+
     @FXML
     private StackPane MainStack;
     @FXML
@@ -94,12 +120,91 @@ public class DashboardController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         initMenu();
         ToggleGroupControl();
+        ToggleGroupControlLowerBtn();
+        ToggleGroupControlRightNav();
+        checkDepartment();
         ClickButton();
         getTime();
         setPane();
-//        btnDashboard.setSelected(false);
+        loadUserInfo();
+//        btnInventory.setSelected(false);
 //        lblMaps.setText("");
     }
+
+    /***************************************************
+     * BELOW IS FOR ACTION EVENT
+    ****************************************************/
+    @FXML
+    private void pane(ActionEvent event) {
+        anchorSubMenu.setVisible(false);
+        for (int i = 0; i < navButtons.length; i++) {
+            navButtons[i].setSelected(false); // Set each button's selected state to false
+        }
+
+        anchorSubMenuNotif.setVisible(false);
+        for (int i = 0; i < navButtonsRightNav.length; i++) {
+            navButtonsRightNav[i].setSelected(false); // Set each button's selected state to false
+        }
+    }
+
+    @FXML
+    private void switchInventory(ActionEvent event) {
+        toggleSubmenu("Dashboard Section", "switchDashboard", 0);
+//        btnInventory.setSelected(true);
+        dashboardMenu01();
+    }
+
+    @FXML
+    private void switchNotification(ActionEvent event) {
+        toggleSubmenuRightBtn("Notification Section", "switchNotification", 0);
+        RightNavNotif();
+    }
+
+    @FXML
+    private void switchItem(ActionEvent event) {
+        toggleSubmenu("Item Section", "switchItem", 1);
+//        btnPurchasing.setSelected(true);
+        dashboardMenu02();
+    }
+
+    @FXML
+    private void switchOrder(ActionEvent event) {
+        toggleSubmenu("Order Section", "switchOrder", 2);
+    }
+
+    @FXML
+    private void switchWayBill(ActionEvent event) {
+        toggleSubmenu("WayBill Section", "switchWayBill", 3);
+    }
+
+    @FXML
+    private void switchPickup(ActionEvent event) {
+        toggleSubmenu("Pickup Section", "switchPickup", 4);
+    }
+
+    @FXML
+    private void switchClient(ActionEvent event) {
+        toggleSubmenu("Client Section", "switchClient", 5);
+    }
+
+    @FXML
+    private void switchQA(ActionEvent event) {
+        toggleSubmenu("QA Section", "switchQA", 6);
+    }
+
+    @FXML
+    private void switchRatings(ActionEvent event) {
+        toggleSubmenu("Ratings Section", "switchRatings", 7);
+    }
+
+    @FXML
+    private void switchReports(ActionEvent event) {
+        toggleSubmenu("Reports Section", "switchReports", 8);
+    }
+
+    /***************************************************
+     * END OF ACTION EVENT
+    ****************************************************/
 
     public String SetTabTitle(String menuaction) {
         switch (menuaction) {
@@ -135,22 +240,27 @@ public class DashboardController implements Initializable {
         return -1;
     }
 
-    public void setPane(){
+    public void setPane() {
         pane.setOnMouseClicked(event -> {
             // Check if the click occurred on the tabs area (not the content area)
             System.out.println("pane clicked at: " + event.getSceneX() + ", " + event.getSceneY());
 
             // Hide the sub-menu
             anchorSubMenu.setVisible(false);
+            anchorSubMenuNotif.setVisible(false);
 
             // Assuming navButtons is an array or List of buttons in Java
             for (int i = 0; i < navButtons.length; i++) {
                 navButtons[i].setSelected(false); // Set each button's selected state to false
             }
+            for (int i = 0; i < navButtonsRightNav.length; i++) {
+                navButtonsRightNav[i].setSelected(false); // Set each button's selected state to false
+            }
 
             // Perform other actions on click if needed
         });
     }
+
     public void setTabPane() {
         // set up the drag and drop listeners on the tab pane
         tabpane.setOnMouseClicked(event -> {
@@ -159,12 +269,15 @@ public class DashboardController implements Initializable {
 
             // Hide the sub-menu
             anchorSubMenu.setVisible(false);
-
             // Assuming navButtons is an array or List of buttons in Java
             for (int i = 0; i < navButtons.length; i++) {
                 navButtons[i].setSelected(false); // Set each button's selected state to false
             }
 
+            anchorSubMenuNotif.setVisible(false);
+            for (int i = 0; i < navButtonsRightNav.length; i++) {
+                navButtonsRightNav[i].setSelected(false); // Set each button's selected state to false
+            }
             // Perform other actions on click if needed
         });
 
@@ -198,7 +311,7 @@ public class DashboardController implements Initializable {
                 double tabHeaderHeight = tabpane.lookup(".tab-header-area").getBoundsInParent().getHeight();
                 System.out.println("mouseY " + mouseY);
                 System.out.println("tabHeaderHeight " + tabHeaderHeight);
-                
+
                 targetTabIndex = (int) (mouseX / 180);
                 System.out.println("targetTabIndex " + targetTabIndex);
                 if (mouseY < tabHeaderHeight) {
@@ -249,7 +362,7 @@ public class DashboardController implements Initializable {
 
         setTabPane();
         setPane();
-        
+
         ScreenInterface fxObj = getController(fsFormName);
         fxObj.setGRider(oApp);
 
@@ -421,71 +534,9 @@ public class DashboardController implements Initializable {
         }
     }
 
-    /*SET SCENE FOR WORKPLACE - STACKPANE - TABPANE*/
-    public void setScene2(TabPane foPane) {
-        workingSpace.getChildren().clear();
-        workingSpace.getChildren().add(foPane);
-    }
-
-    @FXML
-    private void pane(ActionEvent event) {
-        anchorSubMenu.setVisible(false);
-        for (int i = 0; i < navButtons.length; i++) {
-                navButtons[i].setSelected(false); // Set each button's selected state to false
-            }
-    }
-
-    @FXML
-    private void switchDashboard(ActionEvent event) {
-        toggleSubmenu("Dashboard Section", "switchDashboard", 0);
-//        btnDashboard.setSelected(true);
-        dashboardMenu01();
-    }
-
-    @FXML
-    private void switchItem(ActionEvent event) {
-        toggleSubmenu("Item Section", "switchItem", 1);
-//        btnItemManagement.setSelected(true);
-        dashboardMenu02();
-    }
-
-    @FXML
-    private void switchOrder(ActionEvent event) {
-        toggleSubmenu("Order Section", "switchOrder", 2);
-    }
-
-    @FXML
-    private void switchWayBill(ActionEvent event) {
-        toggleSubmenu("WayBill Section", "switchWayBill", 3);
-    }
-
-    @FXML
-    private void switchPickup(ActionEvent event) {
-        toggleSubmenu("Pickup Section", "switchPickup", 4);
-    }
-
-    @FXML
-    private void switchClient(ActionEvent event) {
-        toggleSubmenu("Client Section", "switchClient", 5);
-    }
-
-    @FXML
-    private void switchQA(ActionEvent event) {
-        toggleSubmenu("QA Section", "switchQA", 6);
-    }
-
-    @FXML
-    private void switchRatings(ActionEvent event) {
-        toggleSubmenu("Ratings Section", "switchRatings", 7);
-    }
-
-    @FXML
-    private void switchReports(ActionEvent event) {
-        toggleSubmenu("Reports Section", "switchReports", 8);
-    }
-
     private void initMenu() {
         anchorSubMenu.setVisible(false);
+        anchorSubMenuNotif.setVisible(false);
     }
 
     private void toggleSubmenu(String sectionName, String buttonId, Integer btnIndex) {
@@ -500,6 +551,21 @@ public class DashboardController implements Initializable {
             // Show the submenu and update the last clicked button
             anchorSubMenu.setVisible(true);
             lastClickedButton = buttonId;
+        }
+    }
+
+    private void toggleSubmenuRightBtn(String sectionName, String buttonId, Integer btnIndex) {
+        // Check if the submenu is visible and the same button is clicked
+        if (anchorSubMenuNotif.isVisible() && lastClickedBtnRighNav.equals(buttonId)) {
+            // Hide the submenu and reset the last clicked button
+            anchorSubMenuNotif.setVisible(false);
+            navButtonsRightNav[btnIndex].setSelected(false); // Set each button's selected state to false
+            lastClickedBtnRighNav = "";
+
+        } else {
+            // Show the submenu and update the last clicked button
+            anchorSubMenuNotif.setVisible(true);
+            lastClickedBtnRighNav = buttonId;
         }
     }
 
@@ -537,26 +603,63 @@ public class DashboardController implements Initializable {
     }
 
     private void dashboardMenu01() {
-        JSONArray laMaster, laDetail, laData;
+        JSONArray laMaster, laDetail;
         JSONObject loMaster, loDetail;
         laMaster = new JSONArray();
         laDetail = new JSONArray();
-        loMaster = new JSONObject();
 
-        loDetail = new JSONObject();
-        loDetail.put("parent", "Sales Replacement");
-        laDetail.add(loDetail);
+        // Add "Sales Replacement" only if the department is not 26
+        if (!"026".equals(oApp.getDepartment())) {
+            loDetail = new JSONObject();
+            loDetail.put("parent", "Sales Replacement");
+            laDetail.add(loDetail);
+        }
 
+        // Add "Additional Give" menu item
         loDetail = new JSONObject();
         loDetail.put("parent", "Additional Give");
         laDetail.add(loDetail);
 
+        // Create the "Sales" parent with its children
+        loMaster = new JSONObject();
         loMaster.put("parent", "Sales");
         loMaster.put("child", laDetail);
+
+        // Add "Sales" to the master list
         laMaster.add(loMaster);
 
         dissectJSON(laMaster.toJSONString());
     }
+
+    private void RightNavNotif() {
+        JSONArray laMaster, laDetail;
+        JSONObject loMaster, loDetail;
+        laMaster = new JSONArray();
+        laDetail = new JSONArray();
+
+        // Add "Sales Replacement" only if the department is not 26
+        if (!"026".equals(oApp.getDepartment())) {
+            loDetail = new JSONObject();
+            loDetail.put("parent", "Sales");
+            laDetail.add(loDetail);
+        }
+
+        // Add "Additional Give" menu item
+        loDetail = new JSONObject();
+        loDetail.put("parent", "PO Receiving");
+        laDetail.add(loDetail);
+
+        // Create the "Sales" parent with its children
+        loMaster = new JSONObject();
+        loMaster.put("parent", "Monthly Payment");
+        loMaster.put("child", laDetail);
+
+        // Add "Sales" to the master list
+        laMaster.add(loMaster);
+
+        dissectJSONRightNav(laMaster.toJSONString());
+    }
+
 
     private void dissectJSON(String fsValue) {
         if (fsValue == null || fsValue.isEmpty()) {
@@ -650,47 +753,218 @@ public class DashboardController implements Initializable {
         }
     }
 
-    private void ToggleGroupControl() {
-    toggleGroup = new ToggleGroup();
-    navButtons = new ToggleButton[]{
-        btnDashboard,
-        btnItemManagement,
-        btnOrder,
-        btnWayBill,
-        btnPickup,
-        btnClient,
-        btnQA,
-        btnRatings,
-        btnReports
-    };
-    
-    // Tooltip texts for each button
-    String[] tooltipTexts = {
-        "Sales",
-        "Manage Items",
-        "View Orders",
-        "View Waybills",
-        "Pickup Information",
-        "Manage Clients",
-        "Quality Assurance",
-        "View Ratings",
-        "View Reports"
-    };
-
-    // Assign tooltips and toggle group in a loop
-    for (int i = 0; i < navButtons.length; i++) {
-        navButtons[i].setTooltip(new Tooltip(tooltipTexts[i]));
-        navButtons[i].setToggleGroup(toggleGroup);
+        /*SET SCENE FOR WORKPLACE - STACKPANE - TABPANE*/
+    public void setScene2(TabPane foPane) {
+        workingSpace.getChildren().clear();
+        workingSpace.getChildren().add(foPane);
     }
-}
+    private void dissectJSONRightNav(String fsValue) {
+        if (fsValue == null || fsValue.isEmpty()) {
+            System.err.println("Invalid JSON string.");
+            return;
+        }
 
+        JSONParser loParser = new JSONParser();
+        try {
+            JSONArray laMaster = (JSONArray) loParser.parse(fsValue);
+            if (laMaster == null) {
+                System.err.println("Parsed JSON is empty or invalid.");
+                return;
+            }
 
-    /*Handle button click*/
+            JSONArray laDetail, laDetail2;
+            JSONObject loParent, loDetail, loSubDetail;
+
+            TreeItem<String> root = new TreeItem<>("root");
+
+            for (int lnCtr = 0; lnCtr < laMaster.size(); lnCtr++) {
+                loParent = (JSONObject) laMaster.get(lnCtr);
+                if (loParent == null || !loParent.containsKey("parent")) {
+                    continue; // Skip invalid entries
+                }
+                TreeItem<String> parentnode = new TreeItem<>(String.valueOf(loParent.get("parent")));
+
+                if (loParent.containsKey("child") && loParent.get("child") instanceof JSONArray) {
+                    laDetail = (JSONArray) loParent.get("child");
+                    for (int x = 0; x < laDetail.size(); x++) {
+                        loDetail = (JSONObject) laDetail.get(x);
+                        if (loDetail == null || !loDetail.containsKey("parent")) {
+                            continue; // Skip invalid child entries
+                        }
+                        TreeItem<String> child = new TreeItem<>(String.valueOf(loDetail.get("parent")));
+                        if (loDetail.containsKey("child") && loDetail.get("child") instanceof JSONArray) {
+                            laDetail2 = (JSONArray) loDetail.get("child");
+                            for (int y = 0; y < laDetail2.size(); y++) {
+                                // Check for non-null and valid data
+                                TreeItem<String> subdetail = new TreeItem<>(String.valueOf(laDetail2.get(y)));
+                                child.getChildren().add(subdetail);
+                            }
+                        }
+                        parentnode.getChildren().add(child);
+                    }
+                }
+                root.getChildren().add(parentnode);
+            }
+
+            // Ensure tvChild1 is not null before interacting with it
+            if (tvChild1 != null) {
+                tvChild1.setRoot(root);
+                tvChild1.setShowRoot(false);
+                tvChild1.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue != null && newValue.isLeaf() && newValue.getValue() != null && !newValue.getValue().isEmpty()) {
+                        System.out.println("Selected: " + newValue.getValue());
+
+                        switch (newValue.getValue()) {
+                            case "Sales Replacement":
+                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml";
+                                intIndex = 0;
+                                break;
+                            case "Additional Give":
+                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml";
+                                intIndex = 0;
+                                break;
+                            default:
+                                intIndex = -1;
+                                throw new AssertionError("Unhandled case: " + newValue.getValue());
+                        }
+
+                        // Add logic to load the form
+                        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
+                            setScene2(loadAnimate(sformname));
+                            anchorSubMenuNotif.setVisible(false);
+                            navButtonsRightNav[intIndex].setSelected(false);
+                            pane.requestFocus();
+                        }
+                    } else {
+                        // Handle the case where newValue is null, empty, or not a leaf
+                        System.out.println("Invalid selection or empty value.");
+                    }
+
+                });
+            } else {
+                System.err.println("tvChild1 is not initialized.");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace(); // Log the full exception for easier debugging
+        }
+    }
+
+    
+    /***************************************************
+     * BELOW IS FOR TOGGLE GROUP ON LEFT NAVIGATION
+    ****************************************************/
+    
+    private void ToggleGroupControl() {
+        toggleGroup = new ToggleGroup();
+        navButtons = new ToggleButton[]{
+            btnInventory,
+            btnPurchasing,
+            btnSales,
+            btnServiceRepair,
+            btnAccountsPayable,
+            btnAccountsReceivable,
+            btnGeneralAccounting,
+            btnParameters
+        };
+
+        // Tooltip texts for each button
+        String[] tooltipTexts = {
+            "Inventory",
+            "Purchasing",
+            "Sales",
+            "Service Repair",
+            "Accounts Payable",
+            "Accounts Receivable",
+            "General Accounting",
+            "Parameters"
+        };
+
+        // Assign tooltips to buttons
+        for (int i = 0; i < navButtons.length; i++) {
+            if (navButtons[i].isVisible()) { // Skip setting tooltip for hidden buttons
+                navButtons[i].setTooltip(new Tooltip(tooltipTexts[i]));
+                navButtons[i].setToggleGroup(toggleGroup);
+            }
+        }
+    }
+    /***************************************************
+     * END OF TOGGLE GROUP ON LEFT NAVIGATION
+    ****************************************************/
+    
+    /***************************************************
+     * BELOW IS FOR TOGGLE GROUP ON RIGHT NAVIGATION
+    ****************************************************/
+    private void ToggleGroupControlRightNav() {
+        toggleGroupRightNav = new ToggleGroup();
+        navButtonsRightNav = new ToggleButton[]{
+            btnNotification,
+            btnAddToCart
+        };
+
+        // Tooltip texts for each button
+        String[] tooltipTexts = {
+            "Notification",
+            "Add To Cart"
+        };
+
+        // Assign tooltips and toggle group in a loop
+        for (int i = 0; i < navButtonsRightNav.length; i++) {
+            navButtonsRightNav[i].setTooltip(new Tooltip(tooltipTexts[i]));
+            navButtonsRightNav[i].setToggleGroup(toggleGroupRightNav);
+        }
+    }
+    /***************************************************
+     * END OF TOGGLE GROUP ON RIGHT NAVIGATION
+    ****************************************************/
+    private void ToggleGroupControlLowerBtn() {
+        toggleGroupLowerBtn = new ToggleGroup();
+        navButtonsLowerBtn = new ToggleButton[]{
+            btnHelp,
+            btnLogout
+        };
+
+        // Tooltip texts for each button
+        String[] tooltipTexts = {
+            "Help",
+            "Logout"
+        };
+
+        // Assign tooltips and toggle group in a loop
+        for (int i = 0; i < navButtonsLowerBtn.length; i++) {
+            navButtonsLowerBtn[i].setTooltip(new Tooltip(tooltipTexts[i]));
+            navButtonsLowerBtn[i].setToggleGroup(toggleGroupLowerBtn);
+        }
+    }
+
+    /***************************************************
+     * BELOW IS FOR DEPARTMENT VALIDATION
+    ****************************************************/
+    private void checkDepartment() {
+        // Validate and hide btnSales if department is 026
+        if ("026".equals(oApp.getDepartment())) { // Ensure the department is compared correctly
+            btnSales.setVisible(false);
+            btnSales.setManaged(false);  // Hide the button
+        }
+    }
+    /***************************************************
+     * END OF DEPARTMENT VALIDATION
+    ****************************************************/
+
+    /***************************************************
+     * BELOW IS FOR CLICK INITIALIZE
+    ****************************************************/
     private void ClickButton() {
         btnClose.setOnAction(this::handleButtonAction);
         btnMinimize.setOnAction(this::handleButtonAction);
     }
-
+    /***************************************************
+     * END OF CLICK INITIALIZE
+    ****************************************************/
+    
+    /***************************************************
+     * BELOW IS FOR HANDDLE ACTION BUTTON
+    ****************************************************/
     private void handleButtonAction(ActionEvent event) {
         Object source = event.getSource();
         JSONObject poJSON;
@@ -709,30 +983,37 @@ public class DashboardController implements Initializable {
             }
         }
     }
-    
-    private void getTime(){
-        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
-        Calendar cal = Calendar.getInstance();
-        int second = cal.get(Calendar.SECOND);        
-        String temp = "" + second;
-        
-        Date date = new Date();
-        String strTimeFormat = "hh:mm:";
-        String strDateFormat = "MMMM dd, yyyy";
-        String secondFormat = "ss";
-        
-        DateFormat timeFormat = new SimpleDateFormat(strTimeFormat + secondFormat);
-        DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-        
-        String formattedTime= timeFormat.format(date);
-        String formattedDate= dateFormat.format(date);
-        
-        DateAndTime.setText(formattedDate+ " || " + formattedTime);
+    /***************************************************
+     * END OF HANDDLE ACTION BUTTON
+    ****************************************************/
+
+    private void getTime() {
+        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            Calendar cal = Calendar.getInstance();
+            int second = cal.get(Calendar.SECOND);
+            String temp = "" + second;
+
+            Date date = new Date();
+            String strTimeFormat = "hh:mm:";
+            String strDateFormat = "MMMM dd, yyyy";
+            String secondFormat = "ss";
+
+            DateFormat timeFormat = new SimpleDateFormat(strTimeFormat + secondFormat);
+            DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+
+            String formattedTime = timeFormat.format(date);
+            String formattedDate = dateFormat.format(date);
+
+            DateAndTime.setText(formattedDate + " || " + formattedTime);
         }),
-         new KeyFrame(Duration.seconds(1))
+                new KeyFrame(Duration.seconds(1))
         );
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
-        
+
+    }
+
+    private void loadUserInfo() {
+        AppUser.setText(oApp.getLogName() + " || " + oApp.getDivisionName() + " ||" + oApp.getDepartment());
     }
 }
