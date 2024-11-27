@@ -17,9 +17,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
 <AnchorPane id="AnchorPane" fx:id="MainAnchor" prefHeight="576.0" prefWidth="1050.0" stylesheets="@../css/StyleSheet.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -54,7 +52,7 @@
                                     <Insets />
                                  </opaqueInsets>
                                  <BorderPane.margin>
-                                    <Insets right="5.0" />
+                                    <Insets />
                                  </BorderPane.margin>
                               </HBox>
                            </right>
@@ -98,7 +96,7 @@
                                     </FontAwesomeIconView>
                                     <Label fx:id="DateAndTime" text="October 1, 2021 08:36 AM" textFill="#141313">
                                        <font>
-                                          <Font name="System Bold Italic" size="12.0" />
+                                          <Font name="System Bold" size="12.0" />
                                        </font>
                                        <HBox.margin>
                                           <Insets left="5.0" />
@@ -316,12 +314,15 @@
                                                             <FontAwesomeIconView fill="#8c8c8c" glyphName="EXCLAMATION_CIRCLE" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
                                                          </graphic>
                   </ToggleButton>
-                                                      <Circle fx:id="badgeNotification" fill="#ff000d" radius="8.0" stroke="#f20101" strokeType="INSIDE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0" />
-                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="4.0">
-                                                         <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                         </font>
-                                                      </Text>
+                                                      <AnchorPane fx:id="badgeNotification" layoutX="20.0" layoutY="20.0" prefHeight="17.0" prefWidth="17.0" style="-fx-background-color: red; -fx-background-radius: 150;" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                         <children>
+                                                            <Label fx:id="lblNotifCount" alignment="CENTER" contentDisplay="CENTER" text="0" textAlignment="JUSTIFY" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <font>
+                                                                  <Font name="System Bold" size="11.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </AnchorPane>
                                                    </children>
                                                 </AnchorPane>
                                                 <AnchorPane prefWidth="45.0">
@@ -334,12 +335,15 @@
                                                             <FontAwesomeIconView fill="#8c8c8c" glyphName="SHOPPING_CART" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
                                                          </graphic>
                                                       </ToggleButton>
-                                                      <Circle fx:id="badgeAddtoCart" fill="#ff000d" radius="8.0" stroke="#f20101" strokeType="INSIDE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0" />
-                                                      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="11" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="4.0">
-                                                         <font>
-                                                            <Font name="System Bold" size="12.0" />
-                                                         </font>
-                                                      </Text>
+                                                      <AnchorPane fx:id="badgeNotification" layoutX="10.0" layoutY="10.0" prefHeight="17.0" prefWidth="17.0" style="-fx-background-color: red; -fx-background-radius: 150;" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                         <children>
+                                                            <Label fx:id="lblAddToCartCount" alignment="CENTER" contentDisplay="CENTER" text="11" textAlignment="JUSTIFY" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <font>
+                                                                  <Font name="System Bold" size="11.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </AnchorPane>
                                                    </children>
                                                 </AnchorPane>
          </children>
