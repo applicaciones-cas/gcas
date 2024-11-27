@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
@@ -191,8 +192,24 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
-    private void switchRatings(ActionEvent event) {
-        toggleSubmenu("Ratings Section", "switchRatings", 7);
+    private void switchLogout(ActionEvent event) {
+//        toggleSubmenu("Logout", "switchLogout", 7);
+       Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("GUANZON GROUP OF COMPANY");
+    alert.setHeaderText("Are you sure you want to logout?");
+
+    // Show the alert and wait for a response
+    Optional<ButtonType> result = alert.showAndWait();
+
+    // Check the response
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+        // Close the current window
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
+    } else {
+        // If Cancel is clicked, reset the selection
+        btnLogout.setSelected(false);
+    }
     }
 
     @FXML

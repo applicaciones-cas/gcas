@@ -202,7 +202,7 @@
                                                                   <Cursor fx:constant="HAND" />
                                                                </cursor>
                                                             </ToggleButton>
-                                                            <ToggleButton fx:id="btnParameters" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchRatings" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
+                                                            <ToggleButton fx:id="btnParameters" graphicTextGap="15.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
                                                                <graphic>
                                                                   <FontAwesomeIconView glyphName="FILE_POWERPOINT_ALT" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
                                                                </graphic>
@@ -232,7 +232,7 @@
                                                                   <Cursor fx:constant="HAND" />
                                                                </cursor>
                                                             </ToggleButton>
-                                                            <ToggleButton fx:id="btnLogout" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchRatings" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
+                                                            <ToggleButton fx:id="btnLogout" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchLogout" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
                                                                <graphic>
                                                                   <FontAwesomeIconView glyphName="POWER_OFF" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
                                                                </graphic>
