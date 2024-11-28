@@ -20,6 +20,8 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,7 +63,7 @@ public class DashboardController implements Initializable {
     private GRider oApp;
     private String lastClickedButton = "";
     private String lastClickedBtnRighNav = "";
-
+    private int notificationCount = 0;
     private ToggleGroup toggleGroup;
     private static ToggleButton[] navButtons;
     private static Tooltip[] navTooltip;
@@ -131,6 +133,7 @@ public class DashboardController implements Initializable {
         getTime();
         setPane();
         loadUserInfo();
+        notificationChecker();
     }
 
     /** PANE **/
@@ -150,7 +153,7 @@ public class DashboardController implements Initializable {
     /** ACTION EVENTS **/
     @FXML
     private void switchInventory(ActionEvent event) {
-        toggleSubmenu("Dashboard Section", "switchDashboard", 0);
+        toggleSubmenu("Dashboard Section", "switchInventory", 0);
         dashboardMenu01();
     }
 
@@ -194,22 +197,22 @@ public class DashboardController implements Initializable {
     @FXML
     private void switchLogout(ActionEvent event) {
 //        toggleSubmenu("Logout", "switchLogout", 7);
-       Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setTitle("GUANZON GROUP OF COMPANY");
-    alert.setHeaderText("Are you sure you want to logout?");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("GUANZON GROUP OF COMPANY");
+        alert.setHeaderText("Are you sure you want to logout?");
 
-    // Show the alert and wait for a response
-    Optional<ButtonType> result = alert.showAndWait();
+        // Show the alert and wait for a response
+        Optional<ButtonType> result = alert.showAndWait();
 
-    // Check the response
-    if (result.isPresent() && result.get() == ButtonType.OK) {
-        // Close the current window
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.close();
-    } else {
-        // If Cancel is clicked, reset the selection
-        btnLogout.setSelected(false);
-    }
+        // Check the response
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Close the current window
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.close();
+        } else {
+            // If Cancel is clicked, reset the selection
+            btnLogout.setSelected(false);
+        }
     }
 
     @FXML
@@ -711,6 +714,7 @@ public class DashboardController implements Initializable {
                             for (int y = 0; y < laDetail2.size(); y++) {
                                 // Check for non-null and valid data
                                 TreeItem<String> subdetail = new TreeItem<>(String.valueOf(laDetail2.get(y)));
+                                
                                 child.getChildren().add(subdetail);
                             }
                         }
@@ -942,7 +946,7 @@ public class DashboardController implements Initializable {
     /**GET DEPARTMENT**/ 
     private void checkDepartment() {
         // Validate and hide btnSales if department is 026
-        if ("026".equals(oApp.getDepartment())) { // Ensure the department is compared correctly
+        if ("022".equals(oApp.getDepartment())) { // Ensure the department is compared correctly
             btnSales.setVisible(false);
             btnSales.setManaged(false);  // Hide the button
         }
@@ -1005,5 +1009,35 @@ public class DashboardController implements Initializable {
     /**LOAD USER INFO**/
     private void loadUserInfo() {
         AppUser.setText(oApp.getLogName() + " || " + oApp.getDivisionName());
+    }
+    
+    
+    private void notificationChecker(){
+    // Setup the ScheduledService to check for notifications periodically
+        ScheduledService<Void> service = new ScheduledService<Void>() {  // Explicit type argument here
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {  // Explicit type argument here
+                    @Override
+                    protected Void call() {
+                        checkNotifications();
+                        return null;
+                    }
+                };
+            }
+        };
+        service.setPeriod(Duration.minutes(1)); // Runs every minute (adjust as needed)
+        service.start(); 
+        
+    }
+    private void checkNotifications() {
+        // Simulate the logic to check notifications (replace with actual logic)
+        notificationCount += (int) (Math.random() * 5);  // Adds 0-4 random notifications
+
+        // Update the label's text on the JavaFX Application Thread
+        Platform.runLater(() -> {
+            lblNotifCount.setText( String.valueOf(notificationCount));
+            lblAddToCartCount.setText(String.valueOf(notificationCount));
+        });
     }
 }
