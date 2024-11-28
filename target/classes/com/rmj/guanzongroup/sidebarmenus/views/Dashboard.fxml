@@ -224,7 +224,7 @@
                                                    <children>
                                                       <VBox fx:id="nav_bar1" prefWidth="50.0" spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
-                                                            <ToggleButton fx:id="btnHelp" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchQA" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
+                                                            <ToggleButton fx:id="btnHelp" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchHelp" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
                                                                <graphic>
                                                                   <FontAwesomeIconView glyphName="QUESTION_CIRCLE" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
                                                                </graphic>

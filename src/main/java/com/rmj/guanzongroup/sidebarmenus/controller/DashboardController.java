@@ -1,6 +1,8 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import static com.rmj.guanzongroup.sidebarmenus.controller.FXMLDocumentController.setNavButtonsSelected;
+import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -195,6 +197,11 @@ public class DashboardController implements Initializable {
     @FXML
     private void switchQA(ActionEvent event) {
         toggleSubmenu("QA Section", "switchQA", 6);
+    }
+    @FXML
+    private void switchHelp(ActionEvent event) {
+        openPDF("D:/Help.pdf");
+        btnHelp.setSelected(false);
     }
 
     @FXML
@@ -1043,5 +1050,24 @@ public class DashboardController implements Initializable {
             lblNotifCount.setText( String.valueOf(notificationCount));
             lblAddToCartCount.setText(String.valueOf(cartCount));
         });
+    }
+    
+    private void openPDF(String filePath) {
+        File pdfFile = new File(filePath);
+
+        if (pdfFile.exists()) {
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().open(pdfFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("Error opening the file.");
+                }
+            } else {
+                System.out.println("Desktop is not supported on this platform.");
+            }
+        } else {
+            System.out.println("File not found: " + pdfFile.getAbsolutePath());
+        }
     }
 }
