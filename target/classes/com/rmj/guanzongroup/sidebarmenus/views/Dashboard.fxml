@@ -306,19 +306,19 @@
          <children>
                                                 <AnchorPane prefWidth="45.0">
                                                    <children>
-                  <ToggleButton fx:id="btnNotification" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchNotification" prefHeight="45.0" styleClass="side-button">
+                  <ToggleButton fx:id="btnNotification" alignment="CENTER_RIGHT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchNotification" prefHeight="45.0" styleClass="side-button">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
                                                          <graphic>
-                                                            <FontAwesomeIconView fill="#8c8c8c" glyphName="EXCLAMATION_CIRCLE" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
+                                                            <FontAwesomeIconView fill="#8c8c8c" glyphName="EXCLAMATION_CIRCLE" size="25" styleClass="sidebar-icon" textAlignment="RIGHT" />
                                                          </graphic>
                   </ToggleButton>
-                                                      <AnchorPane fx:id="badgeNotification" layoutX="20.0" layoutY="20.0" prefHeight="17.0" prefWidth="17.0" style="-fx-background-color: red; -fx-background-radius: 150;" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                      <AnchorPane fx:id="badgeNotification" layoutX="20.0" layoutY="20.0" prefHeight="18.0" prefWidth="18.0" style="-fx-background-color: red; -fx-background-radius: 150;" AnchorPane.leftAnchor="4.0" AnchorPane.topAnchor="2.0">
                                                          <children>
                                                             <Label fx:id="lblNotifCount" alignment="CENTER" contentDisplay="CENTER" text="0" textAlignment="JUSTIFY" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <font>
-                                                                  <Font name="System Bold" size="11.0" />
+                                                                  <Font name="System Bold" size="10.0" />
                                                                </font>
                                                             </Label>
                                                          </children>
@@ -327,19 +327,19 @@
                                                 </AnchorPane>
                                                 <AnchorPane prefWidth="45.0">
                                                    <children>
-                                                      <ToggleButton fx:id="btnAddToCart" graphicTextGap="15.0" mnemonicParsing="false" prefHeight="45.0" styleClass="side-button">
+                                                      <ToggleButton fx:id="btnAddToCart" alignment="CENTER_RIGHT" graphicTextGap="15.0" mnemonicParsing="false" prefHeight="45.0" styleClass="side-button">
                                                          <cursor>
                                                             <Cursor fx:constant="HAND" />
                                                          </cursor>
                                                          <graphic>
-                                                            <FontAwesomeIconView fill="#8c8c8c" glyphName="SHOPPING_CART" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
+                                                            <FontAwesomeIconView fill="#8c8c8c" glyphName="SHOPPING_CART" size="25" styleClass="sidebar-icon" textAlignment="RIGHT" />
                                                          </graphic>
                                                       </ToggleButton>
-                                                      <AnchorPane fx:id="badgeNotification" layoutX="10.0" layoutY="10.0" prefHeight="17.0" prefWidth="17.0" style="-fx-background-color: red; -fx-background-radius: 150;" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                      <AnchorPane fx:id="badgeNotification" layoutX="10.0" layoutY="10.0" prefHeight="18.0" prefWidth="18.0" style="-fx-background-color: red; -fx-background-radius: 150;" AnchorPane.leftAnchor="4.0" AnchorPane.topAnchor="2.0">
                                                          <children>
-                                                            <Label fx:id="lblAddToCartCount" alignment="CENTER" contentDisplay="CENTER" text="11" textAlignment="JUSTIFY" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <Label fx:id="lblAddToCartCount" alignment="CENTER" contentDisplay="CENTER" text="999" textAlignment="JUSTIFY" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <font>
-                                                                  <Font name="System Bold" size="11.0" />
+                                                                  <Font name="System Bold" size="10.0" />
                                                                </font>
                                                             </Label>
                                                          </children>

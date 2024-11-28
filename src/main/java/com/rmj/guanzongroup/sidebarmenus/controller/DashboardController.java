@@ -63,7 +63,10 @@ public class DashboardController implements Initializable {
     private GRider oApp;
     private String lastClickedButton = "";
     private String lastClickedBtnRighNav = "";
+    
     private int notificationCount = 0;
+    private int cartCount = 0;
+    
     private ToggleGroup toggleGroup;
     private static ToggleButton[] navButtons;
     private static Tooltip[] navTooltip;
@@ -1033,11 +1036,12 @@ public class DashboardController implements Initializable {
     private void checkNotifications() {
         // Simulate the logic to check notifications (replace with actual logic)
         notificationCount += (int) (Math.random() * 5);  // Adds 0-4 random notifications
+        cartCount += (int) (Math.random() * 5);  // Adds 0-4 random notifications
 
         // Update the label's text on the JavaFX Application Thread
         Platform.runLater(() -> {
             lblNotifCount.setText( String.valueOf(notificationCount));
-            lblAddToCartCount.setText(String.valueOf(notificationCount));
+            lblAddToCartCount.setText(String.valueOf(cartCount));
         });
     }
 }
