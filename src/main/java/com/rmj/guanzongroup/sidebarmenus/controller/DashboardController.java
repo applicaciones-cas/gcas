@@ -1,6 +1,8 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import static com.rmj.guanzongroup.sidebarmenus.controller.FXMLDocumentController.setNavButtonsSelected;
+import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -11,6 +13,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
@@ -19,6 +22,8 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -47,6 +52,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.base.GRider;
@@ -59,6 +65,10 @@ public class DashboardController implements Initializable {
     private GRider oApp;
     private String lastClickedButton = "";
     private String lastClickedBtnRighNav = "";
+    
+    private int notificationCount = 0;
+    private int cartCount = 0;
+    
     private ToggleGroup toggleGroup;
     private static ToggleButton[] navButtons;
     private static Tooltip[] navTooltip;
@@ -78,7 +88,7 @@ public class DashboardController implements Initializable {
     @FXML
     private TabPane tabpane;
     @FXML
-    private AnchorPane anchorSubMenu, anchorSpace, MainAnchor, anchorSubMenuNotif;
+    private AnchorPane anchorSubMenu, anchorSpace, MainAnchor, anchorSubMenuNotif, badgeNotification, badgeAddtoCart;
     @FXML
     private TreeView<String> tvChild;
     @FXML
@@ -100,15 +110,16 @@ public class DashboardController implements Initializable {
             btnLogout,
             btnNotification,
             btnAddToCart;
-    @FXML
-    private Circle badgeNotification, badgeAddtoCart;
+
     @FXML
     private Pane pane;
+
     @FXML
-    private Label DateAndTime, AppUser;
+    private Label DateAndTime, AppUser, lblAddToCartCount, lblNotifCount;
 
     @FXML
     private StackPane MainStack;
+
     @FXML
     private BorderPane main_container;
 
@@ -127,13 +138,10 @@ public class DashboardController implements Initializable {
         getTime();
         setPane();
         loadUserInfo();
-//        btnInventory.setSelected(false);
-//        lblMaps.setText("");
+        notificationChecker();
     }
 
-    /***************************************************
-     * BELOW IS FOR ACTION EVENT
-    ****************************************************/
+    /** PANE **/
     @FXML
     private void pane(ActionEvent event) {
         anchorSubMenu.setVisible(false);
@@ -146,11 +154,11 @@ public class DashboardController implements Initializable {
             navButtonsRightNav[i].setSelected(false); // Set each button's selected state to false
         }
     }
-
+    
+    /** ACTION EVENTS **/
     @FXML
     private void switchInventory(ActionEvent event) {
-        toggleSubmenu("Dashboard Section", "switchDashboard", 0);
-//        btnInventory.setSelected(true);
+        toggleSubmenu("Dashboard Section", "switchInventory", 0);
         dashboardMenu01();
     }
 
@@ -163,7 +171,6 @@ public class DashboardController implements Initializable {
     @FXML
     private void switchItem(ActionEvent event) {
         toggleSubmenu("Item Section", "switchItem", 1);
-//        btnPurchasing.setSelected(true);
         dashboardMenu02();
     }
 
@@ -191,10 +198,31 @@ public class DashboardController implements Initializable {
     private void switchQA(ActionEvent event) {
         toggleSubmenu("QA Section", "switchQA", 6);
     }
+    @FXML
+    private void switchHelp(ActionEvent event) {
+        openPDF("D:/Help.pdf");
+        btnHelp.setSelected(false);
+    }
 
     @FXML
-    private void switchRatings(ActionEvent event) {
-        toggleSubmenu("Ratings Section", "switchRatings", 7);
+    private void switchLogout(ActionEvent event) {
+//        toggleSubmenu("Logout", "switchLogout", 7);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("GUANZON GROUP OF COMPANY");
+        alert.setHeaderText("Are you sure you want to logout?");
+
+        // Show the alert and wait for a response
+        Optional<ButtonType> result = alert.showAndWait();
+
+        // Check the response
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Close the current window
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.close();
+        } else {
+            // If Cancel is clicked, reset the selection
+            btnLogout.setSelected(false);
+        }
     }
 
     @FXML
@@ -202,10 +230,7 @@ public class DashboardController implements Initializable {
         toggleSubmenu("Reports Section", "switchReports", 8);
     }
 
-    /***************************************************
-     * END OF ACTION EVENT
-    ****************************************************/
-
+    /** SET TAB TITLE **/
     public String SetTabTitle(String menuaction) {
         switch (menuaction) {
             /**/
@@ -240,6 +265,7 @@ public class DashboardController implements Initializable {
         return -1;
     }
 
+    /** PANE LOAD **/
     public void setPane() {
         pane.setOnMouseClicked(event -> {
             // Check if the click occurred on the tabs area (not the content area)
@@ -261,6 +287,7 @@ public class DashboardController implements Initializable {
         });
     }
 
+    /** TAB PANE **/
     public void setTabPane() {
         // set up the drag and drop listeners on the tab pane
         tabpane.setOnMouseClicked(event -> {
@@ -278,7 +305,6 @@ public class DashboardController implements Initializable {
             for (int i = 0; i < navButtonsRightNav.length; i++) {
                 navButtonsRightNav[i].setSelected(false); // Set each button's selected state to false
             }
-            // Perform other actions on click if needed
         });
 
         tabpane.setOnDragDetected(event -> {
@@ -343,6 +369,7 @@ public class DashboardController implements Initializable {
 
     }
 
+    /** SCREEN INTERFACE **/
     private ScreenInterface getController(String fsValue) {
         switch (fsValue) {
             case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
@@ -354,6 +381,7 @@ public class DashboardController implements Initializable {
         }
     }
 
+    /** STAB PANE LOAD **/
     public TabPane loadAnimate(String fsFormName) {
         //set fxml controller class
         if (tabpane.getTabs().isEmpty()) {
@@ -412,7 +440,7 @@ public class DashboardController implements Initializable {
         return null;
     }
 
-    //Load Main Screen if no tab remain
+    //TAB CLOSE
     public void Tabclose() {
         int tabsize = tabpane.getTabs().size();
         if (tabsize == 0) {
@@ -424,7 +452,8 @@ public class DashboardController implements Initializable {
         workingSpace.getChildren().clear();
         workingSpace.getChildren().add(foPane);
     }
-
+    
+    /** LOAD ANIMATE ANCHOR **/
     public AnchorPane loadAnimateAnchor(String fsFormName) {
         System.err.println("fsFormName to close == " + String.valueOf(fsFormName));
         ScreenInterface fxObj = getController(fsFormName);
@@ -453,7 +482,8 @@ public class DashboardController implements Initializable {
 
         return null;
     }
-
+    
+    /** CREATE CONTEXT MENU **/
     public ContextMenu createContextMenu(TabPane tabPane, Tab tab, GRider oApp) {
         ContextMenu contextMenu = new ContextMenu();
 
@@ -476,6 +506,7 @@ public class DashboardController implements Initializable {
         return contextMenu;
     }
 
+    /** SHOW MESSAGE **/
     private boolean showMessage() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation Dialog");
@@ -494,6 +525,7 @@ public class DashboardController implements Initializable {
         return result == buttonTypeYes;
     }
 
+    /** CLOSE SELECTED TAB **/
     private void closeSelectTabs(TabPane tabPane, Tab tab) {
         if (showMessage()) {
             Tabclose(tabPane);
@@ -501,15 +533,16 @@ public class DashboardController implements Initializable {
             tabPane.getTabs().remove(tab);
         }
     }
-    //Load Main Screen if no tab remain
-
+    
+    /**CLoad Main Screen if no tab remain **/
     public void Tabclose(TabPane tabpane) {
         int tabsize = tabpane.getTabs().size();
         if (tabsize == 0) {
             setScene(loadAnimateAnchor("Dashboard.fxml"));
         }
     }
-
+    
+    /**CLOSE OTHER TAB **/
     private void closeOtherTabs(TabPane tabPane, Tab currentTab) {
         if (showMessage()) {
             tabPane.getTabs().removeIf(tab -> tab != currentTab);
@@ -520,7 +553,8 @@ public class DashboardController implements Initializable {
             }
         }
     }
-
+    
+    /**CLOSE ALL TAB **/
     private void closeAllTabs(TabPane tabPane, GRider oApp) {
         if (showMessage()) {
             tabName.clear();
@@ -533,42 +567,32 @@ public class DashboardController implements Initializable {
             myBox.getChildren().clear();
         }
     }
-
+    
+    /**INITIALIZE SUB MENU VISIBILITY**/
     private void initMenu() {
         anchorSubMenu.setVisible(false);
         anchorSubMenuNotif.setVisible(false);
     }
-
+    
+    /**TOGGLE SUBMENU ON LEFT BUTTON**/
     private void toggleSubmenu(String sectionName, String buttonId, Integer btnIndex) {
         // Check if the submenu is visible and the same button is clicked
-        if (anchorSubMenu.isVisible() && lastClickedButton.equals(buttonId)) {
-            // Hide the submenu and reset the last clicked button
-            anchorSubMenu.setVisible(false);
-            navButtons[btnIndex].setSelected(false); // Set each button's selected state to false
-            lastClickedButton = "";
-
-        } else {
-            // Show the submenu and update the last clicked button
-            anchorSubMenu.setVisible(true);
-            lastClickedButton = buttonId;
-        }
+        boolean isSameButton = anchorSubMenu.isVisible() && lastClickedButton.equals(buttonId);
+        anchorSubMenu.setVisible(!isSameButton);
+        navButtons[btnIndex].setSelected(!isSameButton);
+        lastClickedButton = isSameButton ? "" : buttonId;
     }
-
+    
+    /**TOGGLE SUBMENU ON RIGHT BUTTON**/
     private void toggleSubmenuRightBtn(String sectionName, String buttonId, Integer btnIndex) {
         // Check if the submenu is visible and the same button is clicked
-        if (anchorSubMenuNotif.isVisible() && lastClickedBtnRighNav.equals(buttonId)) {
-            // Hide the submenu and reset the last clicked button
-            anchorSubMenuNotif.setVisible(false);
-            navButtonsRightNav[btnIndex].setSelected(false); // Set each button's selected state to false
-            lastClickedBtnRighNav = "";
-
-        } else {
-            // Show the submenu and update the last clicked button
-            anchorSubMenuNotif.setVisible(true);
-            lastClickedBtnRighNav = buttonId;
-        }
+        boolean isSameButton = anchorSubMenuNotif.isVisible() && lastClickedBtnRighNav.equals(buttonId);
+        anchorSubMenuNotif.setVisible(!isSameButton);
+        navButtonsRightNav[btnIndex].setSelected(!isSameButton);
+        lastClickedBtnRighNav = isSameButton ? "" : buttonId;
     }
-
+    
+    /**STATIC DATA (JSON ON LEFT NAVIGATION)**/
     private void dashboardMenu02() {
 
         JSONArray laMaster, laDetail, laData;
@@ -601,7 +625,7 @@ public class DashboardController implements Initializable {
 
         dissectJSON(laMaster.toJSONString());
     }
-
+    /**STATIC DATA (JSON ON LEFT NAVIGATION)**/
     private void dashboardMenu01() {
         JSONArray laMaster, laDetail;
         JSONObject loMaster, loDetail;
@@ -609,7 +633,7 @@ public class DashboardController implements Initializable {
         laDetail = new JSONArray();
 
         // Add "Sales Replacement" only if the department is not 26
-        if (!"026".equals(oApp.getDepartment())) {
+        if (!"029".equals(oApp.getDepartment())) {
             loDetail = new JSONObject();
             loDetail.put("parent", "Sales Replacement");
             laDetail.add(loDetail);
@@ -630,7 +654,7 @@ public class DashboardController implements Initializable {
 
         dissectJSON(laMaster.toJSONString());
     }
-
+    /**STATIC DATA (JSON ON RIGHT NAVIGATION)**/
     private void RightNavNotif() {
         JSONArray laMaster, laDetail;
         JSONObject loMaster, loDetail;
@@ -638,7 +662,7 @@ public class DashboardController implements Initializable {
         laDetail = new JSONArray();
 
         // Add "Sales Replacement" only if the department is not 26
-        if (!"026".equals(oApp.getDepartment())) {
+        if (!"029".equals(oApp.getDepartment())) {
             loDetail = new JSONObject();
             loDetail.put("parent", "Sales");
             laDetail.add(loDetail);
@@ -659,8 +683,8 @@ public class DashboardController implements Initializable {
 
         dissectJSONRightNav(laMaster.toJSONString());
     }
-
-
+    
+    /**LOAD THE FORM BASE FROM THE JSON ON LEFT NAVIGATION**/
     private void dissectJSON(String fsValue) {
         if (fsValue == null || fsValue.isEmpty()) {
             System.err.println("Invalid JSON string.");
@@ -700,6 +724,7 @@ public class DashboardController implements Initializable {
                             for (int y = 0; y < laDetail2.size(); y++) {
                                 // Check for non-null and valid data
                                 TreeItem<String> subdetail = new TreeItem<>(String.valueOf(laDetail2.get(y)));
+                                
                                 child.getChildren().add(subdetail);
                             }
                         }
@@ -720,44 +745,46 @@ public class DashboardController implements Initializable {
                         switch (newValue.getValue()) {
                             case "Sales Replacement":
                                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml";
-                                intIndex = 0;
+//                                intIndex = 0;
                                 break;
                             case "Additional Give":
                                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml";
-                                intIndex = 0;
+//                                intIndex = 0;
                                 break;
-                            default:
-                                intIndex = -1;
-                                throw new AssertionError("Unhandled case: " + newValue.getValue());
                         }
 
-                        // Add logic to load the form
-                        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
-                            setScene2(loadAnimate(sformname));
-                            anchorSubMenu.setVisible(false);
-                            navButtons[intIndex].setSelected(false);
+                        // Add logic to load the form    
+                        if (oApp != null) {
+                            boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
+                                if (isNewTab) setScene2(loadAnimate(sformname)); 
+                                else System.out.println("THIS FORM IS ALREADY OPENED");
+                                anchorSubMenu.setVisible(false);
+                            for (ToggleButton navButton : navButtons) {
+                                navButton.setSelected(false);
+                            }
                             pane.requestFocus();
                         }
                     } else {
                         // Handle the case where newValue is null, empty, or not a leaf
                         System.out.println("Invalid selection or empty value.");
                     }
-
                 });
             } else {
                 System.err.println("tvChild is not initialized.");
             }
-
         } catch (Exception ex) {
-            ex.printStackTrace(); // Log the full exception for easier debugging
+            ex.printStackTrace(); //Log the full exception for easier debugging
         }
     }
 
-        /*SET SCENE FOR WORKPLACE - STACKPANE - TABPANE*/
+    /**SET SCENE FOR WORKPLACE - STACKPANE - TABPANE**/
     public void setScene2(TabPane foPane) {
         workingSpace.getChildren().clear();
         workingSpace.getChildren().add(foPane);
     }
+
+    
+    /**LOAD THE FORM BASE FROM THE JSON ON RIGHT NAVIGATION**/
     private void dissectJSONRightNav(String fsValue) {
         if (fsValue == null || fsValue.isEmpty()) {
             System.err.println("Invalid JSON string.");
@@ -817,29 +844,28 @@ public class DashboardController implements Initializable {
                         switch (newValue.getValue()) {
                             case "Sales Replacement":
                                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml";
-                                intIndex = 0;
+//                                intIndex = 0;
                                 break;
                             case "Additional Give":
                                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml";
-                                intIndex = 0;
+//                                intIndex = 0;
                                 break;
-                            default:
-                                intIndex = -1;
-                                throw new AssertionError("Unhandled case: " + newValue.getValue());
                         }
-
                         // Add logic to load the form
-                        if (oApp != null && checktabs(SetTabTitle(sformname)) == 1) {
-                            setScene2(loadAnimate(sformname));
-                            anchorSubMenuNotif.setVisible(false);
-                            navButtonsRightNav[intIndex].setSelected(false);
+                        if (oApp != null) {
+                            boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
+                                if (isNewTab) setScene2(loadAnimate(sformname)); 
+                                else System.out.println("THIS FORM IS ALREADY OPENED");
+                                anchorSubMenuNotif.setVisible(false);
+                            for (ToggleButton navButtonsRightNav : navButtonsRightNav) {
+                                navButtonsRightNav.setSelected(false);
+                            }
                             pane.requestFocus();
                         }
                     } else {
                         // Handle the case where newValue is null, empty, or not a leaf
                         System.out.println("Invalid selection or empty value.");
                     }
-
                 });
             } else {
                 System.err.println("tvChild1 is not initialized.");
@@ -850,11 +876,7 @@ public class DashboardController implements Initializable {
         }
     }
 
-    
-    /***************************************************
-     * BELOW IS FOR TOGGLE GROUP ON LEFT NAVIGATION
-    ****************************************************/
-    
+    /**INITIALIZE TOGGLE GROUP LEFT NAVIGATION**/
     private void ToggleGroupControl() {
         toggleGroup = new ToggleGroup();
         navButtons = new ToggleButton[]{
@@ -888,13 +910,8 @@ public class DashboardController implements Initializable {
             }
         }
     }
-    /***************************************************
-     * END OF TOGGLE GROUP ON LEFT NAVIGATION
-    ****************************************************/
-    
-    /***************************************************
-     * BELOW IS FOR TOGGLE GROUP ON RIGHT NAVIGATION
-    ****************************************************/
+
+    /**INITIALIZE TOGGLE GROUP RIGHT NAVIGATION**/
     private void ToggleGroupControlRightNav() {
         toggleGroupRightNav = new ToggleGroup();
         navButtonsRightNav = new ToggleButton[]{
@@ -914,9 +931,8 @@ public class DashboardController implements Initializable {
             navButtonsRightNav[i].setToggleGroup(toggleGroupRightNav);
         }
     }
-    /***************************************************
-     * END OF TOGGLE GROUP ON RIGHT NAVIGATION
-    ****************************************************/
+
+    /**INITIALIZE TOGGLE GROUP LOWER BUTTON **/
     private void ToggleGroupControlLowerBtn() {
         toggleGroupLowerBtn = new ToggleGroup();
         navButtonsLowerBtn = new ToggleButton[]{
@@ -937,34 +953,22 @@ public class DashboardController implements Initializable {
         }
     }
 
-    /***************************************************
-     * BELOW IS FOR DEPARTMENT VALIDATION
-    ****************************************************/
+    /**GET DEPARTMENT**/ 
     private void checkDepartment() {
         // Validate and hide btnSales if department is 026
-        if ("026".equals(oApp.getDepartment())) { // Ensure the department is compared correctly
+        if ("022".equals(oApp.getDepartment())) { // Ensure the department is compared correctly
             btnSales.setVisible(false);
             btnSales.setManaged(false);  // Hide the button
         }
     }
-    /***************************************************
-     * END OF DEPARTMENT VALIDATION
-    ****************************************************/
 
-    /***************************************************
-     * BELOW IS FOR CLICK INITIALIZE
-    ****************************************************/
+    /**INITIALIZE CLICK BUTTON**/
     private void ClickButton() {
         btnClose.setOnAction(this::handleButtonAction);
         btnMinimize.setOnAction(this::handleButtonAction);
     }
-    /***************************************************
-     * END OF CLICK INITIALIZE
-    ****************************************************/
-    
-    /***************************************************
-     * BELOW IS FOR HANDDLE ACTION BUTTON
-    ****************************************************/
+
+    /** HANDLE BUTTON ACTION **/
     private void handleButtonAction(ActionEvent event) {
         Object source = event.getSource();
         JSONObject poJSON;
@@ -983,10 +987,10 @@ public class DashboardController implements Initializable {
             }
         }
     }
-    /***************************************************
-     * END OF HANDDLE ACTION BUTTON
-    ****************************************************/
 
+
+    
+    /**GET TIME**/
     private void getTime() {
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             Calendar cal = Calendar.getInstance();
@@ -1012,8 +1016,58 @@ public class DashboardController implements Initializable {
         clock.play();
 
     }
-
+    /**LOAD USER INFO**/
     private void loadUserInfo() {
-        AppUser.setText(oApp.getLogName() + " || " + oApp.getDivisionName() + " ||" + oApp.getDepartment());
+        AppUser.setText(oApp.getLogName() + " || " + oApp.getDivisionName());
+    }
+    
+    
+    private void notificationChecker(){
+    // Setup the ScheduledService to check for notifications periodically
+        ScheduledService<Void> service = new ScheduledService<Void>() {  // Explicit type argument here
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {  // Explicit type argument here
+                    @Override
+                    protected Void call() {
+                        checkNotifications();
+                        return null;
+                    }
+                };
+            }
+        };
+        service.setPeriod(Duration.minutes(1)); // Runs every minute (adjust as needed)
+        service.start(); 
+        
+    }
+    private void checkNotifications() {
+        // Simulate the logic to check notifications (replace with actual logic)
+        notificationCount += (int) (Math.random() * 5);  // Adds 0-4 random notifications
+        cartCount += (int) (Math.random() * 5);  // Adds 0-4 random notifications
+
+        // Update the label's text on the JavaFX Application Thread
+        Platform.runLater(() -> {
+            lblNotifCount.setText( String.valueOf(notificationCount));
+            lblAddToCartCount.setText(String.valueOf(cartCount));
+        });
+    }
+    
+    private void openPDF(String filePath) {
+        File pdfFile = new File(filePath);
+
+        if (pdfFile.exists()) {
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().open(pdfFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("Error opening the file.");
+                }
+            } else {
+                System.out.println("Desktop is not supported on this platform.");
+            }
+        } else {
+            System.out.println("File not found: " + pdfFile.getAbsolutePath());
+        }
     }
 }
