@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import java.net.URL;
@@ -11,13 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.cas.clients.Client_Master;
 
-/**
- * FXML Controller class
- *
- * @author User
- */
 public class SampleForm2Controller implements Initializable,ScreenInterface {
     private final String pxeModuleName = "Sample Form 2";
     private GRider oApp;
@@ -50,12 +40,9 @@ public class SampleForm2Controller implements Initializable,ScreenInterface {
     @FXML
     private Button btnClose;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        System.out.println("this form is called");
     }    
 
     @Override

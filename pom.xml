@@ -13,16 +13,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <excludes>
-                        <exclude>module-info.java</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.4</version>
@@ -151,33 +141,9 @@
             <version>0.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
-       
         <dependency>
             <groupId>org.guanzon</groupId>
-            <artifactId>cas-parameters</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.guanzon.clients</groupId>
-            <artifactId>cas-clients</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.guanzon.cas.inventory</groupId>
-            <artifactId>cas-inventory</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.guanzon</groupId>
-            <artifactId>appdriver-base</artifactId>
-            <version>0.1-SNAPSHOT</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.guanzon</groupId>
-            <artifactId>cas-purchasing</artifactId>
+            <artifactId>cas-parameter</artifactId>
             <version>0.1-SNAPSHOT</version>
             <type>jar</type>
         </dependency>

@@ -11,13 +11,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.cas.clients.Client_Master;
+import org.guanzon.cas.parameter.Barangay;
+import org.json.simple.JSONObject;
 
-/**
- * FXML Controller class
- *
- * @author User
- */
 public class SampleForm1Controller implements Initializable,ScreenInterface {
     private final String pxeModuleName = "Sample Form 1";
     private GRider oApp;
@@ -50,18 +46,22 @@ public class SampleForm1Controller implements Initializable,ScreenInterface {
     @FXML
     private Button btnClose;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        Barangay loBarangay = new Barangay(oApp, false);
+        JSONObject loJSON = loBarangay.searchRecord("", false);        
+        System.out.println(loBarangay.getModel().getBarangayName());
+        System.out.println(loBarangay.getModel().getTownId());
+        System.out.println(loBarangay.getModel().getTownName());
+        
+        loJSON = loBarangay.searchBarangayWithStatus("", false);        
+        System.out.println(loBarangay.getModel().getBarangayName());
+        System.out.println(loBarangay.getModel().getTownId());
+        System.out.println(loBarangay.getModel().getTownName());
     }    
 
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
-        
     }
-    
 }

@@ -1,25 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.Animation;
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
@@ -27,7 +17,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -50,19 +39,18 @@ import org.guanzon.appdriver.base.GRider;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-//import org.rmj.marketplace.model.ScreenInterface;
-//import org.rmj.appdriver.GRider;
-//import org.rmj.appdriver.SQLUtil;
 
-/**
- *
- * @author user
- */
 public class FXMLDocumentController implements Initializable {
     private GRider oApp;
     private static ToggleButton[] navButtons;
     private static Tooltip[] navTooltip;
     private String lsTitle = "";
+    
+    public static ToggleGroup drawer_button;
+    private TranslateTransition openNav;
+    private TranslateTransition closeNav;
+    private TranslateTransition closeFastNav;
+    
     @FXML
     private Pane btnMin;
     @FXML
@@ -95,10 +83,6 @@ public class FXMLDocumentController implements Initializable {
     private ToggleButton btnParameters;
     @FXML
     private FontAwesomeIconView drawer_icon;
-    public static ToggleGroup drawer_button;
-    private TranslateTransition openNav;
-    private TranslateTransition closeNav;
-    private TranslateTransition closeFastNav;
     @FXML
     private TreeView tvChild;
    @FXML

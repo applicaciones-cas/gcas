@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-import com.rmj.guanzongroup.sidebarmenus.GriderGui;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.base.GRider;
@@ -19,7 +18,7 @@ public class LetMeIn extends Application {
             path = "/srv/GGC_Maven_Systems";
         }
         System.setProperty("sys.default.path.config", path);
-        System.setProperty("sys.default.path.metadata", "D:/GGC_Maven_Systems/config/metadata/");
+        System.setProperty("sys.default.path.metadata", System.getProperty("sys.default.path.config") + "/config/metadata/new/");
         
         if (!loadProperties()) {
             System.err.println("Unable to load config.");
@@ -45,12 +44,12 @@ public class LetMeIn extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-private static boolean loadProperties() {
+    
+    private static boolean loadProperties() {
         try {
             Properties po_props = new Properties();
-            po_props.load(new FileInputStream("D:\\GGC_Maven_Systems\\config\\cas.properties"));
+            po_props.load(new FileInputStream(System.getProperty("sys.default.path.config") + "/config/cas.properties"));
 
             System.setProperty("store.branch.code", po_props.getProperty("store.branch.code"));
             System.setProperty("store.inventory.industry", po_props.getProperty("store.inventory.category"));

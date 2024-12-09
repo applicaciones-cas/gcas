@@ -3,8 +3,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\DashboardController.class
 com\rmj\guanzongroup\sidebarmenus\GriderGui.class
 com\rmj\guanzongroup\sidebarmenus\controller\ScreenInterfaceController.class
 com\rmj\guanzongroup\sidebarmenus\controller\SampleForm2Controller.class
-com\rmj\guanzongroup\sidebarmenus\PrimaryController.class
-com\rmj\guanzongroup\sidebarmenus\SecondaryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\FXMLDocumentController$1.class
 com\rmj\guanzongroup\sidebarmenus\LetMeIn.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController1$1.class
