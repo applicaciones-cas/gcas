@@ -14,6 +14,7 @@ import org.guanzon.appdriver.base.GRider;
 import org.guanzon.cas.client.Client_Master;
 import org.guanzon.cas.parameter.Barangay;
 import org.guanzon.cas.parameter.Country;
+import org.guanzon.cas.parameter.Province;
 import org.guanzon.cas.parameter.TownCity;
 import org.json.simple.JSONObject;
 
@@ -51,10 +52,14 @@ public class SampleForm1Controller implements Initializable,ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Client_Master loObject = new Client_Master(oApp, false);
-        JSONObject loJSON = loObject.searchRecord("", false);        
-        System.out.println(loObject.getModel().getClientId());
-        System.out.println(loObject.getModel().getFullName());
+        Province loObject = new Province();
+        loObject.setApplicationDriver(oApp);
+        loObject.setWithParentClass(false);
+        loObject.initialize();
+        
+        JSONObject loJSON = loObject.searchProvinceWithStatus("", false);        
+        System.out.println(loObject.getModel().getProvinceId());
+        System.out.println(loObject.getModel().getProvinceName());
     }    
 
     @Override
