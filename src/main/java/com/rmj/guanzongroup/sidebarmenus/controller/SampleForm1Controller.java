@@ -11,7 +11,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.cas.client.Client_Master;
 import org.guanzon.cas.parameter.Barangay;
+import org.guanzon.cas.parameter.Country;
+import org.guanzon.cas.parameter.TownCity;
 import org.json.simple.JSONObject;
 
 public class SampleForm1Controller implements Initializable,ScreenInterface {
@@ -48,16 +51,10 @@ public class SampleForm1Controller implements Initializable,ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Barangay loBarangay = new Barangay(oApp, false);
-        JSONObject loJSON = loBarangay.searchRecord("", false);        
-        System.out.println(loBarangay.getModel().getBarangayName());
-        System.out.println(loBarangay.getModel().getTownId());
-        System.out.println(loBarangay.getModel().getTownName());
-        
-        loJSON = loBarangay.searchBarangayWithStatus("", false);        
-        System.out.println(loBarangay.getModel().getBarangayName());
-        System.out.println(loBarangay.getModel().getTownId());
-        System.out.println(loBarangay.getModel().getTownName());
+        Client_Master loObject = new Client_Master(oApp, false);
+        JSONObject loJSON = loObject.searchRecord("", false);        
+        System.out.println(loObject.getModel().getClientId());
+        System.out.println(loObject.getModel().getFullName());
     }    
 
     @Override
