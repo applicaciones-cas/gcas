@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import java.net.URL;
@@ -11,11 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.cas.client.Client_Address;
+import org.guanzon.cas.client.Client_Institution_Contact;
+import org.guanzon.cas.client.Client_Mail;
 import org.guanzon.cas.client.Client_Master;
-import org.guanzon.cas.parameter.Barangay;
-import org.guanzon.cas.parameter.Country;
-import org.guanzon.cas.parameter.Province;
-import org.guanzon.cas.parameter.TownCity;
+import org.guanzon.cas.client.Client_Mobile;
+import org.guanzon.cas.client.Client_Social_Media;
 import org.json.simple.JSONObject;
 
 public class SampleForm1Controller implements Initializable,ScreenInterface {
@@ -52,14 +49,15 @@ public class SampleForm1Controller implements Initializable,ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Province loObject = new Province();
+        Client_Institution_Contact loObject = new Client_Institution_Contact();
         loObject.setApplicationDriver(oApp);
         loObject.setWithParentClass(false);
         loObject.initialize();
         
-        JSONObject loJSON = loObject.searchProvinceWithStatus("", false);        
-        System.out.println(loObject.getModel().getProvinceId());
-        System.out.println(loObject.getModel().getProvinceName());
+        JSONObject loJSON = loObject.searchRecord("", false);        
+        if ("success".equals((String) loJSON.get("result"))){
+            System.out.println(loObject.getModel().getClientId());
+        } else System.out.println("No record was selected.");
     }    
 
     @Override
