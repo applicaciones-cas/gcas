@@ -6,18 +6,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.cas.client.Client_Address;
+import org.guanzon.cas.client.Client;
 import org.guanzon.cas.client.Client_Institution_Contact;
-import org.guanzon.cas.client.Client_Mail;
-import org.guanzon.cas.client.Client_Master;
-import org.guanzon.cas.client.Client_Mobile;
-import org.guanzon.cas.client.Client_Social_Media;
 import org.json.simple.JSONObject;
 
 public class SampleForm1Controller implements Initializable,ScreenInterface {
     private final String pxeModuleName = "Sample Form 1";
     private GRider oApp;
+    private JSONObject poJSON;
     
     private int pnEditMode;  
     @FXML
