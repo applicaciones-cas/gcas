@@ -138,7 +138,7 @@
         <dependency>
             <groupId>org.guanzon</groupId>
             <artifactId>appdriver-agent</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.2-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -154,6 +154,13 @@
             <version>1.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
+        
+        <dependency>
+            <groupId>org.guanzon</groupId>
+            <artifactId>cas-inv</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

@@ -6,10 +6,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
-import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.cas.client.Client;
-import org.guanzon.cas.client.Client_Institution_Contact;
+import org.guanzon.cas.parameter.Bin;
+import org.guanzon.cas.parameter.Branch;
 import org.json.simple.JSONObject;
 
 public class SampleForm1Controller implements Initializable,ScreenInterface {
@@ -47,14 +46,16 @@ public class SampleForm1Controller implements Initializable,ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Client_Institution_Contact loObject = new Client_Institution_Contact();
+        Branch loObject;
+        loObject = new Branch();
         loObject.setApplicationDriver(oApp);
         loObject.setWithParentClass(false);
         loObject.initialize();
         
         JSONObject loJSON = loObject.searchRecord("", false);        
         if ("success".equals((String) loJSON.get("result"))){
-            System.out.println(loObject.getModel().getClientId());
+            System.out.println(loObject.getModel().getBranchCode());
+            System.out.println(loObject.getModel().getBranchName());
         } else System.out.println("No record was selected.");
     }    
 
