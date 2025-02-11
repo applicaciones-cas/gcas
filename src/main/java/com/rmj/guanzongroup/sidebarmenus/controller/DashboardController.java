@@ -236,10 +236,10 @@ public class DashboardController implements Initializable {
             /**/
             case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
                 return "Sample Form 1";
-
             case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
                 return "Sample Form 2";
-
+            case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
+                return "Purchase Order";
             default:
                 return null;
         }
@@ -376,6 +376,8 @@ public class DashboardController implements Initializable {
                 return new SampleForm1Controller();
             case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
                 return new SampleForm2Controller();
+            case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
+                return new PurchasingOrder_EntryController();
             default:
                 return null;
         }
@@ -604,22 +606,18 @@ public class DashboardController implements Initializable {
         loMaster = new JSONObject();
 
         loMaster = new JSONObject();
-        loMaster.put("parent", "Sales InInquiry");
-        laMaster.add(loMaster);
+//        loMaster.put("parent", "Sales InInquiry");
+//        laMaster.add(loMaster);
 
         loDetail = new JSONObject();
-        loDetail.put("parent", "Reservation Payment");
+        loDetail.put("parent", "Delivery Acceptance");
         laDetail.add(loDetail);
 
         loDetail = new JSONObject();
-        loDetail.put("parent", "Release");
+        loDetail.put("parent", "Return");
         laDetail.add(loDetail);
 
-        loDetail = new JSONObject();
-        loDetail.put("parent", "Delivery");
-        laDetail.add(loDetail);
-
-        loMaster.put("parent", "Sales Reservation");
+        loMaster.put("parent", "Purchasing");
         loMaster.put("child", laDetail);
         laMaster.add(loMaster);
 
@@ -643,11 +641,12 @@ public class DashboardController implements Initializable {
         loDetail = new JSONObject();
         loDetail.put("parent", "Additional Give");
         laDetail.add(loDetail);
-
+        
         // Create the "Sales" parent with its children
         loMaster = new JSONObject();
         loMaster.put("parent", "Sales");
         loMaster.put("child", laDetail);
+
 
         // Add "Sales" to the master list
         laMaster.add(loMaster);
@@ -749,6 +748,9 @@ public class DashboardController implements Initializable {
                                 break;
                             case "Additional Give":
                                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml";
+                                break;
+                            case "Delivery Acceptance":
+                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml";
 //                                intIndex = 0;
                                 break;
                         }
