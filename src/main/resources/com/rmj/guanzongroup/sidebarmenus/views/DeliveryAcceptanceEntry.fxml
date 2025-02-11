@@ -159,7 +159,7 @@
                                                                                     </font>
                                                                                 </Label>
                                                                                 <Label text="Date" GridPane.rowIndex="4" />
-                                                                                <Label text="Referrence No." GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                                                                                <Label text="Reference No." GridPane.columnIndex="6" GridPane.rowIndex="5" />
                                                                                 <Label text="Company" GridPane.rowIndex="5" />
                                                                                 <Label text="Supplier" GridPane.rowIndex="6" />
                                                                                 <Label text="Remarks" GridPane.rowIndex="8" />
@@ -181,7 +181,7 @@
                                                                                     </font>
                                                                                 </Label>
                                                                                 <Label text="Term" GridPane.columnIndex="6" GridPane.rowIndex="6" />
-                                                                                <Label text="Destination" GridPane.rowIndex="7" />
+                                                                                <Label text="Trucking" GridPane.rowIndex="7" />
                                                                                 <TextField fx:id="txtField06" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" />
                                                             <TextArea maxWidth="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="804.0" GridPane.columnIndex="2" GridPane.rowIndex="8">
                                                                <GridPane.margin>
@@ -189,6 +189,8 @@
                                                                </GridPane.margin>
                                                             </TextArea>
                                                             <Label text="Disc. Amt" GridPane.columnIndex="10" GridPane.rowIndex="6" />
+                                                            <Label text="Reference Date" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                                                            <TextField fx:id="txtField081" maxHeight="25.0" GridPane.columnIndex="8" GridPane.rowIndex="4" />
                                                                             </children>
                                                                         </GridPane>
                                                                     </children>
@@ -235,7 +237,7 @@
                                                                                 <TextField fx:id="txtField25" maxHeight="25.0" GridPane.columnIndex="10" GridPane.rowIndex="3" />
                                                                                 <TextField fx:id="txtField26" maxHeight="25.0" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                                                 <TextField fx:id="txtField27" maxHeight="25.0" GridPane.columnIndex="10" GridPane.rowIndex="5" />
-                                                                                <Label text="Request" GridPane.columnIndex="16" GridPane.rowIndex="4">
+                                                                                <Label text="Order" GridPane.columnIndex="16" GridPane.rowIndex="4">
                                                                <font>
                                                                   <Font name="System Bold" size="12.0" />
                                                                </font></Label>
@@ -254,7 +256,7 @@
                                                                                 <TextField fx:id="txtField22" maxHeight="25.0" GridPane.columnIndex="14" GridPane.rowIndex="4" />
                                                                                 <TextField fx:id="txtField23" maxHeight="25.0" GridPane.columnIndex="14" GridPane.rowIndex="3" />
                                                                                 <TextField fx:id="txtField24" maxHeight="25.0" GridPane.columnIndex="14" GridPane.rowIndex="5" />
-                                                                                <Label text="Order" GridPane.columnIndex="16" GridPane.rowIndex="5">
+                                                                                <Label text="Recevied" GridPane.columnIndex="16" GridPane.rowIndex="5">
                                                                                     <font>
                                                                                         <Font name="System Bold" size="15.0" />
                                                                                     </font>
@@ -292,7 +294,7 @@
                                                             <children>
                                                                 <AnchorPane minHeight="-Infinity" prefHeight="28.0" prefWidth="402.0" style="-fx-background-color: FF8201;">
                                                                     <children>
-                                                                        <Label alignment="CENTER" contentDisplay="CENTER" text="APPROVED REQUESTS" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                        <Label alignment="CENTER" contentDisplay="CENTER" text="PURCHASE ORDERS" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                             <font>
                                                                                 <Font name="System Bold" size="14.0" />
                                                                             </font>
@@ -305,7 +307,7 @@
                                                                 <TableView fx:id="tblViewStock_Request" minWidth="242.0" GridPane.rowIndex="1">
                                                                     <columns>
                                                                         <TableColumn fx:id="tblindex01" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="No." />
-                                                                        <TableColumn fx:id="tblindex02" maxWidth="236.0" minWidth="236.0" prefWidth="236.0" resizable="false" sortable="false" text="Branch" />
+                                                                        <TableColumn fx:id="tblindex02" maxWidth="236.0" minWidth="236.0" prefWidth="236.0" resizable="false" sortable="false" text="Supplier" />
                                                                         <TableColumn fx:id="tblindex03" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" text="Date" />
                                                                         <TableColumn fx:id="tblindex04" maxWidth="106.0" minWidth="106.0" prefWidth="106.0" resizable="false" sortable="false" text="Refer No." />
                                                       <TableColumn fx:id="tblindex05" maxWidth="302.0" minWidth="45.6666259765625" prefWidth="74.0" resizable="false" text="Items" />
@@ -346,8 +348,8 @@
                                                                 <TableColumn fx:id="tblindex12_order_details" maxWidth="1.7976931348623157E308" minWidth="50.0" prefWidth="100.0" resizable="false" text="Cost" />
                                                                 <TableColumn fx:id="tblindex09_order_details" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="QOH" />
                                                 <TableColumn fx:id="tblindex09_order_details1" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="ROQ" />
-                                                                <TableColumn fx:id="tblindex10_order_details" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Request" />
-                                                                <TableColumn fx:id="tblindex11_order_details" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Order" />
+                                                                <TableColumn fx:id="tblindex10_order_details" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Order" />
+                                                                <TableColumn fx:id="tblindex11_order_details" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Received" />
                                                                 <TableColumn fx:id="tblindex13_order_details" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="107.0" resizable="false" text="Total" />
                                                             </columns>
                                              <columnResizePolicy>

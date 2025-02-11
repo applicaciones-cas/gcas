@@ -1,10 +1,8 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.FXMLDocumentController.setNavButtonsSelected;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,8 +49,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.base.GRider;
@@ -233,13 +229,12 @@ public class DashboardController implements Initializable {
     /** SET TAB TITLE **/
     public String SetTabTitle(String menuaction) {
         switch (menuaction) {
-            /**/
-            case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
-                return "Sample Form 1";
-            case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
-                return "Sample Form 2";
             case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
                 return "Purchase Order";
+            case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
+                return "Delivery Acceptance";
+            case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
+                return "Payment Request";
             default:
                 return null;
         }
@@ -378,6 +373,10 @@ public class DashboardController implements Initializable {
                 return new SampleForm2Controller();
             case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
                 return new PurchasingOrder_EntryController();
+            case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
+                return new DeliveryAcceptanceEntryController();
+            case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
+                return new PaymentRequestController();
             default:
                 return null;
         }
@@ -605,16 +604,24 @@ public class DashboardController implements Initializable {
         laDetail = new JSONArray();
         loMaster = new JSONObject();
 
-        loMaster = new JSONObject();
-//        loMaster.put("parent", "Sales InInquiry");
+//        loMaster = new JSONObject();
+//        loMaster.put("parent", "Purchase Order");
 //        laMaster.add(loMaster);
 
+        loDetail = new JSONObject();
+        loDetail.put("parent", "Purchase Order");
+        laDetail.add(loDetail);
+        
         loDetail = new JSONObject();
         loDetail.put("parent", "Delivery Acceptance");
         laDetail.add(loDetail);
 
         loDetail = new JSONObject();
         loDetail.put("parent", "Return");
+        laDetail.add(loDetail);
+        
+        loDetail = new JSONObject();
+        loDetail.put("parent", "Payment Request");
         laDetail.add(loDetail);
 
         loMaster.put("parent", "Purchasing");
@@ -742,16 +749,14 @@ public class DashboardController implements Initializable {
                         System.out.println("Selected: " + newValue.getValue());
 
                         switch (newValue.getValue()) {
-                            case "Sales Replacement":
-                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml";
-//                                intIndex = 0;
-                                break;
-                            case "Additional Give":
-                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml";
+                            case "Purchase Order":
+                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml";
                                 break;
                             case "Delivery Acceptance":
-                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml";
-//                                intIndex = 0;
+                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml";
+                                break;
+                            case "Payment Request":
+                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml";
                                 break;
                         }
 

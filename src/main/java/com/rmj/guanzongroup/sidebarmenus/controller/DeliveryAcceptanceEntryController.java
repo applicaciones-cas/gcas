@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrder;
@@ -26,184 +22,126 @@ import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
 import org.json.simple.JSONObject;
 
-public class PurchasingOrder_EntryController implements Initializable,ScreenInterface {
-    private final String pxeModuleName = "Purchase Order";
+public class DeliveryAcceptanceEntryController implements Initializable,ScreenInterface {
+    private final String pxeModuleName = "Delivery Acceptance";
     private GRider oApp;
     private JSONObject poJSON;
-    
+
     private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
     
     @FXML
     private AnchorPane apBrowse;
-
     @FXML
     private AnchorPane apButton;
-
     @FXML
     private HBox hbButtons;
-
     @FXML
     private Button btnBrowse;
-
     @FXML
     private Button btnNew;
-
     @FXML
     private Button btnClose;
-
     @FXML
     private Button btnSave;
-
     @FXML
     private Button btnSearch;
-
     @FXML
     private Button btnDelete;
-
     @FXML
     private Button btnCancel;
-
-    @FXML
-    private TextField txtField01;
-
-    @FXML
-    private TextField txtField02;
-
-    @FXML
-    private TextField txtField03;
-
-    @FXML
-    private TextField txtField04;
-
-    @FXML
-    private TextField txtField05;
-
-    @FXML
-    private TextField txtField08;
-
-    @FXML
-    private CheckBox cbAdv;
-
-    @FXML
-    private TextField txtField09;
-
-    @FXML
-    private TextField txtField11;
-
-    @FXML
-    private TextField txtField12;
-
-    @FXML
-    private TextField txtField14;
-
-    @FXML
-    private TextField txtField06;
-
     @FXML
     private Label lblStatus;
-
+    @FXML
+    private TextField txtField01;
+    @FXML
+    private TextField txtField02;
+    @FXML
+    private TextField txtField03;
+    @FXML
+    private TextField txtField04;
+    @FXML
+    private TextField txtField05;
+    @FXML
+    private TextField txtField08;
+    @FXML
+    private CheckBox cbAdv;
+    @FXML
+    private TextField txtField09;
+    @FXML
+    private TextField txtField11;
+    @FXML
+    private TextField txtField12;
+    @FXML
+    private TextField txtField14;
+    @FXML
+    private TextField txtField06;
     @FXML
     private TextField txtField18;
-
     @FXML
     private TextField txtField19;
-
     @FXML
     private TextField txtField25;
-
     @FXML
     private TextField txtField26;
-
     @FXML
     private TextField txtField27;
-
     @FXML
     private TextField txtField17;
-
     @FXML
     private TextField txtField16;
-
     @FXML
     private TextField txtField15;
-
     @FXML
     private TextField txtField20;
-
     @FXML
     private TextField txtField21;
-
     @FXML
     private TextField txtField22;
-
     @FXML
     private TextField txtField23;
-
     @FXML
     private TextField txtField24;
-
     @FXML
     private TableView tblViewStock_Request;
-
     @FXML
     private TableColumn tblindex01;
-
     @FXML
     private TableColumn tblindex02;
-
     @FXML
     private TableColumn tblindex03;
-
     @FXML
     private TableColumn tblindex04;
-
     @FXML
     private TableColumn tblindex05;
-
     @FXML
     private TableView<?> tblViewOrderDetails;
-
     @FXML
     private TableColumn tblindex01_order_details;
-
     @FXML
     private TableColumn tblindex02_order_details;
-
     @FXML
     private TableColumn tblindex04_order_details;
-
     @FXML
     private TableColumn tblindex05_order_details;
-
     @FXML
     private TableColumn tblindex06_order_details;
-
     @FXML
     private TableColumn tblindex07_order_details;
-
     @FXML
     private TableColumn tblindex08_order_details;
-
     @FXML
     private TableColumn tblindex12_order_details;
-
     @FXML
     private TableColumn tblindex09_order_details;
-
     @FXML
     private TableColumn tblindex09_order_details1;
-
     @FXML
     private TableColumn tblindex10_order_details;
-
     @FXML
     private TableColumn tblindex11_order_details;
-
     @FXML
     private TableColumn tblindex13_order_details;
-
-    @FXML
-    private TableColumn tblindex06_order_details1;
-
+    
     @FXML
     void cmdButton_Click(ActionEvent event) {
 
@@ -234,7 +172,7 @@ public class PurchasingOrder_EntryController implements Initializable,ScreenInte
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("working");
-        data.add(new ModelPurchaseOrder("1", "Samsung - Robinsons San Fernando LUN", "2025-02-11", "M00125000001", "50"
+        data.add(new ModelPurchaseOrder("1", "LP - General Warehouse", "2025-02-11", "M00125000000", "10"
         ));
         inittable();
     }
@@ -243,5 +181,4 @@ public class PurchasingOrder_EntryController implements Initializable,ScreenInte
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
-
 }

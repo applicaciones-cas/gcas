@@ -31,15 +31,15 @@
     -fx-text-fill: black;
     -fx-background-radius: 0;
     -fx-font-size:14;
-    
+
 }
 .side-button:hover > .glyph-icon
 {
-  -fx-fill: black;
+    -fx-fill: black;
 }
 
 .side-button > .glyph-icon {
-   -fx-fill: #505050;
+    -fx-fill: #505050;
 }
 /*.side-button:focused {
     -fx-background-color: #FF8201;
@@ -50,7 +50,7 @@
 }*/
 .side-button:selected > .glyph-icon
 {
-  -fx-fill: black
+    -fx-fill: black
 }
 .side-button:selected {
     -fx-background-color: #FF8201;
@@ -96,9 +96,9 @@
 /* DRAWER CSS END*/
 
 /*BODY CSS*/
-    
+
 .footer {
-  -fx-background-color: #d9d9d9;
+    -fx-background-color: #d9d9d9;
 }
 /*******************************************************************************
  *                                                                             *
@@ -129,8 +129,8 @@
 }
 
 .button_process_nav:selected{
-  -fx-background-color: #FF8201;
-  -fx-text-fill: black;
+    -fx-background-color: #FF8201;
+    -fx-text-fill: black;
 }
 
 .button_process {
@@ -157,8 +157,8 @@
 }
 
 .button_process:selected{
-  -fx-background-color: #FF8201;
-  -fx-text-fill: black;
+    -fx-background-color: #FF8201;
+    -fx-text-fill: black;
 }
 /* BUTTON BODY CSS END */
 
@@ -169,15 +169,15 @@
  ******************************************************************************/
 
 .tab-pane *.tab-header-area *.tab-header-background {
-  -fx-background-radius: 0;
-  -fx-background-insets: 0;
-  -fx-border-radius: 0;
-  -fx-border-insets: 0;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-radius: 0;
+    -fx-border-insets: 0;
 }
 
 .tab-pane {
-  -fx-tab-min-height:20px;
-  -fx-tab-max-height:20px;
+    -fx-tab-min-height:20px;
+    -fx-tab-max-height:20px;
 }
 .tab {
     -fx-tab-min-height:30px;
@@ -193,7 +193,7 @@
 }
 
 .tab-label{
-  -fx-padding: 0 15 0 15;
+    -fx-padding: 0 15 0 15;
 }
 .tab:hover {
     -fx-text-fill: white;
@@ -225,7 +225,7 @@
     -fx-background-color:
         grey,
         white;
-   -fx-text-fill: black;
+    -fx-text-fill: black;
 }
 
 .text-area .scroll-pane {
@@ -234,7 +234,8 @@
     -fx-focus-color: transparent;
     -fx-background-color: transparent;
     -fx-opacity: 1.0;
-}.text-area .scroll-pane:disabled {
+}
+.text-area .scroll-pane:disabled {
     -fx-hbar-policy: never;
     -fx-vbar-policy: never;
     -fx-focus-color: transparent;
@@ -244,7 +245,8 @@
 
 .text-field {
     -fx-font-size: 10pt;
-    -fx-min-height: 26;
+    -fx-min-height: 25;
+    -fx-pref-height: 25px;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -253,14 +255,14 @@
 }
 
 .text-field, .text-area:focused {
-    -fx-min-height: 26;
+    -fx-min-height: 25;
     -fx-background-color:
         orange,
         white;
 }
 .text-field, .text-area:disabled {
     -fx-font-size: 10pt;
-    -fx-min-height: 26;
+    -fx-min-height: 25;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -270,7 +272,7 @@
 
 .menu-button {
     -fx-font-size: 10pt;
-    -fx-min-height: 26;
+    -fx-min-height: 25;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -301,11 +303,11 @@
  ******************************************************************************/
 
 .scroll-pane-item-management{
-   -fx-background-color:transparent;
-   -fx-hbar-policy: never;
+    -fx-background-color:transparent;
+    -fx-hbar-policy: never;
 }
-.scroll-pane-item-management > .viewport { 
-   -fx-background-color: transparent;
+.scroll-pane-item-management > .viewport {
+    -fx-background-color: transparent;
 }
 .scroll-pane {
     -fx-focus-color: transparent;
@@ -358,22 +360,54 @@
     -fx-stroke: orange;
     -fx-stroke-width: 3px;
 }
-.default-color0.chart-line-symbol { -fx-background-color: orange; }
-.default-color1.chart-line-symbol { -fx-background-color: orange; }
-.default-color2.chart-line-symbol { -fx-background-color: orange; }
-.default-color3.chart-line-symbol { -fx-background-color: orange; }
-.default-color4.chart-line-symbol { -fx-background-color: orange; }
-.default-color5.chart-line-symbol { -fx-background-color: orange; }
-.default-color6.chart-line-symbol { -fx-background-color: orange; }
-.default-color7.chart-line-symbol { -fx-background-color: orange; }
-.default-color0.chart-series-line { -fx-stroke: orange; }
-.default-color1.chart-series-line { -fx-stroke: orange; }
-.default-color2.chart-series-line { -fx-stroke: orange; }
-.default-color3.chart-series-line { -fx-stroke: orange; }
-.default-color4.chart-series-line { -fx-stroke: orange; }
-.default-color5.chart-series-line { -fx-stroke: orange; }
-.default-color6.chart-series-line { -fx-stroke: orange; }
-.default-color7.chart-series-line { -fx-stroke: orange; }
+.default-color0.chart-line-symbol {
+    -fx-background-color: orange;
+}
+.default-color1.chart-line-symbol {
+    -fx-background-color: orange;
+}
+.default-color2.chart-line-symbol {
+    -fx-background-color: orange;
+}
+.default-color3.chart-line-symbol {
+    -fx-background-color: orange;
+}
+.default-color4.chart-line-symbol {
+    -fx-background-color: orange;
+}
+.default-color5.chart-line-symbol {
+    -fx-background-color: orange;
+}
+.default-color6.chart-line-symbol {
+    -fx-background-color: orange;
+}
+.default-color7.chart-line-symbol {
+    -fx-background-color: orange;
+}
+.default-color0.chart-series-line {
+    -fx-stroke: orange;
+}
+.default-color1.chart-series-line {
+    -fx-stroke: orange;
+}
+.default-color2.chart-series-line {
+    -fx-stroke: orange;
+}
+.default-color3.chart-series-line {
+    -fx-stroke: orange;
+}
+.default-color4.chart-series-line {
+    -fx-stroke: orange;
+}
+.default-color5.chart-series-line {
+    -fx-stroke: orange;
+}
+.default-color6.chart-series-line {
+    -fx-stroke: orange;
+}
+.default-color7.chart-series-line {
+    -fx-stroke: orange;
+}
 
 .tooltip {
     -fx-show-delay: 100ms;
@@ -385,18 +419,18 @@
 }
 .dash-order{
     -fx-background-color:  #008080;
-    -fx-border-radius: 5px;   
-    -fx-background-radius: 5px;    
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
 }
 .dash-product{
     -fx-background-color:  #336699;
     -fx-border-radius: 5px;
-    -fx-background-radius: 5px;   
+    -fx-background-radius: 5px;
 }
 .dash-client{
     -fx-background-color:  #46a049;
-    -fx-border-radius: 5px;   
-    -fx-background-radius: 5px;   
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
 }
 
 .dash-sale:hover{
@@ -438,7 +472,7 @@
     -fx-opacity: 1;
     -fx-text-fill: black;
 }
-.list-cell:filled:selected:focused:disabled, 
+.list-cell:filled:selected:focused:disabled,
 .list-cell:filled:selected:disabled {
     -fx-opacity: 1;
 }
@@ -466,7 +500,7 @@
     -fx-padding: 0.2;
     -fx-spacing: -2;
     -fx-opacity: 1;
-    
+
 }
 
 #onlineUsersHbox {
