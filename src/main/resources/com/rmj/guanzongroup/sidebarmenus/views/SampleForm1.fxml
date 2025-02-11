@@ -16,9 +16,9 @@
    <children>
       <BorderPane layoutX="418.0" layoutY="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
-            <AnchorPane prefHeight="35.0" style="-fx-background-color: gray;" BorderPane.alignment="CENTER">
+            <AnchorPane prefHeight="25.0" style="-fx-background-color: gray;" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane prefHeight="35.0" style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane prefHeight="20.0" style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Label fx:id="lblMaps" layoutX="300.0" layoutY="9.0" text="SALES &gt; Sales Reservation &gt; Reservation Payment" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0">
                            <font>
@@ -32,12 +32,12 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label layoutX="23.0" layoutY="24.0" text="SAMPLE LOAD FORM">
+                  <Label layoutX="23.0" layoutY="24.0" text="SAMPLE LOAD FORM" AnchorPane.topAnchor="5.0">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
                   </Label>
-                  <TableView layoutX="14.0" layoutY="85.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="85.0">
+                  <TableView layoutX="14.0" layoutY="85.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="55.0">
                     <columns>
                       <TableColumn prefWidth="165.0" text="LAST NAME" />
                       <TableColumn prefWidth="165.0" text="FIRST NAME" />
