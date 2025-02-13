@@ -212,9 +212,9 @@ public class PurchasingOrder_EntryController implements Initializable,ScreenInte
     public void inittable() {
         tblindex01.setStyle("-fx-alignment: CENTER;");
         tblindex02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        tblindex03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        tblindex04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        tblindex05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 0 0 5;");
+        tblindex03.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 0;");
+        tblindex04.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 0;");
+        tblindex05.setStyle("-fx-alignment: CENTER;-fx-padding: 0 0 0 0;");
 
         tblindex01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index01"));
         tblindex02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index02"));
