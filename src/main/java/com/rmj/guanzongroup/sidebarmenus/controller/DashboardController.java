@@ -1,10 +1,9 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.FXMLDocumentController.setNavButtonsSelected;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
+import java.io.StringReader;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,9 +11,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -42,6 +45,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.ClipboardContent;
@@ -51,36 +55,40 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class DashboardController implements Initializable {
 
     private GRider oApp;
-    private String lastClickedButton = "";
-    private String lastClickedBtnRighNav = "";
-    
+    private String lastClickedBtnLeftSideBar = "";
+    private String lastClickedBtnRightSideBar = "";
+
     private int notificationCount = 0;
     private int cartCount = 0;
-    
+
     private ToggleGroup toggleGroup;
-    private static ToggleButton[] navButtons;
-    private static Tooltip[] navTooltip;
+    private static ToggleButton[] toggleBtnLeftUpperSideBar;
+    private static Tooltip[] sideBarLeftUpperToolTip;
 
     private ToggleGroup toggleGroupLowerBtn;
-    private static ToggleButton[] navButtonsLowerBtn;
-    private static Tooltip[] navTooltipLowerBtn;
+    private static ToggleButton[] toggleBtnLeftLowerSideBar;
+    private static Tooltip[] sideBarLeftLowerToolTip;
 
-    private ToggleGroup toggleGroupRightNav;
-    private static ToggleButton[] navButtonsRightNav;
-    private static Tooltip[] navTooltipRightNav;
+    private ToggleGroup toggleGroupRightSideBar;
+    private static ToggleButton[] toggleBtnRightSideBar;
+    private static Tooltip[] sideBarRightToolTip;
+    private Map<TreeItem<String>, String> menuLocationMap = new HashMap<>();
+    private boolean isListenerAdded = false; // Prevent multiple listener additions
 
+    private boolean isMenuExpanded = false; // Track the menu state
+    private JSONArray flatMenuItems;
     private int targetTabIndex = -1;
     private int intIndex = -1;
     List<String> tabName = new ArrayList<>();
@@ -88,11 +96,11 @@ public class DashboardController implements Initializable {
     @FXML
     private TabPane tabpane;
     @FXML
-    private AnchorPane anchorSubMenu, anchorSpace, MainAnchor, anchorSubMenuNotif, badgeNotification, badgeAddtoCart;
+    private AnchorPane anchorLeftSideBarMenu, anchorSpace, MainAnchor, anchorRightSideBarMenu, badgeNotification, badgeAddtoCart;
     @FXML
-    private TreeView<String> tvChild;
+    private TreeView<String> tvLeftSideBar;
     @FXML
-    private TreeView<String> tvChild1;
+    private TreeView<String> tvRightSideBar;
     @FXML
     StackPane workingSpace;
     @FXML
@@ -129,165 +137,118 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        initMenu();
-        ToggleGroupControl();
-        ToggleGroupControlLowerBtn();
-        ToggleGroupControlRightNav();
-        checkDepartment();
-        ClickButton();
-        getTime();
-        setPane();
-        loadUserInfo();
-        notificationChecker();
+        try {
+            setPane();
+            initMenu();
+            ToggleGroupControlUpperLeftSideBar();
+            ToggleGroupControlLowerLeftSideBar();
+            ToggleGroupControlRightSideBar();
+            loadUserInfo();
+            checkDepartment();
+            getTime();
+            initButtonClickActions();
+            notificationChecker();
+
+            //johndave modified 02-12-2025
+            treeViewFactoryStyle(tvLeftSideBar);
+            treeViewFactoryStyle(tvRightSideBar);
+            anchorRightSideBarMenu.setVisible(true);
+            anchorRightSideBarMenu.setManaged(true);
+            notifMenuItems();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    /** PANE **/
+    /**
+     * ********************** LOAD CONTENT SECTIONS **************************
+     */
+    /**
+     * PANE *
+     */
     @FXML
     private void pane(ActionEvent event) {
-        anchorSubMenu.setVisible(false);
-        for (int i = 0; i < navButtons.length; i++) {
-            navButtons[i].setSelected(false); // Set each button's selected state to false
+        anchorLeftSideBarMenu.setVisible(false);
+        for (int i = 0; i < toggleBtnLeftUpperSideBar.length; i++) {
+            toggleBtnLeftUpperSideBar[i].setSelected(false); // Set each button's selected state to false
         }
 
-        anchorSubMenuNotif.setVisible(false);
-        for (int i = 0; i < navButtonsRightNav.length; i++) {
-            navButtonsRightNav[i].setSelected(false); // Set each button's selected state to false
-        }
-    }
-    
-    /** ACTION EVENTS **/
-    @FXML
-    private void switchInventory(ActionEvent event) {
-        toggleSubmenu("Dashboard Section", "switchInventory", 0);
-        dashboardMenu01();
-    }
-
-    @FXML
-    private void switchNotification(ActionEvent event) {
-        toggleSubmenuRightBtn("Notification Section", "switchNotification", 0);
-        RightNavNotif();
-    }
-
-    @FXML
-    private void switchItem(ActionEvent event) {
-        toggleSubmenu("Item Section", "switchItem", 1);
-        dashboardMenu02();
-    }
-
-    @FXML
-    private void switchOrder(ActionEvent event) {
-        toggleSubmenu("Order Section", "switchOrder", 2);
-    }
-
-    @FXML
-    private void switchWayBill(ActionEvent event) {
-        toggleSubmenu("WayBill Section", "switchWayBill", 3);
-    }
-
-    @FXML
-    private void switchPickup(ActionEvent event) {
-        toggleSubmenu("Pickup Section", "switchPickup", 4);
-    }
-
-    @FXML
-    private void switchClient(ActionEvent event) {
-        toggleSubmenu("Client Section", "switchClient", 5);
-    }
-
-    @FXML
-    private void switchQA(ActionEvent event) {
-        toggleSubmenu("QA Section", "switchQA", 6);
-    }
-    @FXML
-    private void switchHelp(ActionEvent event) {
-        openPDF("D:/Help.pdf");
-        btnHelp.setSelected(false);
-    }
-
-    @FXML
-    private void switchLogout(ActionEvent event) {
-//        toggleSubmenu("Logout", "switchLogout", 7);
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("GUANZON GROUP OF COMPANY");
-        alert.setHeaderText("Are you sure you want to logout?");
-
-        // Show the alert and wait for a response
-        Optional<ButtonType> result = alert.showAndWait();
-
-        // Check the response
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            // Close the current window
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.close();
-        } else {
-            // If Cancel is clicked, reset the selection
-            btnLogout.setSelected(false);
+        anchorRightSideBarMenu.setVisible(false);
+        for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
+            toggleBtnRightSideBar[i].setSelected(false); // Set each button's selected state to false
         }
     }
 
-    @FXML
-    private void switchReports(ActionEvent event) {
-        toggleSubmenu("Reports Section", "switchReports", 8);
-    }
-
-    /** SET TAB TITLE **/
-    public String SetTabTitle(String menuaction) {
-        switch (menuaction) {
-            /**/
-            case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
-                return "Sample Form 1";
-
-            case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
-                return "Sample Form 2";
-
-            default:
-                return null;
-        }
-    }
-
-    public int checktabs(String tabtitle) {
-        for (Tab tab : tabpane.getTabs()) {
-            if (tab.getText().equals(tabtitle)) {
-                tabpane.getSelectionModel().select(tab);
-                return 0;
-            }
-        }
-        return 1;
-    }
-
-    private int findTabIndex(String tabText) {
-        ObservableList<Tab> tabs = tabpane.getTabs();
-        for (int i = 0; i < tabs.size(); i++) {
-            if (tabs.get(i).getText().equals(tabText)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    /** PANE LOAD **/
+    /**
+     * PANE LOAD *
+     */
     public void setPane() {
         pane.setOnMouseClicked(event -> {
             // Check if the click occurred on the tabs area (not the content area)
             System.out.println("pane clicked at: " + event.getSceneX() + ", " + event.getSceneY());
 
             // Hide the sub-menu
-            anchorSubMenu.setVisible(false);
-            anchorSubMenuNotif.setVisible(false);
+            anchorLeftSideBarMenu.setVisible(false);
+//            anchorSubMenuNotif.setVisible(false);
 
             // Assuming navButtons is an array or List of buttons in Java
-            for (int i = 0; i < navButtons.length; i++) {
-                navButtons[i].setSelected(false); // Set each button's selected state to false
+            for (int i = 0; i < toggleBtnLeftUpperSideBar.length; i++) {
+                toggleBtnLeftUpperSideBar[i].setSelected(false); // Set each button's selected state to false
             }
-            for (int i = 0; i < navButtonsRightNav.length; i++) {
-                navButtonsRightNav[i].setSelected(false); // Set each button's selected state to false
+            for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
+                toggleBtnRightSideBar[i].setSelected(false); // Set each button's selected state to false
             }
 
             // Perform other actions on click if needed
         });
     }
 
-    /** TAB PANE **/
+    /**
+     * SET TAB TITLE
+     *
+     *
+     * @param menuaction
+     */
+    public String SetTabTitle(String menuaction) {
+        switch (menuaction) {
+            case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
+                return "Purchase Order";
+            case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
+                return "Purchase Order History";
+            case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
+                return "Delivery Acceptance";
+            case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
+                return "Payment Request";
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * SCREEN INTERFACE *
+     */
+    private ScreenInterface getController(String fsValue) {
+        switch (fsValue) {
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
+                return new SampleForm1Controller();
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
+                return new SampleForm2Controller();
+            case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
+//                return new PurchasingOrder_EntryController();
+            case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
+                return new PurchasingOrder_HistoryController();
+            case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
+//                return new DeliveryAcceptanceEntryController();
+            case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
+//                return new PaymentRequestController();
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * TAB PANE *
+     */
     public void setTabPane() {
         // set up the drag and drop listeners on the tab pane
         tabpane.setOnMouseClicked(event -> {
@@ -295,15 +256,16 @@ public class DashboardController implements Initializable {
             System.out.println("TabPane clicked at: " + event.getSceneX() + ", " + event.getSceneY());
 
             // Hide the sub-menu
-            anchorSubMenu.setVisible(false);
+            anchorLeftSideBarMenu.setVisible(false);
             // Assuming navButtons is an array or List of buttons in Java
-            for (int i = 0; i < navButtons.length; i++) {
-                navButtons[i].setSelected(false); // Set each button's selected state to false
+            for (int i = 0; i < toggleBtnLeftUpperSideBar.length; i++) {
+                toggleBtnLeftUpperSideBar[i].setSelected(false); // Set each button's selected state to false
             }
 
-            anchorSubMenuNotif.setVisible(false);
-            for (int i = 0; i < navButtonsRightNav.length; i++) {
-                navButtonsRightNav[i].setSelected(false); // Set each button's selected state to false
+            anchorRightSideBarMenu.setVisible(false);
+            anchorRightSideBarMenu.setManaged(false);
+            for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
+                toggleBtnRightSideBar[i].setSelected(false); // Set each button's selected state to false
             }
         });
 
@@ -369,19 +331,29 @@ public class DashboardController implements Initializable {
 
     }
 
-    /** SCREEN INTERFACE **/
-    private ScreenInterface getController(String fsValue) {
-        switch (fsValue) {
-            case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
-                return new SampleForm1Controller();
-            case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
-                return new SampleForm2Controller();
-            default:
-                return null;
+    public int checktabs(String tabtitle) {
+        for (Tab tab : tabpane.getTabs()) {
+            if (tab.getText().equals(tabtitle)) {
+                tabpane.getSelectionModel().select(tab);
+                return 0;
+            }
         }
+        return 1;
     }
 
-    /** STAB PANE LOAD **/
+    private int findTabIndex(String tabText) {
+        ObservableList<Tab> tabs = tabpane.getTabs();
+        for (int i = 0; i < tabs.size(); i++) {
+            if (tabs.get(i).getText().equals(tabText)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * STAB PANE LOAD *
+     */
     public TabPane loadAnimate(String fsFormName) {
         //set fxml controller class
         if (tabpane.getTabs().isEmpty()) {
@@ -440,20 +412,22 @@ public class DashboardController implements Initializable {
         return null;
     }
 
-    //TAB CLOSE
-    public void Tabclose() {
-        int tabsize = tabpane.getTabs().size();
-        if (tabsize == 0) {
-            setScene(loadAnimateAnchor("Dashboard.fxml"));
-        }
-    }
-
     private void setScene(AnchorPane foPane) {
         workingSpace.getChildren().clear();
         workingSpace.getChildren().add(foPane);
     }
-    
-    /** LOAD ANIMATE ANCHOR **/
+
+    /**
+     * SET SCENE FOR WORKPLACE - STACKPANE - TABPANE*
+     */
+    public void setScene2(TabPane foPane) {
+        workingSpace.getChildren().clear();
+        workingSpace.getChildren().add(foPane);
+    }
+
+    /**
+     * LOAD ANIMATE ANCHOR *
+     */
     public AnchorPane loadAnimateAnchor(String fsFormName) {
         System.err.println("fsFormName to close == " + String.valueOf(fsFormName));
         ScreenInterface fxObj = getController(fsFormName);
@@ -482,8 +456,10 @@ public class DashboardController implements Initializable {
 
         return null;
     }
-    
-    /** CREATE CONTEXT MENU **/
+
+    /**
+     * CREATE CONTEXT MENU *
+     */
     public ContextMenu createContextMenu(TabPane tabPane, Tab tab, GRider oApp) {
         ContextMenu contextMenu = new ContextMenu();
 
@@ -506,26 +482,27 @@ public class DashboardController implements Initializable {
         return contextMenu;
     }
 
-    /** SHOW MESSAGE **/
-    private boolean showMessage() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("Are you sure you want to proceed?");
-        alert.setContentText("Choose your option.");
-
-        // Add Yes and No buttons to the alert dialog
-        ButtonType buttonTypeYes = new ButtonType("Yes");
-        ButtonType buttonTypeNo = new ButtonType("No");
-        alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
-
-        // Show the alert and wait for a response
-        javafx.scene.control.ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
-
-        // Handle the user's response
-        return result == buttonTypeYes;
+    //TAB CLOSE
+    public void Tabclose() {
+        int tabsize = tabpane.getTabs().size();
+        if (tabsize == 0) {
+            setScene(loadAnimateAnchor("Dashboard.fxml"));
+        }
     }
 
-    /** CLOSE SELECTED TAB **/
+    /**
+     * CLoad Main Screen if no tab remain *
+     */
+    public void Tabclose(TabPane tabpane) {
+        int tabsize = tabpane.getTabs().size();
+        if (tabsize == 0) {
+            setScene(loadAnimateAnchor("Dashboard.fxml"));
+        }
+    }
+
+    /**
+     * CLOSE SELECTED TAB *
+     */
     private void closeSelectTabs(TabPane tabPane, Tab tab) {
         if (showMessage()) {
             Tabclose(tabPane);
@@ -533,16 +510,10 @@ public class DashboardController implements Initializable {
             tabPane.getTabs().remove(tab);
         }
     }
-    
-    /**CLoad Main Screen if no tab remain **/
-    public void Tabclose(TabPane tabpane) {
-        int tabsize = tabpane.getTabs().size();
-        if (tabsize == 0) {
-            setScene(loadAnimateAnchor("Dashboard.fxml"));
-        }
-    }
-    
-    /**CLOSE OTHER TAB **/
+
+    /**
+     * CLOSE OTHER TAB *
+     */
     private void closeOtherTabs(TabPane tabPane, Tab currentTab) {
         if (showMessage()) {
             tabPane.getTabs().removeIf(tab -> tab != currentTab);
@@ -553,8 +524,10 @@ public class DashboardController implements Initializable {
             }
         }
     }
-    
-    /**CLOSE ALL TAB **/
+
+    /**
+     * CLOSE ALL TAB *
+     */
     private void closeAllTabs(TabPane tabPane, GRider oApp) {
         if (showMessage()) {
             tabName.clear();
@@ -567,95 +540,710 @@ public class DashboardController implements Initializable {
             myBox.getChildren().clear();
         }
     }
-    
-    /**INITIALIZE SUB MENU VISIBILITY**/
+
+    /**
+     * INITIALIZE SUB MENU VISIBILITY*
+     */
     private void initMenu() {
-        anchorSubMenu.setVisible(false);
-        anchorSubMenuNotif.setVisible(false);
+        anchorLeftSideBarMenu.setVisible(false);
+        anchorRightSideBarMenu.setVisible(false);
+        anchorRightSideBarMenu.setManaged(false);
     }
-    
-    /**TOGGLE SUBMENU ON LEFT BUTTON**/
-    private void toggleSubmenu(String sectionName, String buttonId, Integer btnIndex) {
-        // Check if the submenu is visible and the same button is clicked
-        boolean isSameButton = anchorSubMenu.isVisible() && lastClickedButton.equals(buttonId);
-        anchorSubMenu.setVisible(!isSameButton);
-        navButtons[btnIndex].setSelected(!isSameButton);
-        lastClickedButton = isSameButton ? "" : buttonId;
+
+    //johndave modified 02-12-2025
+    private void treeViewFactoryStyle(TreeView treeView) {
+        treeView.setCellFactory(tv -> new TreeCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                    setStyle("-fx-background-color: #DFDFDF; "
+                            + "-fx-border-color: DFDFDF;"
+                    ); // Keep default background
+                    getStyleClass().add("empty-tree-cell"); // Add class to prevent hover effect
+                } else {
+                    setText(item);
+                    setStyle(""); // Reset style for non-empty items
+                    getStyleClass().remove("empty-tree-cell"); // Remove empty class for valid items
+                }
+            }
+        });
     }
-    
-    /**TOGGLE SUBMENU ON RIGHT BUTTON**/
-    private void toggleSubmenuRightBtn(String sectionName, String buttonId, Integer btnIndex) {
-        // Check if the submenu is visible and the same button is clicked
-        boolean isSameButton = anchorSubMenuNotif.isVisible() && lastClickedBtnRighNav.equals(buttonId);
-        anchorSubMenuNotif.setVisible(!isSameButton);
-        navButtonsRightNav[btnIndex].setSelected(!isSameButton);
-        lastClickedBtnRighNav = isSameButton ? "" : buttonId;
+
+    private void ToggleGroupControlUpperLeftSideBar() {
+        toggleGroup = new ToggleGroup();
+        toggleBtnLeftUpperSideBar = new ToggleButton[]{
+            btnInventory,
+            btnPurchasing,
+            btnSales,
+            btnServiceRepair,
+            btnAccountsPayable,
+            btnAccountsReceivable,
+            btnGeneralAccounting,
+            btnParameters
+        };
+
+        // Tooltip texts for each button
+        String[] tooltipTexts = {
+            "Inventory",
+            "Purchasing",
+            "Sales",
+            "Service Repair",
+            "Accounts Payable",
+            "Accounts Receivable",
+            "General Accounting",
+            "Parameters"
+        };
+
+        // Assign tooltips to buttons
+        for (int i = 0; i < toggleBtnLeftUpperSideBar.length; i++) {
+            if (toggleBtnLeftUpperSideBar[i].isVisible()) { // Skip setting tooltip for hidden buttons
+                toggleBtnLeftUpperSideBar[i].setTooltip(new Tooltip(tooltipTexts[i]));
+                toggleBtnLeftUpperSideBar[i].setToggleGroup(toggleGroup);
+            }
+        }
     }
-    
-    /**STATIC DATA (JSON ON LEFT NAVIGATION)**/
-    private void dashboardMenu02() {
 
-        JSONArray laMaster, laDetail, laData;
-        JSONObject loMaster, loDetail;
+    /**
+     * INITIALIZE TOGGLE GROUP RIGHT NAVIGATION*
+     */
+    private void ToggleGroupControlRightSideBar() {
+        toggleGroupRightSideBar = new ToggleGroup();
+        toggleBtnRightSideBar = new ToggleButton[]{
+            btnNotification,
+            btnAddToCart
+        };
 
-        laMaster = new JSONArray();
+        // Tooltip texts for each button
+        String[] tooltipTexts = {
+            "Notification",
+            "Add To Cart"
+        };
 
-        laDetail = new JSONArray();
-        loMaster = new JSONObject();
-
-        loMaster = new JSONObject();
-        loMaster.put("parent", "Sales InInquiry");
-        laMaster.add(loMaster);
-
-        loDetail = new JSONObject();
-        loDetail.put("parent", "Reservation Payment");
-        laDetail.add(loDetail);
-
-        loDetail = new JSONObject();
-        loDetail.put("parent", "Release");
-        laDetail.add(loDetail);
-
-        loDetail = new JSONObject();
-        loDetail.put("parent", "Delivery");
-        laDetail.add(loDetail);
-
-        loMaster.put("parent", "Sales Reservation");
-        loMaster.put("child", laDetail);
-        laMaster.add(loMaster);
-
-        dissectJSON(laMaster.toJSONString());
+        // Assign tooltips and toggle group in a loop
+        for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
+            toggleBtnRightSideBar[i].setTooltip(new Tooltip(tooltipTexts[i]));
+            toggleBtnRightSideBar[i].setToggleGroup(toggleGroupRightSideBar);
+        }
     }
-    /**STATIC DATA (JSON ON LEFT NAVIGATION)**/
-    private void dashboardMenu01() {
-        JSONArray laMaster, laDetail;
-        JSONObject loMaster, loDetail;
-        laMaster = new JSONArray();
-        laDetail = new JSONArray();
 
-        // Add "Sales Replacement" only if the department is not 26
-        if (!"029".equals(oApp.getDepartment())) {
-            loDetail = new JSONObject();
-            loDetail.put("parent", "Sales Replacement");
-            laDetail.add(loDetail);
+    /**
+     * INITIALIZE TOGGLE GROUP LOWER BUTTON *
+     */
+    private void ToggleGroupControlLowerLeftSideBar() {
+        toggleGroupLowerBtn = new ToggleGroup();
+        toggleBtnLeftLowerSideBar = new ToggleButton[]{
+            btnHelp,
+            btnLogout
+        };
+
+        // Tooltip texts for each button
+        String[] tooltipTexts = {
+            "Help",
+            "Logout"
+        };
+
+        // Assign tooltips and toggle group in a loop
+        for (int i = 0; i < toggleBtnLeftLowerSideBar.length; i++) {
+            toggleBtnLeftLowerSideBar[i].setTooltip(new Tooltip(tooltipTexts[i]));
+            toggleBtnLeftLowerSideBar[i].setToggleGroup(toggleGroupLowerBtn);
+        }
+    }
+
+    /**
+     * ACTION EVENTS *
+     */
+    /*Right Side Bar*/
+    @FXML
+    private void switchNotification(ActionEvent event) {
+        toggleRightSideBarMenuButton("switchNotification", 0);
+        notifMenuItems();
+
+    }
+
+    @FXML
+    private void switchAddToCart(ActionEvent event) {
+        toggleRightSideBarMenuButton("switchAddToCart", 1);
+    }
+
+    /*Left Side Bar*/
+    @FXML
+    private void switchInventory(ActionEvent event) {
+        toggleLeftSideBarMenuButton("switchInventory", 0);
+        toggleSidebarWidth();
+        inventoryMenuItems();
+    }
+
+    @FXML
+    private void switchPurchasing(ActionEvent event) {
+        toggleLeftSideBarMenuButton("switchPurchasing", 1);
+        toggleSidebarWidth();
+        purchasingMenuItems();
+    }
+
+    @FXML
+    private void switchSales(ActionEvent event) {
+        toggleLeftSideBarMenuButton("switchSales", 2);
+        toggleSidebarWidth();
+        salesMenuItems();
+    }
+
+    @FXML
+    private void switchServiceRepair(ActionEvent event) {
+        toggleLeftSideBarMenuButton("switchServiceRepair", 3);
+        tvLeftSideBar.setRoot(null); // Clear previous menu
+    }
+
+    @FXML
+    private void switchAccountsPayable(ActionEvent event) {
+        toggleLeftSideBarMenuButton("switchAccountsPayable", 4);
+        tvLeftSideBar.setRoot(null); // Clear previous menu
+    }
+
+    @FXML
+    private void switchAccountsReceivable(ActionEvent event) {
+        toggleLeftSideBarMenuButton("switchAccountsReceivable", 5);
+        tvLeftSideBar.setRoot(null); // Clear previous menu
+    }
+
+    @FXML
+    private void switchGeneralAccounting(ActionEvent event) {
+        toggleLeftSideBarMenuButton("switchGeneralAccounting", 6);
+        tvLeftSideBar.setRoot(null); // Clear previous menu
+    }
+
+    @FXML
+    private void switchParameters(ActionEvent event) {
+        toggleLeftSideBarMenuButton("switchParameters", 7);
+        tvLeftSideBar.setRoot(null); // Clear previous menu
+    }
+
+    @FXML
+    private void switchHelp(ActionEvent event) {
+        openPDF("D:/Help.pdf");
+        btnHelp.setSelected(false);
+    }
+
+    @FXML
+    private void switchLogout(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("GUANZON GROUP OF COMPANY");
+        alert.setHeaderText("Are you sure you want to logout?");
+
+        // Show the alert and wait for a response
+        Optional<ButtonType> result = alert.showAndWait();
+
+        // Check the response
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Close the current window
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.close();
+        } else {
+            // If Cancel is clicked, reset the selection
+            btnLogout.setSelected(false);
+        }
+    }
+
+    /**
+     * TOGGLE SUBMENU ON LEFT BUTTON*
+     */
+    private void toggleLeftSideBarMenuButton(String buttonId, Integer btnIndex) {
+        System.out.println("Toggling: " + buttonId + " | Last Clicked: " + lastClickedBtnLeftSideBar);
+
+        boolean isSameButton = anchorLeftSideBarMenu.isVisible() && lastClickedBtnLeftSideBar.equals(buttonId);
+        anchorLeftSideBarMenu.setVisible(!isSameButton);
+
+        // Ensure only the correct button stays selected
+        for (ToggleButton button : toggleBtnLeftUpperSideBar) {
+            button.setSelected(false);
         }
 
-        // Add "Additional Give" menu item
-        loDetail = new JSONObject();
-        loDetail.put("parent", "Additional Give");
-        laDetail.add(loDetail);
-
-        // Create the "Sales" parent with its children
-        loMaster = new JSONObject();
-        loMaster.put("parent", "Sales");
-        loMaster.put("child", laDetail);
-
-        // Add "Sales" to the master list
-        laMaster.add(loMaster);
-
-        dissectJSON(laMaster.toJSONString());
+        toggleBtnLeftUpperSideBar[btnIndex].setSelected(!isSameButton);
+        lastClickedBtnLeftSideBar = isSameButton ? "" : buttonId;
     }
-    /**STATIC DATA (JSON ON RIGHT NAVIGATION)**/
-    private void RightNavNotif() {
+
+    private void toggleRightSideBarMenuButton(String buttonId, Integer btnIndex) {
+        System.out.println("Toggling: " + buttonId + " | Last Clicked: " + lastClickedBtnRightSideBar);
+
+        boolean isSameButton = anchorRightSideBarMenu.isVisible() && lastClickedBtnRightSideBar.equals(buttonId);
+        anchorRightSideBarMenu.setVisible(!isSameButton);
+
+        // Ensure only the correct button stays selected
+        for (ToggleButton button : toggleBtnRightSideBar) {
+            button.setSelected(false);
+        }
+
+        toggleBtnRightSideBar[btnIndex].setSelected(!isSameButton);
+        lastClickedBtnRightSideBar = isSameButton ? "" : buttonId;
+    }
+
+    /**
+     * **************** MENU ITEMS SECTIONS *********************************
+     */
+    private void inventoryMenuItems() {
+        String jsonString = "[\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Inventory\", \"controller_path\": \"sample.controller\", \"menu_id\": \"028\", \"menu_parent\": \"\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"029\", \"menu_parent\": \"028\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"030\", \"menu_parent\": \"029\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/Regular Stocks/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"033\", \"menu_parent\": \"029\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"034\", \"menu_parent\": \"033\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"035\", \"menu_parent\": \"033\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"History\", \"fxml_path\": \"Inventory/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"036\", \"menu_parent\": \"028\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/History/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"037\", \"menu_parent\": \"036\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"038\", \"menu_parent\": \"037\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"039\", \"menu_parent\": \"038\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"040\", \"menu_parent\": \"038\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/History/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"041\", \"menu_parent\": \"037\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/History/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"042\", \"menu_parent\": \"041\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/History/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"043\", \"menu_parent\": \"041\"}\n"
+                + "]";
+        JSONParser parser = new JSONParser();
+        try {
+            try {
+                flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
+                JSONObject purchasingMainMenu = buildHierarchy("028");
+                dissectLeftSideBarJSON(purchasingMainMenu.toJSONString());
+            } catch (IOException ex) {
+                Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void purchasingMenuItems() {
+        String jsonString = "["
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing\","
+                + "\"fxml_path\": \"Purchasing\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"014\","
+                + "\"menu_parent\": \"\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Requisition Slip\","
+                + "\"fxml_path\": \"Purchasing/Requisition Slip\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"015\","
+                + "\"menu_parent\": \"014\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing Quotation Request\","
+                + "\"fxml_path\": \"Purchasing/Purchasing Quotation Request\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"016\","
+                + "\"menu_parent\": \"014\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing Quotation\","
+                + "\"fxml_path\": \"Purchasing/Purchasing Quotation\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"017\","
+                + "\"menu_parent\": \"014\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing Order\","
+                + "\"fxml_path\": \"Purchasing/Purchasing Order\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"018\","
+                + "\"menu_parent\": \"014\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing Receiving\","
+                + "\"fxml_path\": \"Purchasing/Purchasing Receiving\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"019\","
+                + "\"menu_parent\": \"014\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing Return\","
+                + "\"fxml_path\": \"Purchasing/Purchasing Return\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"020\","
+                + "\"menu_parent\": \"014\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"History\","
+                + "\"fxml_path\": \"Purchasing/History\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"021\","
+                + "\"menu_parent\": \"014\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Requisition Slip\","
+                + "\"fxml_path\": \"Purchasing/History/Requisition Slip\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"022\","
+                + "\"menu_parent\": \"021\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing Quotation Request\","
+                + "\"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"023\","
+                + "\"menu_parent\": \"021\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing Quotation\","
+                + "\"fxml_path\": \"Purchasing/History/Purchasing Quotation\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"024\","
+                + "\"menu_parent\": \"021\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing Order\","
+                + "\"fxml_path\": \"Purchasing/History/Purchasing Order\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"025\","
+                + "\"menu_parent\": \"021\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing Receiving\","
+                + "\"fxml_path\": \"Purchasing/History/Purchasing Receiving\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"026\","
+                + "\"menu_parent\": \"021\""
+                + "},"
+                + "{"
+                + "\"access_level\": \"\","
+                + "\"menu_name\": \"Purchasing Return\","
+                + "\"fxml_path\": \"Purchasing/History/Purchasing Return\","
+                + "\"controller_path\": \"sample.controller\","
+                + "\"menu_id\": \"027\","
+                + "\"menu_parent\": \"021\""
+                + "}"
+                + "]";
+        JSONParser parser = new JSONParser();
+        try {
+            try {
+                flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
+                JSONObject purchasingMainMenu = buildHierarchy("014");
+                dissectLeftSideBarJSON(purchasingMainMenu.toJSONString());
+            } catch (IOException ex) {
+                Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void salesMenuItems() {
+        // Convert to JSON and process
+        String jsonString = "["
+                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\", \"level\": 0},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\", \"level\": 1},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/Sales/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"003\", \"menu_parent\": \"002\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/Sales/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"004\", \"menu_parent\": \"002\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Inquiry\", \"fxml_path\": \"Sales/Inquiry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"001\", \"level\": 1},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/Inquiry/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"006\", \"menu_parent\": \"005\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/Inquiry/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"007\", \"menu_parent\": \"005\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"History\", \"fxml_path\": \"Sales/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"001\", \"level\": 1},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/History/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"013\", \"menu_parent\": \"008\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/History/Inquiry/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"014\", \"menu_parent\": \"013\", \"level\": 3},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/History/Inquiry/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"015\", \"menu_parent\": \"013\", \"level\": 3}"
+                + "{\"access_level\": \"\", \"menu_name\": \"Inquiry\", \"fxml_path\": \"Sales/History/Inquiry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"008\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/History/Sales/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"011\", \"menu_parent\": \"009\", \"level\": 3},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/History/Sales/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"012\", \"menu_parent\": \"009\", \"level\": 3},"
+                + "]";
+        JSONParser parser = new JSONParser();
+        try {
+            try {
+                flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
+                JSONObject salesMainMenu = buildHierarchy("001");
+                dissectLeftSideBarJSON(salesMainMenu.toJSONString());
+            } catch (IOException ex) {
+                Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //Pag meron ng JSONArray mag dagdag ng parameter
+    private JSONObject buildHierarchy(String menuCode) {
+        for (Object item : flatMenuItems) {
+            JSONObject jsonItem = (JSONObject) item;
+
+            // Look for the root menu item
+            if (jsonNameEquals((String) jsonItem.get("menu_id"), menuCode)
+                    && (jsonItem.get("menu_parent") == null || jsonNameEquals((String) jsonItem.get("menu_parent"), ""))) {
+
+                // Directly return the root object without extra nesting
+                return buildSubHierarchy(jsonItem);
+            }
+        }
+        return new JSONObject(); // Return empty object if no matching root is found
+    }
+
+    private JSONObject buildSubHierarchy(JSONObject item) {
+        JSONObject node = new JSONObject();
+        node.put("menu_id", item.get("menu_id"));
+        node.put("menu_name", item.get("menu_name"));
+        node.put("menu_parent", item.get("menu_parent"));
+        node.put("fxml_path", item.get("fxml_path"));
+        node.put("controller_path", item.get("controller_path"));
+        node.put("access_level", item.get("access_level"));
+
+        List<JSONObject> children = new ArrayList<>();
+        for (Object flatItem : flatMenuItems) {
+            JSONObject childItem = (JSONObject) flatItem;
+            // Check if this item is a child of the current item
+            if (jsonNameEquals((String) childItem.get("menu_parent"), (String) item.get("menu_id"))) {
+                children.add(buildSubHierarchy(childItem)); // Recursively build child hierarchy
+            }
+        }
+
+        if (!children.isEmpty()) {
+            JSONArray childrenArray = new JSONArray();
+            childrenArray.addAll(children);
+            node.put("child", childrenArray);
+        } else {
+            node.put("child", new JSONArray()); // Ensure an empty array if no children exist
+        }
+
+        return node;
+    }
+
+    private boolean jsonNameEquals(String a, String b) {
+        return a == null ? b == null : a.equalsIgnoreCase(b);
+    }
+
+    private void dissectLeftSideBarJSON(String fsValue) {
+        System.out.println("json! " + fsValue);
+
+        if (fsValue == null || fsValue.isEmpty()) {
+            System.err.println("Invalid JSON string.");
+            return;
+        }
+
+        JSONParser loParser = new JSONParser();
+        try {
+            Object parsedJson = loParser.parse(fsValue);
+            JSONArray laMaster;
+
+            // Ensure we have an array
+            if (parsedJson instanceof JSONArray) {
+                laMaster = (JSONArray) parsedJson;
+            } else if (parsedJson instanceof JSONObject) {
+                laMaster = new JSONArray();
+                laMaster.add(parsedJson);
+            } else {
+                System.err.println("Invalid JSON format.");
+                return;
+            }
+
+            TreeItem<String> root = new TreeItem<>("root");
+            menuLocationMap.clear(); // Clear previous mappings
+
+            for (Object objMaster : laMaster) {
+                if (!(objMaster instanceof JSONObject)) {
+                    System.err.println("Skipping invalid entry: " + objMaster);
+                    continue;
+                }
+
+                JSONObject loParent = (JSONObject) objMaster;
+                if (!loParent.containsKey("menu_name")) {
+                    continue; // Skip invalid entries
+                }
+
+                String parentName = String.valueOf(loParent.get("menu_name"));
+                String location = loParent.containsKey("fxml_path") ? String.valueOf(loParent.get("fxml_path")) : "";
+
+                TreeItem<String> parentNode = new TreeItem<>(parentName);
+                menuLocationMap.put(parentNode, location); // Store location
+
+                if (loParent.containsKey("child") && loParent.get("child") instanceof JSONArray) {
+                    JSONArray laDetail = (JSONArray) loParent.get("child");
+                    addChildren(parentNode, laDetail);
+                }
+
+                root.getChildren().add(parentNode);
+            }
+
+            // Assign tree structure
+            if (tvLeftSideBar != null) {
+                tvLeftSideBar.setRoot(root);
+                tvLeftSideBar.setShowRoot(false);
+
+                if (!isListenerAdded) {
+                    isListenerAdded = true;
+                    tvLeftSideBar.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                        if (newValue != null) {
+                            handleSelection(newValue);
+
+                            if (!newValue.getChildren().isEmpty()) {
+                                int childCount = newValue.getChildren().size();
+                                int baseWidth = 200; // Minimum width when expanded
+                                int incrementPerChild = 20; // Width increase per child (adjust as needed)
+                                int maxWidth = 400; // Set a max limit if needed
+
+                                int newWidth = Math.min(baseWidth + (childCount * incrementPerChild), maxWidth);
+                                anchorLeftSideBarMenu.setPrefWidth(newWidth);
+                            }
+                        }
+                    });
+                }
+            } else {
+                System.err.println("tvLeftSideBar is not initialized.");
+            }
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void toggleSidebarWidth() {
+        if (tvLeftSideBar != null && tvLeftSideBar.getRoot() != null) {
+            int maxChildCount = getMaxChildren(tvLeftSideBar.getRoot());
+            int baseWidth = 200; // Minimum width
+            int incrementPerChild = 20; // Width per child
+            int maxWidth = 400; // Maximum limit
+
+            int newWidth = isMenuExpanded ? baseWidth : Math.min(baseWidth + (maxChildCount * incrementPerChild), maxWidth);
+            anchorLeftSideBarMenu.setPrefWidth(newWidth);
+
+            isMenuExpanded = !isMenuExpanded; // Toggle state
+        }
+    }
+
+// Method to calculate the max number of children in the TreeView
+    private int getMaxChildren(TreeItem<String> root) {
+        int maxChildren = 0;
+        for (TreeItem<String> item : root.getChildren()) {
+            maxChildren = Math.max(maxChildren, item.getChildren().size());
+        }
+        return maxChildren;
+    }
+
+    private void handleSelection(TreeItem<String> newValue) {
+        if (newValue == null || !newValue.isLeaf() || newValue.getValue() == null || newValue.getValue().isEmpty()) {
+            System.out.println("Invalid selection or empty value.");
+            return;
+        }
+
+        String selectedMenu = newValue.getValue();
+        String sLocation = menuLocationMap.getOrDefault(newValue, ""); // Get location from map
+
+        System.out.println("Selected: " + selectedMenu + " | Location: " + sLocation);
+
+        switch (selectedMenu) {
+            case "Motorcycle":
+                switch (sLocation.toLowerCase()) {
+                    case "sales/sales/motorcycle":
+                        sformname = sLocation;
+                        System.out.println(sformname);
+                        ShowMessageFX.Information("Navigation", "You selected", sLocation);
+                        break;
+                    case "sales/inquiry/motorcycle":
+                        sformname = sLocation;
+                        System.out.println(sformname);
+                        ShowMessageFX.Information("test", "You selected", sLocation);
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Spareparts":
+                switch (sLocation.toLowerCase()) {
+                    case "sales/sales/spareparts":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/motorycle_sales.fxml";
+                        ShowMessageFX.Information("Navigation", "You selected", sLocation);
+                        break;
+                    case "sales/inquiry/spareparts":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/motorycle_inquiry.fxml";
+                        ShowMessageFX.Information("test", "You selected", sLocation);
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Purchase Order":
+                switch (sLocation.toLowerCase()) {
+                    case "purchasing/purchase order":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml";
+                        break;
+                    case "purchasing/history/purchase order":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml";
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml";
+                break;
+            case "Delivery Acceptance":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml";
+                break;
+            case "Payment Request":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml";
+                break;
+        }
+
+        // Load the corresponding form
+        if (oApp != null) {
+            boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
+            if (isNewTab) {
+                if (!sformname.isEmpty()) {
+                    setScene2(loadAnimate(sformname));
+                } else {
+                    System.out.println("EMPTY FORM NAME");
+                }
+            } else {
+                System.out.println("THIS FORM IS ALREADY OPENED");
+            }
+            anchorLeftSideBarMenu.setVisible(false);
+            for (ToggleButton navButton : toggleBtnLeftUpperSideBar) {
+                navButton.setSelected(false);
+            }
+            pane.requestFocus();
+        }
+    }
+
+    private void addChildren(TreeItem<String> parentNode, JSONArray childrenArray) {
+        for (Object obj : childrenArray) {
+            JSONObject loDetail = (JSONObject) obj;
+            if (loDetail == null || !loDetail.containsKey("menu_name")) {
+                continue; // Skip invalid child entries
+            }
+
+            String parentName = String.valueOf(loDetail.get("menu_name"));
+            String location = loDetail.containsKey("fxml_path") ? String.valueOf(loDetail.get("fxml_path")) : "";
+
+            TreeItem<String> childNode = new TreeItem<>(parentName);
+            menuLocationMap.put(childNode, location); // Store location for this node
+
+            // Recursively add more child levels if present
+            if (loDetail.containsKey("child") && loDetail.get("child") instanceof JSONArray) {
+                JSONArray subChildren = (JSONArray) loDetail.get("child");
+                addChildren(childNode, subChildren);
+            }
+
+            parentNode.getChildren().add(childNode);
+        }
+    }
+
+    /*LEFT SIDE BAR MENU ITEMS */
+    private void notifMenuItems() {
         JSONArray laMaster, laDetail;
         JSONObject loMaster, loDetail;
         laMaster = new JSONArray();
@@ -681,11 +1269,10 @@ public class DashboardController implements Initializable {
         // Add "Sales" to the master list
         laMaster.add(loMaster);
 
-        dissectJSONRightNav(laMaster.toJSONString());
+        dissectRightSideBarJSON(laMaster.toJSONString());
     }
-    
-    /**LOAD THE FORM BASE FROM THE JSON ON LEFT NAVIGATION**/
-    private void dissectJSON(String fsValue) {
+
+    private void dissectRightSideBarJSON(String fsValue) {
         if (fsValue == null || fsValue.isEmpty()) {
             System.err.println("Invalid JSON string.");
             return;
@@ -699,145 +1286,29 @@ public class DashboardController implements Initializable {
                 return;
             }
 
-            JSONArray laDetail, laDetail2;
-            JSONObject loParent, loDetail, loSubDetail;
-
             TreeItem<String> root = new TreeItem<>("root");
 
-            for (int lnCtr = 0; lnCtr < laMaster.size(); lnCtr++) {
-                loParent = (JSONObject) laMaster.get(lnCtr);
+            for (Object objMaster : laMaster) {
+                JSONObject loParent = (JSONObject) objMaster;
                 if (loParent == null || !loParent.containsKey("parent")) {
                     continue; // Skip invalid entries
                 }
-                TreeItem<String> parentnode = new TreeItem<>(String.valueOf(loParent.get("parent")));
+
+                TreeItem<String> parentNode = new TreeItem<>(String.valueOf(loParent.get("parent")));
 
                 if (loParent.containsKey("child") && loParent.get("child") instanceof JSONArray) {
-                    laDetail = (JSONArray) loParent.get("child");
-                    for (int x = 0; x < laDetail.size(); x++) {
-                        loDetail = (JSONObject) laDetail.get(x);
-                        if (loDetail == null || !loDetail.containsKey("parent")) {
-                            continue; // Skip invalid child entries
-                        }
-                        TreeItem<String> child = new TreeItem<>(String.valueOf(loDetail.get("parent")));
-                        if (loDetail.containsKey("child") && loDetail.get("child") instanceof JSONArray) {
-                            laDetail2 = (JSONArray) loDetail.get("child");
-                            for (int y = 0; y < laDetail2.size(); y++) {
-                                // Check for non-null and valid data
-                                TreeItem<String> subdetail = new TreeItem<>(String.valueOf(laDetail2.get(y)));
-                                
-                                child.getChildren().add(subdetail);
-                            }
-                        }
-                        parentnode.getChildren().add(child);
-                    }
+                    JSONArray laDetail = (JSONArray) loParent.get("child");
+                    addChildren(parentNode, laDetail);
                 }
-                root.getChildren().add(parentnode);
+
+                root.getChildren().add(parentNode);
             }
 
-            // Ensure tvChild is not null before interacting with it
-            if (tvChild != null) {
-                tvChild.setRoot(root);
-                tvChild.setShowRoot(false);
-                tvChild.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null && newValue.isLeaf() && newValue.getValue() != null && !newValue.getValue().isEmpty()) {
-                        System.out.println("Selected: " + newValue.getValue());
-
-                        switch (newValue.getValue()) {
-                            case "Sales Replacement":
-                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml";
-//                                intIndex = 0;
-                                break;
-                            case "Additional Give":
-                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml";
-//                                intIndex = 0;
-                                break;
-                        }
-
-                        // Add logic to load the form    
-                        if (oApp != null) {
-                            boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
-                                if (isNewTab) setScene2(loadAnimate(sformname)); 
-                                else System.out.println("THIS FORM IS ALREADY OPENED");
-                                anchorSubMenu.setVisible(false);
-                            for (ToggleButton navButton : navButtons) {
-                                navButton.setSelected(false);
-                            }
-                            pane.requestFocus();
-                        }
-                    } else {
-                        // Handle the case where newValue is null, empty, or not a leaf
-                        System.out.println("Invalid selection or empty value.");
-                    }
-                });
-            } else {
-                System.err.println("tvChild is not initialized.");
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace(); //Log the full exception for easier debugging
-        }
-    }
-
-    /**SET SCENE FOR WORKPLACE - STACKPANE - TABPANE**/
-    public void setScene2(TabPane foPane) {
-        workingSpace.getChildren().clear();
-        workingSpace.getChildren().add(foPane);
-    }
-
-    
-    /**LOAD THE FORM BASE FROM THE JSON ON RIGHT NAVIGATION**/
-    private void dissectJSONRightNav(String fsValue) {
-        if (fsValue == null || fsValue.isEmpty()) {
-            System.err.println("Invalid JSON string.");
-            return;
-        }
-
-        JSONParser loParser = new JSONParser();
-        try {
-            JSONArray laMaster = (JSONArray) loParser.parse(fsValue);
-            if (laMaster == null) {
-                System.err.println("Parsed JSON is empty or invalid.");
-                return;
-            }
-
-            JSONArray laDetail, laDetail2;
-            JSONObject loParent, loDetail, loSubDetail;
-
-            TreeItem<String> root = new TreeItem<>("root");
-
-            for (int lnCtr = 0; lnCtr < laMaster.size(); lnCtr++) {
-                loParent = (JSONObject) laMaster.get(lnCtr);
-                if (loParent == null || !loParent.containsKey("parent")) {
-                    continue; // Skip invalid entries
-                }
-                TreeItem<String> parentnode = new TreeItem<>(String.valueOf(loParent.get("parent")));
-
-                if (loParent.containsKey("child") && loParent.get("child") instanceof JSONArray) {
-                    laDetail = (JSONArray) loParent.get("child");
-                    for (int x = 0; x < laDetail.size(); x++) {
-                        loDetail = (JSONObject) laDetail.get(x);
-                        if (loDetail == null || !loDetail.containsKey("parent")) {
-                            continue; // Skip invalid child entries
-                        }
-                        TreeItem<String> child = new TreeItem<>(String.valueOf(loDetail.get("parent")));
-                        if (loDetail.containsKey("child") && loDetail.get("child") instanceof JSONArray) {
-                            laDetail2 = (JSONArray) loDetail.get("child");
-                            for (int y = 0; y < laDetail2.size(); y++) {
-                                // Check for non-null and valid data
-                                TreeItem<String> subdetail = new TreeItem<>(String.valueOf(laDetail2.get(y)));
-                                child.getChildren().add(subdetail);
-                            }
-                        }
-                        parentnode.getChildren().add(child);
-                    }
-                }
-                root.getChildren().add(parentnode);
-            }
-
-            // Ensure tvChild1 is not null before interacting with it
-            if (tvChild1 != null) {
-                tvChild1.setRoot(root);
-                tvChild1.setShowRoot(false);
-                tvChild1.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            // Assign tree structure
+            if (tvRightSideBar != null) {
+                tvRightSideBar.setRoot(root);
+                tvRightSideBar.setShowRoot(false);
+                tvRightSideBar.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                     if (newValue != null && newValue.isLeaf() && newValue.getValue() != null && !newValue.getValue().isEmpty()) {
                         System.out.println("Selected: " + newValue.getValue());
 
@@ -854,11 +1325,15 @@ public class DashboardController implements Initializable {
                         // Add logic to load the form
                         if (oApp != null) {
                             boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
-                                if (isNewTab) setScene2(loadAnimate(sformname)); 
-                                else System.out.println("THIS FORM IS ALREADY OPENED");
-                                anchorSubMenuNotif.setVisible(false);
-                            for (ToggleButton navButtonsRightNav : navButtonsRightNav) {
-                                navButtonsRightNav.setSelected(false);
+                            if (isNewTab) {
+                                setScene2(loadAnimate(sformname));
+                            } else {
+                                System.out.println("THIS FORM IS ALREADY OPENED");
+                            }
+                            anchorRightSideBarMenu.setVisible(false);
+                            anchorRightSideBarMenu.setManaged(false);
+                            for (ToggleButton toggleBtnRightSideBar : toggleBtnRightSideBar) {
+                                toggleBtnRightSideBar.setSelected(false);
                             }
                             pane.requestFocus();
                         }
@@ -868,107 +1343,24 @@ public class DashboardController implements Initializable {
                     }
                 });
             } else {
-                System.err.println("tvChild1 is not initialized.");
+                System.err.println("tvChild is not initialized.");
             }
-
         } catch (Exception ex) {
-            ex.printStackTrace(); // Log the full exception for easier debugging
+            ex.printStackTrace();
         }
     }
 
-    /**INITIALIZE TOGGLE GROUP LEFT NAVIGATION**/
-    private void ToggleGroupControl() {
-        toggleGroup = new ToggleGroup();
-        navButtons = new ToggleButton[]{
-            btnInventory,
-            btnPurchasing,
-            btnSales,
-            btnServiceRepair,
-            btnAccountsPayable,
-            btnAccountsReceivable,
-            btnGeneralAccounting,
-            btnParameters
-        };
-
-        // Tooltip texts for each button
-        String[] tooltipTexts = {
-            "Inventory",
-            "Purchasing",
-            "Sales",
-            "Service Repair",
-            "Accounts Payable",
-            "Accounts Receivable",
-            "General Accounting",
-            "Parameters"
-        };
-
-        // Assign tooltips to buttons
-        for (int i = 0; i < navButtons.length; i++) {
-            if (navButtons[i].isVisible()) { // Skip setting tooltip for hidden buttons
-                navButtons[i].setTooltip(new Tooltip(tooltipTexts[i]));
-                navButtons[i].setToggleGroup(toggleGroup);
-            }
-        }
-    }
-
-    /**INITIALIZE TOGGLE GROUP RIGHT NAVIGATION**/
-    private void ToggleGroupControlRightNav() {
-        toggleGroupRightNav = new ToggleGroup();
-        navButtonsRightNav = new ToggleButton[]{
-            btnNotification,
-            btnAddToCart
-        };
-
-        // Tooltip texts for each button
-        String[] tooltipTexts = {
-            "Notification",
-            "Add To Cart"
-        };
-
-        // Assign tooltips and toggle group in a loop
-        for (int i = 0; i < navButtonsRightNav.length; i++) {
-            navButtonsRightNav[i].setTooltip(new Tooltip(tooltipTexts[i]));
-            navButtonsRightNav[i].setToggleGroup(toggleGroupRightNav);
-        }
-    }
-
-    /**INITIALIZE TOGGLE GROUP LOWER BUTTON **/
-    private void ToggleGroupControlLowerBtn() {
-        toggleGroupLowerBtn = new ToggleGroup();
-        navButtonsLowerBtn = new ToggleButton[]{
-            btnHelp,
-            btnLogout
-        };
-
-        // Tooltip texts for each button
-        String[] tooltipTexts = {
-            "Help",
-            "Logout"
-        };
-
-        // Assign tooltips and toggle group in a loop
-        for (int i = 0; i < navButtonsLowerBtn.length; i++) {
-            navButtonsLowerBtn[i].setTooltip(new Tooltip(tooltipTexts[i]));
-            navButtonsLowerBtn[i].setToggleGroup(toggleGroupLowerBtn);
-        }
-    }
-
-    /**GET DEPARTMENT**/ 
-    private void checkDepartment() {
-        // Validate and hide btnSales if department is 026
-        if ("022".equals(oApp.getDepartment())) { // Ensure the department is compared correctly
-            btnSales.setVisible(false);
-            btnSales.setManaged(false);  // Hide the button
-        }
-    }
-
-    /**INITIALIZE CLICK BUTTON**/
-    private void ClickButton() {
+    /**
+     * INITIALIZE CLICK BUTTON*
+     */
+    private void initButtonClickActions() {
         btnClose.setOnAction(this::handleButtonAction);
         btnMinimize.setOnAction(this::handleButtonAction);
     }
 
-    /** HANDLE BUTTON ACTION **/
+    /**
+     * HANDLE BUTTON ACTION *
+     */
     private void handleButtonAction(ActionEvent event) {
         Object source = event.getSource();
         JSONObject poJSON;
@@ -988,9 +1380,27 @@ public class DashboardController implements Initializable {
         }
     }
 
+    /**
+     * LOAD USER INFO*
+     */
+    private void loadUserInfo() {
+        AppUser.setText(oApp.getLogName() + " || " + oApp.getDivisionName());
+    }
 
-    
-    /**GET TIME**/
+    /**
+     * GET DEPARTMENT*
+     */
+    private void checkDepartment() {
+        // Validate and hide btnSales if department is 026
+        if ("022".equals(oApp.getDepartment())) { // Ensure the department is compared correctly
+            btnSales.setVisible(false);
+            btnSales.setManaged(false);  // Hide the button
+        }
+    }
+
+    /**
+     * GET TIME*
+     */
     private void getTime() {
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             Calendar cal = Calendar.getInstance();
@@ -1016,14 +1426,9 @@ public class DashboardController implements Initializable {
         clock.play();
 
     }
-    /**LOAD USER INFO**/
-    private void loadUserInfo() {
-        AppUser.setText(oApp.getLogName() + " || " + oApp.getDivisionName());
-    }
-    
-    
-    private void notificationChecker(){
-    // Setup the ScheduledService to check for notifications periodically
+
+    private void notificationChecker() {
+        // Setup the ScheduledService to check for notifications periodically
         ScheduledService<Void> service = new ScheduledService<Void>() {  // Explicit type argument here
             @Override
             protected Task<Void> createTask() {
@@ -1037,9 +1442,9 @@ public class DashboardController implements Initializable {
             }
         };
         service.setPeriod(Duration.minutes(1)); // Runs every minute (adjust as needed)
-        service.start(); 
-        
+        service.start();
     }
+
     private void checkNotifications() {
         // Simulate the logic to check notifications (replace with actual logic)
         notificationCount += (int) (Math.random() * 5);  // Adds 0-4 random notifications
@@ -1047,11 +1452,11 @@ public class DashboardController implements Initializable {
 
         // Update the label's text on the JavaFX Application Thread
         Platform.runLater(() -> {
-            lblNotifCount.setText( String.valueOf(notificationCount));
+            lblNotifCount.setText(String.valueOf(notificationCount));
             lblAddToCartCount.setText(String.valueOf(cartCount));
         });
     }
-    
+
     private void openPDF(String filePath) {
         File pdfFile = new File(filePath);
 
@@ -1069,5 +1474,26 @@ public class DashboardController implements Initializable {
         } else {
             System.out.println("File not found: " + pdfFile.getAbsolutePath());
         }
+    }
+
+    /**
+     * SHOW MESSAGE *
+     */
+    private boolean showMessage() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation Dialog");
+        alert.setHeaderText("Are you sure you want to proceed?");
+        alert.setContentText("Choose your option.");
+
+        // Add Yes and No buttons to the alert dialog
+        ButtonType buttonTypeYes = new ButtonType("Yes");
+        ButtonType buttonTypeNo = new ButtonType("No");
+        alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
+
+        // Show the alert and wait for a response
+        javafx.scene.control.ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
+
+        // Handle the user's response
+        return result == buttonTypeYes;
     }
 }
