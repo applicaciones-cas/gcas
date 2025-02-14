@@ -86,8 +86,8 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
     @FXML
     private TableView tblViewStock_Request, tblViewOrderDetails, tblAttachments, tblViewOrderDetails1;
     @FXML
-    private TableColumn tblindex01, tblindex02, tblindex03, tblindex04, tblindex01_order_details, tblindex02_order_details, 
-            tblindex04_order_details, tblindex05_order_details, tblindex06_order_details, tblindex07_order_details, 
+    private TableColumn tblindex01, tblindex02, tblindex03, tblindex04, tblindex01_order_details, tblindex02_order_details,
+            tblindex04_order_details, tblindex05_order_details, tblindex06_order_details, tblindex07_order_details,
             tblindex08_order_details, tblindex12_order_details, tblindex09_order_details, tblindex09_order_details1,
             tblindex10_order_details, tblindex11_order_details, tblindex13_order_details, index12, index13, tblindex02_order_details1,
             tblindex04_order_details1, tblindex09_order_details11, tblindex09_order_details12;
@@ -95,6 +95,7 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
     private StackPane stackPane1;
     @FXML
     private ImageView imageView;
+
     /**
      * Initializes the controller class.
      */
@@ -231,7 +232,7 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
             imageView.setImage(null);
             stackPaneClip();
             pnAttachmentRow = 0;
-            
+
         }
 
     }
@@ -273,11 +274,11 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
         currentIndex = pnAttachmentRow;
         int newIndex = currentIndex + direction;
 
-        if (currentIndex != -1 && (newIndex >= img_data.size() - 1 && newIndex <= img_data.size() - 1)) {
+        if (newIndex != -1 && (newIndex <= img_data.size() - 1)) {
             ModelAttachment image = img_data.get(newIndex);
             Path filePath = Paths.get(image.getIndex13());
             String convertedPath = filePath.toUri().toString();
-            
+
             Image newImage = new Image(convertedPath);
             // Create a transition animation
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
@@ -332,7 +333,6 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         initAttachmentPreviewPane();
-    
 
         initAttachmentTableData();
         initDetailsTableData();
@@ -369,9 +369,7 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
 
                     tblAttachments.getFocusModel().focus(pnAttachmentRow);
                     tblAttachments.getSelectionModel().select(pnAttachmentRow);
-                    
-                    
-                    
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
