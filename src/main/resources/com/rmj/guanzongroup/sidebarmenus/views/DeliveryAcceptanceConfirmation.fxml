@@ -24,7 +24,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxWidth="1487.0" minWidth="1487.0" prefHeight="789.0" prefWidth="1487.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" maxWidth="1487.0" minWidth="1487.0" prefHeight="789.0" prefWidth="1487.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -117,7 +117,7 @@
                                                     <children>
                                                         <VBox prefHeight="339.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <children>
-                                                                <AnchorPane style="-fx-border-color: orange;">
+                                                                <AnchorPane style="-fx-border-color: FF8201;">
                                                                     <children>
                                                                         <GridPane layoutX="11.0" layoutY="6.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="6.0">
                                                                             <columnConstraints>
@@ -186,7 +186,7 @@
                                                                         </GridPane>
                                                                     </children>
                                                                 </AnchorPane>
-                                                                <AnchorPane minWidth="800.0" style="-fx-border-color: orange;">
+                                                                <AnchorPane minWidth="800.0" style="-fx-border-color: FF8201;">
                                                                     <children>
                                                                         <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                                             <columnConstraints>
@@ -272,7 +272,7 @@
                                                         <Insets top="5.0" />
                                                     </HBox.margin>
                                                 </AnchorPane>
-                                                <AnchorPane prefWidth="0.0" style="-fx-border-color: orange;" HBox.hgrow="ALWAYS">
+                                                <AnchorPane prefWidth="0.0" style="-fx-border-color: FF8201;" HBox.hgrow="ALWAYS">
                                                     <children>
                                                         <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <columnConstraints>
@@ -315,7 +315,7 @@
                                                 </AnchorPane>
                                             </children>
                                         </HBox>
-                                        <AnchorPane style="-fx-border-color: orange;" VBox.vgrow="ALWAYS">
+                                        <AnchorPane style="-fx-border-color: FF8201;" VBox.vgrow="ALWAYS">
                                             <children>
                                                 <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                                     <columnConstraints>
@@ -401,52 +401,24 @@
                            <children>
                               <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                    <AnchorPane prefWidth="739.0">
                                        <children>
-                                                                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                    <columnConstraints>
-                                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity" />
-                                                                    </columnConstraints>
-                                                                    <rowConstraints>
-                                                                      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                                    </rowConstraints>
-                                                                     <children>
-                                                <Button fx:id="btnArrowLeft" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="33.0" prefWidth="38.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css">
+                                          <StackPane fx:id="stackPane1" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                             <children>
+                                                <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                                                <Button fx:id="btnArrowLeft" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="33.0" prefWidth="38.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" StackPane.alignment="CENTER_LEFT">
                                                    <graphic>
                                                       <FontAwesomeIconView fill="WHITE" glyphName="ANGLE_LEFT" size="27.0" />
                                                    </graphic>
                                                 </Button>
-                                                                     </children>
-                                                                  </GridPane>
-                                       </children>
-                                    </AnchorPane>
-                                    <AnchorPane prefWidth="739.0">
-                                       <children>
-                                          <StackPane fx:id="stackPane1" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
-                                             <children>
-                                                <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                                             </children>
-                                          </StackPane>
-                                       </children>
-                                    </AnchorPane>
-                                    <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0">
-                                                               <children>
-                                                                  <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                    <columnConstraints>
-                                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="-Infinity" />
-                                                                    </columnConstraints>
-                                                                    <rowConstraints>
-                                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                    </rowConstraints>
-                                                                     <children>
-                                                <Button fx:id="btnArrowRight" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="33.0" prefWidth="38.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css">
+                                                <Button fx:id="btnArrowRight" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="33.0" prefWidth="38.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" StackPane.alignment="CENTER_RIGHT">
                                                    <graphic>
                                                       <FontAwesomeIconView fill="WHITE" glyphName="ANGLE_RIGHT" size="27.0" />
                                                    </graphic>
                                                 </Button>
-                                                                     </children>
-                                                                  </GridPane>
-                                                               </children>
+                                             </children>
+                                          </StackPane>
+                                       </children>
                                     </AnchorPane>
                                  </children>
                               </HBox>
@@ -470,7 +442,7 @@
                                                     <children>
                                                         <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <children>
-                                                                <AnchorPane maxHeight="-Infinity" prefHeight="100.0" style="-fx-border-color: orange;">
+                                                                <AnchorPane maxHeight="-Infinity" prefHeight="100.0" style="-fx-border-color: FF8201;">
                                                                     <children>
                                                                         <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                                             <columnConstraints>
@@ -512,7 +484,7 @@
                                                 </AnchorPane>
                                             </children>
                                         </HBox>
-                                        <AnchorPane maxWidth="-Infinity" style="-fx-border-color: orange;" VBox.vgrow="ALWAYS">
+                                        <AnchorPane maxWidth="-Infinity" style="-fx-border-color: FF8201;" VBox.vgrow="ALWAYS">
                                             <children>
                                                 <GridPane prefWidth="497.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                                     <columnConstraints>

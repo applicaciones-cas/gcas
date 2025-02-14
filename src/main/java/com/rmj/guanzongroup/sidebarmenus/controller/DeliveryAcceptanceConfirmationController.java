@@ -226,6 +226,7 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
 
             img_data.add(new ModelAttachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
             setSelectedAttachment();
+            initAttachmentDetailsGrid2();
         });
     }
 
@@ -260,7 +261,6 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
     }
 
     private void adjustImageSize(Image image) {
-
         double imageRatio = image.getWidth() / image.getHeight();
         double containerRatio = ldstackPaneWidth / ldstackPaneHeight;
 
@@ -289,6 +289,7 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
         }
         img_data.clear();
         img_data.addAll(tempData);
+
     }
 
     private void stackPaneClip() {
@@ -301,21 +302,29 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
         clip.setLayoutX(4); // Set padding offset for X
         clip.setLayoutY(4); // Set padding offset for Y
         stackPane1.setClip(clip);
+
     }
 
     private void setSelectedAttachment() {
         if (pnAttachmentRow >= 0) {
-            String filePath = (String) img_data.get(pnAttachmentRow).getIndex13();
+            try {
+                String filePath = (String) img_data.get(pnAttachmentRow).getIndex13();
 
-            if (filePath.length() != 0) {
-                Path imgPath = Paths.get(filePath);
-                String convertedPath = imgPath.toUri().toString();
-                Image loimage = new Image(convertedPath);
-                imageView.setImage(loimage);
-                adjustImageSize(loimage);
+                if (filePath.length() != 0) {
+                    Path imgPath = Paths.get(filePath);
+                    String convertedPath = imgPath.toUri().toString();
+                    Image loimage = new Image(convertedPath);
+                    imageView.setImage(loimage);
+                    adjustImageSize(loimage);
+                    stackPaneClip();
 
-                stackPaneClip();
-            } else {
+                    stackPaneClip();
+                } else {
+                    imageView.setImage(null);
+                    stackPaneClip();
+                }
+
+            } catch (Exception e) {
                 imageView.setImage(null);
                 stackPaneClip();
             }
@@ -361,10 +370,10 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
     }
 
     public void slideImage(int direction) {
-        currentIndex = pnAttachmentRow; //1
+        currentIndex = pnAttachmentRow;
+        int newIndex = currentIndex + direction;
 
-        if ((currentIndex != -1 || img_data.size() - 1 > currentIndex)) { //FIX problem here
-            int newIndex = currentIndex + direction;
+        if (currentIndex != -1 && (newIndex >= img_data.size() - 1 && newIndex <= img_data.size() - 1)) {
             ModelAttachment image = img_data.get(newIndex);
             Path filePath = Paths.get(image.getIndex13());
             String convertedPath = filePath.toUri().toString();
@@ -417,7 +426,6 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
     private void initDetailsTableData() {
         data.add(new ModelPurchaseOrder("1", "LP - General Warehouse", "2025-02-11", "M00125000000", "10"
         ));
-
     }
 
     @Override
