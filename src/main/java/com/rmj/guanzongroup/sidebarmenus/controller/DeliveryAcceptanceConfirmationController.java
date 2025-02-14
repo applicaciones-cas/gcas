@@ -67,149 +67,34 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
     private final ObservableList<ModelAttachment> img_data = FXCollections.observableArrayList();
 
     @FXML
-    private AnchorPane apBrowse;
-    @FXML
-    private AnchorPane apButton;
+    private AnchorPane apBrowse, apButton;
+
     @FXML
     private HBox hbButtons;
     @FXML
-    private Button btnBrowse;
-    @FXML
-    private Button btnNew;
-    @FXML
-    private Button btnSave;
-    @FXML
-    private Button btnSearch;
-    @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnClose;
+    private Button btnBrowse, btnNew, btnSave, btnSearch, btnCancel,
+            btnClose, btnRemoveItem, btnAddAttachment, btnArrowLeft, btnArrowRight;
     @FXML
     private Label lblStatus;
     @FXML
-    private TextField txtField01;
-    @FXML
-    private TextField txtField02;
-    @FXML
-    private TextField txtField04;
-    @FXML
-    private TextField txtField05;
-    @FXML
-    private TextField txtField08;
+    private TextField txtField01, txtField02, txtField04, txtField05, txtField08,
+            txtField11, txtField12, txtField06, txtField081, txtField18, txtField19,
+            txtField25, txtField26, txtField27, txtField17, txtField16, txtField15, txtField20, txtField21, txtField22,
+            txtField23, txtField24, txtField181, txtField191, txtField171, txtField161, txtField151;
     @FXML
     private CheckBox cbAdv;
     @FXML
-    private TextField txtField11;
+    private TableView tblViewStock_Request, tblViewOrderDetails, tblAttachments, tblViewOrderDetails1;
     @FXML
-    private TextField txtField12;
-    @FXML
-    private TextField txtField06;
-    @FXML
-    private TextField txtField081;
-    @FXML
-    private TextField txtField18;
-    @FXML
-    private TextField txtField19;
-    @FXML
-    private TextField txtField25;
-    @FXML
-    private TextField txtField26;
-    @FXML
-    private TextField txtField27;
-    @FXML
-    private TextField txtField17;
-    @FXML
-    private TextField txtField16;
-    @FXML
-    private TextField txtField15;
-    @FXML
-    private TextField txtField20;
-    @FXML
-    private TextField txtField21;
-    @FXML
-    private TextField txtField22;
-    @FXML
-    private TextField txtField23;
-    @FXML
-    private TextField txtField24;
-    @FXML
-    private TableView tblViewStock_Request;
-    @FXML
-    private TableColumn tblindex01;
-    @FXML
-    private TableColumn tblindex02;
-    @FXML
-    private TableColumn tblindex03;
-    @FXML
-    private TableColumn tblindex04;
-    @FXML
-    private TableView tblViewOrderDetails;
-    @FXML
-    private TableColumn tblindex01_order_details;
-    @FXML
-    private TableColumn tblindex02_order_details;
-    @FXML
-    private TableColumn tblindex04_order_details;
-    @FXML
-    private TableColumn tblindex05_order_details;
-    @FXML
-    private TableColumn tblindex06_order_details;
-    @FXML
-    private TableColumn tblindex07_order_details;
-    @FXML
-    private TableColumn tblindex08_order_details;
-    @FXML
-    private TableColumn tblindex12_order_details;
-    @FXML
-    private TableColumn tblindex09_order_details;
-    @FXML
-    private TableColumn tblindex09_order_details1;
-    @FXML
-    private TableColumn tblindex10_order_details;
-    @FXML
-    private TableColumn tblindex11_order_details;
-    @FXML
-    private TableColumn tblindex13_order_details;
-    @FXML
-    private TableView tblAttachments;
-    @FXML
-    private TableColumn index12;
-    @FXML
-    private TableColumn index13;
-    @FXML
-    private Button btnRemoveItem;
-    @FXML
-    private Button btnAddAttachment;
-    @FXML
-    private Button btnArrowLeft;
+    private TableColumn tblindex01, tblindex02, tblindex03, tblindex04, tblindex01_order_details, tblindex02_order_details, 
+            tblindex04_order_details, tblindex05_order_details, tblindex06_order_details, tblindex07_order_details, 
+            tblindex08_order_details, tblindex12_order_details, tblindex09_order_details, tblindex09_order_details1,
+            tblindex10_order_details, tblindex11_order_details, tblindex13_order_details, index12, index13, tblindex02_order_details1,
+            tblindex04_order_details1, tblindex09_order_details11, tblindex09_order_details12;
     @FXML
     private StackPane stackPane1;
     @FXML
-    private Button btnArrowRight;
-    @FXML
-    private TextField txtField181;
-    @FXML
-    private TextField txtField191;
-    @FXML
-    private TextField txtField171;
-    @FXML
-    private TextField txtField161;
-    @FXML
-    private TextField txtField151;
-    @FXML
-    private TableView tblViewOrderDetails1;
-    @FXML
-    private TableColumn tblindex02_order_details1;
-    @FXML
-    private TableColumn tblindex04_order_details1;
-    @FXML
-    private TableColumn tblindex09_order_details11;
-    @FXML
-    private TableColumn tblindex09_order_details12;
-
-    @FXML
     private ImageView imageView;
-
     /**
      * Initializes the controller class.
      */
@@ -256,6 +141,20 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
             double translateY = event.getSceneY() - mouseAnchorY;
             imageView.setTranslateX(translateX);
             imageView.setTranslateY(translateY);
+        });
+
+        stackPane1.widthProperty().addListener((observable, oldValue, newWidth) -> {
+            double computedWidth = newWidth.doubleValue();
+            ldstackPaneWidth = computedWidth;
+
+        });
+        stackPane1.heightProperty().addListener((observable, oldValue, newHeight) -> {
+            double computedHeight = newHeight.doubleValue();
+            ldstackPaneHeight = computedHeight;
+
+            //Placed to get height and width of stack pane in computed size before loading the image
+            initAttachmentTableData();
+            initAttachmentDetailsGrid2();
         });
 
     }
@@ -332,6 +231,7 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
             imageView.setImage(null);
             stackPaneClip();
             pnAttachmentRow = 0;
+            
         }
 
     }
@@ -377,7 +277,7 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
             ModelAttachment image = img_data.get(newIndex);
             Path filePath = Paths.get(image.getIndex13());
             String convertedPath = filePath.toUri().toString();
-
+            
             Image newImage = new Image(convertedPath);
             // Create a transition animation
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
@@ -432,8 +332,7 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         initAttachmentPreviewPane();
-        initAttachmentDetailsGrid2();
-        initDetailsTable();
+    
 
         initAttachmentTableData();
         initDetailsTableData();
@@ -470,7 +369,9 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
 
                     tblAttachments.getFocusModel().focus(pnAttachmentRow);
                     tblAttachments.getSelectionModel().select(pnAttachmentRow);
-
+                    
+                    
+                    
                 }
             } catch (Exception e) {
                 e.printStackTrace();
