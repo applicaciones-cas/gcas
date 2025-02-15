@@ -8,6 +8,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -48,6 +49,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -55,6 +57,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -86,9 +89,9 @@ public class DashboardController implements Initializable {
     private static Tooltip[] sideBarRightToolTip;
     private Map<TreeItem<String>, String> menuLocationMap = new HashMap<>();
     private boolean isListenerAdded = false; // Prevent multiple listener additions
-
-    private boolean isMenuExpanded = false; // Track the menu state
-    private JSONArray flatMenuItems;
+//    private JSONArray flatMenuItems;
+    private List<JSONObject> flatMenuItems;
+    private int userLevel; // User's access level
     private int targetTabIndex = -1;
     private int intIndex = -1;
     List<String> tabName = new ArrayList<>();
@@ -152,6 +155,10 @@ public class DashboardController implements Initializable {
             //johndave modified 02-12-2025
             treeViewFactoryStyle(tvLeftSideBar);
             treeViewFactoryStyle(tvRightSideBar);
+
+            //johndave modified 02-15-2025
+            applyBlurToRightCorner(anchorLeftSideBarMenu);
+            applyBlurToRightCorner(anchorRightSideBarMenu);
             anchorRightSideBarMenu.setVisible(true);
             anchorRightSideBarMenu.setManaged(true);
             notifMenuItems();
@@ -573,6 +580,20 @@ public class DashboardController implements Initializable {
         });
     }
 
+    private void applyBlurToRightCorner(AnchorPane anchorPane) {
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(20); // Adjust blur intensity
+        shadow.setWidth(21.0);
+        shadow.setColor(Color.rgb(0, 0, 0, 0.3)); // Adjust transparency
+
+        // Apply shadow only to the right side
+        shadow.setOffsetX(2); // Moves shadow to the right
+        shadow.setOffsetY(0);
+
+        // Apply to the AnchorPane
+        anchorPane.setEffect(shadow);
+    }
+
     private void ToggleGroupControlUpperLeftSideBar() {
         toggleGroup = new ToggleGroup();
         toggleBtnLeftUpperSideBar = new ToggleButton[]{
@@ -672,53 +693,57 @@ public class DashboardController implements Initializable {
     /*Left Side Bar*/
     @FXML
     private void switchInventory(ActionEvent event) {
+        inventoryMenuItems();
         toggleLeftSideBarMenuButton("switchInventory", 0);
         toggleSidebarWidth();
-        inventoryMenuItems();
     }
 
     @FXML
     private void switchPurchasing(ActionEvent event) {
+        purchasingMenuItems();
         toggleLeftSideBarMenuButton("switchPurchasing", 1);
         toggleSidebarWidth();
-        purchasingMenuItems();
     }
 
     @FXML
     private void switchSales(ActionEvent event) {
+        salesMenuItems();
         toggleLeftSideBarMenuButton("switchSales", 2);
         toggleSidebarWidth();
-        salesMenuItems();
     }
 
     @FXML
     private void switchServiceRepair(ActionEvent event) {
+        tvLeftSideBar.setRoot(null);
         toggleLeftSideBarMenuButton("switchServiceRepair", 3);
-        tvLeftSideBar.setRoot(null); // Clear previous menu
+
     }
 
     @FXML
     private void switchAccountsPayable(ActionEvent event) {
+        tvLeftSideBar.setRoot(null);
         toggleLeftSideBarMenuButton("switchAccountsPayable", 4);
-        tvLeftSideBar.setRoot(null); // Clear previous menu
+
     }
 
     @FXML
     private void switchAccountsReceivable(ActionEvent event) {
+        tvLeftSideBar.setRoot(null);
         toggleLeftSideBarMenuButton("switchAccountsReceivable", 5);
-        tvLeftSideBar.setRoot(null); // Clear previous menu
+
     }
 
     @FXML
     private void switchGeneralAccounting(ActionEvent event) {
+        tvLeftSideBar.setRoot(null);
         toggleLeftSideBarMenuButton("switchGeneralAccounting", 6);
-        tvLeftSideBar.setRoot(null); // Clear previous menu
+
     }
 
     @FXML
     private void switchParameters(ActionEvent event) {
+        tvLeftSideBar.setRoot(null);
         toggleLeftSideBarMenuButton("switchParameters", 7);
-        tvLeftSideBar.setRoot(null); // Clear previous menu
     }
 
     @FXML
@@ -754,9 +779,21 @@ public class DashboardController implements Initializable {
         System.out.println("Toggling: " + buttonId + " | Last Clicked: " + lastClickedBtnLeftSideBar);
 
         boolean isSameButton = anchorLeftSideBarMenu.isVisible() && lastClickedBtnLeftSideBar.equals(buttonId);
-        anchorLeftSideBarMenu.setVisible(!isSameButton);
 
-        // Ensure only the correct button stays selected
+        if (tvLeftSideBar.getRoot() != null) {
+            if (!tvLeftSideBar.getRoot().getChildren().isEmpty()) {
+                anchorLeftSideBarMenu.setVisible(!isSameButton);
+            } else {
+                anchorLeftSideBarMenu.setVisible(false);
+                ShowMessageFX.Warning(null, "Computerized Accounting System", "No Menu's Available");
+                return;
+            }
+        } else {
+            anchorLeftSideBarMenu.setVisible(false);
+            ShowMessageFX.Warning(null, "Computerized Accounting System", "No Menu's Available");
+            return;
+        }
+
         for (ToggleButton button : toggleBtnLeftUpperSideBar) {
             button.setSelected(false);
         }
@@ -785,22 +822,22 @@ public class DashboardController implements Initializable {
      */
     private void inventoryMenuItems() {
         String jsonString = "[\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Inventory\", \"controller_path\": \"sample.controller\", \"menu_id\": \"028\", \"menu_parent\": \"\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"029\", \"menu_parent\": \"028\"},\n"
+                + "  {\"access_level\": \"026 011\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Inventory\", \"controller_path\": \"sample.controller\", \"menu_id\": \"028\", \"menu_parent\": \"\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"029\", \"menu_parent\": \"028\"},\n"
                 + "  {\"access_level\": \"\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"030\", \"menu_parent\": \"029\"},\n"
                 + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/Regular Stocks/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},\n"
                 + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},\n"
                 + "  {\"access_level\": \"\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"033\", \"menu_parent\": \"029\"},\n"
                 + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"034\", \"menu_parent\": \"033\"},\n"
                 + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"035\", \"menu_parent\": \"033\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"History\", \"fxml_path\": \"Inventory/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"036\", \"menu_parent\": \"028\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/History/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"037\", \"menu_parent\": \"036\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Inventory/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"036\", \"menu_parent\": \"028\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/History/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"037\", \"menu_parent\": \"036\"},\n"
                 + "  {\"access_level\": \"\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"038\", \"menu_parent\": \"037\"},\n"
                 + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"039\", \"menu_parent\": \"038\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"040\", \"menu_parent\": \"038\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts \", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"040\", \"menu_parent\": \"038\"},\n"
                 + "  {\"access_level\": \"\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/History/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"041\", \"menu_parent\": \"037\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/History/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"042\", \"menu_parent\": \"041\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/History/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"043\", \"menu_parent\": \"041\"}\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle \", \"fxml_path\": \"Inventory/History/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"042\", \"menu_parent\": \"041\"},\n"
+                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts \", \"fxml_path\": \"Inventory/History/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"043\", \"menu_parent\": \"041\"}\n"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
@@ -808,8 +845,10 @@ public class DashboardController implements Initializable {
                 flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
                 JSONObject purchasingMainMenu = buildHierarchy("028");
                 dissectLeftSideBarJSON(purchasingMainMenu.toJSONString());
+
             } catch (IOException ex) {
-                Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DashboardController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -819,7 +858,7 @@ public class DashboardController implements Initializable {
     private void purchasingMenuItems() {
         String jsonString = "["
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing\","
                 + "\"fxml_path\": \"Purchasing\","
                 + "\"controller_path\": \"sample.controller\","
@@ -827,7 +866,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Requisition Slip\","
                 + "\"fxml_path\": \"Purchasing/Requisition Slip\","
                 + "\"controller_path\": \"sample.controller\","
@@ -835,7 +874,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"014\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing Quotation Request\","
                 + "\"fxml_path\": \"Purchasing/Purchasing Quotation Request\","
                 + "\"controller_path\": \"sample.controller\","
@@ -843,7 +882,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"014\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing Quotation\","
                 + "\"fxml_path\": \"Purchasing/Purchasing Quotation\","
                 + "\"controller_path\": \"sample.controller\","
@@ -851,7 +890,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"014\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing Order\","
                 + "\"fxml_path\": \"Purchasing/Purchasing Order\","
                 + "\"controller_path\": \"sample.controller\","
@@ -859,7 +898,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"014\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing Receiving\","
                 + "\"fxml_path\": \"Purchasing/Purchasing Receiving\","
                 + "\"controller_path\": \"sample.controller\","
@@ -867,7 +906,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"014\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"0\","
                 + "\"menu_name\": \"Purchasing Return\","
                 + "\"fxml_path\": \"Purchasing/Purchasing Return\","
                 + "\"controller_path\": \"sample.controller\","
@@ -875,7 +914,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"014\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"History\","
                 + "\"fxml_path\": \"Purchasing/History\","
                 + "\"controller_path\": \"sample.controller\","
@@ -883,7 +922,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"014\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"16\","
                 + "\"menu_name\": \"Requisition Slip\","
                 + "\"fxml_path\": \"Purchasing/History/Requisition Slip\","
                 + "\"controller_path\": \"sample.controller\","
@@ -891,7 +930,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"021\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"16\","
                 + "\"menu_name\": \"Purchasing Quotation Request\","
                 + "\"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\","
                 + "\"controller_path\": \"sample.controller\","
@@ -899,7 +938,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"021\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing Quotation\","
                 + "\"fxml_path\": \"Purchasing/History/Purchasing Quotation\","
                 + "\"controller_path\": \"sample.controller\","
@@ -907,7 +946,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"021\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing Order\","
                 + "\"fxml_path\": \"Purchasing/History/Purchasing Order\","
                 + "\"controller_path\": \"sample.controller\","
@@ -915,7 +954,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"021\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"0\","
                 + "\"menu_name\": \"Purchasing Receiving\","
                 + "\"fxml_path\": \"Purchasing/History/Purchasing Receiving\","
                 + "\"controller_path\": \"sample.controller\","
@@ -923,7 +962,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"021\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing Return\","
                 + "\"fxml_path\": \"Purchasing/History/Purchasing Return\","
                 + "\"controller_path\": \"sample.controller\","
@@ -936,65 +975,56 @@ public class DashboardController implements Initializable {
             try {
                 flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
                 JSONObject purchasingMainMenu = buildHierarchy("014");
+                System.out.println("json builded:" + purchasingMainMenu.toJSONString());
                 dissectLeftSideBarJSON(purchasingMainMenu.toJSONString());
+
             } catch (IOException ex) {
-                Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DashboardController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
-    private void salesMenuItems() {
-        // Convert to JSON and process
-        String jsonString = "["
-                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\", \"level\": 0},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\", \"level\": 1},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/Sales/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"003\", \"menu_parent\": \"002\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/Sales/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"004\", \"menu_parent\": \"002\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Inquiry\", \"fxml_path\": \"Sales/Inquiry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"001\", \"level\": 1},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/Inquiry/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"006\", \"menu_parent\": \"005\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/Inquiry/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"007\", \"menu_parent\": \"005\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"History\", \"fxml_path\": \"Sales/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"001\", \"level\": 1},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/History/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"013\", \"menu_parent\": \"008\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/History/Inquiry/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"014\", \"menu_parent\": \"013\", \"level\": 3},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/History/Inquiry/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"015\", \"menu_parent\": \"013\", \"level\": 3}"
-                + "{\"access_level\": \"\", \"menu_name\": \"Inquiry\", \"fxml_path\": \"Sales/History/Inquiry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"008\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/History/Sales/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"011\", \"menu_parent\": \"009\", \"level\": 3},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/History/Sales/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"012\", \"menu_parent\": \"009\", \"level\": 3},"
-                + "]";
-        JSONParser parser = new JSONParser();
-        try {
-            try {
-                flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
-                JSONObject salesMainMenu = buildHierarchy("001");
-                dissectLeftSideBarJSON(salesMainMenu.toJSONString());
-            } catch (IOException ex) {
-                Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+    /*DEPENDS ON DEPARTMENT CODE*/
+    //johndave modified 02-15-2025
+    public JSONObject buildHierarchy(String menuCode) {
+        // Build a map for quick child lookup
+        String userDepartment = "011"; // Fetch user's department instead of level
+        System.out.println("department: " + userDepartment);
+        Map<String, List<JSONObject>> childMap = new HashMap<>();
+        JSONObject rootMenuItem = null;
+
+        for (JSONObject item : flatMenuItems) {
+            List<String> accessDepartments = getAccessDepartments(item);
+
+            // CONTAINS MATCHING: Allow if the department is listed
+            if (!accessDepartments.contains(userDepartment)) {
+                continue;
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
+
+            String menuId = (String) item.get("menu_id");
+            String parentId = (String) item.get("menu_parent");
+
+            // Identify the root menu item
+            if (menuCode.equals(menuId) && (parentId == null || parentId.isEmpty())) {
+                rootMenuItem = item;
+            }
+
+            // Group children under their respective parents
+            childMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(item);
         }
 
-    }
-
-    //Pag meron ng JSONArray mag dagdag ng parameter
-    private JSONObject buildHierarchy(String menuCode) {
-        for (Object item : flatMenuItems) {
-            JSONObject jsonItem = (JSONObject) item;
-
-            // Look for the root menu item
-            if (jsonNameEquals((String) jsonItem.get("menu_id"), menuCode)
-                    && (jsonItem.get("menu_parent") == null || jsonNameEquals((String) jsonItem.get("menu_parent"), ""))) {
-
-                // Directly return the root object without extra nesting
-                return buildSubHierarchy(jsonItem);
-            }
+        // If no root is found, return an empty object
+        if (rootMenuItem == null) {
+            return new JSONObject();
         }
-        return new JSONObject(); // Return empty object if no matching root is found
+
+        return buildSubHierarchy(rootMenuItem, childMap, userDepartment);
     }
 
-    private JSONObject buildSubHierarchy(JSONObject item) {
+    private JSONObject buildSubHierarchy(JSONObject item, Map<String, List<JSONObject>> childMap, String userDepartment) {
         JSONObject node = new JSONObject();
         node.put("menu_id", item.get("menu_id"));
         node.put("menu_name", item.get("menu_name"));
@@ -1003,18 +1033,19 @@ public class DashboardController implements Initializable {
         node.put("controller_path", item.get("controller_path"));
         node.put("access_level", item.get("access_level"));
 
-        List<JSONObject> children = new ArrayList<>();
-        for (Object flatItem : flatMenuItems) {
-            JSONObject childItem = (JSONObject) flatItem;
-            // Check if this item is a child of the current item
-            if (jsonNameEquals((String) childItem.get("menu_parent"), (String) item.get("menu_id"))) {
-                children.add(buildSubHierarchy(childItem)); // Recursively build child hierarchy
+        // Retrieve children from the pre-built map
+        List<JSONObject> children = childMap.getOrDefault(item.get("menu_id"), Collections.emptyList());
+
+        // Recursively build hierarchy while applying department-based filtering
+        JSONArray childrenArray = new JSONArray();
+        for (JSONObject child : children) {
+            List<String> accessDepartments = getAccessDepartments(child);
+            if (accessDepartments.contains(userDepartment)) { // CONTAINS MATCH
+                childrenArray.add(buildSubHierarchy(child, childMap, userDepartment));
             }
         }
 
-        if (!children.isEmpty()) {
-            JSONArray childrenArray = new JSONArray();
-            childrenArray.addAll(children);
+        if (!childrenArray.isEmpty()) {
             node.put("child", childrenArray);
         } else {
             node.put("child", new JSONArray()); // Ensure an empty array if no children exist
@@ -1023,10 +1054,152 @@ public class DashboardController implements Initializable {
         return node;
     }
 
-    private boolean jsonNameEquals(String a, String b) {
-        return a == null ? b == null : a.equalsIgnoreCase(b);
+    private List<String> getAccessDepartments(JSONObject item) {
+        Object accessLevelObj = item.get("access_level");
+
+        if (accessLevelObj == null) {
+            return Collections.emptyList(); // Return empty list for invalid entries
+        }
+
+        String accessLevelStr = accessLevelObj.toString().trim();
+        if (accessLevelStr.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Split by space and return a list of department codes
+        return Arrays.asList(accessLevelStr.split("\\s+"));
     }
 
+    /* USER LEVEL */
+    //johndave modified 02-15-2025
+//    public JSONObject buildHierarchy(String menuCode) {
+//        // Build a map for quick child lookup
+//        userLevel = oApp.getUserLevel();
+//        Map<String, List<JSONObject>> childMap = new HashMap<>();
+//        JSONObject rootMenuItem = null;
+//
+//        for (JSONObject item : flatMenuItems) {
+//            int accessLevel = getAccessLevel(item);
+//            if (accessLevel != userLevel) {
+//                continue; // STRICT MATCHING: Skip if access level does not match user level
+//            }
+//            String menuId = (String) item.get("menu_id");
+//            String parentId = (String) item.get("menu_parent");
+//
+//            // Identify the root menu item
+//            if (menuCode.equals(menuId) && (parentId == null || parentId.isEmpty())) {
+//                rootMenuItem = item;
+//            }
+//
+//            // Group children under their respective parents
+//            childMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(item);
+//        }
+//
+//        // If no root is found, return an empty object
+//        if (rootMenuItem == null) {
+//            return new JSONObject();
+//        }
+//
+//        return buildSubHierarchy(rootMenuItem, childMap);
+//    }
+//
+//    private JSONObject buildSubHierarchy(JSONObject item, Map<String, List<JSONObject>> childMap) {
+//        userLevel = oApp.getUserLevel();
+//        JSONObject node = new JSONObject();
+//        node.put("menu_id", item.get("menu_id"));
+//        node.put("menu_name", item.get("menu_name"));
+//        node.put("menu_parent", item.get("menu_parent"));
+//        node.put("fxml_path", item.get("fxml_path"));
+//        node.put("controller_path", item.get("controller_path"));
+//        node.put("access_level", item.get("access_level"));
+//
+//        // Retrieve children from the pre-built map
+//        List<JSONObject> children = childMap.getOrDefault(item.get("menu_id"), Collections.emptyList());
+//
+//        // Recursively build hierarchy while applying STRICT access level filtering
+//        JSONArray childrenArray = new JSONArray();
+//        for (JSONObject child : children) {
+//            int accessLevel = getAccessLevel(child);
+//            if (accessLevel == userLevel) { // STRICT MATCH
+//                childrenArray.add(buildSubHierarchy(child, childMap));
+//            }
+//        }
+//
+//        if (!childrenArray.isEmpty()) {
+//            node.put("child", childrenArray);
+//        } else {
+//            node.put("child", new JSONArray()); // Ensure an empty array if no children exist
+//        }
+//
+//        return node;
+//    }
+//
+//    private int getAccessLevel(JSONObject item) {
+//        Object accessLevelObj = item.get("access_level");
+//
+//        if (accessLevelObj == null) {
+//            return -1; // Indicate an invalid level (ensures filtering out)
+//        }
+//
+//        String accessLevelStr = accessLevelObj.toString().trim();
+//        if (accessLevelStr.isEmpty()) {
+//            return -1; // Skip empty access levels
+//        }
+//
+//        try {
+//            return Integer.parseInt(accessLevelStr);
+//        } catch (NumberFormatException e) {
+//            return -1; // Skip invalid access levels
+//        }
+//    }
+    /*johndave modified 02-14-2025*/
+    //    Pag meron ng JSONArray mag dagdag ng parameter
+//    private JSONObject buildHierarchy(String menuCode) {
+//        for (Object item : flatMenuItems) {
+//            JSONObject jsonItem = (JSONObject) item;
+//
+//            // Look for the root menu item
+//            if (jsonNameEquals((String) jsonItem.get("menu_id"), menuCode)
+//                    && (jsonItem.get("menu_parent") == null || jsonNameEquals((String) jsonItem.get("menu_parent"), ""))) {
+//
+//                // Directly return the root object without extra nesting
+//                return buildSubHierarchy(jsonItem);
+//            }
+//        }
+//        return new JSONObject(); // Return empty object if no matching root is found
+//    }
+//
+//    private JSONObject buildSubHierarchy(JSONObject item) {
+//        JSONObject node = new JSONObject();
+//        node.put("menu_id", item.get("menu_id"));
+//        node.put("menu_name", item.get("menu_name"));
+//        node.put("menu_parent", item.get("menu_parent"));
+//        node.put("fxml_path", item.get("fxml_path"));
+//        node.put("controller_path", item.get("controller_path"));
+//        node.put("access_level", item.get("access_level"));
+//
+//        List<JSONObject> children = new ArrayList<>();
+//        for (Object flatItem : flatMenuItems) {
+//            JSONObject childItem = (JSONObject) flatItem;
+//            // Check if this item is a child of the current item
+//            if (jsonNameEquals((String) childItem.get("menu_parent"), (String) item.get("menu_id"))) {
+//                children.add(buildSubHierarchy(childItem)); // Recursively build child hierarchy
+//            }
+//        }
+//
+//        if (!children.isEmpty()) {
+//            JSONArray childrenArray = new JSONArray();
+//            childrenArray.addAll(children);
+//            node.put("child", childrenArray);
+//        } else {
+//            node.put("child", new JSONArray()); // Ensure an empty array if no children exist
+//        }
+//
+//        return node;
+//    }
+//    private boolean jsonNameEquals(String a, String b) {
+//        return a == null ? b == null : a.equalsIgnoreCase(b);
+//    }
     private void dissectLeftSideBarJSON(String fsValue) {
         System.out.println("json! " + fsValue);
 
@@ -1089,16 +1262,6 @@ public class DashboardController implements Initializable {
                     tvLeftSideBar.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                         if (newValue != null) {
                             handleSelection(newValue);
-
-                            if (!newValue.getChildren().isEmpty()) {
-                                int childCount = newValue.getChildren().size();
-                                int baseWidth = 200; // Minimum width when expanded
-                                int incrementPerChild = 20; // Width increase per child (adjust as needed)
-                                int maxWidth = 400; // Set a max limit if needed
-
-                                int newWidth = Math.min(baseWidth + (childCount * incrementPerChild), maxWidth);
-                                anchorLeftSideBarMenu.setPrefWidth(newWidth);
-                            }
                         }
                     });
                 }
@@ -1107,115 +1270,6 @@ public class DashboardController implements Initializable {
             }
         } catch (ParseException ex) {
             ex.printStackTrace();
-        }
-    }
-
-    private void toggleSidebarWidth() {
-        if (tvLeftSideBar != null && tvLeftSideBar.getRoot() != null) {
-            int maxChildCount = getMaxChildren(tvLeftSideBar.getRoot());
-            int baseWidth = 200; // Minimum width
-            int incrementPerChild = 20; // Width per child
-            int maxWidth = 400; // Maximum limit
-
-            int newWidth = isMenuExpanded ? baseWidth : Math.min(baseWidth + (maxChildCount * incrementPerChild), maxWidth);
-            anchorLeftSideBarMenu.setPrefWidth(newWidth);
-
-            isMenuExpanded = !isMenuExpanded; // Toggle state
-        }
-    }
-
-// Method to calculate the max number of children in the TreeView
-    private int getMaxChildren(TreeItem<String> root) {
-        int maxChildren = 0;
-        for (TreeItem<String> item : root.getChildren()) {
-            maxChildren = Math.max(maxChildren, item.getChildren().size());
-        }
-        return maxChildren;
-    }
-
-    private void handleSelection(TreeItem<String> newValue) {
-        if (newValue == null || !newValue.isLeaf() || newValue.getValue() == null || newValue.getValue().isEmpty()) {
-            System.out.println("Invalid selection or empty value.");
-            return;
-        }
-
-        String selectedMenu = newValue.getValue();
-        String sLocation = menuLocationMap.getOrDefault(newValue, ""); // Get location from map
-
-        System.out.println("Selected: " + selectedMenu + " | Location: " + sLocation);
-
-        switch (selectedMenu) {
-            case "Motorcycle":
-                switch (sLocation.toLowerCase()) {
-                    case "sales/sales/motorcycle":
-                        sformname = sLocation;
-                        System.out.println(sformname);
-                        ShowMessageFX.Information("Navigation", "You selected", sLocation);
-                        break;
-                    case "sales/inquiry/motorcycle":
-                        sformname = sLocation;
-                        System.out.println(sformname);
-                        ShowMessageFX.Information("test", "You selected", sLocation);
-                        break;
-                    default:
-                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
-                        break;
-                }
-                break;
-            case "Spareparts":
-                switch (sLocation.toLowerCase()) {
-                    case "sales/sales/spareparts":
-                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/motorycle_sales.fxml";
-                        ShowMessageFX.Information("Navigation", "You selected", sLocation);
-                        break;
-                    case "sales/inquiry/spareparts":
-                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/motorycle_inquiry.fxml";
-                        ShowMessageFX.Information("test", "You selected", sLocation);
-                        break;
-                    default:
-                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
-                        break;
-                }
-                break;
-            case "Purchase Order":
-                switch (sLocation.toLowerCase()) {
-                    case "purchasing/purchase order":
-                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml";
-                        break;
-                    case "purchasing/history/purchase order":
-                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml";
-                        break;
-                    default:
-                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
-                        break;
-                }
-                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml";
-                break;
-            case "Delivery Acceptance":
-                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml";
-                break;
-            case "Payment Request":
-                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml";
-                break;
-        }
-
-        // Load the corresponding form
-        if (oApp != null) {
-            boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
-            if (isNewTab) {
-                if (!sformname.isEmpty()) {
-                    setScene2(loadAnimate(sformname));
-                } else {
-                    System.out.println("EMPTY FORM NAME");
-                }
-            } else {
-                System.out.println("THIS FORM IS ALREADY OPENED");
-            }
-            anchorLeftSideBarMenu.setVisible(false);
-            for (ToggleButton navButton : toggleBtnLeftUpperSideBar) {
-                navButton.setSelected(false);
-            }
-            pane.requestFocus();
         }
     }
 
@@ -1239,6 +1293,257 @@ public class DashboardController implements Initializable {
             }
 
             parentNode.getChildren().add(childNode);
+        }
+    }
+
+    private void salesMenuItems() {
+        // Convert to JSON and process
+        String jsonString = "["
+                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\", \"level\": 0},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\", \"level\": 1},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/Sales/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"003\", \"menu_parent\": \"002\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/Sales/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"004\", \"menu_parent\": \"002\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Inquiry\", \"fxml_path\": \"Sales/Inquiry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"001\", \"level\": 1},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/Inquiry/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"006\", \"menu_parent\": \"005\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/Inquiry/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"007\", \"menu_parent\": \"005\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"History\", \"fxml_path\": \"Sales/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"001\", \"level\": 1},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/History/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"013\", \"menu_parent\": \"008\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/History/Inquiry/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"014\", \"menu_parent\": \"013\", \"level\": 3},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/History/Inquiry/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"015\", \"menu_parent\": \"013\", \"level\": 3}"
+                + "{\"access_level\": \"\", \"menu_name\": \"Inquiry\", \"fxml_path\": \"Sales/History/Inquiry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"008\", \"level\": 2},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/History/Sales/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"011\", \"menu_parent\": \"009\", \"level\": 3},"
+                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/History/Sales/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"012\", \"menu_parent\": \"009\", \"level\": 3},"
+                + "]";
+        JSONParser parser = new JSONParser();
+        try {
+            try {
+                flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
+                JSONObject salesMainMenu = buildHierarchy("001");
+                dissectLeftSideBarJSON(salesMainMenu.toJSONString());
+
+            } catch (IOException ex) {
+                Logger.getLogger(DashboardController.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void toggleSidebarWidth() {
+        if (tvLeftSideBar != null && tvLeftSideBar.getRoot() != null) {
+            int calculatedWidth = calculateTreeViewWidth(tvLeftSideBar.getRoot());
+
+            // Expand dynamically based on TreeView size
+            Platform.runLater(() -> {
+                anchorLeftSideBarMenu.setPrefWidth(calculatedWidth);
+            });
+        }
+
+    }
+
+    /**
+     * Dynamically calculates the required width based on the TreeItems.
+     */
+    private int calculateTreeViewWidth(TreeItem<String> root) {
+        if (root == null) {
+            return 200; // Default width if no items exist
+        }
+        int baseWidth = 200; // Minimum width
+        int textPadding = 20; // Small padding for extra space
+
+        int longestTextWidth = getMaxTextWidth(root); // Dynamically get text width
+
+        double parentWidth = anchorLeftSideBarMenu.getParent().getLayoutBounds().getWidth();
+
+        int calculatedWidth = baseWidth + longestTextWidth + textPadding;
+        return (int) Math.min(calculatedWidth, parentWidth * 0.9); // Ensure it fits the UI
+    }
+
+    private int getMaxTextWidth(TreeItem<String> item) {
+        if (item == null) {
+            return 0;
+        }
+
+        int maxWidth = getTextWidth(item.getValue());
+
+        for (TreeItem<String> child : item.getChildren()) {
+            maxWidth = Math.max(maxWidth, getMaxTextWidth(child));
+        }
+
+        return maxWidth;
+    }
+
+    /**
+     * Estimates text width based on character count.
+     */
+    private int getTextWidth(String text) {
+        if (text == null || text.isEmpty()) {
+            return 0;
+        }
+
+        int charWidth = 7; // Approximate character width in pixels
+        return text.length() * charWidth;
+    }
+
+    private void handleSelection(TreeItem<String> newValue) {
+        if (newValue == null || !newValue.isLeaf() || newValue.getValue() == null || newValue.getValue().isEmpty()) {
+            System.out.println("Invalid selection or empty value.");
+            return;
+        }
+
+        String selectedMenu = newValue.getValue();
+        String sLocation = menuLocationMap.getOrDefault(newValue, ""); // Get location from map
+
+        System.out.println("Selected: " + selectedMenu + " | Location: " + sLocation);
+
+        switch (selectedMenu) {
+            case "Motorcycle":     //johndave modified 02-15-2025
+                switch (sLocation.toLowerCase()) {
+                    case "sales/sales/motorcycle":
+                        sformname = sLocation;
+                        ShowMessageFX.Information("Navigation", "You selected", sLocation);
+                        break;
+                    case "sales/inquiry/motorcycle":
+                        sformname = sLocation;
+                        System.out.println(sformname);
+                        ShowMessageFX.Information("test", "You selected", sLocation);
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Spareparts":     //johndave modified 02-15-2025
+                switch (sLocation.toLowerCase()) {
+                    case "sales/sales/spareparts":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/motorycle_sales.fxml";
+                        ShowMessageFX.Information("Navigation", "You selected", sLocation);
+                        break;
+                    case "sales/inquiry/spareparts":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/motorycle_inquiry.fxml";
+                        ShowMessageFX.Information("test", "You selected", sLocation);
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Requisition Slip":     //johndave modified 02-15-2025
+                switch (sLocation.toLowerCase()) {
+                    case "purchasing/requisition slip":
+                        sformname = "";
+                        ShowMessageFX.Information("Requisition Slip", "You selected", sLocation);
+                        break;
+                    case "purchasing/history/requisition slip":
+                        sformname = "";
+                        ShowMessageFX.Information("Requisition Slip", "You selected", sLocation);
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Purchasing Quotation Request":     //johndave modified 02-15-2025
+                switch (sLocation.toLowerCase()) {
+                    case "purchasing/purchasing quotation request":
+                        sformname = "";
+                        ShowMessageFX.Information("Purchasing Quotation Request", "You selected", sLocation);
+                        break;
+                    case "purchasing/history/purchasing quotation request":
+                        sformname = "";
+                        ShowMessageFX.Information("Purchasing Quotation Request", "You selected", sLocation);
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Purchasing Quotation":     //johndave modified 02-15-2025
+                switch (sLocation.toLowerCase()) {
+                    case "purchasing/purchasing quotation":
+                        sformname = "";
+                        ShowMessageFX.Information("Purchasing Quotation", "You selected", sLocation);
+                        break;
+                    case "purchasing/history/purchasing quotation":
+                        sformname = "";
+                        ShowMessageFX.Information("Purchasing Quotation", "You selected", sLocation);
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Purchasing Order":    //johndave modified 02-15-2025
+                switch (sLocation.toLowerCase()) {
+                    case "purchasing/purchasing order":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml";
+                        ShowMessageFX.Information("Purchasing Order", "You selected", sLocation);
+                        break;
+                    case "purchasing/history/purchasing order":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml";
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Purchasing Receiving":     //johndave modified 02-15-2025
+                switch (sLocation.toLowerCase()) {
+                    case "purchasing/purchasing receiving":
+                        sformname = "";
+                        ShowMessageFX.Information("Purchasing Receiving", "You selected", sLocation);
+                        break;
+                    case "purchasing/history/purchasing receiving":
+                        sformname = "";
+                        ShowMessageFX.Information("Purchasing Receiving", "You selected", sLocation);
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Purchasing Return":
+                switch (sLocation.toLowerCase()) {
+                    case "purchasing/purchasing return":
+                        sformname = "";
+                        ShowMessageFX.Information("Purchasing Return", "You selected", sLocation);
+                        break;
+                    case "purchasing/history/purchasing return":
+                        sformname = "";
+                        ShowMessageFX.Information("Purchasing Return", "You selected", sLocation);
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Delivery Acceptance":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml";
+                break;
+            case "Payment Request":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml";
+                break;
+        }
+
+        // Load the corresponding form
+        if (oApp != null) {
+            boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
+            if (isNewTab) {
+                if (!sformname.isEmpty()) {
+                    setScene2(loadAnimate(sformname));
+                } else {
+                    ShowMessageFX.Warning(null, "Computerized Accounting System", "NO FORM NAME");
+                }
+            } else {
+                ShowMessageFX.Warning(null, "Computerized Accounting System", "THIS FORM IS ALREADY OPEN");
+            }
+            anchorLeftSideBarMenu.setVisible(false);
+            for (ToggleButton navButton : toggleBtnLeftUpperSideBar) {
+                navButton.setSelected(false);
+            }
+            pane.requestFocus();
         }
     }
 

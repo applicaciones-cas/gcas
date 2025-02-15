@@ -543,9 +543,9 @@
 }
 
 /* Optional: Remove the ugly default focus border */
-.tree-cell:focused {
+.tree-view:focused {
     -fx-background-insets: 0;
-    -fx-background-radius: 0;
+    -fx-background-color: transparent;
 }
 
 
