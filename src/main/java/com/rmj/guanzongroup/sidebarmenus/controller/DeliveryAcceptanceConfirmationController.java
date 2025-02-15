@@ -21,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -300,6 +301,10 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
             tblAttachments.getSelectionModel().select(newIndex);
             pnAttachmentRow = newIndex;
 
+            
+            if (isImageViewOutOfBounds(imageView, stackPane1)) {
+                resetImageBounds();
+            }
         }
     }
 
@@ -399,18 +404,34 @@ public class DeliveryAcceptanceConfirmationController implements Initializable, 
                 return;
         }
     }
+    
+    private boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
+        Bounds clipBounds = stackPane.getClip().getBoundsInParent();
+        Bounds imageBounds = imageView.getBoundsInParent();
+
+        return imageBounds.getMaxX() < clipBounds.getMinX()
+                || imageBounds.getMinX() > clipBounds.getMaxX()
+                || imageBounds.getMaxY() < clipBounds.getMinY()
+                || imageBounds.getMinY() > clipBounds.getMaxY();
+    }
+    public void resetImageBounds() {
+        imageView.setScaleX(1.0);
+        imageView.setScaleY(1.0);
+        imageView.setTranslateX(0);
+        imageView.setTranslateY(0);
+        stackPane1.setAlignment(imageView, javafx.geometry.Pos.CENTER);
+    }
 
     @FXML
     private void tblAttachments_Clicked(MouseEvent event) {
         pnAttachmentRow = tblAttachments.getSelectionModel().getSelectedIndex();
         if (pnAttachmentRow >= 0) {
             setSelectedAttachment();
+            resetImageBounds();
         }
     }
-
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
-
 }
