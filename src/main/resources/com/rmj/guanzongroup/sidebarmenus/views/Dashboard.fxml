@@ -261,32 +261,28 @@
                     <center>
                         <AnchorPane fx:id="anchorSpacex" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                             <children>
-                                <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                    <children>
-                                        <AnchorPane fx:id="anchorSpace" HBox.hgrow="ALWAYS">
-                                            <children>
-                                                <StackPane fx:id="workingSpace" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                    <children>
-                                                        <Pane fx:id="pane" maxWidth="1.7976931348623157E308">
-                                                            <children>
-                                                                <TabPane fx:id="tabpane" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE">
-                                                                    <padding>
-                                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                                                    </padding>
-                                                                </TabPane>
-                                                            </children>
-                                                        </Pane>
-                                                    </children>
-                                                </StackPane>
-                                            </children>
-                                        </AnchorPane>
-                                        <AnchorPane fx:id="anchorRightSideBarMenu" HBox.hgrow="NEVER">
-                                            <children>
-                                                <TreeView fx:id="tvRightSideBar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                            </children>
-                                        </AnchorPane>
-                                    </children>
-                                </HBox>
+                                  <AnchorPane fx:id="anchorSpace" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <children>
+                                          <StackPane fx:id="workingSpace" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                              <children>
+                                                  <Pane fx:id="pane" maxWidth="1.7976931348623157E308">
+                                                      <children>
+                                                          <TabPane fx:id="tabpane" maxWidth="1.7976931348623157E308" tabClosingPolicy="UNAVAILABLE">
+                                                              <padding>
+                                                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                              </padding>
+                                                          </TabPane>
+                                                      </children>
+                                                  </Pane>
+                                              </children>
+                                          </StackPane>
+                                      </children>
+                                  </AnchorPane>
+                                  <AnchorPane fx:id="anchorRightSideBarMenu" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                      <children>
+                                          <TreeView fx:id="tvRightSideBar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                      </children>
+                                  </AnchorPane>
                                 <AnchorPane fx:id="anchorLeftSideBarMenu" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <TreeView fx:id="tvLeftSideBar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

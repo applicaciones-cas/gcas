@@ -62,6 +62,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.cas.controller.unloadForm;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -72,7 +73,7 @@ public class DashboardController implements Initializable {
     private GRider oApp;
     private String lastClickedBtnLeftSideBar = "";
     private String lastClickedBtnRightSideBar = "";
-
+    private String psDefaultScreenFXML = "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml";
     private int notificationCount = 0;
     private int cartCount = 0;
 
@@ -88,7 +89,8 @@ public class DashboardController implements Initializable {
     private static ToggleButton[] toggleBtnRightSideBar;
     private static Tooltip[] sideBarRightToolTip;
     private Map<TreeItem<String>, String> menuLocationMap = new HashMap<>();
-    private boolean isListenerAdded = false; // Prevent multiple listener additions
+    private boolean isListenerLeftAdded = false; // Prevent multiple listener additions
+    private boolean isListenerRightAdded = false; // Prevent multiple listener additions
 //    private JSONArray flatMenuItems;
     private List<JSONObject> flatMenuItems;
     private int userLevel; // User's access level
@@ -141,6 +143,7 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
+            setScene(loadAnimateAnchor(psDefaultScreenFXML));
             setPane();
             initMenu();
             ToggleGroupControlUpperLeftSideBar();
@@ -153,17 +156,37 @@ public class DashboardController implements Initializable {
             notificationChecker();
 
             //johndave modified 02-12-2025
-            treeViewFactoryStyle(tvLeftSideBar);
-            treeViewFactoryStyle(tvRightSideBar);
+            setTreeViewStyle(tvLeftSideBar);
+            setTreeViewStyle(tvRightSideBar);
 
             //johndave modified 02-15-2025
-            applyBlurToRightCorner(anchorLeftSideBarMenu);
-            applyBlurToRightCorner(anchorRightSideBarMenu);
-            anchorRightSideBarMenu.setVisible(true);
-            anchorRightSideBarMenu.setManaged(true);
+            setDropShadowEffectsLeftSideBar(anchorLeftSideBarMenu);
+            setDropShadowEffectsRightSideBar(anchorRightSideBarMenu);
+
+            //johndave modified 02-17-2025
+            setAnchorPaneVisibleManage(true, anchorRightSideBarMenu);
+
             notifMenuItems();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    //johndave modified 02-17-2025
+    //disable menu buttons depends on the access_level
+    //example initButtonVisible("01", btnParameters, oApp.getDepartment());
+    private void initButtonVisible(String fsAccessLevel, ToggleButton foTButton, String fsContainsTo) {
+        foTButton.setVisible(fsAccessLevel.contains(fsContainsTo));
+        foTButton.setManaged(fsAccessLevel.contains(fsContainsTo));
+    }
+
+    //johndave modified 02-17-2025
+    private void setAnchorPaneVisibleManage(boolean fbVisibleManage, Node... nodes) {
+        for (Node node : nodes) {
+            if (node != null) {
+                node.setVisible(fbVisibleManage);
+                node.setManaged(fbVisibleManage);
+            }
         }
     }
 
@@ -175,15 +198,15 @@ public class DashboardController implements Initializable {
      */
     @FXML
     private void pane(ActionEvent event) {
-        anchorLeftSideBarMenu.setVisible(false);
+        setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
         for (int i = 0; i < toggleBtnLeftUpperSideBar.length; i++) {
             toggleBtnLeftUpperSideBar[i].setSelected(false); // Set each button's selected state to false
         }
 
-        anchorRightSideBarMenu.setVisible(false);
-        for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
-            toggleBtnRightSideBar[i].setSelected(false); // Set each button's selected state to false
-        }
+//        anchorRightSideBarMenu.setVisible(false);
+//        for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
+//            toggleBtnRightSideBar[i].setSelected(false); // Set each button's selected state to false
+//        }
     }
 
     /**
@@ -195,8 +218,8 @@ public class DashboardController implements Initializable {
             System.out.println("pane clicked at: " + event.getSceneX() + ", " + event.getSceneY());
 
             // Hide the sub-menu
-            anchorLeftSideBarMenu.setVisible(false);
-//            anchorSubMenuNotif.setVisible(false);
+            //johndave modified 02-17-2025
+            setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
 
             // Assuming navButtons is an array or List of buttons in Java
             for (int i = 0; i < toggleBtnLeftUpperSideBar.length; i++) {
@@ -217,40 +240,48 @@ public class DashboardController implements Initializable {
      * @param menuaction
      */
     public String SetTabTitle(String menuaction) {
-        switch (menuaction) {
-            case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
-                return "Purchase Order";
-            case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
-                return "Purchase Order History";
-            case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
-                return "Delivery Acceptance";
-            case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
-                return "Payment Request";
-            default:
-                return null;
+        if (menuaction.contains(".fxml")) {
+            switch (menuaction) {
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
+                    return "Purchase Order";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
+                    return "Purchase Order History";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
+                    return "Delivery Acceptance";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
+                    return "Payment Request";
+                default:
+                    return null;
+            }
         }
+        return null;
     }
 
     /**
      * SCREEN INTERFACE *
      */
     private ScreenInterface getController(String fsValue) {
-        switch (fsValue) {
-            case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
-                return new SampleForm1Controller();
-            case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
-                return new SampleForm2Controller();
-            case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
+        if (fsValue.contains(".fxml")) {
+            switch (fsValue) {
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml":
+                    return new DefaultScreenController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
+                    return new SampleForm1Controller();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
+                    return new SampleForm2Controller();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
 //                return new PurchasingOrder_EntryController();
-            case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
-                return new PurchasingOrder_HistoryController();
-            case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
-//                return new DeliveryAcceptanceEntryController();
-            case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
-//                return new PaymentRequestController();
-            default:
-                return null;
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
+                    return new PurchasingOrder_HistoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
+                    return new DeliveryAcceptanceEntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
+                    return new PaymentRequestController();
+                default:
+                    return null;
+            }
         }
+        return null;
     }
 
     /**
@@ -263,14 +294,13 @@ public class DashboardController implements Initializable {
             System.out.println("TabPane clicked at: " + event.getSceneX() + ", " + event.getSceneY());
 
             // Hide the sub-menu
-            anchorLeftSideBarMenu.setVisible(false);
+            setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
             // Assuming navButtons is an array or List of buttons in Java
             for (int i = 0; i < toggleBtnLeftUpperSideBar.length; i++) {
                 toggleBtnLeftUpperSideBar[i].setSelected(false); // Set each button's selected state to false
             }
 
-            anchorRightSideBarMenu.setVisible(false);
-            anchorRightSideBarMenu.setManaged(false);
+//            setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
             for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
                 toggleBtnRightSideBar[i].setSelected(false); // Set each button's selected state to false
             }
@@ -359,7 +389,11 @@ public class DashboardController implements Initializable {
     }
 
     /**
-     * STAB PANE LOAD *
+     * STAB PANE LOAD
+     *
+     *
+     * @param fsFormName
+     * @return
      */
     public TabPane loadAnimate(String fsFormName) {
         //set fxml controller class
@@ -392,9 +426,8 @@ public class DashboardController implements Initializable {
             tabpane.getSelectionModel().select(newTab);
 
             newTab.setOnCloseRequest(event -> {
-                if (showMessage()) {
+                if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
                     tabName.remove(newTab.getText());
-
                     Tabclose();
                 } else {
                     event.consume();
@@ -467,6 +500,27 @@ public class DashboardController implements Initializable {
     /**
      * CREATE CONTEXT MENU *
      */
+//    public ContextMenu createContextMenu(TabPane tabPane, Tab tab, GRider oApp) {
+//        ContextMenu contextMenu = new ContextMenu();
+//
+//        MenuItem closeTabItem = new MenuItem("Close Tab");
+//        MenuItem closeOtherTabsItem = new MenuItem("Close Other Tabs");
+//        MenuItem closeAllTabsItem = new MenuItem("Close All Tabs");
+//
+//        closeTabItem.setOnAction(event -> closeSelectTabs(tabPane, tab));
+//        closeOtherTabsItem.setOnAction(event -> closeOtherTabs(tabPane, tab));
+//        closeAllTabsItem.setOnAction(event -> closeAllTabs(tabPane, oApp));
+//
+//        contextMenu.getItems().add(closeTabItem);
+//        contextMenu.getItems().add(closeOtherTabsItem);
+//        contextMenu.getItems().add(closeAllTabsItem);
+//
+//        tab.setContextMenu(contextMenu);
+//
+//        closeOtherTabsItem.visibleProperty().bind(Bindings.size(tabPane.getTabs()).greaterThan(1));
+//
+//        return contextMenu;
+//    }
     public ContextMenu createContextMenu(TabPane tabPane, Tab tab, GRider oApp) {
         ContextMenu contextMenu = new ContextMenu();
 
@@ -489,40 +543,28 @@ public class DashboardController implements Initializable {
         return contextMenu;
     }
 
-    //TAB CLOSE
-    public void Tabclose() {
-        int tabsize = tabpane.getTabs().size();
-        if (tabsize == 0) {
-            setScene(loadAnimateAnchor("Dashboard.fxml"));
-        }
-    }
-
-    /**
-     * CLoad Main Screen if no tab remain *
-     */
-    public void Tabclose(TabPane tabpane) {
-        int tabsize = tabpane.getTabs().size();
-        if (tabsize == 0) {
-            setScene(loadAnimateAnchor("Dashboard.fxml"));
-        }
-    }
-
+    //johndave modified 02-17-2025
     /**
      * CLOSE SELECTED TAB *
      */
-    private void closeSelectTabs(TabPane tabPane, Tab tab) {
-        if (showMessage()) {
-            Tabclose(tabPane);
-            tabName.remove(tab.getText());
-            tabPane.getTabs().remove(tab);
+    private void closeSelectTabs(TabPane tabPane, Tab currentTab) {
+        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
+            // Remove the tab
+            if (tabPane.getTabs().removeIf(tab -> tab == currentTab)) {
+                if (tabPane.getTabs().isEmpty()) {
+                    unloadForm unload = new unloadForm();
+                    StackPane myBox = (StackPane) tabPane.getParent();
+                    myBox.getChildren().clear();
+                    myBox.getChildren().add(unload.getScene(psDefaultScreenFXML, oApp));
+                }
+            }
+            // Remove the tab name from the tracking list
+            tabName.remove(currentTab.getText());
         }
     }
 
-    /**
-     * CLOSE OTHER TAB *
-     */
     private void closeOtherTabs(TabPane tabPane, Tab currentTab) {
-        if (showMessage()) {
+        if (ShowMessageFX.YesNo(null, "Close Other Tab", "Are you sure, do you want to close other tab?")) {
             tabPane.getTabs().removeIf(tab -> tab != currentTab);
             List<String> currentTabNameList = Collections.singletonList(currentTab.getText());
             tabName.retainAll(currentTabNameList);
@@ -532,19 +574,67 @@ public class DashboardController implements Initializable {
         }
     }
 
-    /**
-     * CLOSE ALL TAB *
-     */
     private void closeAllTabs(TabPane tabPane, GRider oApp) {
-        if (showMessage()) {
-            tabName.clear();
-            // Close all tabs using your TabsStateManager
-            for (Tab tab : tabPane.getTabs()) {
-                String formName = tab.getText();
+        // Check if tabPane or other components are null
+        if (tabPane == null) {
+            System.out.println("tabPane is null");
+            return;
+        }
+
+        if (ShowMessageFX.YesNo(null, "Close All Tabs", "Are you sure, do you want to close all tabs?")) {
+            if (tabName != null) {
+                tabName.clear();  // Check if tabName is not null
+            } else {
+                System.out.println("tabName is null");
             }
+
+            // Close all tabs
             tabPane.getTabs().clear();
-            StackPane myBox = (StackPane) tabpane.getParent();
+
+            unloadForm unload = new unloadForm();
+
+            // Check if tabPane.getParent() returns a valid parent node
+            if (tabPane.getParent() == null) {
+                System.out.println("Parent of tabPane is null");
+                return;
+            }
+
+            StackPane myBox = (StackPane) tabPane.getParent();  // Make sure tabPane's parent is not null
             myBox.getChildren().clear();
+            myBox.getChildren().add(unload.getScene(psDefaultScreenFXML, oApp));
+        }
+    }
+
+//    /**
+//     * CLOSE ALL TAB *
+//     */
+//    private void closeAllTabs(TabPane tabPane, GRider oApp) {
+//        if (showMessage()) {
+//            tabName.clear();
+//            // Close all tabs using your TabsStateManager
+//            for (Tab tab : tabPane.getTabs()) {
+//                String formName = tab.getText();
+//            }
+//            tabPane.getTabs().clear();
+//            StackPane myBox = (StackPane) tabpane.getParent();
+//            myBox.getChildren().clear();
+//        }
+//    }
+    //TAB CLOSE
+    public void Tabclose() {
+        int tabsize = tabpane.getTabs().size();
+        if (tabsize == 1) {
+            setScene(loadAnimateAnchor(psDefaultScreenFXML));
+        }
+    }
+
+    /**
+     * CLoad Main Screen if no tab remain *
+     */
+    public void Tabclose(TabPane tabpane) {
+        int tabsize = tabpane.getTabs().size();
+        if (tabsize == 1) {
+            setScene(loadAnimateAnchor(psDefaultScreenFXML));
         }
     }
 
@@ -552,13 +642,12 @@ public class DashboardController implements Initializable {
      * INITIALIZE SUB MENU VISIBILITY*
      */
     private void initMenu() {
-        anchorLeftSideBarMenu.setVisible(false);
-        anchorRightSideBarMenu.setVisible(false);
-        anchorRightSideBarMenu.setManaged(false);
+        setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
+        setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
     }
 
     //johndave modified 02-12-2025
-    private void treeViewFactoryStyle(TreeView treeView) {
+    private void setTreeViewStyle(TreeView treeView) {
         treeView.setCellFactory(tv -> new TreeCell<String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -568,7 +657,7 @@ public class DashboardController implements Initializable {
                     setText(null);
                     setGraphic(null);
                     setStyle("-fx-background-color: #DFDFDF; "
-                            + "-fx-border-color: DFDFDF;"
+                            + "-fx-border-color: #DFDFDF;"
                     ); // Keep default background
                     getStyleClass().add("empty-tree-cell"); // Add class to prevent hover effect
                 } else {
@@ -580,7 +669,7 @@ public class DashboardController implements Initializable {
         });
     }
 
-    private void applyBlurToRightCorner(AnchorPane anchorPane) {
+    private void setDropShadowEffectsLeftSideBar(AnchorPane anchorPane) {
         DropShadow shadow = new DropShadow();
         shadow.setRadius(20); // Adjust blur intensity
         shadow.setWidth(21.0);
@@ -588,6 +677,20 @@ public class DashboardController implements Initializable {
 
         // Apply shadow only to the right side
         shadow.setOffsetX(2); // Moves shadow to the right
+        shadow.setOffsetY(0);
+
+        // Apply to the AnchorPane
+        anchorPane.setEffect(shadow);
+    }
+
+    private void setDropShadowEffectsRightSideBar(AnchorPane anchorPane) {
+        DropShadow shadow = new DropShadow();
+        shadow.setRadius(20); // Adjust blur intensity
+        shadow.setWidth(21.0);
+        shadow.setColor(Color.rgb(0, 0, 0, 0.3)); // Adjust transparency
+
+        // Apply shadow only to the right side
+        shadow.setOffsetX(-2); // Moves shadow to the right
         shadow.setOffsetY(0);
 
         // Apply to the AnchorPane
@@ -777,44 +880,60 @@ public class DashboardController implements Initializable {
      */
     private void toggleLeftSideBarMenuButton(String buttonId, Integer btnIndex) {
         System.out.println("Toggling: " + buttonId + " | Last Clicked: " + lastClickedBtnLeftSideBar);
-
+        boolean isNoMenu = false;
         boolean isSameButton = anchorLeftSideBarMenu.isVisible() && lastClickedBtnLeftSideBar.equals(buttonId);
 
         if (tvLeftSideBar.getRoot() != null) {
             if (!tvLeftSideBar.getRoot().getChildren().isEmpty()) {
-                anchorLeftSideBarMenu.setVisible(!isSameButton);
+                setAnchorPaneVisibleManage(!isSameButton, anchorLeftSideBarMenu);
             } else {
-                anchorLeftSideBarMenu.setVisible(false);
+                setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
                 ShowMessageFX.Warning(null, "Computerized Accounting System", "No Menu's Available");
-                return;
+                isNoMenu = true;
             }
         } else {
-            anchorLeftSideBarMenu.setVisible(false);
+            setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
             ShowMessageFX.Warning(null, "Computerized Accounting System", "No Menu's Available");
-            return;
+            isNoMenu = true;
         }
 
         for (ToggleButton button : toggleBtnLeftUpperSideBar) {
             button.setSelected(false);
         }
+        if (!isNoMenu) {
+            toggleBtnLeftUpperSideBar[btnIndex].setSelected(!isSameButton);
+            lastClickedBtnLeftSideBar = isSameButton ? "" : buttonId;
+        }
 
-        toggleBtnLeftUpperSideBar[btnIndex].setSelected(!isSameButton);
-        lastClickedBtnLeftSideBar = isSameButton ? "" : buttonId;
     }
 
     private void toggleRightSideBarMenuButton(String buttonId, Integer btnIndex) {
         System.out.println("Toggling: " + buttonId + " | Last Clicked: " + lastClickedBtnRightSideBar);
-
+        boolean isNoMenu = false;
         boolean isSameButton = anchorRightSideBarMenu.isVisible() && lastClickedBtnRightSideBar.equals(buttonId);
-        anchorRightSideBarMenu.setVisible(!isSameButton);
+        setAnchorPaneVisibleManage(!isSameButton, anchorRightSideBarMenu);
 
-        // Ensure only the correct button stays selected
+        if (tvRightSideBar.getRoot() != null) {
+            if (!tvRightSideBar.getRoot().getChildren().isEmpty()) {
+                setAnchorPaneVisibleManage(!isSameButton, anchorRightSideBarMenu);
+            } else {
+                setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
+                ShowMessageFX.Warning(null, "Computerized Accounting System", "No Menu's Available");
+                isNoMenu = true;
+            }
+        } else {
+            setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
+            ShowMessageFX.Warning(null, "Computerized Accounting System", "No Menu's Available");
+            isNoMenu = true;
+        }
+
         for (ToggleButton button : toggleBtnRightSideBar) {
             button.setSelected(false);
         }
-
-        toggleBtnRightSideBar[btnIndex].setSelected(!isSameButton);
-        lastClickedBtnRightSideBar = isSameButton ? "" : buttonId;
+        if (!isNoMenu) {
+            toggleBtnRightSideBar[btnIndex].setSelected(!isSameButton);
+            lastClickedBtnRightSideBar = isSameButton ? "" : buttonId;
+        }
     }
 
     /**
@@ -824,20 +943,20 @@ public class DashboardController implements Initializable {
         String jsonString = "[\n"
                 + "  {\"access_level\": \"026 011\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Inventory\", \"controller_path\": \"sample.controller\", \"menu_id\": \"028\", \"menu_parent\": \"\"},\n"
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"029\", \"menu_parent\": \"028\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"030\", \"menu_parent\": \"029\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/Regular Stocks/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"033\", \"menu_parent\": \"029\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"034\", \"menu_parent\": \"033\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"035\", \"menu_parent\": \"033\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"030\", \"menu_parent\": \"029\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/Regular Stocks/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"033\", \"menu_parent\": \"029\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"034\", \"menu_parent\": \"033\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"035\", \"menu_parent\": \"033\"},\n"
                 + "  {\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Inventory/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"036\", \"menu_parent\": \"028\"},\n"
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/History/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"037\", \"menu_parent\": \"036\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"038\", \"menu_parent\": \"037\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"039\", \"menu_parent\": \"038\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts \", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"040\", \"menu_parent\": \"038\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/History/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"041\", \"menu_parent\": \"037\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Motorcycle \", \"fxml_path\": \"Inventory/History/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"042\", \"menu_parent\": \"041\"},\n"
-                + "  {\"access_level\": \"\", \"menu_name\": \"Spareparts \", \"fxml_path\": \"Inventory/History/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"043\", \"menu_parent\": \"041\"}\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"038\", \"menu_parent\": \"037\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"039\", \"menu_parent\": \"038\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Spareparts \", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"040\", \"menu_parent\": \"038\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/History/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"041\", \"menu_parent\": \"037\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Motorcycle \", \"fxml_path\": \"Inventory/History/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"042\", \"menu_parent\": \"041\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Spareparts \", \"fxml_path\": \"Inventory/History/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"043\", \"menu_parent\": \"041\"}\n"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
@@ -906,7 +1025,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"014\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"0\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing Return\","
                 + "\"fxml_path\": \"Purchasing/Purchasing Return\","
                 + "\"controller_path\": \"sample.controller\","
@@ -922,7 +1041,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"014\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"16\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Requisition Slip\","
                 + "\"fxml_path\": \"Purchasing/History/Requisition Slip\","
                 + "\"controller_path\": \"sample.controller\","
@@ -930,7 +1049,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"021\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"16\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing Quotation Request\","
                 + "\"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\","
                 + "\"controller_path\": \"sample.controller\","
@@ -954,7 +1073,7 @@ public class DashboardController implements Initializable {
                 + "\"menu_parent\": \"021\""
                 + "},"
                 + "{"
-                + "\"access_level\": \"0\","
+                + "\"access_level\": \"011\","
                 + "\"menu_name\": \"Purchasing Receiving\","
                 + "\"fxml_path\": \"Purchasing/History/Purchasing Receiving\","
                 + "\"controller_path\": \"sample.controller\","
@@ -985,6 +1104,41 @@ public class DashboardController implements Initializable {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    private void salesMenuItems() {
+        // Convert to JSON and process
+        String jsonString = "["
+                + "{\"access_level\": \"011\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\", \"level\": 0},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\", \"level\": 1},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/Sales/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"003\", \"menu_parent\": \"002\", \"level\": 2},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/Sales/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"004\", \"menu_parent\": \"002\", \"level\": 2},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inquiry\", \"fxml_path\": \"Sales/Inquiry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"001\", \"level\": 1},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/Inquiry/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"006\", \"menu_parent\": \"005\", \"level\": 2},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/Inquiry/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"007\", \"menu_parent\": \"005\", \"level\": 2},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Sales/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"001\", \"level\": 1},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/History/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"013\", \"menu_parent\": \"008\", \"level\": 2},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/History/Inquiry/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"014\", \"menu_parent\": \"013\", \"level\": 3},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/History/Inquiry/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"015\", \"menu_parent\": \"013\", \"level\": 3}"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inquiry\", \"fxml_path\": \"Sales/History/Inquiry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"008\", \"level\": 2},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/History/Sales/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"011\", \"menu_parent\": \"009\", \"level\": 3},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/History/Sales/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"012\", \"menu_parent\": \"009\", \"level\": 3},"
+                + "]";
+        JSONParser parser = new JSONParser();
+        try {
+            try {
+                flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
+                JSONObject salesMainMenu = buildHierarchy("001");
+                dissectLeftSideBarJSON(salesMainMenu.toJSONString());
+
+            } catch (IOException ex) {
+                Logger.getLogger(DashboardController.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /*DEPENDS ON DEPARTMENT CODE*/
@@ -1257,8 +1411,8 @@ public class DashboardController implements Initializable {
                 tvLeftSideBar.setRoot(root);
                 tvLeftSideBar.setShowRoot(false);
 
-                if (!isListenerAdded) {
-                    isListenerAdded = true;
+                if (!isListenerLeftAdded) {
+                    isListenerLeftAdded = true;
                     tvLeftSideBar.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                         if (newValue != null) {
                             handleSelection(newValue);
@@ -1294,41 +1448,6 @@ public class DashboardController implements Initializable {
 
             parentNode.getChildren().add(childNode);
         }
-    }
-
-    private void salesMenuItems() {
-        // Convert to JSON and process
-        String jsonString = "["
-                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\", \"level\": 0},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\", \"level\": 1},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/Sales/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"003\", \"menu_parent\": \"002\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/Sales/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"004\", \"menu_parent\": \"002\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Inquiry\", \"fxml_path\": \"Sales/Inquiry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"001\", \"level\": 1},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/Inquiry/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"006\", \"menu_parent\": \"005\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/Inquiry/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"007\", \"menu_parent\": \"005\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"History\", \"fxml_path\": \"Sales/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"001\", \"level\": 1},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/History/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"013\", \"menu_parent\": \"008\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/History/Inquiry/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"014\", \"menu_parent\": \"013\", \"level\": 3},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/History/Inquiry/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"015\", \"menu_parent\": \"013\", \"level\": 3}"
-                + "{\"access_level\": \"\", \"menu_name\": \"Inquiry\", \"fxml_path\": \"Sales/History/Inquiry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"008\", \"level\": 2},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Sales/History/Sales/Motorcycle\", \"controller_path\": \"\", \"menu_id\": \"011\", \"menu_parent\": \"009\", \"level\": 3},"
-                + "{\"access_level\": \"\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Sales/History/Sales/Spareparts\", \"controller_path\": \"\", \"menu_id\": \"012\", \"menu_parent\": \"009\", \"level\": 3},"
-                + "]";
-        JSONParser parser = new JSONParser();
-        try {
-            try {
-                flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
-                JSONObject salesMainMenu = buildHierarchy("001");
-                dissectLeftSideBarJSON(salesMainMenu.toJSONString());
-
-            } catch (IOException ex) {
-                Logger.getLogger(DashboardController.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
     }
 
     private void toggleSidebarWidth() {
@@ -1489,7 +1608,7 @@ public class DashboardController implements Initializable {
                         break;
                 }
                 break;
-            case "Purchasing Receiving":     //johndave modified 02-15-2025
+            case "Purchasing Receiving":    //johndave modified 02-15-2025
                 switch (sLocation.toLowerCase()) {
                     case "purchasing/purchasing receiving":
                         sformname = "";
@@ -1525,13 +1644,16 @@ public class DashboardController implements Initializable {
             case "Payment Request":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml";
                 break;
+            default:
+                sformname = "";
+                break;
         }
 
         // Load the corresponding form
         if (oApp != null) {
             boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
             if (isNewTab) {
-                if (!sformname.isEmpty()) {
+                if (!sformname.isEmpty() && sformname.contains(".fxml")) {
                     setScene2(loadAnimate(sformname));
                 } else {
                     ShowMessageFX.Warning(null, "Computerized Accounting System", "NO FORM NAME");
@@ -1539,7 +1661,7 @@ public class DashboardController implements Initializable {
             } else {
                 ShowMessageFX.Warning(null, "Computerized Accounting System", "THIS FORM IS ALREADY OPEN");
             }
-            anchorLeftSideBarMenu.setVisible(false);
+            setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
             for (ToggleButton navButton : toggleBtnLeftUpperSideBar) {
                 navButton.setSelected(false);
             }
@@ -1613,42 +1735,52 @@ public class DashboardController implements Initializable {
             if (tvRightSideBar != null) {
                 tvRightSideBar.setRoot(root);
                 tvRightSideBar.setShowRoot(false);
-                tvRightSideBar.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null && newValue.isLeaf() && newValue.getValue() != null && !newValue.getValue().isEmpty()) {
-                        System.out.println("Selected: " + newValue.getValue());
+                if (!isListenerRightAdded) {
+                    isListenerRightAdded = true;
+                    tvRightSideBar.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                        if (newValue != null && newValue.isLeaf() && newValue.getValue() != null && !newValue.getValue().isEmpty()) {
+                            System.out.println("Selected: " + newValue.getValue());
+                            switch (newValue.getValue()) {
+                                case "Sales Replacement":
+                                    sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml";
+//                                intIndex = 0;
+                                    break;
+                                case "Additional Give":
+                                    sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml";
+//                                intIndex = 0;
+                                    break;
+                                default:
+                                    sformname = "";
+                                    break;
+                            }
 
-                        switch (newValue.getValue()) {
-                            case "Sales Replacement":
-                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml";
-//                                intIndex = 0;
-                                break;
-                            case "Additional Give":
-                                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml";
-//                                intIndex = 0;
-                                break;
-                        }
-                        // Add logic to load the form
-                        if (oApp != null) {
-                            boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
-                            if (isNewTab) {
-                                setScene2(loadAnimate(sformname));
-                            } else {
-                                System.out.println("THIS FORM IS ALREADY OPENED");
+                            // Load the corresponding form
+                            if (oApp != null) {
+                                boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
+                                if (isNewTab) {
+                                    if (!sformname.isEmpty() && sformname.contains(".fxml")) {
+                                        setScene2(loadAnimate(sformname));
+                                    } else {
+                                        ShowMessageFX.Warning(null, "Computerized Accounting System", "NO FORM NAME");
+                                    }
+                                } else {
+                                    ShowMessageFX.Warning(null, "Computerized Accounting System", "THIS FORM IS ALREADY OPEN");
+                                }
+                                setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
+                                for (ToggleButton navButton : toggleBtnRightSideBar) {
+                                    navButton.setSelected(false);
+                                }
+                                pane.requestFocus();
                             }
-                            anchorRightSideBarMenu.setVisible(false);
-                            anchorRightSideBarMenu.setManaged(false);
-                            for (ToggleButton toggleBtnRightSideBar : toggleBtnRightSideBar) {
-                                toggleBtnRightSideBar.setSelected(false);
-                            }
-                            pane.requestFocus();
+                        } else {
+                            // Handle the case where newValue is null, empty, or not a leaf
+                            System.out.println("Invalid selection or empty value.");
                         }
-                    } else {
-                        // Handle the case where newValue is null, empty, or not a leaf
-                        System.out.println("Invalid selection or empty value.");
-                    }
-                });
-            } else {
-                System.err.println("tvChild is not initialized.");
+
+                    });
+                } else {
+                    System.err.println("tvChild1 is not initialized.");
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1668,8 +1800,6 @@ public class DashboardController implements Initializable {
      */
     private void handleButtonAction(ActionEvent event) {
         Object source = event.getSource();
-        JSONObject poJSON;
-
         if (source instanceof Button) {
             Button clickedButton = (Button) source;
             switch (clickedButton.getId()) {
@@ -1779,26 +1909,5 @@ public class DashboardController implements Initializable {
         } else {
             System.out.println("File not found: " + pdfFile.getAbsolutePath());
         }
-    }
-
-    /**
-     * SHOW MESSAGE *
-     */
-    private boolean showMessage() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation Dialog");
-        alert.setHeaderText("Are you sure you want to proceed?");
-        alert.setContentText("Choose your option.");
-
-        // Add Yes and No buttons to the alert dialog
-        ButtonType buttonTypeYes = new ButtonType("Yes");
-        ButtonType buttonTypeNo = new ButtonType("No");
-        alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo);
-
-        // Show the alert and wait for a response
-        javafx.scene.control.ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
-
-        // Handle the user's response
-        return result == buttonTypeYes;
     }
 }
