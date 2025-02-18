@@ -60,9 +60,7 @@ public class unloadForm {
 
                     if (tabName.size() > 0) {
                         tabName.remove(sTabTitle);
-                        // TabsStateManager.saveCurrentTab(tabName);
                     }
-                    // TabsStateManager.closeTab(sTabTitle);
                     break;
                 }
             }
