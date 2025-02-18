@@ -32,8 +32,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -89,9 +87,9 @@ public class DashboardController implements Initializable {
     private static ToggleButton[] toggleBtnRightSideBar;
     private static Tooltip[] sideBarRightToolTip;
     private Map<TreeItem<String>, String> menuLocationMap = new HashMap<>();
-    private boolean isListenerLeftAdded = false; // Prevent multiple listener additions
-    private boolean isListenerRightAdded = false; // Prevent multiple listener additions
-//    private JSONArray flatMenuItems;
+    private boolean isListenerLeftAdded = false;
+    private boolean isListenerRightAdded = false;
+
     private List<JSONObject> flatMenuItems;
     private int userLevel; // User's access level
     private int targetTabIndex = -1;
@@ -155,15 +153,12 @@ public class DashboardController implements Initializable {
             initButtonClickActions();
             notificationChecker();
 
-            //johndave modified 02-12-2025
             setTreeViewStyle(tvLeftSideBar);
             setTreeViewStyle(tvRightSideBar);
 
-            //johndave modified 02-15-2025
             setDropShadowEffectsLeftSideBar(anchorLeftSideBarMenu);
             setDropShadowEffectsRightSideBar(anchorRightSideBarMenu);
 
-            //johndave modified 02-17-2025
             setAnchorPaneVisibleManage(true, anchorRightSideBarMenu);
 
             notifMenuItems();
@@ -172,15 +167,11 @@ public class DashboardController implements Initializable {
         }
     }
 
-    //johndave modified 02-17-2025
-    //disable menu buttons depends on the access_level
-    //example initButtonVisible("01", btnParameters, oApp.getDepartment());
     private void initButtonVisible(String fsAccessLevel, ToggleButton foTButton, String fsContainsTo) {
         foTButton.setVisible(fsAccessLevel.contains(fsContainsTo));
         foTButton.setManaged(fsAccessLevel.contains(fsContainsTo));
     }
 
-    //johndave modified 02-17-2025
     private void setAnchorPaneVisibleManage(boolean fbVisibleManage, Node... nodes) {
         for (Node node : nodes) {
             if (node != null) {
@@ -190,12 +181,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-    /**
-     * ********************** LOAD CONTENT SECTIONS **************************
-     */
-    /**
-     * PANE *
-     */
     @FXML
     private void pane(ActionEvent event) {
         setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
@@ -203,10 +188,6 @@ public class DashboardController implements Initializable {
             toggleBtnLeftUpperSideBar[i].setSelected(false); // Set each button's selected state to false
         }
 
-//        anchorRightSideBarMenu.setVisible(false);
-//        for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
-//            toggleBtnRightSideBar[i].setSelected(false); // Set each button's selected state to false
-//        }
     }
 
     /**
@@ -214,22 +195,13 @@ public class DashboardController implements Initializable {
      */
     public void setPane() {
         pane.setOnMouseClicked(event -> {
-            // Check if the click occurred on the tabs area (not the content area)
-            System.out.println("pane clicked at: " + event.getSceneX() + ", " + event.getSceneY());
-
-            // Hide the sub-menu
-            //johndave modified 02-17-2025
             setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
-
-            // Assuming navButtons is an array or List of buttons in Java
             for (int i = 0; i < toggleBtnLeftUpperSideBar.length; i++) {
-                toggleBtnLeftUpperSideBar[i].setSelected(false); // Set each button's selected state to false
+                toggleBtnLeftUpperSideBar[i].setSelected(false);
             }
             for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
-                toggleBtnRightSideBar[i].setSelected(false); // Set each button's selected state to false
+                toggleBtnRightSideBar[i].setSelected(false);
             }
-
-            // Perform other actions on click if needed
         });
     }
 
@@ -270,7 +242,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
                     return new SampleForm2Controller();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
-//                return new PurchasingOrder_EntryController();
+                    return new PurchasingOrder_EntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
                     return new PurchasingOrder_HistoryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
@@ -288,21 +260,15 @@ public class DashboardController implements Initializable {
      * TAB PANE *
      */
     public void setTabPane() {
-        // set up the drag and drop listeners on the tab pane
         tabpane.setOnMouseClicked(event -> {
-            // Check if the click occurred on the tabs area (not the content area)
-            System.out.println("TabPane clicked at: " + event.getSceneX() + ", " + event.getSceneY());
 
-            // Hide the sub-menu
             setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
-            // Assuming navButtons is an array or List of buttons in Java
             for (int i = 0; i < toggleBtnLeftUpperSideBar.length; i++) {
-                toggleBtnLeftUpperSideBar[i].setSelected(false); // Set each button's selected state to false
+                toggleBtnLeftUpperSideBar[i].setSelected(false);
             }
 
-//            setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
             for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
-                toggleBtnRightSideBar[i].setSelected(false); // Set each button's selected state to false
+                toggleBtnRightSideBar[i].setSelected(false);
             }
         });
 
@@ -330,22 +296,10 @@ public class DashboardController implements Initializable {
                 int draggedTabIndex = findTabIndex(tabText);
                 double mouseX = event.getX();
                 double mouseY = event.getY();
-                Bounds headerBounds = tabpane.lookup(".tab-header-area").getBoundsInParent();
-                Point2D mouseInScene = tabpane.localToScene(mouseX, mouseY);
-                Point2D mouseInHeader = tabpane.sceneToLocal(mouseInScene);
                 double tabHeaderHeight = tabpane.lookup(".tab-header-area").getBoundsInParent().getHeight();
-                System.out.println("mouseY " + mouseY);
-                System.out.println("tabHeaderHeight " + tabHeaderHeight);
 
                 targetTabIndex = (int) (mouseX / 180);
-                System.out.println("targetTabIndex " + targetTabIndex);
                 if (mouseY < tabHeaderHeight) {
-                    //if (headerBounds.contains(mouseInHeader)) {
-                    System.out.println("mouseInHeader.getX() " + mouseInHeader.getX());
-                    System.out.println("headerBounds.getWidth() " + headerBounds.getWidth());
-                    System.out.println("tabsize " + tabpane.getTabs().size());
-                    System.out.println("tabText " + tabText);
-                    System.out.println("draggedTabIndex " + draggedTabIndex);
 
                     if (draggedTabIndex != targetTabIndex) {
                         Tab draggedTab = tabpane.getTabs().remove(draggedTabIndex);
@@ -411,14 +365,12 @@ public class DashboardController implements Initializable {
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
         fxmlLoader.setController(fxObj);
 
-        //Add new tab;
         Tab newTab = new Tab(SetTabTitle(fsFormName));
         newTab.setContent(new javafx.scene.control.Label("Content of Tab " + fsFormName));
         newTab.setContextMenu(createContextMenu(tabpane, newTab, oApp));
-        // Attach a context menu to each tab
+
         tabName.add(SetTabTitle(fsFormName));
 
-        // Save the list of tab IDs to the JSON file
         try {
             Node content = fxmlLoader.load();
             newTab.setContent(content);
@@ -457,17 +409,11 @@ public class DashboardController implements Initializable {
         workingSpace.getChildren().add(foPane);
     }
 
-    /**
-     * SET SCENE FOR WORKPLACE - STACKPANE - TABPANE*
-     */
     public void setScene2(TabPane foPane) {
         workingSpace.getChildren().clear();
         workingSpace.getChildren().add(foPane);
     }
 
-    /**
-     * LOAD ANIMATE ANCHOR *
-     */
     public AnchorPane loadAnimateAnchor(String fsFormName) {
         System.err.println("fsFormName to close == " + String.valueOf(fsFormName));
         ScreenInterface fxObj = getController(fsFormName);
@@ -497,30 +443,6 @@ public class DashboardController implements Initializable {
         return null;
     }
 
-    /**
-     * CREATE CONTEXT MENU *
-     */
-//    public ContextMenu createContextMenu(TabPane tabPane, Tab tab, GRider oApp) {
-//        ContextMenu contextMenu = new ContextMenu();
-//
-//        MenuItem closeTabItem = new MenuItem("Close Tab");
-//        MenuItem closeOtherTabsItem = new MenuItem("Close Other Tabs");
-//        MenuItem closeAllTabsItem = new MenuItem("Close All Tabs");
-//
-//        closeTabItem.setOnAction(event -> closeSelectTabs(tabPane, tab));
-//        closeOtherTabsItem.setOnAction(event -> closeOtherTabs(tabPane, tab));
-//        closeAllTabsItem.setOnAction(event -> closeAllTabs(tabPane, oApp));
-//
-//        contextMenu.getItems().add(closeTabItem);
-//        contextMenu.getItems().add(closeOtherTabsItem);
-//        contextMenu.getItems().add(closeAllTabsItem);
-//
-//        tab.setContextMenu(contextMenu);
-//
-//        closeOtherTabsItem.visibleProperty().bind(Bindings.size(tabPane.getTabs()).greaterThan(1));
-//
-//        return contextMenu;
-//    }
     public ContextMenu createContextMenu(TabPane tabPane, Tab tab, GRider oApp) {
         ContextMenu contextMenu = new ContextMenu();
 
@@ -543,10 +465,6 @@ public class DashboardController implements Initializable {
         return contextMenu;
     }
 
-    //johndave modified 02-17-2025
-    /**
-     * CLOSE SELECTED TAB *
-     */
     private void closeSelectTabs(TabPane tabPane, Tab currentTab) {
         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
             // Remove the tab
@@ -558,7 +476,6 @@ public class DashboardController implements Initializable {
                     myBox.getChildren().add(unload.getScene(psDefaultScreenFXML, oApp));
                 }
             }
-            // Remove the tab name from the tracking list
             tabName.remove(currentTab.getText());
         }
     }
@@ -575,7 +492,6 @@ public class DashboardController implements Initializable {
     }
 
     private void closeAllTabs(TabPane tabPane, GRider oApp) {
-        // Check if tabPane or other components are null
         if (tabPane == null) {
             System.out.println("tabPane is null");
             return;
@@ -583,44 +499,26 @@ public class DashboardController implements Initializable {
 
         if (ShowMessageFX.YesNo(null, "Close All Tabs", "Are you sure, do you want to close all tabs?")) {
             if (tabName != null) {
-                tabName.clear();  // Check if tabName is not null
+                tabName.clear();
             } else {
                 System.out.println("tabName is null");
             }
 
-            // Close all tabs
             tabPane.getTabs().clear();
 
             unloadForm unload = new unloadForm();
 
-            // Check if tabPane.getParent() returns a valid parent node
             if (tabPane.getParent() == null) {
                 System.out.println("Parent of tabPane is null");
                 return;
             }
 
-            StackPane myBox = (StackPane) tabPane.getParent();  // Make sure tabPane's parent is not null
+            StackPane myBox = (StackPane) tabPane.getParent();
             myBox.getChildren().clear();
             myBox.getChildren().add(unload.getScene(psDefaultScreenFXML, oApp));
         }
     }
 
-//    /**
-//     * CLOSE ALL TAB *
-//     */
-//    private void closeAllTabs(TabPane tabPane, GRider oApp) {
-//        if (showMessage()) {
-//            tabName.clear();
-//            // Close all tabs using your TabsStateManager
-//            for (Tab tab : tabPane.getTabs()) {
-//                String formName = tab.getText();
-//            }
-//            tabPane.getTabs().clear();
-//            StackPane myBox = (StackPane) tabpane.getParent();
-//            myBox.getChildren().clear();
-//        }
-//    }
-    //TAB CLOSE
     public void Tabclose() {
         int tabsize = tabpane.getTabs().size();
         if (tabsize == 1) {
@@ -628,9 +526,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-    /**
-     * CLoad Main Screen if no tab remain *
-     */
     public void Tabclose(TabPane tabpane) {
         int tabsize = tabpane.getTabs().size();
         if (tabsize == 1) {
@@ -638,15 +533,11 @@ public class DashboardController implements Initializable {
         }
     }
 
-    /**
-     * INITIALIZE SUB MENU VISIBILITY*
-     */
     private void initMenu() {
         setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
         setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
     }
 
-    //johndave modified 02-12-2025
     private void setTreeViewStyle(TreeView treeView) {
         treeView.setCellFactory(tv -> new TreeCell<String>() {
             @Override
@@ -658,12 +549,12 @@ public class DashboardController implements Initializable {
                     setGraphic(null);
                     setStyle("-fx-background-color: #DFDFDF; "
                             + "-fx-border-color: #DFDFDF;"
-                    ); // Keep default background
-                    getStyleClass().add("empty-tree-cell"); // Add class to prevent hover effect
+                    );
+                    getStyleClass().add("empty-tree-cell");
                 } else {
                     setText(item);
-                    setStyle(""); // Reset style for non-empty items
-                    getStyleClass().remove("empty-tree-cell"); // Remove empty class for valid items
+                    setStyle("");
+                    getStyleClass().remove("empty-tree-cell");
                 }
             }
         });
@@ -671,26 +562,23 @@ public class DashboardController implements Initializable {
 
     private void setDropShadowEffectsLeftSideBar(AnchorPane anchorPane) {
         DropShadow shadow = new DropShadow();
-        shadow.setRadius(20); // Adjust blur intensity
+        shadow.setRadius(20);
         shadow.setWidth(21.0);
-        shadow.setColor(Color.rgb(0, 0, 0, 0.3)); // Adjust transparency
+        shadow.setColor(Color.rgb(0, 0, 0, 0.3));
 
-        // Apply shadow only to the right side
-        shadow.setOffsetX(2); // Moves shadow to the right
+        shadow.setOffsetX(2);
         shadow.setOffsetY(0);
 
-        // Apply to the AnchorPane
         anchorPane.setEffect(shadow);
     }
 
     private void setDropShadowEffectsRightSideBar(AnchorPane anchorPane) {
         DropShadow shadow = new DropShadow();
-        shadow.setRadius(20); // Adjust blur intensity
+        shadow.setRadius(20);
         shadow.setWidth(21.0);
-        shadow.setColor(Color.rgb(0, 0, 0, 0.3)); // Adjust transparency
+        shadow.setColor(Color.rgb(0, 0, 0, 0.3));
 
-        // Apply shadow only to the right side
-        shadow.setOffsetX(-2); // Moves shadow to the right
+        shadow.setOffsetX(-2);
         shadow.setOffsetY(0);
 
         // Apply to the AnchorPane
@@ -764,13 +652,11 @@ public class DashboardController implements Initializable {
             btnLogout
         };
 
-        // Tooltip texts for each button
         String[] tooltipTexts = {
             "Help",
             "Logout"
         };
 
-        // Assign tooltips and toggle group in a loop
         for (int i = 0; i < toggleBtnLeftLowerSideBar.length; i++) {
             toggleBtnLeftLowerSideBar[i].setTooltip(new Tooltip(tooltipTexts[i]));
             toggleBtnLeftLowerSideBar[i].setToggleGroup(toggleGroupLowerBtn);
@@ -861,16 +747,14 @@ public class DashboardController implements Initializable {
         alert.setTitle("GUANZON GROUP OF COMPANY");
         alert.setHeaderText("Are you sure you want to logout?");
 
-        // Show the alert and wait for a response
         Optional<ButtonType> result = alert.showAndWait();
 
-        // Check the response
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // Close the current window
+
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
         } else {
-            // If Cancel is clicked, reset the selection
+
             btnLogout.setSelected(false);
         }
     }
@@ -879,7 +763,6 @@ public class DashboardController implements Initializable {
      * TOGGLE SUBMENU ON LEFT BUTTON*
      */
     private void toggleLeftSideBarMenuButton(String buttonId, Integer btnIndex) {
-        System.out.println("Toggling: " + buttonId + " | Last Clicked: " + lastClickedBtnLeftSideBar);
         boolean isNoMenu = false;
         boolean isSameButton = anchorLeftSideBarMenu.isVisible() && lastClickedBtnLeftSideBar.equals(buttonId);
 
@@ -908,7 +791,6 @@ public class DashboardController implements Initializable {
     }
 
     private void toggleRightSideBarMenuButton(String buttonId, Integer btnIndex) {
-        System.out.println("Toggling: " + buttonId + " | Last Clicked: " + lastClickedBtnRightSideBar);
         boolean isNoMenu = false;
         boolean isSameButton = anchorRightSideBarMenu.isVisible() && lastClickedBtnRightSideBar.equals(buttonId);
         setAnchorPaneVisibleManage(!isSameButton, anchorRightSideBarMenu);
@@ -976,125 +858,27 @@ public class DashboardController implements Initializable {
 
     private void purchasingMenuItems() {
         String jsonString = "["
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing\","
-                + "\"fxml_path\": \"Purchasing\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"014\","
-                + "\"menu_parent\": \"\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Requisition Slip\","
-                + "\"fxml_path\": \"Purchasing/Requisition Slip\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"015\","
-                + "\"menu_parent\": \"014\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing Quotation Request\","
-                + "\"fxml_path\": \"Purchasing/Purchasing Quotation Request\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"016\","
-                + "\"menu_parent\": \"014\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing Quotation\","
-                + "\"fxml_path\": \"Purchasing/Purchasing Quotation\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"017\","
-                + "\"menu_parent\": \"014\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing Order\","
-                + "\"fxml_path\": \"Purchasing/Purchasing Order\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"018\","
-                + "\"menu_parent\": \"014\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing Receiving\","
-                + "\"fxml_path\": \"Purchasing/Purchasing Receiving\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"019\","
-                + "\"menu_parent\": \"014\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing Return\","
-                + "\"fxml_path\": \"Purchasing/Purchasing Return\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"020\","
-                + "\"menu_parent\": \"014\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"History\","
-                + "\"fxml_path\": \"Purchasing/History\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"021\","
-                + "\"menu_parent\": \"014\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Requisition Slip\","
-                + "\"fxml_path\": \"Purchasing/History/Requisition Slip\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"022\","
-                + "\"menu_parent\": \"021\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing Quotation Request\","
-                + "\"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"023\","
-                + "\"menu_parent\": \"021\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing Quotation\","
-                + "\"fxml_path\": \"Purchasing/History/Purchasing Quotation\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"024\","
-                + "\"menu_parent\": \"021\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing Order\","
-                + "\"fxml_path\": \"Purchasing/History/Purchasing Order\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"025\","
-                + "\"menu_parent\": \"021\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing Receiving\","
-                + "\"fxml_path\": \"Purchasing/History/Purchasing Receiving\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"026\","
-                + "\"menu_parent\": \"021\""
-                + "},"
-                + "{"
-                + "\"access_level\": \"011\","
-                + "\"menu_name\": \"Purchasing Return\","
-                + "\"fxml_path\": \"Purchasing/History/Purchasing Return\","
-                + "\"controller_path\": \"sample.controller\","
-                + "\"menu_id\": \"027\","
-                + "\"menu_parent\": \"021\""
-                + "}"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing\", \"fxml_path\": \"Purchasing\", \"controller_path\": \"sample.controller\", \"menu_id\": \"014\", \"menu_parent\": \"\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"015\", \"menu_parent\": \"014\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"016\", \"menu_parent\": \"014\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"017\", \"menu_parent\": \"014\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"018\", \"menu_parent\": \"014\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"019\", \"menu_parent\": \"014\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"020\", \"menu_parent\": \"014\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Purchasing/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"021\", \"menu_parent\": \"014\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/History/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"022\", \"menu_parent\": \"021\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"023\", \"menu_parent\": \"021\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"024\", \"menu_parent\": \"021\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/History/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"025\", \"menu_parent\": \"021\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/History/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"026\", \"menu_parent\": \"021\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/History/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"027\", \"menu_parent\": \"021\"}\n"
                 + "]";
+
         JSONParser parser = new JSONParser();
         try {
             try {
                 flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
                 JSONObject purchasingMainMenu = buildHierarchy("014");
-                System.out.println("json builded:" + purchasingMainMenu.toJSONString());
                 dissectLeftSideBarJSON(purchasingMainMenu.toJSONString());
 
             } catch (IOException ex) {
@@ -1107,7 +891,6 @@ public class DashboardController implements Initializable {
     }
 
     private void salesMenuItems() {
-        // Convert to JSON and process
         String jsonString = "["
                 + "{\"access_level\": \"011\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\", \"level\": 0},"
                 + "{\"access_level\": \"011\", \"menu_name\": \"Sales\", \"fxml_path\": \"Sales/Sales\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\", \"level\": 1},"
@@ -1141,19 +924,14 @@ public class DashboardController implements Initializable {
 
     }
 
-    /*DEPENDS ON DEPARTMENT CODE*/
-    //johndave modified 02-15-2025
     public JSONObject buildHierarchy(String menuCode) {
-        // Build a map for quick child lookup
-        String userDepartment = "011"; // Fetch user's department instead of level
-        System.out.println("department: " + userDepartment);
+        String userDepartment = "011";
         Map<String, List<JSONObject>> childMap = new HashMap<>();
         JSONObject rootMenuItem = null;
 
         for (JSONObject item : flatMenuItems) {
             List<String> accessDepartments = getAccessDepartments(item);
 
-            // CONTAINS MATCHING: Allow if the department is listed
             if (!accessDepartments.contains(userDepartment)) {
                 continue;
             }
@@ -1161,16 +939,13 @@ public class DashboardController implements Initializable {
             String menuId = (String) item.get("menu_id");
             String parentId = (String) item.get("menu_parent");
 
-            // Identify the root menu item
             if (menuCode.equals(menuId) && (parentId == null || parentId.isEmpty())) {
                 rootMenuItem = item;
             }
 
-            // Group children under their respective parents
             childMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(item);
         }
 
-        // If no root is found, return an empty object
         if (rootMenuItem == null) {
             return new JSONObject();
         }
@@ -1187,14 +962,12 @@ public class DashboardController implements Initializable {
         node.put("controller_path", item.get("controller_path"));
         node.put("access_level", item.get("access_level"));
 
-        // Retrieve children from the pre-built map
         List<JSONObject> children = childMap.getOrDefault(item.get("menu_id"), Collections.emptyList());
 
-        // Recursively build hierarchy while applying department-based filtering
         JSONArray childrenArray = new JSONArray();
         for (JSONObject child : children) {
             List<String> accessDepartments = getAccessDepartments(child);
-            if (accessDepartments.contains(userDepartment)) { // CONTAINS MATCH
+            if (accessDepartments.contains(userDepartment)) {
                 childrenArray.add(buildSubHierarchy(child, childMap, userDepartment));
             }
         }
@@ -1202,7 +975,7 @@ public class DashboardController implements Initializable {
         if (!childrenArray.isEmpty()) {
             node.put("child", childrenArray);
         } else {
-            node.put("child", new JSONArray()); // Ensure an empty array if no children exist
+            node.put("child", new JSONArray());
         }
 
         return node;
@@ -1212,7 +985,7 @@ public class DashboardController implements Initializable {
         Object accessLevelObj = item.get("access_level");
 
         if (accessLevelObj == null) {
-            return Collections.emptyList(); // Return empty list for invalid entries
+            return Collections.emptyList();
         }
 
         String accessLevelStr = accessLevelObj.toString().trim();
@@ -1220,143 +993,10 @@ public class DashboardController implements Initializable {
             return Collections.emptyList();
         }
 
-        // Split by space and return a list of department codes
         return Arrays.asList(accessLevelStr.split("\\s+"));
     }
 
-    /* USER LEVEL */
-    //johndave modified 02-15-2025
-//    public JSONObject buildHierarchy(String menuCode) {
-//        // Build a map for quick child lookup
-//        userLevel = oApp.getUserLevel();
-//        Map<String, List<JSONObject>> childMap = new HashMap<>();
-//        JSONObject rootMenuItem = null;
-//
-//        for (JSONObject item : flatMenuItems) {
-//            int accessLevel = getAccessLevel(item);
-//            if (accessLevel != userLevel) {
-//                continue; // STRICT MATCHING: Skip if access level does not match user level
-//            }
-//            String menuId = (String) item.get("menu_id");
-//            String parentId = (String) item.get("menu_parent");
-//
-//            // Identify the root menu item
-//            if (menuCode.equals(menuId) && (parentId == null || parentId.isEmpty())) {
-//                rootMenuItem = item;
-//            }
-//
-//            // Group children under their respective parents
-//            childMap.computeIfAbsent(parentId, k -> new ArrayList<>()).add(item);
-//        }
-//
-//        // If no root is found, return an empty object
-//        if (rootMenuItem == null) {
-//            return new JSONObject();
-//        }
-//
-//        return buildSubHierarchy(rootMenuItem, childMap);
-//    }
-//
-//    private JSONObject buildSubHierarchy(JSONObject item, Map<String, List<JSONObject>> childMap) {
-//        userLevel = oApp.getUserLevel();
-//        JSONObject node = new JSONObject();
-//        node.put("menu_id", item.get("menu_id"));
-//        node.put("menu_name", item.get("menu_name"));
-//        node.put("menu_parent", item.get("menu_parent"));
-//        node.put("fxml_path", item.get("fxml_path"));
-//        node.put("controller_path", item.get("controller_path"));
-//        node.put("access_level", item.get("access_level"));
-//
-//        // Retrieve children from the pre-built map
-//        List<JSONObject> children = childMap.getOrDefault(item.get("menu_id"), Collections.emptyList());
-//
-//        // Recursively build hierarchy while applying STRICT access level filtering
-//        JSONArray childrenArray = new JSONArray();
-//        for (JSONObject child : children) {
-//            int accessLevel = getAccessLevel(child);
-//            if (accessLevel == userLevel) { // STRICT MATCH
-//                childrenArray.add(buildSubHierarchy(child, childMap));
-//            }
-//        }
-//
-//        if (!childrenArray.isEmpty()) {
-//            node.put("child", childrenArray);
-//        } else {
-//            node.put("child", new JSONArray()); // Ensure an empty array if no children exist
-//        }
-//
-//        return node;
-//    }
-//
-//    private int getAccessLevel(JSONObject item) {
-//        Object accessLevelObj = item.get("access_level");
-//
-//        if (accessLevelObj == null) {
-//            return -1; // Indicate an invalid level (ensures filtering out)
-//        }
-//
-//        String accessLevelStr = accessLevelObj.toString().trim();
-//        if (accessLevelStr.isEmpty()) {
-//            return -1; // Skip empty access levels
-//        }
-//
-//        try {
-//            return Integer.parseInt(accessLevelStr);
-//        } catch (NumberFormatException e) {
-//            return -1; // Skip invalid access levels
-//        }
-//    }
-    /*johndave modified 02-14-2025*/
-    //    Pag meron ng JSONArray mag dagdag ng parameter
-//    private JSONObject buildHierarchy(String menuCode) {
-//        for (Object item : flatMenuItems) {
-//            JSONObject jsonItem = (JSONObject) item;
-//
-//            // Look for the root menu item
-//            if (jsonNameEquals((String) jsonItem.get("menu_id"), menuCode)
-//                    && (jsonItem.get("menu_parent") == null || jsonNameEquals((String) jsonItem.get("menu_parent"), ""))) {
-//
-//                // Directly return the root object without extra nesting
-//                return buildSubHierarchy(jsonItem);
-//            }
-//        }
-//        return new JSONObject(); // Return empty object if no matching root is found
-//    }
-//
-//    private JSONObject buildSubHierarchy(JSONObject item) {
-//        JSONObject node = new JSONObject();
-//        node.put("menu_id", item.get("menu_id"));
-//        node.put("menu_name", item.get("menu_name"));
-//        node.put("menu_parent", item.get("menu_parent"));
-//        node.put("fxml_path", item.get("fxml_path"));
-//        node.put("controller_path", item.get("controller_path"));
-//        node.put("access_level", item.get("access_level"));
-//
-//        List<JSONObject> children = new ArrayList<>();
-//        for (Object flatItem : flatMenuItems) {
-//            JSONObject childItem = (JSONObject) flatItem;
-//            // Check if this item is a child of the current item
-//            if (jsonNameEquals((String) childItem.get("menu_parent"), (String) item.get("menu_id"))) {
-//                children.add(buildSubHierarchy(childItem)); // Recursively build child hierarchy
-//            }
-//        }
-//
-//        if (!children.isEmpty()) {
-//            JSONArray childrenArray = new JSONArray();
-//            childrenArray.addAll(children);
-//            node.put("child", childrenArray);
-//        } else {
-//            node.put("child", new JSONArray()); // Ensure an empty array if no children exist
-//        }
-//
-//        return node;
-//    }
-//    private boolean jsonNameEquals(String a, String b) {
-//        return a == null ? b == null : a.equalsIgnoreCase(b);
-//    }
     private void dissectLeftSideBarJSON(String fsValue) {
-        System.out.println("json! " + fsValue);
-
         if (fsValue == null || fsValue.isEmpty()) {
             System.err.println("Invalid JSON string.");
             return;
@@ -1367,7 +1007,6 @@ public class DashboardController implements Initializable {
             Object parsedJson = loParser.parse(fsValue);
             JSONArray laMaster;
 
-            // Ensure we have an array
             if (parsedJson instanceof JSONArray) {
                 laMaster = (JSONArray) parsedJson;
             } else if (parsedJson instanceof JSONObject) {
@@ -1379,7 +1018,7 @@ public class DashboardController implements Initializable {
             }
 
             TreeItem<String> root = new TreeItem<>("root");
-            menuLocationMap.clear(); // Clear previous mappings
+            menuLocationMap.clear();
 
             for (Object objMaster : laMaster) {
                 if (!(objMaster instanceof JSONObject)) {
@@ -1389,7 +1028,7 @@ public class DashboardController implements Initializable {
 
                 JSONObject loParent = (JSONObject) objMaster;
                 if (!loParent.containsKey("menu_name")) {
-                    continue; // Skip invalid entries
+                    continue;
                 }
 
                 String parentName = String.valueOf(loParent.get("menu_name"));
@@ -1406,7 +1045,6 @@ public class DashboardController implements Initializable {
                 root.getChildren().add(parentNode);
             }
 
-            // Assign tree structure
             if (tvLeftSideBar != null) {
                 tvLeftSideBar.setRoot(root);
                 tvLeftSideBar.setShowRoot(false);
@@ -1431,16 +1069,15 @@ public class DashboardController implements Initializable {
         for (Object obj : childrenArray) {
             JSONObject loDetail = (JSONObject) obj;
             if (loDetail == null || !loDetail.containsKey("menu_name")) {
-                continue; // Skip invalid child entries
+                continue;
             }
 
             String parentName = String.valueOf(loDetail.get("menu_name"));
             String location = loDetail.containsKey("fxml_path") ? String.valueOf(loDetail.get("fxml_path")) : "";
 
             TreeItem<String> childNode = new TreeItem<>(parentName);
-            menuLocationMap.put(childNode, location); // Store location for this node
+            menuLocationMap.put(childNode, location);
 
-            // Recursively add more child levels if present
             if (loDetail.containsKey("child") && loDetail.get("child") instanceof JSONArray) {
                 JSONArray subChildren = (JSONArray) loDetail.get("child");
                 addChildren(childNode, subChildren);
@@ -1454,7 +1091,6 @@ public class DashboardController implements Initializable {
         if (tvLeftSideBar != null && tvLeftSideBar.getRoot() != null) {
             int calculatedWidth = calculateTreeViewWidth(tvLeftSideBar.getRoot());
 
-            // Expand dynamically based on TreeView size
             Platform.runLater(() -> {
                 anchorLeftSideBarMenu.setPrefWidth(calculatedWidth);
             });
@@ -1462,22 +1098,19 @@ public class DashboardController implements Initializable {
 
     }
 
-    /**
-     * Dynamically calculates the required width based on the TreeItems.
-     */
     private int calculateTreeViewWidth(TreeItem<String> root) {
         if (root == null) {
-            return 200; // Default width if no items exist
+            return 200;
         }
-        int baseWidth = 200; // Minimum width
-        int textPadding = 20; // Small padding for extra space
+        int baseWidth = 200;
+        int textPadding = 20;
 
-        int longestTextWidth = getMaxTextWidth(root); // Dynamically get text width
+        int longestTextWidth = getMaxTextWidth(root);
 
         double parentWidth = anchorLeftSideBarMenu.getParent().getLayoutBounds().getWidth();
 
         int calculatedWidth = baseWidth + longestTextWidth + textPadding;
-        return (int) Math.min(calculatedWidth, parentWidth * 0.9); // Ensure it fits the UI
+        return (int) Math.min(calculatedWidth, parentWidth * 0.9);
     }
 
     private int getMaxTextWidth(TreeItem<String> item) {
@@ -1502,7 +1135,7 @@ public class DashboardController implements Initializable {
             return 0;
         }
 
-        int charWidth = 7; // Approximate character width in pixels
+        int charWidth = 7;
         return text.length() * charWidth;
     }
 
@@ -1515,10 +1148,8 @@ public class DashboardController implements Initializable {
         String selectedMenu = newValue.getValue();
         String sLocation = menuLocationMap.getOrDefault(newValue, ""); // Get location from map
 
-        System.out.println("Selected: " + selectedMenu + " | Location: " + sLocation);
-
         switch (selectedMenu) {
-            case "Motorcycle":     //johndave modified 02-15-2025
+            case "Motorcycle":
                 switch (sLocation.toLowerCase()) {
                     case "sales/sales/motorcycle":
                         sformname = sLocation;
@@ -1526,7 +1157,6 @@ public class DashboardController implements Initializable {
                         break;
                     case "sales/inquiry/motorcycle":
                         sformname = sLocation;
-                        System.out.println(sformname);
                         ShowMessageFX.Information("test", "You selected", sLocation);
                         break;
                     default:
@@ -1534,7 +1164,7 @@ public class DashboardController implements Initializable {
                         break;
                 }
                 break;
-            case "Spareparts":     //johndave modified 02-15-2025
+            case "Spareparts":
                 switch (sLocation.toLowerCase()) {
                     case "sales/sales/spareparts":
                         sformname = "/com/rmj/guanzongroup/sidebarmenus/views/motorycle_sales.fxml";
@@ -1549,7 +1179,7 @@ public class DashboardController implements Initializable {
                         break;
                 }
                 break;
-            case "Requisition Slip":     //johndave modified 02-15-2025
+            case "Requisition Slip":
                 switch (sLocation.toLowerCase()) {
                     case "purchasing/requisition slip":
                         sformname = "";
@@ -1564,7 +1194,7 @@ public class DashboardController implements Initializable {
                         break;
                 }
                 break;
-            case "Purchasing Quotation Request":     //johndave modified 02-15-2025
+            case "Purchasing Quotation Request":
                 switch (sLocation.toLowerCase()) {
                     case "purchasing/purchasing quotation request":
                         sformname = "";
@@ -1579,7 +1209,7 @@ public class DashboardController implements Initializable {
                         break;
                 }
                 break;
-            case "Purchasing Quotation":     //johndave modified 02-15-2025
+            case "Purchasing Quotation":
                 switch (sLocation.toLowerCase()) {
                     case "purchasing/purchasing quotation":
                         sformname = "";
@@ -1594,7 +1224,7 @@ public class DashboardController implements Initializable {
                         break;
                 }
                 break;
-            case "Purchasing Order":    //johndave modified 02-15-2025
+            case "Purchasing Order":
                 switch (sLocation.toLowerCase()) {
                     case "purchasing/purchasing order":
                         sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml";
@@ -1608,7 +1238,7 @@ public class DashboardController implements Initializable {
                         break;
                 }
                 break;
-            case "Purchasing Receiving":    //johndave modified 02-15-2025
+            case "Purchasing Receiving":
                 switch (sLocation.toLowerCase()) {
                     case "purchasing/purchasing receiving":
                         sformname = "";
@@ -1649,7 +1279,6 @@ public class DashboardController implements Initializable {
                 break;
         }
 
-        // Load the corresponding form
         if (oApp != null) {
             boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
             if (isNewTab) {
@@ -1669,31 +1298,26 @@ public class DashboardController implements Initializable {
         }
     }
 
-    /*LEFT SIDE BAR MENU ITEMS */
     private void notifMenuItems() {
         JSONArray laMaster, laDetail;
         JSONObject loMaster, loDetail;
         laMaster = new JSONArray();
         laDetail = new JSONArray();
 
-        // Add "Sales Replacement" only if the department is not 26
         if (!"029".equals(oApp.getDepartment())) {
             loDetail = new JSONObject();
             loDetail.put("parent", "Sales");
             laDetail.add(loDetail);
         }
 
-        // Add "Additional Give" menu item
         loDetail = new JSONObject();
         loDetail.put("parent", "PO Receiving");
         laDetail.add(loDetail);
 
-        // Create the "Sales" parent with its children
         loMaster = new JSONObject();
         loMaster.put("parent", "Monthly Payment");
         loMaster.put("child", laDetail);
 
-        // Add "Sales" to the master list
         laMaster.add(loMaster);
 
         dissectRightSideBarJSON(laMaster.toJSONString());
@@ -1731,7 +1355,6 @@ public class DashboardController implements Initializable {
                 root.getChildren().add(parentNode);
             }
 
-            // Assign tree structure
             if (tvRightSideBar != null) {
                 tvRightSideBar.setRoot(root);
                 tvRightSideBar.setShowRoot(false);
@@ -1739,15 +1362,12 @@ public class DashboardController implements Initializable {
                     isListenerRightAdded = true;
                     tvRightSideBar.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
                         if (newValue != null && newValue.isLeaf() && newValue.getValue() != null && !newValue.getValue().isEmpty()) {
-                            System.out.println("Selected: " + newValue.getValue());
                             switch (newValue.getValue()) {
                                 case "Sales Replacement":
                                     sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml";
-//                                intIndex = 0;
                                     break;
                                 case "Additional Give":
                                     sformname = "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml";
-//                                intIndex = 0;
                                     break;
                                 default:
                                     sformname = "";
@@ -1773,7 +1393,6 @@ public class DashboardController implements Initializable {
                                 pane.requestFocus();
                             }
                         } else {
-                            // Handle the case where newValue is null, empty, or not a leaf
                             System.out.println("Invalid selection or empty value.");
                         }
 
@@ -1826,10 +1445,9 @@ public class DashboardController implements Initializable {
      * GET DEPARTMENT*
      */
     private void checkDepartment() {
-        // Validate and hide btnSales if department is 026
-        if ("022".equals(oApp.getDepartment())) { // Ensure the department is compared correctly
+        if ("022".equals(oApp.getDepartment())) {
             btnSales.setVisible(false);
-            btnSales.setManaged(false);  // Hide the button
+            btnSales.setManaged(false);
         }
     }
 
@@ -1840,7 +1458,6 @@ public class DashboardController implements Initializable {
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
             Calendar cal = Calendar.getInstance();
             int second = cal.get(Calendar.SECOND);
-            String temp = "" + second;
 
             Date date = new Date();
             String strTimeFormat = "hh:mm:";
@@ -1863,11 +1480,10 @@ public class DashboardController implements Initializable {
     }
 
     private void notificationChecker() {
-        // Setup the ScheduledService to check for notifications periodically
-        ScheduledService<Void> service = new ScheduledService<Void>() {  // Explicit type argument here
+        ScheduledService<Void> service = new ScheduledService<Void>() {
             @Override
             protected Task<Void> createTask() {
-                return new Task<Void>() {  // Explicit type argument here
+                return new Task<Void>() {
                     @Override
                     protected Void call() {
                         checkNotifications();
@@ -1876,16 +1492,14 @@ public class DashboardController implements Initializable {
                 };
             }
         };
-        service.setPeriod(Duration.minutes(1)); // Runs every minute (adjust as needed)
+        service.setPeriod(Duration.minutes(1));
         service.start();
     }
 
     private void checkNotifications() {
-        // Simulate the logic to check notifications (replace with actual logic)
-        notificationCount += (int) (Math.random() * 5);  // Adds 0-4 random notifications
-        cartCount += (int) (Math.random() * 5);  // Adds 0-4 random notifications
+        notificationCount += (int) (Math.random() * 5);
+        cartCount += (int) (Math.random() * 5);
 
-        // Update the label's text on the JavaFX Application Thread
         Platform.runLater(() -> {
             lblNotifCount.setText(String.valueOf(notificationCount));
             lblAddToCartCount.setText(String.valueOf(cartCount));
