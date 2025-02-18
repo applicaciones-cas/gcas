@@ -243,8 +243,8 @@ public class DashboardController implements Initializable {
                     return new SampleForm2Controller();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
                     return new PurchasingOrder_EntryController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
-                    return new PurchasingOrder_HistoryController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
+//                    return new PurchasingOrder_HistoryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
                     return new DeliveryAcceptanceEntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
