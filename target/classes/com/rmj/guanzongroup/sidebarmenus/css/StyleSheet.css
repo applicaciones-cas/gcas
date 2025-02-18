@@ -41,13 +41,7 @@
 .side-button > .glyph-icon {
     -fx-fill: #505050;
 }
-/*.side-button:focused {
-    -fx-background-color: #FF8201;
-    -fx-text-fill: black;
-    -fx-font-weight: bold;
-    -fx-background-radius: 0;
-    -fx-font-size:14;
-}*/
+
 .side-button:selected > .glyph-icon
 {
     -fx-fill: black
@@ -59,12 +53,30 @@
     -fx-background-radius: 0;
     -fx-font-size:14;
 }
-/*.side-button:selected:focused {
+.right-side-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: black;
+    -fx-font-size:14;
+    -fx-border-color: transparent transparent #8c8c8c transparent;
+}
+.right-side-button:hover {
     -fx-background-color: #FF8201;
     -fx-font-weight: bold;
+    -fx-fill-height: true;
+    -fx-text-fill: black;
     -fx-background-radius: 0;
     -fx-font-size:14;
-}*/
+
+}
+.right-side-button:hover > .glyph-icon
+{
+    -fx-fill: black;
+}
+
+.right-side-button > .glyph-icon {
+    -fx-fill: #505050;
+}
+
 .sidebar-label {
     -fx-text-fill: white;
 }

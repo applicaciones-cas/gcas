@@ -307,7 +307,7 @@
                                                             <children>
                                                                 <AnchorPane prefWidth="45.0">
                                                                     <children>
-                                                                        <ToggleButton fx:id="btnNotification" alignment="CENTER_RIGHT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchNotification" prefHeight="45.0" styleClass="side-button">
+                                                                        <ToggleButton fx:id="btnNotification" alignment="CENTER_RIGHT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchNotification" prefHeight="45.0" styleClass="right-side-button">
                                                                             <cursor>
                                                                                 <Cursor fx:constant="HAND" />
                                                                             </cursor>
