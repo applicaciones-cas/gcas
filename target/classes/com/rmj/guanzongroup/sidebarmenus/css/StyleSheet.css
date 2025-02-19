@@ -551,6 +551,7 @@
     -fx-background-color: #DFDFDF; /* Keep background unchanged */
     -fx-effect: none; /* Remove glow effect */
     -fx-font-weight: normal;
+    -fx-cursor: none;  /* Change cursor to hand pointer */
     -fx-text-fill: #333333; /* Keep normal text color */
 }
 
