@@ -186,7 +186,7 @@
                                                                                         <Cursor fx:constant="HAND" />
                                                                                     </cursor>
                                                                                 </ToggleButton>
-                                                                                <ToggleButton fx:id="btnAccountsReceivable" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchAccountsReceivable" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
+                                                                                <ToggleButton fx:id="btnAccounts" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchAccounts" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
                                                                                     <graphic>
                                                                                         <FontAwesomeIconView glyphName="FILE_TEXT" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
                                                                                     </graphic>

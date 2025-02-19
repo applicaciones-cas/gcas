@@ -93,4 +93,37 @@ public class unloadForm {
         return null;
     }
 
+    public void setParentController(Object parentController) {
+        this.parentController = parentController;
+    }
+    private Object parentController;
+    public String SetTabTitle(String menuaction) {
+        switch (menuaction) {
+            /*DIRECTORY*/
+            case "/org/guanzon/cas/views/ClientMasterParameter.fxml":
+                return "Client Parameter";
+            case "/org/guanzon/cas/views/ClientMasterTransactionCompany.fxml":
+                return "Client Transactions Company";
+            case "/org/guanzon/cas/views/ClientMasterTransactionIndividual.fxml":
+                return "Client Transactions Individual";
+            case "/org/guanzon/cas/views/NewCustomer.fxml":
+                return "Client Transactions Standard";
+            case "/org/guanzon/cas/views/FrmAccountsPayable.fxml":
+                return "Accounts Payable Clients";
+            case "/org/guanzon/cas/views/FrmAccountsAccreditation.fxml":
+                return "Accounts Accreditation";
+            case "/org/guanzon/cas/views/InventoryParam.fxml":
+                return "Inventory Parameter";
+            case "/org/guanzon/cas/views/InventoryDetail.fxml":
+                return "Inventory Details";            
+            case "/org/guanzon/cas/views/InventorySerialParam.fxml":
+                return "Inventory Serial Parameter";
+            case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
+                return "Purchase Quotation Request";
+            
+            default:
+                return null;
+        }
+    }
+
 }

@@ -113,7 +113,7 @@ public class DashboardController implements Initializable {
             btnSales,
             btnServiceRepair,
             btnAccountsPayable,
-            btnAccountsReceivable,
+            btnAccounts,
             btnGeneralAccounting,
             btnParameters,
             btnHelp,
@@ -222,7 +222,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
                     return "Payment Request";
                     
-                /*PARAMETERS/ADDRESS*/
+                /*OTHERS/PARAMETERS/ADDRESS*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
                     return "Barangay";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Country.fxml":
@@ -238,7 +238,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml":
                     return "Banks Branches";
                     
-                /*PARAMETERS/CATEGORY*/
+                /*OTHERS/PARAMETERS/CATEGORY*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml":
                     return "Category";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel2.fxml":
@@ -248,13 +248,13 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml":
                     return "Category Level 4";
                     
-                /*PARAMETERS/COLOR*/
+                /*OTHERS/PARAMETERS/COLOR*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml":
                     return "Color";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml":
                     return "Color Detail";
                 
-                /*PARAMETERS/COMPANY*/
+                /*OTHERS/PARAMETERS/COMPANY*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml":
                     return "AffiliatedCompany";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Branch.fxml":
@@ -264,13 +264,13 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Department.fxml":
                     return "Department";
                     
-                /*PARAMETERS/INVENTORY*/
+                /*OTHERS/PARAMETERS/INVENTORY*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryLocation.fxml":
                     return "Inventory Location";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryType.fxml":
                     return "Inventory Type";
                 
-                /*PARAMETERS/LABOR*/
+                /*OTHERS/PARAMETERS/LABOR*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Labor.fxml":
                     return "Labor";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/LaborCategory.fxml":
@@ -278,7 +278,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/LaborModel.fxml":
                     return "Labor Model";    
                 
-                /*PARAMETERS/OTHERS*/
+                /*OTHERS/PARAMETERS/OTHERS*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml":
                     return "Brand";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Made.fxml":
@@ -298,7 +298,23 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml":
                     return "Term";     
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
-                    return "Warehouse";  
+                    return "Warehouse"; 
+                    
+                /*OTHERS/PARAMETERS/INVENTORY*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryParam.fxml":
+                    return "Inventory Parameter";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventorySerialParam.fxml":
+                    return "Inventory Serial Parameter";
+                    
+                /*ACCOUNTS/ACCOUNTS/ACCOUNTS PAYABLE*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayable.fxml":
+                    return "Accounts Payable";
+                
+                /*ACCOUNTS/ACCOUNTS/ACCOUNTS RECEIVABLE*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
+                    return "Accounts Receivable";
+                    
+                    
                 default:
                     return null;
             }
@@ -327,7 +343,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
                     return new PaymentRequestController();
                     
-                /*PARAMETERS/ADDRESS*/
+                /*OTHERS/PARAMETERS/ADDRESS*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
                     return new BarangayController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Country.fxml":
@@ -337,13 +353,13 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Region.fxml":
                     return new RegionController();
                     
-                /*PARAMETERS/BANKS*/
+                /*OTHERS/PARAMETERS/BANKS*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Banks.fxml":
                     return new BanksController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml":
                     return new BanksBranchesController();
                     
-                /*PARAMETERS/CATEGORY*/
+                /*OTHERS/PARAMETERS/CATEGORY*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml":
                     return new CategoryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel2.fxml":
@@ -353,13 +369,13 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml":
                     return new CategoryLevel4Controller();
                     
-                /*PARAMETERS/CATEGORY*/
+                /*OTHERS/PARAMETERS/CATEGORY*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml":
                     return new ColorController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml":
                     return new ColorDetailController();
                 
-                /*PARAMETERS/COMPANY*/
+                /*OTHERS/PARAMETERS/COMPANY*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml":
                     return new AffiliatedCompanyController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Branch.fxml":
@@ -369,13 +385,13 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Department.fxml":
                     return new DepartmentController();
                     
-                /*PARAMETERS/INVENTORY*/
+                /*OTHERS/PARAMETERS/INVENTORY*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryLocation.fxml":
                     return new InventoryLocationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryType.fxml":
                     return new InventoryTypeController();
                     
-                /*PARAMETERS/LABOR*/
+                /*OTHERS/PARAMETERS/LABOR*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Labor.fxml":
                     return new LaborController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/LaborCategory.fxml":
@@ -383,7 +399,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/LaborModel.fxml":
                     return new LaborModelController();    
                     
-                /*PARAMETERS/OTHERS*/
+                /*OTHERS/PARAMETERS/OTHERS*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml":
                     return new BrandController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Made.fxml":
@@ -405,6 +421,21 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
                     return new WarehouseController();    
                 
+                /*OTHERS/INVENTORY*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryParam.fxml":
+                    return new InventoryParamController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventorySerialParam.fxml":
+                    return new InventorySerialParamController();
+                    
+                /*ACOUNTS/ACOUNTS/ACOUNTS PAYABLE*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayable.fxml":
+                    return new AccountsPayableController();
+                    
+                /*ACOUNTS/ACOUNTS/ACOUNTS RECEIVABLE*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
+                    return new AccountsReceivableController();
+
+                    
                 default:
                     return null;
             }
@@ -749,7 +780,7 @@ public class DashboardController implements Initializable {
             btnSales,
             btnServiceRepair,
             btnAccountsPayable,
-            btnAccountsReceivable,
+            btnAccounts,
             btnGeneralAccounting,
             btnParameters
         };
@@ -761,7 +792,7 @@ public class DashboardController implements Initializable {
             "Sales",
             "Service Repair",
             "Accounts Payable",
-            "Accounts Receivable",
+            "Accounts",
             "General Accounting",
             "Parameters"
         };
@@ -872,10 +903,10 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
-    private void switchAccountsReceivable(ActionEvent event) {
-        tvLeftSideBar.setRoot(null);
+    private void switchAccounts(ActionEvent event) {
+        accountsMenuItems();
         toggleLeftSideBarMenuButton("switchAccountsReceivable", 5);
-
+        toggleSidebarWidth(); 
     }
 
     @FXML
@@ -1080,48 +1111,80 @@ public class DashboardController implements Initializable {
         }
 
     }
-    private void parametersMenuItems() {
+    
+    private void accountsMenuItems() {
         String jsonString = "["
-                + "{\"access_level\": \"011\", \"menu_name\": \"Parameters\", \"fxml_path\": \"Parameters\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Address\", \"fxml_path\": \"Parameters/Address\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Barangay\", \"fxml_path\": \"Parameters/Address/Barangay\", \"controller_path\": \"sample.controller\", \"menu_id\": \"003\", \"menu_parent\": \"002\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Country\", \"fxml_path\": \"Parameters/Address/Country\", \"controller_path\": \"\", \"menu_id\": \"004\", \"menu_parent\": \"002\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Province\", \"fxml_path\": \"Parameters/Address/Province\", \"controller_path\": \"\", \"menu_id\": \"005\", \"menu_parent\": \"002\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Region\", \"fxml_path\": \"Parameters/Address/Region\", \"controller_path\": \"\", \"menu_id\": \"006\", \"menu_parent\": \"002\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Banks\", \"fxml_path\": \"Parameters/Banks\", \"controller_path\": \"\", \"menu_id\": \"007\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Banks\", \"fxml_path\": \"Parameters/Banks/Banks\", \"controller_path\": \"\", \"menu_id\": \"008\", \"menu_parent\": \"007\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Banks Branches\", \"fxml_path\": \"Parameters/Banks/Banks Branches\", \"controller_path\": \"\", \"menu_id\": \"009\", \"menu_parent\": \"007\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Category\", \"fxml_path\": \"Parameters/Category\", \"controller_path\": \"\", \"menu_id\": \"010\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Category\", \"fxml_path\": \"Parameters/Category/Category\", \"controller_path\": \"\", \"menu_id\": \"011\", \"menu_parent\": \"010\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Category Level 2\", \"fxml_path\": \"Parameters/Category/Category Level 2\", \"controller_path\": \"\", \"menu_id\": \"012\", \"menu_parent\": \"010\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Category Level 3\", \"fxml_path\": \"Parameters/Category/Category Level 3\", \"controller_path\": \"\", \"menu_id\": \"013\", \"menu_parent\": \"010\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Category Level 4\", \"fxml_path\": \"Parameters/Category/Category Level 4\", \"controller_path\": \"\", \"menu_id\": \"014\", \"menu_parent\": \"010\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Color\", \"fxml_path\": \"Parameters/Color\", \"controller_path\": \"\", \"menu_id\": \"015\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Color\", \"fxml_path\": \"Parameters/Color/Color\", \"controller_path\": \"\", \"menu_id\": \"016\", \"menu_parent\": \"015\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Color Detail\", \"fxml_path\": \"Parameters/Color/Color Detail\", \"controller_path\": \"\", \"menu_id\": \"017\", \"menu_parent\": \"015\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Company\", \"fxml_path\": \"Parameters/Company\", \"controller_path\": \"\", \"menu_id\": \"018\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Affiliated Company\", \"fxml_path\": \"Parameters/Company/Affiliated Company\", \"controller_path\": \"\", \"menu_id\": \"019\", \"menu_parent\": \"018\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Branch\", \"fxml_path\": \"Parameters/Company/Branch\", \"controller_path\": \"\", \"menu_id\": \"020\", \"menu_parent\": \"018\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Company\", \"fxml_path\": \"Parameters/Company/Company\", \"controller_path\": \"\", \"menu_id\": \"021\", \"menu_parent\": \"018\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Department\", \"fxml_path\": \"Parameters/Company/Department\", \"controller_path\": \"\", \"menu_id\": \"022\", \"menu_parent\": \"018\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Parameters/Inventory\", \"controller_path\": \"\", \"menu_id\": \"023\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory Location\", \"fxml_path\": \"Parameters/Inventory/Inventory Location\", \"controller_path\": \"\", \"menu_id\": \"024\", \"menu_parent\": \"023\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory Type\", \"fxml_path\": \"Parameters/Inventory/Inventory Type\", \"controller_path\": \"\", \"menu_id\": \"025\", \"menu_parent\": \"023\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Labor\", \"fxml_path\": \"Parameters/Labor\", \"controller_path\": \"\", \"menu_id\": \"026\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Labor\", \"fxml_path\": \"Parameters/Labor/Labor\", \"controller_path\": \"\", \"menu_id\": \"027\", \"menu_parent\": \"026\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Labor Category\", \"fxml_path\": \"Parameters/Labor/Labor Category\", \"controller_path\": \"\", \"menu_id\": \"028\", \"menu_parent\": \"026\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Labor Model\", \"fxml_path\": \"Parameters/Labor/Labor Model\", \"controller_path\": \"\", \"menu_id\": \"029\", \"menu_parent\": \"026\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Others\", \"fxml_path\": \"Parameters/Others\", \"controller_path\": \"\", \"menu_id\": \"030\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Brand\", \"fxml_path\": \"Parameters/Others/Brand\", \"controller_path\": \"\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Made\", \"fxml_path\": \"Parameters/Others/Made\", \"controller_path\": \"\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Model\", \"fxml_path\": \"Parameters/Others/Model\", \"controller_path\": \"\", \"menu_id\": \"033\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Measure\", \"fxml_path\": \"Parameters/Others/Measure\", \"controller_path\": \"\", \"menu_id\": \"034\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Relationship\", \"fxml_path\": \"Parameters/Others/Relationship\", \"controller_path\": \"\", \"menu_id\": \"035\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Salesman\", \"fxml_path\": \"Parameters/Others/Salesman\", \"controller_path\": \"\", \"menu_id\": \"036\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Section\", \"fxml_path\": \"Parameters/Others/Section\", \"controller_path\": \"\", \"menu_id\": \"037\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Size\", \"fxml_path\": \"Parameters/Others/Size\", \"controller_path\": \"\", \"menu_id\": \"038\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Term\", \"fxml_path\": \"Parameters/Others/Term\", \"controller_path\": \"\", \"menu_id\": \"039\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Warehouse\", \"fxml_path\": \"Parameters/Others/Warehouse\", \"controller_path\": \"\", \"menu_id\": \"040\", \"menu_parent\": \"030\"}"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Accounts\", \"fxml_path\": \"Accounts\", \"controller_path\": \"\", \"menu_id\": \"001\", \"menu_parent\": \"\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Accounts Payable\", \"fxml_path\": \"Accounts/Accounts Payable\", \"controller_path\": \"\", \"menu_id\": \"002\", \"menu_parent\": \"001\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Accounts Receivable\", \"fxml_path\": \"Accounts/Accounts Receivable\", \"controller_path\": \"\", \"menu_id\": \"003\", \"menu_parent\": \"001\"}"
+                + "]";
+        JSONParser parser = new JSONParser();
+        try {
+            try {
+                flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
+                JSONObject accountsMainMenu = buildHierarchy("001");
+                dissectLeftSideBarJSON(accountsMainMenu.toJSONString());
+
+            } catch (IOException ex) {
+                Logger.getLogger(DashboardController.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void parametersMenuItems() {
+                String jsonString = "["
+                + "{\"access_level\": \"011\", \"menu_name\": \"Others\", \"fxml_path\": \"Others\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Parameters\", \"fxml_path\": \"Others/Parameters\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Address\", \"fxml_path\": \"Others/Parameters/Address\", \"controller_path\": \"sample.controller\", \"menu_id\": \"003\", \"menu_parent\": \"002\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Barangay\", \"fxml_path\": \"Others/Parameters/Address/Barangay\", \"controller_path\": \"sample.controller\", \"menu_id\": \"004\", \"menu_parent\": \"003\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Country\", \"fxml_path\": \"Others/Parameters/Address/Country\", \"controller_path\": \"\", \"menu_id\": \"005\", \"menu_parent\": \"003\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Province\", \"fxml_path\": \"Others/Parameters/Address/Province\", \"controller_path\": \"\", \"menu_id\": \"006\", \"menu_parent\": \"003\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Region\", \"fxml_path\": \"Others/Parameters/Address/Region\", \"controller_path\": \"\", \"menu_id\": \"007\", \"menu_parent\": \"003\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Banks\", \"fxml_path\": \"Others/Parameters/Banks\", \"controller_path\": \"\", \"menu_id\": \"008\", \"menu_parent\": \"002\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Banks\", \"fxml_path\": \"Others/Parameters/Banks/Banks\", \"controller_path\": \"\", \"menu_id\": \"009\", \"menu_parent\": \"008\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Banks Branches\", \"fxml_path\": \"Others/Parameters/Banks/Banks Branches\", \"controller_path\": \"\", \"menu_id\": \"010\", \"menu_parent\": \"008\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Category\", \"fxml_path\": \"Others/Parameters/Category\", \"controller_path\": \"\", \"menu_id\": \"011\", \"menu_parent\": \"002\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Category\", \"fxml_path\": \"Others/Parameters/Category/Category\", \"controller_path\": \"\", \"menu_id\": \"012\", \"menu_parent\": \"011\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Category Level 2\", \"fxml_path\": \"Others/Parameters/Category/Category Level 2\", \"controller_path\": \"\", \"menu_id\": \"013\", \"menu_parent\": \"011\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Category Level 3\", \"fxml_path\": \"Others/Parameters/Category/Category Level 3\", \"controller_path\": \"\", \"menu_id\": \"014\", \"menu_parent\": \"011\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Category Level 4\", \"fxml_path\": \"Others/Parameters/Category/Category Level 4\", \"controller_path\": \"\", \"menu_id\": \"015\", \"menu_parent\": \"011\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Color\", \"fxml_path\": \"Others/Parameters/Color\", \"controller_path\": \"\", \"menu_id\": \"016\", \"menu_parent\": \"002\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Color\", \"fxml_path\": \"Others/Parameters/Color/Color\", \"controller_path\": \"\", \"menu_id\": \"017\", \"menu_parent\": \"016\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Color Detail\", \"fxml_path\": \"Others/Parameters/Color/Color Detail\", \"controller_path\": \"\", \"menu_id\": \"018\", \"menu_parent\": \"016\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Company\", \"fxml_path\": \"Others/Parameters/Company\", \"controller_path\": \"\", \"menu_id\": \"019\", \"menu_parent\": \"002\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Affiliated Company\", \"fxml_path\": \"Others/Parameters/Company/Affiliated Company\", \"controller_path\": \"\", \"menu_id\": \"020\", \"menu_parent\": \"019\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Branch\", \"fxml_path\": \"Others/Parameters/Company/Branch\", \"controller_path\": \"\", \"menu_id\": \"021\", \"menu_parent\": \"019\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Company\", \"fxml_path\": \"Others/Parameters/Company/Company\", \"controller_path\": \"\", \"menu_id\": \"022\", \"menu_parent\": \"019\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Department\", \"fxml_path\": \"Others/Parameters/Company/Department\", \"controller_path\": \"\", \"menu_id\": \"023\", \"menu_parent\": \"019\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Others/Parameters/Inventory\", \"controller_path\": \"\", \"menu_id\": \"024\", \"menu_parent\": \"002\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory Location\", \"fxml_path\": \"Others/Parameters/Inventory/Inventory Location\", \"controller_path\": \"\", \"menu_id\": \"025\", \"menu_parent\": \"024\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory Type\", \"fxml_path\": \"Others/Parameters/Inventory/Inventory Type\", \"controller_path\": \"\", \"menu_id\": \"026\", \"menu_parent\": \"024\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Labor\", \"fxml_path\": \"Others/Parameters/Labor\", \"controller_path\": \"\", \"menu_id\": \"027\", \"menu_parent\": \"002\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Labor\", \"fxml_path\": \"Others/Parameters/Labor/Labor\", \"controller_path\": \"\", \"menu_id\": \"028\", \"menu_parent\": \"027\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Labor Category\", \"fxml_path\": \"Others/Parameters/Labor/Labor Category\", \"controller_path\": \"\", \"menu_id\": \"029\", \"menu_parent\": \"027\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Labor Model\", \"fxml_path\": \"Others/Parameters/Labor/Labor Model\", \"controller_path\": \"\", \"menu_id\": \"030\", \"menu_parent\": \"027\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Others\", \"fxml_path\": \"Others/Parameters/Others\", \"controller_path\": \"\", \"menu_id\": \"031\", \"menu_parent\": \"002\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Brand\", \"fxml_path\": \"Others/Parameters/Others/Brand\", \"controller_path\": \"\", \"menu_id\": \"032\", \"menu_parent\": \"031\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Made\", \"fxml_path\": \"Others/Parameters/Others/Made\", \"controller_path\": \"\", \"menu_id\": \"033\", \"menu_parent\": \"031\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Model\", \"fxml_path\": \"Others/Parameters/Others/Model\", \"controller_path\": \"\", \"menu_id\": \"034\", \"menu_parent\": \"031\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Measure\", \"fxml_path\": \"Others/Parameters/Others/Measure\", \"controller_path\": \"\", \"menu_id\": \"035\", \"menu_parent\": \"031\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Relationship\", \"fxml_path\": \"Others/Parameters/Others/Relationship\", \"controller_path\": \"\", \"menu_id\": \"036\", \"menu_parent\": \"031\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Salesman\", \"fxml_path\": \"Others/Parameters/Others/Salesman\", \"controller_path\": \"\", \"menu_id\": \"037\", \"menu_parent\": \"031\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Section\", \"fxml_path\": \"Others/Parameters/Others/Section\", \"controller_path\": \"\", \"menu_id\": \"038\", \"menu_parent\": \"031\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Size\", \"fxml_path\": \"Others/Parameters/Others/Size\", \"controller_path\": \"\", \"menu_id\": \"039\", \"menu_parent\": \"031\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Term\", \"fxml_path\": \"Others/Parameters/Others/Term\", \"controller_path\": \"\", \"menu_id\": \"40\", \"menu_parent\": \"031\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Warehouse\", \"fxml_path\": \"Others/Parameters/Others/Warehouse\", \"controller_path\": \"\", \"menu_id\": \"041\", \"menu_parent\": \"031\"}"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Others/Inventory\", \"controller_path\": \"\", \"menu_id\": \"042\", \"menu_parent\": \"001\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory Parameter\", \"fxml_path\": \"Others/Inventory/Inventory Param\", \"controller_path\": \"\", \"menu_id\": \"43\", \"menu_parent\": \"042\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory Serial Parameter\", \"fxml_path\": \"Others/Inventory/Inventory Serial Param\", \"controller_path\": \"\", \"menu_id\": \"044\", \"menu_parent\": \"042\"}"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Clients\", \"fxml_path\": \"Others/Clients\", \"controller_path\": \"\", \"menu_id\": \"045\", \"menu_parent\": \"001\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Client Parameters\", \"fxml_path\": \"Others/Clients/Client Parameters\", \"controller_path\": \"\", \"menu_id\": \"46\", \"menu_parent\": \"045\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Client Transactions Company\", \"fxml_path\": \"Others/Clients/Client Transactions Company\", \"controller_path\": \"\", \"menu_id\": \"047\", \"menu_parent\": \"045\"}"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Client Transactions Individual\", \"fxml_path\": \"Others/Clients/Client Transactions Individual\", \"controller_path\": \"\", \"menu_id\": \"48\", \"menu_parent\": \"045\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"New Customer\", \"fxml_path\": \"Others/Clients/New Customer\", \"controller_path\": \"\", \"menu_id\": \"049\", \"menu_parent\": \"045\"}"
                 + "]";
 
         JSONParser parser = new JSONParser();
@@ -1491,7 +1554,7 @@ public class DashboardController implements Initializable {
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml";
                 break;
                 
-            /*PARAMETER/ADDRESS*/    
+            /*OTHERS/PARAMETER/ADDRESS*/    
             case "Barangay":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml";
                 break;
@@ -1505,7 +1568,7 @@ public class DashboardController implements Initializable {
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Region.fxml";
                 break;
                 
-            /*PARAMETER/BANKS*/    
+            /*OTHERS/PARAMETER/BANKS*/    
             case "Banks":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Banks.fxml";
                 break;
@@ -1513,7 +1576,7 @@ public class DashboardController implements Initializable {
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml";
                 break;   
                 
-            /*PARAMETER/Category*/    
+            /*OTHERS/PARAMETER/Category*/    
             case "Category":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml";
                 break;
@@ -1527,7 +1590,7 @@ public class DashboardController implements Initializable {
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml";
                 break; 
                 
-            /*PARAMETER/Color*/    
+            /*OTHERS/PARAMETER/Color*/    
             case "Color":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml";
                 break;
@@ -1535,7 +1598,7 @@ public class DashboardController implements Initializable {
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml";
                 break; 
                 
-            /*PARAMETER/Company*/    
+            /*OTHERS/PARAMETER/Company*/    
             case "Affiliated Company":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml";
                 break;
@@ -1549,7 +1612,7 @@ public class DashboardController implements Initializable {
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Department.fxml";
                 break; 
                 
-            /*PARAMETER/Inventory*/    
+            /*OTHERS/PARAMETER/Inventory*/    
             case "Inventory Location":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryLocation.fxml";
                 break;
@@ -1557,7 +1620,7 @@ public class DashboardController implements Initializable {
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryType.fxml";
                 break; 
                 
-            /*PARAMETER/Labor*/    
+            /*OTHERS/PARAMETER/Labor*/    
             case "Labor":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Labor.fxml";
                 break;
@@ -1568,7 +1631,7 @@ public class DashboardController implements Initializable {
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/LaborModel.fxml";
                 break; 
                 
-            /*PARAMETER/Others*/    
+            /*OTHERS/PARAMETER/Others*/    
             case "Brand":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml";
                 break;
@@ -1599,6 +1662,24 @@ public class DashboardController implements Initializable {
             case "Warehouse":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml";
                 break; 
+                
+            /*OTHERS/PARAMETER/Color*/    
+            case "Inventory Parameter":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryParam.fxml";
+                break;
+            case "Inventory Serial Parameter":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventorySerialParam.fxml";
+                break; 
+                
+            /*ACCOUNTS/ACCOUNTS/ACCOUNTS PAYABLE*/  
+            case "Accounts Payable":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayable.fxml";
+                break;
+            
+            /*ACCOUNTS/ACCOUNTS/ACCOUNTS RECEIVABLE*/  
+            case "Accounts Receivable":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml";
+                break;
                 
             default:
                 sformname = "";
