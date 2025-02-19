@@ -221,6 +221,7 @@ public class DashboardController implements Initializable {
                     return "Delivery Acceptance";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
                     return "Payment Request";
+                    
                 /*PARAMETERS/ADDRESS*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
                     return "Barangay";
@@ -236,6 +237,68 @@ public class DashboardController implements Initializable {
                     return "Banks";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml":
                     return "Banks Branches";
+                    
+                /*PARAMETERS/CATEGORY*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml":
+                    return "Category";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel2.fxml":
+                    return "Category Level 2";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel3.fxml":
+                    return "Category Level 3";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml":
+                    return "Category Level 4";
+                    
+                /*PARAMETERS/COLOR*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml":
+                    return "Color";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml":
+                    return "Color Detail";
+                
+                /*PARAMETERS/COMPANY*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml":
+                    return "AffiliatedCompany";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Branch.fxml":
+                    return "Branch";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Company.fxml":
+                    return "Company";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Department.fxml":
+                    return "Department";
+                    
+                /*PARAMETERS/INVENTORY*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryLocation.fxml":
+                    return "Inventory Location";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryType.fxml":
+                    return "Inventory Type";
+                
+                /*PARAMETERS/LABOR*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Labor.fxml":
+                    return "Labor";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/LaborCategory.fxml":
+                    return "Labor Category";    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/LaborModel.fxml":
+                    return "Labor Model";    
+                
+                /*PARAMETERS/OTHERS*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml":
+                    return "Brand";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Made.fxml":
+                    return "Made";    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Model.fxml":
+                    return "Model";  
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Measure.fxml":
+                    return "Measure";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml":
+                    return "Relationship";    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml":
+                    return "Salesman";  
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml":
+                    return "Section";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml":
+                    return "Size";    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml":
+                    return "Term";     
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
+                    return "Warehouse";  
                 default:
                     return null;
             }
@@ -263,6 +326,7 @@ public class DashboardController implements Initializable {
                     return new DeliveryAcceptanceEntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
                     return new PaymentRequestController();
+                    
                 /*PARAMETERS/ADDRESS*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
                     return new BarangayController();
@@ -272,13 +336,75 @@ public class DashboardController implements Initializable {
                     return new ProvinceController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Region.fxml":
                     return new RegionController();
+                    
                 /*PARAMETERS/BANKS*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Banks.fxml":
                     return new BanksController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml":
                     return new BanksBranchesController();
                     
-               
+                /*PARAMETERS/CATEGORY*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml":
+                    return new CategoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel2.fxml":
+                    return new CategoryLevel2Controller();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel3.fxml":
+                    return new CategoryLevel3Controller();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml":
+                    return new CategoryLevel4Controller();
+                    
+                /*PARAMETERS/CATEGORY*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml":
+                    return new ColorController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml":
+                    return new ColorDetailController();
+                
+                /*PARAMETERS/COMPANY*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml":
+                    return new AffiliatedCompanyController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Branch.fxml":
+                    return new BranchController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Company.fxml":
+                    return new CompanyController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Department.fxml":
+                    return new DepartmentController();
+                    
+                /*PARAMETERS/INVENTORY*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryLocation.fxml":
+                    return new InventoryLocationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryType.fxml":
+                    return new InventoryTypeController();
+                    
+                /*PARAMETERS/LABOR*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Labor.fxml":
+                    return new LaborController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/LaborCategory.fxml":
+                    return new LaborCategoryController();    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/LaborModel.fxml":
+                    return new LaborModelController();    
+                    
+                /*PARAMETERS/OTHERS*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml":
+                    return new BrandController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Made.fxml":
+                    return new MadeController();    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Model.fxml":
+                    return new ModelController();    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Measure.fxml":
+                    return new MeasureController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml":
+                    return new RelationshipController();    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml":
+                    return new SalesmanController();    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml":
+                    return new SectionController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml":
+                    return new SizeController();    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml":
+                    return new TermController();     
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
+                    return new WarehouseController();    
+                
                 default:
                     return null;
             }
@@ -1378,6 +1504,7 @@ public class DashboardController implements Initializable {
             case "Region":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Region.fxml";
                 break;
+                
             /*PARAMETER/BANKS*/    
             case "Banks":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Banks.fxml";
@@ -1385,8 +1512,94 @@ public class DashboardController implements Initializable {
             case "Banks Branches":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml";
                 break;   
-             
-//                
+                
+            /*PARAMETER/Category*/    
+            case "Category":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml";
+                break;
+            case "Category Level 2":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel2.fxml";
+                break;
+            case "Category Level 3":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel3.fxml";
+                break;
+            case "Category Level 4":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml";
+                break; 
+                
+            /*PARAMETER/Color*/    
+            case "Color":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml";
+                break;
+            case "Color Detail":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml";
+                break; 
+                
+            /*PARAMETER/Company*/    
+            case "Affiliated Company":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml";
+                break;
+            case "Branch":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Branch.fxml";
+                break; 
+            case "Company":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Company.fxml";
+                break;
+            case "Department":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Department.fxml";
+                break; 
+                
+            /*PARAMETER/Inventory*/    
+            case "Inventory Location":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryLocation.fxml";
+                break;
+            case "Inventory Type":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryType.fxml";
+                break; 
+                
+            /*PARAMETER/Labor*/    
+            case "Labor":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Labor.fxml";
+                break;
+            case "Labor Category":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/LaborCategory.fxml";
+                break; 
+            case "Labor Model":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/LaborModel.fxml";
+                break; 
+                
+            /*PARAMETER/Others*/    
+            case "Brand":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml";
+                break;
+            case "Made":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Made.fxml";
+                break; 
+            case "Model":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Model.fxml";
+                break; 
+            case "Measure":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Measure.fxml";
+                break;
+            case "Relationship":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml";
+                break; 
+            case "Salesman":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml";
+                break;
+            case "Section":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml";
+                break;
+            case "Size":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml";
+                break; 
+            case "Term":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml";
+                break; 
+            case "Warehouse":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml";
+                break; 
+                
             default:
                 sformname = "";
                 break;
