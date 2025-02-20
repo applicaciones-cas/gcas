@@ -67,7 +67,7 @@
                                                         <Insets bottom="5.0" left="15.0" top="5.0" />
                                                     </HBox.margin>
                                                 </ImageView>
-                                                <Label alignment="CENTER" prefHeight="100.0" text="GUANZON GROUP OF COMPANIES" textFill="WHITE">
+                                                <Label alignment="CENTER" prefHeight="100.0" text="GUANZON GROUP OF COMPANY" textFill="WHITE">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
@@ -87,7 +87,7 @@
                             <children>
                                 <BorderPane prefHeight="25.0">
                                     <right>
-                                        <HBox alignment="CENTER_RIGHT" spacing="5.0" BorderPane.alignment="CENTER">
+                                        <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
                                             <children>
                                                 <FontAwesomeIconView glyphName="CLOCK_ALT" size="20">
                                                     <HBox.margin>
@@ -127,13 +127,6 @@
                                             </BorderPane.margin>
                                         </HBox>
                                     </left>
-                           <center>
-                              <Label fx:id="lblVersion" textFill="#141313" BorderPane.alignment="CENTER">
-                                 <font>
-                                    <Font name="System Bold" size="12.0" />
-                                 </font>
-                              </Label>
-                           </center>
                                 </BorderPane>
                             </children>
                         </StackPane>
@@ -185,6 +178,14 @@
                                                                                         <Cursor fx:constant="HAND" />
                                                                                     </cursor>
                                                                                 </ToggleButton>
+                                                                                <ToggleButton fx:id="btnAccountsPayable" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchAccountsPayable" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
+                                                                                    <graphic>
+                                                                                        <FontAwesomeIconView glyphName="FILE_TEXT_ALT" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
+                                                                                    </graphic>
+                                                                                    <cursor>
+                                                                                        <Cursor fx:constant="HAND" />
+                                                                                    </cursor>
+                                                                                </ToggleButton>
                                                                                 <ToggleButton fx:id="btnAccountsReceivable" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchAccountsReceivable" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
                                                                                     <graphic>
                                                                                         <FontAwesomeIconView glyphName="FILE_TEXT" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
@@ -201,7 +202,7 @@
                                                                                         <Cursor fx:constant="HAND" />
                                                                                     </cursor>
                                                                                 </ToggleButton>
-                                                                                <ToggleButton fx:id="btnOthers" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchOthers" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
+                                                                                <ToggleButton fx:id="btnParameters" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchParameters" prefHeight="45.0" prefWidth="190.0" styleClass="side-button">
                                                                                     <graphic>
                                                                                         <FontAwesomeIconView glyphName="FILE_POWERPOINT_ALT" size="25" styleClass="sidebar-icon" textAlignment="CENTER" />
                                                                                     </graphic>
@@ -306,7 +307,7 @@
                                                             <children>
                                                                 <AnchorPane prefWidth="45.0">
                                                                     <children>
-                                                                        <ToggleButton fx:id="btnSysMonitor" alignment="CENTER_RIGHT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchSysMonitor" prefHeight="45.0" styleClass="right-side-button">
+                                                                        <ToggleButton fx:id="btnNotification" alignment="CENTER_RIGHT" graphicTextGap="15.0" mnemonicParsing="false" onAction="#switchNotification" prefHeight="45.0" styleClass="right-side-button">
                                                                             <cursor>
                                                                                 <Cursor fx:constant="HAND" />
                                                                             </cursor>
