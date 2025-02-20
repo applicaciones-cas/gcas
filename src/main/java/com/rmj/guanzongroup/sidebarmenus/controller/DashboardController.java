@@ -213,6 +213,13 @@ public class DashboardController implements Initializable {
     public String SetTabTitle(String menuaction) {
         if (menuaction.contains(".fxml")) {
             switch (menuaction) {
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
+                    return "Inventory Maintenance";
+                
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
+                    return "Accounts Accreditation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
+                    return "Accounts Accreditation History";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
                     return "Purchase Order";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
@@ -299,6 +306,10 @@ public class DashboardController implements Initializable {
                     return "Term";     
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
                     return "Warehouse"; 
+                
+                /*OTHERS/CLIENTS*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/ClientMasterParameter.fxml":
+                    return "Client";
                     
                 /*OTHERS/PARAMETERS/INVENTORY*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryParam.fxml":
@@ -328,14 +339,24 @@ public class DashboardController implements Initializable {
     private ScreenInterface getController(String fsValue) {
         if (fsValue.contains(".fxml")) {
             switch (fsValue) {
-                case "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml":
+                 case "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml":
                     return new DefaultScreenController();
+                    
+                /*INVENTORY/INVENTORY/*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
+                    return new InventoryMaintenanceController();
+                    
+                /*PURCHASING/PURCHASING/*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
                     return new SampleForm1Controller();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
                     return new SampleForm2Controller();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
                     return new PurchasingOrder_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
+                    return new AccountsAccreditationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
+                    return new AccountsAccreditationHistoryController();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
 //                    return new PurchasingOrder_HistoryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
@@ -419,8 +440,12 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml":
                     return new TermController();     
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
-                    return new WarehouseController();    
-                
+                    return new WarehouseController(); 
+                    
+                /*OTHERS/Clients*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/ClientMasterParameter.fxml":
+                    return new ClientMasterParameterController();
+                    
                 /*OTHERS/INVENTORY*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryParam.fxml":
                     return new InventoryParamController();
@@ -1010,8 +1035,10 @@ public class DashboardController implements Initializable {
      * **************** MENU ITEMS SECTIONS *********************************
      */
     private void inventoryMenuItems() {
+        
         String jsonString = "[\n"
                 + "  {\"access_level\": \"026 011\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Inventory\", \"controller_path\": \"sample.controller\", \"menu_id\": \"028\", \"menu_parent\": \"\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Inventory Maintenance\", \"fxml_path\": \"Inventory/Inventory Maintenance\", \"controller_path\": \"sample.controller\", \"menu_id\": \"45\", \"menu_parent\": \"028\"},\n"
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"029\", \"menu_parent\": \"028\"},\n"
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"030\", \"menu_parent\": \"029\"},\n"
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/Regular Stocks/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},\n"
@@ -1028,6 +1055,8 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Motorcycle \", \"fxml_path\": \"Inventory/History/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"042\", \"menu_parent\": \"041\"},\n"
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Spareparts \", \"fxml_path\": \"Inventory/History/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"043\", \"menu_parent\": \"041\"}\n"
                 + "]";
+
+        
         JSONParser parser = new JSONParser();
         try {
             try {
@@ -1044,29 +1073,67 @@ public class DashboardController implements Initializable {
         }
     }
 
-    private void purchasingMenuItems() {
+//    private void purchasingMenuItems() {
+//        String jsonString = "["
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing\", \"fxml_path\": \"Purchasing\", \"controller_path\": \"sample.controller\", \"menu_id\": \"014\", \"menu_parent\": \"\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"015\", \"menu_parent\": \"014\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"016\", \"menu_parent\": \"014\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"017\", \"menu_parent\": \"014\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"018\", \"menu_parent\": \"014\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"019\", \"menu_parent\": \"014\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"020\", \"menu_parent\": \"014\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Purchasing/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"021\", \"menu_parent\": \"014\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/History/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"022\", \"menu_parent\": \"021\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"023\", \"menu_parent\": \"021\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"024\", \"menu_parent\": \"021\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/History/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"025\", \"menu_parent\": \"021\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/History/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"026\", \"menu_parent\": \"021\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/History/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"027\", \"menu_parent\": \"021\"}\n"
+//                + "]";
+//
+//        
+//        
+//        
+//        JSONParser parser = new JSONParser();
+//        try {
+//            try {
+//                flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
+//                JSONObject purchasingMainMenu = buildHierarchy("014");
+//                dissectLeftSideBarJSON(purchasingMainMenu.toJSONString());
+//
+//            } catch (IOException ex) {
+//                Logger.getLogger(DashboardController.class
+//                        .getName()).log(Level.SEVERE, null, ex);
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//    }
+        private void purchasingMenuItems() {
         String jsonString = "["
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing\", \"fxml_path\": \"Purchasing\", \"controller_path\": \"sample.controller\", \"menu_id\": \"014\", \"menu_parent\": \"\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"015\", \"menu_parent\": \"014\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"016\", \"menu_parent\": \"014\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"017\", \"menu_parent\": \"014\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"018\", \"menu_parent\": \"014\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"019\", \"menu_parent\": \"014\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"020\", \"menu_parent\": \"014\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Purchasing/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"021\", \"menu_parent\": \"014\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/History/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"022\", \"menu_parent\": \"021\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"023\", \"menu_parent\": \"021\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"024\", \"menu_parent\": \"021\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/History/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"025\", \"menu_parent\": \"021\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/History/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"026\", \"menu_parent\": \"021\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/History/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"027\", \"menu_parent\": \"021\"}\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing\", \"fxml_path\": \"Purchasing\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditation\", \"fxml_path\": \"Purchasing/Accounts Accreditation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"003\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"004\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"006\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"007\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Purchasing/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditation\", \"fxml_path\": \"Purchasing/History/Accounts Accreditation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"010\", \"menu_parent\": \"009\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/History/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"011\", \"menu_parent\": \"009\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"012\", \"menu_parent\": \"009\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"013\", \"menu_parent\": \"009\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/History/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"014\", \"menu_parent\": \"009\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/History/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"015\", \"menu_parent\": \"009\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/History/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"016\", \"menu_parent\": \"009\"}\n"
                 + "]";
 
         JSONParser parser = new JSONParser();
         try {
             try {
                 flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
-                JSONObject purchasingMainMenu = buildHierarchy("014");
+                JSONObject purchasingMainMenu = buildHierarchy("001");
                 dissectLeftSideBarJSON(purchasingMainMenu.toJSONString());
 
             } catch (IOException ex) {
@@ -1135,8 +1202,12 @@ public class DashboardController implements Initializable {
     }
     
     private void parametersMenuItems() {
-                String jsonString = "["
+          String jsonString = "["
                 + "{\"access_level\": \"011\", \"menu_name\": \"Others\", \"fxml_path\": \"Others\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Clients\", \"fxml_path\": \"Others/Clients\", \"controller_path\": \"\", \"menu_id\": \"045\", \"menu_parent\": \"001\"}"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Others/Inventory\", \"controller_path\": \"\", \"menu_id\": \"042\", \"menu_parent\": \"001\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory Parameter\", \"fxml_path\": \"Others/Inventory/Inventory Parameter\", \"controller_path\": \"\", \"menu_id\": \"43\", \"menu_parent\": \"042\"},"
+                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory Serial Parameter\", \"fxml_path\": \"Others/Inventory/Inventory Serial Parameter\", \"controller_path\": \"\", \"menu_id\": \"044\", \"menu_parent\": \"042\"}"
                 + "{\"access_level\": \"011\", \"menu_name\": \"Parameters\", \"fxml_path\": \"Others/Parameters\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\"},"
                 + "{\"access_level\": \"011\", \"menu_name\": \"Address\", \"fxml_path\": \"Others/Parameters/Address\", \"controller_path\": \"sample.controller\", \"menu_id\": \"003\", \"menu_parent\": \"002\"},"
                 + "{\"access_level\": \"011\", \"menu_name\": \"Barangay\", \"fxml_path\": \"Others/Parameters/Address/Barangay\", \"controller_path\": \"sample.controller\", \"menu_id\": \"004\", \"menu_parent\": \"003\"},"
@@ -1177,14 +1248,6 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\": \"011\", \"menu_name\": \"Size\", \"fxml_path\": \"Others/Parameters/Others/Size\", \"controller_path\": \"\", \"menu_id\": \"039\", \"menu_parent\": \"031\"},"
                 + "{\"access_level\": \"011\", \"menu_name\": \"Term\", \"fxml_path\": \"Others/Parameters/Others/Term\", \"controller_path\": \"\", \"menu_id\": \"40\", \"menu_parent\": \"031\"},"
                 + "{\"access_level\": \"011\", \"menu_name\": \"Warehouse\", \"fxml_path\": \"Others/Parameters/Others/Warehouse\", \"controller_path\": \"\", \"menu_id\": \"041\", \"menu_parent\": \"031\"}"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Others/Inventory\", \"controller_path\": \"\", \"menu_id\": \"042\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory Parameter\", \"fxml_path\": \"Others/Inventory/Inventory Param\", \"controller_path\": \"\", \"menu_id\": \"43\", \"menu_parent\": \"042\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Inventory Serial Parameter\", \"fxml_path\": \"Others/Inventory/Inventory Serial Param\", \"controller_path\": \"\", \"menu_id\": \"044\", \"menu_parent\": \"042\"}"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Clients\", \"fxml_path\": \"Others/Clients\", \"controller_path\": \"\", \"menu_id\": \"045\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Client Parameters\", \"fxml_path\": \"Others/Clients/Client Parameters\", \"controller_path\": \"\", \"menu_id\": \"46\", \"menu_parent\": \"045\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Client Transactions Company\", \"fxml_path\": \"Others/Clients/Client Transactions Company\", \"controller_path\": \"\", \"menu_id\": \"047\", \"menu_parent\": \"045\"}"
-                + "{\"access_level\": \"011\", \"menu_name\": \"Client Transactions Individual\", \"fxml_path\": \"Others/Clients/Client Transactions Individual\", \"controller_path\": \"\", \"menu_id\": \"48\", \"menu_parent\": \"045\"},"
-                + "{\"access_level\": \"011\", \"menu_name\": \"New Customer\", \"fxml_path\": \"Others/Clients/New Customer\", \"controller_path\": \"\", \"menu_id\": \"049\", \"menu_parent\": \"045\"}"
                 + "]";
 
         JSONParser parser = new JSONParser();
@@ -1428,6 +1491,10 @@ public class DashboardController implements Initializable {
         String sLocation = menuLocationMap.getOrDefault(newValue, ""); // Get location from map
 
         switch (selectedMenu) {
+            case "Inventory Maintenance":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml";
+                break;
+            
             case "Motorcycle":
                 switch (sLocation.toLowerCase()) {
                     case "sales/sales/motorcycle":
@@ -1511,6 +1578,21 @@ public class DashboardController implements Initializable {
                         break;
                     case "purchasing/history/purchasing order":
                         sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml";
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
+            case "Accounts Accreditation":
+                switch (sLocation.toLowerCase()) {
+                    case "purchasing/accounts accreditation":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml";
+//                        ShowMessageFX.Information("Purchasing Receiving", "You selected", sLocation);
+                        break;
+                    case "purchasing/history/accounts accreditation":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml";
+//                        ShowMessageFX.Information("Accounts Accreditation History", "You selected", sLocation);
                         break;
                     default:
                         ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
@@ -1662,6 +1744,11 @@ public class DashboardController implements Initializable {
             case "Warehouse":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml";
                 break; 
+                
+            /*OTHERS/CLIENTS*/    
+            case "Clients":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/ClientMasterParameter.fxml";
+                break;    
                 
             /*OTHERS/PARAMETER/Color*/    
             case "Inventory Parameter":

@@ -2,6 +2,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\AccountsReceivableController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController.class
 com\rmj\guanzongroup\sidebarmenus\controller\BarangayController.class
 com\rmj\guanzongroup\sidebarmenus\controller\RegionController$1.class
+com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationHistoryController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\ProvinceController$1.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelMobile.class
 com\rmj\guanzongroup\sidebarmenus\controller\MeasureController$1.class
@@ -13,6 +14,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\AffiliatedCompanyController.class
 com\rmj\guanzongroup\sidebarmenus\controller\AccountsPayableController.class
 com\rmj\guanzongroup\sidebarmenus\controller\MeasureController.class
 com\rmj\guanzongroup\sidebarmenus\LetMeIn.class
+com\rmj\guanzongroup\sidebarmenus\controller\InventoryMaintenanceController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\WarehouseController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryParamController.class
 com\rmj\guanzongroup\sidebarmenus\controller\BrandController.class
@@ -22,10 +24,12 @@ com\rmj\guanzongroup\sidebarmenus\controller\SizeController$1.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelAPClientLedger.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryLocationController.class
+com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\MadeController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelEmail.class
 com\rmj\guanzongroup\sidebarmenus\controller\DepartmentController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel2Controller$1.class
+com\rmj\guanzongroup\sidebarmenus\controller\InventorySerialController.class
 com\rmj\guanzongroup\sidebarmenus\controller\RelationshipController.class
 com\rmj\guanzongroup\sidebarmenus\controller\TermController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvSubUnit.class
@@ -37,10 +41,12 @@ com\rmj\guanzongroup\sidebarmenus\controller\SectionController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel3Controller.class
 com\rmj\guanzongroup\sidebarmenus\controller\ModelController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryTypeController.class
+com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvSerial.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventorySerialParamController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryLocationController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\FXMLDocumentController.class
+com\rmj\guanzongroup\sidebarmenus\table\model\ModelAccredetations.class
 com\rmj\guanzongroup\sidebarmenus\controller\MadeController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\AccountsReceivableController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptanceConfirmationController.class
@@ -52,10 +58,13 @@ com\rmj\guanzongroup\sidebarmenus\controller\SizeController.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel4Controller.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel4Controller$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DepartmentController.class
+com\rmj\guanzongroup\sidebarmenus\controller\InventoryMaintenanceController.class
+com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\SharedModel.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryTypeController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\AffiliatedCompanyController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryController.class
+com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationHistoryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptanceEntryController.class
 com\rmj\guanzongroup\sidebarmenus\GriderGui.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelAttachment.class
@@ -71,6 +80,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\DashboardController1$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController1.class
 com\rmj\guanzongroup\sidebarmenus\controller\TermController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchasingOrder_EntryController.class
+com\rmj\guanzongroup\sidebarmenus\controller\ClientMasterParameterController.class
 com\rmj\guanzongroup\sidebarmenus\controller\BranchController.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\CompanyController$1.class
@@ -78,7 +88,9 @@ com\rmj\guanzongroup\sidebarmenus\controller\unloadForm.class
 com\rmj\guanzongroup\sidebarmenus\App.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController$2$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\SampleForm1Controller.class
+com\rmj\guanzongroup\sidebarmenus\controller\InventoryLedgerController.class
 com\rmj\guanzongroup\sidebarmenus\controller\ModelController.class
+com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvLedger.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelInstitutionalContactPerson.class
 com\rmj\guanzongroup\sidebarmenus\controller\CountryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\SalesmanController.class

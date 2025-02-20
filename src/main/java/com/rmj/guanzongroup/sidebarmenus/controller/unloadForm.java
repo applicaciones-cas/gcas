@@ -125,5 +125,22 @@ public class unloadForm {
                 return null;
         }
     }
+    
+    public void useParentController(String lsValue) {
+        if (parentController instanceof ClientMasterParameterController) {
+            ((ClientMasterParameterController) parentController).loadReturn(lsValue);
+        } 
+//        else if (parentController instanceof ClientMasterTransactionCompanyController) {
+//            ((ClientMasterTransactionCompanyController) parentController).loadReturn(lsValue);
+////        }else if (parentController instanceof FrmAccountsPayableController) {
+////            ((FrmAccountsPayableController) parentController).loadReturn(lsValue);
+////        }else if (parentController instanceof FrmAccountsReceivableController) {
+////            ((FrmAccountsReceivableController) parentController).loadReturn(lsValue);
+//        }else if (parentController instanceof InventoryDetailController) {
+//            ((InventoryDetailController) parentController).loadResult(lsValue,false);
+//        }else if (parentController instanceof PO_Quotation_RequestController) {
+//            ((PO_Quotation_RequestController) parentController).loadResult(lsValue,false);
+//        }
+    }
 
 }

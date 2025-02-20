@@ -314,7 +314,7 @@
  *                                                                             *
  ******************************************************************************/
 
-.scroll-pane-item-management{
+/*.scroll-pane-item-management{
     -fx-background-color:transparent;
     -fx-hbar-policy: never;
 }
@@ -325,8 +325,14 @@
     -fx-focus-color: transparent;
     -fx-smooth: true;
     -fx-unit-increment: 16;
+}*/
+.scroll-pane {
+    -fx-border-color: orange;
 }
 
+.scroll-pane-item-management {
+    -fx-border-color: orange;
+}
 /*******************************************************************************
  *                                                                             *
  * RADIO BUTTON CSS                                                                     *
@@ -641,4 +647,19 @@
     -fx-light-grey-color: gray;
 
     -fx-focus-color: -fx-secondary-color;
+}
+
+.combo-box-base{
+    -fx-font-family: "Courier New";
+    -fx-background-color: white;
+    -fx-border-color: #5e5e5e;
+    -fx-text-alignment: center;
+    -fx-border-radius:3px;
+}
+
+
+.combo-box-base:disabled,
+.list-cell:disabled,
+.check-box:disabled{
+    -fx-opacity: 1;
 }
