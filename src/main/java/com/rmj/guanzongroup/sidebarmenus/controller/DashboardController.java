@@ -767,64 +767,6 @@ public class DashboardController implements Initializable {
         setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
     }
 
-//    private void setTreeViewStyle(TreeView<String> treeView) {
-//        treeView.setCellFactory(tv -> new TreeCell<String>() {
-//            @Override
-//            protected void updateItem(String item, boolean empty) {
-//                super.updateItem(item, empty);
-//
-//                if (empty || item == null) {
-//                    setText(null);
-//                    setGraphic(null);
-//                    setStyle("-fx-background-color: #DFDFDF; -fx-border-color: #DFDFDF;");
-//                    if (!getStyleClass().contains("empty-tree-cell")) {
-//                        getStyleClass().add("empty-tree-cell");
-//                    }
-//                } else {
-//                    setText(item);
-//                    setGraphic(getTreeItem().getGraphic());
-//                    setStyle(null);
-//                    getStyleClass().remove("empty-tree-cell");
-//                }
-//            }
-//        });
-//    }
-//    private void setTreeViewStyle(TreeView<String> treeView) {
-//        treeView.setCellFactory(tv -> new TreeCell<String>() {
-//            @Override
-//            protected void updateItem(String item, boolean empty) {
-//                super.updateItem(item, empty);
-//
-//                if (empty || item == null) {
-//                    setText(null);
-//                    setGraphic(null);
-//                    setStyle("-fx-background-color: #DFDFDF; -fx-border-color: #DFDFDF;");
-//                    if (!getStyleClass().contains("empty-tree-cell")) {
-//                        getStyleClass().add("empty-tree-cell");
-//                    }
-//                } else {
-//                    setText(item);
-//                    setGraphic(getTreeItem().getGraphic());
-//                    setStyle(null);
-//                    getStyleClass().remove("empty-tree-cell");
-//
-//                    setOnMouseClicked(event -> {
-//                        if (event.getClickCount() == 1) {
-//                            TreeItem<String> treeItem = getTreeItem();
-//                            if (treeItem != null && !treeItem.isLeaf()) {
-//                                Node disclosureNode = getDisclosureNode();
-//                                if (disclosureNode != null && disclosureNode.contains(event.getX(), event.getY())) {
-//                                    return;
-//                                }
-//                                treeItem.setExpanded(!treeItem.isExpanded());
-//                                event.consume();
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//    }
     private void setTreeViewStyle(TreeView<String> treeView) {
         treeView.setCellFactory(tv -> new TreeCell<String>() {
             @Override
