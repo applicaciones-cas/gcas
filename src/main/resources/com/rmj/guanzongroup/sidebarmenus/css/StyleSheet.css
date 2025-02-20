@@ -257,8 +257,8 @@
 
 .text-field {
     -fx-font-size: 10pt;
-    -fx-min-height: 25;
-    -fx-pref-height: 25px;
+    -fx-min-height: 26;
+    -fx-pref-height: 26px;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -267,14 +267,14 @@
 }
 
 .text-field, .text-area:focused {
-    -fx-min-height: 25;
+    -fx-min-height: 26;
     -fx-background-color:
         orange,
         white;
 }
 .text-field, .text-area:disabled {
     -fx-font-size: 10pt;
-    -fx-min-height: 25;
+    -fx-min-height: 26;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -284,7 +284,7 @@
 
 .menu-button {
     -fx-font-size: 10pt;
-    -fx-min-height: 25;
+    -fx-min-height: 26;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -572,4 +572,58 @@
 .tree-disclosure-node .arrow {
     -fx-background-color: black;
     -fx-padding: 5px;
+}
+
+.combo-box {
+   -fx-border-color: black ;
+    -fx-max-height: 30px;
+    -fx-min-height: 30px;
+    -fx-background-color: transparent;
+    -fx-border-width: .5px;
+    -fx-border-radius: 5px;
+    -fx-padding: 3px;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+.combo-box:focused {
+    -fx-border-color: #F88222 ;
+}
+
+.combo-box-base:disabled,
+.list-cell:disabled,
+.check-box:disabled{
+    -fx-opacity: 1;
+}
+
+.combo-box {
+
+    -fx-max-height: 30px;
+    -fx-min-height: 30px;
+    -fx-background-color: transparent;
+    -fx-border-width: .5px;
+    -fx-border-radius: 5px;
+    -fx-padding: 3px;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+.combo-box:focused {
+    -fx-border-color: #F88222 ;
+}
+
+.button_process2 {
+    -fx-background-color: #FF8201;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+.button_process2:hover
+{
+    -fx-background-color: #CC6900;
 }
