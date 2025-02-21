@@ -251,7 +251,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
                     return "Purchase Order History";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
-                    return "Delivery Acceptance";
+                    return "Purchase Order Receiving";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml":
                     return "Purchasing Receiving Confirmation";
 
