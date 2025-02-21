@@ -1,3 +1,10 @@
+* {
+    -fx-primary-color: #F88222;
+    -fx-secondary-color: #F88222;
+    -fx-light-grey-color: gray;
+
+    -fx-focus-color: -fx-secondary-color;
+}
 /* HEADER CSS */
 .toolbar{
     -fx-background-color: #4C4C4C;
@@ -172,6 +179,52 @@
     -fx-background-color: #FF8201;
     -fx-text-fill: black;
 }
+
+.date-picker .arrow-button {
+    -fx-background-color: -fx-primary-color;
+    -fx-background-radius: 0;
+}
+.date-picker .arrow-button:hover {
+    -fx-background-color: gray;
+}
+.date-picker .arrow-button .arrow {
+    -fx-background-color: white;
+}
+.date-picker .cell {
+    -fx-background-color: white;
+}
+.date-picker .cell:hover {
+    -fx-background-color: -fx-light-grey-color;
+}
+.date-picker .cell:focused {
+    -fx-background-color: #F88222;
+}
+.date-picker .selected {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+}
+.date-picker .selected:focused {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+}
+.date-picker-popup  {
+    -fx-border-color: transparent;
+}
+.date-picker-popup .month-year-pane {
+    -fx-background-color: -fx-primary-color;
+}
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: white;
+
+}
+.date-picker-popup .week-number-cell {
+    -fx-text-fill: -fx-secondary-color;
+}
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+    -fx-background-color: white;
+}
+
 /* BUTTON BODY CSS END */
 
 /*******************************************************************************
@@ -257,8 +310,8 @@
 
 .text-field {
     -fx-font-size: 10pt;
-    -fx-min-height: 26;
-    -fx-pref-height: 26px;
+    -fx-min-height: 25;
+    -fx-pref-height: 25px;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -267,14 +320,14 @@
 }
 
 .text-field, .text-area:focused {
-    -fx-min-height: 26;
+    -fx-min-height: 25;
     -fx-background-color:
         orange,
         white;
 }
 .text-field, .text-area:disabled {
     -fx-font-size: 10pt;
-    -fx-min-height: 26;
+    -fx-min-height: 25;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -284,7 +337,7 @@
 
 .menu-button {
     -fx-font-size: 10pt;
-    -fx-min-height: 26;
+    -fx-min-height: 25;
     -fx-opacity: 1.0;
     -fx-background-color:
         grey,
@@ -373,56 +426,56 @@
     -fx-stroke-width: 3px;
 }
 .default-color0.chart-line-symbol {
-    -fx-background-color: orange;
+    -fx-stroke: #F88222;
 }
 .default-color1.chart-line-symbol {
-    -fx-background-color: orange;
+    -fx-stroke: #F88222;
 }
 .default-color2.chart-line-symbol {
-    -fx-background-color: orange;
+    -fx-stroke: #F88222;
 }
 .default-color3.chart-line-symbol {
-    -fx-background-color: orange;
+    -fx-stroke: #F88222;
 }
 .default-color4.chart-line-symbol {
-    -fx-background-color: orange;
+    -fx-stroke: #F88222;
 }
 .default-color5.chart-line-symbol {
-    -fx-background-color: orange;
+    -fx-stroke: #F88222;
 }
 .default-color6.chart-line-symbol {
-    -fx-background-color: orange;
+    -fx-stroke: #F88222;
 }
 .default-color7.chart-line-symbol {
-    -fx-background-color: orange;
+    -fx-stroke: #F88222;
 }
 .default-color0.chart-series-line {
-    -fx-stroke: orange;
+    -fx-stroke: #F88222;
 }
 .default-color1.chart-series-line {
-    -fx-stroke: orange;
+    -fx-stroke: #F88222;
 }
 .default-color2.chart-series-line {
-    -fx-stroke: orange;
+    -fx-stroke: #F88222;
 }
 .default-color3.chart-series-line {
-    -fx-stroke: orange;
+    -fx-stroke: #F88222;
 }
 .default-color4.chart-series-line {
-    -fx-stroke: orange;
+    -fx-stroke: #F88222;
 }
 .default-color5.chart-series-line {
-    -fx-stroke: orange;
+    -fx-stroke: #F88222;
 }
 .default-color6.chart-series-line {
-    -fx-stroke: orange;
+    -fx-stroke: #F88222;
 }
 .default-color7.chart-series-line {
-    -fx-stroke: orange;
+    -fx-stroke: #F88222;
 }
 
 .tooltip {
-    -fx-show-delay: 100ms;
+    -fx-show-delay: 1ms;
 }
 .dash-sale{
     -fx-background-color:  #9C27B0;
@@ -465,7 +518,9 @@
  * LISTVIEW CSS                                                                     *
  *                                                                             *
  ******************************************************************************/
-
+.label:disabled {
+    -fx-opacity: 1.0;
+}
 .list-view {
     -fx-border-image-width: 0;
     -fx-opacity: 1;
@@ -573,57 +628,47 @@
     -fx-background-color: black;
     -fx-padding: 5px;
 }
-
-.combo-box {
-   -fx-border-color: black ;
-    -fx-max-height: 30px;
-    -fx-min-height: 30px;
-    -fx-background-color: transparent;
-    -fx-border-width: .5px;
-    -fx-border-radius: 5px;
-    -fx-padding: 3px;
+.date-picker .arrow-button {
+    -fx-background-color: -fx-primary-color;
+    -fx-background-radius: 0;
 }
-
-.combo-box .arrow-button {
-    -fx-background-color: transparent;
-    -fx-shape: "";
-    -fx-padding: 0;
+.date-picker .arrow-button:hover {
+    -fx-background-color: gray;
 }
-.combo-box:focused {
-    -fx-border-color: #F88222 ;
+.date-picker .arrow-button .arrow {
+    -fx-background-color: white;
 }
-
-.combo-box-base:disabled,
-.list-cell:disabled,
-.check-box:disabled{
-    -fx-opacity: 1;
+.date-picker .cell {
+    -fx-background-color: white;
 }
-
-.combo-box {
-
-    -fx-max-height: 30px;
-    -fx-min-height: 30px;
-    -fx-background-color: transparent;
-    -fx-border-width: .5px;
-    -fx-border-radius: 5px;
-    -fx-padding: 3px;
+.date-picker .cell:hover {
+    -fx-background-color: -fx-light-grey-color;
 }
-
-.combo-box .arrow-button {
-    -fx-background-color: transparent;
-    -fx-shape: "";
-    -fx-padding: 0;
+.date-picker .cell:focused {
+    -fx-background-color: #F88222;
 }
-.combo-box:focused {
-    -fx-border-color: #F88222 ;
-}
-
-.button_process2 {
-    -fx-background-color: #FF8201;
+.date-picker .selected {
+    -fx-background-color: -fx-primary-color;
     -fx-text-fill: white;
-    -fx-cursor: hand;
 }
-.button_process2:hover
-{
-    -fx-background-color: #CC6900;
+.date-picker .selected:focused {
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+}
+.date-picker-popup  {
+    -fx-border-color: transparent;
+}
+.date-picker-popup .month-year-pane {
+    -fx-background-color: -fx-primary-color;
+}
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: white;
+
+}
+.date-picker-popup .week-number-cell {
+    -fx-text-fill: -fx-secondary-color;
+}
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+    -fx-background-color: white;
 }

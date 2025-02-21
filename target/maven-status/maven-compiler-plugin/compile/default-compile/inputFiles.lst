@@ -1,10 +1,51 @@
-D:\Guanzon\GMC SEG Folder - Maven\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DashboardController.java
-D:\Guanzon\GMC SEG Folder - Maven\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\LetMeIn.java
-D:\Guanzon\GMC SEG Folder - Maven\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SampleForm2Controller.java
-D:\Guanzon\GMC SEG Folder - Maven\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\FXMLDocumentController.java
-D:\Guanzon\GMC SEG Folder - Maven\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\ScreenInterfaceController.java
-D:\Guanzon\GMC SEG Folder - Maven\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DashboardController1.java
-D:\Guanzon\GMC SEG Folder - Maven\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\App.java
-D:\Guanzon\GMC SEG Folder - Maven\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SampleForm1Controller.java
-D:\Guanzon\GMC SEG Folder - Maven\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\ScreenInterface.java
-D:\Guanzon\GMC SEG Folder - Maven\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\GriderGui.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\LetMeIn.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\BarangayController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\ScreenInterface.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\ColorController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\PaymentRequestController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\BrandController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SampleForm2Controller.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\FXMLDocumentController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel2Controller.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\CompanyController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\RegionController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SectionController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\table\model\ModelAttachment.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SalesmanController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\ScreenInterfaceController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\CategoryController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptanceEntryController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DefaultScreenController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\unloadForm.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SizeController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel4Controller.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\RelationshipController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InventoryTypeController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\ColorDetailController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\LaborCategoryController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptanceConfirmationController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\WarehouseController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\MadeController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\TermController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\AffiliatedCompanyController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel3Controller.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\App.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\MeasureController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\BranchController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\BanksBranchesController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\LaborModelController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\table\model\ModelResultSet.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SampleForm1Controller.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\PurchasingOrder_EntryController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DashboardController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\GriderGui.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\CountryController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DashboardController1.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\ProvinceController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\table\model\ModelListParameter.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\BanksController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DepartmentController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\LaborController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\ModelController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\table\model\ModelPurchaseOrder.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InventoryLocationController.java
