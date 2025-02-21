@@ -258,7 +258,6 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Region.fxml":
                     return "Region";
 
-                    
                 /*PARAMETERS/BANKS*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Banks.fxml":
                     return "Banks";
@@ -343,36 +342,7 @@ public class DashboardController implements Initializable {
                 /* ACCOUNTS/ACCOUNTS/ACCOUNTS RECEIVABLE */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
                     return "Accounts Receivable";
-                
-                /*PARAMETERS/LABOR*/
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Labor.fxml":
-                    return "Labor";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/LaborCategory.fxml":
-                    return "Labor Category";    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/LaborModel.fxml":
-                    return "Labor Model";    
-                
-                /*PARAMETERS/OTHERS*/
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml":
-                    return "Brand";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Made.fxml":
-                    return "Made";    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Model.fxml":
-                    return "Model";  
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Measure.fxml":
-                    return "Measure";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml":
-                    return "Relationship";    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml":
-                    return "Salesman";  
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml":
-                    return "Section";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml":
-                    return "Size";    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml":
-                    return "Term";     
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
-                    return "Warehouse";  
+
                 default:
                     return null;
             }
@@ -390,8 +360,8 @@ public class DashboardController implements Initializable {
                     return new DefaultScreenController();
 
                 /* INVENTORY/INVENTORY/ */
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
-                    return new InventoryMaintenanceController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
+//                    return new InventoryMaintenanceController();
 
                 /* PURCHASING/PURCHASING/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
@@ -400,18 +370,18 @@ public class DashboardController implements Initializable {
                     return new SampleForm2Controller();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
                     return new PurchasingOrder_EntryController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
-                    return new AccountsAccreditationController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
-                    return new AccountsAccreditationHistoryController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
+//                    return new AccountsAccreditationController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
+//                    return new AccountsAccreditationHistoryController();
                 // case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
                 // return new PurchasingOrder_HistoryController();
-                
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
                     return new DeliveryAcceptanceEntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
                     return new PaymentRequestController();
-                
+
                 /* OTHERS/PARAMETERS/ADDRESS */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
                     return new BarangayController();
@@ -491,52 +461,23 @@ public class DashboardController implements Initializable {
                     return new WarehouseController();
 
                 /* OTHERS/Clients */
-                case "/com/rmj/guanzongroup/sidebarmenus/views/ClientMasterParameter.fxml":
-                // return new ClientMasterParameterController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/ClientMasterParameter.fxml":
+//                 return new ClientMasterParameterController();
+//
+//                /* OTHERS/INVENTORY */
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryParam.fxml":
+//                    return new InventoryParamController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/InventorySerialParam.fxml":
+//                    return new InventorySerialParamController();
+//
+//                /* ACOUNTS/ACOUNTS/ACOUNTS PAYABLE */
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayable.fxml":
+//                    return new AccountsPayableController();
+//
+//                /* ACOUNTS/ACOUNTS/ACOUNTS RECEIVABLE */
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
+//                    return new AccountsReceivableController();
 
-                /* OTHERS/INVENTORY */
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryParam.fxml":
-                    return new InventoryParamController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventorySerialParam.fxml":
-                    return new InventorySerialParamController();
-
-                /* ACOUNTS/ACOUNTS/ACOUNTS PAYABLE */
-                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayable.fxml":
-                    return new AccountsPayableController();
-
-                /* ACOUNTS/ACOUNTS/ACOUNTS RECEIVABLE */
-                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
-                    return new AccountsReceivableController();
-                
-                /*PARAMETERS/LABOR*/
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Labor.fxml":
-                    return new LaborController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/LaborCategory.fxml":
-                    return new LaborCategoryController();    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/LaborModel.fxml":
-                    return new LaborModelController();    
-                    
-                /*PARAMETERS/OTHERS*/
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml":
-                    return new BrandController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Made.fxml":
-                    return new MadeController();    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Model.fxml":
-                    return new ModelController();    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Measure.fxml":
-                    return new MeasureController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml":
-                    return new RelationshipController();    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml":
-                    return new SalesmanController();    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml":
-                    return new SectionController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml":
-                    return new SizeController();    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml":
-                    return new TermController();     
-                case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
-                    return new WarehouseController();    
                 default:
                     return null;
             }
@@ -1025,7 +966,7 @@ public class DashboardController implements Initializable {
         toggleLeftSideBarMenuButton("switchOthers", 6);
         toggleSidebarWidth();
     }
-  
+
     @FXML
     private void switchHelp(ActionEvent event) {
         openPDF("D:/Help.pdf");
@@ -1149,21 +1090,33 @@ public class DashboardController implements Initializable {
     private void purchasingMenuItems() {
         String jsonString = "["
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing\", \"fxml_path\": \"Purchasing\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"003\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"004\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"006\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"007\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Purchasing/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/History/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"010\", \"menu_parent\": \"009\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/History/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"011\", \"menu_parent\": \"009\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"012\", \"menu_parent\": \"009\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"013\", \"menu_parent\": \"009\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/History/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"014\", \"menu_parent\": \"009\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/History/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"015\", \"menu_parent\": \"009\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/History/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"016\", \"menu_parent\": \"009\"}\n"
+                //entry
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Entry\", \"fxml_path\": \"Purchasing/Entry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/Entry/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"003\", \"menu_parent\": \"002\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Entry/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"004\", \"menu_parent\": \"002\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Entry/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"002\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing//Entry/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"006\", \"menu_parent\": \"002\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing//Entry/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"007\", \"menu_parent\": \"002\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing//Entry/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"002\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing//Entry/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"002\"},\n"
+                //approval
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Approval\", \"fxml_path\": \"Purchasing/Approval\", \"controller_path\": \"sample.controller\", \"menu_id\": \"010\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/Approval/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"011\", \"menu_parent\": \"010\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Approval/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"012\", \"menu_parent\": \"010\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Approval/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"013\", \"menu_parent\": \"010\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"PurchasingApproval/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"014\", \"menu_parent\": \"010\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Approval/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"015\", \"menu_parent\": \"010\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Approval/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"016\", \"menu_parent\": \"010\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Approval/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"017\", \"menu_parent\": \"010\"},\n"
+                //history
+                + "  {\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Purchasing/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"018\", \"menu_parent\": \"001\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/History/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"019\", \"menu_parent\": \"018\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/History/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"021\", \"menu_parent\": \"018\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"022\", \"menu_parent\": \"018\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"023\", \"menu_parent\": \"018\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/History/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"024\", \"menu_parent\": \"018\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/History/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"025\", \"menu_parent\": \"018\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/History/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"026\", \"menu_parent\": \"018\"}\n"
                 + "]";
 
         JSONParser parser = new JSONParser();
@@ -1301,6 +1254,7 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
     }
+
     private void parametersMenuItems() {
         String jsonString = "["
                 + "{\"access_level\": \"011\", \"menu_name\": \"Parameters\", \"fxml_path\": \"Parameters\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\"},"
@@ -1769,9 +1723,9 @@ public class DashboardController implements Initializable {
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Company.fxml";
                 break;
             case "Department":
-                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Department.fxml"
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Department.fxml";
                 break;
-            
+
             /* OTHERS/PARAMETER/Inventory */
             case "Inventory Location":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryLocation.fxml";
@@ -1806,7 +1760,7 @@ public class DashboardController implements Initializable {
                 break;
             case "Relationship":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml";
-                break; 
+                break;
             case "Salesman":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml";
                 break;
@@ -1844,14 +1798,8 @@ public class DashboardController implements Initializable {
             /* ACCOUNTS/ACCOUNTS/ACCOUNTS RECEIVABLE */
             case "Accounts Receivable":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml";
-            
-                break; 
-            case "Term":
-                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml";
-                break; 
-            case "Warehouse":
-                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml";
                 break;
+
             default:
                 sformname = "";
                 break;
