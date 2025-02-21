@@ -30,7 +30,7 @@ import javafx.util.Duration;
  *
  * @author User
  */
-public class Log_In_2Controller implements Initializable, ScreenInterface {
+public class Log_InController implements Initializable, ScreenInterface {
 
     @FXML
     private StackPane stackPane;
@@ -67,7 +67,7 @@ public class Log_In_2Controller implements Initializable, ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        DashboardController mainController = ControllerHolder.getMainController();
+        DashboardController mainController = LoginControllerHolder.getMainController();
         mainController.triggervbox();
         // TODO
         Platform.runLater(() -> {
@@ -149,9 +149,9 @@ public class Log_In_2Controller implements Initializable, ScreenInterface {
         switch (lsButton) {
             case "BtnLogIn":
                 // must trigger the vbox controller to enable
-                DashboardController mainController = ControllerHolder.getMainController();
+                DashboardController mainController = LoginControllerHolder.getMainController();
                 mainController.triggervbox2();
-
+                LoginControllerHolder.setLogInStatus(true);
                 break;
             default:
                 break;

@@ -55,6 +55,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -70,7 +71,9 @@ public class DashboardController implements Initializable {
     private GRider oApp;
     private String lastClickedBtnLeftSideBar = "";
     private String lastClickedBtnRightSideBar = "";
-    private String psDefaultScreenFXML = "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml";
+//    private String psDefaultScreenFXML = "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml";
+    private String psDefaultScreenFXML = "/com/rmj/guanzongroup/sidebarmenus/views/Log_In.fxml";
+    private String psDefaultScreenFXML2 = "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml";
     private int notificationCount = 0;
     private int cartCount = 0;
 
@@ -132,6 +135,12 @@ public class DashboardController implements Initializable {
     @FXML
     private BorderPane main_container;
 
+    @FXML
+    private VBox nav_bar;
+
+    @FXML
+    private VBox nav_bar11;
+
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
@@ -157,8 +166,6 @@ public class DashboardController implements Initializable {
 
             setDropShadowEffectsLeftSideBar(anchorLeftSideBarMenu);
             setDropShadowEffectsRightSideBar(anchorRightSideBarMenu);
-
-            setAnchorPaneVisibleManage(true, anchorRightSideBarMenu);
 
             monitorMenuItems();
         } catch (Exception e) {
@@ -243,8 +250,11 @@ public class DashboardController implements Initializable {
                     return "Purchase Order";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
                     return "Purchase Order History";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
                     return "Delivery Acceptance";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml":
+                    return "Purchasing Receiving Confirmation";
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
                     return "Payment Request";
 
@@ -353,9 +363,43 @@ public class DashboardController implements Initializable {
     /**
      * SCREEN INTERFACE *
      */
+    public void triggervbox() {
+        nav_bar.setDisable(true);
+        nav_bar11.setDisable(true);
+
+    }
+
+    public void triggervbox2() {
+        setAnchorPaneVisibleManage(true, anchorRightSideBarMenu);
+        nav_bar.setDisable(false);
+        nav_bar11.setDisable(false);
+        setScene(loadAnimateAnchor(psDefaultScreenFXML2));
+
+        toggleGroupLowerBtn = new ToggleGroup();
+        toggleBtnLeftLowerSideBar = new ToggleButton[]{
+            btnHelp,
+            btnLogout
+        };
+
+        String[] tooltipTexts = {
+            "Help",
+            "Logout"
+        };
+
+        for (int i = 0; i < toggleBtnLeftLowerSideBar.length; i++) {
+            toggleBtnLeftLowerSideBar[i].setTooltip(new Tooltip(tooltipTexts[i]));
+            toggleBtnLeftLowerSideBar[i].setToggleGroup(toggleGroupLowerBtn);
+        }
+
+    }
+
     private ScreenInterface getController(String fsValue) {
         if (fsValue.contains(".fxml")) {
             switch (fsValue) {
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Log_In.fxml":
+                    LoginControllerHolder locontroller = new LoginControllerHolder();
+                    locontroller.setMainController(this);
+                    return new Log_InController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml":
                     return new DefaultScreenController();
 
@@ -377,8 +421,10 @@ public class DashboardController implements Initializable {
                 // case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
                 // return new PurchasingOrder_HistoryController();
 
-                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml":
-                    return new DeliveryAcceptanceEntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
+                    return new DeliveryAcceptance_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml":
+                    return new DeliveryAcceptance_ConfirmationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
                     return new PaymentRequestController();
 
@@ -477,7 +523,6 @@ public class DashboardController implements Initializable {
 //                /* ACOUNTS/ACOUNTS/ACOUNTS RECEIVABLE */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
 //                    return new AccountsReceivableController();
-
                 default:
                     return null;
             }
@@ -664,6 +709,11 @@ public class DashboardController implements Initializable {
             ft.setAutoReverse(false);
             ft.play();
 
+            //            if(fsFormName.equals(psDefaultScreenFXML))
+//            FadeTransition fadeIn = new FadeTransition(Duration.seconds(3), root);
+//            fadeIn.setFromValue(0);
+//            fadeIn.setToValue(1);
+//            fadeIn.play();
             return root;
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
@@ -744,21 +794,21 @@ public class DashboardController implements Initializable {
 
             StackPane myBox = (StackPane) tabPane.getParent();
             myBox.getChildren().clear();
-            myBox.getChildren().add(unload.getScene(psDefaultScreenFXML, oApp));
+            myBox.getChildren().add(unload.getScene(psDefaultScreenFXML2, oApp));
         }
     }
 
     public void Tabclose() {
         int tabsize = tabpane.getTabs().size();
         if (tabsize == 1) {
-            setScene(loadAnimateAnchor(psDefaultScreenFXML));
+            setScene(loadAnimateAnchor(psDefaultScreenFXML2));
         }
     }
 
     public void Tabclose(TabPane tabpane) {
         int tabsize = tabpane.getTabs().size();
         if (tabsize == 1) {
-            setScene(loadAnimateAnchor(psDefaultScreenFXML));
+            setScene(loadAnimateAnchor(psDefaultScreenFXML2));
         }
     }
 
@@ -892,7 +942,7 @@ public class DashboardController implements Initializable {
 
         String[] tooltipTexts = {
             "Help",
-            "Logout"
+            "Exit"
         };
 
         for (int i = 0; i < toggleBtnLeftLowerSideBar.length; i++) {
@@ -975,18 +1025,28 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void switchLogout(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("GUANZON GROUP OF COMPANIES");
-        alert.setHeaderText("Are you sure you want to logout?");
 
-        Optional<ButtonType> result = alert.showAndWait();
+        if (LoginControllerHolder.getLogInStatus()) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("GUANZON GROUP OF COMPANIES");
+            alert.setHeaderText("Are you sure you want to logout?");
 
-        if (result.isPresent() && result.get() == ButtonType.OK) {
+            Optional<ButtonType> result = alert.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                ToggleGroupControlLowerLeftSideBar();
+                setScene(loadAnimateAnchor(psDefaultScreenFXML));
+                btnLogout.setSelected(false);
+                LoginControllerHolder.setLogInStatus(false);
+            } else {
+                btnLogout.setSelected(false);
+            }
+        } else {
+            LoginControllerHolder.setLogInStatus(false);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
-        } else {
-            btnLogout.setSelected(false);
         }
+
     }
 
     /**
@@ -1046,6 +1106,7 @@ public class DashboardController implements Initializable {
             toggleBtnRightSideBar[btnIndex].setSelected(!isSameButton);
             lastClickedBtnRightSideBar = isSameButton ? "" : buttonId;
         }
+
     }
 
     /**
@@ -1095,10 +1156,10 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/Entry/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"003\", \"menu_parent\": \"002\"},\n"
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Entry/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"004\", \"menu_parent\": \"002\"},\n"
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Entry/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"002\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing//Entry/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"006\", \"menu_parent\": \"002\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing//Entry/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"007\", \"menu_parent\": \"002\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing//Entry/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"002\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing//Entry/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"002\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/Entry/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"006\", \"menu_parent\": \"002\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Entry/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"007\", \"menu_parent\": \"002\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Entry/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"002\"},\n"
+                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Entry/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"002\"},\n"
                 //approval
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Approval\", \"fxml_path\": \"Purchasing/Approval\", \"controller_path\": \"sample.controller\", \"menu_id\": \"010\", \"menu_parent\": \"001\"},\n"
                 + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/Approval/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"011\", \"menu_parent\": \"010\"},\n"
@@ -1620,8 +1681,11 @@ public class DashboardController implements Initializable {
                 break;
             case "Purchasing Order":
                 switch (sLocation.toLowerCase()) {
-                    case "purchasing/purchasing order":
+                    case "purchasing/entry/purchasing order":
                         sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml";
+                        break;
+                    case "purchasing/approval/purchasing order":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Approval.fxml";
                         break;
                     case "purchasing/history/purchasing order":
                         sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml";
@@ -1630,17 +1694,21 @@ public class DashboardController implements Initializable {
                         ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
                         break;
                 }
-                break;
             case "Purchasing Receiving":
                 switch (sLocation.toLowerCase()) {
-                    case "purchasing/purchasing receiving":
-                        sformname = "";
+                    case "purchasing/entry/purchasing receiving":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml";
                         ShowMessageFX.Information("Purchasing Receiving", "You selected", sLocation);
                         break;
                     case "purchasing/history/purchasing receiving":
-                        sformname = "";
-                        ShowMessageFX.Information("Purchasing Receiving", "You selected", sLocation);
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml";
+                        ShowMessageFX.Information("Purchasing Receiving History", "You selected", sLocation);
                         break;
+                    case "purchasing/approval/purchasing receiving":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml";
+                        ShowMessageFX.Information("Purchasing Receiving Confirmation", "You selected", sLocation);
+                        break;
+
                     default:
                         ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
                         break;
@@ -1662,7 +1730,7 @@ public class DashboardController implements Initializable {
                 }
                 break;
             case "Delivery Acceptance":
-                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptanceEntry.fxml";
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml";
                 break;
             case "Payment Request":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml";

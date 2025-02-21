@@ -22,8 +22,8 @@ import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
 import org.json.simple.JSONObject;
 
-public class DeliveryAcceptanceEntryController implements Initializable,ScreenInterface {
-    private final String pxeModuleName = "Delivery Acceptance";
+public class DeliveryAcceptance_EntryController implements Initializable,ScreenInterface {
+    private final String pxeModuleName = "Purchasing Receiving";
     private GRider oApp;
     private JSONObject poJSON;
 

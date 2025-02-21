@@ -48,9 +48,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class DeliveryAcceptanceConfirmationController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_ConfirmationController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Delivery Acceptance Confirmation";
+    private final String pxeModuleName = "Purchasing Receiving Confirmation";
     private GRider oApp;
     private JSONObject poJSON;
 

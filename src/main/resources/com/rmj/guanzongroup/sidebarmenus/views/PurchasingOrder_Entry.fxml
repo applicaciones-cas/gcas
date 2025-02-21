@@ -36,7 +36,7 @@
                     <bottom>
                         <AnchorPane fx:id="apButton" BorderPane.alignment="CENTER">
                             <children>
-                                <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="1042.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="1482.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Browse">
                                             <graphic>

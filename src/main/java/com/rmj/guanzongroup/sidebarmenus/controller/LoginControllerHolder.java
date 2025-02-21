@@ -8,8 +8,9 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
  *
  * @author User
  */
-public class ControllerHolder {
+public class LoginControllerHolder {
     private static DashboardController mainController;
+    private static Boolean lbstatus = false;
 
     public static void setMainController(DashboardController controller) {
         mainController = controller;
@@ -17,5 +18,12 @@ public class ControllerHolder {
 
     public static DashboardController getMainController() {
         return mainController;
+    }
+    public   static void setLogInStatus(Boolean lbvalue) {
+        lbstatus = lbvalue;
+    }
+
+    public static Boolean getLogInStatus() {
+        return lbstatus;
     }
 }
