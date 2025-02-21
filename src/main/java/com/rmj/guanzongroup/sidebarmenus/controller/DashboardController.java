@@ -752,7 +752,7 @@ public class DashboardController implements Initializable {
                     unloadForm unload = new unloadForm();
                     StackPane myBox = (StackPane) tabPane.getParent();
                     myBox.getChildren().clear();
-                    myBox.getChildren().add(unload.getScene(psDefaultScreenFXML, oApp));
+                    myBox.getChildren().add(unload.getScene(psDefaultScreenFXML2, oApp));
                 }
             }
             tabName.remove(currentTab.getText());
@@ -1034,6 +1034,8 @@ public class DashboardController implements Initializable {
             Optional<ButtonType> result = alert.showAndWait();
 
             if (result.isPresent() && result.get() == ButtonType.OK) {
+                setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
+                setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
                 ToggleGroupControlLowerLeftSideBar();
                 setScene(loadAnimateAnchor(psDefaultScreenFXML));
                 btnLogout.setSelected(false);
