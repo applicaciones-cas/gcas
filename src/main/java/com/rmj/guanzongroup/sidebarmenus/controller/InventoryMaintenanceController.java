@@ -368,7 +368,7 @@ public class InventoryMaintenanceController implements Initializable, ScreenInte
             overlay.setVisible(true);
 
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventorySerial.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/InventorySerial.fxml"));
 
             InventorySerialController loControl = new InventorySerialController();
             loControl.setGRider(oApp);
@@ -449,7 +449,7 @@ public class InventoryMaintenanceController implements Initializable, ScreenInte
             overlay.setVisible(true);
 
             FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/org/guanzon/cas/views/InventoryLedger.fxml"));
+            fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/InventoryLedger.fxml"));
 
             InventoryLedgerController loControl = new InventoryLedgerController();
             loControl.setGRider(oApp);

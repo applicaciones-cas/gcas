@@ -404,8 +404,8 @@ public class DashboardController implements Initializable {
                     return new DefaultScreenController();
 
                 /* INVENTORY/INVENTORY/ */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
-//                    return new InventoryMaintenanceController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
+                    return new InventoryMaintenanceController();
 
                 /* PURCHASING/PURCHASING/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
