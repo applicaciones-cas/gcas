@@ -178,14 +178,14 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
                     switch (Status) {
                         case "0":
                             if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-                                poJsON = oParameters.CategoryLevel4().postTransaction();
+                                poJsON = oParameters.CategoryLevel4().activateRecord();
                                 ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 loadRecord();
                             }
                             break;
                         case "1":
                             if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-                                poJsON = oParameters.CategoryLevel4().voidTransaction();
+                                poJsON = oParameters.CategoryLevel4().deactivateRecord();
                                 ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 loadRecord();
                             }

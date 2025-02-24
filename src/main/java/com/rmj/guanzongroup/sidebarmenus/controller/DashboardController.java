@@ -68,6 +68,7 @@ import org.json.simple.parser.ParseException;
 
 public class DashboardController implements Initializable {
 
+    private final String pxeModuleName = "Computerized Accounting System";
     private GRider oApp;
     private String lastClickedBtnLeftSideBar = "";
     private String lastClickedBtnRightSideBar = "";
@@ -1881,10 +1882,10 @@ public class DashboardController implements Initializable {
                 if (!sformname.isEmpty() && sformname.contains(".fxml")) {
                     setScene2(loadAnimate(sformname));
                 } else {
-                    ShowMessageFX.Warning(null, "Computerized Accounting System", "NO FORM NAME");
+                    ShowMessageFX.Warning("This form is currently unavailable.", "Computerized Accounting System", pxeModuleName);
                 }
             } else {
-                ShowMessageFX.Warning(null, "Computerized Accounting System", "THIS FORM IS ALREADY OPEN");
+                ShowMessageFX.Warning("This form is already active.", "Computerized Accounting System", pxeModuleName);
             }
             setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
             for (ToggleButton navButton : toggleBtnLeftUpperSideBar) {
@@ -1977,10 +1978,10 @@ public class DashboardController implements Initializable {
                                     if (!sformname.isEmpty() && sformname.contains(".fxml")) {
                                         setScene2(loadAnimate(sformname));
                                     } else {
-                                        ShowMessageFX.Warning(null, "Computerized Accounting System", "NO FORM NAME");
+                                        ShowMessageFX.Warning("This form is currently unavailable.", "Computerized Accounting System",  pxeModuleName);
                                     }
                                 } else {
-                                    ShowMessageFX.Warning(null, "Computerized Accounting System", "THIS FORM IS ALREADY OPEN");
+                                    ShowMessageFX.Warning("This form is already active.", "Computerized Accounting System", pxeModuleName);
                                 }
                                 setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
                                 for (ToggleButton navButton : toggleBtnRightSideBar) {
