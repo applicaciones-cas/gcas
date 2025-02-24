@@ -36,7 +36,7 @@
                     <bottom>
                         <AnchorPane fx:id="apButton" BorderPane.alignment="CENTER">
                             <children>
-                                <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="1042.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="1482.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                         <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Browse">
                                             <graphic>
@@ -118,9 +118,9 @@
                                                             <children>
                                                                 <AnchorPane style="-fx-border-color: orange;">
                                                                     <children>
-                                                                        <GridPane layoutX="11.0" layoutY="6.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="6.0">
+                                                                        <GridPane layoutX="11.0" layoutY="6.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="6.0">
                                                                             <columnConstraints>
-                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="79.0" />
+                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="72.0" />
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="162.0" minWidth="-Infinity" prefWidth="113.0" />
                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="108.0" minWidth="-Infinity" prefWidth="108.0" />
@@ -133,18 +133,17 @@
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="104.0" />
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                             <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="149.0" minWidth="-Infinity" prefWidth="140.0" />
-                                                            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="11.0" minWidth="0.0" prefWidth="9.0" />
                                                                             </columnConstraints>
                                                                             <rowConstraints>
                                                                                 <RowConstraints />
                                                                                 <RowConstraints />
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                             </rowConstraints>
                                                                             <children>
                                                             <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="140.0" style="-fx-background-color: FF8201;" GridPane.columnIndex="12" GridPane.rowIndex="2" />
@@ -171,7 +170,7 @@
                                                                                 <TextField fx:id="txtField08" maxHeight="25.0" GridPane.columnIndex="8" GridPane.rowIndex="5" />
                                                                                 <CheckBox fx:id="cbAdv" mnemonicParsing="false" text="w/ Adv" GridPane.columnIndex="6" GridPane.rowIndex="7" />
                                                                                 <TextField fx:id="txtField09" maxHeight="25.0" GridPane.columnIndex="8" GridPane.rowIndex="6" />
-                                                                                <TextField fx:id="txtField11" maxHeight="25.0" maxWidth="-Infinity" prefWidth="139.0" GridPane.columnIndex="12" GridPane.rowIndex="5" />
+                                                                                <TextField fx:id="txtField11" maxHeight="25.0" maxWidth="-Infinity" GridPane.columnIndex="12" GridPane.rowIndex="5" />
                                                                                 <TextField fx:id="txtField12" maxHeight="25.0" GridPane.columnIndex="12" GridPane.rowIndex="6" />
                                                                                 <TextField fx:id="txtField14" maxHeight="25.0" GridPane.columnIndex="12" GridPane.rowIndex="7" />
                                                                                 <Label text="Disc. Rate" GridPane.columnIndex="10" GridPane.rowIndex="5" />
@@ -183,7 +182,7 @@
                                                                                 <Label text="Term" GridPane.columnIndex="6" GridPane.rowIndex="6" />
                                                                                 <Label text="Destination" GridPane.rowIndex="7" />
                                                                                 <TextField fx:id="txtField06" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" />
-                                                            <TextArea maxWidth="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="804.0" GridPane.columnIndex="2" GridPane.rowIndex="8">
+                                                            <TextArea maxWidth="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="809.0" GridPane.columnIndex="2" GridPane.rowIndex="8">
                                                                <GridPane.margin>
                                                                   <Insets top="1.0" />
                                                                </GridPane.margin>
@@ -197,7 +196,7 @@
                                                                     <children>
                                                                         <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                                             <columnConstraints>
-                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="74.0" minWidth="-Infinity" prefWidth="63.0" />
+                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="72.0" />
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="171.0" />
                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
@@ -219,12 +218,12 @@
                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
                                                                             </columnConstraints>
                                                                             <rowConstraints>
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                             <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                             </rowConstraints>
                                                                             <children>
                                                                                 <Label text="Category" GridPane.columnIndex="4" GridPane.rowIndex="3" />

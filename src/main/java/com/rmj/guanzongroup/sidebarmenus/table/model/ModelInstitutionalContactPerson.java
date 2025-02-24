@@ -57,7 +57,23 @@ public class ModelInstitutionalContactPerson {
         this.index13 = new SimpleStringProperty(index13);
     }
 
-   
+   public ModelInstitutionalContactPerson(String index01,
+               String index02,
+               String index03,
+               String index04,
+               String index05,
+               String index06,
+               String index07){
+        
+        this.index01 = new SimpleStringProperty(index01);
+        this.index02 = new SimpleStringProperty(index02);
+        this.index03 = new SimpleStringProperty(index03);
+        this.index04 = new SimpleStringProperty(index04);
+        this.index05 = new SimpleStringProperty(index05);
+        this.index06 = new SimpleStringProperty(index06);
+        this.index07 = new SimpleStringProperty(index07);
+    }
+
 
     
 
@@ -67,14 +83,10 @@ public class ModelInstitutionalContactPerson {
     public String getIndex02(){return index02.get();}
     public void setIndex02(String index02){this.index02.set(index02);}
     
-    public String getIndex03(){
-        return index03.get();
-    }
+    public String getIndex03(){return index03.get();}
     public void setIndex03(String index03){this.index03.set(index03);}
     
-    public String getIndex04(){
-        return index04.get();
-    }
+    public String getIndex04(){return index04.get();}
     public void setIndex04(String index04){this.index04.set(index04);}
     
     public String getIndex05(){return index05.get();}

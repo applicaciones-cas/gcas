@@ -22,6 +22,7 @@ com\rmj\guanzongroup\sidebarmenus\table\model\ModelSocialMedia.class
 com\rmj\guanzongroup\sidebarmenus\controller\LaborController.class
 com\rmj\guanzongroup\sidebarmenus\controller\SizeController$1.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelAPClientLedger.class
+com\rmj\guanzongroup\sidebarmenus\controller\Log_InController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryLocationController.class
 com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationController$1.class
@@ -34,6 +35,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\RelationshipController.class
 com\rmj\guanzongroup\sidebarmenus\controller\TermController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvSubUnit.class
 com\rmj\guanzongroup\sidebarmenus\controller\WarehouseController.class
+com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationController.class
 com\rmj\guanzongroup\sidebarmenus\controller\LaborController$1.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelListParameter.class
 com\rmj\guanzongroup\sidebarmenus\controller\ColorController$1.class
@@ -49,7 +51,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\FXMLDocumentController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelAccredetations.class
 com\rmj\guanzongroup\sidebarmenus\controller\MadeController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\AccountsReceivableController$1.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptanceConfirmationController.class
 com\rmj\guanzongroup\sidebarmenus\controller\ScreenInterface.class
 com\rmj\guanzongroup\sidebarmenus\controller\BanksController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\BrandController$1.class
@@ -65,7 +66,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\InventoryTypeController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\AffiliatedCompanyController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationHistoryController.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptanceEntryController.class
 com\rmj\guanzongroup\sidebarmenus\GriderGui.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelAttachment.class
 com\rmj\guanzongroup\sidebarmenus\controller\BanksBranchesController$1.class
@@ -81,6 +81,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\DashboardController1.class
 com\rmj\guanzongroup\sidebarmenus\controller\TermController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchasingOrder_EntryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\ClientMasterParameterController.class
+com\rmj\guanzongroup\sidebarmenus\controller\LoginControllerHolder.class
 com\rmj\guanzongroup\sidebarmenus\controller\BranchController.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\CompanyController$1.class
@@ -94,6 +95,7 @@ com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvLedger.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelInstitutionalContactPerson.class
 com\rmj\guanzongroup\sidebarmenus\controller\CountryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\SalesmanController.class
+com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PaymentRequestController.class
 com\rmj\guanzongroup\sidebarmenus\controller\BarangayController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\LaborCategoryController.class
@@ -101,6 +103,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\BanksBranchesController.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryParamController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\AccountsPayableController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel3Controller$1.class
+com\rmj\guanzongroup\sidebarmenus\controller\ClientMasterParameterController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\FXMLDocumentController$1.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvSerialLedger.class
 com\rmj\guanzongroup\sidebarmenus\controller\RegionController.class
