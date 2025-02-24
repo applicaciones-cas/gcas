@@ -172,9 +172,6 @@ public class InventoryParamController implements Initializable, ScreenInterface 
         oTrans.setLogWrapper(logwrapr);
         oTrans.initialize();
         oParameters = new ParamControllers(oApp, logwrapr);
-        
-        
-        
     }
 
 //    /*Handle button click*/
