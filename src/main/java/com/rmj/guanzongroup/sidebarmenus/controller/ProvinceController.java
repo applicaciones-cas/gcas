@@ -178,14 +178,14 @@ public class ProvinceController implements Initializable, ScreenInterface {
                     switch (Status) {
                         case "0":
                             if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-                                poJsON = oParameters.Province().postTransaction();
+                                poJsON = oParameters.Province().activateRecord();
                                 ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 loadRecord();
                             }
                             break;
                         case "1":
                             if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-                                poJsON = oParameters.Province().voidTransaction();
+                                poJsON = oParameters.Province().deactivateRecord();
                                 ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 loadRecord();
                             }

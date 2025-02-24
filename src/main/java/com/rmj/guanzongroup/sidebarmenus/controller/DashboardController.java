@@ -68,6 +68,7 @@ import org.json.simple.parser.ParseException;
 
 public class DashboardController implements Initializable {
 
+    private final String pxeModuleName = "Computerized Accounting System";
     private GRider oApp;
     private String lastClickedBtnLeftSideBar = "";
     private String lastClickedBtnRightSideBar = "";
@@ -335,7 +336,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
                     return "Warehouse";
 
-                /* OTHERS/CLIENTS */
+                /*OTHERS/CLIENTS*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/ClientMasterParameter.fxml":
                     return "Client";
 
@@ -404,8 +405,8 @@ public class DashboardController implements Initializable {
                     return new DefaultScreenController();
 
                 /* INVENTORY/INVENTORY/ */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
-//                    return new InventoryMaintenanceController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
+                    return new InventoryMaintenanceController();
 
                 /* PURCHASING/PURCHASING/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
@@ -414,12 +415,12 @@ public class DashboardController implements Initializable {
                     return new SampleForm2Controller();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
                     return new PurchasingOrder_EntryController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
-//                    return new AccountsAccreditationController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
-//                    return new AccountsAccreditationHistoryController();
-                // case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
-                // return new PurchasingOrder_HistoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
+                    return new AccountsAccreditationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
+                    return new AccountsAccreditationHistoryController();
+//                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
+//                 return new PurchasingOrder_HistoryController();
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
                     return new DeliveryAcceptance_EntryController();
@@ -507,22 +508,22 @@ public class DashboardController implements Initializable {
                     return new WarehouseController();
 
                 /* OTHERS/Clients */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/ClientMasterParameter.fxml":
-//                 return new ClientMasterParameterController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/ClientMasterParameter.fxml":
+                 return new ClientMasterParameterController();
 //
-//                /* OTHERS/INVENTORY */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryParam.fxml":
-//                    return new InventoryParamController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/InventorySerialParam.fxml":
-//                    return new InventorySerialParamController();
-//
-//                /* ACOUNTS/ACOUNTS/ACOUNTS PAYABLE */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayable.fxml":
-//                    return new AccountsPayableController();
-//
-//                /* ACOUNTS/ACOUNTS/ACOUNTS RECEIVABLE */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
-//                    return new AccountsReceivableController();
+                /* OTHERS/INVENTORY */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryParam.fxml":
+                    return new InventoryParamController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventorySerialParam.fxml":
+                    return new InventorySerialParamController();
+
+                /* ACOUNTS/ACOUNTS/ACOUNTS PAYABLE */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsPayable.fxml":
+                    return new AccountsPayableController();
+
+                /* ACOUNTS/ACOUNTS/ACOUNTS RECEIVABLE */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsReceivable.fxml":
+                    return new AccountsReceivableController();
                 default:
                     return null;
             }
@@ -1881,10 +1882,10 @@ public class DashboardController implements Initializable {
                 if (!sformname.isEmpty() && sformname.contains(".fxml")) {
                     setScene2(loadAnimate(sformname));
                 } else {
-                    ShowMessageFX.Warning(null, "Computerized Accounting System", "NO FORM NAME");
+                    ShowMessageFX.Warning("This form is currently unavailable.", "Computerized Accounting System", pxeModuleName);
                 }
             } else {
-                ShowMessageFX.Warning(null, "Computerized Accounting System", "THIS FORM IS ALREADY OPEN");
+                ShowMessageFX.Warning("This form is already active.", "Computerized Accounting System", pxeModuleName);
             }
             setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
             for (ToggleButton navButton : toggleBtnLeftUpperSideBar) {
@@ -1977,10 +1978,10 @@ public class DashboardController implements Initializable {
                                     if (!sformname.isEmpty() && sformname.contains(".fxml")) {
                                         setScene2(loadAnimate(sformname));
                                     } else {
-                                        ShowMessageFX.Warning(null, "Computerized Accounting System", "NO FORM NAME");
+                                        ShowMessageFX.Warning("This form is currently unavailable.", "Computerized Accounting System",  pxeModuleName);
                                     }
                                 } else {
-                                    ShowMessageFX.Warning(null, "Computerized Accounting System", "THIS FORM IS ALREADY OPEN");
+                                    ShowMessageFX.Warning("This form is already active.", "Computerized Accounting System", pxeModuleName);
                                 }
                                 setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
                                 for (ToggleButton navButton : toggleBtnRightSideBar) {

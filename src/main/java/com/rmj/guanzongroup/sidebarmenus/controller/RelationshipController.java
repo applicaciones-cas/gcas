@@ -177,14 +177,14 @@ public class RelationshipController implements Initializable, ScreenInterface {
                     switch (Status) {
                         case "0":
                             if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-                                poJsON = oParameters.Relationship().postTransaction();
+                                poJsON = oParameters.Relationship().activateRecord();
                                 ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 loadRecord();
                             }
                             break;
                         case "1":
                             if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-                                poJsON = oParameters.Relationship().voidTransaction();
+                                poJsON = oParameters.Relationship().deactivateRecord();
                                 ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 loadRecord();
                             }

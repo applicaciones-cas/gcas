@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="AnchorMain" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane layoutX="119.0" layoutY="52.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <AnchorPane prefHeight="55.0" style="-fx-background-color: black;" BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <AnchorPane style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <GridPane prefHeight="55.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="80.0" prefWidth="80.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="140.0" prefWidth="140.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="120.0" prefWidth="120.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="20.0" prefWidth="50.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="110.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="110.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="110.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="110.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="5.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="30.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Text fx:id="lblSearch01" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial 01" GridPane.columnIndex="5" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="5.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <Text fx:id="lblSearch02" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial 02" GridPane.columnIndex="9" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtSeeks03" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="10" GridPane.columnSpan="2" />
+                                    <TextField fx:id="txtSeeks02" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="6" GridPane.columnSpan="2" />
+                                    <Text fx:id="lblSearch011" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Name" GridPane.columnIndex="1">
+                                       <font>
+                                          <Font name="System Bold" size="15.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="5.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtSeeks01" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="10.0" right="10.0" />
+                                 </padding>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </top>
+         <center>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <SplitPane dividerPositions="0.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <items>
+                        <AnchorPane fx:id="AnchorInput" style="-fx-border-color: FF8201;" SplitPane.resizableWithParent="false">
+                           <children>
+                              <GridPane hgap="3.0" stylesheets="@../../../../../resources/org/guanzon/cas/css/StyleSheet.css" vgap="3.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="130.0" prefWidth="130.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="30.0" prefWidth="30.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="85.0" prefWidth="85.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+                                    <ColumnConstraints />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Serial ID" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField01" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                    <Text fx:id="lblSerial01" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial 01" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField02" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                    <Text fx:id="lblSerial02" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial 02" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField03" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Unit Type" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <ComboBox fx:id="cmbField01" disable="true" prefWidth="203.0" visibleRowCount="0" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Location" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField15" disable="true" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                    <CheckBox fx:id="chkField01" disable="true" mnemonicParsing="false" text="Sold Status" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Category" GridPane.halignment="RIGHT" GridPane.rowIndex="6" GridPane.valignment="CENTER">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField08" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Barcode" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField04" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField05" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField09" disable="true" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField10" disable="true" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField11" disable="true" styleClass="text-field" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Company" GridPane.halignment="RIGHT" GridPane.rowIndex="11">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField12" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="11" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Branch" GridPane.halignment="RIGHT" GridPane.rowIndex="12" GridPane.valignment="CENTER">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField14" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="12" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Name" GridPane.halignment="RIGHT" GridPane.rowIndex="13">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </Text>
+                                    <TextField fx:id="txtField13" disable="true" styleClass="text-field" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="13" />
+                                    <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="4">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" right="10.0" />
+                                       </GridPane.margin>
+                                    </Separator>
+                                    <Separator prefWidth="200.0" GridPane.columnSpan="8" GridPane.rowIndex="9">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" right="10.0" />
+                                       </GridPane.margin>
+                                    </Separator>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="AnchorInput1" style="-fx-border-color: FF8201;">
+                           <children>
+                              <TableView fx:id="tblInventorySerialLedger" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <columns>
+                                    <TableColumn fx:id="index01" editable="false" prefWidth="30.0" sortable="false" text="No" />
+                                    <TableColumn fx:id="index02" editable="false" prefWidth="90.0" sortable="false" text="Date" />
+                                    <TableColumn fx:id="index03" editable="false" prefWidth="290.0" sortable="false" text="Source Branch/Supplier/Destination" />
+                                    <TableColumn fx:id="index04" editable="false" prefWidth="50.0" sortable="false" text="Source" />
+                                    <TableColumn fx:id="index05" editable="false" prefWidth="130.0" sortable="false" text="Source No" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                     </items>
+                  </SplitPane>
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </AnchorPane>
+         </center>
+         <bottom>
+            <AnchorPane prefHeight="100.0" style="-fx-background-color: E9E9E9;" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox fx:id="hbButtons" alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: E9E9E9;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                     <children>
+                        <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Browse">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Close">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </AnchorPane>
+         </bottom>
+      </BorderPane>
+   </children>
+   <stylesheets>
+      <URL value="@../css/StyleSheet.css" />
+      <URL value="@../../../../../resources/org/guanzon/cas/css/MainPanelStyle.css" />
+   </stylesheets>
+</AnchorPane>

@@ -179,14 +179,14 @@ public class CompanyController implements Initializable, ScreenInterface {
                     switch (Status) {
                         case "0":
                             if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-                                poJsON = oParameters.Company().postTransaction();
+                                poJsON = oParameters.Company().activateRecord();
                                 ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 loadRecord();
                             }
                             break;
                         case "1":
                             if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-                                poJsON = oParameters.Company().voidTransaction();
+                                poJsON = oParameters.Company().deactivateRecord();
                                 ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 loadRecord();
                             }
