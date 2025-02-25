@@ -44,7 +44,7 @@
                                                         <FontAwesomeIconView glyphName="CLOSE" size="18" textAlignment="CENTER" />
                                                     </graphic>
                                                     <tooltip>
-                                                        <Tooltip text="Logout" />
+                                                        <Tooltip text="Exit" />
                                                     </tooltip>
                                                 </Button>
                                             </children>

@@ -15,7 +15,13 @@
  * DRAWER CSS                                                                     *
  *                                                                             *
  ******************************************************************************/
-
+.tooltip {
+    -fx-background-color: gray;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 5;
+    -fx-font-size: 13px;
+}
 .sidebar{
     -fx-spacing: 1;
     -fx-background-color: #bfbfbf;
@@ -677,7 +683,7 @@
 
 
 .combo-box {
-   -fx-border-color: black ;
+    -fx-border-color: black ;
     -fx-max-height: 30px;
     -fx-min-height: 30px;
     -fx-background-color: transparent;

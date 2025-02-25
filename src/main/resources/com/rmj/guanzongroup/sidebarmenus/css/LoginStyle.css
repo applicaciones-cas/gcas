@@ -1,0 +1,6 @@
+.text-field-custom {
+    -fx-font-size: 15px;
+    -fx-background-color:transparent;
+    -fx-border-color: transparent;
+    -fx-textflow: wrap;
+}
