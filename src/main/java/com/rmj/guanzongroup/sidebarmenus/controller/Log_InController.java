@@ -83,12 +83,6 @@ public class Log_InController implements Initializable, ScreenInterface {
     private void setupPasswordToggle() {
         btnEyeIcon.setOnMouseClicked(event -> togglePasswordVisibility());
 
-        txtField03.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) {
-                hidePlainText();
-            }
-        });
-
         txtField02.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal && !txtField03.isFocused()) {
                 removeBorder(hboxPassword);
@@ -100,22 +94,21 @@ public class Log_InController implements Initializable, ScreenInterface {
         boolean isPasswordVisible = txtField02.isVisible();
         txtField03.setText(txtField02.getText());
 
+        // Get the last position of the text before toggling
+        int lastPosition = (isPasswordVisible ? txtField02 : txtField03).getText().length();
+
         txtField02.setVisible(!isPasswordVisible);
         txtField03.setVisible(isPasswordVisible);
 
-        (isPasswordVisible ? txtField03 : txtField02).requestFocus();
+        // Focus on the correct field and move cursor to last position
+        TextField focusedField = isPasswordVisible ? txtField03 : txtField02;
+        focusedField.requestFocus();
+        focusedField.positionCaret(lastPosition); // Moves cursor to last position
 
         updateEyeIcon(isPasswordVisible ? FontAwesomeIcon.EYE_SLASH : FontAwesomeIcon.EYE);
-        setBorder(hboxPassword, true);
-    }
 
-    private void hidePlainText() {
-        if (txtField03.isVisible()) {
-            txtField02.setText(txtField03.getText());
-            txtField03.setVisible(false);
-            txtField02.setVisible(true);
-            updateEyeIcon(FontAwesomeIcon.EYE);
-        }
+        // Ensure border remains applied
+        setBorder(hboxPassword, true);
     }
 
     private void updateEyeIcon(FontAwesomeIcon icon) {
