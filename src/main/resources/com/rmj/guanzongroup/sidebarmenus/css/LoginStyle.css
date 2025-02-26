@@ -4,3 +4,15 @@
     -fx-border-color: transparent;
     -fx-textflow: wrap;
 }
+
+.hbox-default {
+    -fx-border-color: gray;
+    -fx-border-radius: 5;
+}
+
+.hbox-border-width{
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5;
+}
+
