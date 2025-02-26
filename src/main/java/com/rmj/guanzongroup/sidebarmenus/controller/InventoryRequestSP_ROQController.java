@@ -29,6 +29,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -48,9 +52,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InventoryRequestMC_ROQController implements Initializable, ScreenInterface {
+public class InventoryRequestSP_ROQController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Inventory Request MC ROQ";
+    private final String pxeModuleName = "Inventory Request SP ROQ";
 
     private GRider oApp;
     private int pnEditMode;
@@ -69,29 +73,33 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus;
-    @FXML
-    private TextArea txtArea01;
-    @FXML
-    private DatePicker dpField01;
-
-    @FXML
-    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06,
-            txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
-            txtField13, txtField14, txtField15, txtField16, txtField17, txtField18, txtField19,
-            txtField20, txtField21, txtField22, txtField23;
-
-    @FXML
     private Button btnBrowse, btnNew, btnSave, btnUpdate, btnSearch, btnPrint, btnAddItem,
             btnDelItem, btnApprove, btnCancelTrans, btnCancel, btnClose, btnStatistic;
 
     @FXML
-    private TableView<?> tblDetails, tblDetailsROQ;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06,
+            txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
+            txtField14, txtField15, txtField16, txtField17, txtField18, txtField19,
+            txtField20, txtField21,txtField22, txtField23;
 
     @FXML
-    private TableColumn index01, index02, index03, index04, index05, index06, index07, index08,
-            index09, index10, index11,
-            indexROQ01, indexROQ02, indexROQ03, indexROQ04, indexROQ05,
+    private DatePicker dpField01;
+
+    @FXML
+    private TextArea txtArea01;
+
+    @FXML
+    private Label lblStatus;
+
+    @FXML
+    private TableView tblDetails, tblDetailsROQ;
+
+    @FXML
+    private TableColumn index01, index02, index03, index04, index05, index06,
+            index07, index08, index09, index10, index11;
+
+    @FXML
+    private TableColumn indexROQ01, indexROQ02, indexROQ03, indexROQ04, indexROQ05,
             indexROQ06, indexROQ07, indexROQ08, indexROQ09;
 
     @Override
@@ -105,7 +113,7 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        
+
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         initializeObject();
@@ -132,8 +140,8 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
         TextField[] focusTextFields = {
             txtField01, txtField02, txtField03, txtField04, txtField05, txtField06,
             txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
-            txtField13, txtField14, txtField15, txtField16, txtField17, txtField18,
-            txtField19, txtField20, txtField21};
+            txtField14, txtField15, txtField16, txtField17, txtField18, txtField19,
+            txtField20, txtField21};
 
 // Add the listener to each text field in the focusTextFields array
         for (TextField textField : focusTextFields) {
@@ -306,17 +314,17 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
 
     private boolean loadPrint() {
         JSONObject loJSON = new JSONObject();
-//        if (oTrans.getMasterModel().getTransactionNumber() == null) {
-//            ShowMessageFX.Warning("Unable to print transaction.", "Warning", "No record loaded.");
-//            loJSON.put("result", "error");
-//            loJSON.put("message", "Model Master is null");
-//            return false;
-//        }
+        if (oTrans.getModel().getBarCode() == null) {
+            ShowMessageFX.Warning("Unable to print transaction.", "Warning", "No record loaded.");
+            loJSON.put("result", "error");
+            loJSON.put("message", "Model Master is null");
+            return false;
+        }
 
         // Prepare report parameters
         Map<String, Object> params = new HashMap<>();
         params.put("sPrintdBy", "Printed By: " + oApp.getLogName());
-        params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
+//      params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
         params.put("sReportNm", pxeModuleName);
         params.put("sReportDt", CommonUtils.xsDateMedium((Date) oApp.getServerDate()));
         params.put("sBranchNm", oApp.getBranchName());
@@ -421,10 +429,12 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
                             index11.setMinWidth(81);
                             index11.setMaxWidth(81);
                         } else {
+
                             System.out.println("visible? == false");
                             index11.setMinWidth(95);
                             index11.setMaxWidth(95);
                         }
+
                     });
                 }
             }
@@ -490,8 +500,8 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
             // Text fields related to specific sections
             {txtField01, txtField02, txtField03, txtField04, txtField05, txtField06,
                 txtField07, txtField08, txtField09, txtField10, txtField11, txtField12,
-                txtField13, txtField14, txtField15, txtField16, txtField17, txtField18, 
-                txtField19, txtField20, txtField21, txtField22, txtField23},};
+                txtField14, txtField15, txtField16, txtField17, txtField18, txtField19,
+                txtField20, txtField21, txtField22, txtField23},};
 
 // Loop through each array of TextFields and clear them
         for (TextField[] fields : allFields) {

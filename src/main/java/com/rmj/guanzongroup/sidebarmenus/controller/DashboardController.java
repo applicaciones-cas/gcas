@@ -242,6 +242,10 @@ public class DashboardController implements Initializable {
             switch (menuaction) {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
                     return "Inventory Maintenance";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequestMC_ROQ.fxml":
+                    return "Inventory Request MC ROQ";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequestSP_ROQ.fxml":
+                    return "Inventory Request SP ROQ";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
                     return "Accounts Accreditation";
@@ -407,6 +411,10 @@ public class DashboardController implements Initializable {
                 /* INVENTORY/INVENTORY/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
                     return new InventoryMaintenanceController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequestMC_ROQ.fxml":
+                    return new InventoryRequestMC_ROQController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequestSP_ROQ.fxml":
+                    return new InventoryRequestSP_ROQController();
 
                 /* PURCHASING/PURCHASING/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
@@ -1617,6 +1625,9 @@ public class DashboardController implements Initializable {
                         sformname = sLocation;
                         ShowMessageFX.Information("test", "You selected", sLocation);
                         break;
+                    case "inventory/request/system recommend/motorcycle":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequestMC_ROQ.fxml";
+                        break;
                     default:
                         ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
                         break;
@@ -1631,6 +1642,9 @@ public class DashboardController implements Initializable {
                     case "sales/inquiry/spareparts":
                         sformname = "/com/rmj/guanzongroup/sidebarmenus/views/spareparts_inquiry.fxml";
                         ShowMessageFX.Information("test", "You selected", sLocation);
+                        break;
+                     case "inventory/request/system recommend/spareparts":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequestSP_ROQ.fxml";
                         break;
                     default:
                         ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);

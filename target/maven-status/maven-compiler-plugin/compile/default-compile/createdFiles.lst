@@ -34,8 +34,10 @@ com\rmj\guanzongroup\sidebarmenus\controller\LaborModelController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DefaultScreenController.class
 com\rmj\guanzongroup\sidebarmenus\controller\ColorDetailController.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryRequestMC_ROQController$1.class
+com\rmj\guanzongroup\sidebarmenus\controller\InventoryRequestSP_ROQController.class
 com\rmj\guanzongroup\sidebarmenus\controller\TermController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\ClientMasterParameterController.class
+com\rmj\guanzongroup\sidebarmenus\controller\InventoryRequestSP_ROQController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\CompanyController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\unloadForm.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryLedgerController.class
