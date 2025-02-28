@@ -54,9 +54,9 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class AccountsAccreditationController implements Initializable, ScreenInterface {
+public class AccountsAccreditationApprovalController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Accounts Accreditation";
+    private final String pxeModuleName = "Accounts Accreditation Approval";
     private GRider oApp;
     private Account_Accreditation oTrans;
     private ParamControllers oParameters;
@@ -97,6 +97,8 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
             btnSearch,
             btnCancel,
             btnClose,
+            btnDisapproved,
+            btnApproved,
             btnUpload;
 
     @FXML
@@ -191,7 +193,9 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
                             btnSave,
                             btnUpdate,
                             btnClose,
-                            btnBrowse};
+                            btnBrowse,
+                            btnApproved,
+                            btnDisapproved};
         for (Button button : buttons) {
             button.setOnAction(this::handleButtonAction);
         }
@@ -281,6 +285,27 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
                     }
 
                     break;
+                case "btnApproved":
+                case "btnDisapproved":
+                    if (oTrans.getModel().getTransactionNo() != null) {
+                        String buttonId = ((Button) event.getSource()).getId();
+                        boolean isApproved = "btnApproved".equals(buttonId);
+                        poJSON = isApproved ? oTrans.postTransaction() : oTrans.voidTransaction();
+                        String result = (String) poJSON.get("result");
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        ShowMessageFX.Information("success".equals(result)
+//                                ? (String) poJSON.get("message") + (isApproved ? "approved." : "disapproved.")
+//                                : "Unable to " + (isApproved ? "approve" : "disapprove") + " the transaction.",
+//                                "Computerized Accounting System",
+//                                pxeModuleName);
+                        
+                        if ("success".equals(result)) {
+                            clearAllFields();
+                        }
+                    }else{
+                        ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
+                    }
+                    break;
                 case "btnUpload":
                     ShowMessageFX.Information("This feature is currently in development!", "Computerized Acounting System", pxeModuleName);
                     break;
@@ -298,7 +323,10 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
+        
+        btnApproved.setVisible(!lbShow);
         btnUpload.setVisible(!lbShow);
+        btnDisapproved.setVisible(!lbShow);
         
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
@@ -308,6 +336,8 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
             btnSearch.setVisible(lbShow);
             btnSave.setVisible(lbShow);
 
+            btnApproved.setVisible(lbShow);
+            btnDisapproved.setVisible(lbShow);
             btnUpload.setVisible(lbShow);
             
             btnUpdate.setVisible(!lbShow); 
@@ -318,6 +348,8 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
             btnUpdate.setManaged(false);
             
             btnUpload.setManaged(false);
+            btnApproved.setManaged(false);
+            btnDisapproved.setManaged(false);
             
             btnClose.setManaged(false);
         } else {

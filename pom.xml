@@ -167,6 +167,12 @@
             <version>4.13.1</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.guanzon</groupId>
+            <artifactId>cas-inv-warehouse</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <distributionManagement>
         <repository>

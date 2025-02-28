@@ -38,8 +38,10 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
+import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.inv.Inventory;
+import org.guanzon.cas.inv.warehouse.StockRequest;
+import org.guanzon.cas.inv.warehouse.services.InvWarehouseControllers;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
@@ -54,7 +56,7 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
 
     private GRider oApp;
     private int pnEditMode;
-    private Inventory oTrans;
+    private InvWarehouseControllers oTrans;
     private ParamControllers oParameters;
     private boolean pbLoaded = false;
     private ObservableList<ModelStockRequest> ROQData = FXCollections.observableArrayList();
@@ -86,7 +88,7 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
             btnDelItem, btnApprove, btnCancelTrans, btnCancel, btnClose, btnStatistic;
 
     @FXML
-    private TableView<?> tblDetails, tblDetailsROQ;
+    private TableView tblDetails, tblDetailsROQ;
 
     @FXML
     private TableColumn index01, index02, index03, index04, index05, index06, index07, index08,
@@ -105,7 +107,6 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         initializeObject();
@@ -113,17 +114,20 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
         initTabAnchor();
         InitTextFields();
         clearAllFields();
+        initTblDetails();
+        initTblDetailsROQ();
         pbLoaded = true;
     }
 
     private void initializeObject() {
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-        oTrans = new Inventory();
-        oTrans.setApplicationDriver(oApp);
-        oTrans.setWithParentClass(false);
-        oTrans.setLogWrapper(logwrapr);
-        oTrans.initialize();
-        oParameters = new ParamControllers(oApp, logwrapr);
+         oTrans = new InvWarehouseControllers(oApp, logwrapr);
+         JSONObject loJSON = new JSONObject();
+         loJSON = oTrans.StockRequest().InitTransaction();
+          if (!"success".equals((String) loJSON.get("result"))){
+                System.err.println((String) loJSON.get("message"));
+            }
+         oParameters = new ParamControllers(oApp, logwrapr);
     }
 
     private void InitTextFields() {
@@ -273,6 +277,23 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
                     }
                     break;
                 case "btnNew":
+                    try {
+                    JSONObject poJSON;
+                    poJSON = oTrans.StockRequest().NewTransaction();
+                    if ("success".equals((String) poJSON.get("result"))) {
+                        pnEditMode = oTrans.StockRequest().getEditMode();
+                        initButton(pnEditMode);
+                        loadDetails();
+                        initTabAnchor();
+                        
+                    } else {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        System.out.println((String) poJSON.get("message"));
+                        initTabAnchor();
+                    }
+                } catch (CloneNotSupportedException | ExceptionInInitializerError e) {
+                    System.err.println(MiscUtil.getException(e));
+                }
                     break;
                 case "btnBrowse":
                     break;
@@ -303,6 +324,9 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
             }
         }
     }
+    private void loadDetails(){
+        txtField01.setText((String)oTrans.StockRequest().Master().getTransactionNo());
+    }
 
     private boolean loadPrint() {
         JSONObject loJSON = new JSONObject();
@@ -321,10 +345,10 @@ public class InventoryRequestMC_ROQController implements Initializable, ScreenIn
         params.put("sReportDt", CommonUtils.xsDateMedium((Date) oApp.getServerDate()));
         params.put("sBranchNm", oApp.getBranchName());
         params.put("sAddressx", oApp.getAddress());
-//        params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
-//        params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
-//        params.put("sRemarks", oTrans.getMasterModel().getRemarks());
-//        params.put("status", oTrans.getMasterModel().getTransactionStatus());
+//      params.put("sTransNox", oTrans.getMasterModel().getTransactionNumber());
+//      params.put("sTranDte", CommonUtils.xsDateMedium((Date) oTrans.getMasterModel().getTransaction()));
+//      params.put("sRemarks", oTrans.getMasterModel().getRemarks());
+//      params.put("status", oTrans.getMasterModel().getTransactionStatus());
 //      params.put("sTranType", "Unprcd Qty");
 //      params.put("sTranQty", "Cancel");
 

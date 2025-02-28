@@ -249,8 +249,11 @@ public class DashboardController implements Initializable {
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
                     return "Accounts Accreditation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationApproval.fxml":
+                    return "Accounts Accreditation Approval";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
                     return "Accounts Accreditation History";
+                    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
                     return "Purchase Order";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
@@ -423,10 +426,14 @@ public class DashboardController implements Initializable {
                     return new SampleForm2Controller();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
                     return new PurchasingOrder_EntryController();
+                    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
                     return new AccountsAccreditationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationApproval.fxml":
+                    return new AccountsAccreditationApprovalController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
                     return new AccountsAccreditationHistoryController();
+                    
 //                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
 //                 return new PurchasingOrder_HistoryController();
 
@@ -1651,6 +1658,22 @@ public class DashboardController implements Initializable {
                         break;
                 }
                 break;
+            case "Accounts Accreditations":
+                switch (sLocation.toLowerCase()) {
+                    case "purchasing/entry/accounts accreditations":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml";
+                        break;
+                    case "purchasing/approval/accounts accreditations":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationApproval.fxml";
+                        break;
+                    case "purchasing/history/accounts accreditations":
+                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml";
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;    
             case "Requisition Slip":
                 switch (sLocation.toLowerCase()) {
                     case "purchasing/requisition slip":

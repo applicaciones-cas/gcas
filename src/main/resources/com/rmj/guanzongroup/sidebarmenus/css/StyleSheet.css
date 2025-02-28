@@ -533,9 +533,7 @@
     -fx-background-color: transparent;
 }
 .list-cell {
-    -fx-cell-size: 50 ;
     -fx-animated: true;
-    -fx-padding: 1px;
     -fx-opacity: 1;
     -fx-text-fill: black;
 }
@@ -673,53 +671,6 @@
     -fx-background-color: white;
 }
 
-
-
-
-.combo-box {
-   -fx-border-color: black ;
-    -fx-max-height: 30px;
-    -fx-min-height: 30px;
-    -fx-background-color: transparent;
-    -fx-border-width: .5px;
-    -fx-border-radius: 5px;
-    -fx-padding: 3px;
-}
-
-.combo-box .arrow-button {
-    -fx-background-color: transparent;
-    -fx-shape: "";
-    -fx-padding: 0;
-}
-.combo-box:focused {
-    -fx-border-color: #F88222 ;
-}
-
-.combo-box-base:disabled,
-.list-cell:disabled,
-.check-box:disabled{
-    -fx-opacity: 1;
-}
-
-.combo-box {
-
-    -fx-max-height: 30px;
-    -fx-min-height: 30px;
-    -fx-background-color: transparent;
-    -fx-border-width: .5px;
-    -fx-border-radius: 5px;
-    -fx-padding: 3px;
-}
-
-.combo-box .arrow-button {
-    -fx-background-color: transparent;
-    -fx-shape: "";
-    -fx-padding: 0;
-}
-.combo-box:focused {
-    -fx-border-color: #F88222 ;
-}
-
 .button_process2 {
     -fx-background-color: #FF8201;
     -fx-text-fill: white;
@@ -728,4 +679,43 @@
 .button_process2:hover
 {
     -fx-background-color: #CC6900;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * LISTVIEW CSS                                                                     *
+ *                                                                             *
+ ******************************************************************************/
+
+.combo-box-base{
+    -fx-font-family: "Courier New";
+    -fx-background-color: white;
+    -fx-border-color: #5e5e5e;
+    -fx-text-alignment: center;
+    -fx-border-radius:3px;
+}
+
+
+.combo-box-base:disabled,
+.list-cell:disabled,
+.check-box:disabled{
+    -fx-opacity: 1;
+}
+.combo-box {
+
+    -fx-max-height: 25px;
+    -fx-min-height: 25px;
+    -fx-background-color: transparent;
+    -fx-border-width: .5px;
+    -fx-border-radius: 5px;
+    -fx-padding: 0px;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+.combo-box:focused {
+    -fx-border-color: #F88222 ;
 }

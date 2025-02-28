@@ -71,25 +71,6 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnApproved" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Approved">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="THUMBS_ALT_UP" size="20" />
-                           </graphic>
-                           <effect>
-                              <Blend />
-                           </effect>
-                        </Button>
-                        <Button fx:id="btnDisapproved" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Disapproved">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="THUMBS_ALT_DOWN" size="20" />
-                           </graphic>
-                           <effect>
-                              <Blend />
-                           </effect>
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                        </Button>
                         <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Search">
                            <graphic>
                               <FontAwesomeIconView glyphName="SEARCH" size="20" />
@@ -125,9 +106,9 @@
          <top>
             <AnchorPane BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane prefHeight="55.0" style="-fx-background-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane prefHeight="45.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <AnchorPane style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <AnchorPane prefHeight="45.0" style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <AnchorPane style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
@@ -147,7 +128,7 @@
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="20.0" />
                                        </columnConstraints>
                                        <rowConstraints>
-                                          <RowConstraints vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Account Type" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">

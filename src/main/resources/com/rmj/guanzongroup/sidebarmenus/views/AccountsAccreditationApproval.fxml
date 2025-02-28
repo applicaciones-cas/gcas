@@ -39,9 +39,9 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnUpload" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Upload">
+                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="New">
                            <graphic>
-                              <FontAwesomeIconView glyphName="CLOUD_UPLOAD" size="20" />
+                              <FontAwesomeIconView glyphName="FILE" size="20" />
                            </graphic>
                            <effect>
                               <Blend />
@@ -54,6 +54,41 @@
                            <effect>
                               <Blend />
                            </effect>
+                        </Button>
+                        <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Update">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="EDIT" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnUpload" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Upload">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="CLOUD_UPLOAD" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnApproved" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Approved">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="THUMBS_ALT_UP" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                        <Button fx:id="btnDisapproved" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Disapproved">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="THUMBS_ALT_DOWN" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                           <font>
+                              <Font size="10.0" />
+                           </font>
                         </Button>
                         <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Search">
                            <graphic>
@@ -90,7 +125,7 @@
          <top>
             <AnchorPane BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane prefHeight="45.0" style="-fx-background-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane prefHeight="45.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <AnchorPane prefHeight="45.0" style="-fx-background-color: FF8201;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
@@ -112,7 +147,7 @@
                                           <ColumnConstraints hgrow="SOMETIMES" minWidth="20.0" />
                                        </columnConstraints>
                                        <rowConstraints>
-                                          <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                                        </rowConstraints>
                                        <children>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Account Type" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
@@ -170,7 +205,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </padding>
                            <children>
-                              <GridPane hgap="2.0" vgap="3.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="15.0">
+                              <GridPane hgap="2.0" vgap="3.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                  <columnConstraints>
                                     <ColumnConstraints hgrow="SOMETIMES" prefWidth="120.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
@@ -264,7 +299,7 @@
                                           <Insets right="5.0" />
                                        </GridPane.margin>
                                     </Label>
-                                    <TextField fx:id="txtField04" alignment="TOP_LEFT" maxHeight="50.0" prefHeight="60.0" prefWidth="466.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="9" GridPane.rowSpan="2">
+                                    <TextField fx:id="txtField04" accessibleRole="TEXT_AREA" alignment="TOP_LEFT" maxHeight="50.0" prefHeight="60.0" prefWidth="466.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="9" GridPane.rowSpan="2">
                                        <GridPane.margin>
                                           <Insets left="5.0" right="5.0" />
                                        </GridPane.margin>

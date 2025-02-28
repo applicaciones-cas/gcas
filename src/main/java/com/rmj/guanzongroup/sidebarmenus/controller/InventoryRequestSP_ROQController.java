@@ -42,8 +42,10 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
+import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inv.Inventory;
+import org.guanzon.cas.inv.warehouse.StockRequest;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
@@ -58,7 +60,7 @@ public class InventoryRequestSP_ROQController implements Initializable, ScreenIn
 
     private GRider oApp;
     private int pnEditMode;
-    private Inventory oTrans;
+    private StockRequest oTrans;
     private ParamControllers oParameters;
     private boolean pbLoaded = false;
     private ObservableList<ModelStockRequest> ROQData = FXCollections.observableArrayList();
@@ -121,16 +123,18 @@ public class InventoryRequestSP_ROQController implements Initializable, ScreenIn
         initTabAnchor();
         InitTextFields();
         clearAllFields();
+        initTblDetails();
+        initTblDetailsROQ();
         pbLoaded = true;
     }
 
     private void initializeObject() {
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-        oTrans = new Inventory();
-        oTrans.setApplicationDriver(oApp);
-        oTrans.setWithParentClass(false);
-        oTrans.setLogWrapper(logwrapr);
-        oTrans.initialize();
+        oTrans = new StockRequest();
+//        oTrans.setApplicationDriver(oApp);
+//        oTrans.setWithParentClass(false);
+//        oTrans.setLogWrapper(logwrapr);
+//        oTrans.initialize();
         oParameters = new ParamControllers(oApp, logwrapr);
     }
 
@@ -281,6 +285,24 @@ public class InventoryRequestSP_ROQController implements Initializable, ScreenIn
                     }
                     break;
                 case "btnNew":
+                    try {
+                    JSONObject poJSON;
+                    poJSON = oTrans.NewTransaction();
+                    if ("success".equals((String) poJSON.get("result"))) {
+                        pnEditMode = oTrans.getEditMode();
+                        initButton(pnEditMode);
+//                        loadDetails();
+txtField01.setText(oTrans.Master().getTransactionNo());
+                        initTabAnchor();
+                        
+                    } else {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        System.out.println((String) poJSON.get("message"));
+                        initTabAnchor();
+                    }
+                    } catch (CloneNotSupportedException | ExceptionInInitializerError e) {
+                    System.err.println(MiscUtil.getException(e));
+                }
                     break;
                 case "btnBrowse":
                     break;
@@ -314,12 +336,12 @@ public class InventoryRequestSP_ROQController implements Initializable, ScreenIn
 
     private boolean loadPrint() {
         JSONObject loJSON = new JSONObject();
-        if (oTrans.getModel().getBarCode() == null) {
-            ShowMessageFX.Warning("Unable to print transaction.", "Warning", "No record loaded.");
-            loJSON.put("result", "error");
-            loJSON.put("message", "Model Master is null");
-            return false;
-        }
+//        if (oTrans.getModel().getBarCode() == null) {
+//            ShowMessageFX.Warning("Unable to print transaction.", "Warning", "No record loaded.");
+//            loJSON.put("result", "error");
+//            loJSON.put("message", "Model Master is null");
+//            return false;
+//        }
 
         // Prepare report parameters
         Map<String, Object> params = new HashMap<>();

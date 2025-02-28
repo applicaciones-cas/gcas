@@ -156,8 +156,8 @@
                                                 <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <TextField fx:id="txtField03" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                                <TextField fx:id="txtField04" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtField03" promptText="PRESS F3: Search" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                <TextField fx:id="txtField04" promptText="PRESS F3: Search" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                 <TextField fx:id="txtField05" editable="false" styleClass="text-field" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                 <TextField fx:id="txtField06" editable="false" styleClass="text-field" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                 <TextField fx:id="txtField07" styleClass="text-field" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.rowIndex="2" />

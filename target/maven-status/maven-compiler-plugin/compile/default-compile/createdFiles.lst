@@ -22,6 +22,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\InventoryLocationController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\AccountsReceivableController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\BanksController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DepartmentController.class
+com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationApprovalController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryMaintenanceController.class
 com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\SharedModel.class
@@ -106,6 +107,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\LaborCategoryController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController1$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController1.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchasingOrder_EntryController.class
+com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationApprovalController.class
 com\rmj\guanzongroup\sidebarmenus\controller\LoginControllerHolder.class
 com\rmj\guanzongroup\sidebarmenus\controller\BranchController.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryController$1.class
