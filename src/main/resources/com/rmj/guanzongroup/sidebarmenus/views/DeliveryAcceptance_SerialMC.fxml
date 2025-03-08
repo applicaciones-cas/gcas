@@ -69,7 +69,7 @@
                                     <children>
                                               <AnchorPane style="-fx-border-color: orange;">
                                                   <children>
-                                                      <GridPane layoutX="11.0" layoutY="6.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="6.0">
+                                                      <GridPane layoutX="11.0" layoutY="6.0" stylesheets="@../css/StyleSheet.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                           <columnConstraints>
                                                               <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="58.0" />
                                                               <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="-Infinity" prefWidth="10.0" />
@@ -85,14 +85,14 @@
                                                           <rowConstraints>
                                                               <RowConstraints />
                                                               <RowConstraints />
-                                                              <RowConstraints minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                              <RowConstraints minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                           </rowConstraints>
                                                           <children>
                                                               <Label text="Engine No." GridPane.rowIndex="2" />
                                                               <Label text="Frame No." GridPane.rowIndex="3" />
                                                               <TextField fx:id="txtField02" maxHeight="26.0" maxWidth="-Infinity" prefWidth="282.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                              <TextField fx:id="txtField04" maxHeight="26.0" maxWidth="-Infinity" prefWidth="232.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                                                              <TextField fx:id="txtField04" maxHeight="26.0" maxWidth="-Infinity" prefWidth="234.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
                                                           </children>
                                                       </GridPane>
                                                   </children>

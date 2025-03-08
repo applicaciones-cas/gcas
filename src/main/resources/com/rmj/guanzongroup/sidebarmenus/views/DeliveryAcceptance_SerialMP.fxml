@@ -86,7 +86,7 @@
                                                               <RowConstraints />
                                                               <RowConstraints />
                                                               <RowConstraints minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                              <RowConstraints minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                           </rowConstraints>
                                                           <children>
                                                               <Label text="IMEI 1" GridPane.rowIndex="2" />

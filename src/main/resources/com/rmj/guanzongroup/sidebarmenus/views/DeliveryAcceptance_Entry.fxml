@@ -219,11 +219,11 @@
                                                                           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="162.0" minWidth="-Infinity" prefWidth="61.0" />
                                                       <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                           <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="171.0" minWidth="-Infinity" prefWidth="250.0" />
-                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="171.0" minWidth="10.0" prefWidth="120.0" />
-                                                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="174.0" minWidth="-Infinity" prefWidth="80.0" />
+                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="171.0" minWidth="10.0" prefWidth="73.0" />
+                                                      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="174.0" minWidth="-Infinity" prefWidth="94.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="67.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="102.0" minWidth="6.0" prefWidth="95.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="102.0" minWidth="6.0" prefWidth="91.0" />
                                                                       </columnConstraints>
                                                                       <rowConstraints>
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
@@ -245,13 +245,13 @@
                                                          </font>
                                                       </Label>
                                                                           <Label text="Brand" GridPane.rowIndex="4" />
-                                                                          <TextField fx:id="txtField16" maxHeight="25.0" GridPane.columnIndex="2" />
+                                                                          <TextField fx:id="txtField16" maxHeight="25.0" promptText="Press F3 : Search" GridPane.columnIndex="2" />
                                                                           <Label text="Model" GridPane.rowIndex="5" />
                                                                           <Label text="Color" GridPane.rowIndex="6" />
                                                                           <Label text="Measure" GridPane.columnIndex="4" GridPane.rowIndex="6" />
                                                                           <TextField fx:id="txtField20" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
                                                                           <TextField fx:id="txtField21" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="6" />
-                                                                          <Label text="Received" GridPane.columnIndex="8" GridPane.rowIndex="6">
+                                                                          <Label text="Received Qty" GridPane.columnIndex="8" GridPane.rowIndex="6">
                                                                               <font>
                                                                                   <Font name="System Bold" size="15.0" />
                                                                               </font>
@@ -264,9 +264,9 @@
                                                       <TextField GridPane.columnIndex="10" GridPane.rowIndex="6" />
                                                       <Label text="Barcode" GridPane.rowIndex="2" />
                                                       <TextField promptText="Press F3 : Search" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                      <TextField maxWidth="-Infinity" minWidth="-Infinity" prefWidth="462.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                      <TextField maxWidth="-Infinity" minWidth="-Infinity" prefWidth="462.0" promptText="Press F3 : Search" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Supersede" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                      <TextField GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                      <TextField promptText="Press F3 : Search" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>

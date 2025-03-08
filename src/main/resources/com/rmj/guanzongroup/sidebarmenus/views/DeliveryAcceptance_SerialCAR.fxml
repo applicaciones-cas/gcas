@@ -17,8 +17,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" maxWidth="1487.0" minWidth="443.0" prefHeight="488.0" prefWidth="443.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" maxWidth="1487.0" minWidth="443.0" prefHeight="488.0" prefWidth="548.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -75,24 +76,25 @@
                                                               <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="162.0" minWidth="-Infinity" prefWidth="113.0" />
                                                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="108.0" minWidth="-Infinity" prefWidth="108.0" />
-                                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="57.0" />
-                                                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                          <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                          <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                          <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="11.0" minWidth="0.0" prefWidth="9.0" />
+                                                              <ColumnConstraints hgrow="SOMETIMES" prefWidth="57.0" />
                                                           </columnConstraints>
                                                           <rowConstraints>
                                                               <RowConstraints />
                                                               <RowConstraints />
-                                                              <RowConstraints minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                              <RowConstraints minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                           </rowConstraints>
                                                           <children>
                                                               <Label text="Engine No." GridPane.rowIndex="2" />
                                                               <Label text="Frame No." GridPane.rowIndex="3" />
-                                                              <TextField fx:id="txtField02" maxHeight="26.0" maxWidth="-Infinity" prefWidth="237.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                              <TextField fx:id="txtField04" maxHeight="26.0" maxWidth="-Infinity" prefWidth="221.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                                                              <TextField fx:id="txtField02" maxHeight="26.0" maxWidth="282.0" minWidth="-Infinity" prefWidth="281.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                              <TextField fx:id="txtField04" maxHeight="26.0" maxWidth="-Infinity" prefWidth="282.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="CS No." GridPane.rowIndex="4" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Year Model" GridPane.rowIndex="5" />
+                                          <TextField maxWidth="282.0" minWidth="-Infinity" prefWidth="282.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                          <TextField minWidth="-Infinity" prefWidth="282.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                           </children>
                                                       </GridPane>
                                                   </children>
@@ -116,6 +118,8 @@
                                                                 <TableColumn fx:id="tblindex01_order_details" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" text="No." />
                                                                 <TableColumn fx:id="tblindex02_order_details" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Engine No." />
                                                                 <TableColumn fx:id="tblindex04_order_details" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Frame No." />
+                                                <TableColumn fx:id="tblindex04_order_details1" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="CS No." />
+                                                <TableColumn fx:id="tblindex04_order_details11" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Year Model" />
                                                             </columns>
                                              <columnResizePolicy>
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
