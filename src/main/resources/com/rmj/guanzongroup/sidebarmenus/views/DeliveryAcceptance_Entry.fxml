@@ -35,7 +35,7 @@
                         </AnchorPane>
                     </top>
                     <bottom>
-                        <AnchorPane fx:id="apButton" maxWidth="1490.0" BorderPane.alignment="CENTER_LEFT">
+                        <AnchorPane fx:id="apButton" maxWidth="1440.0" BorderPane.alignment="CENTER_LEFT">
                             <children>
                                 <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                     <children>
@@ -129,7 +129,7 @@
                                       <children>
                                           <AnchorPane>
                                               <children>
-                                                  <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                  <VBox maxWidth="873.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                       <children>
                                                           <AnchorPane style="-fx-border-color: orange;">
                                                               <children>
@@ -215,7 +215,7 @@
                                                                           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="72.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="171.0" />
-                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="50.0" />
                                                                           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="162.0" minWidth="-Infinity" prefWidth="61.0" />
                                                       <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                           <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="171.0" minWidth="-Infinity" prefWidth="250.0" />
@@ -264,8 +264,8 @@
                                                       <TextField GridPane.columnIndex="10" GridPane.rowIndex="6" />
                                                       <Label text="Barcode" GridPane.rowIndex="2" />
                                                       <TextField promptText="Press F3 : Search" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                      <TextField maxWidth="-Infinity" minWidth="-Infinity" prefWidth="443.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Supercede" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                      <TextField maxWidth="-Infinity" minWidth="-Infinity" prefWidth="462.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Supersede" GridPane.columnIndex="4" GridPane.rowIndex="2" />
                                                       <TextField GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                       </children>
                                                                   </GridPane>
@@ -343,14 +343,11 @@
                                                                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                               </GridPane.margin>
                                                           </TableView>
-                                          <AnchorPane style="-fx-background-color: #7F7F7F;" GridPane.rowIndex="2">
-                                             <children>
-                                                <Pagination stylesheets="@../css/StyleSheet.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                             </children>
+                                          <Pagination prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                                              <GridPane.margin>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" />
                                              </GridPane.margin>
-                                          </AnchorPane>
+                                          </Pagination>
                                                       </children>
                                                   </GridPane>
                                               </children>
