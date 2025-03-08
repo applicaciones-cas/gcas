@@ -308,45 +308,40 @@
                                                                       <rowConstraints>
                                                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
-                                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                       </rowConstraints>
                                                                       <children>
-                                                                          <Label text="Barcode" GridPane.rowIndex="2" />
-                                                                          <Label text="Description" GridPane.rowIndex="3" />
-                                                                          <TextField fx:id="txtField18" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                                                                          <TextField fx:id="txtField19" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                                          <Label text="Order" GridPane.columnIndex="9" GridPane.rowIndex="5">
+                                                                          <TextField fx:id="txtField18" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                          <TextField fx:id="txtField19" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                                          <Label text="Order" GridPane.columnIndex="9" GridPane.rowIndex="3">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
                                                                         </Label>
-                                                                          <Label text="Brand" GridPane.rowIndex="4" />
-                                                                          <TextField fx:id="txtField17" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="3" />
-                                                                          <TextField fx:id="txtField16" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                          <Label text="Model" GridPane.rowIndex="5" />
-                                                                          <Label text="Color" GridPane.rowIndex="6" />
-                                                                          <Label text="Measure" GridPane.columnIndex="4" GridPane.rowIndex="6" />
-                                                                          <TextField fx:id="txtField20" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                                                                          <TextField fx:id="txtField21" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="6" />
-                                                                          <Label text="Received Qty" GridPane.columnIndex="9" GridPane.rowIndex="6">
+                                                                          <Label text="Brand" GridPane.rowIndex="2" />
+                                                                          <Label text="Model" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                                          <Label text="Color" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                                          <Label text="Measure" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                                                                          <TextField fx:id="txtField20" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                                                                          <TextField fx:id="txtField21" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                                                                          <Label text="Received Qty" GridPane.columnIndex="9" GridPane.rowIndex="5">
                                                                               <font>
                                                                                   <Font name="System Bold" size="15.0" />
                                                                               </font>
                                                                           </Label>
-                                                      <Label text="Cost" GridPane.columnIndex="9" GridPane.rowIndex="4" />
-                                                      <Label text="Inv. Type" GridPane.columnIndex="4" GridPane.rowIndex="5" />
-                                                      <TextField GridPane.columnIndex="6" GridPane.rowIndex="5" />
-                                                      <TextField GridPane.columnIndex="11" GridPane.rowIndex="4" />
+                                                      <Label text="Cost" GridPane.columnIndex="9" GridPane.rowIndex="2" />
+                                                      <Label text="Inv. Type" GridPane.rowIndex="4" />
+                                                      <TextField GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                      <TextField GridPane.columnIndex="11" GridPane.rowIndex="2" />
+                                                      <TextField GridPane.columnIndex="11" GridPane.rowIndex="3" />
                                                       <TextField GridPane.columnIndex="11" GridPane.rowIndex="5" />
-                                                      <TextField GridPane.columnIndex="11" GridPane.rowIndex="6" />
                                                                         <Label text="Order No." />
                                                                         <TextField promptText="Press F3: Search" GridPane.columnIndex="2" />
-                                                                              <Label text="Supersede" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                                              <TextField promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                                              <Label text="Variant" GridPane.rowIndex="3" />
+                                                                              <TextField GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
