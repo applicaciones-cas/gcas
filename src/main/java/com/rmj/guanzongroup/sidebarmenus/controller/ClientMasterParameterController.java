@@ -798,13 +798,13 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                         }
                         break;
                     case 4: /*search barangay*/
-                        poJson = new JSONObject();
-                        poJson = oParam.Barangay().searchRecordbyTown(lsValue, TownID, false);
-                        if("success".equals((String)poJson.get("result"))){
-                            AddressField04.setText(oParam.Barangay().getModel().getBarangayName());
-                            JSONObject loJSON = new JSONObject();
-                            loJSON = oTrans.Address(pnAddress).getModel().setBarangayId(oParam.Barangay().getModel().getBarangayId());
-                        }
+//                        poJson = new JSONObject();
+//                        poJson = oParam.Barangay().searchRecordbyTown(lsValue, TownID, false);
+//                        if("success".equals((String)poJson.get("result"))){
+//                            AddressField04.setText(oParam.Barangay().getModel().getBarangayName());
+//                            JSONObject loJSON = new JSONObject();
+//                            loJSON = oTrans.Address(pnAddress).getModel().setBarangayId(oParam.Barangay().getModel().getBarangayId());
+//                        }
                         break;
                 }
             case ENTER:

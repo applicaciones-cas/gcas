@@ -138,7 +138,7 @@
                                     <children>
                                         <VBox prefHeight="339.0" spacing="5.0">
                                             <children>
-                                                <AnchorPane style="-fx-border-color: orange;">
+                                                <AnchorPane fx:id="AnchorMaster" style="-fx-border-color: orange;">
                                                     <children>
                                                         <GridPane layoutX="11.0" layoutY="6.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="6.0">
                                                             <columnConstraints>
@@ -222,7 +222,7 @@
                                                         </GridPane>
                                                     </children>
                                                 </AnchorPane>
-                                                <AnchorPane minWidth="800.0" style="-fx-border-color: orange;">
+                                                <AnchorPane fx:id="AnchorDetails" minWidth="800.0" style="-fx-border-color: orange;">
                                                     <children>
                                                         <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                                                             <columnConstraints>
