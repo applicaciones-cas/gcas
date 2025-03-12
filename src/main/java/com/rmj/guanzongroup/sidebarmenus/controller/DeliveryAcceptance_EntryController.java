@@ -1,33 +1,35 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
+ */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrder;
-import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
 import org.json.simple.JSONObject;
 
-public class DeliveryAcceptance_EntryController implements Initializable,ScreenInterface {
-    private final String pxeModuleName = "Purchasing Receiving";
+/**
+ * FXML Controller class
+ *
+ * @author User
+ */
+public class DeliveryAcceptance_EntryController implements Initializable, ScreenInterface{
     private GRider oApp;
     private JSONObject poJSON;
-
-    private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
+    
     
     @FXML
     private AnchorPane apBrowse;
@@ -40,145 +42,121 @@ public class DeliveryAcceptance_EntryController implements Initializable,ScreenI
     @FXML
     private Button btnNew;
     @FXML
-    private Button btnClose;
-    @FXML
-    private Button btnSave;
+    private Button btnUpdate;
     @FXML
     private Button btnSearch;
     @FXML
-    private Button btnDelete;
+    private Button btnSave;
     @FXML
     private Button btnCancel;
     @FXML
+    private Button btnPrint;
+    @FXML
+    private Button btnHistory;
+    @FXML
+    private Button btnRetrieve;
+    @FXML
+    private Button btnClose;
+    @FXML
+    private HBox hboxid;
+    @FXML
     private Label lblStatus;
     @FXML
-    private TextField txtField01;
+    private TextField txtTransactionNo;
     @FXML
-    private TextField txtField02;
+    private DatePicker txtTransactionDate;
     @FXML
-    private TextField txtField03;
+    private TextField txtIndustry;
     @FXML
-    private TextField txtField04;
+    private TextField txtCompany;
     @FXML
-    private TextField txtField05;
+    private TextField txtSupplier;
     @FXML
-    private TextField txtField08;
+    private TextField txtTrucking;
     @FXML
-    private CheckBox cbAdv;
+    private TextArea txtAreaRemarks;
     @FXML
-    private TextField txtField09;
+    private DatePicker dtReferenceDate;
     @FXML
-    private TextField txtField11;
+    private TextField txtReferenceNo;
     @FXML
-    private TextField txtField12;
+    private TextField txtTerm;
     @FXML
-    private TextField txtField14;
+    private TextField txtDiscountRate;
     @FXML
-    private TextField txtField06;
+    private TextField txtDiscountAmount;
     @FXML
-    private TextField txtField18;
+    private TextField txtTotal;
     @FXML
-    private TextField txtField19;
+    private TextField txtOrderNo;
     @FXML
-    private TextField txtField25;
+    private TextField txtBarcode;
     @FXML
-    private TextField txtField26;
+    private TextField txtSupersede;
     @FXML
-    private TextField txtField27;
+    private TextField txtDescription;
     @FXML
-    private TextField txtField17;
+    private TextField txtBrand;
     @FXML
-    private TextField txtField16;
+    private TextField txtModel;
     @FXML
-    private TextField txtField15;
+    private TextField txtColor;
     @FXML
-    private TextField txtField20;
+    private TextField txtInventoryType;
     @FXML
-    private TextField txtField21;
+    private TextField txtMeasure;
     @FXML
-    private TextField txtField22;
+    private DatePicker dtExpiryDate;
     @FXML
-    private TextField txtField23;
+    private TextField txtCost;
     @FXML
-    private TextField txtField24;
+    private TextField txtOrderQuantity;
+    @FXML
+    private TextField txtReceiveQuantity;
+    @FXML
+    private TableView tblViewOrderDetails;
+    @FXML
+    private TableColumn tblindexRowNoOrderDetails;
+    @FXML
+    private TableColumn tblindexOrderNoOrderDetails;
+    @FXML
+    private TableColumn tblindexBarcodeOrderDetails;
+    @FXML
+    private TableColumn tblindexDescriptionOrderDetails;
+    @FXML
+    private TableColumn tblindexCostOrderDetails;
+    @FXML
+    private TableColumn tblindexOrderQuantityOrderDetails;
+    @FXML
+    private TableColumn tblindexReceiveQuantityOrderDetails;
+    @FXML
+    private TableColumn tblindexTotalOrderDetails;
     @FXML
     private TableView tblViewStock_Request;
     @FXML
-    private TableColumn tblindex01;
+    private TableColumn tblindexRowNoPurchaseOrderList;
     @FXML
-    private TableColumn tblindex02;
+    private TableColumn tblindexSupplierPurchaseOrderList;
     @FXML
-    private TableColumn tblindex03;
+    private TableColumn tblindexDatePurchaseOrderList;
     @FXML
-    private TableColumn tblindex04;
-    @FXML
-    private TableColumn tblindex05;
-    @FXML
-    private TableView<?> tblViewOrderDetails;
-    @FXML
-    private TableColumn tblindex01_order_details;
-    @FXML
-    private TableColumn tblindex02_order_details;
-    @FXML
-    private TableColumn tblindex04_order_details;
-    @FXML
-    private TableColumn tblindex05_order_details;
-    @FXML
-    private TableColumn tblindex06_order_details;
-    @FXML
-    private TableColumn tblindex07_order_details;
-    @FXML
-    private TableColumn tblindex08_order_details;
-    @FXML
-    private TableColumn tblindex12_order_details;
-    @FXML
-    private TableColumn tblindex09_order_details;
-    @FXML
-    private TableColumn tblindex09_order_details1;
-    @FXML
-    private TableColumn tblindex10_order_details;
-    @FXML
-    private TableColumn tblindex11_order_details;
-    @FXML
-    private TableColumn tblindex13_order_details;
-    
-    @FXML
-    void cmdButton_Click(ActionEvent event) {
+    private TableColumn tblIndexReferenceNoPurchaseOrderList;
 
-    }
-
-    public void inittable() {
-        tblindex01.setStyle("-fx-alignment: CENTER;");
-        tblindex02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        tblindex03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        tblindex04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        tblindex05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 0 0 5;");
-
-        tblindex01.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index01"));
-        tblindex02.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index02"));
-        tblindex03.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index03"));
-        tblindex04.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index04"));
-        tblindex05.setCellValueFactory(new PropertyValueFactory<ModelPurchaseOrder, String>("index05"));
-
-        tblViewStock_Request.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewStock_Request.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
-        tblViewStock_Request.setItems(data);
-    }
+    /**
+     * Initializes the controller class.
+     */
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("working");
-        data.add(new ModelPurchaseOrder("1", "LP - General Warehouse", "2025-02-11", "M00125000000", "10"
-        ));
-        inittable();
-    }
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+    }    
 
-    @Override
+    @FXML
+    private void cmdButton_Click(ActionEvent event) {
+        
+    }
+        @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
+    
 }
