@@ -247,7 +247,7 @@ public class DashboardController implements Initializable {
                     return "Accounts Accreditation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
                     return "Accounts Accreditation History";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml":
                     return "Purchase Order";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
                     return "Purchase Order History";
@@ -403,7 +403,9 @@ public class DashboardController implements Initializable {
                     return new Log_InController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml":
                     return new DefaultScreenController();
-
+                /* GENERAL */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml":
+                    return new PurchaseOrder_EntryController();
                 /* INVENTORY/INVENTORY/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
                     return new InventoryMaintenanceController();
@@ -413,8 +415,6 @@ public class DashboardController implements Initializable {
                     return new SampleForm1Controller();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm2.fxml":
                     return new SampleForm2Controller();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml":
-                    return new PurchasingOrder_EntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
                     return new AccountsAccreditationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
@@ -509,7 +509,7 @@ public class DashboardController implements Initializable {
 
                 /* OTHERS/Clients */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/ClientMasterParameter.fxml":
-                 return new ClientMasterParameterController();
+                    return new ClientMasterParameterController();
 //
                 /* OTHERS/INVENTORY */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryParam.fxml":
@@ -1152,36 +1152,121 @@ public class DashboardController implements Initializable {
     }
 
     private void purchasingMenuItems() {
-        String jsonString = "["
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing\", \"fxml_path\": \"Purchasing\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\"},\n"
-                //entry
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Entry\", \"fxml_path\": \"Purchasing/Entry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/Entry/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"003\", \"menu_parent\": \"002\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Entry/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"004\", \"menu_parent\": \"002\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Entry/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"002\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/Entry/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"006\", \"menu_parent\": \"002\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Entry/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"007\", \"menu_parent\": \"002\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Entry/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"002\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Entry/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"002\"},\n"
-                //approval
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Approval\", \"fxml_path\": \"Purchasing/Approval\", \"controller_path\": \"sample.controller\", \"menu_id\": \"010\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/Approval/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"011\", \"menu_parent\": \"010\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Approval/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"012\", \"menu_parent\": \"010\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Approval/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"013\", \"menu_parent\": \"010\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"PurchasingApproval/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"014\", \"menu_parent\": \"010\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Approval/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"015\", \"menu_parent\": \"010\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Approval/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"016\", \"menu_parent\": \"010\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Approval/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"017\", \"menu_parent\": \"010\"},\n"
-                //history
-                + "  {\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Purchasing/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"018\", \"menu_parent\": \"001\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/History/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"019\", \"menu_parent\": \"018\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/History/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"021\", \"menu_parent\": \"018\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"022\", \"menu_parent\": \"018\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"023\", \"menu_parent\": \"018\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/History/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"024\", \"menu_parent\": \"018\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/History/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"025\", \"menu_parent\": \"018\"},\n"
-                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/History/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"026\", \"menu_parent\": \"018\"}\n"
-                + "]";
+//        String jsonString = "["
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing\", \"fxml_path\": \"Purchasing\", \"controller_path\": \"sample.controller\", \"menu_id\": \"001\", \"menu_parent\": \"\"},\n"
+//                //entry
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Entry\", \"fxml_path\": \"Purchasing/Entry\", \"controller_path\": \"sample.controller\", \"menu_id\": \"002\", \"menu_parent\": \"001\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/Entry/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"003\", \"menu_parent\": \"002\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Entry/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"004\", \"menu_parent\": \"002\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Entry/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"005\", \"menu_parent\": \"002\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/Entry/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"006\", \"menu_parent\": \"002\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Entry/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"007\", \"menu_parent\": \"002\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Entry/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"008\", \"menu_parent\": \"002\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Entry/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"009\", \"menu_parent\": \"002\"},\n"
+//                //approval
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Approval\", \"fxml_path\": \"Purchasing/Approval\", \"controller_path\": \"sample.controller\", \"menu_id\": \"010\", \"menu_parent\": \"001\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/Approval/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"011\", \"menu_parent\": \"010\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/Approval/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"012\", \"menu_parent\": \"010\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/Approval/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"013\", \"menu_parent\": \"010\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"PurchasingApproval/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"014\", \"menu_parent\": \"010\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/Approval/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"015\", \"menu_parent\": \"010\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/Approval/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"016\", \"menu_parent\": \"010\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/Approval/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"017\", \"menu_parent\": \"010\"},\n"
+//                //history
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"History\", \"fxml_path\": \"Purchasing/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"018\", \"menu_parent\": \"001\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Accounts Accreditations\", \"fxml_path\": \"Purchasing/History/Accounts Accreditations\", \"controller_path\": \"sample.controller\", \"menu_id\": \"019\", \"menu_parent\": \"018\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Requisition Slip\", \"fxml_path\": \"Purchasing/History/Requisition Slip\", \"controller_path\": \"sample.controller\", \"menu_id\": \"021\", \"menu_parent\": \"018\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation Request\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"022\", \"menu_parent\": \"018\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Quotation\", \"fxml_path\": \"Purchasing/History/Purchasing Quotation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"023\", \"menu_parent\": \"018\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Order\", \"fxml_path\": \"Purchasing/History/Purchasing Order\", \"controller_path\": \"sample.controller\", \"menu_id\": \"024\", \"menu_parent\": \"018\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Receiving\", \"fxml_path\": \"Purchasing/History/Purchasing Receiving\", \"controller_path\": \"sample.controller\", \"menu_id\": \"025\", \"menu_parent\": \"018\"},\n"
+//                + "  {\"access_level\": \"011\", \"menu_name\": \"Purchasing Return\", \"fxml_path\": \"Purchasing/History/Purchasing Return\", \"controller_path\": \"sample.controller\", \"menu_id\": \"026\", \"menu_parent\": \"018\"}\n"
+//                + "]";
+        String jsonString = "[{\"access_level\":\"011\",\"menu_name\":\"Purchasing\",\"fxml_path\":\"Purchasing\",\"controller_path\":\"purchasing.controller\",\"menu_id\":\"001\",\"menu_parent\":\"\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Entry\",\"fxml_path\":\"Entry\",\"controller_path\":\"entry.controller\",\"menu_id\":\"002\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Purchase Order\",\"fxml_path\":\"Purchase Order\",\"controller_path\":\"po.controller\",\"menu_id\":\"003\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryCar.fxml\",\"controller_path\":\"PurchaseOrder_EntryCar.controller\",\"menu_id\":\"004\",\"menu_parent\":\"003\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml\",\"controller_path\":\"PurchaseOrder_Entry.controller\",\"menu_id\":\"005\",\"menu_parent\":\"003\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryLP.fxml\",\"controller_path\":\"PurchaseOrder_EntryLP.controller\",\"menu_id\":\"006\",\"menu_parent\":\"003\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchFood.fxml\",\"controller_path\":\"PurchaseOrder_EntryMonarchFood.controller\",\"menu_id\":\"007\",\"menu_parent\":\"003\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchHospitality.fxml\",\"controller_path\":\"PurchaseOrder_EntryMonarchHospitality.controller\",\"menu_id\":\"008\",\"menu_parent\":\"003\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMC.fxml\",\"controller_path\":\"PurchaseOrder_EntryMC.controller\",\"menu_id\":\"009\",\"menu_parent\":\"003\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMP.fxml\",\"controller_path\":\"PurchaseOrder_EntryMP.controller\",\"menu_id\":\"010\",\"menu_parent\":\"003\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPCar.fxml\",\"controller_path\":\"PurchaseOrder_EntrySPCar.controller\",\"menu_id\":\"011\",\"menu_parent\":\"003\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPMC.fxml\",\"controller_path\":\"PurchaseOrder_EntrySPMC.controller\",\"menu_id\":\"012\",\"menu_parent\":\"003\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Purchase Order Receiving\",\"fxml_path\":\"Purchase Order Receiving\",\"controller_path\":\"po.controller\",\"menu_id\":\"013\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryCar.fxml\",\"controller_path\":\"DeliveryAcceptance_EntryCar.controller\",\"menu_id\":\"014\",\"menu_parent\":\"013\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml\",\"controller_path\":\"DeliveryAcceptance_Entry.controller\",\"menu_id\":\"015\",\"menu_parent\":\"013\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryLP.fxml\",\"controller_path\":\"DeliveryAcceptance_EntryLP.controller\",\"menu_id\":\"016\",\"menu_parent\":\"013\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMonarchFood.fxml\",\"controller_path\":\"DeliveryAcceptance_EntryMonarchFood.controller\",\"menu_id\":\"017\",\"menu_parent\":\"013\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMonarchHospitality.fxml\",\"controller_path\":\"DeliveryAcceptance_EntryMonarchHospitality.controller\",\"menu_id\":\"018\",\"menu_parent\":\"013\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMC.fxml\",\"controller_path\":\"DeliveryAcceptance_EntryMC.controller\",\"menu_id\":\"019\",\"menu_parent\":\"013\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMP.fxml\",\"controller_path\":\"DeliveryAcceptance_EntryMP.controller\",\"menu_id\":\"020\",\"menu_parent\":\"013\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntrySPCar.fxml\",\"controller_path\":\"DeliveryAcceptance_SPCar.controller\",\"menu_id\":\"021\",\"menu_parent\":\"013\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntrySPMC.fxml\",\"controller_path\":\"DeliveryAcceptance_EntrySPMC.controller\",\"menu_id\":\"022\",\"menu_parent\":\"013\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"Confirmation\",\"controller_path\":\"confirmation.controller\",\"menu_id\":\"023\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Purchase Order\",\"fxml_path\":\"Purchase Order\",\"controller_path\":\"po.controller\",\"menu_id\":\"024\",\"menu_parent\":\"023\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationCar.fxml\",\"controller_path\":\"PurchaseOrder_ConfirmationCar.controller\",\"menu_id\":\"025\",\"menu_parent\":\"024\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Confirmation.fxml\",\"controller_path\":\"PurchaseOrder_Confirmation.controller\",\"menu_id\":\"026\",\"menu_parent\":\"024\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationLP.fxml\",\"controller_path\":\"PurchaseOrder_ConfirmationLP.controller\",\"menu_id\":\"027\",\"menu_parent\":\"024\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchFood.fxml\",\"controller_path\":\"PurchaseOrder_ConfirmationMonarchFood.controller\",\"menu_id\":\"028\",\"menu_parent\":\"024\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchHospitality.fxml\",\"controller_path\":\"PurchaseOrder_ConfirmationMonarchHospitality.controller\",\"menu_id\":\"029\",\"menu_parent\":\"024\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMC.fxml\",\"controller_path\":\"PurchaseOrder_ConfirmationMC.controller\",\"menu_id\":\"030\",\"menu_parent\":\"024\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMP.fxml\",\"controller_path\":\"PurchaseOrder_ConfirmationMP.controller\",\"menu_id\":\"031\",\"menu_parent\":\"024\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPCar.fxml\",\"controller_path\":\"PurchaseOrder_ConfirmationSPCar.controller\",\"menu_id\":\"032\",\"menu_parent\":\"024\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPMC.fxml\",\"controller_path\":\"PurchaseOrder_ConfirmationSPMC.controller\",\"menu_id\":\"033\",\"menu_parent\":\"024\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Purchase Order Receiving\",\"fxml_path\":\"Purchase Order Receiving\",\"controller_path\":\"po.controller\",\"menu_id\":\"034\",\"menu_parent\":\"023\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationCar.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationCar.controller\",\"menu_id\":\"035\",\"menu_parent\":\"034\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml\",\"controller_path\":\"DeliveryAcceptance_Confirmation.controller\",\"menu_id\":\"036\",\"menu_parent\":\"034\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationLP.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationLP.controller\",\"menu_id\":\"037\",\"menu_parent\":\"034\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchFood.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationMonarchFood.controller\",\"menu_id\":\"038\",\"menu_parent\":\"034\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchHospitality.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationMonarchHospitality.controller\",\"menu_id\":\"039\",\"menu_parent\":\"034\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMC.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationMC.controller\",\"menu_id\":\"040\",\"menu_parent\":\"034\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMP.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationMP.controller\",\"menu_id\":\"041\",\"menu_parent\":\"034\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationSPCar.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationSPCar.controller\",\"menu_id\":\"042\",\"menu_parent\":\"034\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationSPMC.fxml\",\"controller_path\":\"DeliveryAcceptance_ConfirmationSPMC.controller\",\"menu_id\":\"043\",\"menu_parent\":\"034\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Approval\",\"fxml_path\":\"Approval\",\"controller_path\":\"approval.controller\",\"menu_id\":\"044\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Purchase Order\",\"fxml_path\":\"Purchase Order\",\"controller_path\":\"po.controller\",\"menu_id\":\"045\",\"menu_parent\":\"044\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalCar.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalCar.controller\",\"menu_id\":\"046\",\"menu_parent\":\"045\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Approval.fxml\",\"controller_path\":\"PurchaseOrder_Approval.controller\",\"menu_id\":\"047\",\"menu_parent\":\"045\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalLP.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalLP.controller\",\"menu_id\":\"048\",\"menu_parent\":\"045\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchFood.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalMonarchFood.controller\",\"menu_id\":\"049\",\"menu_parent\":\"045\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchHospitality.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalMonarchHospitality.controller\",\"menu_id\":\"050\",\"menu_parent\":\"045\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMC.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalMC.controller\",\"menu_id\":\"051\",\"menu_parent\":\"045\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMP.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalMP.controller\",\"menu_id\":\"052\",\"menu_parent\":\"045\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPCar.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalSPCar.controller\",\"menu_id\":\"053\",\"menu_parent\":\"045\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPMC.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalSPMC.controller\",\"menu_id\":\"054\",\"menu_parent\":\"045\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Purchase Order Receiving\",\"fxml_path\":\"Purchase Order Receiving\",\"controller_path\":\"po.controller\",\"menu_id\":\"055\",\"menu_parent\":\"044\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalCar.fxml\",\"controller_path\":\"DeliveryAcceptance_ApprovalCar.controller\",\"menu_id\":\"056\",\"menu_parent\":\"055\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml\",\"controller_path\":\"DeliveryAcceptance_Approval.controller\",\"menu_id\":\"057\",\"menu_parent\":\"055\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalLP.fxml\",\"controller_path\":\"DeliveryAcceptance_ApprovalLP.controller\",\"menu_id\":\"058\",\"menu_parent\":\"055\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchFood.fxml\",\"controller_path\":\"DeliveryAcceptance_ApprovalMonarchFood.controller\",\"menu_id\":\"059\",\"menu_parent\":\"055\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchHospitality.fxml\",\"controller_path\":\"DeliveryAcceptance_ApprovalMonarchHospitality.controller\",\"menu_id\":\"060\",\"menu_parent\":\"055\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMC.fxml\",\"controller_path\":\"DeliveryAcceptance_ApprovalMC.controller\",\"menu_id\":\"061\",\"menu_parent\":\"055\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMP.fxml\",\"controller_path\":\"PurchaseOrder_ApprovalMP.controller\",\"menu_id\":\"062\",\"menu_parent\":\"055\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPCar.fxml\",\"controller_path\":\"DeliveryAcceptance_ApprovalSPCar.controller\",\"menu_id\":\"063\",\"menu_parent\":\"055\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPMC.fxml\",\"controller_path\":\"DeliveryAcceptance_ApprovalSPMC.controller\",\"menu_id\":\"064\",\"menu_parent\":\"055\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"History\",\"fxml_path\":\"History\",\"controller_path\":\"history.controller\",\"menu_id\":\"065\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Purchase Order\",\"fxml_path\":\"Purchase Order\",\"controller_path\":\"po.controller\",\"menu_id\":\"066\",\"menu_parent\":\"065\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryCar.fxml\",\"controller_path\":\"PurchaseOrder_HistoryCar.controller\",\"menu_id\":\"067\",\"menu_parent\":\"066\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml\",\"controller_path\":\"PurchaseOrder_History.controller\",\"menu_id\":\"068\",\"menu_parent\":\"066\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryLP.fxml\",\"controller_path\":\"PurchaseOrder_HistoryLP.controller\",\"menu_id\":\"069\",\"menu_parent\":\"066\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchFood.fxml\",\"controller_path\":\"PurchaseOrder_HistoryMonarchFood.controller\",\"menu_id\":\"070\",\"menu_parent\":\"066\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchHospitality.fxml\",\"controller_path\":\"PurchaseOrder_HistoryMonarchHospitality.controller\",\"menu_id\":\"071\",\"menu_parent\":\"066\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMC.fxml\",\"controller_path\":\"PurchaseOrder_HistoryMC.controller\",\"menu_id\":\"072\",\"menu_parent\":\"066\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMP.fxml\",\"controller_path\":\"PurchaseOrder_HistoryMP.controller\",\"menu_id\":\"073\",\"menu_parent\":\"066\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPCar.fxml\",\"controller_path\":\"PurchaseOrder_HistorySPCar.controller\",\"menu_id\":\"074\",\"menu_parent\":\"066\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPMC.fxml\",\"controller_path\":\"PurchaseOrder_HistorySPMC.controller\",\"menu_id\":\"075\",\"menu_parent\":\"066\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Purchase Order Receiving\",\"fxml_path\":\"Purchase Order Receiving\",\"controller_path\":\"po.controller\",\"menu_id\":\"076\",\"menu_parent\":\"065\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DelivertAcceptance_HistoryCar.fxml\",\"controller_path\":\"DelivertAcceptance_HistoryCar.controller\",\"menu_id\":\"077\",\" Исправлено на menu_parent\":\"076\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DelivertAcceptance_History.fxml\",\"controller_path\":\"DelivertAcceptance_History.controller\",\"menu_id\":\"078\",\"menu_parent\":\"076\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DelivertAcceptance_HistoryLP.fxml\",\"controller_path\":\"DelivertAcceptance_HistoryLP.controller\",\"menu_id\":\"079\",\"menu_parent\":\"076\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DelivertAcceptance_HistoryMonarchFood.fxml\",\"controller_path\":\"DelivertAcceptance_HistoryMonarchFood.controller\",\"menu_id\":\"080\",\"menu_parent\":\"076\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DelivertAcceptance_HistoryMonarchHospitality.fxml\",\"controller_path\":\"DelivertAcceptance_HistoryMonarchHospitality.controller\",\"menu_id\":\"081\",\"menu_parent\":\"076\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DelivertAcceptance_HistoryMC.fxml\",\"controller_path\":\"DelivertAcceptance_HistoryMC.controller\",\"menu_id\":\"082\",\"menu_parent\":\"076\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DelivertAcceptance_HistoryMP.fxml\",\"controller_path\":\"DelivertAcceptance_HistoryMP.controller\",\"menu_id\":\"083\",\"menu_parent\":\"076\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DelivertAcceptancer_HistorySPCar.fxml\",\"controller_path\":\"DelivertAcceptance_HistorySPCar.controller\",\"menu_id\":\"084\",\"menu_parent\":\"076\"},"
+                + "{\"access_level\":\"011\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DelivertAcceptance_HistorySPMC.fxml\",\"controller_path\":\"DelivertAcceptance_HistorySPMC.controller\",\"menu_id\":\"085\",\"menu_parent\":\"076\"}]";
 
         JSONParser parser = new JSONParser();
         try {
@@ -1604,6 +1689,37 @@ public class DashboardController implements Initializable {
         String sLocation = menuLocationMap.getOrDefault(newValue, ""); // Get location from map
 
         switch (selectedMenu) {
+            case "General":
+                switch (sLocation) {
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Confirmation.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Approval.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_History.fxml":
+                        sformname = sLocation;
+                        break;
+                    default:
+                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                        break;
+                }
+                break;
             case "Inventory Maintenance":
                 sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml";
                 break;
@@ -1682,21 +1798,6 @@ public class DashboardController implements Initializable {
                         break;
                 }
                 break;
-            case "Purchasing Order":
-                switch (sLocation.toLowerCase()) {
-                    case "purchasing/entry/purchasing order":
-                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Entry.fxml";
-                        break;
-                    case "purchasing/approval/purchasing order":
-                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_Approval.fxml";
-                        break;
-                    case "purchasing/history/purchasing order":
-                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml";
-                        break;
-                    default:
-                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
-                        break;
-                }
             case "Purchasing Receiving":
                 switch (sLocation.toLowerCase()) {
                     case "purchasing/entry/purchasing receiving":
@@ -1978,7 +2079,7 @@ public class DashboardController implements Initializable {
                                     if (!sformname.isEmpty() && sformname.contains(".fxml")) {
                                         setScene2(loadAnimate(sformname));
                                     } else {
-                                        ShowMessageFX.Warning("This form is currently unavailable.", "Computerized Accounting System",  pxeModuleName);
+                                        ShowMessageFX.Warning("This form is currently unavailable.", "Computerized Accounting System", pxeModuleName);
                                     }
                                 } else {
                                     ShowMessageFX.Warning("This form is already active.", "Computerized Accounting System", pxeModuleName);

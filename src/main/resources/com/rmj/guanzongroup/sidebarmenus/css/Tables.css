@@ -34,7 +34,7 @@
 
 .table-view .filler, .table-view .column-header {
     -fx-background-color: transparent;
-    -fx-size: 20px;
+    -fx-size: 25px;
 }
 
 .table-view .table-cell{
@@ -46,9 +46,9 @@
 
 
 .table-view .column-header {
-    -fx-min-height: 20px; /* Sets minimum height */
-    -fx-pref-height: 20px; /* Sets preferred height */
-    -fx-max-height: 20px; /* Sets maximum height */
+    -fx-min-height: 25px; /* Sets minimum height */
+    -fx-pref-height: 25px; /* Sets preferred height */
+    -fx-max-height: 25px; /* Sets maximum height */
 }
 
 .table-view .table-cell{
