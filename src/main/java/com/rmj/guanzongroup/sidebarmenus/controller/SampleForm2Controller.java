@@ -7,12 +7,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 
-public class SampleForm2Controller implements Initializable,ScreenInterface {
+public class SampleForm2Controller implements Initializable, ScreenInterface {
+
     private final String pxeModuleName = "Sample Form 2";
-    private GRider oApp;
-    
-    private int pnEditMode;  
+    private GRiderCAS oApp;
+
+    private int pnEditMode;
     @FXML
     private HBox hbButtons;
     @FXML
@@ -43,12 +45,12 @@ public class SampleForm2Controller implements Initializable,ScreenInterface {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("this form is called");
-    }    
+    }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
-        
+
     }
-    
+
 }

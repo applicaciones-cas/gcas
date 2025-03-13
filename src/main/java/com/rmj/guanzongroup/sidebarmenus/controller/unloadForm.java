@@ -19,7 +19,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 //import org.rmj.appdriver.GRider;
 //import org.rmj.auto.json.TabsStateManager;
 
@@ -30,7 +30,7 @@ import org.guanzon.appdriver.base.GRider;
  */
 public class unloadForm {
 
-    public void unloadForm(AnchorPane AnchorMain, GRider oApp, String sTabTitle) {
+    public void unloadForm(AnchorPane AnchorMain, GRiderCAS oApp, String sTabTitle) {
         // Get the parent of the TabContent node
         Node tabContent = AnchorMain.getParent();
         Parent tabContentParent = tabContent.getParent();
@@ -67,7 +67,7 @@ public class unloadForm {
         }
     }
 
-    public AnchorPane getScene(String fsFormName, GRider oApp) {
+    public AnchorPane getScene(String fsFormName, GRiderCAS oApp) {
         ScreenInterface fxObj = new DefaultScreenController();
         fxObj.setGRider(oApp);
 
@@ -97,6 +97,7 @@ public class unloadForm {
         this.parentController = parentController;
     }
     private Object parentController;
+
     public String SetTabTitle(String menuaction) {
         switch (menuaction) {
             /*DIRECTORY*/
@@ -115,21 +116,21 @@ public class unloadForm {
             case "/org/guanzon/cas/views/InventoryParam.fxml":
                 return "Inventory Parameter";
             case "/org/guanzon/cas/views/InventoryDetail.fxml":
-                return "Inventory Details";            
+                return "Inventory Details";
             case "/org/guanzon/cas/views/InventorySerialParam.fxml":
                 return "Inventory Serial Parameter";
             case "/org/guanzon/cas/views/PO_Quotation_Request.fxml":
                 return "Purchase Quotation Request";
-            
+
             default:
                 return null;
         }
     }
-    
+
     public void useParentController(String lsValue) {
-        if (parentController instanceof ClientMasterParameterController) {
-            ((ClientMasterParameterController) parentController).loadReturn(lsValue);
-        } 
+//        if (parentController instanceof ClientMasterParameterController) {
+//            ((ClientMasterParameterController) parentController).loadReturn(lsValue);
+//        }
 //        else if (parentController instanceof ClientMasterTransactionCompanyController) {
 //            ((ClientMasterTransactionCompanyController) parentController).loadReturn(lsValue);
 ////        }else if (parentController instanceof FrmAccountsPayableController) {

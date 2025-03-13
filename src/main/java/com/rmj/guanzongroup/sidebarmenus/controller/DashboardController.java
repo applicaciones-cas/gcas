@@ -60,7 +60,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
-import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -69,7 +69,7 @@ import org.json.simple.parser.ParseException;
 public class DashboardController implements Initializable {
 
     private final String pxeModuleName = "Computerized Accounting System";
-    private GRider oApp;
+    private GRiderCAS oApp;
     private String lastClickedBtnLeftSideBar = "";
     private String lastClickedBtnRightSideBar = "";
 //    private String psDefaultScreenFXML = "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml";
@@ -142,7 +142,7 @@ public class DashboardController implements Initializable {
     @FXML
     private VBox nav_bar11;
 
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
 
@@ -723,7 +723,7 @@ public class DashboardController implements Initializable {
         return null;
     }
 
-    public ContextMenu createContextMenu(TabPane tabPane, Tab tab, GRider oApp) {
+    public ContextMenu createContextMenu(TabPane tabPane, Tab tab, GRiderCAS oApp) {
         ContextMenu contextMenu = new ContextMenu();
 
         MenuItem closeTabItem = new MenuItem("Close Tab");
@@ -771,7 +771,7 @@ public class DashboardController implements Initializable {
         }
     }
 
-    private void closeAllTabs(TabPane tabPane, GRider oApp) {
+    private void closeAllTabs(TabPane tabPane, GRiderCAS oApp) {
         if (tabPane == null) {
             System.out.println("tabPane is null");
             return;
@@ -2136,7 +2136,7 @@ public class DashboardController implements Initializable {
      * LOAD USER INFO*
      */
     private void loadUserInfo() {
-        AppUser.setText(oApp.getLogName() + " || " + oApp.getDivisionName());
+        AppUser.setText(oApp.getClientName() + " || " + oApp.getDepartment());
     }
 
     /**

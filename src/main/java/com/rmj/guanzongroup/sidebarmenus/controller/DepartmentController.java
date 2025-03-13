@@ -30,6 +30,7 @@ import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
@@ -42,8 +43,8 @@ import org.json.simple.JSONObject;
 public class DepartmentController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Department";
-    private GRider oApp;
-     private ParamControllers oParameters;
+    private GRiderCAS oApp;
+    private ParamControllers oParameters;
     private JSONObject poJSON;
     private int pnEditMode;
 
@@ -276,7 +277,6 @@ public class DepartmentController implements Initializable, ScreenInterface {
 //                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
 //                return;
 //        }
-
         initButton(pnEditMode);
 
     }
@@ -299,7 +299,7 @@ public class DepartmentController implements Initializable, ScreenInterface {
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
 
@@ -498,7 +498,6 @@ public class DepartmentController implements Initializable, ScreenInterface {
 //            btnActivate.setText("Activate");
 //            faActivate.setGlyphName("CHECK");
 //        }
-
     }
 
     private void clearFields() {
@@ -544,7 +543,6 @@ public class DepartmentController implements Initializable, ScreenInterface {
 //                    ""));
 //
 //        }
-
         initListGrid();
     }
 

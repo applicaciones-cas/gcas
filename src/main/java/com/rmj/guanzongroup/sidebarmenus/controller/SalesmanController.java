@@ -29,6 +29,7 @@ import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 
@@ -53,7 +54,6 @@ public class SalesmanController implements Initializable, ScreenInterface {
 //    private int pnListRow;
 //
 //    private ObservableList<ModelParameter> ListData = FXCollections.observableArrayList();
-
     @FXML
     private AnchorPane ChildAnchorPane;
     @FXML
@@ -259,9 +259,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
 //                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
 //                return;
 //        }
-
 //        initButton(pnEditMode);
-
     }
 
     @Override
@@ -282,7 +280,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
 //        oApp = foValue;
     }
 

@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.cas.parameter.Bin;
 import org.guanzon.cas.parameter.Branch;
 import org.json.simple.JSONObject;
@@ -14,7 +15,7 @@ import org.json.simple.JSONObject;
 public class SampleForm1Controller implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Sample Form 1";
-    private GRider oApp;
+    private GRiderCAS oApp;
     private JSONObject poJSON;
 
     private int pnEditMode;
@@ -61,7 +62,7 @@ public class SampleForm1Controller implements Initializable, ScreenInterface {
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
 }

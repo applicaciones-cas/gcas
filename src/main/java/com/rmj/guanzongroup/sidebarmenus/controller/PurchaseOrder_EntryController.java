@@ -42,7 +42,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
-import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
@@ -56,7 +56,7 @@ import org.json.simple.JSONObject;
  */
 public class PurchaseOrder_EntryController implements Initializable, ScreenInterface {
 
-    private GRider poApp;
+    private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
     private String psFormName = "Purchase Order";
     private LogWrapper logWrapper;
@@ -102,7 +102,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private Pagination pagination;
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         poApp = foValue;
     }
 

@@ -24,6 +24,7 @@ import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
@@ -38,7 +39,7 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -373,5 +374,4 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
 //            oParameters.AffiliatedCompany().getModel().setDateAffiliat(SQLUtil.toDate(dpField01.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
 //        });
 //    }
-
 }

@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.guanzon.appdriver.base.GRiderCAS;
 
 /**
  * FXML Controller class
@@ -26,7 +27,7 @@ import javafx.scene.control.TextField;
 public class Log_InController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Log In";
-    private GRider oApp;
+    private GRiderCAS oApp;
 
     @FXML
     private TextField txtField01;
@@ -42,7 +43,7 @@ public class Log_InController implements Initializable, ScreenInterface {
     private Button btnEyeIcon;
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
     /**

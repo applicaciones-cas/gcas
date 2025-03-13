@@ -41,6 +41,7 @@ import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
@@ -62,7 +63,7 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -308,7 +309,7 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 ////                                : "Unable to " + (isApproved ? "approve" : "disapprove") + " the transaction.",
 ////                                "Computerized Accounting System",
 ////                                pxeModuleName);
-//                        
+//
 //                        if ("success".equals(result)) {
 //                            clearAllFields();
 //                        }
@@ -333,11 +334,11 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //        btnCancel.setManaged(lbShow);
 //        btnSearch.setManaged(lbShow);
 //        btnUpdate.setVisible(!lbShow);
-//        
+//
 //        btnApproved.setVisible(!lbShow);
 //        btnUpload.setVisible(!lbShow);
 //        btnDisapproved.setVisible(!lbShow);
-//        
+//
 //        btnBrowse.setVisible(!lbShow);
 //        btnNew.setVisible(!lbShow);
 //
@@ -349,18 +350,18 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //            btnApproved.setVisible(lbShow);
 //            btnDisapproved.setVisible(lbShow);
 //            btnUpload.setVisible(lbShow);
-//            
-//            btnUpdate.setVisible(!lbShow); 
+//
+//            btnUpdate.setVisible(!lbShow);
 //            btnBrowse.setVisible(!lbShow);
 //            btnNew.setVisible(!lbShow);
 //            btnBrowse.setManaged(false);
 //            btnNew.setManaged(false);
 //            btnUpdate.setManaged(false);
-//            
+//
 //            btnUpload.setManaged(false);
 //            btnApproved.setManaged(false);
 //            btnDisapproved.setManaged(false);
-//            
+//
 //            btnClose.setManaged(false);
 //        } else {
 //        }
@@ -406,16 +407,16 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //        if (!nv) { // Lost focus
 //            try {
 //                switch (lnIndex) {
-//                    case 1: // 
+//                    case 1: //
 //                        oTrans.getModel().setTransactionNo(lsValue);
 //                        break;
-//                    case 2: // 
+//                    case 2: //
 //                        oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
 //                        break;
-//                    case 3: //     
+//                    case 3: //
 //                        oTrans.getModel().setClientId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
 //                        break;
-//                    case 4: // 
+//                    case 4: //
 //                        oTrans.getModel().setRemarks(lsValue);
 //                        break;
 //                    case 5: // Description
@@ -462,19 +463,19 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //                            }
 //                                txtField02.setText(oTrans.Client().Master().getModel().getCompanyName());
 //                                oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
-//                                
+//
 //                                poJson = oTrans.Client().ClientInstitutionContact().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
 //                                if ("success".equals(poJson.get("result"))) {
 //                                    txtField03.setText(oTrans.Client().ClientInstitutionContact().getModel().getContactPersonName());
 //                                    oTrans.getModel().setContactId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
-//                                } 
+//                                }
 //                        }
 //                        poJson = oTrans.Client().ClientAddress().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
 //                                if ("success".equals(poJson.get("result"))) {
 //                                    oTrans.getModel().setAddressId(oTrans.Client().ClientAddress().getModel().getClientId());
 //                                }
 //                        break;
-//                    
+//
 //                }
 //            case ENTER:
 //        }
@@ -508,8 +509,8 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 ////                        txtSeeks02.setText(oTrans.getModel().getDescription());
 ////                        pnEditMode = oTrans.getEditMode();
 ////                        loadInventory();
-////                        
-////                        
+////
+////
 ////                        break;
 ////                    case 2:
 ////                        poJSON = oTrans.searchRecord(lsValue, false);
@@ -634,7 +635,7 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //                oTrans.getModel().setCategoryCode(oParameters.Category().getModel().getCategoryId());
 //            }
 //        }
-//        
+//
 //    }
 //
 //    public static LocalDate strToDate(String val) {
@@ -645,7 +646,7 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //        JSONObject poJson;
 //        poJson = new JSONObject();
 //        String AcctType = oTrans.getModel().getAccountType();
-//        
+//
 //        switch (AcctType) {
 //            case "1":
 //                System.out.println("Account Type is 1");
@@ -656,7 +657,7 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //                System.out.println("Account Type is 0");
 //                 oTrans.APClient().APClientMaster().getModel().setClientId(oTrans.getModel().ClientMaster().getClientId());
 //                 poJson = oTrans.APClient().APClientMaster().saveRecord();
-//     
+//
 //                    if ("success".equals((String) poJson.get("result"))) {
 //                           ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
 //                           pnEditMode = EditMode.UNKNOWN;
@@ -669,8 +670,8 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //                System.out.println("Unknown Account Type: " + AcctType);
 //            // Handle unexpected values
 //        }
-//        
-//    
+//
+//
 //    }
 //
 }

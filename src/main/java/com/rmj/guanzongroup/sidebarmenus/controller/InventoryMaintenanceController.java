@@ -51,6 +51,7 @@ import javafx.stage.StageStyle;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 //import org.guanzon.cas.inv.Inv;
@@ -71,7 +72,7 @@ public class InventoryMaintenanceController implements Initializable, ScreenInte
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 //
@@ -265,7 +266,7 @@ public class InventoryMaintenanceController implements Initializable, ScreenInte
 //                            pnEditMode = oTrans.InvMaster().getEditMode();
 //                            System.out.print("brand sa browse == " + oTrans.InvMaster().Inventory().getModel().Brand().getDescription());
 //                            lsBrand = String.valueOf(oTrans.InvMaster().getModel().Inventory().getBrandId());
-//                            
+//
 //                            loadInventory();
 //
 //                        } else {
@@ -300,7 +301,7 @@ public class InventoryMaintenanceController implements Initializable, ScreenInte
 ////                        txtSeeks01.clear();
 ////                        txtSeeks02.clear();
 ////                    }
-////                    
+////
 //////                    data.clear();
 ////                    loadInventory();
 ////                    String lsValue = (txtSeeks01.getText().toString().isEmpty() ? "" : txtSeeks01.getText().toString());
@@ -344,7 +345,7 @@ public class InventoryMaintenanceController implements Initializable, ScreenInte
 //                                || pnEditMode == EditMode.ADDNEW
 //                                || pnEditMode == EditMode.UPDATE) {
 //                            System.out.print("to pass == " + oTrans.InvMaster().Inventory().getModel().getStockId());
-//                            
+//
 //                            loadSerial(lsStockID, lsBrand);
 //                        }
 //                    } catch (SQLException ex) {
@@ -657,7 +658,7 @@ public class InventoryMaintenanceController implements Initializable, ScreenInte
 //            txtField27.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getMaximumInventoryLevel()));
 //            txtField29.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getCost()));
 //            txtField30.setText(String.valueOf(oTrans.InvMaster().getModel().Inventory().getSellingPrice()));
-//            
+//
 //            System.out.println("to load == " + oTrans.InvMaster().getModel().Inventory().getInventoryTypeId());
 //            ObservableList<String> unitTypes = ObservableListUtil.UNIT_TYPES;
 //            cmbField01.setItems(unitTypes);

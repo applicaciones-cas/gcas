@@ -32,6 +32,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.agent.TableModel;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 //import org.guanzon.cas.inv.Inv;
 import org.guanzon.cas.parameter.services.ParamControllers;
@@ -42,7 +43,6 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-
 public class InventoryLedgerController implements Initializable, ScreenInterface {
 
     @Override
@@ -51,7 +51,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 //
@@ -166,8 +166,8 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
 //        handleActionButton();
 //        pbLoaded = true;
 //        initTable();
-//        
-//       
+//
+//
 //    }
 //    private void handleActionButton(){
 //        btnCancel.setOnAction(this::cmdButton_Click);
@@ -182,13 +182,13 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
 //        poJson = oParameters.Brand().searchRecord(lsBrand, true);
 //        if ("success".equals((String) poJson.get("result"))) {
 //            txtField03.setText(oParameters.Brand().getModel().getDescription());
-//        }     
+//        }
 //    }
 //
 //    private void initDetails() {
 //        txtField01.setText(poTrans.InvMaster().getModel().Inventory().getBarCode());
 //        txtField02.setText(poTrans.InvMaster().getModel().Inventory().getDescription());
-//        
+//
 //        txtField04.setText(poTrans.InvMaster().getModel().Inventory().Model().getDescription());
 //        txtField05.setText(poTrans.InvMaster().getModel().Inventory().Color().getDescription());
 //        txtField06.setText(poTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
@@ -198,7 +198,7 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
 //    String category = System.getProperty("store.inventory.industry");
 //    System.out.println("category == " + category);
 //    LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-//    oParameters = new ParamControllers(oApp,  logwrapr); 
+//    oParameters = new ParamControllers(oApp,  logwrapr);
 //    oTrans = new Inv(oApp, "", logwrapr);  // Ensure this isn't overwriting necessary data
 //}
 //
@@ -216,32 +216,32 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
 //                CommonUtils.closeStage(btnClose);
 //                break;
 //            case "btnRecalculate":  //Rcalculate
-//                ShowMessageFX.Information("This feature is currently unavailable.", 
-//                            "Computerized Acounting System", pxeModuleName); 
+//                ShowMessageFX.Information("This feature is currently unavailable.",
+//                            "Computerized Acounting System", pxeModuleName);
 ////                if (data.isEmpty()){
 ////                    ShowMessageFX.Information("Please ensure the ledger is loaded before performing recalculation."
-////                            + "Recalculation cannot be completed correctly without loading the ledger first.", 
-////                            "Computerized Acounting System", pxeModuleName);     
+////                            + "Recalculation cannot be completed correctly without loading the ledger first.",
+////                            "Computerized Acounting System", pxeModuleName);
 ////                    break;
-////                }else{ 
+////                }else{
 ////                    try {
 ////
 ////                        dpField01.setValue(null);
-//                
+//
 ////                        dpField02.setValue(null);
 //////                        poJson = poTrans.recalculate(poTrans.InvMaster().getModel().Inventory().getStockId());
 ////                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-////                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-////                        }  
-////                        ShowMessageFX.Information("Recalculation completed succesfully", 
-////                            "Computerized Acounting System", pxeModuleName); 
+////                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+////                        }
+////                        ShowMessageFX.Information("Recalculation completed succesfully",
+////                            "Computerized Acounting System", pxeModuleName);
 ////                        poJson = new JSONObject();
 //////                        poJson = oTrans.InvMaster.OpenInvLedger(poTrans.getModel().getStockID());
-////                        
+////
 ////                        System.out.println("poJson = " + poJson.toJSONString());
 ////                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-////                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-////                        }  
+////                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+////                        }
 ////                        loadLedger();
 ////
 ////                    } catch (SQLException ex) {
@@ -267,13 +267,13 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
 //                initializeObject();
 //                CommonUtils.closeStage(btnCancel);
 //            break;
-////            
+////
 ////            default:
 ////                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
 ////                return;
 //        }
 //    }
-//    
+//
 //
 //    private boolean isDateEntryOkay() {
 //        fromDate = dpField01.getValue();

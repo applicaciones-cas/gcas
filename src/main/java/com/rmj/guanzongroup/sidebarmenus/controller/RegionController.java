@@ -29,10 +29,11 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelResultSet;
+import org.guanzon.appdriver.base.GRiderCAS;
 
 public class RegionController implements Initializable, ScreenInterface {
 
-    private GRider oApp;
+    private GRiderCAS oApp;
     private final String pxeModuleName = "Region";
     private int pnEditMode;
     private ParamControllers oParameters;
@@ -72,7 +73,7 @@ public class RegionController implements Initializable, ScreenInterface {
     private CheckBox cbField01;
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
 

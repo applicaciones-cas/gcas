@@ -25,6 +25,7 @@ import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
@@ -38,7 +39,7 @@ public class BanksController implements Initializable, ScreenInterface {
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 //
@@ -312,7 +313,7 @@ public class BanksController implements Initializable, ScreenInterface {
 //            txtField.selectAll();
 //        }
 //    };
-//    
+//
 ////    private void txtField_KeyPressed(KeyEvent event) {
 ////        TextField txtField = (TextField) event.getSource();
 ////        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
@@ -343,10 +344,10 @@ public class BanksController implements Initializable, ScreenInterface {
 ////                CommonUtils.SetPreviousFocus(txtField);
 ////        }
 ////    }
-//    
+//
 //    private void loadRecord() {
 //        boolean lbActive = oParameters.Banks().getModel().getRecordStatus() == "1";
-//        
+//
 //        txtField01.setText(oParameters.Banks().getModel().getBankID());
 //        txtField02.setText(oParameters.Banks().getModel().getBankName());
 //        txtField03.setText(oParameters.Banks().getModel().getBankCode());
@@ -363,9 +364,9 @@ public class BanksController implements Initializable, ScreenInterface {
 //                faActivate.setGlyphName("CHECK");
 //                cbField01.setSelected( true);
 //                break;
-//        }   
+//        }
 //    }
-//    
+//
 //    @FXML
 //    void cbField01_Clicked(MouseEvent event) {
 //        if (cbField01.isSelected()){
@@ -374,17 +375,16 @@ public class BanksController implements Initializable, ScreenInterface {
 //            oParameters.Banks().getModel().setRecordStatus("0");
 //        }
 //    }
-//    
-//    
+//
+//
 //    private void initTabAnchor() {
 //    if (AnchorInputs == null) {
 //        System.err.println("Error: AnchorInput is not initialized.");
 //        return;
 //    }
-//    
+//
 //    boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
 //    AnchorInputs.setDisable(!isEditable);
 //}
 //
-    }
-
+}

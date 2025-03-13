@@ -25,6 +25,7 @@ import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
@@ -32,7 +33,7 @@ import org.json.simple.JSONObject;
 
 public class MadeController implements Initializable, ScreenInterface {
 
-    private GRider oApp;
+    private GRiderCAS oApp;
     private final String pxeModuleName = "Made";
     private int pnEditMode;
     private ParamControllers oParameters;
@@ -68,7 +69,7 @@ public class MadeController implements Initializable, ScreenInterface {
     private CheckBox cbField01, cbField02;
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
 

@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 
 /**
  * FXML Controller class
@@ -25,7 +26,7 @@ public class DefaultScreenController implements Initializable, ScreenInterface {
     }
 
     //@Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
 
     }
 }

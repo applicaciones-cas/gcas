@@ -33,6 +33,7 @@ import javax.sql.rowset.CachedRowSet;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
@@ -40,7 +41,7 @@ import org.json.simple.JSONObject;
 
 public class LaborCategoryController implements Initializable, ScreenInterface {
 
-    private GRider oApp;
+    private GRiderCAS oApp;
     private final String pxeModuleName = "Labor Category";
     private int pnEditMode;
     private ParamControllers oParameters;
@@ -77,7 +78,7 @@ public class LaborCategoryController implements Initializable, ScreenInterface {
     private TableColumn index01, index02, index03;
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
 

@@ -29,6 +29,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelResultSet;
+import org.guanzon.appdriver.base.GRiderCAS;
 
 public class BarangayController implements Initializable, ScreenInterface {
 
@@ -38,7 +39,7 @@ public class BarangayController implements Initializable, ScreenInterface {
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 //
@@ -184,7 +185,7 @@ public class BarangayController implements Initializable, ScreenInterface {
 //                case "btnActivate":
 //                    String Status = oParameters.Barangay().getModel().getRecordStatus();
 //                    JSONObject poJsON;
-//                    
+//
 //                    switch (Status) {
 //                        case "0":
 //                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
@@ -282,7 +283,7 @@ public class BarangayController implements Initializable, ScreenInterface {
 //            txtField.selectAll();
 //        }
 //    };
-//    
+//
 //    private void txtField_KeyPressed(KeyEvent event) {
 //        TextField txtField = (TextField) event.getSource();
 //        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
@@ -346,12 +347,12 @@ public class BarangayController implements Initializable, ScreenInterface {
 //                CommonUtils.SetPreviousFocus(txtField);
 //        }
 //    }
-//    
+//
 //    private void loadRecord() {
 //        boolean lbActive = oParameters.Barangay().getModel().getRecordStatus() == "1";
-//        
+//
 //        psPrimary = oParameters.Barangay().getModel().getBarangayId();
-//        
+//
 //        txtField01.setText(oParameters.Barangay().getModel().getBarangayId());
 //        txtField02.setText(oParameters.Barangay().getModel().getBarangayName());
 //        txtField03.setText(oParameters.Barangay().getModel().Town().getTownName());
@@ -370,9 +371,9 @@ public class BarangayController implements Initializable, ScreenInterface {
 //                faActivate.setGlyphName("CHECK");
 //                cbField01.setSelected( false);
 //                break;
-//        }   
+//        }
 //    }
-//    
+//
 //    @FXML
 //    void cbField01_Clicked(MouseEvent event) {
 //        if (cbField01.isSelected()){
@@ -381,12 +382,12 @@ public class BarangayController implements Initializable, ScreenInterface {
 //            oParameters.Barangay().getModel().setRecordStatus("0");
 //        }
 //    }
-//    
+//
 //    @FXML
 //    void cbField02_Clicked(MouseEvent event) {
 //       oParameters.Barangay().getModel().hasRoute(cbField02.isSelected());
 //    }
-//    
+//
 //    @FXML
 //    void cbField03_Clicked(MouseEvent event) {
 //       oParameters.Barangay().getModel().isBlacklisted(cbField03.isSelected());
@@ -396,10 +397,9 @@ public class BarangayController implements Initializable, ScreenInterface {
 //        System.err.println("Error: AnchorInput is not initialized.");
 //        return;
 //    }
-//    
+//
 //    boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
 //    AnchorInputs.setDisable(!isEditable);
 //}
 //
-    }
-
+}

@@ -36,6 +36,7 @@ import javafx.scene.text.Text;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inv.Inventory;
@@ -52,7 +53,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
     private final String pxeModuleName = "Inventory Parameter";
 //    LogWrapper logwrapr = new LogWrapper("cas", "cas-err.log");
 
-    private GRider oApp;
+    private GRiderCAS oApp;
     private int pnEditMode;
     private Inventory oTrans;
     private ParamControllers oParameters;
@@ -119,7 +120,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
      * Initializes the controller class.
      */
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
 
