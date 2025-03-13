@@ -9,9 +9,7 @@ import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +61,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private int pnEditMode;
     private JSONObject poJSON;
     private ObservableList<ModelPurchaseOrder> approvedStockRequest_data = FXCollections.observableArrayList();
+    private ObservableList<ModelPurchaseOrder> poDetail_data = FXCollections.observableArrayList();
 
     private int pnTblStockRequestRow = 0;
     @FXML
@@ -133,6 +132,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         initTextFieldKeyPressed();
         initCheckBoxActions();
         initTableStockRequest();
+        initTablePODetail();
         pnEditMode = EditMode.UNKNOWN;
         initButtons(pnEditMode);
         initFields(pnEditMode);
@@ -306,7 +306,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                         if (pnEditMode == EditMode.ADDNEW) {
                             clearFields();
-//                        oTrans = new PurchaseOrder(oApp, false, oApp.getBranchCode());
                             pnEditMode = EditMode.UNKNOWN;
                         } else {
                             loJSON = poPurchasingController.PurchaseOrder().OpenTransaction("TransCode");
@@ -363,14 +362,41 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     poPurchasingController.PurchaseOrder().Master().setReference(lsValue);
                     break;
                 case "tfDiscountRate":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    if (Double.parseDouble(lsValue) < 0.00 || Double.parseDouble(lsValue) > 100) {
+                        ShowMessageFX.Warning(null, psFormName, "Invalid Downpayment Rates");
+                        return;
+                    }
+                    poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(Double.valueOf(lsValue));
+                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
                     break;
                 case "tfDiscountAmount":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        ShowMessageFX.Warning(null, psFormName, "Invalid Downpayment Amount");
+                        return;
+                    }
+                    poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(Double.valueOf(lsValue.replace(",", "")));
+                    tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
                     break;
                 case "tfAdvancePRate":
                     break;
                 case "tfAdvancePAmount":
                     break;
                 case "tfCost":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        ShowMessageFX.Warning(null, psFormName, "Invalid Cost Amount");
+                        return;
+                    }
+//                    poPurchasingController.PurchaseOrder().Detail().
+
                     break;
                 case "tfOrderQuantity":
                     break;
@@ -460,7 +486,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     break;
                                 }
                                 tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
-
                                 break;
                             case "tfBarcode":
 //                                loJSON = poPurchasingController.PurchaseOrder().searchRecord(lsValue, true);
@@ -578,39 +603,31 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     private void initFields(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
+
         /* Master Fields*/
         AnchorMaster.setDisable(!lbShow);
         AnchorDetails.setDisable(!lbShow);
-//        dpTransactionDate.setDisable(lbShow);
-//        tfCompany.setDisable(lbShow);
-//        tfSupplier.setDisable(lbShow);
-//        tfDestination.setDisable(lbShow);
-//        taRemarks.setDisable(lbShow);
-//        dpExpectedDlvrDate.setDisable(lbShow);
-//        tfReferenceNo.setDisable(lbShow);
-//        tfTerm.setDisable(lbShow);
 
-        //if selected pwede ma edit yung dalawa basta nasa addnew and update siya
+        if (!tfReferenceNo.getText().isEmpty()) {
+            dpTransactionDate.setDisable(!lbShow);
+        }
+
         if (chkbAdvancePayment.isSelected()) {
             tfAdvancePRate.setDisable(!lbShow);
             tfAdvancePAmount.setDisable(!lbShow);
         }
-
-        /* Detail Fields */
-//        tfBarcode.setDisable(lbShow);
-//        tfDescription.setDisable(lbShow);
-//        tfCost.setDisable(lbShow);
-//        tfOrderQuantity.setDisable(lbShow);
     }
 
-    public void initTableStockRequest() {
-        // Set column styles
-        tblRowNo.setStyle("-fx-alignment: CENTER;");
-        tblBranchName.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        tblDate.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        tblReferenceNo.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        tblNoOfItems.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+    private void loadTableStockRequest() {
 
+    }
+
+    private void initTableStockRequest() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            tblVwStockRequest.setEditable(true);
+        } else {
+            tblVwStockRequest.setEditable(false);
+        }
         // Set cell value factories
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblBranchName.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -618,14 +635,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
         tblNoOfItems.setCellValueFactory(new PropertyValueFactory<>("index05"));
 
-        if (tblVwStockRequest != null) { // Ensure tblVwStockRequest is not null
+        if (tblVwStockRequest != null) {
             tblVwStockRequest.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
                 TableHeaderRow header = (TableHeaderRow) tblVwStockRequest.lookup("TableHeaderRow");
-                if (header != null) { // Ensure header is not null
-                    header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                        header.setReordering(false);
-                    });
-                }
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
             });
 
             if (approvedStockRequest_data != null) { // Ensure approvedStockRequest_data is not null
@@ -635,6 +650,45 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             }
 
             tblVwStockRequest.autosize();
+        }
+    }
+
+    private void loadTablePODetail() {
+
+    }
+
+    private void initTablePODetail() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            tblVwOrderDetails.setEditable(true);
+        } else {
+            tblVwOrderDetails.setEditable(false);
+        }
+        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+
+        if (tblVwOrderDetails != null) {
+            tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+                TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
+            });
+
+            if (poDetail_data != null) { // Ensure approvedStockRequest_data is not null
+                tblVwOrderDetails.setItems(poDetail_data);
+            } else {
+                tblVwOrderDetails.setItems(FXCollections.observableArrayList()); // Set an empty list instead of null
+            }
+
+            tblVwOrderDetails.autosize();
         }
     }
 
