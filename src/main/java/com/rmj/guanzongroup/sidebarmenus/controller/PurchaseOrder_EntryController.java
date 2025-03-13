@@ -10,13 +10,13 @@ import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -37,6 +37,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
@@ -47,6 +48,7 @@ import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.services.PurchaseOrderControllers;
+import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 import org.json.simple.JSONObject;
 
 /**
@@ -62,10 +64,11 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private LogWrapper logWrapper;
     private int pnEditMode;
     private JSONObject poJSON;
-    private ObservableList<ModelPurchaseOrder> approvedStockRequest_data = FXCollections.observableArrayList();
+    private ObservableList<ModelPurchaseOrder> poApprovedStockRequest_data = FXCollections.observableArrayList();
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
-
     private int pnTblStockRequestRow = 0;
+    private int pnTblPODetailRow = 0;
+
     @FXML
     private AnchorPane apBrowse, AnchorMaster, AnchorDetails;
     @FXML
@@ -90,15 +93,15 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     @FXML
     private DatePicker dpTransactionDate, dpExpectedDlvrDate;
     @FXML
-    private TableView tblVwOrderDetails;
+    private TableView<ModelPurchaseOrderDetail> tblVwOrderDetails;
     @FXML
-    private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail,
+    private TableColumn<ModelPurchaseOrderDetail, String> tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail,
             tblCostDetail, tblROQDetail, tblRequestQuantityDetail, tblOrderQuantityDetail, tblTotalAmountDetail;
 
     @FXML
-    private TableView tblVwStockRequest;
+    private TableView<ModelPurchaseOrder> tblVwStockRequest;
     @FXML
-    private TableColumn tblRowNo, tblBranchName, tblDate, tblReferenceNo, tblNoOfItems;
+    private TableColumn<ModelPurchaseOrder, String> tblRowNo, tblBranchName, tblDate, tblReferenceNo, tblNoOfItems;
     @FXML
     private Pagination pagination;
 
@@ -112,45 +115,70 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //mag set kanalang here ng industry
-//        tfIndustry.setText("");
-//        try {
-//            poJSON = poPurchasingController.PurchaseOrder().NewTransaction();
-//            if ("success".equals((String) poJSON.get("result"))) {
-//
-//            }
-//        } catch (CloneNotSupportedException ex) {
-//            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);
         JSONObject loJSON = new JSONObject();
         loJSON = poPurchasingController.PurchaseOrder().InitTransaction();
         if (!"success".equals(loJSON.get("result"))) {
             ShowMessageFX.Warning(null, "Search Information", (String) loJSON.get("message"));
         }
+
+        Platform.runLater(() -> btnNew.fire());
         initButtonsClickActions();
         initTextFieldFocus();
         initTextAreaFocus();
         initTextFieldKeyPressed();
         initCheckBoxActions();
+        initDatePickerActions();
+        initTextFieldPattern();
         initTableStockRequest();
         initTablePODetail();
-        pnEditMode = EditMode.UNKNOWN;
+        tblVwStockRequest.setOnMouseClicked(this::tblVwStockRequest_Clicked);
+        tblVwOrderDetails.setOnMouseClicked(this::tblVwOrderDetails_Clicked);
         initButtons(pnEditMode);
         initFields(pnEditMode);
-
+        loadPagination();
     }
 
-    public static LocalDate strToDate(String fsValue) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(fsValue, dateFormatter);
+    private void loadPagination() {
+//        List<String> lsTestDummy = new ArrayList<>();
+//        int lnRowPerPage = 50;
+//        int totalPages = (int) Math.ceil((double) lsTestDummy.size() / lnRowPerPage);
+//        pagination.setMaxPageIndicatorCount(Math.min(totalPages, 5)); // Show max 5 indicators
     }
 
-    // this is for detail fields
     private void loadMaster() {
         tfTransactionNo.setText(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
 
-        dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(CustomCommonUtil.formatDateToShortString(poPurchasingController.PurchaseOrder().Master().getTransactionDate())));
+        String lsStatus = "";
+        switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
+            case PurchaseOrderStatus.OPEN:
+                lsStatus = "OPEN";
+                break;
+            case PurchaseOrderStatus.CONFIRMED:
+                lsStatus = "CONFIRMED";
+                break;
+            case PurchaseOrderStatus.PROCESSED:
+                lsStatus = "APPROVED";
+                break;
+            case PurchaseOrderStatus.RETURN:
+                lsStatus = "RETURNED";
+                break;
+            case PurchaseOrderStatus.CANCELLED:
+                lsStatus = "CANCELLED";
+                break;
+            case PurchaseOrderStatus.VOID:
+                lsStatus = "VOID";
+                break;
+        }
+        lblTransactionStatus.setText(lsStatus);
+        dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+                SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+        String lsIndustryName = "";
+        if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
+            lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
+        }
+        tfIndustry.setText(lsIndustryName);
+
         String lsCompanyName = "";
         if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
             lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
@@ -171,7 +199,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
         taRemarks.setText(poPurchasingController.PurchaseOrder().Master().getRemarks());
 
-        dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
+        dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+                SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
         tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
         tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
         tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
@@ -183,11 +212,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     // this is for detail fields
     private void loadDetail() {
-        String lsBarCode = "";
-        if (poPurchasingController.PurchaseOrder().Master().getBranchCode() != null) {
-            lsBarCode = poPurchasingController.PurchaseOrder().Master().getBranchCode();
-        }
-        tfBarcode.setText(lsBarCode);
+        tfBarcode.setText("");
         String lsDescription = "";
         tfDescription.setText(lsDescription);
         tfBrand.setText("");
@@ -231,6 +256,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     break;
                 case "btnNew":
                     clearFields();
+                    poPurchasingController.PurchaseOrder().Master().setIndustryID(poApp.getIndustry());
                     loJSON = poPurchasingController.PurchaseOrder().NewTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
@@ -279,40 +305,38 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     System.out.println("Unknown TextField");
                             }
                         } else {
-                            System.out.println("No TextField is currently focused.");
+                            ShowMessageFX.Warning(null, psFormName, "No TextField is currently focused to search");
                         }
                     }
                     break;
                 case "btnSave":
+                 try {
                     if (ShowMessageFX.YesNo(null, "Save confirmation", "Are you sure, do you want to save?")) {
-                        try {
-                            loJSON = poPurchasingController.PurchaseOrder().SaveTransaction();
-                        } catch (SQLException ex) {
-                            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (GuanzonException ex) {
-                            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        loJSON = poPurchasingController.PurchaseOrder().SaveTransaction();
                         if ("success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Information(null, psFormName, (String) loJSON.get("message"));
-                            try {
-                                //transcode
-                                loJSON = poPurchasingController.PurchaseOrder().OpenTransaction("TransCode");
-                            } catch (SQLException ex) {
-                                Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (GuanzonException ex) {
-                                Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                            //transcode
+                            loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                             if ("success".equals((String) loJSON.get("result"))) {
                                 loadMaster();
                                 loadDetail();
                                 pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                             }
+                            if (ShowMessageFX.YesNo(null, "Confirmation", "Are you sure, do you want to confirm this information?")) {
+
+                            }
+
                         } else {
                             ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
                             return;
                         }
+                    } else {
+                        return;
                     }
-                    break;
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
                 case "btnCancel":
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                         if (pnEditMode == EditMode.ADDNEW) {
@@ -320,16 +344,14 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             pnEditMode = EditMode.UNKNOWN;
                         } else {
                             try {
-                                loJSON = poPurchasingController.PurchaseOrder().OpenTransaction("TransCode");
-                            } catch (SQLException ex) {
+                                loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+                                if ("success".equals((String) loJSON.get("result"))) {
+                                    loadMaster();
+                                    loadDetail();
+                                    pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                                }
+                            } catch (SQLException | GuanzonException ex) {
                                 Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (GuanzonException ex) {
-                                Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            if ("success".equals((String) loJSON.get("result"))) {
-                                loadMaster();
-                                loadDetail();
-                                pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                             }
                         }
                     }
@@ -412,8 +434,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         ShowMessageFX.Warning(null, psFormName, "Invalid Cost Amount");
                         return;
                     }
-//                    poPurchasingController.PurchaseOrder().Detail().
-
                     break;
                 case "tfOrderQuantity":
                     break;
@@ -471,11 +491,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             case "tfCompany": {
                                 try {
                                     loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
-                                } catch (ExceptionInInitializerError ex) {
-                                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (GuanzonException ex) {
+                                } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
                                     Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
@@ -490,11 +506,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             case "tfSupplier": {
                                 try {
                                     loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
-                                } catch (ExceptionInInitializerError ex) {
-                                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (GuanzonException ex) {
+                                } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
                                     Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
@@ -509,11 +521,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             case "tfDestination": {
                                 try {
                                     loJSON = poPurchasingController.PurchaseOrder().SearchDestination(lsValue, false);
-                                } catch (ExceptionInInitializerError ex) {
-                                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (GuanzonException ex) {
+                                } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
                                     Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
@@ -528,11 +536,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             case "tfTerm": {
                                 try {
                                     loJSON = poPurchasingController.PurchaseOrder().SearchTerm(lsValue, false);
-                                } catch (ExceptionInInitializerError ex) {
-                                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (GuanzonException ex) {
+                                } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
                                     Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
@@ -565,7 +569,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 //                                }
                                 break;
                         }
-                        loadOrders();
+//                        loadApprovedStockRequest();
                         event.consume();
                         CommonUtils.SetNextFocus((TextField) event.getSource());
                         break;
@@ -584,6 +588,29 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         }
     }
 
+    private void initTextFieldPattern() {
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfAdvancePRate,
+                tfAdvancePAmount, tfCost);
+        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
+    }
+
+    private void initDatePickerActions() {
+        dpTransactionDate.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (dpTransactionDate.getValue() != null) {
+                    poPurchasingController.PurchaseOrder().Master().setTransactionDate(SQLUtil.toDate(dpTransactionDate.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                }
+            }
+        });
+        dpExpectedDlvrDate.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (dpExpectedDlvrDate.getValue() != null) {
+                    poPurchasingController.PurchaseOrder().Master().setTransactionDate(SQLUtil.toDate(dpExpectedDlvrDate.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                }
+            }
+        });
+    }
+
     private void initCheckBoxActions() {
         if (chkbAdvancePayment.isSelected()) {
             chkbAdvancePayment.setSelected(true);
@@ -596,12 +623,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private void clearFields() {
         /* Master Fields*/
         tfTransactionNo.setText("");
-        dpTransactionDate.setValue(LocalDate.now());
+        dpTransactionDate.setValue(null);
         tfCompany.setText("");
         tfSupplier.setText("");
         tfDestination.setText("");
         tfAdvancePAmount.setText("");
-        dpExpectedDlvrDate.setValue(LocalDate.now());
+        dpExpectedDlvrDate.setValue(null);
         tfReferenceNo.setText("");
         taRemarks.setText("");
         tfTerm.setText("");
@@ -646,16 +673,38 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         btnNew.setManaged(!lbShow);
         btnUpdate.setVisible(!lbShow);
         btnUpdate.setManaged(!lbShow);
+
         btnSearch.setVisible(lbShow);
         btnSearch.setManaged(lbShow);
         btnSave.setVisible(lbShow);
         btnSave.setManaged(lbShow);
         btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
+
         btnPrint.setVisible(false);
         btnPrint.setManaged(false);
-        btnTransHistory.setVisible(false);
-        btnTransHistory.setManaged(false);
+
+        btnTransHistory.setVisible(fnEditMode != EditMode.ADDNEW && fnEditMode != EditMode.UNKNOWN);
+        btnTransHistory.setManaged(fnEditMode != EditMode.ADDNEW && fnEditMode != EditMode.UNKNOWN);
+
+        switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
+            case PurchaseOrderStatus.OPEN:
+            case PurchaseOrderStatus.PROCESSED:
+                btnPrint.setVisible(true);
+                btnPrint.setManaged(true);
+                break;
+            case PurchaseOrderStatus.CANCELLED:
+            case PurchaseOrderStatus.VOID:
+                btnUpdate.setVisible(false);
+                btnUpdate.setManaged(false);
+                btnSearch.setVisible(false);
+                btnSearch.setManaged(false);
+                btnSave.setVisible(false);
+                btnSave.setManaged(false);
+                btnCancel.setVisible(false);
+                btnCancel.setManaged(false);
+                break;
+        }
     }
 
     private void initFields(int fnEditMode) {
@@ -692,20 +741,20 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
         tblNoOfItems.setCellValueFactory(new PropertyValueFactory<>("index05"));
 
-        if (tblVwStockRequest != null) { // Ensure tblVwStockRequest is not null
+        if (tblVwStockRequest != null) {
             tblVwStockRequest.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
                 TableHeaderRow header = (TableHeaderRow) tblVwStockRequest.lookup("TableHeaderRow");
-                if (header != null) { // Ensure header is not null
+                if (header != null) {
                     header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                         header.setReordering(false);
                     });
                 }
             });
 
-            if (approvedStockRequest_data != null) { // Ensure approvedStockRequest_data is not null
-                tblVwStockRequest.setItems(approvedStockRequest_data);
+            if (poApprovedStockRequest_data != null) {
+                tblVwStockRequest.setItems(poApprovedStockRequest_data);
             } else {
-                tblVwStockRequest.setItems(FXCollections.observableArrayList()); // Set an empty list instead of null
+                tblVwStockRequest.setItems(FXCollections.observableArrayList());
             }
 
             tblVwStockRequest.autosize();
@@ -727,49 +776,50 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
         tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
         tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
+        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
 
-        if (tblVwOrderDetails != null) { // Ensure tblVwStockRequest is not null
-            tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-                TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
-                if (header != null) { // Ensure header is not null
+        if (tblVwStockRequest != null) {
+            tblVwStockRequest.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+                TableHeaderRow header = (TableHeaderRow) tblVwStockRequest.lookup("TableHeaderRow");
+                if (header != null) {
                     header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                         header.setReordering(false);
                     });
                 }
             });
-
-            if (poDetail_data != null) { // Ensure approvedStockRequest_data is not null
-                tblVwOrderDetails.setItems(poDetail_data);
-            } else {
-                tblVwOrderDetails.setItems(FXCollections.observableArrayList()); // Set an empty list instead of null
-            }
-
+            tblVwOrderDetails.setItems(poDetail_data);
+            tblVwOrderDetails.getSelectionModel().select(pnTblStockRequestRow + 1);
             tblVwOrderDetails.autosize();
         }
     }
 
-    private void loadOrders() {
-        try {
-            JSONObject loJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
-            if ("succss".equals((String) loJSON.get("result"))) {
+    private void tblVwStockRequest_Clicked(MouseEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            pnTblStockRequestRow = tblVwStockRequest.getSelectionModel().getSelectedIndex();
+            if (pnTblStockRequestRow < 0 || pnTblStockRequestRow >= tblVwStockRequest.getItems().size()) {
+                ShowMessageFX.Warning(null, "Warning", "Please select valid approved stock request information.");
+                return;
+            }
+            if (event.getClickCount() == 2) {
 
             }
-//	if ("success".equals((String) loJSON.get("result")){
-////		column1 = (String) loJSON.put("sTransNox");
-////		column2 = (String) loJSON.put("sBranchNm");
-////		column3 = (String) loJSON.put("sReferNox");
-////		column4 = (String) loJSON.put("nEntryNox");
-//	}
-        } catch (SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    private void tblVwOrderDetails_Clicked(MouseEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            pnTblPODetailRow = tblVwOrderDetails.getSelectionModel().getSelectedIndex();
+            if (pnTblPODetailRow < 0 || pnTblPODetailRow >= tblVwOrderDetails.getItems().size()) {
+                ShowMessageFX.Warning(null, "Warning", "Please select valid order item information.");
+                return;
+            }
+            if (event.getClickCount() == 2) {
+
+            }
+        }
+    }
 }
