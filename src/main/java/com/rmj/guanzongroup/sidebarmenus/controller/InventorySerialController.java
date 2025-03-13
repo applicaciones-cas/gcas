@@ -26,7 +26,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
-import org.guanzon.cas.inv.Inv;
+//import org.guanzon.cas.inv.Inv;
 import org.guanzon.cas.inv.ObservableListUtil;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
@@ -51,7 +51,7 @@ public class InventorySerialController implements Initializable {
     private String psCode;
     private String lsStockID, lsBrand;
 //    private Inv oTrans;
-    private Inv oTrans;
+//    private Inv oTrans;
     private ParamControllers oParameters;
     private InventoryMaintenanceController parentController;
 
@@ -105,8 +105,6 @@ public class InventorySerialController implements Initializable {
     @FXML
     private TableColumn index07;
 
-
-
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
@@ -114,18 +112,18 @@ public class InventorySerialController implements Initializable {
     public void setStockID(String foValue) {
         lsStockID = foValue;
     }
-
-    private String fsCode;
-
-    private Inv poTrans;
-
-    public void setFsCode(Inv fsCode) {
-        this.poTrans = fsCode;
-    }
-
-    public void setBranchNme(String foValue) {
-        lsBrand = foValue;
-    }
+//
+//    private String fsCode;
+//
+//    private Inv poTrans;
+//
+//    public void setFsCode(Inv fsCode) {
+//        this.poTrans = fsCode;
+//    }
+//
+//    public void setBranchNme(String foValue) {
+//        lsBrand = foValue;
+//    }
 
     public void setParentController(InventoryMaintenanceController cVal) {
         parentController = cVal;
@@ -137,170 +135,167 @@ public class InventorySerialController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        
-        initializeObject();
-        initBrand();
-        initDetails();
-        pbLoaded = true;
-        ClickButton();
-        initTable();   
+//        initializeObject();
+//        initBrand();
+//        initDetails();
+//        pbLoaded = true;
+//        ClickButton();
+//        initTable();
     }
 
-    private void initializeObject() {
-        String category = System.getProperty("store.inventory.industry");
-        System.out.println("category == " + category);
-        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-        oParameters = new ParamControllers(oApp, logwrapr);
-        oTrans = new Inv(oApp, "", logwrapr);  // Ensure this isn't overwriting necessary data
-    }
-
-    private void initBrand() {
-        JSONObject poJson;
-        poJson = new JSONObject();
-        poJson = oParameters.Brand().searchRecord(lsBrand, true);
-        if ("success".equals((String) poJson.get("result"))) {
-            txtField03.setText(oParameters.Brand().getModel().getDescription());
-        }
-    }
-
-    private void initDetails() {
-        lsStockID = poTrans.InvMaster().getModel().Inventory().getStockId();
-        txtField01.setText(poTrans.InvMaster().getModel().Inventory().getBarCode());
-        txtField02.setText(poTrans.InvMaster().getModel().Inventory().getDescription());
-
-        txtField04.setText(poTrans.InvMaster().getModel().Inventory().Model().getDescription());
-        txtField05.setText(poTrans.InvMaster().getModel().Inventory().Color().getDescription());
-        txtField06.setText(poTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
-        
-        ObservableList<String> unitTypes = ObservableListUtil.UNIT_TYPES;
-        cmbField01.setItems(unitTypes);
-        cmbField01.getSelectionModel().select(7);
-    }
-
-    /*Handle button click*/
-    private void ClickButton() {
-        btnOkay.setOnAction(this::handleButtonAction);
-        btnLoadSerial.setOnAction(this::handleButtonAction);
-        btnClose.setOnAction(this::handleButtonAction);
-    }
-
-    private void handleButtonAction(ActionEvent event) {
-        Object source = event.getSource();
-        JSONObject poJSON;
-        if (source instanceof Button) {
-            Button clickedButton = (Button) source;
-            unloadForm appUnload = new unloadForm();
-            switch (clickedButton.getId()) {
-                case "btnClose":  //Close                    
-                    appUnload.useParentController("");
-                    initializeObject();
-                    CommonUtils.closeStage(btnClose);
-                    break;
-
-                case "btnOkay":  //Close
-                    appUnload.useParentController("");
-                    initializeObject();
-                    CommonUtils.closeStage(btnOkay);
-                    break;
-
-                case "btnLoadSerial":
-//                    System.out.println("LOAD SERIAL == " + poTrans.InvMaster().s);
-                    String UnitType = String.valueOf(cmbField01.getSelectionModel().getSelectedIndex());
-                    poJSON = new JSONObject();
-                    
-                    poTrans.OpenInvSerialLedger(lsStockID, "7".equals(UnitType) ? "%" : UnitType);
-                    loadSerialLedger();
-                    break;
-            }
-        }
-    }
-    
-    private void loadSerialLedger() {
-        System.out.println("nagload and ledger");
-        data.clear();
-        System.out.println("Count == " + poTrans.getInvSerialCount());
-        if (poTrans.getInvSerialCount() > 0) {
-            for (int lnCtr = 0; lnCtr < poTrans.getInvSerialCount(); lnCtr++) {
-                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
-
-                // Debugging individual components
-                System.out.println("Serial 02: " + String.valueOf(lnCtr + 1));
-                System.out.println("Serial ID: " + poTrans.InvSerial(lnCtr).getSerialId());
-                System.out.println("Serial 01: " + poTrans.InvSerial(lnCtr).getSerialOne());
-                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getSerialTwo());
-                System.out.println("Serial 01: " + poTrans.InvSerial(lnCtr).getLocationId());
-                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getSoldStatus());
-                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getUnitType());
-                System.out.println("-------------------------------------------------------------");
-
-                data.add(new ModelInvSerial(
-                        String.valueOf(lnCtr + 1),
-                        poTrans.InvSerial(lnCtr).getSerialId(),                       
-                        poTrans.InvSerial(lnCtr).getSerialOne(),
-                        poTrans.InvSerial(lnCtr).getSerialTwo(),
-                        poTrans.InvSerial(lnCtr).getLocationId(),
-                        poTrans.InvSerial(lnCtr).getSoldStatus(),
-                        poTrans.InvSerial(lnCtr).getUnitType()
-                             ,""                       
-                ));
-            }
-        } else {
-            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
-        }
-    }
-    
-//    private void loadSerialLedger() {
-//        data.clear();
+//    private void initializeObject() {
+//        String category = System.getProperty("store.inventory.industry");
+//        System.out.println("category == " + category);
+//        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
+//        oParameters = new ParamControllers(oApp, logwrapr);
+//        oTrans = new Inv(oApp, "", logwrapr);  // Ensure this isn't overwriting necessary data
+//    }
 //
-//        if (oTrans.getInvSerialCount() >= 0) {
-//            for (int lnCtr = 0; lnCtr < oTrans.getInvSerialCount(); lnCtr++) {
-//                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
+//    private void initBrand() {
+//        JSONObject poJson;
+//        poJson = new JSONObject();
+//        poJson = oParameters.Brand().searchRecord(lsBrand, true);
+//        if ("success".equals((String) poJson.get("result"))) {
+//            txtField03.setText(oParameters.Brand().getModel().getDescription());
+//        }
+//    }
 //
-//                // Debugging individual components
-//                System.out.println("Transaction Date: " + oTrans.InvSerial(lnCtr).getSerialId());
-//                System.out.println("Branch Name: " + oTrans.InvSerial(lnCtr).getSerialOne());
-//                System.out.println("Source Code: " + oTrans.InvSerial(lnCtr).getSerialTwo());
-////                System.out.println("Source No: " + oTrans.InvSerial(lnCtr).Inventory().);
+//    private void initDetails() {
+//        lsStockID = poTrans.InvMaster().getModel().Inventory().getStockId();
+//        txtField01.setText(poTrans.InvMaster().getModel().Inventory().getBarCode());
+//        txtField02.setText(poTrans.InvMaster().getModel().Inventory().getDescription());
 //
-//                data.add(new ModelInvSerial(
-//                        String.valueOf(lnCtr + 1),
-//                        oTrans.InvSerial(lnCtr).getSerialId(),                       
-//                        oTrans.InvSerial(lnCtr).getSerialOne(),
-//                        oTrans.InvSerial(lnCtr).getSerialTwo(),
-//                        oTrans.InvSerial(lnCtr).getLocationId(),
-//                        oTrans.InvSerial(lnCtr).getSoldStatus(),
-//                        oTrans.InvSerial(lnCtr).getUnitType()
-//                             ,""                       
-//                ));
-////            lnCtr += 1;
+//        txtField04.setText(poTrans.InvMaster().getModel().Inventory().Model().getDescription());
+//        txtField05.setText(poTrans.InvMaster().getModel().Inventory().Color().getDescription());
+//        txtField06.setText(poTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
+//
+//        ObservableList<String> unitTypes = ObservableListUtil.UNIT_TYPES;
+//        cmbField01.setItems(unitTypes);
+//        cmbField01.getSelectionModel().select(7);
+//    }
+//
+//    /*Handle button click*/
+//    private void ClickButton() {
+//        btnOkay.setOnAction(this::handleButtonAction);
+//        btnLoadSerial.setOnAction(this::handleButtonAction);
+//        btnClose.setOnAction(this::handleButtonAction);
+//    }
+//
+//    private void handleButtonAction(ActionEvent event) {
+//        Object source = event.getSource();
+//        JSONObject poJSON;
+//        if (source instanceof Button) {
+//            Button clickedButton = (Button) source;
+//            unloadForm appUnload = new unloadForm();
+//            switch (clickedButton.getId()) {
+//                case "btnClose":  //Close
+//                    appUnload.useParentController("");
+//                    initializeObject();
+//                    CommonUtils.closeStage(btnClose);
+//                    break;
+//
+//                case "btnOkay":  //Close
+//                    appUnload.useParentController("");
+//                    initializeObject();
+//                    CommonUtils.closeStage(btnOkay);
+//                    break;
+//
+//                case "btnLoadSerial":
+////                    System.out.println("LOAD SERIAL == " + poTrans.InvMaster().s);
+//                    String UnitType = String.valueOf(cmbField01.getSelectionModel().getSelectedIndex());
+//                    poJSON = new JSONObject();
+//
+//                    poTrans.OpenInvSerialLedger(lsStockID, "7".equals(UnitType) ? "%" : UnitType);
+//                    loadSerialLedger();
+//                    break;
 //            }
 //        }
 //    }
-
-
-    private void initTable() {
-        index01.setStyle("-fx-alignment: CENTER;");
-        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-
-        index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        index04.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        index05.setCellValueFactory(new PropertyValueFactory<>("index05"));
-        index06.setCellValueFactory(new PropertyValueFactory<>("index06"));
-        index07.setCellValueFactory(new PropertyValueFactory<>("index07"));
-        tblSerialLedger.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblSerialLedger.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-        tblSerialLedger.setItems(data);
-        tblSerialLedger.autosize();
-    }
+//
+//    private void loadSerialLedger() {
+//        System.out.println("nagload and ledger");
+//        data.clear();
+//        System.out.println("Count == " + poTrans.getInvSerialCount());
+//        if (poTrans.getInvSerialCount() > 0) {
+//            for (int lnCtr = 0; lnCtr < poTrans.getInvSerialCount(); lnCtr++) {
+//                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
+//
+//                // Debugging individual components
+//                System.out.println("Serial 02: " + String.valueOf(lnCtr + 1));
+//                System.out.println("Serial ID: " + poTrans.InvSerial(lnCtr).getSerialId());
+//                System.out.println("Serial 01: " + poTrans.InvSerial(lnCtr).getSerialOne());
+//                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getSerialTwo());
+//                System.out.println("Serial 01: " + poTrans.InvSerial(lnCtr).getLocationId());
+//                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getSoldStatus());
+//                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getUnitType());
+//                System.out.println("-------------------------------------------------------------");
+//
+//                data.add(new ModelInvSerial(
+//                        String.valueOf(lnCtr + 1),
+//                        poTrans.InvSerial(lnCtr).getSerialId(),
+//                        poTrans.InvSerial(lnCtr).getSerialOne(),
+//                        poTrans.InvSerial(lnCtr).getSerialTwo(),
+//                        poTrans.InvSerial(lnCtr).getLocationId(),
+//                        poTrans.InvSerial(lnCtr).getSoldStatus(),
+//                        poTrans.InvSerial(lnCtr).getUnitType(),
+//                        ""
+//                ));
+//            }
+//        } else {
+//            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
+//        }
+//    }
+//
+////    private void loadSerialLedger() {
+////        data.clear();
+////
+////        if (oTrans.getInvSerialCount() >= 0) {
+////            for (int lnCtr = 0; lnCtr < oTrans.getInvSerialCount(); lnCtr++) {
+////                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
+////
+////                // Debugging individual components
+////                System.out.println("Transaction Date: " + oTrans.InvSerial(lnCtr).getSerialId());
+////                System.out.println("Branch Name: " + oTrans.InvSerial(lnCtr).getSerialOne());
+////                System.out.println("Source Code: " + oTrans.InvSerial(lnCtr).getSerialTwo());
+//////                System.out.println("Source No: " + oTrans.InvSerial(lnCtr).Inventory().);
+////
+////                data.add(new ModelInvSerial(
+////                        String.valueOf(lnCtr + 1),
+////                        oTrans.InvSerial(lnCtr).getSerialId(),
+////                        oTrans.InvSerial(lnCtr).getSerialOne(),
+////                        oTrans.InvSerial(lnCtr).getSerialTwo(),
+////                        oTrans.InvSerial(lnCtr).getLocationId(),
+////                        oTrans.InvSerial(lnCtr).getSoldStatus(),
+////                        oTrans.InvSerial(lnCtr).getUnitType()
+////                             ,""
+////                ));
+//////            lnCtr += 1;
+////            }
+////        }
+////    }
+//    private void initTable() {
+//        index01.setStyle("-fx-alignment: CENTER;");
+//        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+//        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+//        index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+//        index05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+//        index06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+//        index07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+//
+//        index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
+//        index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
+//        index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
+//        index04.setCellValueFactory(new PropertyValueFactory<>("index04"));
+//        index05.setCellValueFactory(new PropertyValueFactory<>("index05"));
+//        index06.setCellValueFactory(new PropertyValueFactory<>("index06"));
+//        index07.setCellValueFactory(new PropertyValueFactory<>("index07"));
+//        tblSerialLedger.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+//            TableHeaderRow header = (TableHeaderRow) tblSerialLedger.lookup("TableHeaderRow");
+//            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+//                header.setReordering(false);
+//            });
+//        });
+//        tblSerialLedger.setItems(data);
+//        tblSerialLedger.autosize();
+//    }
 }

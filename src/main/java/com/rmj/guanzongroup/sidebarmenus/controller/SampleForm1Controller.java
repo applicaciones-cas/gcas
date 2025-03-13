@@ -11,12 +11,13 @@ import org.guanzon.cas.parameter.Bin;
 import org.guanzon.cas.parameter.Branch;
 import org.json.simple.JSONObject;
 
-public class SampleForm1Controller implements Initializable,ScreenInterface {
+public class SampleForm1Controller implements Initializable, ScreenInterface {
+
     private final String pxeModuleName = "Sample Form 1";
     private GRider oApp;
     private JSONObject poJSON;
-    
-    private int pnEditMode;  
+
+    private int pnEditMode;
     @FXML
     private HBox hbButtons;
     @FXML
@@ -46,18 +47,18 @@ public class SampleForm1Controller implements Initializable,ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Branch loObject;
-        loObject = new Branch();
-        loObject.setApplicationDriver(oApp);
-        loObject.setWithParentClass(false);
-        loObject.initialize();
-        
-        JSONObject loJSON = loObject.searchRecord("", false);        
-        if ("success".equals((String) loJSON.get("result"))){
-            System.out.println(loObject.getModel().getBranchCode());
-            System.out.println(loObject.getModel().getBranchName());
-        } else System.out.println("No record was selected.");
-    }    
+//        Branch loObject;
+//        loObject = new Branch();
+//        loObject.setApplicationDriver(oApp);
+//        loObject.setWithParentClass(false);
+//        loObject.initialize();
+//
+//        JSONObject loJSON = loObject.searchRecord("", false);
+//        if ("success".equals((String) loJSON.get("result"))){
+//            System.out.println(loObject.getModel().getBranchCode());
+//            System.out.println(loObject.getModel().getBranchName());
+//        } else System.out.println("No record was selected.");
+    }
 
     @Override
     public void setGRider(GRider foValue) {
