@@ -5,6 +5,7 @@ D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controlle
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\ColorController.java
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryController.java
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\PaymentRequestController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\utility\CustomCommonUtil.java
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\BrandController.java
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SampleForm2Controller.java
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationHistoryController.java
@@ -21,6 +22,7 @@ D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controlle
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\AccountsPayableController.java
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\ScreenInterfaceController.java
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\CategoryController.java
+D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\utility\TextFormaterUtil.java
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DefaultScreenController.java
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\unloadForm.java
 D:\MAVEN PROJECTS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\SizeController.java
