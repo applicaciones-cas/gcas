@@ -45,8 +45,8 @@ public class CustomCommonUtil {
      * System.out.println(date); // Outputs: 2024-10-01
      * }</pre>
      */
-    public static LocalDate parseDateStringToLocalDate(String fsDateValue, String fsPattern) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(fsPattern);
+    public static LocalDate parseDateStringToLocalDate(String fsDateValue) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(fsDateValue, dateFormatter);
     }
 

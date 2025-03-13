@@ -46,7 +46,9 @@ import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.services.PurchaseOrderControllers;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import java.sql.SQLException;
 
 /**
  * FXML Controller class
@@ -127,13 +129,14 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         if (!"success".equals(loJSON.get("result"))) {
             ShowMessageFX.Warning(null, "Search Information", (String) loJSON.get("message"));
         }
+
+        initTablePODetail();
+        initTableStockRequest();
         initButtonsClickActions();
         initTextFieldFocus();
         initTextAreaFocus();
         initTextFieldKeyPressed();
         initCheckBoxActions();
-//        initTableStockRequest();
-        initTablePODetail();
         pnEditMode = EditMode.UNKNOWN;
         initButtons(pnEditMode);
         initFields(pnEditMode);
@@ -146,10 +149,42 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     }
 
     // this is for detail fields
+//    private void loadMaster() {
+//        tfTransactionNo.setText(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+//        dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(CustomCommonUtil.formatDateToShortString(poPurchasingController.PurchaseOrder().Master().getTransactionDate())));
+//
+//        String lsCompanyName = "";
+//        if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
+//            lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
+//        }
+//        tfCompany.setText(lsCompanyName);
+//
+//        String lsSupplierName = "";
+//        if (poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null) {
+//            lsSupplierName = poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName();
+//        }
+//        tfSupplier.setText(lsSupplierName);
+//
+//        String lsDestinationName = "";
+//        if (poPurchasingController.PurchaseOrder().Master().Branch().getBranchName() != null) {
+//            lsDestinationName = poPurchasingController.PurchaseOrder().Master().Branch().getBranchName();
+//        }
+//        tfDestination.setText(lsDestinationName);
+//
+//        taRemarks.setText(poPurchasingController.PurchaseOrder().Master().getRemarks());
+//        dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(poPurchasingController.PurchaseOrder().Master().getExpectedDate().toString(), SQLUtil.FORMAT_SHORT_DATE));
+//        tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
+//        tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
+//        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
+//        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
+//        taRemarks.setText(poPurchasingController.PurchaseOrder().Master().getRemarks());
+//        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
+//
+//    }
     private void loadMaster() {
         tfTransactionNo.setText(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-//        dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(poPurchasingController.PurchaseOrder().Master().getTransactionDate().toString(), SQLUtil.FORMAT_SHORT_DATE));
 
+        dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
         String lsCompanyName = "";
         if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
             lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
@@ -169,7 +204,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tfDestination.setText(lsDestinationName);
 
         taRemarks.setText(poPurchasingController.PurchaseOrder().Master().getRemarks());
-//        dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(poPurchasingController.PurchaseOrder().Master().getExpectedDate().toString(), SQLUtil.FORMAT_SHORT_DATE));
+
+        dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
         tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
         tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
         tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
@@ -233,6 +269,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();
+                        loadOrders();
                         pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
@@ -654,16 +691,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         }
     }
 
-    private void loadTableStockRequest() {
-
-    }
-
     private void initTableStockRequest() {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            tblVwStockRequest.setEditable(true);
-        } else {
-            tblVwStockRequest.setEditable(false);
-        }
+//        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//            tblVwStockRequest.setEditable(true);
+//        } else {
+//            tblVwStockRequest.setEditable(false);
+//        }
         // Set cell value factories
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblBranchName.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -671,26 +704,15 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
         tblNoOfItems.setCellValueFactory(new PropertyValueFactory<>("index05"));
 
-        if (tblVwStockRequest != null) {
-            tblVwStockRequest.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-                TableHeaderRow header = (TableHeaderRow) tblVwStockRequest.lookup("TableHeaderRow");
-                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    header.setReordering(false);
-                });
+        tblVwStockRequest.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblVwStockRequest.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
             });
-
-            if (approvedStockRequest_data != null) { // Ensure approvedStockRequest_data is not null
-                tblVwStockRequest.setItems(approvedStockRequest_data);
-            } else {
-                tblVwStockRequest.setItems(FXCollections.observableArrayList()); // Set an empty list instead of null
-            }
-
-            tblVwStockRequest.autosize();
-        }
-    }
-
-    private void loadTablePODetail() {
-
+        });
+        tblVwStockRequest.setItems(approvedStockRequest_data);
+        tblVwStockRequest.getSelectionModel().select(pnTblStockRequestRow + 1);
+        tblVwStockRequest.autosize();
     }
 
     private void initTablePODetail() {
@@ -704,11 +726,11 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
         tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
         tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
+        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
 
         if (tblVwOrderDetails != null) {
             tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
@@ -730,19 +752,121 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     private void loadOrders() {
         try {
-            JSONObject loJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
-            if ("succss".equals((String) loJSON.get("result"))) {
-                
+            JSONObject poJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
+
+            if ("success".equals(poJSON.get("result"))) {
+                JSONArray approvedRequests = (JSONArray) poJSON.get("data");
+
+                approvedStockRequest_data.clear();
+
+                for (Object requestObj : approvedRequests) {
+                    JSONObject obj = (JSONObject) requestObj; // Explicit casting
+
+                    ModelPurchaseOrder modelPurchaseOrder = new ModelPurchaseOrder(
+                            String.valueOf(approvedStockRequest_data.size() + 1), // Auto-increment row number
+                            obj.get("sBranchCd") != null ? obj.get("sBranchCd").toString() : "",
+                            obj.get("dTransact") != null ? obj.get("dTransact").toString() : "",
+                            obj.get("sReferNox") != null ? obj.get("sReferNox").toString() : "",
+                            obj.get("sRemarksx") != null ? obj.get("sRemarksx").toString() : ""
+                    );
+
+                    approvedStockRequest_data.add(modelPurchaseOrder);
+                }
+
+                tblVwStockRequest.setItems(approvedStockRequest_data);
+            } else {
+                System.out.println("Error: " + poJSON.get("message"));
             }
+
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+//  private void loadOrders() {
+//    System.out.println("Loading approved stock requests...");
+//    approvedStockRequest_data.clear();
+//
+//    try {
+//        // Retrieve the JSONObject from the controller
+//        JSONObject response = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
+//
+//        // Check if the response contains data
+//        if (!response.get("result").equals("success")) {
+//            ShowMessageFX.Information("No Record Found!", "Computerized Accounting System", psFormName);
+//            return;
+//        }
+//
+//        // Extract the JSONArray properly
+//        JSONArray stockRequests = response.getJSONArray("data");
+//
+//        for (int i = 0; i < stockRequests.length(); i++) {
+//            JSONObject request = stockRequests.getJSONObject(i);
+//
+//            approvedStockRequest_data.add(new ModelPurchaseOrder(
+//                    String.valueOf(i + 1),
+//                    request.getString("sBranchCd"),
+//                    request.getString("dTransact"),
+//                    request.getString("sReferNox"),
+//                    request.getString("sRemarksx")
+//            ));
+//        }
+//
+//        System.out.println("Successfully loaded " + stockRequests.length() + " records.");
+//    } catch (SQLException | GuanzonException | e) {
+//        System.err.println("Error loading approved stock requests: " + e.getMessage());
+//        ShowMessageFX.Error("Failed to load stock requests.", "Error", e.getMessage());
+//    }
+//}
+//
+//
+//    private void loadOrders() {
+//        try {
+//            JSONObject loJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
+//            if ("succss".equals((String) loJSON.get("result"))) {
+//                
+//            }
 //	if ("success".equals((String) loJSON.get("result")){
 ////		column1 = (String) loJSON.put("sTransNox");
 ////		column2 = (String) loJSON.put("sBranchNm");
 ////		column3 = (String) loJSON.put("sReferNox");
 ////		column4 = (String) loJSON.put("nEntryNox");
 //	}
-        } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-    }
+//        } catch (SQLException | GuanzonException ex) {
+//            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+//        } 
+//    }
+    int lnCtr;
+//        int lnCtr2 = 0;
+//        address_data.clear();
+//
+//        if (oTrans.getAddressCount() >= 0) {
+//            for (lnCtr = 0; lnCtr < oTrans.getAddressCount(); lnCtr++) {
+//
+//                address_data.add(new ModelAddress(String.valueOf(lnCtr + 1),
+//                        (String) oTrans.Address(lnCtr2).getModel().getHouseNo(),
+//                        (String) oTrans.Address(lnCtr2).getModel().getAddress(),
+//                        (String) oTrans.Address(lnCtr2).getModel().Town().getTownName(),
+//                        (String) oTrans.Address(lnCtr2).getModel().Barangay().getBarangayName()
+//                ));
+//                lnCtr2 += 1;
+//            }
+//        }
+//        if (pnAddress < 0 || pnAddress
+//                >= address_data.size()) {
+//            if (!address_data.isEmpty()) {
+//                /* FOCUS ON FIRST ROW */
+//                tblAddress.getSelectionModel().select(0);
+//                tblAddress.getFocusModel().focus(0);
+//                pnAddress = tblAddress.getSelectionModel().getSelectedIndex();
+//                getSelectedAddress();
+//
+//            }
+//        } else {
+//            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+//            tblAddress.getSelectionModel().select(pnAddress);
+//            tblAddress.getFocusModel().focus(pnAddress);
+//            getSelectedAddress();
+//        }
 
 }
