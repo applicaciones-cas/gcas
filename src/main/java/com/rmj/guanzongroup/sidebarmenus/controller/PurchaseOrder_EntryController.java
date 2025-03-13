@@ -764,10 +764,10 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
                     ModelPurchaseOrder modelPurchaseOrder = new ModelPurchaseOrder(
                             String.valueOf(approvedStockRequest_data.size() + 1), // Auto-increment row number
-                            obj.get("sBranchCd") != null ? obj.get("sBranchCd").toString() : "",
+                            obj.get("sBranchNm") != null ? obj.get("sBranchNm").toString() : "",
                             obj.get("dTransact") != null ? obj.get("dTransact").toString() : "",
                             obj.get("sReferNox") != null ? obj.get("sReferNox").toString() : "",
-                            obj.get("sRemarksx") != null ? obj.get("sRemarksx").toString() : ""
+                            obj.get("total_details") != null ? obj.get("total_details").toString() : ""
                     );
 
                     approvedStockRequest_data.add(modelPurchaseOrder);
