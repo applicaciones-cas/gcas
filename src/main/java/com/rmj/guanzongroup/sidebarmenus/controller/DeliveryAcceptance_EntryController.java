@@ -4,6 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.DataModel;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
@@ -23,12 +24,17 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -39,6 +45,7 @@ import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
@@ -63,7 +70,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
-
+    private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
     private final String pxeModuleName = "Purchase Order Receiving Entry";
@@ -72,6 +79,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
+    private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
 
     @FXML
     private AnchorPane apMainAnchor;
@@ -246,6 +254,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     @FXML
     private TableColumn tblReferenceNo;
+    @FXML
+    private Pagination pgPagination;
 
     /**
      * Initializes the controller class.
@@ -261,19 +271,18 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-//                    poJSON = oTrans.searchTransaction("sTransNox", "", pnIndex == 99);
-//                    pnEditMode = EditMode.READY;
-//
-//                    //start
-//                    if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        txtField01.requestFocus();
-//                        pnEditMode = EditMode.UNKNOWN;
-//                        return;
-//                    } else {
-//                        loadRecord();
-//                    }
+                        poJSON = oTrans.searchTransaction("", false);
+                        pnEditMode = EditMode.READY;
+
+                        //start
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            tfTransactionNo.requestFocus();
+                            pnEditMode = EditMode.UNKNOWN;
+                            return;
+                        } else {
+                            loadRecordMaster();
+                        }
                         break;
 
                     case "btnPrint":
@@ -291,9 +300,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         } else {
                             return;
                         }
-
-//                case "btnBrowse":
-//                    break;
                     case "btnNew":
                         poJSON = oTrans.NewTransaction();
                         pnEditMode = oTrans.Master().getEditMode();
@@ -305,7 +311,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             return;
                         }
                         break;
-
                     case "btnUpdate":
                         pnEditMode = oTrans.Master().getEditMode();
 
@@ -317,47 +322,85 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         }
                         break;
                     case "btnSearch":
+                        //Search what
+                        poJSON = oTrans.searchTransaction("", false);
+                        pnEditMode = EditMode.READY;
+
+                        //start
+                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            tfTransactionNo.requestFocus();
+                            pnEditMode = EditMode.UNKNOWN;
+                            return;
+                        } else {
+                            loadRecordMaster();
+                        }
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                            oTrans = new PurchaseOrderReceivingControllers(oApp, null).PurchaseOrderReceiving();
 
-                            pnEditMode = EditMode.UNKNOWN;
-//                        clearFields();
+                            oTrans.CancelTransaction("");
+
+                            JSONObject loJSON = oTrans.InitTransaction(); // Initialize transaction
+                            if (!"success".equals((String) loJSON.get("result"))) {
+                                System.err.println((String) loJSON.get("message"));
+                            }
+                            try {
+                                loJSON = oTrans.NewTransaction();
+                            } catch (CloneNotSupportedException ex) {
+                                Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            if (!"success".equals((String) loJSON.get("result"))) {
+                                System.err.println((String) loJSON.get("message"));
+                            }
+
+                            pnEditMode = oTrans.getEditMode();
+                            clearTextFields();
                             break;
                         } else {
                             break;
                         }
-//                case "btnPrint":
-//                    break;
                     case "btnHistory":
                         break;
                     case "btnRetrieve":
+                        //Retrieve data from purchase order to table main
+
+                        //if supplier is not empty, if yes then general
+//                        trans.Master().setIndustryId(industryId); //direct assignment of value
+//                        trans.Master().setCompanyId(industryId); //direct assignment of value
+                        poJSON = oTrans.getApprovedPurchaseOrder();
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            Assert.fail();
+                        } else {
+                            loadTableMain();
+
+                        }
+
                         break;
                     case "btnSave":
-//                    oTrans.Master().getModel().setCompanyName(oTrans.Master().getModel().getCompanyName());
-//
-//                    loJSON = oTrans.Master().isEntryOkay();
-//                    if ("error".equals((String) loJSON.get("result"))) {
-//                        ShowMessageFX.Information((String) loJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        //Validator
+//                    oTrans.Master().setCompanyName(oApp.getClientName());
+//                    poJSON = oTrans.Master().isEntryOkay();
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 //                        break;
 //                    }
-//                    if (pnEditMode == EditMode.UPDATE) {
-//                        oTrans.Update();
-//                    }
-//
-//                    loJSON = oTrans.Save();
-//
-//                    if ("error".equals((String) loJSON.get("result"))) {
-//                        ShowMessageFX.Information((String) loJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        break;
-//                    } else {
-//                        ShowMessageFX.OkayCancel((String) loJSON.get("message"), "", "Successfully saved!");
-//                    }
+
+                        if (pnEditMode == EditMode.UPDATE) {
+                            oTrans.UpdateTransaction();
+                        }
+                        poJSON = oTrans.SaveTransaction();
+
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        } else {
+                            ShowMessageFX.OkayCancel((String) poJSON.get("message"), "", "Successfully saved!");
+                        }
                         break;
                     default:
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
-
                         break;
                 }
                 initButton(pnEditMode);
@@ -394,7 +437,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     }
                     break;
             }
-            loadRecordDetail();
+            loadRecordMaster();
         } else {
             txtField.selectAll();
         }
@@ -450,7 +493,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         return;
                     }
                     try {
-                        //   oTrans.Detail(pnDetail).Inventory().setCost((Double.valueOf(lsValue.replace(",", ""))));
+                        oTrans.Detail(pnDetail).Inventory().setCost((Double.valueOf(lsValue.replace(",", ""))));
                     } catch (Exception e) {
 
                     }
@@ -460,16 +503,25 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                    if (Integer.parseInt(lsValue.replace(",", "")) < 0) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
                         return;
                     }
-                    oTrans.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue.replace(",", ""))));
+                    oTrans.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
+                    break;
+                case "tfOrder":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0";
+                    }
+                    if (Integer.parseInt(lsValue.replace(",", "")) < 0) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
+                        return;
+                    }
+                    oTrans.Detail(pnDetail).setOrderQty((Integer.valueOf(lsValue)));
                     break;
             }
 
-            loadRecordMaster();
-            loadRecordDetail();
+            loadTableDetail();
         }
     };
 
@@ -505,6 +557,19 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 case "tfTerm":
                     break;
                 case "tfDiscountRate":
+
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
+                        return;
+                    }
+                    poJSON = oTrans.Master().setDiscountRate((Double.valueOf(lsValue)));
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, "");
+                        break;
+                    }
                     break;
                 case "tfDiscountAmount":
                     if (lsValue.isEmpty()) {
@@ -515,15 +580,22 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         return;
                     }
                     oTrans.Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
-                    tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
+
                     break;
                 case "tfTotal":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
+                        return;
+                    }
+                    oTrans.Master().setTransactionTotal(Double.valueOf(lsValue.replace(",", "")));
                     break;
 
             }
 
-//            loadRecordMaster();
-//            loadRecordDetail();
+            loadRecordMaster();
         }
     };
 
@@ -539,46 +611,41 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         case "tfCompany":
                             /*search company*/
                             loJSON = new JSONObject();
-                            loJSON = oTrans.SearchCompany(lsValue, false);
-
-                            oTrans.Master().getCompanyId();
-
+                            loJSON = oTrans.SearchCompany(lsValue, true);
                             if ("error".equals(loJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
                                 tfCompany.setText("");
                                 break;
                             }
-
-                            tfCompany.setText(oTrans.Master().Company().getCompanyName());
-
+                            loadRecordMaster();
                             break;
 
                         case "tfSupplier":
-                            loJSON = oTrans.SearchSupplier(lsValue, false);
+                            loJSON = oTrans.SearchSupplier(lsValue, true);
                             if ("error".equals(loJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
                                 tfSupplier.setText("");
                                 break;
                             }
-                            tfSupplier.setText(oTrans.Master().Supplier().getCompanyName());
+
                             break;
                         case "tfTrucking":
-                            loJSON = oTrans.SearchTrucking(lsValue, false);
+                            loJSON = oTrans.SearchTrucking(lsValue, true);
                             if ("error".equals(loJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
                                 tfTrucking.setText("");
                                 break;
                             }
-                            tfTrucking.setText(oTrans.Master().Trucking().getCompanyName());
+                            loadRecordMaster();
                             break;
                         case "tfTerm":
-                            loJSON = oTrans.SearchTerm(lsValue, false);
+                            loJSON = oTrans.SearchTerm(lsValue, true);
                             if ("error".equals(loJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
                                 tfTerm.setText("");
                                 break;
                             }
-                            tfTerm.setText(oTrans.Master().Term().getDescription());
+                            loadRecordMaster();
                             break;
                         case "tfOrderNo":
 
@@ -591,8 +658,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 break;
                             }
 
-                            tfBarcode.setText(oTrans.Detail(pnDetail).Inventory().getBarCode());
-
+                            loadTableDetail();
                             break;
 
                         case "tfDescription": {
@@ -603,7 +669,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             tfDescription.setText("");
                             break;
                         }
-                        tfDescription.setText(oTrans.Detail(pnDetail).Inventory().getDescription());
+
+                        loadTableDetail();
                         break;
 
                         case "tfSupersede":
@@ -613,8 +680,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 tfSupersede.setText("");
                                 break;
                             }
-                            tfSupersede.setText(oTrans.Detail(pnDetail).Supersede().getBriefDescription());
 
+                            loadTableDetail();
                             break;
 
                     }
@@ -765,7 +832,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     public void initMainGrid() {
         tblRowNo.setStyle("-fx-alignment: CENTER;");
         tblSupplier.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        tblDate.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        tblDate.setStyle("-fx-alignment: CENTER");
         tblReferenceNo.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
 
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
@@ -779,11 +846,22 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 header.setReordering(false);
             });
         });
-        tblViewStock_Request.setItems(main_data);
+
+        filteredData = new FilteredList<>(main_data, b -> true);
+        SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(tblViewStock_Request.comparatorProperty());
+        tblViewStock_Request.setItems(sortedData);
+
+//        tblViewStock_Request.setItems(main_data);
         tblViewStock_Request.autosize();
     }
 
     public void clearTextFields() {
+
+        dpTransactionDate.setValue(null);
+        dpReferenceDate.setValue(null);
+        dpExpiryDate.setValue(null);
+
         tfTransactionNo.clear();
         tfIndustry.clear();
         tfCompany.clear();
@@ -807,22 +885,43 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         tfCost.clear();
         tfOrderQuantity.clear();
         tfReceiveQuantity.clear();
+
+        loadRecordMaster();
+        loadTableDetail();
     }
 
     public void loadRecordDetail() {
-        //        tfBrand.setText(oTrans.Detail(pnDetail).Inventory().Brand().getDescription());
-//        tfModel.setText(oTrans.Detail(pnDetail).Inventory().Model().getDescription());
-//        tfColor.setText(oTrans.Detail(pnDetail).Inventory().Color().getDescription());
-//        tfInventoryType.setText(oTrans.Detail(pnDetail).Inventory().InventoryType().getDescription());
-//        tfMeasure.setText(oTrans.Detail(pnDetail).Inventory().Measure().getMeasureName());
         try {
-            tfCost.setText(String.valueOf(oTrans.Detail(pnDetail).Inventory().getCost()));
-        } catch (Exception ex) {
+            tfBarcode.setText(oTrans.Detail(pnDetail).Inventory().getBarCode());
+            tfDescription.setText(oTrans.Detail(pnDetail).Inventory().getDescription());
+            tfSupersede.setText(oTrans.Detail(pnDetail).Supersede().getBriefDescription());
+            tfBrand.setText(oTrans.Detail(pnDetail).Inventory().Brand().getDescription());
+            tfModel.setText(oTrans.Detail(pnDetail).Inventory().Model().getDescription());
+            tfColor.setText(oTrans.Detail(pnDetail).Inventory().Color().getDescription());
+            tfInventoryType.setText(oTrans.Detail(pnDetail).Inventory().InventoryType().getDescription());
+            tfMeasure.setText(oTrans.Detail(pnDetail).Inventory().Measure().getDescription());
+
+            try {
+                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(oTrans.Detail(pnDetail).Inventory().getCost()));
+            } catch (Exception e) {
+                oTrans.Detail(pnDetail).Inventory().setCost(0.00);
+            }
+            try {
+                tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Integer.valueOf(oTrans.Detail(pnDetail).getOrderQty())));
+            } catch (Exception e) {
+                oTrans.Detail(pnDetail).setOrderQty(0);
+            }
+            try {
+                tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Detail(pnDetail).getQuantity())));
+            } catch (Exception e) {
+                oTrans.Detail(pnDetail).setQuantity(0);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        tfOrderQuantity.setText(String.valueOf(oTrans.Detail(pnDetail).getOrderQty()));
-        tfReceiveQuantity.setText(String.valueOf(oTrans.Detail(pnDetail).getQuantity()));
 
 //        oTrans.Detail(pnDetail).getExpiryDate();
 //        oTrans.Detail(pnDetail).setExpiryDate(expiryDate);
@@ -884,14 +983,15 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         } catch (Exception e) {
             Assert.fail();
         }
-        tfCompany.setText(oTrans.Master().getCompanyId());
+
         try {
+            tfCompany.setText(oTrans.Master().Company().getCompanyName());
             tfSupplier.setText(oTrans.Master().Supplier().getCompanyName());
+            tfTrucking.setText(oTrans.Master().Trucking().getCompanyName());
+            tfTerm.setText(oTrans.Master().Term().getDescription());
         } catch (Exception e) {
 
         }
-
-        tfTrucking.setText(oTrans.Master().getTruckingId());
 
         //ReferenceDate
         try {
@@ -911,26 +1011,79 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 } else {
                 }
             }
-
-        } catch (Exception e) {
-        }
-
-        tfReferenceNo.setText(oTrans.Master().getReferenceNo());
-        tfTerm.setText(oTrans.Master().getTermCode());
-
-        try {
-            tfDiscountRate.setText(String.valueOf(oTrans.Master().getDiscountRate()));
         } catch (Exception e) {
         }
         try {
-            tfDiscountAmount.setText(String.valueOf(oTrans.Master().getDiscount()));
+            tfReferenceNo.setText(oTrans.Master().getReferenceNo());
+            taRemarks.setText(oTrans.Master().getRemarks());
         } catch (Exception e) {
         }
-        taRemarks.setText(oTrans.Master().getRemarks());
+
+        try {
+            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getDiscountRate())));
+        } catch (Exception e) {
+            oTrans.Master().setDiscountRate(0.00);
+        }
+        try {
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getDiscount())));
+        } catch (Exception e) {
+            oTrans.Master().setDiscount(0.00);
+        }
+        try {
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getTransactionTotal())));
+        } catch (Exception e) {
+            oTrans.Master().setTransactionTotal(0.00);
+        }
 
     }
 
+    EventHandler<KeyEvent> tableScrollHandler = event -> {
+        if (event.isAltDown()) {
+            TableView<?> focusedTable = getFocusedTable();
+            if (focusedTable != null) {
+                switch (event.getCode()) {
+                    case UP:
+                        scrollTable(focusedTable, -1);
+                        event.consume(); // Prevent default behavior
+                        break;
+                    case DOWN:
+                        scrollTable(focusedTable, 1);
+                        event.consume(); // Prevent default behavior
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    };
+
+    private TableView<?> getFocusedTable() {
+        if (tblViewStock_Request.isFocused()) {
+            return tblViewStock_Request;
+        } else if (tblViewOrderDetails.isFocused()) {
+            return tblViewOrderDetails;
+        }
+        return null; // No table has focus
+    }
+
+    private void scrollTable(TableView<?> table, int direction) {
+        int rowCount = table.getItems().size();
+        if (rowCount == 0) {
+            return;
+        }
+
+        int currentIndex = table.getSelectionModel().getSelectedIndex();
+        int newIndex = currentIndex + direction;
+
+        // Ensure the index is within bounds
+        if (newIndex >= 0 && newIndex < rowCount) {
+            table.getSelectionModel().clearAndSelect(newIndex);
+            table.scrollTo(newIndex);
+        }
+    }
+
     public void initTableOnClick() {
+
         tblViewOrderDetails.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
@@ -947,13 +1100,16 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             }
         });
 
+        tblViewStock_Request.setOnKeyPressed(tableScrollHandler);
+        tblViewOrderDetails.setOnKeyPressed(tableScrollHandler);
+
     }
 
     public void loadTableMain() {
         // Setting data to table detail
 
         int lnCtr;
-        int lnCtr2 = 0;
+
         main_data.clear();
 
         String lsMainDate = "";
@@ -978,18 +1134,26 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             }
         }
 
-//        if (oTrans.Master(). >= 0) {
-//            for (lnCtr = 0; lnCtr < oTrans.Master(); lnCtr++) {
-//
-//                main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
-//                        (String) oTrans.Master().Supplier().getCompanyName(),
-//                        lsMainDate,
-//                        (String) oTrans.Master().getReferenceNo()
-//                ));
-//                lnCtr2 += 1;
-//
-//            }
-//        }
+        if (oTrans.PurchaseOrderList().size() >= 0) {
+            for (lnCtr = 0; lnCtr < oTrans.PurchaseOrderList().size() - 1; lnCtr++) {
+                try {
+                    main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
+                            (String) oTrans.Master().Supplier().getCompanyName(),
+                            lsMainDate,
+                            (String) oTrans.Master().getReferenceNo()
+                    ));
+                } catch (SQLException ex) {
+                    Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (GuanzonException ex) {
+                    Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                for (int lnCol = 1; lnCol <= oTrans.PurchaseOrderList(lnCtr).getColumnCount(); lnCol++) {
+                    System.out.println(oTrans.PurchaseOrderList(lnCtr).getColumn(lnCol) + " ->> " + oTrans.PurchaseOrderList(lnCtr).getValue(lnCol));
+                }
+            }
+        }
+
         if (pnMain < 0 || pnMain
                 >= main_data.size()) {
             if (!main_data.isEmpty()) {
@@ -1011,7 +1175,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     public void loadTableDetail() {
         // Setting data to table detail
-        loadTableMain();
 
         int lnCtr;
         int lnCtr2 = 0;
@@ -1019,9 +1182,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
         if (oTrans.Detail().size() >= 0) {
             for (lnCtr = 0; lnCtr < oTrans.Detail().size(); lnCtr++) {
-
-                new PurchaseOrderReceivingModels(oApp).PurchaseOrderReceivingDetails();
-
                 try {
                     details_data.add(
                             new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
@@ -1031,14 +1191,15 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                     String.valueOf(oTrans.Detail(lnCtr2).Inventory().getCost()),
                                     String.valueOf(oTrans.Detail(lnCtr2).getOrderQty()),
                                     String.valueOf(oTrans.Detail(lnCtr2).getQuantity()),
-                                    String.valueOf(10) //identify total
+                                    String.valueOf(0) //identify total
                             ));
+
+                    lnCtr2 += 1;
                 } catch (SQLException ex) {
                     Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (GuanzonException ex) {
                     Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                lnCtr2 += 1;
 
             }
         }
@@ -1107,6 +1268,97 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 //        }
 //        oTrans.setTransType("SP");
     }
+//
+
+//    public void loadTableMainSample() {
+//        // Setting sample data to table detail
+//        int lnCtr;
+//        main_data.clear();
+//        for (lnCtr = 0; lnCtr < 50; lnCtr++) {
+//            main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
+//                    "Company",
+//                    "2025-10-10",
+//                    "12345"
+//            ));
+//        }
+//        for (lnCtr = 51; lnCtr < 101; lnCtr++) {
+//            main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
+//                    "Company2",
+//                    "2024-10-10",
+//                    "54321"
+//            ));
+//        }
+//    }
+    private void generateData(int count) {
+        int lnCtr;
+        main_data.clear();
+        for (lnCtr = 0; lnCtr < 50; lnCtr++) {
+            main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
+                    "Company",
+                    "2024-10-10",
+                    "12345"
+            ));
+        }
+        for (lnCtr = 50; lnCtr < 100; lnCtr++) {
+            main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
+                    "Company2",
+                    "2024-10-10",
+                    "54321"
+            ));
+        }
+        for (lnCtr = 100; lnCtr < 150; lnCtr++) {
+            main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
+                    "Company3",
+                    "2024-10-10",
+                    "54321"
+            ));
+        }
+    }
+
+    private Node createPage(int pageIndex) {
+        int fromIndex = pageIndex * ROWS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, main_data.size());
+
+        tblViewStock_Request.setItems(FXCollections.observableArrayList(main_data.subList(fromIndex, toIndex)));
+        return tblViewStock_Request;
+
+    }
+//    public void page(int pageIndex) {
+//        int fromIndex = pageIndex * ROWS_PER_PAGE;
+//        int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, main_data.size());
+//        tblViewStock_Request.setItems(FXCollections.observableArrayList(main_data.subList(fromIndex, toIndex)));
+//    }
+//
+//    private TableView<ModelDeliveryAcceptance_Main> createPage(int pageIndex) {
+//        int fromIndex = pageIndex * ROWS_PER_PAGE;
+//        int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, main_data.size());
+//        tblViewStock_Request.setItems(FXCollections.observableArrayList(main_data.subList(fromIndex, toIndex)));
+//        return tblViewStock_Request;
+//    }
+
+    private void loadTab() {
+
+        int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
+        pgPagination.setPageCount(totalPage);
+        pgPagination.setCurrentPageIndex(0);
+        changeTableView(0, ROWS_PER_PAGE);
+        pgPagination.currentPageIndexProperty().addListener(
+                (observable, oldValue, newValue) -> changeTableView(newValue.intValue(), ROWS_PER_PAGE));
+
+    }
+
+    private void changeTableView(int index, int limit) {
+        int fromIndex = index * limit;
+        int toIndex = Math.min(fromIndex + limit, main_data.size());
+
+        int minIndex = Math.min(toIndex, main_data.size());
+        SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(
+                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+        sortedData.comparatorProperty().bind(tblViewStock_Request.comparatorProperty());
+        tblViewStock_Request.setItems(FXCollections.observableArrayList(filteredData.subList(fromIndex, toIndex)));
+        tblViewStock_Request.scrollTo(0);
+
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -1127,8 +1379,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             System.err.println((String) loJSON.get("message"));
         }
 
-        oTrans.Detail().size();
-
         initTextFields();
         initDatePickers();
         initMainGrid();
@@ -1137,11 +1387,23 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         clearTextFields();
 
         loadRecordMaster();
+        loadTableDetail();
+
+        generateData(150); // Simulate 100 rows of data
+//        pgPagination.setPageCount((int) Math.ceil((double) main_data.size() / ROWS_PER_PAGE));
+
+        loadTab();
+//        pgPagination.setPageFactory(this::createPage);
+
+        TableViewStyler.enableHighlight();
+        TableViewStyler.highlightRow(tblViewOrderDetails, 0);
+        TableViewStyler.highlightRow(tblViewOrderDetails, 1);
 
         pnEditMode = oTrans.getEditMode();
         initButton(pnEditMode);
 
     }
+
 
     @Override
     public void setGRider(GRiderCAS foValue) {
