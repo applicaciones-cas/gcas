@@ -370,7 +370,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     }
 
     private void initTextAreaFocus() {
-        taRemarks.focusedProperty().addListener(txtField_Focus);
+        taRemarks.focusedProperty().addListener(txtArea_Focus);
     }
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -532,7 +532,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 //                                }
                                     break;
                             }
-//                        loadApprovedStockRequest();
+//                        loadTableStockRequest();
                             event.consume();
                             CommonUtils.SetNextFocus((TextField) event.getSource());
                             break;
@@ -691,6 +691,11 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             tfAdvancePRate.setDisable(!lbShow);
             tfAdvancePAmount.setDisable(!lbShow);
         }
+
+        if (tblVwStockRequest.getItems().isEmpty()) {
+            pagination.setVisible(false);
+            pagination.setManaged(false);
+        }
     }
 
     private void loadTableStockRequest() {
@@ -734,7 +739,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 //        List<String> lsTestDummy = new ArrayList<>();
 //        int lnRowPerPage = 50;
 //        int totalPages = (int) Math.ceil((double) lsTestDummy.size() / lnRowPerPage);
-//        pagination.setMaxPageIndicatorCount(Math.min(totalPages, 5)); // Show max 5 indicators
+//        pagination.setMaxPageIndicatorCount(1); // Show max 5 indicators
     }
 
     private void loadTablePODetail() {
