@@ -19,13 +19,21 @@ public class ModelPurchaseOrder {
     public StringProperty index04;
     public StringProperty index05;
     public StringProperty index06;
+    public StringProperty index07;
+    public StringProperty index08;
+    public StringProperty index09;
+    public StringProperty index10;
 
     public ModelPurchaseOrder(String index01,
             String index02,
             String index03,
             String index04,
             String index05,
-            String index06) {
+            String index06,
+            String index07,
+            String index08,
+            String index09,
+            String index10) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
@@ -33,6 +41,10 @@ public class ModelPurchaseOrder {
         this.index04 = new SimpleStringProperty(index04);
         this.index05 = new SimpleStringProperty(index05);
         this.index06 = new SimpleStringProperty(index06);
+        this.index07 = new SimpleStringProperty(index07);
+        this.index08 = new SimpleStringProperty(index08);
+        this.index09 = new SimpleStringProperty(index09);
+        this.index10 = new SimpleStringProperty(index10);
     }
 
     public String getIndex01() {
@@ -83,4 +95,35 @@ public class ModelPurchaseOrder {
         this.index06.set(index06);
     }
 
+    public String getIndex07() {
+        return index07.get();
+    }
+
+    public void setIndex07(String index07) {
+        this.index07.set(index07);
+    }
+
+    public String getIndex08() {
+        return index08.get();
+    }
+
+    public void setIndex08(String index08) {
+        this.index08.set(index08);
+    }
+
+    public String getIndex09() {
+        return index09.get();
+    }
+
+    public void setIndex09(String index09) {
+        this.index09.set(index09);
+    }
+
+    public String getIndex10() {
+        return index10.get();
+    }
+
+    public void setIndex10(String index10) {
+        this.index10.set(index10);
+    }
 }
