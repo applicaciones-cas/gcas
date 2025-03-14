@@ -27,7 +27,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\RelationshipController.class
 com\rmj\guanzongroup\sidebarmenus\controller\TermController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvSubUnit.class
 com\rmj\guanzongroup\sidebarmenus\controller\WarehouseController.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelListParameter.class
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel3Controller.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryTypeController.class
@@ -60,6 +59,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\LoginControllerHolder.class
 com\rmj\guanzongroup\sidebarmenus\controller\BranchController.class
 com\rmj\guanzongroup\sidebarmenus\controller\unloadForm.class
 com\rmj\guanzongroup\sidebarmenus\App.class
+com\rmj\guanzongroup\sidebarmenus\table\model\ModelPurchaseOrderDetails.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController$2$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\SampleForm1Controller.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryLedgerController.class
@@ -68,7 +68,6 @@ com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvLedger.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelInstitutionalContactPerson.class
 com\rmj\guanzongroup\sidebarmenus\controller\CountryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\SalesmanController.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PaymentRequestController.class
 com\rmj\guanzongroup\sidebarmenus\controller\LaborCategoryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\BanksBranchesController.class

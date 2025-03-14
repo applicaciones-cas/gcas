@@ -10,7 +10,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author User
  */
-public class ModelPurchaseOrder {
+public class ModelPurchaseOrderDetails {
 
     public StringProperty index01;
     public StringProperty index02;
@@ -33,26 +33,7 @@ public class ModelPurchaseOrder {
     public StringProperty index19;
     public StringProperty index20;
 
-    public ModelPurchaseOrder(String index01,
-            String index02,
-            String index03,
-            String index04,
-            String index05,
-            String index06,
-            String index07,
-            String index08,
-            String index09,
-            String index10,
-            String index11,
-            String index12,
-            String index13,
-            String index14,
-            String index15,
-            String index16,
-            String index17,
-            String index18,
-            String index19,
-            String index20) {
+    public ModelPurchaseOrderDetails(String index01, String index02, String index03, String index04, String index05, String index06, String index07, String index08, String index09, String index10, String index11, String index12, String index13, String index14, String index15) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
@@ -69,26 +50,14 @@ public class ModelPurchaseOrder {
         this.index13 = new SimpleStringProperty(index13);
         this.index14 = new SimpleStringProperty(index14);
         this.index15 = new SimpleStringProperty(index15);
-        this.index16 = new SimpleStringProperty(index16);
-        this.index17 = new SimpleStringProperty(index17);
-        this.index18 = new SimpleStringProperty(index18);
-        this.index19 = new SimpleStringProperty(index19);
-        this.index20 = new SimpleStringProperty(index20);
     }
 
-    public ModelPurchaseOrder(String index01,
-            String index02,
-            String index03,
-            String index04,
-            String index05,
-            String index06) {
+    public ModelPurchaseOrderDetails(String index01, String index02, String index03, String index04, String toString3, String toString4) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
         this.index03 = new SimpleStringProperty(index03);
         this.index04 = new SimpleStringProperty(index04);
-        this.index05 = new SimpleStringProperty(index05);
-        this.index06 = new SimpleStringProperty(index06);
     }
 
     public String getIndex01() {
@@ -131,11 +100,5 @@ public class ModelPurchaseOrder {
         this.index05.set(index05);
     }
     
-    public String getIndex06() {
-        return index06.get();
-    }
-
-    public void setIndex06(String index06) {
-        this.index06.set(index06);
-    }
+   
 }

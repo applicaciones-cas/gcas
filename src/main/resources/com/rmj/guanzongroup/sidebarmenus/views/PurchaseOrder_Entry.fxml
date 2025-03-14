@@ -359,7 +359,7 @@
                                                                 <Insets left="5.0" right="5.0" top="5.0" />
                                                             </GridPane.margin>
                                                         </AnchorPane>
-                                                        <TableView fx:id="tblVwStockRequest" GridPane.rowIndex="1">
+                                                        <TableView fx:id="tblVwStockRequest" onMouseClicked="#tblVwStockRequest_Clicked" GridPane.rowIndex="1">
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNo" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="No." />
                                                                 <TableColumn fx:id="tblBranchName" maxWidth="236.0" minWidth="236.0" prefWidth="236.0" resizable="false" sortable="false" text="Branch" />
