@@ -24,7 +24,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxWidth="1601.0" minWidth="1487.0" prefHeight="789.0" prefWidth="1601.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="AnchorMain" maxWidth="1601.0" minWidth="1487.0" prefHeight="789.0" prefWidth="1601.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -330,12 +330,12 @@
                                                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                                                     </columnResizePolicy>
                                                                 </TableView>
-                                                                <AnchorPane fx:id="apTableDetailLoading" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #0000001a;">
+                                                                <AnchorPane fx:id="apTableDetailLoading" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #0000001a;" visible="false">
                                                                     <GridPane.margin>
                                                                         <Insets />
                                                                     </GridPane.margin>
                                                                 </AnchorPane>
-                                                                <ProgressIndicator fx:id="piTableDetailLoading" maxHeight="50.0" style="-fx-progress-color: FF8201;" />
+                                                                <ProgressIndicator fx:id="piTableDetailLoading" maxHeight="50.0" style="-fx-progress-color: FF8201;" visible="false" />
                                                             </children>
                                                         </GridPane>
                                                     </children>
@@ -383,8 +383,8 @@
                                                                 <Insets />
                                                             </GridPane.margin>
                                                         </Pagination>
-                                                        <AnchorPane fx:id="apTableStockRequestLoading" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #0000001a;" GridPane.rowIndex="1" />
-                                                        <ProgressIndicator fx:id="piTableStockRequestLoading" maxHeight="50.0" style="-fx-progress-color: FF8201;" GridPane.rowIndex="1" />
+                                                        <AnchorPane fx:id="apTableStockRequestLoading" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #0000001a;" visible="false" GridPane.rowIndex="1" />
+                                                        <ProgressIndicator fx:id="piTableStockRequestLoading" maxHeight="50.0" style="-fx-progress-color: FF8201;" visible="false" GridPane.rowIndex="1" />
                                                     </children>
                                                 </GridPane>
                                             </children>

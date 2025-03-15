@@ -10,6 +10,7 @@ import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -65,13 +66,14 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private LogWrapper logWrapper;
     private int pnEditMode;
     private JSONObject poJSON;
+    unloadForm poUnload = new unloadForm();
     private ObservableList<ModelPurchaseOrder> poApprovedStockRequest_data = FXCollections.observableArrayList();
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblStockRequestRow = -1;
     private int pnTblPODetailRow = 0;
     private int pnSTOCK_REQUEST_PAGE = 10;
     @FXML
-    private AnchorPane apBrowse, AnchorMaster, AnchorDetails, apTableDetailLoading, apTableStockRequestLoading;
+    private AnchorPane apBrowse, AnchorMaster, AnchorDetails, apTableDetailLoading, apTableStockRequestLoading, AnchorMain;
     @FXML
     private ProgressIndicator piTableDetailLoading, piTableStockRequestLoading;
     @FXML
@@ -217,24 +219,27 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     // this is for detail fields
     private void loadDetail() {
-        tfBarcode.setText("");
-        String lsDescription = "";
-        tfDescription.setText(lsDescription);
-        tfBrand.setText("");
-        tfModel.setText("");
-        tfColor.setText("");
-        tfCategory.setText("");
-        tfInventoryType.setText("");
-        tfMeasure.setText("");
-        tfClass.setText("");
-        tfAMC.setText("");
-        tfROQ.setText("");
-        tfRO.setText("");
-        tfBO.setText("");
-        tfQOH.setText("");
-        tfCost.setText("");
-        tfRequestQuantity.setText("");
-        tfOrderQuantity.setText("");
+        try {
+            tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
+            tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
+//            tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Brand().getDescription());
+//            tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Model().getDescription());
+//            tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Color().getDescription());
+//            tfCategory.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Category().getDescription());
+//            tfInventoryType.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryType().getDescription());
+//            tfMeasure.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Measure().getDescription());
+//            tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getInventoryClassification());
+//            tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getAverageCost()));
+            tfROQ.setText("0");
+            tfRO.setText("0");
+//            tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getBackOrderQuantity()));
+//            tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getQuantityOnHand()));
+//            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getUnitPrice()));
+            tfRequestQuantity.setText("0");
+            tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
+        } catch (GuanzonException | SQLException ex) {
+            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initButtonsClickActions() {
@@ -409,12 +414,17 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 case "btnPrint":
                     break;
                 case "btnRetrieve":
+                    loadTableStockRequest();
                     break;
                 case "btnTransHistory":
                     break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to close this form?")) {
-                        CommonUtils.closeStage(btnClose);
+                        if (poUnload != null) {
+                            poUnload.unloadForm(AnchorMain, poApp, psFormName);
+                        } else {
+                            ShowMessageFX.Warning(null, "Warning", "Please notify the system administrator to configure the null value at the close button.");
+                        }
                     }
                     break;
                 default:
@@ -451,17 +461,30 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     poPurchasingController.PurchaseOrder().Master().setReference(lsValue);
                     break;
                 case "tfDiscountRate":
+                    break;
+                case "tfDiscountAmount":
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    if (Double.parseDouble(lsValue) < 0.00 || Double.parseDouble(lsValue) > 100) {
+                    if (Double.parseDouble(lsValue) < 0.00) {
+                        ShowMessageFX.Warning(null, psFormName, "Invalid Discount Amount");
+                        return;
+                    }
+                    poPurchasingController.PurchaseOrder().Master().setDiscount(Double.valueOf(lsValue));
+                    tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
+                    break;
+                case "tfAdvancePRate":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00 || Double.parseDouble(lsValue) > 100) {
                         ShowMessageFX.Warning(null, psFormName, "Invalid Downpayment Rates");
                         return;
                     }
-                    poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(Double.valueOf(lsValue));
-                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
+                    poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(Double.valueOf(lsValue.replace(",", "")));
+                    tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
                     break;
-                case "tfDiscountAmount":
+                case "tfAdvancePAmount":
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
@@ -469,12 +492,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         ShowMessageFX.Warning(null, psFormName, "Invalid Downpayment Amount");
                         return;
                     }
-                    poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(Double.valueOf(lsValue.replace(",", "")));
-                    tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
-                    break;
-                case "tfAdvancePRate":
-                    break;
-                case "tfAdvancePAmount":
+                    poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(Double.valueOf(lsValue.replace(",", "")));
+                    tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
                     break;
                 case "tfCost":
                     if (lsValue.isEmpty()) {
@@ -484,8 +503,19 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         ShowMessageFX.Warning(null, psFormName, "Invalid Cost Amount");
                         return;
                     }
+                    poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setUnitPrice(Double.valueOf(lsValue.replace(",", "")));
+                    tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
                     break;
                 case "tfOrderQuantity":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0";
+                    }
+                    if (Integer.parseInt(lsValue) < 0) {
+                        ShowMessageFX.Warning(null, psFormName, "Invalid Order Quantity");
+                        return;
+                    }
+                    poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
+                    tfOrderQuantity.setText(lsValue);
                     break;
             }
         } else {
@@ -761,14 +791,16 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         }
 
         piTableDetailLoading.setVisible(false);
+        piTableDetailLoading.setManaged(false);
         piTableStockRequestLoading.setVisible(false);
+        piTableDetailLoading.setManaged(false);
         apTableDetailLoading.setVisible(false);
+        apTableDetailLoading.setManaged(false);
         apTableStockRequestLoading.setVisible(false);
+        apTableStockRequestLoading.setManaged(false);
     }
 
     private void loadTableStockRequest() {
-        piTableStockRequestLoading.setVisible(true);
-        piTableStockRequestLoading.setManaged(true);
         try {
             JSONObject loJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
             if ("success".equals(loJSON.get("result"))) {
@@ -797,6 +829,32 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+//    private void loadTableStockRequest() {
+//        poApprovedStockRequest_data.clear();
+//        try {
+//            JSONObject loJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
+//            if ("success".equals(loJSON.get("result"))) {
+//                for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getInventoryStockRequestCount() - 1; lnCntr++) {
+//                    poApprovedStockRequest_data.add(new ModelPurchaseOrder(
+//                            String.valueOf(lnCntr + 1),
+//                            poPurchasingController.PurchaseOrder().InventoryStockRequestMaster().Branch().getBranchName(),
+//                            //                                CustomCommonUtil.convertLongDateStringToShort(SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().InventoryStockRequestMaster().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)),
+//                            "",
+//                            poPurchasingController.PurchaseOrder().InventoryStockRequestMaster().getReferenceNo(),
+//                            String.valueOf(poPurchasingController.PurchaseOrder().InventoryStockRequestMaster().getEntryNo()),
+//                            poPurchasingController.PurchaseOrder().InventoryStockRequestMaster().getTransactionNo(),
+//                            "",
+//                            "",
+//                            "",
+//                            ""
+//                    ));
+//                    tblVwStockRequest.setItems(poApprovedStockRequest_data);
+//                }
+//            }
+//        } catch (SQLException | GuanzonException ex) {
+//            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
 
     private void initTableStockRequest() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -830,16 +888,19 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     private void loadTablePODetail() {
         poDetail_data.clear();
-        JSONObject loJSON = new JSONObject();
-        for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
-            poDetail_data.add(new ModelPurchaseOrderDetail(
-                    String.valueOf(lnCntr + 1),
-                    poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
-                    poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
-                    poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
-                    String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
-                    "", "", "", "", ""
-            ));
+        try {
+            for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
+                poDetail_data.add(new ModelPurchaseOrderDetail(
+                        String.valueOf(lnCntr + 1),
+                        poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
+                        poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
+                        poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
+                        String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
+                        "", "", "", "", ""
+                ));
+            }
+        } catch (GuanzonException | SQLException ex) {
+            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
         tblVwOrderDetails.setItems(poDetail_data);
     }
@@ -886,14 +947,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         ShowMessageFX.Warning(null, "Warning", "This stock request has already been selected.");
                         return;
                     }
-                    piTableDetailLoading.setVisible(true);
-                    piTableDetailLoading.setManaged(true);
                     try {
                         JSONObject loJSON = poPurchasingController.PurchaseOrder().addStockRequestOrdersToPODetail(lsTransactionNo);
                         if ("success".equals(loJSON.get("result"))) {
                             if (poPurchasingController.PurchaseOrder().getDetailCount() > 0) {
                                 poDetail_data.clear();
-                                for (int lnCtr = 0; lnCtr < poPurchasingController.PurchaseOrder().getDetailCount(); lnCtr++) {
+                                for (int lnCtr = 0; lnCtr < poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCtr++) {
                                     poDetail_data.add(new ModelPurchaseOrderDetail(
                                             String.valueOf(lnCtr + 1),
                                             poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo(),
@@ -907,37 +966,35 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             }
                         } else {
                             ShowMessageFX.Warning(null, psFormName, loJSON.get("message").toString());
+
                         }
                     } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                        Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(PurchaseOrder_EntryController.class
+                                .getName()).log(Level.SEVERE, null, ex);
                         ShowMessageFX.Warning(null, psFormName, "Error loading data: " + ex.getMessage());
-                    } finally {
-                        piTableDetailLoading.setVisible(false);
-                        piTableDetailLoading.setManaged(false);
                     }
                 }
+
             }
         }
     }
 
     private void tblVwOrderDetails_Clicked(MouseEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
             pnTblPODetailRow = tblVwOrderDetails.getSelectionModel().getSelectedIndex();
 
             if (pnTblPODetailRow < 0 || pnTblPODetailRow >= tblVwOrderDetails.getItems().size()) {
                 ShowMessageFX.Warning(null, "Warning", "Please select valid order item information.");
                 return;
             }
-
             ModelPurchaseOrderDetail selectedItem = tblVwOrderDetails.getSelectionModel().getSelectedItem();
             if (event.getClickCount() == 2) {
                 if (selectedItem != null) {
-                    tfBarcode.setText(selectedItem.getIndex03());
-                    tfDescription.setText(selectedItem.getIndex04());
-                    tfBrand.setText(selectedItem.getIndex03());
-
+                    loadDetail();
                     if (!tfBarcode.getText().isEmpty()) {
+//                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         tfOrderQuantity.requestFocus();
+//                        }
                     }
                 }
             }
