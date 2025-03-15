@@ -372,7 +372,7 @@
                                                                           <TextField fx:id="tfBrand" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                           <TextField fx:id="tfModel" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                                           <TextField fx:id="tfColor" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                                                      <TextField fx:id="tfInventoryType" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                      <TextField fx:id="tfInventoryType" disable="true" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                           <TextField fx:id="tfMeasure" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                                   <DatePicker fx:id="dpExpiryDate" GridPane.columnIndex="6" GridPane.rowIndex="6" />
                                                       <TextField fx:id="tfCost" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="11" GridPane.rowIndex="2" />
@@ -452,7 +452,7 @@
                                                                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                               </GridPane.margin>
                                                           </TableView>
-                                                            <Pagination GridPane.rowIndex="2" />
+                                                            <Pagination fx:id="pgPagination" GridPane.rowIndex="2" />
                                                       </children>
                                                   </GridPane>
                                               </children>
