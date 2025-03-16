@@ -237,7 +237,7 @@ public class DashboardController implements Initializable {
      *
      * @param menuaction
      */
-    public String SetTabTitle(String menuaction) {
+    public String setTabTitle(String menuaction) {
         if (menuaction.contains(".fxml")) {
             switch (menuaction) {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
@@ -249,7 +249,11 @@ public class DashboardController implements Initializable {
                     return "Accounts Accreditation History";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml":
                     return "Purchase Order";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Confirmation.fxml":
+                    return "Purchase Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Approval.fxml":
+                    return "Purchase Order Approval";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml":
                     return "Purchase Order History";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
                     return "Purchase Order Receiving";
@@ -406,6 +410,12 @@ public class DashboardController implements Initializable {
                 /* GENERAL */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml":
                     return new PurchaseOrder_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Confirmation.fxml":
+                    return new PurchaseOrder_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Approval.fxml":
+                    return new PurchaseOrder_ApprovalController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml":
+                    return new PurchaseOrder_HistoryController();
                 /* INVENTORY/INVENTORY/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
                     return new InventoryMaintenanceController();
@@ -640,11 +650,11 @@ public class DashboardController implements Initializable {
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
         fxmlLoader.setController(fxObj);
 
-        Tab newTab = new Tab(SetTabTitle(fsFormName));
+        Tab newTab = new Tab(setTabTitle(fsFormName));
         newTab.setContent(new javafx.scene.control.Label("Content of Tab " + fsFormName));
         newTab.setContextMenu(createContextMenu(tabpane, newTab, oApp));
 
-        tabName.add(SetTabTitle(fsFormName));
+        tabName.add(setTabTitle(fsFormName));
 
         try {
             Node content = fxmlLoader.load();
@@ -1978,7 +1988,7 @@ public class DashboardController implements Initializable {
         }
 
         if (oApp != null) {
-            boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
+            boolean isNewTab = (checktabs(setTabTitle(sformname)) == 1);
             if (isNewTab) {
                 if (!sformname.isEmpty() && sformname.contains(".fxml")) {
                     setScene2(loadAnimate(sformname));
@@ -2074,7 +2084,7 @@ public class DashboardController implements Initializable {
 
                             // Load the corresponding form
                             if (oApp != null) {
-                                boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
+                                boolean isNewTab = (checktabs(setTabTitle(sformname)) == 1);
                                 if (isNewTab) {
                                     if (!sformname.isEmpty() && sformname.contains(".fxml")) {
                                         setScene2(loadAnimate(sformname));
