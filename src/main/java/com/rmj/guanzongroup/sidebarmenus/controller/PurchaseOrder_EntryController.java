@@ -225,7 +225,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     }
 
-    // this is for detail fields
     private void loadDetail() {
         try {
             if (pnTblPODetailRow >= 0) {
@@ -240,12 +239,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getInventoryClassification());
                 tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getAverageCost()));
                 tfROQ.setText("0");
-                tfRO.setText("0");
-                tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getBackOrderQuantity()));
-                tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getQuantityOnHand()));
-                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getUnitPrice()));
+                tfRO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getReceived()));
+                tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getBackOrder()));
+                tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantityOnHand()));
+                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost()));
                 tfRequestQuantity.setText("0");
-                tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
+                tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
@@ -573,8 +572,14 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         ShowMessageFX.Warning(null, psFormName, "Invalid Cost Amount");
                         return;
                     }
-                    poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setUnitPrice(Double.valueOf(lsValue.replace(",", "")));
-                    tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
+
+                    if (pnTblPODetailRow >= 0) {
+                        poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setUnitPrice(Double.valueOf(lsValue.replace(",", "")));
+                        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
+                    } else {
+                        lsValue = "0.00";
+                        ShowMessageFX.Warning(null, psFormName, "Invalid row to update.");
+                    }
                     break;
                 case "tfOrderQuantity":
                     if (lsValue.isEmpty()) {
@@ -584,8 +589,13 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         ShowMessageFX.Warning(null, psFormName, "Invalid Order Quantity");
                         return;
                     }
-                    poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
-                    tfOrderQuantity.setText(lsValue);
+                    if (pnTblPODetailRow >= 0) {
+                        poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
+                        tfOrderQuantity.setText(lsValue);
+                    } else {
+                        lsValue = "0.00";
+                        ShowMessageFX.Warning(null, psFormName, "Invalid row to update.");
+                    }
                     break;
             }
         } else {
@@ -683,8 +693,11 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                         tfBarcode.setText("");
                                         break;
                                     }
-                                    tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
-
+                                    if (pnTblPODetailRow >= 0) {
+                                        tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
+                                    } else {
+                                        ShowMessageFX.Warning(null, psFormName, "Invalid row to update.");
+                                    }
                                     break;
                                 case "tfDescription":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false);
@@ -693,7 +706,11 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                         tfDescription.setText("");
                                         break;
                                     }
-                                    tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
+                                    if (pnTblPODetailRow >= 0) {
+                                        tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
+                                    } else {
+                                        ShowMessageFX.Warning(null, psFormName, "Invalid row to update.");
+                                    }
                                     break;
                             }
                             loadTableStockRequest();
@@ -959,7 +976,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private void loadTablePODetail() {
         poDetail_data.clear();
         try {
-            poPurchasingController.PurchaseOrder().AddDetail();
             for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
                 poDetail_data.add(new ModelPurchaseOrderDetail(
                         String.valueOf(lnCntr + 1),
@@ -975,7 +991,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 ));
             }
             tblVwOrderDetails.setItems(poDetail_data);
-        } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
