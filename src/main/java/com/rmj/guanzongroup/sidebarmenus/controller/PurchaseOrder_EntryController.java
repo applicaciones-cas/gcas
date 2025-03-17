@@ -230,12 +230,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             if (pnTblPODetailRow >= 0) {
                 tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
                 tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
-                tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Brand().getDescription());
-                tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Model().getDescription());
-                tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Color().getDescription());
-                tfCategory.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Category().getDescription());
-                tfInventoryType.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryType().getDescription());
-                tfMeasure.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Measure().getDescription());
+                tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription());
+                tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription());
+                tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Color().getDescription());
+                tfCategory.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Category().getDescription());
+                tfInventoryType.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().InventoryType().getDescription());
+                tfMeasure.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Measure().getDescription());
                 tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getInventoryClassification());
                 tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getAverageCost()));
                 tfROQ.setText("0");
@@ -275,7 +275,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     }
                     break;
                 case "btnNew":
-                    clearFields();
+                    clearDetailFields();
+                    clearMasterFields();
                     loJSON = poPurchasingController.PurchaseOrder().NewTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
@@ -406,7 +407,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 case "btnCancel":
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                         if (pnEditMode == EditMode.ADDNEW) {
-                            clearFields();
+                            clearDetailFields();
+                            clearMasterFields();
                             pnEditMode = EditMode.UNKNOWN;
                             poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
                             if ("error".equals((String) loJSON.get("result"))) {
@@ -767,7 +769,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         initFields(pnEditMode);
     }
 
-    private void clearFields() {
+    private void clearMasterFields() {
         /* Master Fields*/
         pnTblPODetailRow = -1;
         tfTransactionNo.setText("");
@@ -786,6 +788,9 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tfAdvancePRate.setText("");
         tfDiscountAmount.setText("");
         tfDiscountAmount.setText("");
+    }
+
+    private void clearDetailFields() {
         /* Detail Fields*/
         tfBarcode.setText("");
         tfDescription.setText("");
@@ -1045,18 +1050,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         JSONObject loJSON = poPurchasingController.PurchaseOrder().addStockRequestOrdersToPODetail(lsTransactionNo);
                         if ("success".equals(loJSON.get("result"))) {
                             if (poPurchasingController.PurchaseOrder().getDetailCount() > 0) {
-                                poDetail_data.clear();
-                                for (int lnCtr = 0; lnCtr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCtr++) {
-                                    poDetail_data.add(new ModelPurchaseOrderDetail(
-                                            String.valueOf(lnCtr + 1),
-                                            poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo(),
-                                            poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getBarCode(),
-                                            poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getDescription(),
-                                            String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getCost()),
-                                            "", "", "", "", ""
-                                    ));
-                                }
-                                tblVwOrderDetails.setItems(poDetail_data); // Update table
+                                loadTablePODetail();
                             }
                         } else {
                             ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
@@ -1082,6 +1076,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             }
             ModelPurchaseOrderDetail selectedItem = tblVwOrderDetails.getSelectionModel().getSelectedItem();
             if (event.getClickCount() == 2) {
+                clearDetailFields();
                 if (selectedItem != null) {
                     loadDetail();
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
