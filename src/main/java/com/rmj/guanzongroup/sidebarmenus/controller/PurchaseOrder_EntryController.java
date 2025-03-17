@@ -278,6 +278,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 case "btnNew":
                     clearDetailFields();
                     clearMasterFields();
+                    poDetail_data.clear();
                     loJSON = poPurchasingController.PurchaseOrder().NewTransaction();
                     poPurchasingController.PurchaseOrder().Master().setIndustryID(poApp.getIndustry());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -391,9 +392,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 loadDetail();
                                 loadTablePODetail();
                                 pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
-                            }
-                            if (ShowMessageFX.YesNo("Are you sure, do you want to confirm this information?", "Confirmation", null)) {
-
+                                Platform.runLater(() -> btnNew.fire());
                             }
                         } else {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
