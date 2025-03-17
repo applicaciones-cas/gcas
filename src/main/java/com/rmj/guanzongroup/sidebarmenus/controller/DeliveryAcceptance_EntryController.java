@@ -43,6 +43,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -266,10 +267,59 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     /**
      * Initializes the controller class.
      */
+    
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        try {
+            oTrans = new PurchaseOrderReceivingControllers(oApp, null).PurchaseOrderReceiving();
+            poJSON = new JSONObject();
+            poJSON = oTrans.InitTransaction(); // Initialize transaction
+            if (!"success".equals((String) poJSON.get("result"))) {
+                System.err.println((String) poJSON.get("message"));
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+            }
+            
+            poJSON = oTrans.NewTransaction();
+            if (!"success".equals((String) poJSON.get("result"))) {
+                System.err.println((String) poJSON.get("message"));
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+            }
+            
+            initTextFields();
+            initDatePickers();
+            initMainGrid();
+            initDetailsGrid();
+            initTableOnClick();
+            clearTextFields();
+            
+            loadRecordMaster();
+            loadTableDetail();
+            
+//        generateData(150); // Simulate 100 rows of data
+//        loadTab();
+//        highlight(tblViewOrderDetails, 0);
+            pgPagination.setPageCount(1);
+
+            pnEditMode = oTrans.getEditMode();
+            initButton(pnEditMode);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    @Override
+    public void setGRider(GRiderCAS foValue) {
+        oApp = foValue;
+    }
+    
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
         String tabText = "";
+        String lsCompanyId = "";
+        String lsSupplierId = "";
         try {
             Object source = event.getSource();
             if (source instanceof Button) {
@@ -277,18 +327,15 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = oTrans.searchTransaction("", false);
-                        pnEditMode = EditMode.READY;
-
-                        //start
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        poJSON = oTrans.searchTransaction();
+                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
-                            pnEditMode = EditMode.UNKNOWN;
                             return;
                         } else {
                             loadRecordMaster();
                         }
+                        pnEditMode = oTrans.getEditMode();
                         break;
 
                     case "btnPrint":
@@ -308,64 +355,53 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         }
                     case "btnNew":
                         poJSON = oTrans.NewTransaction();
-                        pnEditMode = oTrans.Master().getEditMode();
-                        oTrans.searchTransaction("", true);
-
                         if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            pnEditMode = EditMode.UNKNOWN;
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
+                        if(!lsCompanyId.isEmpty()){
+                            oTrans.SearchCompany(lsCompanyId, true);
+                        }
+                        if(!lsSupplierId.isEmpty()){
+                            oTrans.SearchSupplier(lsSupplierId, true);
+                        }
+                        pnEditMode = oTrans.getEditMode();
                         break;
                     case "btnUpdate":
-                        pnEditMode = oTrans.Master().getEditMode();
-
                         poJSON = oTrans.UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            pnEditMode = EditMode.UNKNOWN;
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
+                        pnEditMode = oTrans.getEditMode();
                         break;
                     case "btnSearch":
-                        //Search what
-                        poJSON = oTrans.searchTransaction("", false);
-                        pnEditMode = EditMode.READY;
+                        if (lastFocusedTextField != null) {
+                            // Create a simulated KeyEvent for F3 key press
+                           KeyEvent keyEvent = new KeyEvent(
+                           KeyEvent.KEY_PRESSED, 
+                           "",  
+                           "F3", 
+                           KeyCode.F3, 
+                           false, false, false, false);
 
-                        //start
-                        if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            tfTransactionNo.requestFocus();
-                            pnEditMode = EditMode.UNKNOWN;
-                            return;
+                           lastFocusedTextField.fireEvent(keyEvent);
                         } else {
-                            loadRecordMaster();
+                            System.out.println("No TextField is currently focused.");
                         }
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                            //get last retrieved Company and Supplier
+                            lsCompanyId = oTrans.Master().getCompanyId();
+                            lsSupplierId = oTrans.Master().getSupplierId();
 
-                            oTrans.CancelTransaction("");
-
-                            JSONObject loJSON = oTrans.InitTransaction(); // Initialize transaction
-                            if (!"success".equals((String) loJSON.get("result"))) {
-                                System.err.println((String) loJSON.get("message"));
-                            }
-                            try {
-                                loJSON = oTrans.NewTransaction();
-                            } catch (CloneNotSupportedException ex) {
-                                Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                            if (!"success".equals((String) loJSON.get("result"))) {
-                                System.err.println((String) loJSON.get("message"));
-                            }
-
-                            pnEditMode = oTrans.getEditMode();
+                            //Call new transaction
+                            btnNew.fire();
                             clearTextFields();
-                            loadTableDetail();
                             break;
                         } else {
-                            break;
+                            return;
                         }
                     case "btnHistory":
                         break;
@@ -375,18 +411,21 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         break;
                     case "btnSave":
                         //Validator
-
+                        poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
-                            if (pnEditMode == EditMode.UPDATE) {
-                                oTrans.UpdateTransaction();
-                            }
                             poJSON = oTrans.SaveTransaction();
-
                             if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                                break;
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                return;
                             } else {
-                                ShowMessageFX.Information((String) poJSON.get("message"), "", "Successfully saved!");
+                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                                //get last retrieved Company and Supplier
+                                lsCompanyId = oTrans.Master().getCompanyId();
+                                lsSupplierId = oTrans.Master().getSupplierId();
+                                
+                                //Call new transaction
+                                btnNew.fire();
+                                clearTextFields();
                             }
                         } else {
                             return;
@@ -398,6 +437,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         break;
                 }
                 initButton(pnEditMode);
+                loadRecordMaster();
+                loadTableDetail();
             }
 
         } catch (Exception e) {
@@ -407,34 +448,42 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     public void retrievePO() {
         poJSON = new JSONObject();
-        String lsMessage = "";
-        poJSON.put("result", "success");
-
-        if (oTrans.Master().getIndustryId().equals("")) {
-            poJSON.put("result", "error");
-            lsMessage = "Industry";
+        poJSON = oTrans.getApprovedPurchaseOrder();
+        if (!"success".equals((String) poJSON.get("result"))) {
+            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+            return;
         }
-        if (oTrans.Master().getCompanyId().equals("")) {
-            poJSON.put("result", "error");
-            lsMessage += lsMessage.isEmpty() ? "Company" : " & Company";
-        }
-        if (oTrans.Master().getSupplierId().equals("")) {
-            poJSON.put("result", "error");
-            lsMessage += lsMessage.isEmpty() ? "Supplier" : " & Supplier";
-        }
-
-        if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = oTrans.getApprovedPurchaseOrder();
-            if (!"success".equals((String) poJSON.get("result"))) {
-                System.err.println((String) poJSON.get("message"));
-                Assert.fail();
-            } else {
-                loadTableMain();
-            }
-        } else {
-            poJSON.put("message", lsMessage + " is blank");
-            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-        }
+        
+        loadTableMain();
+//        String lsMessage = "";
+//        poJSON.put("result", "success");
+//
+//        if (oTrans.Master().getIndustryId().equals("")) {
+//            poJSON.put("result", "error");
+//            lsMessage = "Industry";
+//        }
+//        if (oTrans.Master().getCompanyId().equals("")) {
+//            poJSON.put("result", "error");
+//            lsMessage += lsMessage.isEmpty() ? "Company" : " & Company";
+//        }
+//        if (oTrans.Master().getSupplierId().equals("")) {
+//            poJSON.put("result", "error");
+//            lsMessage += lsMessage.isEmpty() ? "Supplier" : " & Supplier";
+//        }
+//
+//        if ("success".equals((String) poJSON.get("result"))) {
+//            poJSON = oTrans.getApprovedPurchaseOrder();
+//            if (!"success".equals((String) poJSON.get("result"))) {
+////                System.err.println((String) poJSON.get("message"));
+////                Assert.fail();
+//                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//            } else {
+//                loadTableMain();
+//            }
+//        } else {
+//            poJSON.put("message", lsMessage + " is blank");
+//            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//        }
     }
 
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
@@ -445,17 +494,17 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         if (lsValue == null) {
             return;
         }
-        JSONObject loJSON;
+        poJSON = new JSONObject();
         if (!nv) {
             /*Lost Focus*/
             lsValue = lsValue.trim();
             switch (lsID) {
 
                 case "taRemarks"://Remarks
-                    loJSON = oTrans.Master().setRemarks(lsValue);
-                    if ("error".equals((String) loJSON.get("result"))) {
-                        System.err.println((String) loJSON.get("message"));
-                        ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                    poJSON = oTrans.Master().setRemarks(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
                     break;
@@ -466,13 +515,14 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         }
     };
 
+    // Method to handle focus change and track the last focused TextField
+    private TextField lastFocusedTextField = null;
     final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
-
-        JSONObject loJSON;
+        poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
+        lastFocusedTextField = txtPersonalInfo;
         if (lsValue == null) {
             return;
         }
@@ -483,11 +533,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 switch (lsTxtFieldID) {
                     case "tfOrderNo":
                         // identify here if existing in records or not
-
-                        loJSON = oTrans.Detail(pnDetail).setOrderNo(lsValue);
-                        if ("error".equals((String) loJSON.get("result"))) {
-                            System.err.println((String) loJSON.get("message"));
-                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                        poJSON = oTrans.Detail(pnDetail).setOrderNo(lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
                         break;
@@ -495,10 +544,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         //if value is blank then reset
                         if (lsValue.equals("")) {
                             if (oTrans.Detail(pnDetail).Inventory().getBarCode() != null && !oTrans.Detail(pnDetail).Inventory().getBarCode().equals("")) {
-                                loJSON = oTrans.Detail(pnDetail).setStockId("");
-                                if ("error".equals((String) loJSON.get("result"))) {
-                                    System.err.println((String) loJSON.get("message"));
-                                    ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                                poJSON = oTrans.Detail(pnDetail).setStockId("");
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    System.err.println((String) poJSON.get("message"));
+                                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                     return;
                                 }
                             }
@@ -509,10 +558,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         //if value is blank then reset
                         if (lsValue.equals("")) {
                             if (oTrans.Detail(pnDetail).Inventory().getSupersededId() != null && !oTrans.Detail(pnDetail).Inventory().getSupersededId().equals("")) {
-                                loJSON = oTrans.Detail(pnDetail).setStockId("");
-                                if ("error".equals((String) loJSON.get("result"))) {
-                                    System.err.println((String) loJSON.get("message"));
-                                    ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                                poJSON = oTrans.Detail(pnDetail).setStockId("");
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    System.err.println((String) poJSON.get("message"));
+                                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                     return;
                                 }
                             }
@@ -523,10 +572,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         //if value is blank then reset
                         if (lsValue.equals("")) {
                             if (oTrans.Detail(pnDetail).Inventory().getDescription() != null && !oTrans.Detail(pnDetail).Inventory().getDescription().equals("")) {
-                                loJSON = oTrans.Detail(pnDetail).setStockId("");
-                                if ("error".equals((String) loJSON.get("result"))) {
-                                    System.err.println((String) loJSON.get("message"));
-                                    ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                                poJSON = oTrans.Detail(pnDetail).setStockId("");
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    System.err.println((String) poJSON.get("message"));
+                                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                     return;
                                 }
                             }
@@ -541,16 +590,15 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
                             return;
                         }
-                        loJSON = oTrans.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
-                        if ("error".equals((String) loJSON.get("result"))) {
-                            System.err.println((String) loJSON.get("message"));
-                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                        poJSON = oTrans.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
 
                         break;
                     case "tfReceiveQuantity":
-
                         if (lsValue.isEmpty()) {
                             lsValue = "0";
                         }
@@ -558,11 +606,11 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
                             return;
                         }
-                        loJSON = oTrans.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
+                        poJSON = oTrans.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                         oTrans.Detail(pnDetail).getQuantity();
-                        if ("error".equals((String) loJSON.get("result"))) {
-                            System.err.println((String) loJSON.get("message"));
-                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
                         break;
@@ -574,10 +622,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
                             return;
                         }
-                        loJSON = oTrans.Detail(pnDetail).setOrderQty((Integer.valueOf(lsValue)));
-                        if ("error".equals((String) loJSON.get("result"))) {
-                            System.err.println((String) loJSON.get("message"));
-                            ShowMessageFX.Information(null, pxeModuleName, (String) loJSON.get("message"));
+                        poJSON = oTrans.Detail(pnDetail).setOrderQty((Integer.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
                         break;
@@ -598,7 +646,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
+        lastFocusedTextField = txtPersonalInfo;
+        
         if (lsValue == null) {
             return;
         }
@@ -619,7 +668,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 case "tfTerm":
                     break;
                 case "tfDiscountRate":
-
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
@@ -629,12 +677,12 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     }
                     poJSON = oTrans.Master().setDiscountRate((Double.valueOf(lsValue)));
                     if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, "");
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = oTrans.computeDiscountRate(oTrans.Master().getDiscountRate());
+                    poJSON = oTrans.computeDiscountRate(oTrans.Master().getDiscountRate().doubleValue());
                     if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, "");
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
                     break;
@@ -648,13 +696,13 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     }
                     poJSON = oTrans.Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, "");
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
 
-                    poJSON = oTrans.computeDiscount(oTrans.Master().getDiscount());
+                    poJSON = oTrans.computeDiscount(oTrans.Master().getDiscount().doubleValue());
                     if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, "");
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
                     break;
@@ -668,7 +716,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     }
                     poJSON = oTrans.Master().setTransactionTotal(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, "");
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
                     break;
@@ -684,51 +732,46 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             TextField txtField = (TextField) event.getSource();
             String lsID = (((TextField) event.getSource()).getId());
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
-            JSONObject loJSON = new JSONObject();
+            poJSON = new JSONObject();
             switch (event.getCode()) {
                 case F3:
                     switch (lsID) {
                         case "tfCompany":
                             /*search company*/
-                            loJSON = new JSONObject();
-                            loJSON = oTrans.SearchCompany(lsValue, true);
-                            if ("error".equals(loJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
+                            poJSON = oTrans.SearchCompany(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfCompany.setText("");
                                 break;
                             }
-                            loadRecordMaster();
                             if (!oTrans.Master().getSupplierId().equals("")) {
                                 retrievePO();
                             }
                             break;
 
                         case "tfSupplier":
-                            loJSON = oTrans.SearchSupplier(lsValue, false);
-                            if ("error".equals(loJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
+                            poJSON = oTrans.SearchSupplier(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupplier.setText("");
                                 break;
                             }
-                            loadRecordMaster();
                             if (!oTrans.Master().getCompanyId().equals("")) {
                                 retrievePO();
                             }
                             break;
                         case "tfTrucking":
-                            loJSON = oTrans.SearchTrucking(lsValue, false);
-                            if ("error".equals(loJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
+                            poJSON = oTrans.SearchTrucking(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfTrucking.setText("");
                                 break;
                             }
-                            loadRecordMaster();
-                            retrievePO();
                             break;
                         case "tfTerm":
-                            loJSON = oTrans.SearchTerm(lsValue, true);
-                            if ("error".equals(loJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
+                            poJSON = oTrans.SearchTerm(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfTerm.setText("");
                                 break;
                             }
@@ -738,41 +781,36 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
                             break;
                         case "tfBarcode":
-                            loJSON = oTrans.SearchBarcode(lsValue, true, pnDetail);
-                            if ("error".equals(loJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
+                            poJSON = oTrans.SearchBarcode(lsValue, true, pnDetail);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfBarcode.setText("");
                                 break;
                             }
-                            oTrans.Detail(pnDetail).setStockId((String) loJSON.get("sStockIdx"));
-                            loadTableDetail();
                             break;
 
-                        case "tfDescription": {
-                            loJSON = oTrans.SearchDescription(lsValue, true, pnDetail);
-                        }
-                        if ("error".equals(loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
-                            tfDescription.setText("");
-                            break;
-                        }
-
-                        loadTableDetail();
+                        case "tfDescription": 
+                            poJSON = oTrans.SearchDescription(lsValue, true, pnDetail);
+                        
+                            if ("error".equals(poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfDescription.setText("");
+                                break;
+                            }
                         break;
-
                         case "tfSupersede":
-                            loJSON = oTrans.SearchSupersede(lsValue, true, pnDetail);
-                            if ("error".equals(loJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "");
+                            poJSON = oTrans.SearchSupersede(lsValue, true, pnDetail);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupersede.setText("");
                                 break;
                             }
-                            loadTableDetail();
                             break;
-
                     }
             }
 
+            loadRecordMaster();
+            loadTableDetail();
             switch (event.getCode()) {
                 case ENTER:
                     CommonUtils.SetNextFocus(txtField);
@@ -1099,9 +1137,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         tfReferenceNo.setText(oTrans.Master().getReferenceNo());
         taRemarks.setText(oTrans.Master().getRemarks());
 
-        tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getDiscountRate())));
-        tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getDiscount())));
-        tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getTransactionTotal())));
+        tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getDiscountRate().doubleValue())));
+        tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getDiscount().doubleValue())));
+        tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getTransactionTotal().doubleValue())));
 
     }
 
@@ -1338,7 +1376,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 String.valueOf(oTrans.Detail(lnCtr).getQuantity());
 
                 try {
-                    lnTotal = oTrans.Detail(lnCtr).getUnitPrce() * (Double) oTrans.Detail(lnCtr).getOrderQty();
+//                    lnTotal = oTrans.Detail(lnCtr).getUnitPrce() * oTrans.Detail(lnCtr).getOrderQty().doubleValue();
                 } catch (Exception e) {
                 }
                 details_data.add(
@@ -1504,52 +1542,4 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         highlightedRows.remove(rowIndex);
         table.refresh();
     }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-
-        oTrans = new PurchaseOrderReceivingControllers(oApp, null).PurchaseOrderReceiving();
-
-        JSONObject loJSON = oTrans.InitTransaction(); // Initialize transaction
-        if (!"success".equals((String) loJSON.get("result"))) {
-            System.err.println((String) loJSON.get("message"));
-        }
-
-        try {
-            loJSON = oTrans.NewTransaction();
-        } catch (CloneNotSupportedException e) {
-            System.err.println(MiscUtil.getException(e));
-            Assert.fail();
-        }
-
-        if (!"success".equals((String) loJSON.get("result"))) {
-            System.err.println((String) loJSON.get("message"));
-        }
-
-        initTextFields();
-        initDatePickers();
-        initMainGrid();
-        initDetailsGrid();
-        initTableOnClick();
-        clearTextFields();
-
-        loadRecordMaster();
-        loadTableDetail();
-
-//        generateData(150); // Simulate 100 rows of data
-//        loadTab();
-//        highlight(tblViewOrderDetails, 0);
-        pgPagination.setPageCount(1);
-
-        pnEditMode = oTrans.getEditMode();
-        initButton(pnEditMode);
-        oTrans.Detail(0).getStockId();
-
-    }
-
-    @Override
-    public void setGRider(GRiderCAS foValue) {
-        oApp = foValue;
-    }
-
 }
