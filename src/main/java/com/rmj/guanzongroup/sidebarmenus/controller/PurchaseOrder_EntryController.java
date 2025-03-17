@@ -901,29 +901,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     private void loadTableStockRequest() {
         try {
-            //        poApprovedStockRequest_data.clear();
-//        JSONObject loJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
-//        if ("success".equals(loJSON.get("result"))) {
-//            for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getInvStockRequestCount() - 1; lnCntr++) {
-//                try {
-//                    poApprovedStockRequest_data.add(new ModelPurchaseOrder(
-//                            String.valueOf(lnCntr + 1),
-//                            poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).Branch().getBranchName(),
-//                            SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
-//                            poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getReferenceNo(),
-//                            String.valueOf(poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getEntryNo()),
-//                            poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getTransactionNo(),
-//                            "",
-//                            "",
-//                            "",
-//                            ""));
-//                    tblVwStockRequest.setItems(poApprovedStockRequest_data);
-//                } catch (SQLException | GuanzonException ex) {
-//                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//            loadTableStockRequestPagination(); // Call pagination
-//        }
             JSONObject poJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
             if ("success".equals(poJSON.get("result"))) {
                 JSONArray approvedRequests = (JSONArray) poJSON.get("data");
