@@ -983,6 +983,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     private void loadTablePODetail() {
         poDetail_data.clear();
+        double grandTotalAmount = 0.0;
         try {
             for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
                 double lnTotalAmount = poPurchasingController.PurchaseOrder()
@@ -990,7 +991,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         .Inventory().getCost().doubleValue() * poPurchasingController.PurchaseOrder()
                                 .Detail(lnCntr)
                                 .getQuantity().doubleValue();
-
+                grandTotalAmount += lnTotalAmount;
                 poDetail_data.add(new ModelPurchaseOrderDetail(
                         String.valueOf(lnCntr + 1),
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
@@ -1005,6 +1006,10 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 ));
             }
             tblVwOrderDetails.setItems(poDetail_data);
+            System.out.println("Grand Total Amount: " + CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
+            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
+            poPurchasingController.PurchaseOrder().Master().setTranTotal(grandTotalAmount);
+
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
