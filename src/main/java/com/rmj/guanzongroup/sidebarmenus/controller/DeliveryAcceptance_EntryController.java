@@ -175,8 +175,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("working");
-        data.add(new ModelPurchaseOrder("1", "LP - General Warehouse", "2025-02-11", "M00125000000", "10"
-        ));
+        //        data.add(new ModelPurchaseOrder("1", "LP - General Warehouse", "2025-02-11", "M00125000000", "10"
+//        ));
         inittable();
     }
 

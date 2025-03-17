@@ -330,8 +330,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     }
 
     private void initDetailsTableData() {
-        data.add(new ModelPurchaseOrder("1", "LP - General Warehouse", "2025-02-11", "M00125000000", "10"
-        ));
+//        data.add(new ModelPurchaseOrder("1", "LP - General Warehouse", "2025-02-11", "M00125000000", "10"
+//        ));
     }
 
     @Override
