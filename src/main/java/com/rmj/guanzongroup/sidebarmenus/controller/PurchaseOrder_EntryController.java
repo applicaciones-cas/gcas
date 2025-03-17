@@ -750,7 +750,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         dpExpectedDlvrDate.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (dpExpectedDlvrDate.getValue() != null) {
-                    poPurchasingController.PurchaseOrder().Master().setTransactionDate(SQLUtil.toDate(dpExpectedDlvrDate.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+                    poPurchasingController.PurchaseOrder().Master().setExpectedDate(SQLUtil.toDate(dpExpectedDlvrDate.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
                 }
             }
         });
