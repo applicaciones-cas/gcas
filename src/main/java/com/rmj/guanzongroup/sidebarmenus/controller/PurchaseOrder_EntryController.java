@@ -987,7 +987,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
                 double lnTotalAmount = poPurchasingController.PurchaseOrder()
                         .Detail(lnCntr)
-                        .getUnitPrice() * poPurchasingController.PurchaseOrder()
+                        .Inventory().getCost().doubleValue() * poPurchasingController.PurchaseOrder()
                                 .Detail(lnCntr)
                                 .getQuantity().doubleValue();
 
@@ -996,7 +996,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
-                        CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).getUnitPrice()),
+                        CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
+                        //                        "0.00",
                         "",
                         String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getQuantity()),
                         String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
@@ -1025,7 +1026,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
         tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
         tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
-        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
 
         tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
