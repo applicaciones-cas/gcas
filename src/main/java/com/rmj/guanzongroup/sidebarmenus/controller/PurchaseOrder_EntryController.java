@@ -125,11 +125,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             JSONObject loJSON = new JSONObject();
             loJSON = poPurchasingController.PurchaseOrder().InitTransaction();
             if (!"success".equals(loJSON.get("result"))) {
-                ShowMessageFX.Warning(null, "Search Information", (String) loJSON.get("message"));
+                ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
             }
             poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
             if ("error".equals((String) loJSON.get("result"))) {
-                ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+
                 return;
             }
             String lsIndustryName = "";
@@ -243,8 +244,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getBackOrder()));
                 tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantityOnHand()));
                 tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost()));
-                tfRequestQuantity.setText("0");
-                tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantity()));
+                tfRequestQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantity()));
+                tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
@@ -271,13 +272,14 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         loadTablePODetail();
                         pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                     } else {
-                        ShowMessageFX.Warning(null, "Search Information", (String) loJSON.get("message"));
+                        ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
                     }
                     break;
                 case "btnNew":
                     clearDetailFields();
                     clearMasterFields();
                     loJSON = poPurchasingController.PurchaseOrder().NewTransaction();
+                    poPurchasingController.PurchaseOrder().Master().setIndustryID(poApp.getIndustry());
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();
@@ -313,7 +315,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfCompany":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfCompany.setText("");
                                         break;
                                     }
@@ -323,7 +325,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfSupplier":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfSupplier.setText("");
                                         break;
                                     }
@@ -333,7 +335,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfDestination":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchDestination(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfDestination.setText("");
                                         break;
                                     }
@@ -343,7 +345,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfTerm":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchTerm(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfTerm.setText("");
                                         break;
                                     }
@@ -353,7 +355,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfBarcode":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfBarcode.setText("");
                                         break;
                                     }
@@ -363,7 +365,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfDescription":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfDescription.setText("");
                                         break;
                                     }
@@ -379,13 +381,10 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         }
                     }
                     break;
-
                 case "btnSave":
                     if (ShowMessageFX.YesNo(null, "Save confirmation", "Are you sure, do you want to save?")) {
-                        loJSON = poPurchasingController.PurchaseOrder().SaveTransaction();
                         if ("success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Information(null, psFormName, (String) loJSON.get("message"));
-                            //transcode
                             loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                             if ("success".equals((String) loJSON.get("result"))) {
                                 loadMaster();
@@ -393,11 +392,11 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 loadTablePODetail();
                                 pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                             }
-                            if (ShowMessageFX.YesNo(null, "Confirmation", "Are you sure, do you want to confirm this information?")) {
+                            if (ShowMessageFX.YesNo("Are you sure, do you want to confirm this information?", "Confirmation", null)) {
 
                             }
                         } else {
-                            ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                             return;
                         }
                     } else {
@@ -412,7 +411,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             pnEditMode = EditMode.UNKNOWN;
                             poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
                             if ("error".equals((String) loJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                 return;
                             }
                             String lsIndustryName = "";
@@ -452,16 +451,16 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 case "btnTransHistory":
                     break;
                 case "btnClose":
-                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to close this form?")) {
+                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
                         if (poUnload != null) {
                             poUnload.unloadForm(AnchorMain, poApp, psFormName);
                         } else {
-                            ShowMessageFX.Warning(null, "Warning", "Please notify the system administrator to configure the null value at the close button.");
+                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
                         }
                     }
                     break;
                 default:
-                    ShowMessageFX.Warning(null, psFormName, "Please contact admin to assist about no button available");
+                    ShowMessageFX.Warning("Please contact admin to assist about no button available", psFormName, null);
                     break;
             }
             initButtons(pnEditMode);
@@ -538,7 +537,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         lsValue = "0.00";
                     }
                     if (Double.parseDouble(lsValue) < 0.00) {
-                        ShowMessageFX.Warning(null, psFormName, "Invalid Discount Amount");
+                        ShowMessageFX.Warning("Invalid Discount Amount", psFormName, null);
                         return;
                     }
                     poPurchasingController.PurchaseOrder().Master().setDiscount(Double.valueOf(lsValue));
@@ -549,7 +548,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         lsValue = "0.00";
                     }
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00 || Double.parseDouble(lsValue) > 100) {
-                        ShowMessageFX.Warning(null, psFormName, "Invalid Downpayment Rates");
+                        ShowMessageFX.Warning("Invalid Downpayment Rates", psFormName, null);
                         return;
                     }
                     poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(Double.valueOf(lsValue.replace(",", "")));
@@ -560,7 +559,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         lsValue = "0.00";
                     }
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, psFormName, "Invalid Downpayment Amount");
+                        ShowMessageFX.Warning("Invalid Downpayment Amount", psFormName, null);
                         return;
                     }
                     poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(Double.valueOf(lsValue.replace(",", "")));
@@ -571,7 +570,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         lsValue = "0.00";
                     }
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, psFormName, "Invalid Cost Amount");
+                        ShowMessageFX.Warning("Invalid Cost Amount", psFormName, null);
                         return;
                     }
 
@@ -580,7 +579,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue.replace(",", "")));
                     } else {
                         lsValue = lsValue.replace(",", "");
-                        ShowMessageFX.Warning(null, psFormName, "Invalid row to update.");
+                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                     }
 
                     loadTablePODetail();
@@ -590,7 +589,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         lsValue = "0";
                     }
                     if (Integer.parseInt(lsValue) < 0) {
-                        ShowMessageFX.Warning(null, psFormName, "Invalid Order Quantity");
+                        ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
+
                         return;
                     }
                     if (pnTblPODetailRow >= 0) {
@@ -598,7 +598,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         tfOrderQuantity.setText(lsValue);
                     } else {
                         lsValue = "0";
-                        ShowMessageFX.Warning(null, psFormName, "Invalid row to update.");
+                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                     }
                     loadTablePODetail();
                     break;
@@ -657,7 +657,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfCompany":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfCompany.setText("");
                                         break;
                                     }
@@ -667,7 +667,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfSupplier":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfSupplier.setText("");
                                         break;
                                     }
@@ -676,7 +676,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfDestination":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchDestination(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfDestination.setText("");
                                         break;
                                     }
@@ -685,7 +685,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfTerm":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchTerm(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfTerm.setText("");
                                         break;
                                     }
@@ -694,27 +694,28 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 case "tfBarcode":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfBarcode.setText("");
                                         break;
                                     }
                                     if (pnTblPODetailRow >= 0) {
                                         tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
                                     } else {
-                                        ShowMessageFX.Warning(null, psFormName, "Invalid row to update.");
+                                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     }
                                     break;
                                 case "tfDescription":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfDescription.setText("");
                                         break;
                                     }
                                     if (pnTblPODetailRow >= 0) {
                                         tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
                                     } else {
-                                        ShowMessageFX.Warning(null, psFormName, "Invalid row to update.");
+                                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+
                                     }
                                     break;
                             }
@@ -1039,7 +1040,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             pnTblStockRequestRow = tblVwStockRequest.getSelectionModel().getSelectedIndex();
             if (pnTblStockRequestRow < 0 || pnTblStockRequestRow >= tblVwStockRequest.getItems().size()) {
-                ShowMessageFX.Warning(null, "Warning", "Please select valid approved stock request information.");
+                ShowMessageFX.Warning("Please select valid approved stock request information.", "Warning", null);
                 return;
             }
             if (event.getClickCount() == 1) {
@@ -1050,7 +1051,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         boolean alreadyExists = poDetail_data.stream()
                                 .anyMatch(detail -> detail.getIndex02().equals(lsTransactionNo));
                         if (alreadyExists) {
-                            ShowMessageFX.Warning(null, "Warning", "This stock request has already been selected.");
+                            ShowMessageFX.Warning("This stock request has already been selected.", "Warning", null);
                             return;
                         }
                     }
@@ -1062,12 +1063,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 loadTablePODetail();
                             }
                         } else {
-                            ShowMessageFX.Warning(null, psFormName, (String) loJSON.get("message"));
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         }
                     } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
                         Logger.getLogger(PurchaseOrder_EntryController.class
                                 .getName()).log(Level.SEVERE, null, ex);
-                        ShowMessageFX.Warning(null, psFormName, "Error loading data: " + ex.getMessage());
+                        ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
                     }
                 }
 
@@ -1080,7 +1081,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             pnTblPODetailRow = tblVwOrderDetails.getSelectionModel().getSelectedIndex();
 
             if (pnTblPODetailRow < 0 || pnTblPODetailRow >= tblVwOrderDetails.getItems().size()) {
-                ShowMessageFX.Warning(null, "Warning", "Please select valid order item information.");
+                ShowMessageFX.Warning("Please select valid order item information.", "Warning", null);
                 return;
             }
             ModelPurchaseOrderDetail selectedItem = tblVwOrderDetails.getSelectionModel().getSelectedItem();
