@@ -2146,7 +2146,7 @@ public class DashboardController implements Initializable {
      * LOAD USER INFO*
      */
     private void loadUserInfo() {
-        AppUser.setText(oApp.getClientName() + " || " + oApp.getDivisionName());
+        AppUser.setText(oApp.getClientName() + " || " + oApp.getIndustry());
     }
 
     /**
