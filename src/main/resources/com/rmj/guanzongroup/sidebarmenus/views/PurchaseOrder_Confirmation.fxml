@@ -193,7 +193,7 @@
                                     <children>
                                         <VBox prefHeight="339.0" spacing="5.0">
                                             <children>
-                                                <AnchorPane style="-fx-border-color: orange;">
+                                                <AnchorPane fx:id="AnchorMaster" style="-fx-border-color: orange;">
                                                     <children>
                                                         <GridPane layoutX="11.0" layoutY="6.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="6.0">
                                                             <columnConstraints>
@@ -246,10 +246,10 @@
                                                                 <TextField fx:id="tfCompany" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="6" />
                                                                 <TextField fx:id="tfSupplier" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" />
                                                                 <TextField fx:id="tfReferenceNo" maxHeight="25.0" GridPane.columnIndex="8" GridPane.rowIndex="5" />
-                                                                <CheckBox fx:id="cbAdv" mnemonicParsing="false" text="w/ Adv Rate (%)" GridPane.columnIndex="10" GridPane.rowIndex="6" />
+                                                                <CheckBox fx:id="chkbAdvancePayment" mnemonicParsing="false" text="w/ Adv Rate (%)" GridPane.columnIndex="10" GridPane.rowIndex="6" />
                                                                 <TextField fx:id="tfTerm" maxHeight="25.0" GridPane.columnIndex="8" GridPane.rowIndex="6" />
                                                                 <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="5" />
-                                                                <TextField fx:id="tfTotalAmount" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="8" />
+                                                                <TextField fx:id="tfTotalAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" style="-fx-font-weight: bold;" GridPane.columnIndex="12" GridPane.rowIndex="8" />
                                                                 <Label text="Disc. Rate (%)" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                                 <Label text="Total" GridPane.columnIndex="10" GridPane.rowIndex="8">
                                                                     <font>
@@ -277,7 +277,7 @@
                                                         </GridPane>
                                                     </children>
                                                 </AnchorPane>
-                                                <AnchorPane minWidth="800.0" style="-fx-border-color: orange;">
+                                                <AnchorPane fx:id="AnchorDetails" minWidth="800.0" style="-fx-border-color: orange;">
                                                     <children>
                                                         <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                                                             <columnConstraints>
@@ -417,10 +417,9 @@
                                                         <TableView fx:id="tblVwPurchaseOrder" minWidth="242.0" GridPane.rowIndex="1">
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNo" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="No." />
-                                                                <TableColumn fx:id="tblBranchName" maxWidth="236.0" minWidth="236.0" prefWidth="236.0" resizable="false" sortable="false" text="Branch" />
+                                                                <TableColumn fx:id="tblTransactionNo" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Transaction No" />
                                                                 <TableColumn fx:id="tblDate" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" text="Date" />
-                                                                <TableColumn fx:id="tblReferenceNo" maxWidth="106.0" minWidth="106.0" prefWidth="106.0" resizable="false" sortable="false" text="Refer No." />
-                                                                <TableColumn fx:id="tblNoOfItems" maxWidth="302.0" minWidth="45.6666259765625" prefWidth="74.0" resizable="false" text="Items" />
+                                                                <TableColumn fx:id="tblSupplier" maxWidth="150.0" minWidth="250.0" prefWidth="150.0" resizable="false" sortable="false" text="Supplier" />
                                                             </columns>
                                                             <GridPane.margin>
                                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
