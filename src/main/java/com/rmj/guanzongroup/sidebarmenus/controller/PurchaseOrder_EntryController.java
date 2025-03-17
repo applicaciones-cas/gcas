@@ -998,7 +998,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
                         CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
-                        //                        "0.00",
                         "",
                         String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getQuantity()),
                         String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
