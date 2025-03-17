@@ -837,12 +837,18 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         btnTransHistory.setVisible(fnEditMode != EditMode.ADDNEW && fnEditMode != EditMode.UNKNOWN);
         btnTransHistory.setManaged(fnEditMode != EditMode.ADDNEW && fnEditMode != EditMode.UNKNOWN);
 
+        if (fnEditMode == EditMode.READY) {
+            switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
+                case PurchaseOrderStatus.OPEN:
+                case PurchaseOrderStatus.PROCESSED:
+                case PurchaseOrderStatus.CONFIRMED:
+                    btnPrint.setVisible(true);
+                    btnPrint.setManaged(true);
+                    break;
+            }
+        }
+
         switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
-            case PurchaseOrderStatus.OPEN:
-            case PurchaseOrderStatus.PROCESSED:
-                btnPrint.setVisible(true);
-                btnPrint.setManaged(true);
-                break;
             case PurchaseOrderStatus.CANCELLED:
             case PurchaseOrderStatus.VOID:
                 btnUpdate.setVisible(false);
