@@ -48,6 +48,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.services.PurchaseOrderControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -201,6 +202,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 lsDestinationName = poPurchasingController.PurchaseOrder().Master().Branch().getBranchName();
             }
             tfDestination.setText(lsDestinationName);
+
+            String lsTermCode = "";
+            if (poPurchasingController.PurchaseOrder().Master().Term().getDescription() != null) {
+                lsTermCode = poPurchasingController.PurchaseOrder().Master().Term().getDescription();
+            }
+            tfTerm.setText(lsTermCode);
 
             taRemarks.setText(poPurchasingController.PurchaseOrder().Master().getRemarks());
 
@@ -745,6 +752,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     private void clearFields() {
         /* Master Fields*/
+        pnTblPODetailRow = -1;
         tfTransactionNo.setText("");
         dpTransactionDate.setValue(null);
         tfCompany.setText("");
@@ -866,28 +874,55 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     }
 
     private void loadTableStockRequest() {
-        poApprovedStockRequest_data.clear();
-        JSONObject loJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
-        if ("success".equals(loJSON.get("result"))) {
-            for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getInvStockRequestCount() - 1; lnCntr++) {
-                try {
-                    poApprovedStockRequest_data.add(new ModelPurchaseOrder(
-                            String.valueOf(lnCntr + 1),
-                            poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).Branch().getBranchName(),
-                            SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
-                            poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getReferenceNo(),
-                            String.valueOf(poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getEntryNo()),
-                            poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getTransactionNo(),
+        try {
+            //        poApprovedStockRequest_data.clear();
+//        JSONObject loJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
+//        if ("success".equals(loJSON.get("result"))) {
+//            for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getInvStockRequestCount() - 1; lnCntr++) {
+//                try {
+//                    poApprovedStockRequest_data.add(new ModelPurchaseOrder(
+//                            String.valueOf(lnCntr + 1),
+//                            poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).Branch().getBranchName(),
+//                            SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
+//                            poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getReferenceNo(),
+//                            String.valueOf(poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getEntryNo()),
+//                            poPurchasingController.PurchaseOrder().InvStockRequestMaster(lnCntr).getTransactionNo(),
+//                            "",
+//                            "",
+//                            "",
+//                            ""));
+//                    tblVwStockRequest.setItems(poApprovedStockRequest_data);
+//                } catch (SQLException | GuanzonException ex) {
+//                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//            loadTableStockRequestPagination(); // Call pagination
+//        }
+            JSONObject poJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
+            if ("success".equals(poJSON.get("result"))) {
+                JSONArray approvedRequests = (JSONArray) poJSON.get("data");
+                poApprovedStockRequest_data.clear();
+                for (Object requestObj : approvedRequests) {
+                    JSONObject obj = (JSONObject) requestObj; // Explicit casting
+
+                    ModelPurchaseOrder loApprovedStockRequest = new ModelPurchaseOrder(
+                            String.valueOf(poApprovedStockRequest_data.size() + 1), // Auto-increment row number
+                            obj.get("sBranchNm") != null ? obj.get("sBranchNm").toString() : "",
+                            obj.get("dTransact") != null ? obj.get("dTransact").toString() : "",
+                            obj.get("sReferNox") != null ? obj.get("sReferNox").toString() : "",
+                            obj.get("total_details") != null ? obj.get("total_details").toString() : "",
+                            obj.get("sTransNox") != null ? obj.get("sTransNox").toString() : "",
                             "",
                             "",
                             "",
-                            ""));
-                    tblVwStockRequest.setItems(poApprovedStockRequest_data);
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                            ""
+                    );
+                    poApprovedStockRequest_data.add(loApprovedStockRequest);
                 }
+                tblVwStockRequest.setItems(poApprovedStockRequest_data);
             }
-            loadTableStockRequestPagination(); // Call pagination
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
