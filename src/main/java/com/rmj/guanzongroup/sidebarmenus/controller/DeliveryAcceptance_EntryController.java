@@ -81,6 +81,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     private final String pxeModuleName = "Purchase Order Receiving Entry";
     static PurchaseOrderReceiving oTrans;
     public int pnEditMode;
+    
+    private String lsCompanyId = "";
+    private String lsSupplierId = "";
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
@@ -318,8 +321,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
         String tabText = "";
-        String lsCompanyId = "";
-        String lsSupplierId = "";
+        
         try {
             Object source = event.getSource();
             if (source instanceof Button) {
@@ -332,9 +334,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
-                        } else {
-                            loadRecordMaster();
-                        }
+                        } 
                         pnEditMode = oTrans.getEditMode();
                         break;
 
@@ -349,7 +349,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
-
                         } else {
                             return;
                         }
@@ -378,14 +377,14 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     case "btnSearch":
                         if (lastFocusedTextField != null) {
                             // Create a simulated KeyEvent for F3 key press
-                           KeyEvent keyEvent = new KeyEvent(
-                           KeyEvent.KEY_PRESSED, 
-                           "",  
-                           "F3", 
-                           KeyCode.F3, 
-                           false, false, false, false);
-
-                           lastFocusedTextField.fireEvent(keyEvent);
+                            KeyEvent keyEvent = new KeyEvent(
+                                    KeyEvent.KEY_PRESSED,
+                                    "",
+                                    "F3",
+                                    KeyCode.F3,
+                                    false, false, false, false);
+                            
+                            lastFocusedTextField.fireEvent(keyEvent);
                         } else {
                             System.out.println("No TextField is currently focused.");
                         }
@@ -396,9 +395,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             lsCompanyId = oTrans.Master().getCompanyId();
                             lsSupplierId = oTrans.Master().getSupplierId();
 
+                            clearTextFields();
                             //Call new transaction
                             btnNew.fire();
-                            clearTextFields();
                             break;
                         } else {
                             return;
@@ -423,9 +422,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 lsCompanyId = oTrans.Master().getCompanyId();
                                 lsSupplierId = oTrans.Master().getSupplierId();
                                 
+                                clearTextFields();
                                 //Call new transaction
                                 btnNew.fire();
-                                clearTextFields();
                             }
                         } else {
                             return;
@@ -440,9 +439,12 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 loadRecordMaster();
                 loadTableDetail();
             }
-
-        } catch (Exception e) {
-
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -654,18 +656,23 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-
-                case "tfCompany":
-                    break;
-                case "tfSupplier":
-                    break;
-                case "tfTrucking":
-                    break;
-                case "tfAreaRemarks":
-                    break;
+//                case "tfCompany":
+//                    break;
+//                case "tfSupplier":
+//                    break;
+//                case "tfTrucking":
+//                    break;
+//                case "tfAreaRemarks":
+//                    break;
+//                case "tfTerm":
+//                    break;
                 case "tfReferenceNo":
-                    break;
-                case "tfTerm":
+                    poJSON = oTrans.Master().setReferenceNo(lsValue);
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfReferenceNo.setText("");
+                        break;
+                    }
                     break;
                 case "tfDiscountRate":
                     if (lsValue.isEmpty()) {
@@ -680,7 +687,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = oTrans.computeDiscountRate(oTrans.Master().getDiscountRate().doubleValue());
+                    poJSON = oTrans.computeDiscount(oTrans.Master().getDiscountRate().doubleValue());
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -700,26 +707,26 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         break;
                     }
 
-                    poJSON = oTrans.computeDiscount(oTrans.Master().getDiscount().doubleValue());
+                    poJSON = oTrans.computeDiscountRate(oTrans.Master().getDiscount().doubleValue());
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
                     break;
-                case "tfTotal":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
-                        return;
-                    }
-                    poJSON = oTrans.Master().setTransactionTotal(Double.valueOf(lsValue.replace(",", "")));
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
-                    }
-                    break;
+//                case "tfTotal":
+//                    if (lsValue.isEmpty()) {
+//                        lsValue = "0.00";
+//                    }
+//                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+//                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
+//                        return;
+//                    }
+//                    poJSON = oTrans.Master().setTransactionTotal(Double.valueOf(lsValue.replace(",", "")));
+//                    if ("error".equals(poJSON.get("result"))) {
+//                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                        break;
+//                    }
+//                    break;
             }
 
             loadRecordMaster();
@@ -1042,41 +1049,32 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     }
 
     public void loadRecordMaster() {
-
         try {
+            String lsActive = oTrans.Master().getTransactionStatus();
+            switch (lsActive) {
+                case "0":
+                    lblStatus.setText("OPEN");
+                    break;
+                case "1":
+                    lblStatus.setText("CLOSED");
+                    break;
+                case "2":
+                    lblStatus.setText("POSTED");
+                    break;
+                case "3":
+                    lblStatus.setText("CANCELLED");
+                    break;
+                default:
+                    lblStatus.setText("UNKNOWN");
+                    break;
+            }
+            
             oTrans.computeFields();
-        } catch (Exception e) {
-        }
-
-        String lsActive = oTrans.Master().getTransactionStatus();
-
-        switch (lsActive) {
-            case "0":
-                lblStatus.setText("OPEN");
-                break;
-            case "1":
-                lblStatus.setText("CLOSED");
-                break;
-            case "2":
-                lblStatus.setText("POSTED");
-                break;
-            case "3":
-                lblStatus.setText("CANCELLED");
-                break;
-            default:
-                lblStatus.setText("UNKNOWN");
-                break;
-        }
-
-        oTrans.Master().setBranchCode(oApp.getBranchCode());
-        tfTransactionNo.setText(oTrans.Master().getTransactionNo());
-        try {
+            oTrans.Master().setBranchCode(oApp.getBranchCode());
             oTrans.Master().setTransactionDate(oApp.getServerDate());
-        } catch (Exception e) {
-        }
-
-        // Transaction Date
-        try {
+            oTrans.Master().setIndustryId(oApp.getIndustry());
+            
+            // Transaction Date
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(oTrans.Master().getTransactionDate());
             if (!lsTransactionDate.equals("")) {
                 Object loTransDate = oTrans.Master().getTransactionDate();
@@ -1090,31 +1088,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     Date sqlDate = (Date) loTransDate;
                     LocalDate localDate = sqlDate.toLocalDate();
                     dpTransactionDate.setValue(localDate);
-                } else {
                 }
             }
-        } catch (Exception e) {
-
-        }
-
-        try {
-            oTrans.Master().setIndustryId(oApp.getIndustry());
-            tfIndustry.setText(oTrans.Master().Industry().getDescription());
-        } catch (Exception e) {
-            Assert.fail();
-        }
-
-        try {
-            tfCompany.setText(oTrans.Master().Company().getCompanyName());
-            tfSupplier.setText(oTrans.Master().Supplier().getCompanyName());
-            tfTrucking.setText(oTrans.Master().Trucking().getCompanyName());
-            tfTerm.setText(oTrans.Master().Term().getDescription());
-        } catch (Exception e) {
-
-        }
-
-        //ReferenceDate
-        try {
+            //ReferenceDate
             String lsReferenceDate = CustomCommonUtil.formatDateToShortString(oTrans.Master().getReferenceDate());
             if (!oTrans.Master().getReferenceDate().equals("")) {
                 Object loReferenceDate = oTrans.Master().getReferenceDate();
@@ -1131,15 +1107,24 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 } else {
                 }
             }
-        } catch (Exception e) {
+            
+            tfTransactionNo.setText(oTrans.Master().getTransactionNo());
+            tfIndustry.setText(oTrans.Master().Industry().getDescription());
+            tfCompany.setText(oTrans.Master().Company().getCompanyName());
+            tfSupplier.setText(oTrans.Master().Supplier().getCompanyName());
+            tfTrucking.setText(oTrans.Master().Trucking().getCompanyName());
+            tfTerm.setText(oTrans.Master().Term().getDescription());
+            tfReferenceNo.setText(oTrans.Master().getReferenceNo());
+            taRemarks.setText(oTrans.Master().getRemarks());
+            
+            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getDiscountRate().doubleValue())));
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getDiscount().doubleValue())));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getTransactionTotal().doubleValue())));
+        } catch (SQLException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        tfReferenceNo.setText(oTrans.Master().getReferenceNo());
-        taRemarks.setText(oTrans.Master().getRemarks());
-
-        tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getDiscountRate().doubleValue())));
-        tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getDiscount().doubleValue())));
-        tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(oTrans.Master().getTransactionTotal().doubleValue())));
 
     }
 
@@ -1301,10 +1286,15 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     public void loadTableDetailFromMain() {
         try {
-            oTrans.addPurchaseOrderToPORDetail(oTrans.PurchaseOrderList(pnMain).getTransactionNo());
-        } catch (Exception e) {
-        }
-        loadTableDetail();
+            poJSON = new JSONObject();
+            poJSON = oTrans.addPurchaseOrderToPORDetail(oTrans.PurchaseOrderList(pnMain).getTransactionNo());
+            if("error".equals((String) poJSON.get("message"))){
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                return;
+            } 
+            
+            loadTableDetail();
+            
 //        for (int lnCtr = 0; lnCtr <= oTrans.getPurchaseOrderCount() - 1; lnCtr++) {
 //            details_data.add(
 //                    new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
@@ -1317,6 +1307,13 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 //                            String.valueOf(0) //identify total
 //                    ));
 //        }
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
@@ -1365,9 +1362,12 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 lnCtr--;
             }
 
-            if ((oTrans.getDetailCount() - 1) > 0) {
-                oTrans.AddDetail();
+            if ((oTrans.getDetailCount() - 1) >= 0) {
+                if (oTrans.Detail(oTrans.getDetailCount()-1).getStockId() != null && !oTrans.Detail(oTrans.getDetailCount()-1).getStockId().equals("")) {
+                    oTrans.AddDetail();
+                }
             }
+            
             double lnTotal = 0.0;
             for (lnCtr = 0; lnCtr < oTrans.getDetailCount(); lnCtr++) {
 
@@ -1375,10 +1375,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 String.valueOf(oTrans.Detail(lnCtr).getOrderQty());
                 String.valueOf(oTrans.Detail(lnCtr).getQuantity());
 
-                try {
-//                    lnTotal = oTrans.Detail(lnCtr).getUnitPrce() * oTrans.Detail(lnCtr).getOrderQty().doubleValue();
-                } catch (Exception e) {
-                }
                 details_data.add(
                         new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
                                 String.valueOf(oTrans.Detail(lnCtr).getOrderNo()),
