@@ -126,7 +126,6 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
             tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
-            initCheckBoxActions();
             initTextFieldKeyPressed();
             initTablePODetail();
             tblVwOrderDetails.setOnMouseClicked(this::tblVwOrderDetails_Clicked);
@@ -195,6 +194,11 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
+            if (poPurchasingController.PurchaseOrder().Master().isWithAdvPaym() == true) {
+                chkbAdvancePayment.setSelected(true);
+            } else {
+                chkbAdvancePayment.setSelected(false);
+            }
             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
 
@@ -268,14 +272,6 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
                 break;
         }
         initButtons(pnEditMode);
-    }
-
-    private void initCheckBoxActions() {
-        if (chkbAdvancePayment.isSelected()) {
-            chkbAdvancePayment.setSelected(true);
-        } else {
-            chkbAdvancePayment.setSelected(false);
-        }
     }
 
     private void initTextFieldKeyPressed() {

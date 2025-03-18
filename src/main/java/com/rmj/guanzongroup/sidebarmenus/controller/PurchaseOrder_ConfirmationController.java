@@ -143,7 +143,6 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
             initTextFieldFocus();
             initTextAreaFocus();
             initTextFieldKeyPressed();
-            initCheckBoxActions();
             initDatePickerActions();
             initTextFieldPattern();
             initTablePurchaseOrder();
@@ -216,6 +215,11 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
+            if (poPurchasingController.PurchaseOrder().Master().isWithAdvPaym() == true) {
+                chkbAdvancePayment.setSelected(true);
+            } else {
+                chkbAdvancePayment.setSelected(false);
+            }
             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
         } catch (GuanzonException | SQLException ex) {
@@ -636,15 +640,6 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                 }
             }
         });
-    }
-
-    private void initCheckBoxActions() {
-        if (chkbAdvancePayment.isSelected()) {
-            chkbAdvancePayment.setSelected(true);
-        } else {
-            chkbAdvancePayment.setSelected(false);
-        }
-        initFields(pnEditMode);
     }
 
     private void clearMasterFields() {
