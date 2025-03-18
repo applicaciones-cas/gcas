@@ -14,7 +14,10 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.SharedModel;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -42,6 +45,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.Logical;
 import org.guanzon.cas.client.Client_Master;
@@ -230,38 +234,44 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
-            pnEditMode = EditMode.ADDNEW;
-        }
+        try {
+            // TODO
+            if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
+                pnEditMode = EditMode.ADDNEW;
+            }
 //        ClickButton();
 
-        // Initialize the Client_Master transaction
+// Initialize the Client_Master transaction
 //        oTrans = new Client_Master(oApp, false, oApp.getBranchCode());
-        // Call newRecord to initialize a new record
-        oTrans.newRecord();
+// Call newRecord to initialize a new record
+            oTrans.newRecord();
 
-        // Access sClientID directly from the jsonResult and set it to txtField01
-        String sClientID = (String) oTrans.getMaster("sClientID");
-        if (txtField01 != null) { // Check if txtField01 is not null before setting its text
-            txtField01.setText(sClientID);
-        } else {
-            // Handle the case where txtField01 is null
-            System.out.println("txtField01 is null");
-        }
-        initcompny();
-        initTextFields();
-        InitContctPersonInfo();
+// Access sClientID directly from the jsonResult and set it to txtField01
+            String sClientID = (String) oTrans.getMaster("sClientID");
+            if (txtField01 != null) { // Check if txtField01 is not null before setting its text
+                txtField01.setText(sClientID);
+            } else {
+                // Handle the case where txtField01 is null
+                System.out.println("txtField01 is null");
+            }
+            initcompny();
+            initTextFields();
+            InitContctPersonInfo();
 //        initAddressInfo();
 //
 //        loadContctPerson();
 //        initContctPersonGrid();
-        cmpnyInfo01.setText(lsCompanyName);
-        txtField02.setText(lsCompanyName);
+            cmpnyInfo01.setText(lsCompanyName);
+            txtField02.setText(lsCompanyName);
 //        oTrans.getModel().setFullName(lsCompanyName);
 //        cmpnyInfo01.requestFocus();
 //        oTrans.setType(ValidatorFactory.ClientTypes.COMPANY);
-        pbLoaded = true;
+            pbLoaded = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientMasterTransactionCompanyController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(ClientMasterTransactionCompanyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
