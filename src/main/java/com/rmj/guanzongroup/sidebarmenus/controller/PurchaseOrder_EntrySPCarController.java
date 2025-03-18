@@ -277,7 +277,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("");
+                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("",false);
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();

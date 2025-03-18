@@ -71,7 +71,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblStockRequestRow = -1;
     private int pnTblPODetailRow = -1;
-    private int pnSTOCK_REQUEST_PAGE = 10;
     private TextField activeField;
     @FXML
     private AnchorPane apBrowse, AnchorMaster, AnchorDetails, apTableDetailLoading, apTableStockRequestLoading, AnchorMain;
@@ -151,6 +150,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             initTextFieldPattern();
             initTableStockRequest();
             initTablePODetail();
+            loadTableStockRequestPagination();
             tblVwStockRequest.setOnMouseClicked(this::tblVwStockRequest_Clicked);
             tblVwOrderDetails.setOnMouseClicked(this::tblVwOrderDetails_Clicked);
             initButtons(pnEditMode);
@@ -272,7 +272,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("");
+                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("",false);
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();
@@ -910,14 +910,37 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         });
     }
 
-    private void loadTableStockRequestPagination() {
-        int totalItems = poApprovedStockRequest_data.size();
-        int totalPages = (int) Math.ceil((double) totalItems / pnSTOCK_REQUEST_PAGE);
+private void loadTableStockRequestPagination() {
+    // Define the number of rows per page (1 row per page)
+    int pnSTOCK_REQUEST_PAGE = 1;
 
-        pagination.setPageCount(totalPages);
-        pagination.setMaxPageIndicatorCount(Math.min(5, totalPages));
+    // Calculate the total number of items and pages
+    int totalItems = poApprovedStockRequest_data.size();
+    int totalPages = (int) Math.ceil((double) totalItems / pnSTOCK_REQUEST_PAGE);
 
-    }
+    // Set the total page count in the pagination
+    pagination.setPageCount(totalPages);
+
+    // Limit the number of page indicators to 5 or fewer if there are fewer pages
+    pagination.setMaxPageIndicatorCount(Math.min(5, totalPages));
+
+    // Set the current page index to the first page by default
+    pagination.setCurrentPageIndex(0);
+
+    // Set up the page factory to load the data when the page changes
+    pagination.setPageFactory(pageIndex -> {
+        // Calculate the start and end indices for the data to display on the current page
+        int start = pageIndex * pnSTOCK_REQUEST_PAGE;
+        int end = Math.min(start + pnSTOCK_REQUEST_PAGE, totalItems);
+
+        // Update the TableView with the data corresponding to the current page
+        tblVwStockRequest.setItems(FXCollections.observableArrayList(poApprovedStockRequest_data.subList(start, end)));
+
+        return tblVwStockRequest; // Return the TableView to display on the page
+    });
+     tblVwStockRequest.setMinHeight(200);  // Ensure enough space for content
+}
+
 
     private void loadTablePODetail() {
         poDetail_data.clear();
