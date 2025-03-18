@@ -59,11 +59,11 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class PurchaseOrder_ApprovalController implements Initializable, ScreenInterface {
+public class PurchaseOrder_ApprovalLPController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order Approval";
+    private String psFormName = "Purchase Order Approval LP";
     private LogWrapper logWrapper;
     private int pnEditMode;
     private JSONObject poJSON;
@@ -155,7 +155,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -220,7 +220,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -247,7 +247,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                 tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -290,7 +290,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         loadTablePODetail();
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ApprovalLPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnSave":
@@ -331,7 +331,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         return;
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ApprovalLPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnCancel":
@@ -374,7 +374,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         loadTablePODetail();
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ApprovalLPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnClose":
@@ -393,7 +393,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -615,7 +615,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -743,7 +743,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             }
 //
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -807,7 +807,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class
+            Logger.getLogger(PurchaseOrder_EntryLPController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -869,7 +869,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         initFields(pnEditMode);
                     }
                 } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryController.class
+                    Logger.getLogger(PurchaseOrder_EntryLPController.class
                             .getName()).log(Level.SEVERE, null, ex);
                     ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
                 }

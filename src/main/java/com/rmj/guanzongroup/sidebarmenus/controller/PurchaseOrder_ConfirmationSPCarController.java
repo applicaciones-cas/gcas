@@ -59,11 +59,11 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class PurchaseOrder_ApprovalController implements Initializable, ScreenInterface {
+public class PurchaseOrder_ConfirmationSPCarController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order Approval";
+    private String psFormName = "Purchase Order Confirmation SPCar";
     private LogWrapper logWrapper;
     private int pnEditMode;
     private JSONObject poJSON;
@@ -72,13 +72,13 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblPurchaseOrderRow = -1;
     private int pnTblPODetailRow = -1;
-    private int pnSTOCK_REQUEST_PAGE = 10;
+    private int pnPURCHASE_ORDER_PAGE = 10;
     @FXML
     private AnchorPane apBrowse, apButton;
     @FXML
     private AnchorPane AnchorMaster, AnchorDetails, AnchorMain;
     @FXML
-    private Button btnUpdate, btnSave, btnCancel, btnApprove, btnReturn, btnVoid, btnPrint,
+    private Button btnUpdate, btnSave, btnCancel, btnConfirm, btnReturn, btnVoid, btnPrint,
             btnRetrieve, btnTransHistory, btnClose;
     @FXML
     private Label lblTransactionStatus;
@@ -139,7 +139,6 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             }
             tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
-
             initButtonsClickActions();
             initTextFieldFocus();
             initTextAreaFocus();
@@ -155,7 +154,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -220,7 +219,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -247,13 +246,13 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                 tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private void initButtonsClickActions() {
         List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel,
-                btnPrint, btnRetrieve, btnTransHistory, btnClose, btnApprove);
+                btnPrint, btnRetrieve, btnTransHistory, btnClose, btnConfirm);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -270,7 +269,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
                     break;
-                case "btnApprove":
+                case "btnConfirm":
                   try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -279,7 +278,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                             break;
                         }
-                        loJSON = poPurchasingController.PurchaseOrder().PostTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+                        loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                             break;
@@ -290,11 +289,11 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         loadTablePODetail();
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnSave":
-                         try {
+                     try {
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure, do you want to save?")) {
                         return;
                     }
@@ -310,11 +309,11 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                         if ("success".equals(loJSON.get("result"))) {
-                            if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)) {
-                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
+                            if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
+                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                                     loJSON = ShowDialogFX.getUserApproval(poApp);
                                     if ("success".equals(loJSON.get("result"))) {
-                                        loJSON = poPurchasingController.PurchaseOrder().PostTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+                                        loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                                         if ("success".equals(loJSON.get("result"))) {
                                             ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                         }
@@ -355,7 +354,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                 case "btnReturn":
                     break;
                 case "btnVoid":
-                         try {
+                          try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
                         loJSON = ShowDialogFX.getUserApproval(poApp);
@@ -374,7 +373,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         loadTablePODetail();
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnClose":
@@ -393,7 +392,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -416,9 +415,6 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
         if (!nv) {
             /*Lost Focus*/
             switch (lsTextFieldID) {
-                case "tfReferenceNo":
-                    poPurchasingController.PurchaseOrder().Master().setReference(lsValue);
-                    break;
                 case "tfDiscountRate":
                     break;
                 case "tfDiscountAmount":
@@ -498,8 +494,8 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
 
     private void initTextFieldKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount,
-                tfReferenceNo, tfTerm, tfDiscountRate, tfDiscountAmount,
-                tfDestination, tfAdvancePRate, tfDescription,
+                tfReferenceNo, tfDiscountRate, tfDiscountAmount,
+                tfAdvancePRate, tfDescription,
                 tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier,
                 tfSearchReferenceNo);
 
@@ -615,7 +611,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -680,17 +676,21 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
-        CustomCommonUtil.setVisible(false, btnApprove, btnReturn, btnVoid, btnUpdate, btnPrint);
-        CustomCommonUtil.setManaged(false, btnApprove, btnReturn, btnVoid, btnUpdate, btnPrint);
+        CustomCommonUtil.setVisible(false, btnConfirm, btnReturn, btnVoid, btnUpdate, btnPrint);
+        CustomCommonUtil.setManaged(false, btnConfirm, btnReturn, btnVoid, btnUpdate, btnPrint);
 
         btnTransHistory.setVisible(fnEditMode != EditMode.UNKNOWN);
         btnTransHistory.setManaged(fnEditMode != EditMode.UNKNOWN);
 
         if (fnEditMode == EditMode.READY) {
             switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
+                case PurchaseOrderStatus.OPEN:
+                    CustomCommonUtil.setVisible(true, btnConfirm, btnReturn, btnVoid, btnUpdate, btnPrint);
+                    CustomCommonUtil.setManaged(true, btnConfirm, btnReturn, btnVoid, btnUpdate, btnPrint);
+                    break;
                 case PurchaseOrderStatus.CONFIRMED:
-                    CustomCommonUtil.setVisible(true, btnApprove, btnReturn, btnVoid, btnUpdate, btnPrint);
-                    CustomCommonUtil.setManaged(true, btnApprove, btnReturn, btnVoid, btnUpdate, btnPrint);
+                    CustomCommonUtil.setVisible(true, btnReturn, btnVoid, btnUpdate, btnPrint);
+                    CustomCommonUtil.setManaged(true, btnReturn, btnVoid, btnUpdate, btnPrint);
                     break;
                 case PurchaseOrderStatus.PROCESSED:
                     btnPrint.setVisible(true);
@@ -741,19 +741,12 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                 }
                 loadTablePurchaseOrderPagination(); // Call pagination
             }
-//
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private void initTablePurchaseOrder() {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            tblVwPurchaseOrder.setEditable(true);
-        } else {
-            tblVwPurchaseOrder.setEditable(false);
-        }
-        // Set cell value factories
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblTransactionNo.setCellValueFactory(new PropertyValueFactory<>("index02"));
         tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
@@ -769,7 +762,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
 
     private void loadTablePurchaseOrderPagination() {
         int totalItems = poPurchaseOrder_data.size();
-        int totalPages = (int) Math.ceil((double) totalItems / pnSTOCK_REQUEST_PAGE);
+        int totalPages = (int) Math.ceil((double) totalItems / pnPURCHASE_ORDER_PAGE);
 
         pagination.setPageCount(totalPages);
         pagination.setMaxPageIndicatorCount(Math.min(5, totalPages));
@@ -807,7 +800,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class
+            Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -849,9 +842,9 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             return;
         }
         if (event.getClickCount() == 1) {
-            ModelPurchaseOrder loSelectedStockRequest = (ModelPurchaseOrder) tblVwPurchaseOrder.getSelectionModel().getSelectedItem();
-            if (loSelectedStockRequest != null) {
-                String lsTransactionNo = loSelectedStockRequest.getIndex02();
+            ModelPurchaseOrder loSelectedPurchaseOrder = (ModelPurchaseOrder) tblVwPurchaseOrder.getSelectionModel().getSelectedItem();
+            if (loSelectedPurchaseOrder != null) {
+                String lsTransactionNo = loSelectedPurchaseOrder.getIndex02();
                 try {
                     loJSON = poPurchasingController.PurchaseOrder().InitTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -869,7 +862,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         initFields(pnEditMode);
                     }
                 } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryController.class
+                    Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class
                             .getName()).log(Level.SEVERE, null, ex);
                     ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
                 }
@@ -880,7 +873,6 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
     private void tblVwOrderDetails_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
             pnTblPODetailRow = tblVwOrderDetails.getSelectionModel().getSelectedIndex();
-
             ModelPurchaseOrderDetail selectedItem = tblVwOrderDetails.getSelectionModel().getSelectedItem();
             if (event.getClickCount() == 2) {
                 clearDetailFields();

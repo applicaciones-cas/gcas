@@ -247,10 +247,12 @@ public class DashboardController implements Initializable {
                     return "Accounts Accreditation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
                     return "Accounts Accreditation History";
+
+                /*Purchase Order*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml":
                     return "Purchase Order";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Confirmation.fxml":
-                    return "Purchase Confirmation";
+                    return "Purchase Order Confirmation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Approval.fxml":
                     return "Purchase Order Approval";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml":
@@ -259,6 +261,51 @@ public class DashboardController implements Initializable {
                     return "Purchase Order Receiving";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml":
                     return "Purchasing Receiving Confirmation";
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryLP.fxml":
+                    return "Purchase Order LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationLP.fxml":
+                    return "Purchase Order Confirmation LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalLP.fxml":
+                    return "Purchase Order Approval LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryLP.fxml":
+                    return "Purchase Order History LP";
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchFood.fxml":
+                    return "Purchase Order MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchFood.fxml":
+                    return "Purchase Order Confirmation MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchFood.fxml":
+                    return "Purchase Order Approval MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchFood.fxml":
+                    return "Purchase Order History MF";
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchHospitality.fxml":
+                    return "Purchase Order MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchHospitality.fxml":
+                    return "Purchase Order Confirmation MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchHospitality.fxml":
+                    return "Purchase Order Approval MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchHospitality.fxml":
+                    return "Purchase Order History MH";
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPCar.fxml":
+                    return "Purchase Order SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPCar.fxml":
+                    return "Purchase Order Confirmation SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPCar.fxml":
+                    return "Purchase Order Approval SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPCar.fxml":
+                    return "Purchase Order History SPCar";
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPMC.fxml":
+                    return "Purchase Order SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPMC.fxml":
+                    return "Purchase Order Confirmation SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPMC.fxml":
+                    return "Purchase Order Approval SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPMC.fxml":
+                    return "Purchase Order History SPMC";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
                     return "Payment Request";
@@ -407,7 +454,9 @@ public class DashboardController implements Initializable {
                     return new Log_InController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml":
                     return new DefaultScreenController();
-                /* GENERAL */
+
+                /*PURCHASE ORDER */
+                // GENERAL
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml":
                     return new PurchaseOrder_EntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Confirmation.fxml":
@@ -416,6 +465,52 @@ public class DashboardController implements Initializable {
                     return new PurchaseOrder_ApprovalController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml":
                     return new PurchaseOrder_HistoryController();
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryLP.fxml":
+                    return new PurchaseOrder_EntryLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationLP.fxml":
+                    return new PurchaseOrder_ConfirmationLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalLP.fxml":
+                    return new PurchaseOrder_ApprovalLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryLP.fxml":
+                    return new PurchaseOrder_HistoryLPController();
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchFood.fxml":
+                    return new PurchaseOrder_EntryMonarchFoodController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchFood.fxml":
+                    return new PurchaseOrder_ConfirmationMonarchFoodController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchFood.fxml":
+                    return new PurchaseOrder_ApprovalMonarchFoodController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchFood.fxml":
+                    return new PurchaseOrder_HistoryMonarchFoodController();
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchHospitality.fxml":
+                    return new PurchaseOrder_EntryMonarchHospitalityController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchHospitality.fxml":
+                    return new PurchaseOrder_ConfirmationMonarchHospitalityController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchHospitality.fxml":
+                    return new PurchaseOrder_ApprovalMonarchHospitalityController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchHospitality.fxml":
+                    return new PurchaseOrder_HistoryMonarchHospitalityController();
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPCar.fxml":
+                    return new PurchaseOrder_EntrySPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPCar.fxml":
+                    return new PurchaseOrder_ConfirmationSPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPCar.fxml":
+                    return new PurchaseOrder_ApprovalSPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPCar.fxml":
+                    return new PurchaseOrder_HistorySPCarController();
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPMC.fxml":
+                    return new PurchaseOrder_EntrySPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPMC.fxml":
+                    return new PurchaseOrder_ConfirmationSPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPMC.fxml":
+                    return new PurchaseOrder_ApprovalSPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPMC.fxml":
+                    return new PurchaseOrder_HistorySPMCController();
+
                 /* INVENTORY/INVENTORY/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
                     return new InventoryMaintenanceController();
@@ -1730,38 +1825,104 @@ public class DashboardController implements Initializable {
                         break;
                 }
                 break;
-            case "Inventory Maintenance":
-                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml";
+            case "Los Pedritos":
+                switch (sLocation) {
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryLP.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationLP.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalLP.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryLP.fxml":
+                        sformname = sLocation;
+                        break;
+                }
+                break;
+            case "Monarch Restaurant":
+                switch (sLocation) {
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchFood.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchFood.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchFood.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchFood.fxml":
+                        sformname = sLocation;
+                        break;
+                }
+                break;
+            case "Monarch Hospitality":
+                switch (sLocation) {
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchHospitality.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchHospitality.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchHospitality.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchHospitality.fxml":
+                        sformname = sLocation;
+                        break;
+                }
+                break;
+            case "Spare Parts Car":
+                switch (sLocation) {
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPCar.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPCar.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPCar.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPCar.fxml":
+                        sformname = sLocation;
+                        break;
+                }
+                break;
+            case "Spare Parts Motorycle":
+                switch (sLocation) {
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPMC.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPMC.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPMC.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPMC.fxml":
+                        sformname = sLocation;
+                        break;
+                }
                 break;
             case "Motorcycle":
                 switch (sLocation.toLowerCase()) {
-                    case "sales/sales/motorcycle":
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMC.fxml":
                         sformname = sLocation;
-                        ShowMessageFX.Information("Navigation", "You selected", sLocation);
                         break;
-                    case "sales/inquiry/motorcycle":
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMC.fxml":
                         sformname = sLocation;
-                        ShowMessageFX.Information("test", "You selected", sLocation);
                         break;
-                    default:
-                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMC.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMC.fxml":
+                        sformname = sLocation;
                         break;
                 }
                 break;
-            case "Spareparts":
-                switch (sLocation.toLowerCase()) {
-                    case "sales/sales/spareparts":
-                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/spareparts_sales.fxml";
-                        ShowMessageFX.Information("Navigation", "You selected", sLocation);
-                        break;
-                    case "sales/inquiry/spareparts":
-                        sformname = "/com/rmj/guanzongroup/sidebarmenus/views/spareparts_inquiry.fxml";
-                        ShowMessageFX.Information("test", "You selected", sLocation);
-                        break;
-                    default:
-                        ShowMessageFX.Information("This is another motorycle", "You selected", sLocation);
-                        break;
-                }
+            case "Inventory Maintenance":
+                sformname = "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml";
                 break;
             case "Requisition Slip":
                 switch (sLocation.toLowerCase()) {

@@ -52,13 +52,13 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author
+ * @author User
  */
-public class PurchaseOrder_HistoryController implements Initializable, ScreenInterface {
+public class PurchaseOrder_HistoryLPController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order History";
+    private String psFormName = "Purchase Order History LP";
     private LogWrapper logWrapper;
     private int pnEditMode;
     private JSONObject poJSON;
@@ -133,7 +133,7 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
             pnEditMode = EditMode.UNKNOWN;
             initButtons(pnEditMode);
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -199,7 +199,7 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -226,7 +226,7 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
                 tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -357,7 +357,7 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 //        }
     }
@@ -430,7 +430,7 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class
+            Logger.getLogger(PurchaseOrder_HistoryLPController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }

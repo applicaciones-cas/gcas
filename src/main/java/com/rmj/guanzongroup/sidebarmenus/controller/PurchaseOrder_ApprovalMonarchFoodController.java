@@ -59,11 +59,11 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class PurchaseOrder_ApprovalController implements Initializable, ScreenInterface {
+public class PurchaseOrder_ApprovalMonarchFoodController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order Approval";
+    private String psFormName = "Purchase Order Approval MF";
     private LogWrapper logWrapper;
     private int pnEditMode;
     private JSONObject poJSON;
@@ -290,7 +290,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         loadTablePODetail();
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ApprovalMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnSave":
@@ -331,7 +331,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         return;
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ApprovalMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnCancel":
@@ -374,7 +374,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         loadTablePODetail();
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ApprovalMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnClose":
