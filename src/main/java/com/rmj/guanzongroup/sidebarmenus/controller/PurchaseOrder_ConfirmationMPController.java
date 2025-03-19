@@ -41,6 +41,7 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -59,11 +60,11 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class PurchaseOrder_ConfirmationLPController implements Initializable, ScreenInterface {
+public class PurchaseOrder_ConfirmationMPController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order Confirmation LP";
+    private String psFormName = "Purchase Order Confirmation MP";
     private LogWrapper logWrapper;
     private int pnEditMode;
     private JSONObject poJSON;
@@ -74,34 +75,33 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
     private int pnTblPODetailRow = -1;
     private int pnPURCHASE_ORDER_PAGE = 10;
     @FXML
-    private AnchorPane apBrowse, apButton;
+    private AnchorPane AnchorMaster, AnchorDetails, AnchorMain, apBrowse, apButton;
     @FXML
-    private AnchorPane AnchorMaster, AnchorDetails, AnchorMain;
+    private HBox hbButtons;
     @FXML
     private Button btnUpdate, btnSave, btnCancel, btnConfirm, btnReturn, btnVoid, btnPrint,
             btnRetrieve, btnTransHistory, btnClose;
     @FXML
-    private Label lblTransactionStatus;
-    @FXML
-    private TextField tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo;
-    @FXML
     private TextField tfTransactionNo, tfIndustry, tfCompany, tfSupplier, tfDestination, tfReferenceNo,
             tfTerm, tfDiscountRate, tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount;
     @FXML
-    private TextField tfBarcode, tfDescription, tfBrand, tfModel, tfColor, tfCategory, tfInventoryType,
-            tfMeasure, tfClass, tfAMC, tfROQ, tfRO, tfBO, tfQOH, tfCost, tfRequestQuantity, tfOrderQuantity;
+    private Label lblTransactionStatus;
     @FXML
     private CheckBox chkbAdvancePayment;
     @FXML
-    private TextArea taRemarks;
-    @FXML
     private DatePicker dpTransactionDate, dpExpectedDlvrDate;
+    @FXML
+    private TextField tfBrand, tfModel, tfVariant, tfInventoryType, tfColor, tfClass, tfAMC, tfROQ,
+            tfRO, tfBO, tfQOH, tfCost, tfRequestQuantity, tfOrderQuantity;
+    @FXML
+    private TextField tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo;
+    @FXML
+    private TextArea taRemarks;
     @FXML
     private TableView<ModelPurchaseOrderDetail> tblVwOrderDetails;
     @FXML
-    private TableColumn<ModelPurchaseOrderDetail, String> tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail,
-            tblDescriptionDetail, tblCostDetail, tblROQDetail, tblRequestQuantityDetail, tblOrderQuantityDetail,
-            tblTotalAmountDetail;
+    private TableColumn<ModelPurchaseOrderDetail, String> tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail,
+            tblCostDetail, tblROQDetail, tblRequestQuantityDetail, tblOrderQuantityDetail, tblTotalAmountDetail;
     @FXML
     private TableView<ModelPurchaseOrder> tblVwPurchaseOrder;
     @FXML
@@ -143,6 +143,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
             initTextFieldFocus();
             initTextAreaFocus();
             initTextFieldKeyPressed();
+            initCheckBoxActions();
             initDatePickerActions();
             initTextFieldPattern();
             initTablePurchaseOrder();
@@ -153,7 +154,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -215,15 +216,10 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
-            if (poPurchasingController.PurchaseOrder().Master().isWithAdvPaym() == true) {
-                chkbAdvancePayment.setSelected(true);
-            } else {
-                chkbAdvancePayment.setSelected(false);
-            }
             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -231,14 +227,11 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
     private void loadDetail() {
         try {
             if (pnTblPODetailRow >= 0) {
-                tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
-                tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
                 tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription());
                 tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription());
-                tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Color().getDescription());
-                tfCategory.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Category().getDescription());
+                tfVariant.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).ModelVariant().getDescription());
                 tfInventoryType.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().InventoryType().getDescription());
-                tfMeasure.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Measure().getDescription());
+                tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Color().getDescription());
                 tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getInventoryClassification());
                 tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getAverageCost()));
                 tfROQ.setText("0");
@@ -250,7 +243,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                 tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -293,7 +286,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                         loadTablePODetail();
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnSave":
@@ -377,7 +370,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                         loadTablePODetail();
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnClose":
@@ -396,7 +389,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -497,11 +490,12 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
     };
 
     private void initTextFieldKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount,
-                tfReferenceNo, tfDiscountRate, tfDiscountAmount,
-                tfAdvancePRate, tfDescription,
-                tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier,
-                tfSearchReferenceNo);
+        List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount, tfCompany, tfSupplier,
+                tfReferenceNo, tfTerm, tfDiscountRate, tfDiscountAmount, tfTotalAmount,
+                tfDestination, tfAdvancePRate,
+                tfBrand, tfModel,
+                tfBO, tfRO,
+                tfCost, tfOrderQuantity);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
@@ -570,28 +564,28 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                                 }
                                 tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
                                 break;
-                            case "tfBarcode":
+                            case "tfBrand":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfBarcode.setText("");
+                                    tfBrand.setText("");
                                     break;
                                 }
                                 if (pnTblPODetailRow >= 0) {
-                                    tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
+                                    tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
                                 } else {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                 }
                                 break;
-                            case "tfDescription":
+                            case "tfModel":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfDescription.setText("");
+                                    tfModel.setText("");
                                     break;
                                 }
                                 if (pnTblPODetailRow >= 0) {
-                                    tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
+                                    tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
                                 } else {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
 
@@ -615,7 +609,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -642,6 +636,15 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
         });
     }
 
+    private void initCheckBoxActions() {
+        if (chkbAdvancePayment.isSelected()) {
+            chkbAdvancePayment.setSelected(true);
+        } else {
+            chkbAdvancePayment.setSelected(false);
+        }
+        initFields(pnEditMode);
+    }
+
     private void clearMasterFields() {
         /* Master Fields*/
         pnTblPODetailRow = -1;
@@ -656,8 +659,8 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
 
     private void clearDetailFields() {
         /* Detail Fields*/
-        CustomCommonUtil.setText("", tfBarcode, tfDescription, tfBrand, tfModel,
-                tfColor, tfCategory, tfInventoryType, tfMeasure, tfClass,
+        CustomCommonUtil.setText("", tfBrand, tfModel, tfBrand, tfModel,
+                tfColor, tfInventoryType, tfClass,
                 tfAMC, tfROQ, tfRO, tfBO, tfQOH,
                 tfCost, tfRequestQuantity, tfOrderQuantity);
     }
@@ -737,7 +740,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                 loadTablePurchaseOrderPagination(); // Call pagination
             }
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -795,7 +798,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationLPController.class
+            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -857,7 +860,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                         initFields(pnEditMode);
                     }
                 } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationLPController.class
+                    Logger.getLogger(PurchaseOrder_ConfirmationMPController.class
                             .getName()).log(Level.SEVERE, null, ex);
                     ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
                 }
@@ -875,7 +878,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                     if (pnTblPODetailRow >= 0) {
                         loadDetail();
                         if (pnEditMode == EditMode.UPDATE) {
-                            if (!tfBarcode.getText().isEmpty()) {
+                            if (!tfBrand.getText().isEmpty()) {
                                 tfOrderQuantity.requestFocus();
                             }
                         }

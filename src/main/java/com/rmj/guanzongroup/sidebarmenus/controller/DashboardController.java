@@ -307,6 +307,33 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPMC.fxml":
                     return "Purchase Order History SPMC";
 
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMC.fxml":
+                    return "Purchase Order MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMC.fxml":
+                    return "Purchase Order Confirmation MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMC.fxml":
+                    return "Purchase Order Approval MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMC.fxml":
+                    return "Purchase Order History MC";
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMP.fxml":
+                    return "Purchase Order MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMP.fxml":
+                    return "Purchase Order Confirmation MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMP.fxml":
+                    return "Purchase Order Approval MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMP.fxml":
+                    return "Purchase Order History MP";
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryCar.fxml":
+                    return "Purchase Order Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationCar.fxml":
+                    return "Purchase Order Confirmation Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalCar.fxml":
+                    return "Purchase Order Approval Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryCar.fxml":
+                    return "Purchase Order History Car";
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
                     return "Payment Request";
 
@@ -465,7 +492,7 @@ public class DashboardController implements Initializable {
                     return new PurchaseOrder_ApprovalController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml":
                     return new PurchaseOrder_HistoryController();
-
+                // Los Pedritos
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryLP.fxml":
                     return new PurchaseOrder_EntryLPController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationLP.fxml":
@@ -474,7 +501,7 @@ public class DashboardController implements Initializable {
                     return new PurchaseOrder_ApprovalLPController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryLP.fxml":
                     return new PurchaseOrder_HistoryLPController();
-
+                //Monarch Restaurant
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchFood.fxml":
                     return new PurchaseOrder_EntryMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchFood.fxml":
@@ -483,7 +510,7 @@ public class DashboardController implements Initializable {
                     return new PurchaseOrder_ApprovalMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchFood.fxml":
                     return new PurchaseOrder_HistoryMonarchFoodController();
-
+                //Monarch Hospitality
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchHospitality.fxml":
                     return new PurchaseOrder_EntryMonarchHospitalityController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchHospitality.fxml":
@@ -492,7 +519,7 @@ public class DashboardController implements Initializable {
                     return new PurchaseOrder_ApprovalMonarchHospitalityController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchHospitality.fxml":
                     return new PurchaseOrder_HistoryMonarchHospitalityController();
-
+                //Monarch Spare Parts Car
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPCar.fxml":
                     return new PurchaseOrder_EntrySPCarController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPCar.fxml":
@@ -501,7 +528,7 @@ public class DashboardController implements Initializable {
                     return new PurchaseOrder_ApprovalSPCarController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPCar.fxml":
                     return new PurchaseOrder_HistorySPCarController();
-
+                //Monarch Spare Parts MC
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPMC.fxml":
                     return new PurchaseOrder_EntrySPMCController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPMC.fxml":
@@ -511,6 +538,32 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPMC.fxml":
                     return new PurchaseOrder_HistorySPMCController();
 
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMC.fxml":
+                    return new PurchaseOrder_EntryMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMC.fxml":
+                    return new PurchaseOrder_ConfirmationMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMC.fxml":
+                    return new PurchaseOrder_ApprovalMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMC.fxml":
+                    return new PurchaseOrder_HistoryMCController();
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMP.fxml":
+                    return new PurchaseOrder_EntryMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMP.fxml":
+                    return new PurchaseOrder_ConfirmationMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMP.fxml":
+                    return new PurchaseOrder_ApprovalMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMP.fxml":
+                    return new PurchaseOrder_HistoryMPController();
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryCar.fxml":
+                    return new PurchaseOrder_EntryCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationCar.fxml":
+                    return new PurchaseOrder_ConfirmationCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalCar.fxml":
+                    return new PurchaseOrder_ApprovalCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryCar.fxml":
+                    return new PurchaseOrder_HistoryCarController();
                 /* INVENTORY/INVENTORY/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
                     return new InventoryMaintenanceController();
@@ -1906,7 +1959,7 @@ public class DashboardController implements Initializable {
                 }
                 break;
             case "Motorcycle":
-                switch (sLocation.toLowerCase()) {
+                switch (sLocation) {
                     case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMC.fxml":
                         sformname = sLocation;
                         break;
@@ -1917,6 +1970,38 @@ public class DashboardController implements Initializable {
                         sformname = sLocation;
                         break;
                     case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMC.fxml":
+                        sformname = sLocation;
+                        break;
+                }
+                break;
+            case "Mobile Phone":
+                switch (sLocation) {
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMP.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMP.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMP.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMP.fxml":
+                        sformname = sLocation;
+                        break;
+                }
+                break;
+            case "Car":
+                switch (sLocation) {
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryCar.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationCar.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalCar.fxml":
+                        sformname = sLocation;
+                        break;
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryCar.fxml":
                         sformname = sLocation;
                         break;
                 }
