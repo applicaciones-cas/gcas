@@ -354,10 +354,40 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     tfTerm.requestFocus();
                                     break;
                                 case "tfBrand":
+                                    if (pnTblPODetailRow < 0) {
+                                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                        tfBrand.setText("");
+                                        break;
+                                    }
+                                    loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, pnTblPODetailRow);
+                                    if ("error".equals(loJSON.get("result"))) {
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                        tfBrand.setText("");
+                                        break;
+                                    }
+                                    if (pnTblPODetailRow >= 0) {
+                                        tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription());
+                                    }
+                                    tfBrand.requestFocus();
                                     loadDetail();
+                                    loadTablePODetail();
                                     break;
                                 case "tfModel":
+                                    loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, pnTblPODetailRow);
+                                    if ("error".equals(loJSON.get("result"))) {
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                        tfModel.setText("");
+                                        break;
+                                    }
+                                    if (pnTblPODetailRow >= 0) {
+                                        tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription());
+                                    } else {
+                                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                        tfModel.setText("");
+                                    }
+                                    tfModel.requestFocus();
                                     loadDetail();
+                                    loadTablePODetail();
                                     break;
                                 default:
                                     System.out.println("Unknown TextField");
@@ -681,30 +711,32 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                         tfBrand.setText("");
                                         break;
                                     }
-//                                    loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false);
-//                                    if ("error".equals(loJSON.get("result"))) {
-//                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-//                                        tfBrand.setText("");
-//                                        break;
-//                                    }
-                                    if (pnTblPODetailRow >= 0) {
-                                        tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Brand().getDescription());
+                                    loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, pnTblPODetailRow);
+                                    if ("error".equals(loJSON.get("result"))) {
+                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                        tfBrand.setText("");
+                                        break;
                                     }
+                                    if (pnTblPODetailRow >= 0) {
+                                        tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription());
+                                    }
+                                    loadDetail();
                                     loadTablePODetail();
                                     break;
                                 case "tfModel":
-                                    loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false);
+                                    loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, pnTblPODetailRow);
                                     if ("error".equals(loJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfModel.setText("");
                                         break;
                                     }
                                     if (pnTblPODetailRow >= 0) {
-                                        tfModel.setText("");
+                                        tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription());
                                     } else {
                                         ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                         tfModel.setText("");
                                     }
+                                    loadDetail();
                                     loadTablePODetail();
                                     break;
                             }

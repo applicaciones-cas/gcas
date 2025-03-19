@@ -8,7 +8,6 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -320,12 +319,6 @@
                                                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                                                     </columnResizePolicy>
                                                                 </TableView>
-                                                                <AnchorPane fx:id="apTableDetailLoading" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #0000001a;" visible="false">
-                                                                    <GridPane.margin>
-                                                                        <Insets />
-                                                                    </GridPane.margin>
-                                                                </AnchorPane>
-                                                                <ProgressIndicator fx:id="piTableDetailLoading" maxHeight="50.0" style="-fx-progress-color: FF8201;" visible="false" />
                                                             </children>
                                                         </GridPane>
                                                     </children>
@@ -373,8 +366,6 @@
                                                                 <Insets />
                                                             </GridPane.margin>
                                                         </Pagination>
-                                                        <AnchorPane fx:id="apTableStockRequestLoading" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #0000001a;" visible="false" GridPane.rowIndex="1" />
-                                                        <ProgressIndicator fx:id="piTableStockRequestLoading" maxHeight="50.0" style="-fx-progress-color: FF8201;" visible="false" GridPane.rowIndex="1" />
                                                     </children>
                                                 </GridPane>
                                             </children>
