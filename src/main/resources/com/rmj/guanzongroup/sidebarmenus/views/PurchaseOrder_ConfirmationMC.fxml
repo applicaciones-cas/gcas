@@ -189,7 +189,7 @@
                     <center>
                         <AnchorPane prefWidth="1503.0" BorderPane.alignment="CENTER">
                             <children>
-                                <HBox prefHeight="344.0" prefWidth="1042.0" spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                <HBox prefHeight="344.0" spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                                     <children>
                                         <VBox prefHeight="339.0" spacing="5.0">
                                             <children>
@@ -380,52 +380,30 @@
                                                 </AnchorPane>
                                             </children>
                                         </VBox>
-                                        <AnchorPane prefWidth="552.0" style="-fx-border-color: orange;" HBox.hgrow="ALWAYS">
-                                            <children>
-                                                <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                    <columnConstraints>
-                                                        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
-                                                    </columnConstraints>
-                                                    <rowConstraints>
-                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                                                        <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="30.0" vgrow="ALWAYS" />
-                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
-                                                    </rowConstraints>
-                                                    <children>
-                                                        <AnchorPane minHeight="-Infinity" prefHeight="28.0" prefWidth="402.0" style="-fx-background-color: FF8201;">
-                                                            <children>
-                                                                <Label alignment="CENTER" contentDisplay="CENTER" text="PURCHASE ORDERS" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                    <font>
-                                                                        <Font name="System Bold" size="14.0" />
-                                                                    </font>
-                                                                </Label>
-                                                            </children>
-                                                            <GridPane.margin>
-                                                                <Insets left="5.0" right="5.0" top="5.0" />
-                                                            </GridPane.margin>
-                                                        </AnchorPane>
-                                                        <TableView fx:id="tblVwPurchaseOrder" minWidth="242.0" GridPane.rowIndex="1">
-                                                            <columns>
-                                                                <TableColumn fx:id="tblRowNo" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="No." />
-                                                                <TableColumn fx:id="tblTransactionNo" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Transaction No" />
-                                                                <TableColumn fx:id="tblDate" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" text="Date" />
-                                                                <TableColumn fx:id="tblSupplier" maxWidth="150.0" minWidth="250.0" prefWidth="150.0" resizable="false" sortable="false" text="Supplier" />
-                                                            </columns>
-                                                            <GridPane.margin>
-                                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                            </GridPane.margin>
-                                                        </TableView>
-                                                        <Pagination fx:id="pagination" maxPageIndicatorCount="0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
-                                                            <GridPane.margin>
-                                                                <Insets />
-                                                            </GridPane.margin>
-                                                        </Pagination>
-                                                    </children>
-                                                </GridPane>
-                                            </children>
+                                        <AnchorPane style="-fx-border-color: orange;" HBox.hgrow="ALWAYS">
                                             <HBox.margin>
                                                 <Insets />
                                             </HBox.margin>
+                                 <children>
+                                    <AnchorPane minHeight="-Infinity" prefHeight="28.0" style="-fx-background-color: FF8201;" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                       <children>
+                                          <Label alignment="CENTER" contentDisplay="CENTER" text="PURCHASE ORDERS" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <font>
+                                                <Font name="System Bold" size="14.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                    <Pagination fx:id="pagination" maxPageIndicatorCount="0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="38.0" />
+                                    <TableView fx:id="tblVwPurchaseOrder" minWidth="242.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="40.0">
+                                       <columns>
+                                          <TableColumn fx:id="tblRowNo" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="No." />
+                                          <TableColumn fx:id="tblTransactionNo" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Transaction No" />
+                                          <TableColumn fx:id="tblDate" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" text="Date" />
+                                          <TableColumn fx:id="tblSupplier" maxWidth="150.0" minWidth="250.0" prefWidth="150.0" resizable="false" sortable="false" text="Supplier" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
                                         </AnchorPane>
                                     </children>
                                 </HBox>

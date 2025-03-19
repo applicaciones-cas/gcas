@@ -20,14 +20,18 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -41,6 +45,7 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -72,7 +77,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblPurchaseOrderRow = -1;
     private int pnTblPODetailRow = -1;
-    private int pnPURCHASE_ORDER_PAGE = 10;
+    private static final int ROWS_PER_PAGE = 1;
     @FXML
     private AnchorPane apBrowse, apButton;
     @FXML
@@ -499,7 +504,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
     private void initTextFieldKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount,
                 tfReferenceNo, tfDiscountRate, tfDiscountAmount,
-                tfAdvancePRate, tfDescription,
+                tfAdvancePRate,
                 tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier,
                 tfSearchReferenceNo);
 
@@ -715,31 +720,89 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
     }
 
     private void loadTablePurchaseOrder() {
-        try {
-            poPurchaseOrder_data.clear();
-            JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder();
-            if ("success".equals(loJSON.get("result"))) {
-                for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getPOMasterCount() - 1; lnCntr++) {
-                    poPurchaseOrder_data.add(new ModelPurchaseOrder(
-                            String.valueOf(lnCntr + 1),
-                            poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionNo(),
-                            SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
-                            poPurchasingController.PurchaseOrder().POMaster(lnCntr).Supplier().getCompanyName(),
-                            "",
-                            "",
-                            "",
-                            "",
-                            "",
-                            ""));
-                    tblVwPurchaseOrder.setItems(poPurchaseOrder_data);
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMaxHeight(50); // Set size to 200x200
+        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
+        StackPane loadingPane = new StackPane(progressIndicator);
+        loadingPane.setAlignment(Pos.CENTER); // Center it
 
+        tblVwPurchaseOrder.setPlaceholder(loadingPane); // Show while loading
+        progressIndicator.setVisible(true); // Make sure it's visible
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    // Simulate loading delay
+                    Thread.sleep(1000);
+
+                    poPurchaseOrder_data.clear();
+                    JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder();
+                    if ("success".equals(loJSON.get("result"))) {
+                        for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getPOMasterCount() - 1; lnCntr++) {
+                            poPurchaseOrder_data.add(new ModelPurchaseOrder(
+                                    String.valueOf(lnCntr + 1),
+                                    poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionNo(),
+                                    SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
+                                    poPurchasingController.PurchaseOrder().POMaster(lnCntr).Supplier().getCompanyName(),
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    ""));
+                            tblVwPurchaseOrder.setItems(poPurchaseOrder_data);
+                        }
+                    }
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(PurchaseOrder_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                loadTablePurchaseOrderPagination(); // Call pagination
+                return null;
             }
-        } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+            @Override
+            protected void succeeded() {
+                if (pagination != null) {
+                    pagination.setPageCount((int) Math.ceil((double) poPurchaseOrder_data.size() / ROWS_PER_PAGE));
+                    pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> {
+                        createPage(newIndex.intValue());
+                    });
+                }
+                createPage(0);
+                pagination.setVisible(true);
+                pagination.setManaged(true);
+                tblVwPurchaseOrder.toFront();
+            }
+
+            @Override
+            protected void failed() {
+                progressIndicator.setVisible(false);
+            }
+        };
+        new Thread(task).start(); // Run task in background
     }
+    private Node createPage(int pageIndex) {
+        int totalPages = (int) Math.ceil((double) poPurchaseOrder_data.size() / ROWS_PER_PAGE);
+        if (totalPages == 0) {
+            totalPages = 1;
+        }
+
+        pageIndex = Math.max(0, Math.min(pageIndex, totalPages - 1));
+        int fromIndex = pageIndex * ROWS_PER_PAGE;
+        int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, poPurchaseOrder_data.size());
+
+        if (!poPurchaseOrder_data.isEmpty()) {
+            tblVwPurchaseOrder.setItems(FXCollections.observableArrayList(poPurchaseOrder_data.subList(fromIndex, toIndex)));
+        }
+
+        if (pagination != null) { // Replace with your actual Pagination variable
+            pagination.setPageCount(totalPages);
+            pagination.setCurrentPageIndex(pageIndex);
+        }
+
+        return tblVwPurchaseOrder;
+    }
+
 
     private void initTablePurchaseOrder() {
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
@@ -755,18 +818,30 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
         });
     }
 
-    private void loadTablePurchaseOrderPagination() {
-        int totalItems = poPurchaseOrder_data.size();
-        int totalPages = (int) Math.ceil((double) totalItems / pnPURCHASE_ORDER_PAGE);
 
-        pagination.setPageCount(totalPages);
-        pagination.setMaxPageIndicatorCount(Math.min(5, totalPages));
-
-    }
 
     private void loadTablePODetail() {
-        poDetail_data.clear();
-        try {
+         // Configure ProgressIndicator
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMaxSize(50, 50); // Ensure consistent size
+        progressIndicator.setStyle("-fx-accent: #FF8201;"); // Set custom progress color
+
+// Center ProgressIndicator inside TableView using StackPane
+        StackPane loadingPane = new StackPane(progressIndicator);
+        loadingPane.setAlignment(Pos.CENTER); // Center it
+        loadingPane.setStyle("-fx-background-color: transparent;"); // Make background transparent
+
+        tblVwOrderDetails.setPlaceholder(loadingPane); // Show while loading
+        progressIndicator.setVisible(true); // Make sure it's visible
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                poDetail_data.clear();
+                try {
+
+                    Thread.sleep(300);
+
             double grandTotalAmount = 0.0;
             for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
                 double lnTotalAmount = poPurchasingController.PurchaseOrder()
@@ -795,9 +870,27 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationController.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
+                    Logger.getLogger(PurchaseOrder_EntryMCController.class
+                            .getName()).log(Level.SEVERE, null, ex);
+                }
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                 tblVwOrderDetails.setItems(poDetail_data);
+                progressIndicator.setVisible(false); // Hide when done
+                
+                
+            }
+
+            @Override
+            protected void failed() {
+                progressIndicator.setVisible(false);
+            }
+        };
+
+        new Thread(task).start(); // Run task in background
     }
 
     private void computeTotalAmount(double fnGrandTotal) {
