@@ -10,7 +10,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author User
  */
-public class ModelAttachment {
+public class ModelDeliveryAcceptance_Attachment {
 
     public StringProperty index01;
     public StringProperty index02;
@@ -33,7 +33,7 @@ public class ModelAttachment {
     public StringProperty index19;
     public StringProperty index20;
 
-    public ModelAttachment(String index01,
+    public ModelDeliveryAcceptance_Attachment(String index01,
             String index02,
             String index03,
             String index04,
@@ -76,28 +76,28 @@ public class ModelAttachment {
         this.index20 = new SimpleStringProperty(index20);
     }
 
-    public ModelAttachment(String index12,
-            String index13) {
+    public ModelDeliveryAcceptance_Attachment(String index01,
+            String index02) {
 
-        this.index12 = new SimpleStringProperty(index12);
-        this.index13 = new SimpleStringProperty(index13);
+        this.index01 = new SimpleStringProperty(index01);
+        this.index02 = new SimpleStringProperty(index02);
   
     }
 
-    public String getIndex12() {
-        return index12.get();
+    public String getIndex01() {
+        return index01.get();
     }
 
-    public void setIndex12(String index12) {
-        this.index12.set(index12);
+    public void setIndex01(String index01) {
+        this.index01.set(index01);
     }
 
-    public String getIndex13() {
-        return index13.get();
+    public String getIndex02() {
+        return index02.get();
     }
 
-    public void setIndex13(String index13) {
-        this.index13.set(index13);
+    public void setIndex02(String index02) {
+        this.index02.set(index02);
     }
 
 

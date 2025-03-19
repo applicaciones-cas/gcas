@@ -90,7 +90,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     private double xOffset = 0;
     private double yOffset = 0;
-    
+
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
 
@@ -227,7 +227,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         break;
 
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord();
+                        poJSON = poPurchaseReceivingController.printRecord(false);
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
@@ -373,7 +373,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
     }
-    
 
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -423,14 +422,14 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
                     }
-                    
+
                     break;
                 case "tfSupersede":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setReplaceId("");
                     }
-                    
+
                     break;
                 case "tfCost":
                     if (lsValue.isEmpty()) {
@@ -446,7 +445,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
-                    
+
                     break;
                 case "tfReceiveQuantity":
                     if (lsValue.isEmpty()) {
@@ -460,7 +459,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     }
                     break;
             }
-            loadTableDetail();          
+            loadTableDetail();
         }
     };
 
@@ -782,7 +781,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 header.setReordering(false);
             });
         });
-        
+
 //        tblViewOrderDetails.setItems(details_data);
 //        tblViewOrderDetails.autosize();
 //        
@@ -808,9 +807,12 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
         tblViewPuchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewPuchaseOrder.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
+            try {
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
+            } catch (Exception e) {
+            }
         });
 
         filteredData = new FilteredList<>(main_data, b -> true);
@@ -1005,9 +1007,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         }
     }
 
-    private void moveToNextRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
+    private int moveToNextRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
         int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
         table.getSelectionModel().select(nextRow);
+        return nextRow;
     }
 
     private void handleTabKey(KeyEvent event) {
@@ -1020,6 +1023,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     case "tblViewOrderDetails":
                         System.out.println("Tab pressed in Table 1");
                         moveToNextRow(tblViewOrderDetails, focusedCell);
+
+                        pnDetail = moveToNextRow(tblViewOrderDetails, focusedCell);
+                        loadTableDetail();
                         break;
                     case "tblViewPuchaseOrder":
                         System.out.println("Tab pressed in Table 2");
