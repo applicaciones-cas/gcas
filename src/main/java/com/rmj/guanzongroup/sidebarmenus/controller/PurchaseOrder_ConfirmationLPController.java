@@ -132,7 +132,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
             if (!"success".equals(loJSON.get("result"))) {
                 ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
             }
-            poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
+            poJSON = poPurchasingController.PurchaseOrder().SearchIndustry("05", true);
             if ("error".equals((String) loJSON.get("result"))) {
                 ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
 
@@ -770,16 +770,21 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
 
             @Override
             protected void succeeded() {
-                if (pagination != null) {
-                    pagination.setPageCount((int) Math.ceil((double) poPurchaseOrder_data.size() / ROWS_PER_PAGE));
-                    pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> {
-                        createPage(newIndex.intValue());
-                    });
+                progressIndicator.setVisible(false);
+
+                if (poPurchaseOrder_data == null || poPurchaseOrder_data.isEmpty()) {
+                    tblVwPurchaseOrder.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                } else {
+                    if (pagination != null) {
+                        int pageCount = (int) Math.ceil((double) poPurchaseOrder_data.size() / ROWS_PER_PAGE);
+                        pagination.setPageCount(pageCount);
+                        pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> createPage(newIndex.intValue()));
+                    }
+                    createPage(0);
+                    pagination.setVisible(true);
+                    pagination.setManaged(true);
+                    tblVwPurchaseOrder.toFront();
                 }
-                createPage(0);
-                pagination.setVisible(true);
-                pagination.setManaged(true);
-                tblVwPurchaseOrder.toFront();
             }
 
             @Override
