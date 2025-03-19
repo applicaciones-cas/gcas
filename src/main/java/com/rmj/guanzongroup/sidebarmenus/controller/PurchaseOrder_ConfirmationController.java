@@ -762,16 +762,21 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
 
             @Override
             protected void succeeded() {
-                if (pagination != null) {
-                    pagination.setPageCount((int) Math.ceil((double) poPurchaseOrder_data.size() / ROWS_PER_PAGE));
-                    pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> {
-                        createPage(newIndex.intValue());
-                    });
+                progressIndicator.setVisible(false);
+
+                if (poPurchaseOrder_data == null || poPurchaseOrder_data.isEmpty()) {
+                    tblVwPurchaseOrder.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                } else {
+                    if (pagination != null) {
+                        int pageCount = (int) Math.ceil((double) poPurchaseOrder_data.size() / ROWS_PER_PAGE);
+                        pagination.setPageCount(pageCount);
+                        pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> createPage(newIndex.intValue()));
+                    }
+                    createPage(0);
+                    pagination.setVisible(true);
+                    pagination.setManaged(true);
+                    tblVwPurchaseOrder.toFront();
                 }
-                createPage(0);
-                pagination.setVisible(true);
-                pagination.setManaged(true);
-                tblVwPurchaseOrder.toFront();
             }
 
             @Override
