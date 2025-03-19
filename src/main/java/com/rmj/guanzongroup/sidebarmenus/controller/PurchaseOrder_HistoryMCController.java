@@ -147,7 +147,7 @@ public class PurchaseOrder_HistoryMCController implements Initializable, ScreenI
                 case PurchaseOrderStatus.CONFIRMED:
                     lsStatus = "CONFIRMED";
                     break;
-                case PurchaseOrderStatus.PROCESSED:
+                case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
                 case PurchaseOrderStatus.RETURN:
@@ -213,7 +213,7 @@ public class PurchaseOrder_HistoryMCController implements Initializable, ScreenI
             if (pnTblPODetailRow >= 0) {
                 tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription());
                 tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription());
-                tfVariant.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).ModelVariant().getDescription());
+                tfVariant.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription());
                 tfInventoryType.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().InventoryType().getDescription());
                 tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Color().getDescription());
                 tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getInventoryClassification());
@@ -238,37 +238,46 @@ public class PurchaseOrder_HistoryMCController implements Initializable, ScreenI
     }
 
     private void handleButtonAction(ActionEvent event) {
-        JSONObject loJSON = new JSONObject();
-        String lsButton = ((Button) event.getSource()).getId();
-        switch (lsButton) {
-            case "btnBrowse":
-                loJSON = poPurchasingController.PurchaseOrder().searchTransaction("", true);
-                if ("success".equals((String) loJSON.get("result"))) {
-                    loadMaster();
-                    loadDetail();
-                    loadTablePODetail();
-                    pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
-                } else {
-                    ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
-                }
-            case "btnPrint":
-                break;
-            case "btnTransHistory":
-                break;
-            case "btnClose":
-                if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
-                    if (poUnload != null) {
-                        poUnload.unloadForm(AnchorMain, poApp, psFormName);
+        try {
+            JSONObject loJSON = new JSONObject();
+            String lsButton = ((Button) event.getSource()).getId();
+            switch (lsButton) {
+                case "btnBrowse":
+                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("");
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        loadMaster();
+                        loadDetail();
+                        loadTablePODetail();
+                        pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                     } else {
-                        ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                        ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
                     }
-                }
-                break;
-            default:
-                ShowMessageFX.Warning("Please contact admin to assist about no button available", psFormName, null);
-                break;
+                    break;
+                case "btnPrint":
+                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                    }
+                    break;
+                case "btnTransHistory":
+                    break;
+                case "btnClose":
+                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                        if (poUnload != null) {
+                            poUnload.unloadForm(AnchorMain, poApp, psFormName);
+                        } else {
+                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                        }
+                    }
+                    break;
+                default:
+                    ShowMessageFX.Warning("Please contact admin to assist about no button available", psFormName, null);
+                    break;
+            }
+            initButtons(pnEditMode);
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+            Logger.getLogger(PurchaseOrder_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        initButtons(pnEditMode);
     }
 
     private void initTextFieldKeyPressed() {
@@ -380,10 +389,15 @@ public class PurchaseOrder_HistoryMCController implements Initializable, ScreenI
         btnPrint.setManaged(false);
         btnTransHistory.setVisible(fnEditMode != EditMode.UNKNOWN);
         btnTransHistory.setManaged(fnEditMode != EditMode.UNKNOWN);
+        if (poPurchasingController.PurchaseOrder().Master().getPrint().equals("1")) {
+            btnPrint.setText("Reprint");
+        } else {
+            btnPrint.setText("Print");
+        }
         if (fnEditMode == EditMode.READY) {
             switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
                 case PurchaseOrderStatus.OPEN:
-                case PurchaseOrderStatus.PROCESSED:
+                case PurchaseOrderStatus.APPROVED:
                 case PurchaseOrderStatus.CONFIRMED:
                     btnPrint.setVisible(true);
                     btnPrint.setManaged(true);

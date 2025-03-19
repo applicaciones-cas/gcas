@@ -168,7 +168,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                 case PurchaseOrderStatus.CONFIRMED:
                     lsStatus = "CONFIRMED";
                     break;
-                case PurchaseOrderStatus.PROCESSED:
+                case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
                 case PurchaseOrderStatus.RETURN:
@@ -234,7 +234,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
             if (pnTblPODetailRow >= 0) {
                 tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription());
                 tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription());
-                tfVariant.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).ModelVariant().getDescription());
+                tfVariant.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription());
                 tfInventoryType.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().InventoryType().getDescription());
                 tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Color().getDescription());
                 tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getInventoryClassification());
@@ -347,6 +347,10 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                     }
                     break;
                 case "btnPrint":
+                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                    }
                     break;
                 case "btnRetrieve":
                     loadTablePurchaseOrder();
@@ -675,7 +679,11 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
 
         btnTransHistory.setVisible(fnEditMode != EditMode.UNKNOWN);
         btnTransHistory.setManaged(fnEditMode != EditMode.UNKNOWN);
-
+        if (poPurchasingController.PurchaseOrder().Master().getPrint().equals("1")) {
+            btnPrint.setText("Reprint");
+        } else {
+            btnPrint.setText("Print");
+        }
         if (fnEditMode == EditMode.READY) {
             switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
                 case PurchaseOrderStatus.OPEN:
@@ -686,7 +694,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                     CustomCommonUtil.setVisible(true, btnReturn, btnVoid, btnUpdate, btnPrint);
                     CustomCommonUtil.setManaged(true, btnReturn, btnVoid, btnUpdate, btnPrint);
                     break;
-                case PurchaseOrderStatus.PROCESSED:
+                case PurchaseOrderStatus.APPROVED:
                     btnPrint.setVisible(true);
                     btnPrint.setManaged(true);
                     break;

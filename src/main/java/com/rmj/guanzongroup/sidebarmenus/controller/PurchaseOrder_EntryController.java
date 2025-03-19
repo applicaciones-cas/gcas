@@ -171,7 +171,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 case PurchaseOrderStatus.CONFIRMED:
                     lsStatus = "CONFIRMED";
                     break;
-                case PurchaseOrderStatus.PROCESSED:
+                case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
                 case PurchaseOrderStatus.RETURN:
@@ -273,7 +273,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             switch (lsButton) {
                 case "btnBrowse":
                     loJSON = poPurchasingController.PurchaseOrder().searchTransaction("");
-                    if ("success".equals((String) loJSON.get("result"))) {
+                    if (!"error".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();
                         loadTablePODetail();
@@ -467,6 +467,10 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     }
                     break;
                 case "btnPrint":
+                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                    }
                     break;
                 case "btnRetrieve":
                     loadTableStockRequest();
@@ -819,7 +823,11 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
         btnTransHistory.setVisible(fnEditMode != EditMode.ADDNEW && fnEditMode != EditMode.UNKNOWN);
         btnTransHistory.setManaged(fnEditMode != EditMode.ADDNEW && fnEditMode != EditMode.UNKNOWN);
-
+        if (poPurchasingController.PurchaseOrder().Master().getPrint().equals("1")) {
+            btnPrint.setText("Reprint");
+        } else {
+            btnPrint.setText("Print");
+        }
         if (fnEditMode == EditMode.READY) {
             switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
                 case PurchaseOrderStatus.OPEN:
@@ -827,7 +835,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     CustomCommonUtil.setVisible(true, btnPrint, btnUpdate);
                     CustomCommonUtil.setManaged(true, btnPrint, btnUpdate);
                     break;
-                case PurchaseOrderStatus.PROCESSED:
+                case PurchaseOrderStatus.APPROVED:
                     btnPrint.setVisible(true);
                     btnPrint.setManaged(true);
                     break;

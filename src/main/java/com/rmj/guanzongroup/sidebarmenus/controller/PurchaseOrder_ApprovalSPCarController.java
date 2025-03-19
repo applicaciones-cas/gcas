@@ -169,7 +169,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                 case PurchaseOrderStatus.CONFIRMED:
                     lsStatus = "CONFIRMED";
                     break;
-                case PurchaseOrderStatus.PROCESSED:
+                case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
                 case PurchaseOrderStatus.RETURN:
@@ -350,6 +350,10 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                     }
                     break;
                 case "btnPrint":
+                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                    }
                     break;
                 case "btnRetrieve":
                     loadTablePurchaseOrder();
@@ -680,14 +684,18 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
 
         btnTransHistory.setVisible(fnEditMode != EditMode.UNKNOWN);
         btnTransHistory.setManaged(fnEditMode != EditMode.UNKNOWN);
-
+        if (poPurchasingController.PurchaseOrder().Master().getPrint().equals("1")) {
+            btnPrint.setText("Reprint");
+        } else {
+            btnPrint.setText("Print");
+        }
         if (fnEditMode == EditMode.READY) {
             switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
                 case PurchaseOrderStatus.CONFIRMED:
                     CustomCommonUtil.setVisible(true, btnApprove, btnReturn, btnVoid, btnUpdate, btnPrint);
                     CustomCommonUtil.setManaged(true, btnApprove, btnReturn, btnVoid, btnUpdate, btnPrint);
                     break;
-                case PurchaseOrderStatus.PROCESSED:
+                case PurchaseOrderStatus.APPROVED:
                     btnPrint.setVisible(true);
                     btnPrint.setManaged(true);
                     break;
