@@ -103,8 +103,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     private double xOffset = 0;
     private double yOffset = 0;
 
-    int lastClickedRowDetail = -1;
-    int lastClickedRowMain = -1;
     @FXML
     private AnchorPane apMainAnchor;
 
@@ -265,7 +263,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     private TableColumn tblTotalDetail;
 
     @FXML
-    private TableView tblViewStock_Request;
+    private TableView tblViewPuchaseOrder;
 
     @FXML
     private TableColumn tblRowNo;
@@ -312,9 +310,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             loadRecordMaster();
             loadTableDetail();
 
-//        generateData(150); // Simulate 100 rows of data
-//        loadTab();
-//        highlight(tblViewOrderDetails, 0);
             pgPagination.setPageCount(1);
 
             pnEditMode = oTrans.getEditMode();
@@ -330,7 +325,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         oApp = foValue;
     }
 
-    public void revealSerialDialog() {
+    public void showSerialDialog() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Serial.fxml"));
             DeliveryAcceptance_SerialController controller = new DeliveryAcceptance_SerialController();
@@ -524,15 +519,16 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         if ("success".equals((String) poJSON.get("result"))) {
             poJSON = oTrans.getApprovedPurchaseOrder();
             if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {
                 loadTableMain();
             }
         } else {
-            poJSON.put("message", lsMessage + " is blank");
-            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+            poJSON.put("message", lsMessage + " cannot be empty.");
+            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
     }
+    
 
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -585,7 +581,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 poJSON = oTrans.Detail(pnDetail).setStockId("");
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                     return;
                                 }
                             }
@@ -599,7 +595,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 poJSON = oTrans.Detail(pnDetail).setStockId("");
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                     return;
                                 }
                             }
@@ -613,7 +609,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 poJSON = oTrans.Detail(pnDetail).setStockId("");
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                     return;
                                 }
                             }
@@ -631,7 +627,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         poJSON = oTrans.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
-                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
 
@@ -648,7 +644,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         poJSON = oTrans.Detail(pnDetail).setOrderQty((Integer.valueOf(lsValue)));
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
-                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
                         break;
@@ -665,7 +661,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         oTrans.Detail(pnDetail).getQuantity();
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
-                            ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
                         break;
@@ -1023,8 +1019,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
         tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
 
-        tblViewStock_Request.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewStock_Request.lookup("TableHeaderRow");
+        tblViewPuchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewPuchaseOrder.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 header.setReordering(false);
             });
@@ -1032,11 +1028,11 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
         filteredData = new FilteredList<>(main_data, b -> true);
         SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(tblViewStock_Request.comparatorProperty());
-        tblViewStock_Request.setItems(sortedData);
+        sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
+        tblViewPuchaseOrder.setItems(sortedData);
 
-//        tblViewStock_Request.setItems(main_data);
-        tblViewStock_Request.autosize();
+//        tblViewPuchaseOrder.setItems(main_data);
+        tblViewPuchaseOrder.autosize();
     }
 
     public void clearTextFields() {
@@ -1200,8 +1196,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     };
 
     private TableView<?> getFocusedTable() {
-        if (tblViewStock_Request.isFocused()) {
-            return tblViewStock_Request;
+        if (tblViewPuchaseOrder.isFocused()) {
+            return tblViewPuchaseOrder;
         } else if (tblViewOrderDetails.isFocused()) {
             return tblViewOrderDetails;
         }
@@ -1240,9 +1236,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         System.out.println("Tab pressed in Table 1");
                         moveToNextRow(tblViewOrderDetails, focusedCell);
                         break;
-                    case "tblViewStock_Request":
+                    case "tblViewPuchaseOrder":
                         System.out.println("Tab pressed in Table 2");
-                        moveToNextRow(tblViewStock_Request, focusedCell);
+                        moveToNextRow(tblViewPuchaseOrder, focusedCell);
                         break;
                     default:
                         System.out.println("Unknown Table");
@@ -1256,24 +1252,15 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     public void initTableOnClick() {
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
-            int currentRow = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
-            if (event.getClickCount() == 1 && currentRow == lastClickedRowDetail) {
-                System.out.println("Clicked the same row twice!");
+            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
+                pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
+                loadTableDetail();
             }
-            lastClickedRowDetail = currentRow;
-            pnDetail = currentRow;
-            loadTableDetail();
         });
 
-        tblViewStock_Request.setOnMouseClicked(event -> {
-            int currentRow = tblViewStock_Request.getSelectionModel().getSelectedIndex();
-            if (event.getClickCount() == 1) {
-                if (currentRow == lastClickedRowMain) {
-                    System.out.println("Clicked the same row twice!");
-                    ShowMessageFX.Warning("clicked twice", pxeModuleName, (String) poJSON.get("message"));
-                }
-                lastClickedRowMain = currentRow;
-                pnMain = currentRow;
+        tblViewPuchaseOrder.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
+                pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
                 if (pnMain >= 0) {
                     loadTableDetailFromMain();
                 }
@@ -1294,10 +1281,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             }
         });
 
-        tblViewStock_Request.setOnKeyPressed(tableScrollHandler);
+        tblViewPuchaseOrder.setOnKeyPressed(tableScrollHandler);
         tblViewOrderDetails.setOnKeyPressed(tableScrollHandler);
 
-        tblViewStock_Request.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabKey);
+        tblViewPuchaseOrder.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabKey);
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabKey);
 
     }
@@ -1352,16 +1339,16 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 >= main_data.size()) {
             if (!main_data.isEmpty()) {
                 /* FOCUS ON FIRST ROW */
-                tblViewStock_Request.getSelectionModel().select(0);
-                tblViewStock_Request.getFocusModel().focus(0);
-                pnMain = tblViewStock_Request.getSelectionModel().getSelectedIndex();
+                tblViewPuchaseOrder.getSelectionModel().select(0);
+                tblViewPuchaseOrder.getFocusModel().focus(0);
+                pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
 //                loadTableDetailFromMain();
 
             }
         } else {
             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-            tblViewStock_Request.getSelectionModel().select(pnMain);
-            tblViewStock_Request.getFocusModel().focus(pnMain);
+            tblViewPuchaseOrder.getSelectionModel().select(pnMain);
+            tblViewPuchaseOrder.getFocusModel().focus(pnMain);
 //            loadTableDetailFromMain();
         }
         loadTab();
@@ -1370,14 +1357,16 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     public void loadTableDetailFromMain() {
         try {
-            poJSON = new JSONObject();
-            poJSON = oTrans.addPurchaseOrderToPORDetail(oTrans.PurchaseOrderList(pnMain).getTransactionNo());
-            if ("error".equals((String) poJSON.get("message"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                return;
-            }
+            if (oTrans.getEditMode() == EditMode.ADDNEW || oTrans.getEditMode() == EditMode.UPDATE) {
+                poJSON = new JSONObject();
+                poJSON = oTrans.addPurchaseOrderToPORDetail(oTrans.PurchaseOrderList(pnMain).getTransactionNo());
+                if ("error".equals((String) poJSON.get("message"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    return;
+                }
 
-            loadTableDetail();
+                loadTableDetail();
+            }
 
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
@@ -1413,11 +1402,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
             double lnTotal = 0.0;
             for (lnCtr = 0; lnCtr < oTrans.getDetailCount(); lnCtr++) {
-
-                String.valueOf(oTrans.Detail(lnCtr).getUnitPrce());
-                String.valueOf(oTrans.Detail(lnCtr).getOrderQty());
-                String.valueOf(oTrans.Detail(lnCtr).getQuantity());
-
                 try {
 
                     lnTotal = oTrans.Detail(lnCtr).getUnitPrce().doubleValue() * oTrans.Detail(lnCtr).getQuantity();
@@ -1466,7 +1450,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         // Manage visibility and managed state of other buttons
-//        btnBrowse.setVisible(!lbShow);
+//        btnBrowse.setVisible(!lbShow); // Requires no change to state
         btnNew.setVisible(!lbShow);
 //        btnRetrieve.setVisible(!lbShow);
         btnClose.setVisible(!lbShow);
@@ -1511,31 +1495,29 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 //
 
     private void loadTab() {
-
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
         pgPagination.setPageCount(totalPage);
         pgPagination.setCurrentPageIndex(0);
         changeTableView(0, ROWS_PER_PAGE);
         pgPagination.currentPageIndexProperty().addListener(
                 (observable, oldValue, newValue) -> changeTableView(newValue.intValue(), ROWS_PER_PAGE));
-
     }
 
     private void changeTableView(int index, int limit) {
-        tblViewStock_Request.getSelectionModel().clearSelection();
+        tblViewPuchaseOrder.getSelectionModel().clearSelection();
         int fromIndex = index * limit;
         int toIndex = Math.min(fromIndex + limit, main_data.size());
         int minIndex = Math.min(toIndex, main_data.size());
         SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(
                 FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
-        sortedData.comparatorProperty().bind(tblViewStock_Request.comparatorProperty());
+        sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
         try {
-            tblViewStock_Request.setItems(FXCollections.observableArrayList(filteredData.subList(fromIndex, toIndex)));
+            tblViewPuchaseOrder.setItems(FXCollections.observableArrayList(filteredData.subList(fromIndex, toIndex)));
         } catch (Exception e) {
 
         }
 
-        tblViewStock_Request.scrollTo(0);
+        tblViewPuchaseOrder.scrollTo(0);
     }
 
     private void changeTableViewDetail(int index, int limit) {
