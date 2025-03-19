@@ -504,7 +504,7 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                 tfDestination, tfAdvancePRate,
                 tfBrand, tfModel,
                 tfBO, tfRO,
-                tfCost, tfOrderQuantity);
+                tfCost, tfOrderQuantity,tfSearchIndustry,tfSearchCompany,tfSearchSupplier,tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }

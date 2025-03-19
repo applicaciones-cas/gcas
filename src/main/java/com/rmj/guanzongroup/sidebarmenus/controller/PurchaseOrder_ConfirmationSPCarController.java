@@ -509,7 +509,7 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
         List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount,
                 tfReferenceNo, tfDiscountRate, tfDiscountAmount,
                 tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier,
-                tfSearchReferenceNo);
+                tfSearchReferenceNo,tfSearchIndustry,tfSearchCompany,tfSearchSupplier,tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }

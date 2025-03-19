@@ -510,7 +510,7 @@ public class PurchaseOrder_ConfirmationSPMCController implements Initializable, 
                 tfReferenceNo, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate, 
                 tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier,
-                tfSearchReferenceNo);
+                tfSearchReferenceNo,tfSearchIndustry,tfSearchCompany,tfSearchSupplier,tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }

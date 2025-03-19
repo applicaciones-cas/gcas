@@ -509,7 +509,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                 tfDestination, tfAdvancePRate,
                 tfBrand, tfModel,
                 tfBO, tfRO,
-                tfCost, tfOrderQuantity);
+                tfCost, tfOrderQuantity,tfSearchIndustry,tfSearchCompany,tfSearchSupplier,tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
