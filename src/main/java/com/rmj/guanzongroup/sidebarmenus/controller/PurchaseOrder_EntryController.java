@@ -435,6 +435,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         if (pnEditMode == EditMode.ADDNEW) {
                             clearDetailFields();
                             clearMasterFields();
+                            poDetail_data.clear();
                             pnEditMode = EditMode.UNKNOWN;
                             poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
                             if ("error".equals((String) loJSON.get("result"))) {

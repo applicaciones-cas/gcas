@@ -448,6 +448,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                         if (pnEditMode == EditMode.ADDNEW) {
                             clearDetailFields();
                             clearMasterFields();
+                            poDetail_data.clear();
                             pnEditMode = EditMode.UNKNOWN;
                             poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
                             if ("error".equals((String) loJSON.get("result"))) {
@@ -471,7 +472,6 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                             }
                             tfSupplier.setText(lsSupplierName);
                             loadTableStockRequest();
-                            poDetail_data.clear();
                         } else {
                             loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                             if ("success".equals((String) loJSON.get("result"))) {
