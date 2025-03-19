@@ -194,7 +194,7 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
             if (controller != null) {
                 controller.setGRider(oApp);
                 controller.setObject(poPurchaseReceivingController);
-                controller.setEntryNo(pnDetail);
+                controller.setEntryNo(pnDetail+1);
                 System.out.println("Controller loaded successfully: " + controller.getClass().getName());
             } else {
                 System.out.println("Controller is null!");
@@ -854,9 +854,10 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
 
     public void loadRecordDetail() {
         try {
+            poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
             tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription());
             tfModel.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Model().getDescription());
-            tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Model().getDescription());// TODO
+            tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).ModelVariant().getDescription());
             tfColor.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Color().getDescription());
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());

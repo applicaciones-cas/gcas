@@ -125,7 +125,6 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
             String lsButton = clickedButton.getId();
             switch (lsButton) {
                 case "btnOkay":
-                    break;
                 case "btnClose":
                     CommonUtils.closeStage(btnClose);
                     break;
@@ -148,24 +147,16 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
             /*Lost Focus*/
             switch (lsTxtFieldID) {
                 case "tfEngineNo":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial01("");
-                    }
+                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial01(lsValue);
                     break;
                 case "tfFrameNo":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial02("");
-                    }
+                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial02(lsValue);
                     break;
                 case "tfCSNo":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setConductionSticker("");
-                    }
+                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setConductionStickerNo(lsValue);
                     break;
                 case "tfPlateNo":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setPlateNo("");
-                    }
+                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setPlateNo(lsValue);
                     break;
                 case "tfLocation":
                     if (lsValue.isEmpty()) {
@@ -225,7 +216,7 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
             if(pnDetail >= 0) {
                 tfEngineNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial01());
                 tfFrameNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial02());
-                tfCSNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getConductionSticker());
+                tfCSNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getConductionStickerNo());
                 tfPlateNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getPlateNo());
                 tfLocation.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).Location().getDescription());
             }
@@ -243,7 +234,7 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
         details_data.clear();
         
         try {
-            poJSON = poPurchaseReceivingController.getPurchaseOrderReceivingSerial(pnEntryNo);
+                poJSON = poPurchaseReceivingController.getPurchaseOrderReceivingSerial(pnEntryNo);
             for (lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount() - 1; lnCtr++) {
                 if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo){ 
                     details_data.add(
@@ -251,7 +242,7 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
                                 String.valueOf(lnRow + 1),
                                 String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01()),
                                 String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02()),
-                                String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getConductionSticker()),
+                                String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getConductionStickerNo()),
                                 String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getPlateNo()),
                                 String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).Location().getDescription()),
                                 String.valueOf(lnCtr),
@@ -292,7 +283,7 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
                 ModelDeliveryAcceptance_Serial selectedItem = tblViewSerialList.getItems().get(tblViewSerialList.getSelectionModel().getSelectedIndex());
                 pnDetail = Integer.valueOf(selectedItem.getIndex07());
                 
-                loadTableDetail();
+                loadPurchaseOrderReceivingSerial();
             }
         });
     }
@@ -303,6 +294,9 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
         tfCSNo.focusedProperty().addListener(txtMaster_Focus);
         tfPlateNo.focusedProperty().addListener(txtMaster_Focus);
         tfLocation.focusedProperty().addListener(txtMaster_Focus);
+        
+        tfLocation.setOnKeyPressed(this::txtField_KeyPressed);
+        
     }
     
     public void initDetailsGrid() {
@@ -326,6 +320,9 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
                 header.setReordering(false);
             });
         });
+        
+        tblViewSerialList.setItems(details_data);
+        tblViewSerialList.autosize();
     }
     
 }

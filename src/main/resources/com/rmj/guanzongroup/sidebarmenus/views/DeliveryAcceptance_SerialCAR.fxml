@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="488.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" prefHeight="488.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -142,11 +142,11 @@
                                                     <children>
                                                         <TableView fx:id="tblViewSerialList" prefHeight="200.0" prefWidth="200.0">
                                                             <columns>
-                                                                <TableColumn fx:id="tblRowNoDetail" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" style="-fx-font-size: 12;" text="No." />
+                                                                <TableColumn fx:id="tblRowNoDetail" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" style="-fx-font-size: 12;" text="No." />
                                                                 <TableColumn fx:id="tblEngineNoDetail" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" style="-fx-font-size: 12;" text="Engine No." />
                                                                 <TableColumn fx:id="tblFrameNoDetail" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" style="-fx-font-size: 12;" text="Frame No." />
-                                                <TableColumn fx:id="tblConductionStickerNoDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" style="-fx-font-size: 12;" text="CS No." />
-                                                <TableColumn fx:id="tblPlateNoDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" style="-fx-font-size: 12;" text="Plate No." />
+                                                <TableColumn fx:id="tblConductionStickerNoDetail" maxWidth="80.0" minWidth="80.0" resizable="false" style="-fx-font-size: 12;" text="CS No." />
+                                                <TableColumn fx:id="tblPlateNoDetail" maxWidth="80.0" minWidth="80.0" resizable="false" style="-fx-font-size: 12;" text="Plate No." />
                                                 <TableColumn fx:id="tblLocationDetail" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" style="-fx-font-size: 12;" text="Location" />
                                                             </columns>
                                              <columnResizePolicy>
