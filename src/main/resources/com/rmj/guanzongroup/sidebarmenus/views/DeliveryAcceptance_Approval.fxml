@@ -90,6 +90,72 @@
                             <children>
                                 <HBox fx:id="hbButtons" alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
+                              <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" layoutX="270.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Update">
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="EDIT" size="20" />
+                                 </graphic>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" layoutX="185.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Search">
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="SEARCH" size="20" />
+                                 </graphic>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" layoutX="100.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Save">
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="SAVE" size="20" />
+                                 </graphic>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" layoutX="185.0" layoutY="15.0" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Cancel">
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="TIMES" size="20" />
+                                 </graphic>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Button>
+                                        <Button fx:id="btnApprove" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Approve">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="CHECK" size="20" />
+                                            </graphic>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                                        </Button>
+                              <Button fx:id="btnVoid" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="TIMES" size="20" />
+                                 </graphic>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Button>
                                         <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Print">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="PRINT" size="20" />
@@ -101,6 +167,17 @@
                                     <Font size="12.0" />
                                  </font>
                                         </Button>
+                              <Button fx:id="btnReturn" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Return">
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="REPEAT" size="20" />
+                                 </graphic>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Button>
                               <Button fx:id="btnHistory" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="History">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="BOOK" size="20" />
@@ -464,6 +541,7 @@
                                                         <rowConstraints>
                                                           <RowConstraints maxHeight="60.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
                                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                          <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         </rowConstraints>
                                                          <children>
                                                             <AnchorPane fx:id="apAttachments" prefHeight="200.0" prefWidth="200.0">
@@ -503,6 +581,33 @@
                                               <TableColumn fx:id="tblFileNameAttachment" maxWidth="1.7976931348623157E308" prefWidth="268.9999694824219" style="-fx-font-size: 12;" text="File Name" />
                                             </columns>
                                           </TableView>
+                                                               </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane fx:id="apAttachmentButtons" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+                                                               <children>
+                                                                  <GridPane layoutX="94.0" layoutY="-20.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                                                                    <columnConstraints>
+                                                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="295.0" minWidth="10.0" prefWidth="262.5" />
+                                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="26.0" minWidth="26.0" prefWidth="26.0" />
+                                                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="5.0" />
+                                                                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="26.0" minWidth="26.0" prefWidth="26.0" />
+                                                                    </columnConstraints>
+                                                                    <rowConstraints>
+                                                                      <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+                                                                    </rowConstraints>
+                                                                     <children>
+                                                <Button fx:id="btnAddAttachment" mnemonicParsing="false" onAction="#cmdButton_Click" styleClass="button_process" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1">
+                                                                           <graphic>
+                                                                              <FontAwesomeIconView glyphName="PLUS" />
+                                                                           </graphic>
+                                                </Button>
+                                                <Button fx:id="btnRemoveAttachment" mnemonicParsing="false" onAction="#cmdButton_Click" styleClass="button_process" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="3">
+                                                   <graphic>
+                                                      <FontAwesomeIconView fill="WHITE" glyphName="TRASH" />
+                                                   </graphic>
+                                                </Button>
+                                                                     </children>
+                                                                  </GridPane>
                                                                </children>
                                                             </AnchorPane>
                                                          </children>

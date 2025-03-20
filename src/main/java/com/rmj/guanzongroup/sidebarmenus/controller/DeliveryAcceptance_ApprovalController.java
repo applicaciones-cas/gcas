@@ -4,12 +4,10 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ConfirmationController.poPurchaseReceivingController;
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_EntryController.poPurchaseReceivingController;
+import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ApprovalController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrder;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
@@ -21,13 +19,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.TranslateTransition;
@@ -47,7 +41,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
@@ -80,6 +73,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
@@ -92,14 +86,14 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class DeliveryAcceptance_ConfirmationController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_ApprovalController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Confirmation";
+    private final String pxeModuleName = "Purchasing Order Receiving Approval";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
@@ -129,230 +123,155 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private double yOffset = 0;
 
     @FXML
+    private AnchorPane apMainAnchor;
+    @FXML
     private AnchorPane apBrowse;
-
     @FXML
     private TextField tfSearchIndustry;
-
     @FXML
     private TextField tfSearchSupplier;
-
     @FXML
     private TextField tfSearchReferenceNo;
-
     @FXML
     private TextField tfSearchCompany;
-
     @FXML
     private AnchorPane apButton;
-
     @FXML
     private HBox hbButtons;
-
     @FXML
     private Button btnUpdate;
-
     @FXML
     private Button btnSearch;
-
     @FXML
     private Button btnSave;
-
     @FXML
     private Button btnCancel;
-
     @FXML
-    private Button btnConfirm;
-
+    private Button btnApprove;
     @FXML
     private Button btnVoid;
-
     @FXML
     private Button btnPrint;
-
     @FXML
     private Button btnReturn;
-
     @FXML
     private Button btnHistory;
-
     @FXML
     private Button btnRetrieve;
-
     @FXML
     private Button btnClose;
-
-    @FXML
-    private AnchorPane apMainAnchor;
-
     @FXML
     private AnchorPane apMaster;
-
     @FXML
     private Label lblStatus;
-
     @FXML
     private TextField tfTransactionNo;
-
     @FXML
     private TextField tfCompany;
-
     @FXML
     private TextField tfSupplier;
-
     @FXML
     private TextField tfTerm;
-
     @FXML
     private TextField tfTrucking;
-
     @FXML
     private TextArea taRemarks;
-
     @FXML
     private TextField tfReferenceNo;
-
     @FXML
     private DatePicker dpReferenceDate;
-
     @FXML
     private TextField tfIndustry;
-
     @FXML
     private TextField tfDiscountAmount;
-
     @FXML
     private TextField tfTotal;
-
     @FXML
     private TextField tfDiscountRate;
-
     @FXML
     private DatePicker dpTransactionDate;
-
     @FXML
     private AnchorPane apDetail;
-
     @FXML
     private TextField tfBrand;
-
     @FXML
     private TextField tfModel;
-
     @FXML
     private TextField tfDescription;
-
     @FXML
     private TextField tfBarcode;
-
     @FXML
     private TextField tfColor;
-
     @FXML
     private TextField tfMeasure;
-
     @FXML
     private TextField tfInventoryType;
-
     @FXML
     private TextField tfCost;
-
     @FXML
     private TextField tfOrderQuantity;
-
     @FXML
     private TextField tfReceiveQuantity;
-
     @FXML
     private TextField tfOrderNo;
-
     @FXML
     private TextField tfSupersede;
-
     @FXML
     private DatePicker dpExpiryDate;
-
     @FXML
     private TableView tblViewOrderDetails;
-
     @FXML
     private TableColumn tblRowNoDetail;
-
     @FXML
     private TableColumn tblOrderNoDetail;
-
     @FXML
     private TableColumn tblBarcodeDetail;
-
     @FXML
     private TableColumn tblDescriptionDetail;
-
     @FXML
     private TableColumn tblCostDetail;
-
     @FXML
     private TableColumn tblOrderQuantityDetail;
-
     @FXML
     private TableColumn tblReceiveQuantityDetail;
-
     @FXML
     private TableColumn tblTotalDetail;
-
     @FXML
     private TableView tblViewPuchaseOrder;
-
     @FXML
     private TableColumn tblRowNo;
-
     @FXML
     private TableColumn tblSupplier;
-
     @FXML
     private TableColumn tblDate;
-
     @FXML
     private TableColumn tblReferenceNo;
-
     @FXML
     private Pagination pgPagination;
-
     @FXML
     private AnchorPane apAttachments;
-
     @FXML
     private TextField tfAttachmentNo;
-
     @FXML
     private TextField tfAttachmentType;
-
     @FXML
     private TableView tblAttachments;
-
     @FXML
     private TableColumn tblRowNoAttachment;
-
     @FXML
     private TableColumn tblFileNameAttachment;
-
     @FXML
     private AnchorPane apAttachmentButtons;
-
     @FXML
     private Button btnAddAttachment;
-
     @FXML
     private Button btnRemoveAttachment;
-
     @FXML
     private StackPane stackPane1;
-
     @FXML
     private ImageView imageView;
-
     @FXML
     private Button btnArrowLeft;
-
     @FXML
     private Button btnArrowRight;
 
@@ -520,7 +439,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     case "btnArrowLeft":
                         slideImage(-1);
                         break;
-                    case "btnConfirm":
+                    case "btnApprove":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to confirm transaction?") == true) {
                             poJSON = poPurchaseReceivingController.ConfirmTransaction("");
@@ -592,13 +511,13 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
             }
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -642,8 +561,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         btnPrint.setManaged(lbShow3);
         btnHistory.setManaged(lbShow3);
 
-        btnConfirm.setVisible(lbShow3);
-        btnConfirm.setManaged(lbShow3);
+        btnApprove.setVisible(lbShow3);
+        btnApprove.setManaged(lbShow3);
         btnVoid.setVisible(lbShow3);
         btnVoid.setManaged(lbShow3);
 
@@ -677,9 +596,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         String lsMessage = "";
         poJSON.put("result", "success");
 
-
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(false, poPurchaseReceivingController.Master().getReferenceNo());
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true, poPurchaseReceivingController.Master().getReferenceNo());
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {
@@ -1296,13 +1214,71 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
+    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
+        poJSON = new JSONObject();
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            if (!newValue) { // Lost focus
+
+            }
+
+            if (!newValue) { // Lost focus
+                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
+                String lsID = datePicker.getId();
+                LocalDate selectedDate = datePicker.getValue();
+                LocalDate localbdate = LocalDate.parse(selectedDate.toString(), formatter);
+                String formattedDate = formatter.format(selectedDate);
+                LocalDate currentDate = LocalDate.now();
+
+                LocalDate localDate = (selectedDate != null) ? LocalDate.parse(selectedDate.toString(), formatter) : null;
+                switch (lsID) {
+                    case "dpTransactionDate":
+                        if (selectedDate.isAfter(currentDate)) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "Selected date cannot be in the future.");
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        } else {
+                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+                            if (localDate != null) {
+                                datePicker.setValue(localDate);
+                            }
+                        }
+                        break;
+                    case "dpReferenceDate":
+                        if (selectedDate.isAfter(currentDate)) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "Selected date cannot be in the future.");
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        } else {
+                            poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+                            if (localDate != null) {
+                                datePicker.setValue(localDate);
+                            }
+                        }
+                        break;
+                    default:
+                        System.out.println("Unknown DatePicker.");
+                        break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    };
+
     public void initTextFields() {
+        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
+        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
+
         tfSearchCompany.focusedProperty().addListener(txtField_Focus);
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
@@ -1353,36 +1329,28 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         // Blank content
 //        dpReferenceDate
 //        dpDate
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        dpReferenceDate.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-
-                return (date != null) ? date.format(formatter) : "";
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
-            }
-        });
-
-        dpReferenceDate.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) { // Lost focus
-                LocalDate selectedDate = dpReferenceDate.getValue();
-                LocalDate localbdate = LocalDate.parse(selectedDate.toString(), formatter);
-                String formattedDate = formatter.format(selectedDate);
-                dpReferenceDate.setValue(localbdate);
-            }
-        });
-
-    }
-
-    public void getSelectedMain() {
-
-    }
-
-    public void getSelectedDetail() {
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        dpReferenceDate.setConverter(new StringConverter<LocalDate>() {
+//            @Override
+//            public String toString(LocalDate date) {
+//
+//                return (date != null) ? date.format(formatter) : "";
+//            }
+//
+//            @Override
+//            public LocalDate fromString(String string) {
+//                return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
+//            }
+//        });
+//
+//        dpReferenceDate.focusedProperty().addListener((observable, oldValue, newValue) -> {
+//            if (!newValue) { // Lost focus
+//                LocalDate selectedDate = dpReferenceDate.getValue();
+//                LocalDate localbdate = LocalDate.parse(selectedDate.toString(), formatter);
+//                String formattedDate = formatter.format(selectedDate);
+//                dpReferenceDate.setValue(localbdate);
+//            }
+//        });
 
     }
 
@@ -1567,9 +1535,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                                     String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                             ));
                         } catch (SQLException ex) {
-                            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (GuanzonException ex) {
-                            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
                     }
@@ -1628,9 +1596,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1685,9 +1653,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1774,9 +1742,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1822,11 +1790,11 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             }
 
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1909,11 +1877,11 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         }
 
                     } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
 
@@ -2047,9 +2015,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
             poPurchaseReceivingController.Master().Industry().getDescription();
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         initTextFields();

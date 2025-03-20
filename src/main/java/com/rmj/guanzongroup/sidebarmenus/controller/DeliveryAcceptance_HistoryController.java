@@ -4,12 +4,10 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ConfirmationController.poPurchaseReceivingController;
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_EntryController.poPurchaseReceivingController;
+import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_HistoryController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrder;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
@@ -21,13 +19,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.TranslateTransition;
@@ -47,7 +41,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
@@ -84,6 +77,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
+import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -92,14 +86,14 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class DeliveryAcceptance_ConfirmationController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_HistoryController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Confirmation";
+    private final String pxeModuleName = "Purchasing Receiving History";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
@@ -129,6 +123,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private double yOffset = 0;
 
     @FXML
+    private AnchorPane apMainAnchor;
+
+    @FXML
     private AnchorPane apBrowse;
 
     @FXML
@@ -150,28 +147,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private HBox hbButtons;
 
     @FXML
-    private Button btnUpdate;
-
-    @FXML
-    private Button btnSearch;
-
-    @FXML
-    private Button btnSave;
-
-    @FXML
-    private Button btnCancel;
-
-    @FXML
-    private Button btnConfirm;
-
-    @FXML
-    private Button btnVoid;
-
-    @FXML
     private Button btnPrint;
-
-    @FXML
-    private Button btnReturn;
 
     @FXML
     private Button btnHistory;
@@ -181,9 +157,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
     @FXML
     private Button btnClose;
-
-    @FXML
-    private AnchorPane apMainAnchor;
 
     @FXML
     private AnchorPane apMaster;
@@ -336,15 +309,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private TableColumn tblFileNameAttachment;
 
     @FXML
-    private AnchorPane apAttachmentButtons;
-
-    @FXML
-    private Button btnAddAttachment;
-
-    @FXML
-    private Button btnRemoveAttachment;
-
-    @FXML
     private StackPane stackPane1;
 
     @FXML
@@ -356,250 +320,71 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     @FXML
     private Button btnArrowRight;
 
+    /**
+     * Initializes the controller class.
+     */
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
         String tabText = "";
 
-        try {
-            Object source = event.getSource();
-            if (source instanceof Button) {
-                Button clickedButton = (Button) source;
-                String lsButton = clickedButton.getId();
-                switch (lsButton) {
+        Object source = event.getSource();
+        if (source instanceof Button) {
+            Button clickedButton = (Button) source;
+            String lsButton = clickedButton.getId();
+            switch (lsButton) {
 
-                    case "btnBrowse":
-                        poJSON = poPurchaseReceivingController.searchTransaction();
-                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            tfTransactionNo.requestFocus();
-                            return;
-                        }
-                        pnEditMode = poPurchaseReceivingController.getEditMode();
-                        break;
-
-                    case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord();
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        }
-
-                        break;
-                    case "btnClose":
-                        unloadForm appUnload = new unloadForm();
-                        if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-                            poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                            if (!"success".equals((String) poJSON.get("result"))) {
-                                System.err.println((String) poJSON.get("message"));
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            }
-                            clearTextFields();
-                            appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
-                        } else {
-                            return;
-                        }
-
-                    case "btnUpdate":
-                        poJSON = poPurchaseReceivingController.UpdateTransaction();
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            return;
-                        }
-                        pnEditMode = poPurchaseReceivingController.getEditMode();
-                        break;
-                    case "btnSearch":
-                        if (lastFocusedTextField != null) {
-                            // Create a simulated KeyEvent for F3 key press
-                            KeyEvent keyEvent = new KeyEvent(
-                                    KeyEvent.KEY_PRESSED,
-                                    "",
-                                    "F3",
-                                    KeyCode.F3,
-                                    false, false, false, false);
-
-                            lastFocusedTextField.fireEvent(keyEvent);
-                        } else {
-                            System.out.println("No TextField is currently focused.");
-                        }
-                        break;
-                    case "btnCancel":
-                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                            //get last retrieved Company and Supplier
-
-                            poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                            if (!"success".equals((String) poJSON.get("result"))) {
-                                System.err.println((String) poJSON.get("message"));
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            }
-
-                            lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
-                            pnEditMode = EditMode.UNKNOWN;
-                            clearTextFields();
-
-                            break;
-                        } else {
-                            return;
-                        }
-                    case "btnHistory":
-                        break;
-                    case "btnRetrieve":
-                        //Retrieve data from purchase order to table main
-                        retrievePOR();
-                        break;
-                    case "btnSave":
-                        //Validator
-                        poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.SaveTransaction();
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                return;
-                            } else {
-                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                                if (!"success".equals((String) poJSON.get("result"))) {
-                                    System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
-                                pnEditMode = EditMode.UNKNOWN;
-                                clearTextFields();
-                            }
-                        } else {
-                            return;
-                        }
-
-                        break;
-                    case "btnAddAttachment":
-                try {
-                        fileChooser = new FileChooser();
-                        fileChooser.setTitle("Choose Image");
-                        fileChooser.getExtensionFilters().addAll(
-                                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif")
-                        );
-                        java.io.File selectedFile = fileChooser.showOpenDialog((Stage) btnAddAttachment.getScene().getWindow());
-
-                        if (selectedFile != null) {
-                            // Read image from the selected file
-                            Path imgPath = selectedFile.toPath();
-                            Image loimage = new Image(Files.newInputStream(imgPath));
-                            imageView.setImage(loimage);
-
-                            String imgPath2 = selectedFile.toString();
-                            img_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(img_data.size()), imgPath2));
-
-                            if (img_data.size() > 1) {
-                                pnAttachment = img_data.size() - 1;
-                            }
-                            loadTableAttachment();
-
-                            tblAttachments.getFocusModel().focus(pnAttachment);
-                            tblAttachments.getSelectionModel().select(pnAttachment);
-
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                case "btnPrint":
+                    poJSON = poPurchaseReceivingController.printRecord();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
+
                     break;
-                    case "btnRemoveAttachment":
-                        img_data.remove(pnAttachment);
-                        if (pnAttachment != 0) {
-                            pnAttachment -= 1;
+                case "btnClose":
+                    unloadForm appUnload = new unloadForm();
+                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                        poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
-                        loadTableAttachment();
-                        initAttachmentsGrid();
-                        break;
-                    case "btnArrowRight":
-                        slideImage(1);
-                        break;
-                    case "btnArrowLeft":
-                        slideImage(-1);
-                        break;
-                    case "btnConfirm":
-                        poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to confirm transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.ConfirmTransaction("");
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                return;
-                            } else {
-                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                        clearTextFields();
+                        appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
+                    } else {
+                        return;
+                    }
 
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                case "btnHistory":
+                    break;
+                case "btnRetrieve":
+                    //Retrieve data from purchase order to table main
+                    retrievePOR();
+                    break;
 
-                                poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                                if (!"success".equals((String) poJSON.get("result"))) {
-                                    System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-                                clearTextFields();
-                                pnEditMode = EditMode.UNKNOWN;
-                                highlight(tblViewPuchaseOrder, pnMain, "#1AB0E5");
-                                loadTableDetail();
-                                clearTextFields();
-                            }
-                        } else {
-                            return;
-                        }
-                        break;
-                    case "btnVoid":
-                        poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.VoidTransaction("");
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                return;
-                            } else {
-                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                //get last retrieved Company and Supplier
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
-                                poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                                if (!"success".equals((String) poJSON.get("result"))) {
-                                    System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-                                clearTextFields();
-                                pnEditMode = EditMode.UNKNOWN;
-                                highlight(tblViewPuchaseOrder, pnMain, "#F7706A");
-                                loadTableDetail();
-                            }
-                        } else {
-                            return;
-                        }
-                        break;
-                    default:
-                        ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
-                        break;
-                }
-                initButton(pnEditMode);
-
-                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment")
-                        || lsButton.equals("btnRemoveAttachment") || lsButton.equals("btnArrowRight")
-                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnVoid") || lsButton.equals("btnRetrieve")) {
-
-                } else {
-                    loadRecordMaster();
-                    loadTableDetail();
-                }
-
+                case "btnArrowRight":
+                    slideImage(1);
+                    break;
+                case "btnArrowLeft":
+                    slideImage(-1);
+                    break;
+                default:
+                    ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                    break;
             }
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            initButton(pnEditMode);
+
+            if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment")
+                    || lsButton.equals("btnRemoveAttachment") || lsButton.equals("btnArrowRight")
+                    || lsButton.equals("btnArrowLeft") || lsButton.equals("btnVoid") || lsButton.equals("btnRetrieve")) {
+
+            } else {
+                loadRecordMaster();
+                loadTableDetail();
+            }
+
         }
+
     }
 
     private void initButton(int fnValue) {
@@ -620,39 +405,18 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
         // Manage visibility and managed state of other buttons
 
-        btnReturn.setVisible(lbShow2);
-        btnReturn.setManaged(lbShow2);
-
         btnClose.setVisible(lbShow4);
         btnClose.setManaged(lbShow4);
 
-        btnSearch.setVisible(lbShow1);
-        btnSave.setVisible(lbShow1);
-        btnCancel.setVisible(lbShow1);
-
-        btnSearch.setManaged(lbShow1);
-        btnSave.setManaged(lbShow1);
-        btnCancel.setManaged(lbShow1);
-
-        btnUpdate.setVisible(lbShow3);
         btnPrint.setVisible(lbShow3);
         btnHistory.setVisible(lbShow3);
 
-        btnUpdate.setManaged(lbShow3);
         btnPrint.setManaged(lbShow3);
         btnHistory.setManaged(lbShow3);
-
-        btnConfirm.setVisible(lbShow3);
-        btnConfirm.setManaged(lbShow3);
-        btnVoid.setVisible(lbShow3);
-        btnVoid.setManaged(lbShow3);
 
 //        apBrowse.setDisable(lbShow); // no usage
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
-
-        btnAddAttachment.setDisable(!lbShow2);
-        btnRemoveAttachment.setDisable(!lbShow2);
 
         //fix position here
 //        btnClose.setVisible(!lbproceed);
@@ -677,7 +441,18 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         String lsMessage = "";
         poJSON.put("result", "success");
 
-
+//        if (poPurchaseReceivingController.Master().getIndustryId().equals("")) {
+//            poJSON.put("result", "error");
+//            lsMessage = "Industry";
+//        }
+//        if (poPurchaseReceivingController.Master().getCompanyId().equals("")) {
+//            poJSON.put("result", "error");
+//            lsMessage += lsMessage.isEmpty() ? "Company" : " & Company";
+//        }
+//        if (poPurchaseReceivingController.Master().getSupplierId().equals("")) {
+//            poJSON.put("result", "error");
+//            lsMessage += lsMessage.isEmpty() ? "Supplier" : " & Supplier";
+//        }
         if ("success".equals((String) poJSON.get("result"))) {
             poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(false, poPurchaseReceivingController.Master().getReferenceNo());
             if (!"success".equals((String) poJSON.get("result"))) {
@@ -1296,9 +1071,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1567,9 +1342,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                                     String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                             ));
                         } catch (SQLException ex) {
-                            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (GuanzonException ex) {
-                            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
                     }
@@ -1628,9 +1403,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1685,9 +1460,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1774,9 +1549,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1822,11 +1597,11 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             }
 
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1909,11 +1684,11 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         }
 
                     } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
 
@@ -2034,8 +1809,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
+    public void initialize(URL url, ResourceBundle rb) {
         poPurchaseReceivingController = new PurchaseOrderReceivingControllers(oApp, null).PurchaseOrderReceiving();
         poJSON = new JSONObject();
         poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
@@ -2047,9 +1821,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
             poPurchaseReceivingController.Master().Industry().getDescription();
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         initTextFields();
@@ -2069,4 +1843,5 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
+
 }
