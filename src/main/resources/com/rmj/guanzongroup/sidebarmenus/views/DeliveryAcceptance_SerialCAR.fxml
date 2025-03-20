@@ -120,7 +120,7 @@
                                           <TextField fx:id="tfPlateNo" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                           <Label text="Location" GridPane.rowIndex="5" />
                                           <TextField fx:id="tfLocation" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                          <CheckBox fx:id="cbApplyToAll" mnemonicParsing="false" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                                          <CheckBox fx:id="cbApplyToAll" mnemonicParsing="false" onAction="#cmdCheckBox_Click" GridPane.columnIndex="6" GridPane.rowIndex="5" />
                                           <Label text="Apply to All" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                                           </children>
                                                       </GridPane>
@@ -140,7 +140,7 @@
                                                         <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <TableView fx:id="tblViewSerialList" prefHeight="200.0" prefWidth="200.0">
+                                                        <TableView fx:id="tblViewDetail" prefHeight="200.0" prefWidth="200.0">
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNoDetail" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" style="-fx-font-size: 12;" text="No." />
                                                                 <TableColumn fx:id="tblEngineNoDetail" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" style="-fx-font-size: 12;" text="Engine No." />

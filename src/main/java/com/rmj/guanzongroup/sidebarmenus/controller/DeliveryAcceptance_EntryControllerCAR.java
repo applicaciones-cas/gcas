@@ -67,6 +67,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
+import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 
 /**
@@ -242,6 +243,7 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
                             tfTransactionNo.requestFocus();
                             return;
                         }
+                        poPurchaseReceivingController.resetOthers();
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
 
@@ -274,6 +276,7 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
                         if (!lsSupplierId.isEmpty()) {
                             poPurchaseReceivingController.SearchSupplier(lsSupplierId, true);
                         }
+                        poPurchaseReceivingController.resetOthers();
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnUpdate":
@@ -439,10 +442,17 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
             /*Lost Focus*/
             switch (lsTxtFieldID) {
                 case "tfBrand":
+                    //if value is blank then reset
+                    if (lsValue.equals("")) {
+                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
+                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setModelVariantId("");
+                    }
                 case "tfModel":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
+                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setModelVariantId("");
                     }
                     break;
                 case "tfCost":
@@ -625,7 +635,7 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
 
                             break;
                         case "tfBrand":
-                            poJSON = poPurchaseReceivingController.SearchBrand(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchBrand(lsValue, false, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfBrand.setText("");
@@ -633,7 +643,7 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
                             }
                             break;
                         case "tfModel":
-                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfModel.setText("");
@@ -854,10 +864,16 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
 
     public void loadRecordDetail() {
         try {
-            poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
+            
+            if(poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")){
+                poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
+                poPurchaseReceivingController.Detail(pnDetail).setModelVariantId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getVariantId());
+            } 
+            
             tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription());
-            tfModel.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Model().getDescription());
             tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).ModelVariant().getDescription());
+            
+            tfModel.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Model().getDescription());
             tfColor.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Color().getDescription());
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
@@ -878,17 +894,26 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
         try {
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
-                case "0":
+                case PurchaseOrderReceivingStatus.APPROVED:
+                    lblStatus.setText("APPROVE");
+                    break;
+                case PurchaseOrderReceivingStatus.CANCELLED:
+                    lblStatus.setText("CANCELLED");
+                    break;
+                case PurchaseOrderReceivingStatus.CONFIRMED:
+                    lblStatus.setText("CONFIRMED");
+                    break;
+                case PurchaseOrderReceivingStatus.OPEN:
                     lblStatus.setText("OPEN");
                     break;
-                case "1":
-                    lblStatus.setText("CLOSED");
+                case PurchaseOrderReceivingStatus.PROCESSED:
+                    lblStatus.setText("PROCESSED");
                     break;
-                case "2":
-                    lblStatus.setText("POSTED");
+                case PurchaseOrderReceivingStatus.RETURNED:
+                    lblStatus.setText("RETURNED");
                     break;
-                case "3":
-                    lblStatus.setText("CANCELLED");
+                case PurchaseOrderReceivingStatus.VOID:
+                    lblStatus.setText("VOID");
                     break;
                 default:
                     lblStatus.setText("UNKNOWN");
