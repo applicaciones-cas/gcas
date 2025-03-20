@@ -34,6 +34,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -75,7 +76,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblStockRequestRow = -1;
     private int pnTblPODetailRow = -1;
-    private int pnSTOCK_REQUEST_PAGE = 1;
+    private int pnSTOCK_REQUEST_PAGE = 30;
     private TextField activeField;
     @FXML
     private AnchorPane apBrowse, AnchorMaster, AnchorDetails, apTableDetailLoading, apTableStockRequestLoading, AnchorMain;
@@ -125,7 +126,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);
-            poPurchasingController.PurchaseOrder().setTransactionStatus("012");
+            poPurchasingController.PurchaseOrder().setTransactionStatus("01");
             JSONObject loJSON = new JSONObject();
             loJSON = poPurchasingController.PurchaseOrder().InitTransaction();
             if (!"success".equals(loJSON.get("result"))) {
@@ -142,7 +143,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
             tfIndustry.setText(lsIndustryName);
-            loadTableStockRequest();
+//            loadTableStockRequest();
             Platform.runLater(() -> btnNew.fire());
             initButtonsClickActions();
             initTextFieldFocus();
@@ -478,6 +479,25 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     break;
                 case "btnRetrieve":
                     loadTableStockRequest();
+
+                    if (poApprovedStockRequest_data.size() > 0) {
+
+                        for (int lnCtr = 0; lnCtr <= poDetail_data.size() - 1; lnCtr++) {
+                            String listPODetail = poDetail_data.get(lnCtr).getIndex02();
+                            for (int lnCtr1 = 0; lnCtr1 <= poApprovedStockRequest_data.size() - 1; lnCtr1++) {
+                                String listPOMaster = poApprovedStockRequest_data.get(lnCtr1).getIndex06();
+
+                                if (listPODetail.equals(listPOMaster)) {
+                                    if (poApprovedStockRequest_data.get(lnCtr1).getIndex07() == PurchaseOrderStatus.CONFIRMED) {
+                                        break;
+                                    }
+                                    poApprovedStockRequest_data.get(lnCtr1).setIndex07(PurchaseOrderStatus.CONFIRMED);
+                                    tblVwStockRequest.refresh();
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     break;
                 case "btnTransHistory":
                     break;
@@ -887,7 +907,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 try {
                     // Simulate loading delay
                     Thread.sleep(1000);
-
+                    poApprovedStockRequest_data.clear();
                     JSONObject poJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
                     if ("success".equals(poJSON.get("result"))) {
                         JSONArray approvedRequests = (JSONArray) poJSON.get("data");
@@ -902,7 +922,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     obj.get("sReferNox") != null ? obj.get("sReferNox").toString() : "",
                                     obj.get("total_details") != null ? obj.get("total_details").toString() : "",
                                     obj.get("sTransNox") != null ? obj.get("sTransNox").toString() : "",
-                                    "",
+                                    "0",
                                     "",
                                     "",
                                     ""
@@ -918,18 +938,22 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
             @Override
             protected void succeeded() {
-                if (pagination != null) {
-                    pagination.setPageCount((int) Math.ceil((double) poApprovedStockRequest_data.size() / pnSTOCK_REQUEST_PAGE));
-                    pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> {
-                        createPage(newIndex.intValue());
-                    });
+                if (poApprovedStockRequest_data == null || poApprovedStockRequest_data.isEmpty()) {
+                    tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                } else {
+                    if (pagination != null) {
+                        pagination.setPageCount((int) Math.ceil((double) poApprovedStockRequest_data.size() / pnSTOCK_REQUEST_PAGE));
+                        pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> {
+                            createPage(newIndex.intValue());
+                        });
+                    }
+                    createPage(0);
+                    pagination.setVisible(true);
+                    pagination.setManaged(true);
+                    progressIndicator.setVisible(false);
+                    progressIndicator.setManaged(false);
+                    tblVwStockRequest.toFront();
                 }
-                createPage(0);
-                pagination.setVisible(true);
-                pagination.setManaged(true);
-                progressIndicator.setVisible(false);
-                progressIndicator.setManaged(false);
-                tblVwStockRequest.toFront();
             }
 
             @Override
@@ -978,6 +1002,31 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                 header.setReordering(false);
             });
+        });
+        initTableHighlithers();
+    }
+
+    private void initTableHighlithers() {
+        tblVwStockRequest.setRowFactory(tv -> new TableRow<ModelPurchaseOrder>() {
+            @Override
+            protected void updateItem(ModelPurchaseOrder item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item == null || empty) {
+                    setStyle("");
+                } else {
+                    // Assuming empIndex05 corresponds to an employee status
+                    String status = item.getIndex07(); // Replace with actual getter
+                    switch (status) {
+                        case PurchaseOrderStatus.CONFIRMED:
+                            setStyle("-fx-background-color: #A7C7E7;");
+                            break;
+                        default:
+                            setStyle("");
+                    }
+                    tblVwStockRequest.refresh();
+                }
+            }
         });
     }
 
@@ -1087,7 +1136,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 ShowMessageFX.Warning("Please select valid approved stock request information.", "Warning", null);
                 return;
             }
-            if (event.getClickCount() == 1) {
+            if (event.getClickCount() == 2) {
                 ModelPurchaseOrder loSelectedStockRequest = (ModelPurchaseOrder) tblVwStockRequest.getSelectionModel().getSelectedItem();
                 if (loSelectedStockRequest != null) {
                     String lsTransactionNo = loSelectedStockRequest.getIndex06();
@@ -1105,6 +1154,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         if ("success".equals(loJSON.get("result"))) {
                             if (poPurchasingController.PurchaseOrder().getDetailCount() > 0) {
                                 loadTablePODetail();
+                                tblVwStockRequest.refresh();
+                                poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.CONFIRMED);
                             }
                         } else {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -1142,4 +1193,5 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             }
         }
     }
+
 }

@@ -45,6 +45,7 @@ public class ModelPurchaseOrder {
         this.index08 = new SimpleStringProperty(index08);
         this.index09 = new SimpleStringProperty(index09);
         this.index10 = new SimpleStringProperty(index10);
+        
     }
 
     public String getIndex01() {
@@ -98,6 +99,9 @@ public class ModelPurchaseOrder {
     public String getIndex07() {
         return index07.get();
     }
+    public StringProperty index07Property() {
+        return index07;
+    }
 
     public void setIndex07(String index07) {
         this.index07.set(index07);
@@ -126,4 +130,6 @@ public class ModelPurchaseOrder {
     public void setIndex10(String index10) {
         this.index10.set(index10);
     }
+
+    
 }

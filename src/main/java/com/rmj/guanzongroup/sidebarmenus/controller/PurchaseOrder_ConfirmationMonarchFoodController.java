@@ -33,6 +33,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -126,7 +127,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);
-            poPurchasingController.PurchaseOrder().setTransactionStatus("012");
+            poPurchasingController.PurchaseOrder().setTransactionStatus("0");
             JSONObject loJSON = new JSONObject();
             loJSON = poPurchasingController.PurchaseOrder().InitTransaction();
             if (!"success".equals(loJSON.get("result"))) {
@@ -296,6 +297,10 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                         clearMasterFields();
                         clearDetailFields();
                         loadTablePODetail();
+
+                        //this code below use to highlight tblpurchase 
+                        tblVwPurchaseOrder.refresh();
+                        poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
                     }
                 } catch (ParseException ex) {
                     Logger.getLogger(PurchaseOrder_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
@@ -365,6 +370,11 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                 case "btnTransHistory":
                     break;
                 case "btnReturn":
+                    //add your method here
+
+                    //this code below use to highlight tblpurchase 
+                    tblVwPurchaseOrder.refresh();
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
                     break;
                 case "btnVoid":
                           try {
@@ -384,6 +394,10 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                         clearMasterFields();
                         clearDetailFields();
                         loadTablePODetail();
+
+                        //this code below use to highlight tblpurchase 
+                        tblVwPurchaseOrder.refresh();
+                        poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
                     }
                 } catch (ParseException ex) {
                     Logger.getLogger(PurchaseOrder_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
@@ -510,7 +524,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                 tfReferenceNo, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate,
                 tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier,
-                tfSearchReferenceNo,tfSearchIndustry,tfSearchCompany,tfSearchSupplier,tfSearchReferenceNo);
+                tfSearchReferenceNo, tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
@@ -794,6 +808,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
         };
         new Thread(task).start(); // Run task in background
     }
+
     private Node createPage(int pageIndex) {
         int totalPages = (int) Math.ceil((double) poPurchaseOrder_data.size() / ROWS_PER_PAGE);
         if (totalPages == 0) {
@@ -828,11 +843,40 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                 header.setReordering(false);
             });
         });
+        initTableHighlithers();
     }
 
-   
+    private void initTableHighlithers() {
+        tblVwPurchaseOrder.setRowFactory(tv -> new TableRow<ModelPurchaseOrder>() {
+            @Override
+            protected void updateItem(ModelPurchaseOrder item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item == null || empty) {
+                    setStyle("");
+                } else {
+                    // Assuming empIndex05 corresponds to an employee status
+                    String status = item.getIndex05(); // Replace with actual getter
+                    switch (status) {
+                        case PurchaseOrderStatus.CONFIRMED:
+                            setStyle("-fx-background-color: #C1E1C1;");
+                            break;
+                        case PurchaseOrderStatus.VOID:
+                            setStyle("-fx-background-color: #FAA0A0;");
+                            break;
+                        case PurchaseOrderStatus.RETURN:
+                            setStyle("-fx-background-color: #FAC898");
+                        default:
+                            setStyle("");
+                    }
+                    tblVwPurchaseOrder.refresh();
+                }
+            }
+        });
+    }
+
     private void loadTablePODetail() {
-         // Configure ProgressIndicator
+        // Configure ProgressIndicator
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxSize(50, 50); // Ensure consistent size
         progressIndicator.setStyle("-fx-accent: #FF8201;"); // Set custom progress color
@@ -853,34 +897,34 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
 
                     Thread.sleep(300);
 
-            double grandTotalAmount = 0.0;
-            for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
-                double lnTotalAmount = poPurchasingController.PurchaseOrder()
-                        .Detail(lnCntr)
-                        .Inventory().getCost().doubleValue() * poPurchasingController.PurchaseOrder()
+                    double grandTotalAmount = 0.0;
+                    for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
+                        double lnTotalAmount = poPurchasingController.PurchaseOrder()
                                 .Detail(lnCntr)
-                                .getQuantity().doubleValue();
-                grandTotalAmount += lnTotalAmount;
-                poDetail_data.add(new ModelPurchaseOrderDetail(
-                        String.valueOf(lnCntr + 1),
-                        poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
-                        poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
-                        poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
-                        CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
-                        "",
-                        String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getQuantity()),
-                        String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
-                        CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
-                        ""
-                ));
+                                .Inventory().getCost().doubleValue() * poPurchasingController.PurchaseOrder()
+                                        .Detail(lnCntr)
+                                        .getQuantity().doubleValue();
+                        grandTotalAmount += lnTotalAmount;
+                        poDetail_data.add(new ModelPurchaseOrderDetail(
+                                String.valueOf(lnCntr + 1),
+                                poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
+                                poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
+                                poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
+                                "",
+                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getQuantity()),
+                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
+                                ""
+                        ));
 
-            }
-            tblVwOrderDetails.setItems(poDetail_data);
-            computeTotalAmount(grandTotalAmount);
-            poPurchasingController.PurchaseOrder().Master().setTranTotal(grandTotalAmount);
-            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
+                    }
+                    tblVwOrderDetails.setItems(poDetail_data);
+                    computeTotalAmount(grandTotalAmount);
+                    poPurchasingController.PurchaseOrder().Master().setTranTotal(grandTotalAmount);
+                    tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
-        } catch (GuanzonException | SQLException ex) {
+                } catch (GuanzonException | SQLException ex) {
                     Logger.getLogger(PurchaseOrder_EntryMCController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
@@ -889,10 +933,9 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
 
             @Override
             protected void succeeded() {
-                 tblVwOrderDetails.setItems(poDetail_data);
+                tblVwOrderDetails.setItems(poDetail_data);
                 progressIndicator.setVisible(false); // Hide when done
-                
-                
+
             }
 
             @Override
