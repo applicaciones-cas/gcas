@@ -455,7 +455,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
 
                     break;
                 case "btnSave":
-                try {
+                    try {
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure, do you want to save?")) {
                         return;
                     }
@@ -480,6 +480,13 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                         if ("success".equals(loJSON.get("result"))) {
                                             ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                         }
+
+                                    }
+                                }
+                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                                    loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                                    if ("success".equals(loJSON.get("result"))) {
+                                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                     }
                                 }
                             }
@@ -532,8 +539,10 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                             }
                         }
                     }
-                    tblVwStockRequest.refresh();
-                    poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.OPEN);
+                    if (pnTblStockRequestRow >= 0) {
+                        tblVwStockRequest.refresh();
+                        poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.OPEN);
+                    }
                     break;
                 case "btnPrint":
                     poJSON = poPurchasingController.PurchaseOrder().printTransaction();
