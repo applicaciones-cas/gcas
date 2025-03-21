@@ -376,7 +376,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
 
                     //this code below use to highlight tblpurchase
                     tblVwPurchaseOrder.refresh();
-                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURNED);
                     break;
                 case "btnVoid":
                           try {
@@ -866,7 +866,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                         case PurchaseOrderStatus.VOID:
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
-                        case PurchaseOrderStatus.RETURN:
+                        case PurchaseOrderStatus.RETURNED:
                             setStyle("-fx-background-color: #FAC898");
                         default:
                             setStyle("");
@@ -943,7 +943,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                 progressIndicator.setVisible(false);
             }
         };
-        
+
         new Thread(task).start(); // Run task in background
     }
 
@@ -1031,7 +1031,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
             }
         }
     }
-    
+
     private int moveToNextRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
         if (table.getItems().isEmpty()) {
             return -1; // No movement possible
@@ -1055,21 +1055,21 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
         TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
         if (focusedCell != null) {
             if ("tblVwOrderDetails".equals(currentTable.getId())) {
-            switch (event.getCode()) {
-                case TAB:
-                case DOWN:
-                    pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
-                    break;
-                case UP:
-                    pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
-                    break;
-                default:
-                    return; // Ignore other keys
-            }
+                switch (event.getCode()) {
+                    case TAB:
+                    case DOWN:
+                        pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
+                        break;
+                    case UP:
+                        pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
+                        break;
+                    default:
+                        return; // Ignore other keys
+                }
 
-            loadDetail();
-            event.consume();
-        }
+                loadDetail();
+                event.consume();
+            }
 
         }
     }
