@@ -238,6 +238,11 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     break;
             }
 
+            if (poPurchasingController.PurchaseOrder().Master().isPreOwned() == true) {
+                chkbAdvancePayment.setSelected(true);
+            } else {
+                chkbAdvancePayment.setSelected(false);
+            }
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
@@ -853,6 +858,17 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     chkbAdvancePayment.setSelected(false);
                 }
                 initFields(pnEditMode);
+            }
+        });
+        chkbPreOwned.setOnAction(event -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (chkbAdvancePayment.isSelected()) {
+                    chkbAdvancePayment.setSelected(true);
+                    poPurchasingController.PurchaseOrder().Master().isWithAdvPaym(true);
+                } else {
+                    poPurchasingController.PurchaseOrder().Master().isWithAdvPaym(false);
+                    chkbAdvancePayment.setSelected(false);
+                }
             }
         });
     }

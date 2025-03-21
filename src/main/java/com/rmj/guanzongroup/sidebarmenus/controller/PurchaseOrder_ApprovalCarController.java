@@ -189,6 +189,12 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                     lsStatus = "VOID";
                     break;
             }
+
+            if (poPurchasingController.PurchaseOrder().Master().isPreOwned() == true) {
+                chkbAdvancePayment.setSelected(true);
+            } else {
+                chkbAdvancePayment.setSelected(false);
+            }
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
