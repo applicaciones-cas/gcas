@@ -147,7 +147,6 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-            tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldFocus();
@@ -194,7 +193,11 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-
+            String lsIndustryName = "";
+            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
+                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
+            }
+            tfIndustry.setText(lsIndustryName);
             String lsCompanyName = "";
             if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
                 lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
@@ -285,7 +288,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     }
                     break;
                 case "btnConfirm":
-                  
+
                   try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
@@ -304,7 +307,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                         clearDetailFields();
                         loadTablePODetail();
 
-                        //this code below use to highlight tblpurchase 
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
 
@@ -377,9 +380,9 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                 case "btnTransHistory":
                     break;
                 case "btnReturn":
-                    // add method here 
+                    // add method here
 
-                    //this code below use to highlight tblpurchase 
+                    //this code below use to highlight tblpurchase
                     tblVwPurchaseOrder.refresh();
                     poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
                     break;
@@ -402,7 +405,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                         clearDetailFields();
                         loadTablePODetail();
 
-                        //this code below use to highlight tblpurchase 
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
                     }
@@ -530,8 +533,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
         List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount,
                 tfReferenceNo, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate,
-                tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier,
-                tfSearchReferenceNo, tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo);
+                tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
@@ -569,7 +571,6 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                                     tfCompany.setText("");
                                     break;
                                 }
-                                tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
@@ -579,7 +580,6 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                                     tfSupplier.setText("");
                                     break;
                                 }
-                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
                             case "tfDestination":

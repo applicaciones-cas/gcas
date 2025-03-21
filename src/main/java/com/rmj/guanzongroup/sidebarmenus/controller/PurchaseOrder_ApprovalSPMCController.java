@@ -143,7 +143,6 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-            tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
 
             initButtonsClickActions();
@@ -298,8 +297,8 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                         clearMasterFields();
                         clearDetailFields();
                         loadTablePODetail();
-                        
-                        //this code below use to highlight tblpurchase 
+
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.APPROVED);
                     }
@@ -372,8 +371,8 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                     break;
                 case "btnReturn":
                     //add your method here
-                    
-                    //this code below use to highlight tblpurchase 
+
+                    //this code below use to highlight tblpurchase
                     tblVwPurchaseOrder.refresh();
                     poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
                     break;
@@ -395,8 +394,8 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                         clearMasterFields();
                         clearDetailFields();
                         loadTablePODetail();
-                        
-                        //this code below use to highlight tblpurchase 
+
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
                     }
@@ -566,7 +565,6 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                                     tfCompany.setText("");
                                     break;
                                 }
-                                tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
@@ -576,7 +574,6 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                                     tfSupplier.setText("");
                                     break;
                                 }
-                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
                             case "tfDestination":
@@ -921,7 +918,7 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                 header.setReordering(false);
             });
         });
-    initTableHighlithers();
+        initTableHighlithers();
     }
 
     private void initTableHighlithers() {

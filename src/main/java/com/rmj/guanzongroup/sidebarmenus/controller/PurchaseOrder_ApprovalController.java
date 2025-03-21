@@ -143,9 +143,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-            tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
-
             initButtonsClickActions();
             initTextFieldFocus();
             initTextAreaFocus();
@@ -191,6 +189,12 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+
+            String lsIndustryName = "";
+            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
+                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
+            }
+            tfIndustry.setText(lsIndustryName);
 
             String lsCompanyName = "";
             if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
@@ -262,7 +266,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
     }
 
     private void initButtonsClickActions() {
-        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel,btnVoid,
+        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel, btnVoid,
                 btnPrint, btnRetrieve, btnTransHistory, btnClose, btnApprove);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
@@ -553,7 +557,6 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                                     tfCompany.setText("");
                                     break;
                                 }
-                                tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
@@ -563,7 +566,6 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                                     tfSupplier.setText("");
                                     break;
                                 }
-                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
                             case "tfDestination":
@@ -909,7 +911,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                 header.setReordering(false);
             });
         });
-    initTableHighlithers();
+        initTableHighlithers();
     }
 
     private void initTableHighlithers() {

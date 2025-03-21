@@ -136,14 +136,12 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
             if ("error".equals((String) loJSON.get("result"))) {
                 ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-
                 return;
             }
             String lsIndustryName = "";
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-            tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldFocus();
@@ -190,6 +188,12 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+
+            String lsIndustryName = "";
+            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
+                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
+            }
+            tfIndustry.setText(lsIndustryName);
 
             String lsCompanyName = "";
             if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
@@ -259,7 +263,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
     }
 
     private void initButtonsClickActions() {
-        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel,btnVoid,
+        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel, btnVoid,
                 btnPrint, btnRetrieve, btnTransHistory, btnClose, btnApprove);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
@@ -295,8 +299,8 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                         clearMasterFields();
                         clearDetailFields();
                         loadTablePODetail();
-                        
-                        //this code below use to highlight tblpurchase 
+
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.APPROVED);
                     }
@@ -369,9 +373,9 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                     break;
                 case "btnReturn":
                     //add your method here
-                    //this code below use to highlight tblpurchase 
-                        tblVwPurchaseOrder.refresh();
-                        poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
+                    //this code below use to highlight tblpurchase
+                    tblVwPurchaseOrder.refresh();
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
                     break;
                 case "btnVoid":
                           try {
@@ -391,10 +395,10 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                         clearMasterFields();
                         clearDetailFields();
                         loadTablePODetail();
-                        //this code below use to highlight tblpurchase 
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
-                        
+
                     }
                 } catch (ParseException ex) {
                     Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
@@ -522,7 +526,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                 tfDestination, tfAdvancePRate,
                 tfBrand, tfModel,
                 tfBO, tfRO,
-                tfCost, tfOrderQuantity);
+                tfCost, tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
@@ -560,7 +564,6 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                                     tfCompany.setText("");
                                     break;
                                 }
-                                tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
@@ -570,7 +573,6 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                                     tfSupplier.setText("");
                                     break;
                                 }
-                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
                             case "tfDestination":
@@ -897,7 +899,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
 
         new Thread(task).start(); // Run task in background
     }
-    
+
     private void initTablePurchaseOrder() {
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblTransactionNo.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -910,7 +912,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                 header.setReordering(false);
             });
         });
-    initTableHighlithers();
+        initTableHighlithers();
     }
 
     private void initTableHighlithers() {
@@ -941,6 +943,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             }
         });
     }
+
     private void computeTotalAmount(double fnGrandTotal) {
         double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
         tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(amount));
