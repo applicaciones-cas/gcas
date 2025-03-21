@@ -33,6 +33,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -143,6 +144,7 @@ public class PurchaseOrder_ConfirmationSPMCController implements Initializable, 
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
+            tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldFocus();
@@ -176,7 +178,7 @@ public class PurchaseOrder_ConfirmationSPMCController implements Initializable, 
                 case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
-                case PurchaseOrderStatus.RETURN:
+                case PurchaseOrderStatus.RETURNED:
                     lsStatus = "RETURNED";
                     break;
                 case PurchaseOrderStatus.CANCELLED:
@@ -376,7 +378,7 @@ public class PurchaseOrder_ConfirmationSPMCController implements Initializable, 
                     //add your method here
                     //this code below use to highlight tblpurchase
                     tblVwPurchaseOrder.refresh();
-                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURNED);
                     break;
                 case "btnVoid":
                           try {
@@ -863,7 +865,7 @@ public class PurchaseOrder_ConfirmationSPMCController implements Initializable, 
                         case PurchaseOrderStatus.VOID:
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
-                        case PurchaseOrderStatus.RETURN:
+                        case PurchaseOrderStatus.RETURNED:
                             setStyle("-fx-background-color: #FAC898");
                         default:
                             setStyle("");
@@ -1028,6 +1030,48 @@ public class PurchaseOrder_ConfirmationSPMCController implements Initializable, 
                     }
                 }
             }
+        }
+    }
+    
+    private int moveToNextRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
+        if (table.getItems().isEmpty()) {
+            return -1; // No movement possible
+        }
+        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
+        table.getSelectionModel().select(nextRow);
+        return nextRow;
+    }
+
+    private int moveToPreviousRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
+        if (table.getItems().isEmpty()) {
+            return -1; // No movement possible
+        }
+        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
+        table.getSelectionModel().select(previousRow);
+        return previousRow;
+    }
+
+    private void tableKeyEvents(KeyEvent event) {
+        TableView<?> currentTable = (TableView<?>) event.getSource();
+        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+        if (focusedCell != null) {
+            if ("tblVwOrderDetails".equals(currentTable.getId())) {
+            switch (event.getCode()) {
+                case TAB:
+                case DOWN:
+                    pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
+                    break;
+                case UP:
+                    pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
+                    break;
+                default:
+                    return; // Ignore other keys
+            }
+
+            loadDetail();
+            event.consume();
+        }
+
         }
     }
 }
