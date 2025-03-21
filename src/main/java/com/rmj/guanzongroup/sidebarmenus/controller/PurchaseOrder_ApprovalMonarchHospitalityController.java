@@ -33,6 +33,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -139,6 +140,7 @@ public class PurchaseOrder_ApprovalMonarchHospitalityController implements Initi
 
                 return;
             }
+            tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             String lsIndustryName = "";
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
@@ -1042,4 +1044,47 @@ public class PurchaseOrder_ApprovalMonarchHospitalityController implements Initi
             }
         }
     }
+
+    private int moveToNextRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
+        if (table.getItems().isEmpty()) {
+            return -1; // No movement possible
+        }
+        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
+        table.getSelectionModel().select(nextRow);
+        return nextRow;
+    }
+
+    private int moveToPreviousRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
+        if (table.getItems().isEmpty()) {
+            return -1; // No movement possible
+        }
+        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
+        table.getSelectionModel().select(previousRow);
+        return previousRow;
+    }
+
+    private void tableKeyEvents(KeyEvent event) {
+        TableView<?> currentTable = (TableView<?>) event.getSource();
+        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+        if (focusedCell != null) {
+            if ("tblVwOrderDetails".equals(currentTable.getId())) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case DOWN:
+                        pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
+                        break;
+                    case UP:
+                        pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
+                        break;
+                    default:
+                        return; // Ignore other keys
+                }
+
+                loadDetail();
+                event.consume();
+            }
+
+        }
+    }
+
 }
