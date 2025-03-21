@@ -433,10 +433,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     }
                                 }
                             }
-                            loadMaster();
-                            loadDetail();
-                            loadTablePODetail();
-                            pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                            Platform.runLater(() -> btnNew.fire());
                         }
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -485,6 +482,8 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                             }
                         }
                     }
+                    tblVwStockRequest.refresh();
+                    poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.OPEN);
                     break;
                 case "btnPrint":
                     poJSON = poPurchasingController.PurchaseOrder().printTransaction();
@@ -494,26 +493,6 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     break;
                 case "btnRetrieve":
                     loadTableStockRequest();
-                    if (poApprovedStockRequest_data.size() > 0) {
-                        
-                        for (int lnCtr = 0; lnCtr <= poDetail_data.size() - 1; lnCtr++) {
-                            String listPODetail = poDetail_data.get(lnCtr).getIndex02();
-                                for (int lnCtr1 = 0; lnCtr1 <= poApprovedStockRequest_data.size() - 1; lnCtr1++) {
-                                    String listPOMaster = poApprovedStockRequest_data.get(lnCtr1).getIndex06();
-
-                                    if (listPODetail.equals(listPOMaster)) {
-                                        if(poApprovedStockRequest_data.get(lnCtr1).getIndex07() == PurchaseOrderStatus.CONFIRMED){
-                                        break;
-                                        }
-   
-                                        poApprovedStockRequest_data.get(lnCtr1).setIndex07(PurchaseOrderStatus.CONFIRMED);
-                                        tblVwStockRequest.refresh();
-                                        break;
-                                    }
-                                }
-                        }
-                        
-                    }
                     break;
                 case "btnTransHistory":
                     break;
@@ -1121,8 +1100,30 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
             }
         };
 
+            if (!poApprovedStockRequest_data.isEmpty()) {
+                if (!poDetail_data.isEmpty()) {
+                    for (ModelPurchaseOrderDetail detail : poDetail_data) {
+                        String listPODetail = detail.getIndex02();
+
+                        for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                            if (listPODetail.equals(master.getIndex06())) {
+                                if (master.getIndex07() != PurchaseOrderStatus.CONFIRMED) {
+                                    master.setIndex07(PurchaseOrderStatus.CONFIRMED);
+                                }
+                                break; // Exit inner loop once matched
+                            }
+                        }
+                    }
+                } else {
+                    for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                        master.setIndex07(PurchaseOrderStatus.OPEN);
+                    }
+                }
+                tblVwStockRequest.refresh(); // Refresh only once after updates
+            }
         new Thread(task).start(); // Run task in background
     }
+
 
     private void computeTotalAmount(double fnGrandTotal) {
         double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
