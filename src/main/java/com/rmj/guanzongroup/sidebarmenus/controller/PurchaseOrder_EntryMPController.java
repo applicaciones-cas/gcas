@@ -431,10 +431,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                     }
                                 }
                             }
-                            loadMaster();
-                            loadDetail();
-                            loadTablePODetail();
-                            pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                            Platform.runLater(() -> btnNew.fire());
                         }
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -483,6 +480,8 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                             }
                         }
                     }
+                    tblVwStockRequest.refresh();
+                    poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.OPEN);
                     break;
                 case "btnPrint":
                     poJSON = poPurchasingController.PurchaseOrder().printTransaction();
@@ -492,26 +491,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                     break;
                 case "btnRetrieve":
                     loadTableStockRequest();
-                    if (poApprovedStockRequest_data.size() > 0) {
-
-                        for (int lnCtr = 0; lnCtr <= poDetail_data.size() - 1; lnCtr++) {
-                            String listPODetail = poDetail_data.get(lnCtr).getIndex02();
-
-                            for (int lnCtr1 = 0; lnCtr1 <= poApprovedStockRequest_data.size() - 1; lnCtr1++) {
-                                String listPOMaster = poApprovedStockRequest_data.get(lnCtr1).getIndex06();
-
-                                if (listPODetail.equals(listPOMaster)) {
-                                    if (poApprovedStockRequest_data.get(lnCtr1).getIndex07() == PurchaseOrderStatus.CONFIRMED) {
-                                        break;
-                                    }
-                                    poApprovedStockRequest_data.get(lnCtr1).setIndex07(PurchaseOrderStatus.CONFIRMED);
-                                    tblVwStockRequest.refresh();
-                                    break;
-                                }
-                            }
-                        }
-
-                    }
+                    
                     break;
                 case "btnTransHistory":
                     break;

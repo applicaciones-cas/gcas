@@ -418,10 +418,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     }
                                 }
                             }
-                            loadMaster();
-                            loadDetail();
-                            loadTablePODetail();
-                            pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                            Platform.runLater(() -> btnNew.fire());
                         }
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -470,6 +467,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             }
                         }
                     }
+                    tblVwStockRequest.refresh();
+                    poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.OPEN);
                     break;
                 case "btnPrint":
                     poJSON = poPurchasingController.PurchaseOrder().printTransaction();
@@ -478,26 +477,10 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     }
                     break;
                 case "btnRetrieve":
+//                    tblVwStockRequest.refresh();
                     loadTableStockRequest();
+                    
 
-                    if (poApprovedStockRequest_data.size() > 0) {
-
-                        for (int lnCtr = 0; lnCtr <= poDetail_data.size() - 1; lnCtr++) {
-                            String listPODetail = poDetail_data.get(lnCtr).getIndex02();
-                            for (int lnCtr1 = 0; lnCtr1 <= poApprovedStockRequest_data.size() - 1; lnCtr1++) {
-                                String listPOMaster = poApprovedStockRequest_data.get(lnCtr1).getIndex06();
-
-                                if (listPODetail.equals(listPOMaster)) {
-                                    if (poApprovedStockRequest_data.get(lnCtr1).getIndex07() == PurchaseOrderStatus.CONFIRMED) {
-                                        break;
-                                    }
-                                    poApprovedStockRequest_data.get(lnCtr1).setIndex07(PurchaseOrderStatus.CONFIRMED);
-                                    tblVwStockRequest.refresh();
-                                    break;
-                                }
-                            }
-                        }
-                    }
                     break;
                 case "btnTransHistory":
                     break;
@@ -965,6 +948,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 tblVwStockRequest.toFront();
             }
         };
+        
         new Thread(task).start(); // Run task in background
     }
 
@@ -1017,6 +1001,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 } else {
                     // Assuming empIndex05 corresponds to an employee status
                     String status = item.getIndex07(); // Replace with actual getter
+                    if (status == PurchaseOrderStatus.CONFIRMED)
                     switch (status) {
                         case PurchaseOrderStatus.CONFIRMED:
                             setStyle("-fx-background-color: #A7C7E7;");
@@ -1024,7 +1009,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         default:
                             setStyle("");
                     }
-                    tblVwStockRequest.refresh();
                 }
             }
         });
@@ -1096,7 +1080,27 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 progressIndicator.setVisible(false);
             }
         };
+            if (!poApprovedStockRequest_data.isEmpty()) {
+                if (!poDetail_data.isEmpty()) {
+                    for (ModelPurchaseOrderDetail detail : poDetail_data) {
+                        String listPODetail = detail.getIndex02();
 
+                        for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                            if (listPODetail.equals(master.getIndex06())) {
+                                if (master.getIndex07() != PurchaseOrderStatus.CONFIRMED) {
+                                    master.setIndex07(PurchaseOrderStatus.CONFIRMED);
+                                }
+                                break; // Exit inner loop once matched
+                            }
+                        }
+                    }
+                } else {
+                    for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                        master.setIndex07(PurchaseOrderStatus.OPEN);
+                    }
+                }
+                tblVwStockRequest.refresh(); // Refresh only once after updates
+            }
         new Thread(task).start(); // Run task in background
     }
 

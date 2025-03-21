@@ -425,10 +425,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                                     }
                                 }
                             }
-                            loadMaster();
-                            loadDetail();
-                            loadTablePODetail();
-                            pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                            Platform.runLater(() -> btnNew.fire());
                         }
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -1113,6 +1110,27 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
             }
         };
 
+        if (!poApprovedStockRequest_data.isEmpty()) {
+            if (!poDetail_data.isEmpty()) {
+                for (ModelPurchaseOrderDetail detail : poDetail_data) {
+                    String listPODetail = detail.getIndex02();
+
+                    for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                        if (listPODetail.equals(master.getIndex06())) {
+                            if (master.getIndex07() != PurchaseOrderStatus.CONFIRMED) {
+                                master.setIndex07(PurchaseOrderStatus.CONFIRMED);
+                            }
+                            break; // Exit inner loop once matched
+                        }
+                    }
+                }
+            } else {
+                for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                    master.setIndex07(PurchaseOrderStatus.OPEN);
+                }
+            }
+            tblVwStockRequest.refresh(); // Refresh only once after updates
+        }
         new Thread(task).start(); // Run task in background
     }
 
