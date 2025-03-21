@@ -736,11 +736,12 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
         boolean lbShow = (fnEditMode == EditMode.UPDATE);
 
         /* Master Fields*/
-        CustomCommonUtil.setDisable(!lbShow, AnchorMaster, AnchorDetails);
+        CustomCommonUtil.setDisable(true, AnchorMaster);
         if (!tfReferenceNo.getText().isEmpty()) {
             dpTransactionDate.setDisable(!lbShow);
         }
 
+        tfOrderQuantity.setDisable(!lbShow);
         if (chkbAdvancePayment.isSelected()) {
             CustomCommonUtil.setDisable(!lbShow, tfAdvancePRate, tfAdvancePAmount);
         }
