@@ -300,8 +300,9 @@ public class PurchaseOrder_ConfirmationSPMCController implements Initializable, 
                         }
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         clearMasterFields();
-                        clearDetailFields();
-                        loadTablePODetail();
+                        clearDetailFields();                        
+                        poDetail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
 
                         //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
@@ -396,8 +397,9 @@ public class PurchaseOrder_ConfirmationSPMCController implements Initializable, 
                         }
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         clearMasterFields();
-                        clearDetailFields();
-                        loadTablePODetail();
+                        clearDetailFields();                        
+                        poDetail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
 
                         //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();

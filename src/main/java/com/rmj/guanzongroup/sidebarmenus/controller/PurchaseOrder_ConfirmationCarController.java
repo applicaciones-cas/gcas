@@ -306,11 +306,9 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                         }
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         clearMasterFields();
-                        clearDetailFields();
-                        loadTablePODetail();
+                        clearDetailFields();                        
+                        poDetail_data.clear();
                         pnEditMode = EditMode.UNKNOWN;
-                        initButtons(pnEditMode);
-                        tblVwOrderDetails.refresh();
 
                         //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
@@ -409,8 +407,8 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         clearMasterFields();
                         clearDetailFields();
-                        loadTablePODetail();
-
+                        poDetail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
                         //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
