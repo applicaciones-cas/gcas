@@ -149,7 +149,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
                 case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
-                case PurchaseOrderStatus.RETURN:
+                case PurchaseOrderStatus.RETURNED:
                     lsStatus = "RETURNED";
                     break;
                 case PurchaseOrderStatus.CANCELLED:

@@ -150,7 +150,6 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
             tfIndustry.setText(lsIndustryName);
-//            loadTableStockRequest();
             Platform.runLater(() -> btnNew.fire());
             initButtonsClickActions();
             initTextFieldFocus();
@@ -184,7 +183,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                 case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
-                case PurchaseOrderStatus.RETURN:
+                case PurchaseOrderStatus.RETURNED:
                     lsStatus = "RETURNED";
                     break;
                 case PurchaseOrderStatus.CANCELLED:

@@ -149,7 +149,7 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
                 case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
-                case PurchaseOrderStatus.RETURN:
+                case PurchaseOrderStatus.RETURNED:
                     lsStatus = "RETURNED";
                     break;
                 case PurchaseOrderStatus.CANCELLED:

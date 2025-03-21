@@ -176,7 +176,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                 case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
-                case PurchaseOrderStatus.RETURN:
+                case PurchaseOrderStatus.RETURNED:
                     lsStatus = "RETURNED";
                     break;
                 case PurchaseOrderStatus.CANCELLED:
@@ -377,7 +377,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
 
                     //this code below use to highlight tblpurchase
                     tblVwPurchaseOrder.refresh();
-                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURNED);
                     break;
                 case "btnVoid":
                           try {
@@ -934,7 +934,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                         case PurchaseOrderStatus.VOID:
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
-                        case PurchaseOrderStatus.RETURN:
+                        case PurchaseOrderStatus.RETURNED:
                             setStyle("-fx-background-color: #FAC898");
                         default:
                             setStyle("");
