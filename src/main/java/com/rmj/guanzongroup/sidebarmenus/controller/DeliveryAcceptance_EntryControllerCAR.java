@@ -978,7 +978,7 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
         }
 
     }
-
+//
     EventHandler<KeyEvent> tableScrollHandler = event -> {
         if (event.isAltDown()) {
             TableView<?> focusedTable = getFocusedTable();
@@ -1023,47 +1023,47 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
             table.scrollTo(newIndex);
         }
     }
-
-    private void moveToNextRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
-        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
-        table.getSelectionModel().select(nextRow);
-    }
-
-    private void handleTabKey(KeyEvent event) {
-        if (event.getCode().toString().equals("TAB")) {
-            TableView<?> currentTable = (TableView<?>) event.getSource();
-            TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-
-            if (focusedCell != null) {
-                switch (currentTable.getId()) {
-                    case "tblViewOrderDetails":
-                        System.out.println("Tab pressed in Table 1");
-                        moveToNextRow(tblViewOrderDetails, focusedCell);
-                        break;
-                    case "tblViewPuchaseOrder":
-                        System.out.println("Tab pressed in Table 2");
-                        moveToNextRow(tblViewPuchaseOrder, focusedCell);
-                        break;
-                    default:
-                        System.out.println("Unknown Table");
-                        break;
-                }
-                event.consume();
-            }
-        }
-    }
+//
+//    private void moveToNextRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
+//        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
+//        table.getSelectionModel().select(nextRow);
+//    }
+//
+//    private void handleTabKey(KeyEvent event) {
+//        if (event.getCode().toString().equals("TAB")) {
+//            TableView<?> currentTable = (TableView<?>) event.getSource();
+//            TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+//
+//            if (focusedCell != null) {
+//                switch (currentTable.getId()) {
+//                    case "tblViewOrderDetails":
+//                        System.out.println("Tab pressed in Table 1");
+//                        moveToNextRow(tblViewOrderDetails, focusedCell);
+//                        break;
+//                    case "tblViewPuchaseOrder":
+//                        System.out.println("Tab pressed in Table 2");
+//                        moveToNextRow(tblViewPuchaseOrder, focusedCell);
+//                        break;
+//                    default:
+//                        System.out.println("Unknown Table");
+//                        break;
+//                }
+//                event.consume();
+//            }
+//        }
+//    }
 
     public void initTableOnClick() {
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
+            if (event.getClickCount() == 1) { 
                 pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
                 loadTableDetail();
             }
         });
 
         tblViewPuchaseOrder.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
+            if (event.getClickCount() == 2) {  
                 pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
                 if (pnMain >= 0) {
                     loadTableDetailFromMain();
@@ -1084,12 +1084,40 @@ public class DeliveryAcceptance_EntryControllerCAR implements Initializable, Scr
                 }
             }
         });
+        
+        tblViewOrderDetails.setOnKeyReleased((KeyEvent t) -> {
+            KeyCode key = t.getCode();
+            switch (key) {
+                case DOWN:
+                case TAB:
+                    pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex() - 1;
+                    if (pnDetail == tblViewOrderDetails.getItems().size()) {
+                        pnDetail = tblViewOrderDetails.getItems().size();
+                    } else {
+                        pnDetail++;
+                    }
+                    System.out.println("Down " + pnDetail);
+                    break;
+
+                case UP:
+                    pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex() + 1;
+                    if(pnDetail == 0){
+                        pnDetail = 0;
+                    } else {
+                        pnDetail--;
+                    }
+                    System.out.println("UP " + pnDetail);
+                    break;
+            }
+            
+            loadRecordDetail();
+        });
 
         tblViewPuchaseOrder.setOnKeyPressed(tableScrollHandler);
-        tblViewOrderDetails.setOnKeyPressed(tableScrollHandler);
-
-        tblViewPuchaseOrder.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabKey);
-        tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabKey);
+//        tblViewOrderDetails.setOnKeyPressed(tableScrollHandler);
+//
+//        tblViewPuchaseOrder.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabKey);
+//        tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabKey);
 
     }
 
