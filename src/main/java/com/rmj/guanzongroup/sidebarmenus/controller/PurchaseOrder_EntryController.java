@@ -45,6 +45,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -142,7 +143,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+            tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             tfIndustry.setText(lsIndustryName);
             Platform.runLater(() -> btnNew.fire());
             initButtonsClickActions();
@@ -432,42 +433,6 @@ tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
                     }
 
                     break;
-//                case "btnSave":
-//                try {
-//                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure, do you want to save?")) {
-//                        return;
-//                    }
-//                    if (pnEditMode == EditMode.UPDATE) {
-//                        poPurchasingController.PurchaseOrder().Master().setModifiedDate(poApp.getServerDate());
-//                        poPurchasingController.PurchaseOrder().Master().setModifyingId(poApp.getUserID());
-//                        for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
-//                            poPurchasingController.PurchaseOrder().Detail(lnCntr).setModifiedDate(poApp.getServerDate());
-//                        }
-//                    }
-//
-//                    loJSON = poPurchasingController.PurchaseOrder().SaveTransaction();
-//                    if ("success".equals(loJSON.get("result"))) {
-//                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-//                        loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-//                        if ("success".equals(loJSON.get("result"))) {
-//                            if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
-//                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-//                                    loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-//                                    if ("success".equals(loJSON.get("result"))) {
-//                                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-//                                    }
-//                                }
-//                            }
-//                            Platform.runLater(() -> btnNew.fire());
-//                        }
-//                    } else {
-//                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-//                        return;
-//                    }
-//                } catch (ParseException ex) {
-//                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                break;
                 case "btnSave":
                     try {
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure, do you want to save?")) {
@@ -476,7 +441,7 @@ tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
                     if (pnEditMode == EditMode.UPDATE) {
                         poPurchasingController.PurchaseOrder().Master().setModifiedDate(poApp.getServerDate());
                         poPurchasingController.PurchaseOrder().Master().setModifyingId(poApp.getUserID());
-                        for (int lnCntr = 0; lnCntr < poPurchasingController.PurchaseOrder().getDetailCount(); lnCntr++) {
+                        for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
                             poPurchasingController.PurchaseOrder().Detail(lnCntr).setModifiedDate(poApp.getServerDate());
                         }
                     }
@@ -485,26 +450,33 @@ tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
                     if ("success".equals(loJSON.get("result"))) {
                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                        if (!"success".equals(loJSON.get("result"))) {
-                            pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
-                            ShowMessageFX.Warning("Failed to open transaction.", psFormName, null);
-                            return;
-                        }
-                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
-                            if (ShowMessageFX.YesNo("Do you want to confirm this transaction?", psFormName, null)) {
-                                loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                                if (!"success".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        if ("success".equals(loJSON.get("result"))) {
+                            if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
+                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                                    loJSON = ShowDialogFX.getUserApproval(poApp);
+                                    if ("success".equals(loJSON.get("result"))) {
+                                        loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+                                        if ("success".equals(loJSON.get("result"))) {
+                                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                                        }
+
+                                    }
                                 }
-                                ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                                    loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                                    if ("success".equals(loJSON.get("result"))) {
+                                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                                    }
+                                }
                             }
+                            Platform.runLater(() -> btnNew.fire());
                         }
-                        Platform.runLater(() -> btnNew.fire());
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        return;
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnCancel":
@@ -535,7 +507,6 @@ tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
                                 lsSupplierName = poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName();
                             }
                             tfSupplier.setText(lsSupplierName);
-                            loadTableStockRequest();
                         } else {
                             loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                             if ("success".equals((String) loJSON.get("result"))) {
@@ -546,8 +517,10 @@ tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
                             }
                         }
                     }
-                    tblVwStockRequest.refresh();
-                    poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.OPEN);
+                    if (pnTblStockRequestRow >= 0) {
+                        tblVwStockRequest.refresh();
+                        poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.OPEN);
+                    }
                     break;
                 case "btnPrint":
                     poJSON = poPurchasingController.PurchaseOrder().printTransaction();
@@ -556,9 +529,7 @@ tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
                     }
                     break;
                 case "btnRetrieve":
-//                    tblVwStockRequest.refresh();
                     loadTableStockRequest();
-
                     break;
                 case "btnTransHistory":
                     break;
