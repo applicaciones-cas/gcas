@@ -143,7 +143,6 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-            tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldFocus();
@@ -190,7 +189,11 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-
+            String lsIndustryName = "";
+            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
+                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
+            }
+            tfIndustry.setText(lsIndustryName);
             String lsCompanyName = "";
             if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
                 lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
@@ -298,7 +301,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                         clearDetailFields();
                         loadTablePODetail();
 
-                        //this code below use to highlight tblpurchase 
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
                     }
@@ -372,7 +375,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                 case "btnReturn":
                     //add your method here
 
-                    //this code below use to highlight tblpurchase 
+                    //this code below use to highlight tblpurchase
                     tblVwPurchaseOrder.refresh();
                     poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
                     break;
@@ -395,7 +398,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                         clearDetailFields();
                         loadTablePODetail();
 
-                        //this code below use to highlight tblpurchase 
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
                     }
@@ -523,8 +526,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
         List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount,
                 tfReferenceNo, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate,
-                tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier,
-                tfSearchReferenceNo, tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo);
+                tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
@@ -562,7 +564,6 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                                     tfCompany.setText("");
                                     break;
                                 }
-                                tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
@@ -572,7 +573,6 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                                     tfSupplier.setText("");
                                     break;
                                 }
-                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
                             case "tfDestination":

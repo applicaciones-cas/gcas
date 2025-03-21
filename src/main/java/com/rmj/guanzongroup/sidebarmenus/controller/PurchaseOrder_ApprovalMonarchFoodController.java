@@ -143,7 +143,6 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-            tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
 
             initButtonsClickActions();
@@ -191,6 +190,12 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+
+            String lsIndustryName = "";
+            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
+                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
+            }
+            tfIndustry.setText(lsIndustryName);
 
             String lsCompanyName = "";
             if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
@@ -262,7 +267,7 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
     }
 
     private void initButtonsClickActions() {
-        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel,btnVoid,
+        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel, btnVoid,
                 btnPrint, btnRetrieve, btnTransHistory, btnClose, btnApprove);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
@@ -298,8 +303,8 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                         clearMasterFields();
                         clearDetailFields();
                         loadTablePODetail();
-                        
-                        //this code below use to highlight tblpurchase 
+
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.APPROVED);
                     }
@@ -372,9 +377,9 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                     break;
                 case "btnReturn":
                     //add your method here
-                    //this code below use to highlight tblpurchase 
-                        tblVwPurchaseOrder.refresh();
-                        poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
+                    //this code below use to highlight tblpurchase
+                    tblVwPurchaseOrder.refresh();
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
                     break;
                 case "btnVoid":
                          try {
@@ -394,8 +399,8 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                         clearMasterFields();
                         clearDetailFields();
                         loadTablePODetail();
-                        
-                        //this code below use to highlight tblpurchase 
+
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
                     }
@@ -525,7 +530,7 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
     private void initTextFieldKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount,
                 tfReferenceNo, tfTerm, tfDiscountRate, tfDiscountAmount,
-                tfDestination, tfAdvancePRate, 
+                tfDestination, tfAdvancePRate,
                 tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier,
                 tfSearchReferenceNo);
 
@@ -565,7 +570,6 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                                     tfCompany.setText("");
                                     break;
                                 }
-                                tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
@@ -575,7 +579,6 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                                     tfSupplier.setText("");
                                     break;
                                 }
-                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
                             case "tfDestination":
@@ -921,7 +924,7 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                 header.setReordering(false);
             });
         });
-    initTableHighlithers();
+        initTableHighlithers();
     }
 
     private void initTableHighlithers() {

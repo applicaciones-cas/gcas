@@ -123,7 +123,6 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-            tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldKeyPressed();
@@ -163,7 +162,11 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-
+            String lsIndustryName = "";
+            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
+                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
+            }
+            tfIndustry.setText(lsIndustryName);
             String lsCompanyName = "";
             if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
                 lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
@@ -323,7 +326,6 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
                                     tfCompany.setText("");
                                     break;
                                 }
-                                tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
@@ -333,7 +335,6 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
                                     tfSupplier.setText("");
                                     break;
                                 }
-                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
                             case "tfDestination":

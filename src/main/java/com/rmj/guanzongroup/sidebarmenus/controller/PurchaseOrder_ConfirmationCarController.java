@@ -143,7 +143,6 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-            tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldFocus();
@@ -259,7 +258,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
     }
 
     private void initButtonsClickActions() {
-        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel,btnVoid,
+        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel, btnVoid,
                 btnPrint, btnRetrieve, btnTransHistory, btnClose, btnConfirm);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
@@ -295,8 +294,8 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                         clearMasterFields();
                         clearDetailFields();
                         loadTablePODetail();
-                        
-                        //this code below use to highlight tblpurchase 
+
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
                     }
@@ -369,10 +368,10 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                     break;
                 case "btnReturn":
                     //add your method here
-                    
-                        //this code below use to highlight tblpurchase 
-                        tblVwPurchaseOrder.refresh();
-                        poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
+
+                    //this code below use to highlight tblpurchase
+                    tblVwPurchaseOrder.refresh();
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURN);
                     break;
                 case "btnVoid":
                           try {
@@ -392,8 +391,8 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                         clearMasterFields();
                         clearDetailFields();
                         loadTablePODetail();
-                        
-                        //this code below use to highlight tblpurchase 
+
+                        //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
                     }
@@ -523,7 +522,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                 tfDestination, tfAdvancePRate,
                 tfBrand, tfModel,
                 tfBO, tfRO,
-                tfCost, tfOrderQuantity,tfSearchIndustry,tfSearchCompany,tfSearchSupplier,tfSearchReferenceNo);
+                tfCost, tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
@@ -561,7 +560,6 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                                     tfCompany.setText("");
                                     break;
                                 }
-                                tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
@@ -571,7 +569,6 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                                     tfSupplier.setText("");
                                     break;
                                 }
-                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
                             case "tfDestination":
@@ -800,6 +797,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                 }
 
             }
+
             @Override
             protected void failed() {
                 progressIndicator.setVisible(false);
@@ -807,6 +805,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
         };
         new Thread(task).start(); // Run task in background
     }
+
     private Node createPage(int pageIndex) {
         int totalPages = (int) Math.ceil((double) poPurchaseOrder_data.size() / ROWS_PER_PAGE);
         if (totalPages == 0) {
@@ -829,7 +828,6 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
         return tblVwPurchaseOrder;
     }
 
-
     private void initTablePurchaseOrder() {
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblTransactionNo.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -842,7 +840,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                 header.setReordering(false);
             });
         });
-    initTableHighlithers();
+        initTableHighlithers();
     }
 
     private void initTableHighlithers() {
@@ -873,8 +871,6 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
             }
         });
     }
-
-
 
     private void loadTablePODetail() {
         ProgressIndicator progressIndicator = new ProgressIndicator();

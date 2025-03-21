@@ -123,7 +123,6 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-            tfIndustry.setText(lsIndustryName);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldKeyPressed();
@@ -163,7 +162,11 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-
+            String lsIndustryName = "";
+            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
+                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
+            }
+            tfIndustry.setText(lsIndustryName);
             String lsCompanyName = "";
             if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
                 lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
