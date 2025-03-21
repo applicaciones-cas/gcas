@@ -149,6 +149,7 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
+            tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             tfIndustry.setText(lsIndustryName);
             Platform.runLater(() -> btnNew.fire());
             initButtonsClickActions();
@@ -166,6 +167,48 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
             initFields(pnEditMode);
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
             Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private int moveToNextRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
+        if (table.getItems().isEmpty()) {
+            return -1; // No movement possible
+        }
+        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
+        table.getSelectionModel().select(nextRow);
+        return nextRow;
+    }
+
+    private int moveToPreviousRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
+        if (table.getItems().isEmpty()) {
+            return -1; // No movement possible
+        }
+        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
+        table.getSelectionModel().select(previousRow);
+        return previousRow;
+    }
+
+    private void tableKeyEvents(KeyEvent event) {
+        TableView<?> currentTable = (TableView<?>) event.getSource();
+        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+        if (focusedCell != null) {
+            if ("tblVwOrderDetails".equals(currentTable.getId())) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case DOWN:
+                        pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
+                        break;
+                    case UP:
+                        pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
+                        break;
+                    default:
+                        return; // Ignore other keys
+                }
+
+                loadDetail();
+                event.consume();
+            }
+
         }
     }
 
