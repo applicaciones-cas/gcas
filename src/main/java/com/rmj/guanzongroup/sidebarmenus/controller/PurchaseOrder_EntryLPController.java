@@ -485,7 +485,6 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     break;
                 case "btnRetrieve":
                     loadTableStockRequest();
-                    
                     break;
                 case "btnTransHistory":
                     break;
