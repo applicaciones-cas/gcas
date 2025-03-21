@@ -54,12 +54,12 @@ import org.json.simple.JSONObject;
  *
  * @author Arsiela
  */
-public class DeliveryAcceptance_SerialControllerCAR implements Initializable, ScreenInterface{
+public class DeliveryAcceptance_SerialCARController implements Initializable, ScreenInterface{
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     int pnEntryNo = 0;
-    int pnDetail = 0;
+    int pnDetail = -1;
     private final String pxeModuleName = "Purchase Order Receiving Serial";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
@@ -165,6 +165,11 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
         if (lsValue == null) {
             return;
         }
+        
+        if(pnDetail < 0){
+            return;
+        }
+        
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
@@ -243,9 +248,9 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
                 tfLocation.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).Location().getDescription());
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_SerialControllerCAR.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_SerialCARController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_SerialControllerCAR.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_SerialCARController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -277,6 +282,7 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
                                 String.valueOf(""),
                                 String.valueOf("") 
                         ));
+                    lsLocation = "";
                     lnRow++;
                 }
             }
@@ -305,20 +311,22 @@ public class DeliveryAcceptance_SerialControllerCAR implements Initializable, Sc
             switch (key) {
                 case DOWN:
                 case TAB:
-                    pnDetail = Integer.valueOf(selectedItem.getIndex07()) - 1;
                     if (pnDetail == tblViewDetail.getItems().size()) {
                         pnDetail = tblViewDetail.getItems().size();
                     } else {
+                        selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex()-1);
+                        pnDetail = Integer.valueOf(selectedItem.getIndex07());
                         pnDetail++;
                     }
                     System.out.println("Down " + pnDetail);
                     break;
 
                 case UP:
-                    pnDetail = Integer.valueOf(selectedItem.getIndex07()) + 1;
                     if(pnDetail == 0){
                         pnDetail = 0;
                     } else {
+                        selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex()+1);
+                        pnDetail = Integer.valueOf(selectedItem.getIndex07());
                         pnDetail--;
                     }
                     System.out.println("UP " + pnDetail);

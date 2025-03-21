@@ -197,7 +197,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
 
     public void showSerialDialog() {
         try {
-            if (poPurchaseReceivingController.Detail(pnDetail).getQuantity() == 0) {
+            if (poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue() == 0) {
                 ShowMessageFX.Warning(null, pxeModuleName, "Received quantity cannot be empty.");
                 return;
             }
@@ -960,9 +960,6 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                 case PurchaseOrderReceivingStatus.OPEN:
                     lblStatus.setText("OPEN");
                     break;
-                case PurchaseOrderReceivingStatus.PROCESSED:
-                    lblStatus.setText("PROCESSED");
-                    break;
                 case PurchaseOrderReceivingStatus.RETURNED:
                     lblStatus.setText("RETURNED");
                     break;
@@ -1299,14 +1296,10 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
 
             double lnTotal = 0.0;
             for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
-                try {
-
-                    lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity();
-                } catch (Exception e) {
-                }
+                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue();
 
                 if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                        && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity()) {
+                        && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()) {
                     highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
                 }
 
