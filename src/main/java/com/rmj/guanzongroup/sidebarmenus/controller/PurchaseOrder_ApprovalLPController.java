@@ -177,7 +177,7 @@ public class PurchaseOrder_ApprovalLPController implements Initializable, Screen
                 case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
-                case PurchaseOrderStatus.RETURN:
+                case PurchaseOrderStatus.RETURNED:
                     lsStatus = "RETURNED";
                     break;
                 case PurchaseOrderStatus.CANCELLED:
@@ -944,7 +944,7 @@ public class PurchaseOrder_ApprovalLPController implements Initializable, Screen
                         case PurchaseOrderStatus.VOID:
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
-                        case PurchaseOrderStatus.RETURN:
+                        case PurchaseOrderStatus.RETURNED:
                             setStyle("-fx-background-color: #FAC898");
                         default:
                             setStyle("");

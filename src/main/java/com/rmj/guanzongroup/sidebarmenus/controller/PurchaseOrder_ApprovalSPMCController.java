@@ -939,7 +939,7 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                         case PurchaseOrderStatus.VOID:
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
-                        case PurchaseOrderStatus.RETURN:
+                        case PurchaseOrderStatus.RETURNED:
                             setStyle("-fx-background-color: #FAC898");
                         default:
                             setStyle("");

@@ -44,7 +44,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -143,7 +142,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
             tfIndustry.setText(lsIndustryName);
-//            loadTableStockRequest();
             Platform.runLater(() -> btnNew.fire());
             initButtonsClickActions();
             initTextFieldFocus();
@@ -177,7 +175,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
-                case PurchaseOrderStatus.RETURN:
+                case PurchaseOrderStatus.RETURNED:
                     lsStatus = "RETURNED";
                     break;
                 case PurchaseOrderStatus.CANCELLED:
@@ -291,6 +289,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     poDetail_data.clear();
                     loJSON = poPurchasingController.PurchaseOrder().NewTransaction();
                     poPurchasingController.PurchaseOrder().Master().setIndustryID(poApp.getIndustry());
+                    poPurchasingController.PurchaseOrder().Master().setDestinationID(poPurchasingController.PurchaseOrder().Master().Branch().getBranchCode());
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();
@@ -389,15 +388,51 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     }
 
                     break;
+//                case "btnSave":
+//                try {
+//                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure, do you want to save?")) {
+//                        return;
+//                    }
+//                    if (pnEditMode == EditMode.UPDATE) {
+//                        poPurchasingController.PurchaseOrder().Master().setModifiedDate(poApp.getServerDate());
+//                        poPurchasingController.PurchaseOrder().Master().setModifyingId(poApp.getUserID());
+//                        for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
+//                            poPurchasingController.PurchaseOrder().Detail(lnCntr).setModifiedDate(poApp.getServerDate());
+//                        }
+//                    }
+//
+//                    loJSON = poPurchasingController.PurchaseOrder().SaveTransaction();
+//                    if ("success".equals(loJSON.get("result"))) {
+//                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+//                        loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+//                        if ("success".equals(loJSON.get("result"))) {
+//                            if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
+//                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+//                                    loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+//                                    if ("success".equals(loJSON.get("result"))) {
+//                                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+//                                    }
+//                                }
+//                            }
+//                            Platform.runLater(() -> btnNew.fire());
+//                        }
+//                    } else {
+//                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+//                        return;
+//                    }
+//                } catch (ParseException ex) {
+//                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                break;
                 case "btnSave":
-                try {
+                    try {
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure, do you want to save?")) {
                         return;
                     }
                     if (pnEditMode == EditMode.UPDATE) {
                         poPurchasingController.PurchaseOrder().Master().setModifiedDate(poApp.getServerDate());
                         poPurchasingController.PurchaseOrder().Master().setModifyingId(poApp.getUserID());
-                        for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
+                        for (int lnCntr = 0; lnCntr < poPurchasingController.PurchaseOrder().getDetailCount(); lnCntr++) {
                             poPurchasingController.PurchaseOrder().Detail(lnCntr).setModifiedDate(poApp.getServerDate());
                         }
                     }
@@ -406,23 +441,23 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     if ("success".equals(loJSON.get("result"))) {
                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                        if ("success".equals(loJSON.get("result"))) {
-                            if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
-                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                                    loJSON = ShowDialogFX.getUserApproval(poApp);
-                                    if ("success".equals(loJSON.get("result"))) {
-                                        loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                                        if ("success".equals(loJSON.get("result"))) {
-                                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                                        }
-                                    }
-                                }
-                            }
-                            Platform.runLater(() -> btnNew.fire());
+                        if (!"success".equals(loJSON.get("result"))) {
+                            pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                            ShowMessageFX.Warning("Failed to open transaction.", psFormName, null);
+                            return;
                         }
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
+                            if (ShowMessageFX.YesNo("Do you want to confirm this transaction?", psFormName, null)) {
+                                loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+                                if (!"success".equals(loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                }
+                                ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                            }
+                        }
+                        Platform.runLater(() -> btnNew.fire());
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                        return;
                     }
                 } catch (ParseException ex) {
                     Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
@@ -479,7 +514,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 case "btnRetrieve":
 //                    tblVwStockRequest.refresh();
                     loadTableStockRequest();
-                    
 
                     break;
                 case "btnTransHistory":
@@ -948,7 +982,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 tblVwStockRequest.toFront();
             }
         };
-        
+
         new Thread(task).start(); // Run task in background
     }
 
@@ -1001,13 +1035,14 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 } else {
                     // Assuming empIndex05 corresponds to an employee status
                     String status = item.getIndex07(); // Replace with actual getter
-                    if (status == PurchaseOrderStatus.CONFIRMED)
-                    switch (status) {
-                        case PurchaseOrderStatus.CONFIRMED:
-                            setStyle("-fx-background-color: #A7C7E7;");
-                            break;
-                        default:
-                            setStyle("");
+                    if (status == PurchaseOrderStatus.CONFIRMED) {
+                        switch (status) {
+                            case PurchaseOrderStatus.CONFIRMED:
+                                setStyle("-fx-background-color: #A7C7E7;");
+                                break;
+                            default:
+                                setStyle("");
+                        }
                     }
                 }
             }
@@ -1080,27 +1115,27 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 progressIndicator.setVisible(false);
             }
         };
-            if (!poApprovedStockRequest_data.isEmpty()) {
-                if (!poDetail_data.isEmpty()) {
-                    for (ModelPurchaseOrderDetail detail : poDetail_data) {
-                        String listPODetail = detail.getIndex02();
+        if (!poApprovedStockRequest_data.isEmpty()) {
+            if (!poDetail_data.isEmpty()) {
+                for (ModelPurchaseOrderDetail detail : poDetail_data) {
+                    String listPODetail = detail.getIndex02();
 
-                        for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
-                            if (listPODetail.equals(master.getIndex06())) {
-                                if (master.getIndex07() != PurchaseOrderStatus.CONFIRMED) {
-                                    master.setIndex07(PurchaseOrderStatus.CONFIRMED);
-                                }
-                                break; // Exit inner loop once matched
+                    for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                        if (listPODetail.equals(master.getIndex06())) {
+                            if (master.getIndex07() != PurchaseOrderStatus.CONFIRMED) {
+                                master.setIndex07(PurchaseOrderStatus.CONFIRMED);
                             }
+                            break; // Exit inner loop once matched
                         }
                     }
-                } else {
-                    for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
-                        master.setIndex07(PurchaseOrderStatus.OPEN);
-                    }
                 }
-                tblVwStockRequest.refresh(); // Refresh only once after updates
+            } else {
+                for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                    master.setIndex07(PurchaseOrderStatus.OPEN);
+                }
             }
+            tblVwStockRequest.refresh(); // Refresh only once after updates
+        }
         new Thread(task).start(); // Run task in background
     }
 

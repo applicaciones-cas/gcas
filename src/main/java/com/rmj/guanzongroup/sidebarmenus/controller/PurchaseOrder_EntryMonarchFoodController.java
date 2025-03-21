@@ -150,7 +150,6 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
             tfIndustry.setText(lsIndustryName);
-//            loadTableStockRequest();
             Platform.runLater(() -> btnNew.fire());
             initButtonsClickActions();
             initTextFieldFocus();
@@ -184,7 +183,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                 case PurchaseOrderStatus.APPROVED:
                     lsStatus = "APPROVED";
                     break;
-                case PurchaseOrderStatus.RETURN:
+                case PurchaseOrderStatus.RETURNED:
                     lsStatus = "RETURNED";
                     break;
                 case PurchaseOrderStatus.CANCELLED:
@@ -485,7 +484,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                     break;
                 case "btnRetrieve":
                     loadTableStockRequest();
-                    
+
                     break;
                 case "btnTransHistory":
                     break;
