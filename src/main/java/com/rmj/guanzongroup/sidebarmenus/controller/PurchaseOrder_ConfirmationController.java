@@ -295,11 +295,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                   try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loJSON = ShowDialogFX.getUserApproval(poApp);
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            break;
-                        }
+                        
                         loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -307,7 +303,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                         }
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         clearMasterFields();
-                        clearDetailFields();                        
+                        clearDetailFields();
                         poDetail_data.clear();
                         pnEditMode = EditMode.UNKNOWN;
 
@@ -321,42 +317,52 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                 }
                 break;
                 case "btnSave":
-                     try {
-                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure, do you want to save?")) {
+                    try {
+                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
                     }
-                    if (pnEditMode == EditMode.UPDATE) {
-                        poPurchasingController.PurchaseOrder().Master().setModifiedDate(poApp.getServerDate());
-                        poPurchasingController.PurchaseOrder().Master().setModifyingId(poApp.getUserID());
-                        for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
-                            poPurchasingController.PurchaseOrder().Detail(lnCntr).setModifiedDate(poApp.getServerDate());
-                        }
-                    }
-                    loJSON = poPurchasingController.PurchaseOrder().SaveTransaction();
-                    if ("success".equals(loJSON.get("result"))) {
-                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                        loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                        if ("success".equals(loJSON.get("result"))) {
-                            if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
-                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                                    loJSON = ShowDialogFX.getUserApproval(poApp);
-                                    if ("success".equals(loJSON.get("result"))) {
-                                        loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                                        if ("success".equals(loJSON.get("result"))) {
-                                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                                        }
-                                    }
-                                }
-                            }
-                            loadMaster();
-                            loadDetail();
-                            loadTablePODetail();
-                            pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
-                        }
-                    } else {
+
+                    if (pnEditMode == EditMode.UPDATE && (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)
+                            || !"success".equals((loJSON = ShowDialogFX.getUserApproval(poApp)).get("result")))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         return;
                     }
+
+                    if (pnEditMode == EditMode.UPDATE) {
+                        poPurchasingController.PurchaseOrder().Master().setModifiedDate(poApp.getServerDate());
+                        poPurchasingController.PurchaseOrder().Master().setModifyingId(poApp.getUserID());
+                        for (int i = 0; i < poPurchasingController.PurchaseOrder().getDetailCount(); i++) {
+                            poPurchasingController.PurchaseOrder().Detail(i).setModifiedDate(poApp.getServerDate());
+                        }
+                    }
+
+                    if (!"success".equals((loJSON = poPurchasingController.PurchaseOrder().SaveTransaction()).get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        return;
+                    }
+
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                    loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+
+                    if ("success".equals(loJSON.get("result")) && poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
+                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo())).get("result"))) {
+                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                        }
+                    }
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                        if ("success".equals(loJSON.get("result"))) {
+                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                        }
+                    }
+
+                    loadMaster();
+                    loadDetail();
+                    loadTablePODetail();
+                    pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+
                 } catch (ParseException ex) {
                     Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -394,11 +400,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loJSON = ShowDialogFX.getUserApproval(poApp);
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            break;
-                        }
+                        
                         loJSON = poPurchasingController.PurchaseOrder().VoidTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -406,7 +408,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                         }
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         clearMasterFields();
-                        clearDetailFields();                        
+                        clearDetailFields();
                         poDetail_data.clear();
                         pnEditMode = EditMode.UNKNOWN;
 
@@ -933,8 +935,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
 
                     }
                     tblVwOrderDetails.setItems(poDetail_data);
-                    
-                   
+
                     computeTotalAmount(grandTotalAmount);
                     poPurchasingController.PurchaseOrder().Master().setTranTotal(grandTotalAmount);
                     tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
@@ -1048,6 +1049,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
             }
         }
     }
+
     private int moveToNextRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
         if (table.getItems().isEmpty()) {
             return -1; // No movement possible
@@ -1071,21 +1073,21 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
         TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
         if (focusedCell != null) {
             if ("tblVwOrderDetails".equals(currentTable.getId())) {
-            switch (event.getCode()) {
-                case TAB:
-                case DOWN:
-                    pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
-                    break;
-                case UP:
-                    pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
-                    break;
-                default:
-                    return; // Ignore other keys
-            }
+                switch (event.getCode()) {
+                    case TAB:
+                    case DOWN:
+                        pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
+                        break;
+                    case UP:
+                        pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
+                        break;
+                    default:
+                        return; // Ignore other keys
+                }
 
-            loadDetail();
-            event.consume();
-        }
+                loadDetail();
+                event.consume();
+            }
 
         }
     }

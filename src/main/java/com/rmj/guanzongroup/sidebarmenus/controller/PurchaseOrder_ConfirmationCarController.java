@@ -294,11 +294,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                   try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loJSON = ShowDialogFX.getUserApproval(poApp);
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            break;
-                        }
+                        
                         loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -350,7 +346,14 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                             if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo())).get("result"))) 
                                 ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         }
-
+                        
+                        if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                            loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                            if ("success".equals(loJSON.get("result"))) {
+                                ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                            }
+                        }
+                        
                         loadMaster();
                         loadDetail();
                         loadTablePODetail();
@@ -394,11 +397,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                           try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        loJSON = ShowDialogFX.getUserApproval(poApp);
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            break;
-                        }
+                        
                         loJSON = poPurchasingController.PurchaseOrder().VoidTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
