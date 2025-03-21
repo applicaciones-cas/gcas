@@ -39,7 +39,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -48,11 +47,7 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -291,17 +286,16 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     }
                     break;
                 case "btnConfirm":
-
                   try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        
+
                         loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                             break;
                         }
-                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         clearMasterFields();
                         clearDetailFields();
                         poDetail_data.clear();
@@ -310,10 +304,9 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                         //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
-
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnSave":
@@ -390,45 +383,35 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                 case "btnTransHistory":
                     break;
                 case "btnReturn":
-                    // add method here
+                    //add your method here
 
                     //this code below use to highlight tblpurchase
                     tblVwPurchaseOrder.refresh();
-                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURNED);
                     break;
                 case "btnVoid":
-                    try {
+                          try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        
+
                         loJSON = poPurchasingController.PurchaseOrder().VoidTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                             break;
                         }
-                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         clearMasterFields();
                         clearDetailFields();
                         poDetail_data.clear();
                         pnEditMode = EditMode.UNKNOWN;
-
                         //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
-                case "btnClose":
-                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
-                        if (poUnload != null) {
-                            poUnload.unloadForm(AnchorMain, poApp, psFormName);
-                        } else {
-                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
-                        }
-                    }
-                    break;
                 default:
                     ShowMessageFX.Warning("Please contact admin to assist about no button available", psFormName, null);
                     break;

@@ -288,12 +288,13 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
                   try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
+
                         loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                             break;
                         }
-                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         clearMasterFields();
                         clearDetailFields();
                         poDetail_data.clear();
@@ -304,7 +305,7 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnSave":
@@ -381,7 +382,7 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
                 case "btnTransHistory":
                     break;
                 case "btnReturn":
-                    // add your method here
+                    //add your method here
 
                     //this code below use to highlight tblpurchase
                     tblVwPurchaseOrder.refresh();
@@ -391,24 +392,23 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
                           try {
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        
+
                         loJSON = poPurchasingController.PurchaseOrder().VoidTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                             break;
                         }
-                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         clearMasterFields();
                         clearDetailFields();
                         poDetail_data.clear();
                         pnEditMode = EditMode.UNKNOWN;
-
                         //this code below use to highlight tblpurchase
                         tblVwPurchaseOrder.refresh();
                         poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
                     }
                 } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
                 case "btnClose":

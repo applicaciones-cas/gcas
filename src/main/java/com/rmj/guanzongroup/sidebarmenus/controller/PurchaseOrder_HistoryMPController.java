@@ -259,6 +259,12 @@ public class PurchaseOrder_HistoryMPController implements Initializable, ScreenI
                     }
                     break;
                 case "btnPrint":
+                    if (btnPrint.getText().equals("Reprint")) {
+                    } else {
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.APPROVED)) {
+                            poPurchasingController.PurchaseOrder().Master().setPrint("1");
+                        }
+                    }
                     poJSON = poPurchasingController.PurchaseOrder().printTransaction();
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
