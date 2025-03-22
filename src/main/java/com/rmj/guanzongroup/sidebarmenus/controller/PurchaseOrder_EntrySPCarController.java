@@ -273,7 +273,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
             tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
 
-            if (poPurchasingController.PurchaseOrder().Master().isWithAdvPaym() == true) {
+            if (poPurchasingController.PurchaseOrder().Master().getWithAdvPaym() == true) {
                 chkbAdvancePayment.setSelected(true);
             } else {
                 chkbAdvancePayment.setSelected(false);
@@ -406,7 +406,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                                     tfTerm.requestFocus();
                                     break;
                                 case "tfBarcode":
-                                    poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false);
+                                    poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblPODetailRow);
                                     if ("error".equals(poJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                         tfBarcode.setText("");
@@ -418,7 +418,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                                     loadTablePODetail();
                                     break;
                                 case "tfDescription":
-                                    poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false);
+                                    poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblPODetailRow);
                                     if ("error".equals(poJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                         tfDescription.setText("");
@@ -774,7 +774,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                                         tfBarcode.setText("");
                                         break;
                                     }
-                                    loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false);
+                                    loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblPODetailRow);
                                     if ("error".equals(loJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfBarcode.setText("");
@@ -787,7 +787,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                                     loadTablePODetail();
                                     break;
                                 case "tfDescription":
-                                    loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false);
+                                    loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblPODetailRow);
                                     if ("error".equals(loJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                         tfDescription.setText("");
@@ -856,14 +856,14 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                         || Double.parseDouble(tfTotalAmount.getText().replace(",", "")) > 0.0) {
                     if (chkbAdvancePayment.isSelected()) {
                         chkbAdvancePayment.setSelected(true);
-                        poPurchasingController.PurchaseOrder().Master().isWithAdvPaym(true);
+                        poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(true);
                     } else {
-                        poPurchasingController.PurchaseOrder().Master().isWithAdvPaym(false);
+                        poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(false);
                         chkbAdvancePayment.setSelected(false);
                     }
                 } else {
                     ShowMessageFX.Warning("Advance payment cannot be entered until the total amount is greater than 0.00.", psFormName, null);
-                    poPurchasingController.PurchaseOrder().Master().isWithAdvPaym(false);
+                    poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(false);
                     chkbAdvancePayment.setSelected(false);
                 }
                 initFields(pnEditMode);
