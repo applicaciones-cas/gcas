@@ -11,7 +11,6 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -41,6 +40,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import static javafx.scene.input.KeyCode.ENTER;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -78,7 +78,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblStockRequestRow = -1;
     private int pnTblPODetailRow = -1;
-    private int pnSTOCK_REQUEST_PAGE = 30;
+    private int pnSTOCK_REQUEST_PAGE = 50;
     private TextField activeField;
     @FXML
     private AnchorPane apBrowse, AnchorMaster, AnchorDetails, apTableDetailLoading, apTableStockRequestLoading, AnchorMain;
@@ -414,6 +414,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                         break;
                                     }
                                     tfBarcode.setText(poPurchasingController.PurchaseOrder().Master().Inventory().getBarCode());
+
                                     tfOrderQuantity.requestFocus();
                                     loadDetail();
                                     loadTablePODetail();
@@ -837,13 +838,25 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                         tfDescription.setText("");
                                     }
                                     tfOrderQuantity.requestFocus();
-
                                     loadDetail();
                                     loadTablePODetail();
                                     break;
                             }
                             loadTableStockRequest();
                             event.consume();
+                            switch (txtFieldID) {
+                                case "tfCompany":
+                                case "tfSupplier":
+                                case "tfDestination":
+                                case "tfTerm":
+                                case "tfAdvancePAmount":
+                                case "tfAdvancePRate":
+                                case "tfDiscountRate":
+                                case "tfDiscountAmount":
+                                case "tfOrderQuantity":
+                                    CommonUtils.SetNextFocus((TextField) event.getSource());
+                                    break;
+                            }
                             break;
                         case UP:
                             event.consume();
