@@ -315,10 +315,13 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                         return;
                     }
 
-                    if (pnEditMode == EditMode.UPDATE && (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)
-                            || !"success".equals((loJSON = ShowDialogFX.getUserApproval(poApp)).get("result")))) {
-                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                        return;
+                    if (pnEditMode == EditMode.UPDATE
+                            && (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED))) {
+                        loJSON = ShowDialogFX.getUserApproval(poApp);
+                        if (!"success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                            return;
+                        }
                     }
 
                     if (pnEditMode == EditMode.UPDATE) {
@@ -590,33 +593,33 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                                 }
                                 tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
                                 break;
-                            case "tfBarcode":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfBarcode.setText("");
-                                    break;
-                                }
-                                if (pnTblPODetailRow >= 0) {
-                                    tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
-                                } else {
-                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                }
-                                break;
-                            case "tfDescription":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfDescription.setText("");
-                                    break;
-                                }
-                                if (pnTblPODetailRow >= 0) {
-                                    tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
-                                } else {
-                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-
-                                }
-                                break;
+//                            case "tfBarcode":
+//                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false);
+//                                if ("error".equals(loJSON.get("result"))) {
+//                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+//                                    tfBarcode.setText("");
+//                                    break;
+//                                }
+//                                if (pnTblPODetailRow >= 0) {
+//                                    tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
+//                                } else {
+//                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+//                                }
+//                                break;
+//                            case "tfDescription":
+//                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false);
+//                                if ("error".equals(loJSON.get("result"))) {
+//                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+//                                    tfDescription.setText("");
+//                                    break;
+//                                }
+//                                if (pnTblPODetailRow >= 0) {
+//                                    tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
+//                                } else {
+//                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+//
+//                                }
+//                                break;
                         }
                         loadTablePurchaseOrder();
                         event.consume();
