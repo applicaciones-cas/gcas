@@ -5,7 +5,6 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Serial;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
@@ -18,26 +17,18 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.F3;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -45,7 +36,6 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
-import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.json.simple.JSONObject;
 
@@ -127,6 +117,13 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
             String lsButton = clickedButton.getId();
             switch (lsButton) {
                 case "btnOkay":
+                    //check for empty serial 1 || serial 2 is empty delete the excess row
+                    poJSON = checkSerialNo();
+                    if("error".equals((String) poJSON.get("result"))){
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
                 case "btnClose":
                     CommonUtils.closeStage(btnClose);
                     break;
@@ -137,6 +134,32 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
         }
     }
     
+    private JSONObject checkSerialNo(){
+        poJSON = new JSONObject();
+        int lnRow = 1;
+        for(int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount()-1; lnCtr++){
+            if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo){
+                if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01().equals("")){
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "Engine No at row "+lnRow+" cannot be empty.");
+                    return poJSON;
+                } 
+                if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02().equals("")){
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "Frame No at row "+lnRow+" cannot be empty.");
+                    return poJSON;
+                }
+                if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getLocationId()== null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getLocationId().equals("")){
+                    poJSON.put("result", "error");
+                    poJSON.put("message", "Location No at row "+lnRow+" cannot be empty.");
+                    return poJSON;
+                }
+                lnRow++;
+            }
+        }
+        return poJSON;
+    }
+    
     
     @FXML
     private void cmdCheckBox_Click(ActionEvent event) {
@@ -145,11 +168,11 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
         if (source instanceof CheckBox) {
             CheckBox checkbox = (CheckBox) source;
             String lsCheckBox = checkbox.getId();
-            String lsLocation = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getLocationID();
+            String lsLocation = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getLocationId();
             if(lsCheckBox.equals("cbApplyToAll")){
                 for(int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount() - 1; lnCtr++){
                     if((lsLocation != null) || !lsLocation.equals("")){
-                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).setLocationID(lsLocation);
+                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).setLocationId(lsLocation);
                     }
                 }
                 loadTableDetail();
@@ -187,7 +210,7 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
                     break;
                 case "tfLocation":
                     if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setLocationID("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setLocationId("");
                     }
                     break;
             }
@@ -262,7 +285,6 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
         details_data.clear();
         
         try {
-            poJSON = poPurchaseReceivingController.getPurchaseOrderReceivingSerial(pnEntryNo);
             for (lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount() - 1; lnCtr++) {
                 if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo){ 
                     if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).Location().getDescription() != null){
@@ -286,7 +308,24 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
                     lnRow++;
                 }
             }
-
+        
+        if (pnDetail < 0 || pnDetail
+                >= details_data.size()) {
+            if (!details_data.isEmpty()) {
+                /* FOCUS ON FIRST ROW */
+                tblViewDetail.getSelectionModel().select(0);
+                tblViewDetail.getFocusModel().focus(0);
+                ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
+                pnDetail = Integer.valueOf(selectedItem.getIndex07());
+                loadRecordDetail();
+            }
+        } else {
+            /* FOCUS ON THE ROW THAT pnDetail POINTS TO */
+            tblViewDetail.getSelectionModel().select(pnDetail);
+            tblViewDetail.getFocusModel().focus(pnDetail);
+            loadRecordDetail();
+        }
+            
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
@@ -305,7 +344,7 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
         });
         
         tblViewDetail.setOnKeyReleased((KeyEvent t) -> {
-            ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
+            ModelDeliveryAcceptance_Serial selectedItem ;
             
             KeyCode key = t.getCode();
             switch (key) {
