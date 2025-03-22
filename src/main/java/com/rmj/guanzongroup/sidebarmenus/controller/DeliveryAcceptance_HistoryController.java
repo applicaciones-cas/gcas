@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -58,6 +59,7 @@ import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -73,6 +75,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
@@ -116,11 +119,9 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
     double ldstackPaneWidth = 0;
     double ldstackPaneHeight = 0;
 
-    private final Map<Integer, String> highlightedRows = new HashMap<>();
+    private final Map<Integer, String> highlightedRowsMain = new HashMap<>();
+    private final Map<Integer, String> highlightedRowsDetail = new HashMap<>();
     private TextField lastFocusedTextField = null;
-
-    private double xOffset = 0;
-    private double yOffset = 0;
 
     @FXML
     private AnchorPane apMainAnchor;
@@ -339,7 +340,6 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
-
                     break;
                 case "btnClose":
                     unloadForm appUnload = new unloadForm();
@@ -361,7 +361,6 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                     //Retrieve data from purchase order to table main
                     retrievePOR();
                     break;
-
                 case "btnArrowRight":
                     slideImage(1);
                     break;
@@ -389,16 +388,6 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 
     private void initButton(int fnValue) {
         //detect if voided
-//        String lsstat = "";
-//        try {
-//            lsstat = poPurchaseReceivingController.Master().getTransactionStatus();
-//        } catch (Exception e) {
-//        }
-
-//        boolean lbproceed = true;
-//        if (lsstat.equals("4")) {
-//            lbproceed = false;
-//        }
         boolean lbShow1 = (fnValue == EditMode.UPDATE);
         boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
         boolean lbShow3 = (fnValue == EditMode.READY);
@@ -417,13 +406,8 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 //        apBrowse.setDisable(lbShow); // no usage
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
+        apAttachments.setDisable(!lbShow1);
 
-        //fix position here
-//        btnClose.setVisible(!lbproceed);
-//        btnClose.setManaged(!lbproceed);
-//
-//        btnHistory.setVisible(!lbproceed);
-//        btnHistory.setManaged(!lbproceed);
     }
 
     @FXML
@@ -441,18 +425,6 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         String lsMessage = "";
         poJSON.put("result", "success");
 
-//        if (poPurchaseReceivingController.Master().getIndustryId().equals("")) {
-//            poJSON.put("result", "error");
-//            lsMessage = "Industry";
-//        }
-//        if (poPurchaseReceivingController.Master().getCompanyId().equals("")) {
-//            poJSON.put("result", "error");
-//            lsMessage += lsMessage.isEmpty() ? "Company" : " & Company";
-//        }
-//        if (poPurchaseReceivingController.Master().getSupplierId().equals("")) {
-//            poJSON.put("result", "error");
-//            lsMessage += lsMessage.isEmpty() ? "Supplier" : " & Supplier";
-//        }
         if ("success".equals((String) poJSON.get("result"))) {
             poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(false, poPurchaseReceivingController.Master().getReferenceNo());
             if (!"success".equals((String) poJSON.get("result"))) {
@@ -663,9 +635,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                 header.setReordering(false);
             });
         });
-//        tblViewOrderDetails.setItems(details_data);
-//        tblViewOrderDetails.autosize();
-//        
+
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
         autoSearch(tfOrderNo);
 
@@ -719,188 +689,6 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         stackPane1.setAlignment(imageView, javafx.geometry.Pos.CENTER);
     }
 
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
-        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsID = (txtField.getId());
-        String lsValue = txtField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-        poJSON = new JSONObject();
-        if (!nv) {
-            /*Lost Focus*/
-            lsValue = lsValue.trim();
-            switch (lsID) {
-
-                case "taRemarks"://Remarks
-                    poJSON = poPurchaseReceivingController.Master().setRemarks(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-            }
-            loadRecordMaster();
-        } else {
-            txtField.selectAll();
-        }
-    };
-
-    // Method to handle focus change and track the last focused TextField
-    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfDescription":
-                case "tfBarcode":
-                    //if value is blank then reset
-                    if (lsValue.equals("")) {
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
-                    }
-
-                    break;
-                case "tfSupersede":
-                    //if value is blank then reset
-                    if (lsValue.equals("")) {
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setReplaceId("");
-                    }
-
-                    break;
-                case "tfCost":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
-                        return;
-                    }
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-
-                    break;
-                case "tfReceiveQuantity":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-            }
-            loadTableDetail();
-        }
-    };
-
-    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfCompany":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setCompanyId("");
-                    }
-                    break;
-                case "tfSupplier":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setSupplierId("");
-                    }
-                    break;
-                case "tfTrucking":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setTruckingId("");
-                    }
-                    break;
-                case "tfAreaRemarks":
-                    break;
-                case "tfTerm":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setTermCode("");
-                    }
-                    break;
-                case "tfReferenceNo":
-                    if (!lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setReferenceNo(lsValue);
-                    } else {
-                        poJSON = poPurchaseReceivingController.Master().setReferenceNo("");
-                    }
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        tfReferenceNo.setText("");
-                        break;
-                    }
-                    break;
-                case "tfDiscountRate":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
-                        return;
-                    }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue)));
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
-                    }
-                    poJSON = poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
-                    }
-                    break;
-                case "tfDiscountAmount":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
-                        return;
-                    }
-                    poJSON = poPurchaseReceivingController.Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
-                    }
-
-                    poJSON = poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
-                    }
-                    break;
-
-            }
-
-            loadRecordMaster();
-        }
-
-    };
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
 
         poJSON = new JSONObject();
@@ -1084,31 +872,6 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentType.focusedProperty().addListener(txtField_Focus);
 
-        tfTransactionNo.focusedProperty().addListener(txtMaster_Focus);
-        tfIndustry.focusedProperty().addListener(txtMaster_Focus);
-        tfCompany.focusedProperty().addListener(txtMaster_Focus);
-        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
-        tfTrucking.focusedProperty().addListener(txtMaster_Focus);
-        taRemarks.focusedProperty().addListener(txtArea_Focus);
-        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
-        tfTerm.focusedProperty().addListener(txtMaster_Focus);
-        tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
-        tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
-//        tfTotal.focusedProperty().addListener(txtMaster_Focus);
-
-//        tfOrderNo.focusedProperty().addListener(txtDetail_Focus);
-        tfBarcode.focusedProperty().addListener(txtDetail_Focus);
-        tfSupersede.focusedProperty().addListener(txtDetail_Focus);
-        tfDescription.focusedProperty().addListener(txtDetail_Focus);
-        tfBrand.focusedProperty().addListener(txtDetail_Focus);
-        tfModel.focusedProperty().addListener(txtDetail_Focus);
-        tfColor.focusedProperty().addListener(txtDetail_Focus);
-        tfInventoryType.focusedProperty().addListener(txtDetail_Focus);
-        tfMeasure.focusedProperty().addListener(txtDetail_Focus);
-        tfCost.focusedProperty().addListener(txtDetail_Focus);
-        tfOrderQuantity.focusedProperty().addListener(txtDetail_Focus);
-        tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
-
         tfSearchCompany.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
@@ -1124,15 +887,11 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 
     }
 
-    public void initDatePickers() {
-        // Blank content
-//        dpReferenceDate
-//        dpDate
+    private void setDatePickerFormat(DatePicker datePicker) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        dpReferenceDate.setConverter(new StringConverter<LocalDate>() {
+        datePicker.setConverter(new StringConverter<LocalDate>() {
             @Override
             public String toString(LocalDate date) {
-
                 return (date != null) ? date.format(formatter) : "";
             }
 
@@ -1141,23 +900,12 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                 return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
             }
         });
-
-        dpReferenceDate.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue) { // Lost focus
-                LocalDate selectedDate = dpReferenceDate.getValue();
-                LocalDate localbdate = LocalDate.parse(selectedDate.toString(), formatter);
-                String formattedDate = formatter.format(selectedDate);
-                dpReferenceDate.setValue(localbdate);
-            }
-        });
-
     }
 
-    public void getSelectedMain() {
-
-    }
-
-    public void getSelectedDetail() {
+    public void initDatePickers() {
+        setDatePickerFormat(dpTransactionDate);
+        setDatePickerFormat(dpReferenceDate);
+        setDatePickerFormat(dpExpiryDate);
 
     }
 
@@ -1170,50 +918,36 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         return null; // No table has focus
     }
 
-    private void scrollTable(TableView table, int direction) {
-        int rowCount = table.getItems().size();
-        if (rowCount == 0) {
-            return;
-        }
-
-        int currentIndex = table.getSelectionModel().getSelectedIndex();
-        int newIndex = currentIndex + direction;
-
-        // Ensure the index is within bounds
-        if (newIndex >= 0 && newIndex < rowCount) {
-            table.getSelectionModel().clearAndSelect(newIndex);
-            table.scrollTo(newIndex);
-        }
-    }
-
     private int moveToNextRow(TableView table, TablePosition focusedCell) {
         int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
         table.getSelectionModel().select(nextRow);
         return nextRow;
     }
 
-    private void handleTabKey(KeyEvent event) {
-        if (event.getCode().toString().equals("TAB")) {
-            TableView currentTable = (TableView) event.getSource();
-            TablePosition focusedCell = currentTable.getFocusModel().getFocusedCell();
+    private int moveToPreviousRow(TableView table, TablePosition focusedCell) {
+        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
+        table.getSelectionModel().select(previousRow);
+        return previousRow;
+    }
 
-            if (focusedCell != null) {
-                switch (currentTable.getId()) {
-                    case "tblViewOrderDetails":
-                        System.out.println("Tab pressed in Table 1");
-                        pnDetail = moveToNextRow(tblViewOrderDetails, focusedCell);
-                        loadRecordDetail();
-                        break;
-                    case "tblViewPuchaseOrder":
-                        System.out.println("Tab pressed in Table 2");
-                        moveToNextRow(tblViewPuchaseOrder, focusedCell);
-                        break;
-                    default:
-                        System.out.println("Unknown Table");
-                        break;
-                }
-                event.consume();
+    private void tableKeyEvents(KeyEvent event) {
+        TableView<?> currentTable = (TableView<?>) event.getSource();
+        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+        if (focusedCell != null) {
+            switch (event.getCode()) {
+                case TAB:
+                case DOWN:
+                    pnDetail = moveToNextRow(currentTable, focusedCell);
+                    break;
+                case UP:
+                    pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                    break;
+
+                default:
+                    break;
             }
+            loadRecordDetail();
+            event.consume();
         }
     }
 
@@ -1227,10 +961,9 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         });
 
         tblViewPuchaseOrder.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
-                if (pnMain >= 0) {
-
+            pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
+            if (pnMain >= 0) {
+                if (event.getClickCount() == 2) {
                     loadTableDetailFromMain();
                     pnEditMode = poPurchaseReceivingController.getEditMode();
                     initButton(pnEditMode);
@@ -1244,19 +977,28 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                 super.updateItem(item, empty);
                 if (item == null || empty) {
                     setStyle(""); // Reset for empty rows
-                } else if (highlightedRows.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRows.get(getIndex()) + ";");
+                } else if (highlightedRowsMain.containsKey(getIndex())) {
+                    setStyle("-fx-background-color: " + highlightedRowsMain.get(getIndex()) + ";");
+                } else {
+                    setStyle(""); // Default style
+                }
+            }
+        });
+        tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Detail>() {
+            @Override
+            protected void updateItem(ModelDeliveryAcceptance_Detail item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setStyle(""); // Reset for empty rows
+                } else if (highlightedRowsDetail.containsKey(getIndex())) {
+                    setStyle("-fx-background-color: " + highlightedRowsDetail.get(getIndex()) + ";");
                 } else {
                     setStyle(""); // Default style
                 }
             }
         });
 
-        tblViewPuchaseOrder.setOnKeyPressed(tableScrollHandler);
-        tblViewOrderDetails.setOnKeyPressed(tableScrollHandler);
-
-        tblViewPuchaseOrder.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabKey);
-        tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabKey);
+        tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
     }
 
     private void loadTab() {
@@ -1287,7 +1029,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 
     public void loadTableMain() {
         // Setting data to table detail
-        disableAllHighlight(tblViewPuchaseOrder);
+        disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);
@@ -1298,6 +1040,9 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         progressIndicator.setVisible(true);
 
         main_data.clear();
+
+        Label placeholderLabel = new Label("NO RECORD TO LOAD");
+        placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
 
         Task<Void> task = new Task<Void>() {
             @Override
@@ -1371,20 +1116,16 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 
             @Override
             protected void succeeded() {
-                progressIndicator.setVisible(false);
-                Label placeholderLabel = new Label("NO RECORD TO LOAD");
-                placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
                 if (main_data == null || main_data.isEmpty()) {
                     tblViewPuchaseOrder.setPlaceholder(placeholderLabel);
                 } else {
                     tblViewPuchaseOrder.toFront();
                 }
+                progressIndicator.setVisible(false);
             }
 
             @Override
             protected void failed() {
-                Label placeholderLabel = new Label("NO RECORD TO LOAD");
-                placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
                 if (main_data == null || main_data.isEmpty()) {
                     tblViewPuchaseOrder.setPlaceholder(placeholderLabel);
                 }
@@ -1468,6 +1209,13 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
     }
 
     public void loadRecordMaster() {
+        boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
+        if (lbIsReprint) {
+            btnPrint.setText("Reprint");
+        } else {
+            btnPrint.setText("Print");
+        }
+        
         try {
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
@@ -1482,9 +1230,6 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                     break;
                 case PurchaseOrderReceivingStatus.OPEN:
                     lblStatus.setText("OPEN");
-                    break;
-                case PurchaseOrderReceivingStatus.PROCESSED:
-                    lblStatus.setText("PROCESSED");
                     break;
                 case PurchaseOrderReceivingStatus.RETURNED:
                     lblStatus.setText("RETURNED");
@@ -1556,26 +1301,6 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 
     }
 
-    EventHandler<KeyEvent> tableScrollHandler = event -> {
-        if (event.isAltDown()) {
-            TableView focusedTable = getFocusedTable();
-            if (focusedTable != null) {
-                switch (event.getCode()) {
-                    case UP:
-                        scrollTable(focusedTable, -1);
-                        event.consume(); // Prevent default behavior
-                        break;
-                    case DOWN:
-                        scrollTable(focusedTable, 1);
-                        event.consume(); // Prevent default behavior
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    };
-
     public void loadTableDetailFromMain() {
         try {
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
@@ -1591,6 +1316,9 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                 if ("error".equals((String) poJSON.get("message"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
+                } else {
+                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                    highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
                 }
 
                 loadTableDetail();
@@ -1610,6 +1338,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         // Setting data to table detail
         loadRecordMaster();
         details_data.clear();
+        disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -1619,6 +1348,9 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         loadingPane.setAlignment(Pos.CENTER);
         tblViewOrderDetails.setPlaceholder(loadingPane);
         progressIndicator.setVisible(true);
+
+        Label placeholderLabel = new Label("NO RECORD TO LOAD");
+        placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
 
         Task<Void> task = new Task<Void>() {
             @Override
@@ -1649,10 +1381,16 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             try {
 
-                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity();
+                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
 
                             } catch (Exception e) {
 
+                            }
+
+                            if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
+                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
+                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
+                                highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
                             }
 
                             details_data.add(
@@ -1697,21 +1435,16 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 
             @Override
             protected void succeeded() {
-                Label placeholderLabel = new Label("NO RECORD TO LOAD");
-                placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
                 if (details_data == null || details_data.isEmpty()) {
                     tblViewOrderDetails.setPlaceholder(placeholderLabel);
                 } else {
                     tblViewOrderDetails.toFront();
                 }
                 progressIndicator.setVisible(false);
-
             }
 
             @Override
             protected void failed() {
-                Label placeholderLabel = new Label("NO RECORD TO LOAD");
-                placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
                 if (details_data == null || details_data.isEmpty()) {
                     tblViewOrderDetails.setPlaceholder(placeholderLabel);
                 }
@@ -1762,25 +1495,20 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         tfAttachmentNo.clear();
         tfAttachmentType.clear();
 
-//        loadRecordMaster();
-//        loadTableDetail();
-//        loadTableMain();
     }
 
-    public void highlight(TableView<ModelDeliveryAcceptance_Main> table, int rowIndex, String color) {
-        highlightedRows.put(rowIndex, color);
+    public <T> void highlight(TableView<T> table, int rowIndex, String color, Map<Integer, String> highlightMap) {
+        highlightMap.put(rowIndex, color);
         table.refresh(); // Refresh to apply changes
     }
 
-    // Method to remove highlight from a specific row
-    public void disableHighlight(TableView<ModelDeliveryAcceptance_Main> table, int rowIndex) {
-        highlightedRows.remove(rowIndex);
+    public <T> void disableHighlight(TableView<T> table, int rowIndex, Map<Integer, String> highlightMap) {
+        highlightMap.remove(rowIndex);
         table.refresh();
     }
 
-    // Method to remove all highlights
-    public void disableAllHighlight(TableView<ModelDeliveryAcceptance_Main> table) {
-        highlightedRows.clear();
+    public <T> void disableAllHighlight(TableView<T> table, Map<Integer, String> highlightMap) {
+        highlightMap.clear();
         table.refresh();
     }
 

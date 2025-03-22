@@ -58,6 +58,7 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
@@ -84,7 +85,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Entry CAR";
+    private final String pxeModuleName = "Purchasing Order Receiving Entry Car";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
@@ -104,6 +105,8 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
     private double yOffset = 0;
 
     private Stage dialogStage = null;
+    private ChangeListener<String> detailSearchListener;
+    private ChangeListener<String> mainSearchListener;
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
@@ -196,13 +199,21 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
     }
 
     public void showSerialDialog() {
+        poJSON = new JSONObject();
         try {
             if (poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue() == 0) {
                 ShowMessageFX.Warning(null, pxeModuleName, "Received quantity cannot be empty.");
                 return;
             }
 
-            // Check if the dialog is already open
+            //Populate Purchase Order Receiving Detail
+            poJSON = poPurchaseReceivingController.getPurchaseOrderReceivingSerial(pnDetail + 1);
+            if ("error".equals((String) poJSON.get("result"))) {
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                return;
+            }
+
+//             Check if the dialog is already open
             if (dialogStage != null) {
                 if (dialogStage.isShowing()) {
                     dialogStage.toFront();
@@ -236,16 +247,20 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
 
             dialogStage = new Stage();
             dialogStage.initStyle(StageStyle.UNDECORATED);
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
             dialogStage.setTitle("Inventory Serial");
             dialogStage.setScene(new Scene(root));
 
             // Clear the reference when closed
             dialogStage.setOnHidden(event -> dialogStage = null);
-
             dialogStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -325,7 +340,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
 
                             lastFocusedTextField.fireEvent(keyEvent);
                         } else {
-                            System.out.println("No TextField is currently focused.");
+                            ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
                         }
                         break;
                     case "btnCancel":
@@ -352,6 +367,10 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                         break;
                     case "btnRetrieve":
                         //Retrieve data from purchase order to table main
+                        if (mainSearchListener != null) {
+                            tfOrderNo.textProperty().removeListener(mainSearchListener);
+                            mainSearchListener = null; // Clear reference to avoid memory leaks
+                        }
                         retrievePO();
                         break;
                     case "btnSave":
@@ -945,6 +964,13 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
     }
 
     public void loadRecordMaster() {
+        boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
+        if (lbIsReprint) {
+            btnPrint.setText("Reprint");
+        } else {
+            btnPrint.setText("Print");
+        }
+
         try {
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
@@ -1019,7 +1045,10 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
             taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
 
-            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+            double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
+            if (!Double.isNaN(lnValue)) {
+                tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+            }
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
@@ -1030,26 +1059,6 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
 
     }
 
-    EventHandler<KeyEvent> tableScrollHandler = event -> {
-        if (event.isAltDown()) {
-            TableView<?> focusedTable = getFocusedTable();
-            if (focusedTable != null) {
-                switch (event.getCode()) {
-                    case UP:
-                        scrollTable(focusedTable, -1);
-                        event.consume(); // Prevent default behavior
-                        break;
-                    case DOWN:
-                        scrollTable(focusedTable, 1);
-                        event.consume(); // Prevent default behavior
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    };
-
     private TableView<?> getFocusedTable() {
         if (tblViewPuchaseOrder.isFocused()) {
             return tblViewPuchaseOrder;
@@ -1057,22 +1066,6 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             return tblViewOrderDetails;
         }
         return null; // No table has focus
-    }
-
-    private void scrollTable(TableView<?> table, int direction) {
-        int rowCount = table.getItems().size();
-        if (rowCount == 0) {
-            return;
-        }
-
-        int currentIndex = table.getSelectionModel().getSelectedIndex();
-        int newIndex = currentIndex + direction;
-
-        // Ensure the index is within bounds
-        if (newIndex >= 0 && newIndex < rowCount) {
-            table.getSelectionModel().clearAndSelect(newIndex);
-            table.scrollTo(newIndex);
-        }
     }
 
     private int moveToNextRow(TableView table, TablePosition focusedCell) {
@@ -1108,26 +1101,6 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
         }
     }
 
-    EventHandler<KeyEvent> tableAltArrowHandler = event -> {
-        if (event.isAltDown()) { // if ALT AND ARROW IS CLICKED
-            TableView focusedTable = getFocusedTable();
-            if (focusedTable != null) {
-                switch (event.getCode()) {
-                    case UP:
-                        scrollTable(focusedTable, -1);
-                        event.consume(); // Prevent default behavior
-                        break;
-                    case DOWN:
-                        scrollTable(focusedTable, 1);
-                        event.consume(); // Prevent default behavior
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    };
-
     public void initTableOnClick() {
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
@@ -1141,9 +1114,8 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
             if (pnMain >= 0) {
                 if (event.getClickCount() == 2) {
+                    tfOrderNo.setText("");
                     loadTableDetailFromMain();
-                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
-                    highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
                     pnEditMode = poPurchaseReceivingController.getEditMode();
                     initButton(pnEditMode);
                 }
@@ -1176,9 +1148,6 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                 }
             }
         });
-        tblViewPuchaseOrder.setOnKeyPressed(tableAltArrowHandler); // Alt keypressed + arrow
-        tblViewOrderDetails.setOnKeyPressed(tableAltArrowHandler); // Alt keypressed + arrow
-
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
     }
 
@@ -1256,6 +1225,9 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                 if ("error".equals((String) poJSON.get("message"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
+                } else {
+                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                    highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
                 }
 
                 loadTableDetail();
@@ -1303,6 +1275,15 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                     highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
                 }
 
+                if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {
+                    cbPreOwned.setSelected(poPurchaseReceivingController.Detail(lnCtr).PurchaseOrderMaster().getPreOwned());
+                }
+                if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
+                        && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
+                        && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
+                    highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
+                }
+
                 details_data.add(
                         new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
                                 String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
@@ -1341,53 +1322,44 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
     }
 
     private void initButton(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         // Manage visibility and managed state of other buttons
-//        btnBrowse.setVisible(!lbShow); // Requires no change to state
-        btnNew.setVisible(!lbShow);
-//        btnRetrieve.setVisible(!lbShow);
-        btnClose.setVisible(!lbShow);
-
-        btnSerials.setVisible(lbShow);
-        btnSearch.setVisible(lbShow);
-        btnSave.setVisible(lbShow);
-        btnCancel.setVisible(lbShow);
-
-//        btnBrowse.setManaged(!lbShow);
-        btnNew.setManaged(!lbShow);
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+//        btnRetrieve.setVisible(!lbShow);// Requires no change to state
 //        btnRetrieve.setManaged(!lbShow);
-        btnClose.setManaged(!lbShow);
+        btnBrowse.setVisible(!lbShow);
+        btnBrowse.setManaged(!lbShow);
 
+        btnNew.setVisible(!lbShow);
+        btnNew.setManaged(!lbShow);
+        btnSerials.setVisible(lbShow);
         btnSerials.setManaged(lbShow);
+        btnSearch.setVisible(lbShow);
         btnSearch.setManaged(lbShow);
+        btnSave.setVisible(lbShow);
         btnSave.setManaged(lbShow);
+        btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
 
         boolean lbShow2 = fnValue == EditMode.READY;
-
-        btnUpdate.setVisible(lbShow2);
-        btnPrint.setVisible(lbShow2);
-        btnHistory.setVisible(lbShow2);
-
-        btnUpdate.setManaged(lbShow2);
-        btnPrint.setManaged(lbShow2);
-        btnHistory.setManaged(lbShow2);
-
         btnClose.setVisible(lbShow2);
         btnClose.setManaged(lbShow2);
 
-//        apBrowse.setDisable(lbShow); // no usage
+        btnUpdate.setVisible(lbShow2);
+        btnUpdate.setManaged(lbShow2);
+        btnPrint.setVisible(lbShow2);
+        btnPrint.setManaged(lbShow2);
+        btnHistory.setVisible(lbShow2);
+        btnHistory.setManaged(lbShow2);
+
+        //Only Show close button during ready / unknown editmode
+        boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
+        btnClose.setVisible(lbShow3);
+        btnClose.setManaged(lbShow3);
+
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
-//        apTable.setDisable(!lbShow); // disable upon for viewing?
-//        if (Integer.valueOf(poPurchaseReceivingController.getMasterModel().getTransactionStatus()) != 0) {
-//            btnVoid.setDisable(false);
-//        } else {
-//            btnVoid.setDisable(true);
-//        }
-//        poPurchaseReceivingController.setTransType("SP");
+
     }
-//
 
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
@@ -1431,17 +1403,50 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
     }
 
     private void autoSearch(TextField txtField) {
-        txtField.textProperty().addListener((observable, oldValue, newValue) -> {
+        detailSearchListener = (observable, oldValue, newValue) -> {
             filteredDataDetail.setPredicate(orders -> {
-                // If filter text is empty, display all persons.
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
-                // Compare order no. and last name of every person with filter text.
+                if (mainSearchListener != null) {
+                    txtField.textProperty().removeListener(mainSearchListener);
+                    mainSearchListener = null; // Clear reference to avoid memory leaks
+                }
                 String lowerCaseFilter = newValue.toLowerCase();
-                return (orders.getIndex02().toLowerCase().contains(lowerCaseFilter)); // Does not match.   
+                return orders.getIndex02().toLowerCase().contains(lowerCaseFilter);
             });
-//            changeTableViewDetail(0, details_data.size());
-        });
+            // If no results and autoSearchMain is enabled, remove listener and trigger autoSearchMain
+            if (filteredDataDetail.isEmpty()) {
+                txtField.textProperty().removeListener(mainSearchListener);
+                filteredData = new FilteredList<>(main_data, b -> true);
+                autoSearchMain(txtField); // Trigger autoSearchMain if no results
+                SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
+                sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
+                tblViewPuchaseOrder.setItems(sortedData);
+
+                String currentText = txtField.getText();
+                txtField.setText(currentText + " "); // Add a space
+                txtField.setText(currentText);       // Set back to original
+            }
+        };
+        txtField.textProperty().addListener(detailSearchListener);
+    }
+
+    private void autoSearchMain(TextField txtField) {
+        mainSearchListener = (observable, oldValue, newValue) -> {
+            filteredData.setPredicate(orders -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    if (mainSearchListener != null) {
+                        txtField.textProperty().removeListener(mainSearchListener);
+                        mainSearchListener = null; // Clear reference to avoid memory leaks
+                        initDetailsGrid();
+                    }
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                return orders.getIndex04().toLowerCase().contains(lowerCaseFilter);
+            });
+        };
+        txtField.textProperty().addListener(mainSearchListener);
     }
 }
