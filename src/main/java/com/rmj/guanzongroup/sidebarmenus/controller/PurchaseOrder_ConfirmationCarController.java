@@ -188,11 +188,10 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                     lsStatus = "VOID";
                     break;
             }
-
             if (poPurchasingController.PurchaseOrder().Master().getPreOwned() == true) {
-                chkbAdvancePayment.setSelected(true);
+                chkbPreOwned.setSelected(true);
             } else {
-                chkbAdvancePayment.setSelected(false);
+                chkbPreOwned.setSelected(false);
             }
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(

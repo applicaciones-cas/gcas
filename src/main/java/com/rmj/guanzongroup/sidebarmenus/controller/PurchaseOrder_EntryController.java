@@ -770,7 +770,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     }
                                     tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                     break;
-
                                 case "tfSupplier":
                                     loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                     if ("error".equals(loJSON.get("result"))) {

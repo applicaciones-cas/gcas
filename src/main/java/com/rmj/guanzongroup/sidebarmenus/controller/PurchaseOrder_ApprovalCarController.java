@@ -191,9 +191,9 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
             }
 
             if (poPurchasingController.PurchaseOrder().Master().getPreOwned() == true) {
-                chkbAdvancePayment.setSelected(true);
+                chkbPreOwned.setSelected(true);
             } else {
-                chkbAdvancePayment.setSelected(false);
+                chkbPreOwned.setSelected(false);
             }
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(

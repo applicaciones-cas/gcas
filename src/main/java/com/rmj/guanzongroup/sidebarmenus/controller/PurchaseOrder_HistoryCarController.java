@@ -162,9 +162,9 @@ public class PurchaseOrder_HistoryCarController implements Initializable, Screen
                     break;
             }
             if (poPurchasingController.PurchaseOrder().Master().getPreOwned() == true) {
-                chkbAdvancePayment.setSelected(true);
+                chkbPreOwned.setSelected(true);
             } else {
-                chkbAdvancePayment.setSelected(false);
+                chkbPreOwned.setSelected(false);
             }
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
