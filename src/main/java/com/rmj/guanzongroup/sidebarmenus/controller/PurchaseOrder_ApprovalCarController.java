@@ -190,7 +190,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                     break;
             }
 
-            if (poPurchasingController.PurchaseOrder().Master().isPreOwned() == true) {
+            if (poPurchasingController.PurchaseOrder().Master().getPreOwned() == true) {
                 chkbAdvancePayment.setSelected(true);
             } else {
                 chkbAdvancePayment.setSelected(false);
@@ -236,7 +236,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
 
             tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
-            if (poPurchasingController.PurchaseOrder().Master().isWithAdvPaym() == true) {
+            if (poPurchasingController.PurchaseOrder().Master().getWithAdvPaym() == true) {
                 chkbAdvancePayment.setSelected(true);
             } else {
                 chkbAdvancePayment.setSelected(false);

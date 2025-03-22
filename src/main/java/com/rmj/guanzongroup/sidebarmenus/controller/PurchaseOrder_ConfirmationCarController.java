@@ -189,7 +189,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                     break;
             }
 
-            if (poPurchasingController.PurchaseOrder().Master().isPreOwned() == true) {
+            if (poPurchasingController.PurchaseOrder().Master().getPreOwned() == true) {
                 chkbAdvancePayment.setSelected(true);
             } else {
                 chkbAdvancePayment.setSelected(false);
@@ -235,7 +235,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
 
             tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
-            if (poPurchasingController.PurchaseOrder().Master().isWithAdvPaym() == true) {
+            if (poPurchasingController.PurchaseOrder().Master().getWithAdvPaym() == true) {
                 chkbAdvancePayment.setSelected(true);
             } else {
                 chkbAdvancePayment.setSelected(false);
@@ -909,8 +909,6 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
             protected Void call() throws Exception {
                 poDetail_data.clear();
                 try {
-
-                  
 
                     double grandTotalAmount = 0.0;
                     for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {

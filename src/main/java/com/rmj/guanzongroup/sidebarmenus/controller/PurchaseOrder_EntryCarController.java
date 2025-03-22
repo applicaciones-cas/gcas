@@ -238,7 +238,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     break;
             }
 
-            if (poPurchasingController.PurchaseOrder().Master().isPreOwned() == true) {
+            if (poPurchasingController.PurchaseOrder().Master().getPreOwned() == true) {
                 chkbAdvancePayment.setSelected(true);
             } else {
                 chkbAdvancePayment.setSelected(false);
@@ -278,7 +278,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
             tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
 
-            if (poPurchasingController.PurchaseOrder().Master().isWithAdvPaym() == true) {
+            if (poPurchasingController.PurchaseOrder().Master().getWithAdvPaym() == true) {
                 chkbAdvancePayment.setSelected(true);
             } else {
                 chkbAdvancePayment.setSelected(false);
@@ -856,14 +856,14 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                         || Double.parseDouble(tfTotalAmount.getText().replace(",", "")) > 0.0) {
                     if (chkbAdvancePayment.isSelected()) {
                         chkbAdvancePayment.setSelected(true);
-                        poPurchasingController.PurchaseOrder().Master().isWithAdvPaym(true);
+                        poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(true);
                     } else {
-                        poPurchasingController.PurchaseOrder().Master().isWithAdvPaym(false);
+                        poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(false);
                         chkbAdvancePayment.setSelected(false);
                     }
                 } else {
                     ShowMessageFX.Warning("Advance payment cannot be entered until the total amount is greater than 0.00.", psFormName, null);
-                    poPurchasingController.PurchaseOrder().Master().isWithAdvPaym(false);
+                    poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(false);
                     chkbAdvancePayment.setSelected(false);
                 }
                 initFields(pnEditMode);
@@ -873,9 +873,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (chkbAdvancePayment.isSelected()) {
                     chkbAdvancePayment.setSelected(true);
-                    poPurchasingController.PurchaseOrder().Master().isWithAdvPaym(true);
+                    poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(true);
                 } else {
-                    poPurchasingController.PurchaseOrder().Master().isWithAdvPaym(false);
+                    poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(false);
                     chkbAdvancePayment.setSelected(false);
                 }
             }
