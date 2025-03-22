@@ -129,6 +129,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private final Map<Integer, String> highlightedRowsDetail = new HashMap<>();
     private TextField lastFocusedTextField = null;
 
+    private ChangeListener<String> detailSearchListener;
+    private ChangeListener<String> mainSearchListener;
+
     @FXML
     private AnchorPane apBrowse;
 
@@ -420,7 +423,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
                             lastFocusedTextField.fireEvent(keyEvent);
                         } else {
-                            System.out.println("No TextField is currently focused.");
+                            ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
                         }
                         break;
                     case "btnCancel":
@@ -446,6 +449,10 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         break;
                     case "btnRetrieve":
                         //Retrieve data from purchase order to table main
+                        if (mainSearchListener != null) {
+                            tfOrderNo.textProperty().removeListener(mainSearchListener);
+                            mainSearchListener = null; // Clear reference to avoid memory leaks
+                        }
                         retrievePOR();
                         break;
                     case "btnSave":
@@ -495,6 +502,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                                 }
                                 clearTextFields();
                                 pnEditMode = EditMode.UNKNOWN;
+                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                                 highlight(tblViewPuchaseOrder, pnMain, "#C1E1C1", highlightedRowsMain);
                                 loadTableDetail();
                                 clearTextFields();
@@ -523,6 +531,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                                 }
                                 clearTextFields();
                                 pnEditMode = EditMode.UNKNOWN;
+                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                                 highlight(tblViewPuchaseOrder, pnMain, "#FAA0A0", highlightedRowsMain);
                                 loadTableDetail();
                             }
@@ -550,6 +559,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                                 }
                                 clearTextFields();
                                 pnEditMode = EditMode.UNKNOWN;
+                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                                 highlight(tblViewPuchaseOrder, pnMain, "#FAC898", highlightedRowsMain);
                                 loadTableDetail();
                             }
@@ -631,17 +641,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     }
 
     private void initButton(int fnValue) {
-        //detect if voided
-//        String lsstat = "";
-//        try {
-//            lsstat = poPurchaseReceivingController.Master().getTransactionStatus();
-//        } catch (Exception e) {
-//        }
 
-//        boolean lbproceed = true;
-//        if (lsstat.equals("4")) {
-//            lbproceed = false;
-//        }
         boolean lbShow1 = (fnValue == EditMode.UPDATE);
         boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
         boolean lbShow3 = (fnValue == EditMode.READY);
@@ -683,12 +683,16 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         btnAddAttachment.setDisable(!lbShow2);
         btnRemoveAttachment.setDisable(!lbShow2);
 
-        //fix position here
-//        btnClose.setVisible(!lbproceed);
-//        btnClose.setManaged(!lbproceed);
-//
-//        btnHistory.setVisible(!lbproceed);
-//        btnHistory.setManaged(!lbproceed);
+        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
+            case PurchaseOrderReceivingStatus.APPROVED:
+                btnConfirm.setVisible(!lbShow3);
+                btnConfirm.setManaged(!lbShow3);
+                break;
+            case PurchaseOrderReceivingStatus.VOID:
+                btnVoid.setVisible(!lbShow3);
+                btnVoid.setManaged(!lbShow3);
+                break;
+        }
     }
 
     @FXML
@@ -1461,22 +1465,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         return null; // No table has focus
     }
 
-    private void scrollTable(TableView table, int direction) {
-        int rowCount = table.getItems().size();
-        if (rowCount == 0) {
-            return;
-        }
-
-        int currentIndex = table.getSelectionModel().getSelectedIndex();
-        int newIndex = currentIndex + direction;
-
-        // Ensure the index is within bounds
-        if (newIndex >= 0 && newIndex < rowCount) {
-            table.getSelectionModel().clearAndSelect(newIndex);
-            table.scrollTo(newIndex);
-        }
-    }
-
     private int moveToNextRow(TableView table, TablePosition focusedCell) {
         int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
         table.getSelectionModel().select(nextRow);
@@ -1510,26 +1498,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         }
     }
 
-    EventHandler<KeyEvent> tableAltArrowHandler = event -> {
-        if (event.isAltDown()) { // if ALT AND ARROW IS CLICKED
-            TableView focusedTable = getFocusedTable();
-            if (focusedTable != null) {
-                switch (event.getCode()) {
-                    case UP:
-                        scrollTable(focusedTable, -1);
-                        event.consume(); // Prevent default behavior
-                        break;
-                    case DOWN:
-                        scrollTable(focusedTable, 1);
-                        event.consume(); // Prevent default behavior
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    };
-
     public void initTableOnClick() {
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
@@ -1543,9 +1511,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
             if (pnMain >= 0) {
                 if (event.getClickCount() == 2) {
+                    tfOrderNo.setText("");
                     loadTableDetailFromMain();
-                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
-                    highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
                     pnEditMode = poPurchaseReceivingController.getEditMode();
                     initButton(pnEditMode);
                 }
@@ -1578,8 +1545,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 }
             }
         });
-        tblViewPuchaseOrder.setOnKeyPressed(tableAltArrowHandler); // Alt keypressed + arrow
-        tblViewOrderDetails.setOnKeyPressed(tableAltArrowHandler); // Alt keypressed + arrow
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
     }
@@ -1791,6 +1756,13 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     }
 
     public void loadRecordMaster() {
+        boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
+        if (lbIsReprint) {
+            btnPrint.setText("Reprint");
+        } else {
+            btnPrint.setText("Print");
+        }
+
         try {
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
@@ -1865,7 +1837,10 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
             taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
 
-            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+            double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
+            if (!Double.isNaN(lnValue)) {
+                tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+            }
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
@@ -1891,6 +1866,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 if ("error".equals((String) poJSON.get("message"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
+                } else {
+                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                    highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
                 }
 
                 loadTableDetail();
@@ -1960,7 +1938,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             }
 
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()) {
+                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
+                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
                                 highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
                             }
 
@@ -2099,18 +2078,57 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         table.refresh();
     }
 
+    public <T> void disableAllHighlightByColor(TableView<T> table, String color, Map<Integer, String> highlightMap) {
+        highlightMap.entrySet().removeIf(entry -> entry.getValue().equals(color));
+        table.refresh();
+    }
+
     private void autoSearch(TextField txtField) {
-        txtField.textProperty().addListener((observable, oldValue, newValue) -> {
+        detailSearchListener = (observable, oldValue, newValue) -> {
             filteredDataDetail.setPredicate(orders -> {
-                // If filter text is empty, display all persons.
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
-                // Compare order no. and last name of every person with filter text.
+                if (mainSearchListener != null) {
+                    txtField.textProperty().removeListener(mainSearchListener);
+                    mainSearchListener = null; // Clear reference to avoid memory leaks
+                }
                 String lowerCaseFilter = newValue.toLowerCase();
-                return (orders.getIndex02().toLowerCase().contains(lowerCaseFilter)); // Does not match.   
+                return orders.getIndex02().toLowerCase().contains(lowerCaseFilter);
             });
-        });
+            // If no results and autoSearchMain is enabled, remove listener and trigger autoSearchMain
+            if (filteredDataDetail.isEmpty()) {
+                txtField.textProperty().removeListener(mainSearchListener);
+                filteredData = new FilteredList<>(main_data, b -> true);
+                autoSearchMain(txtField); // Trigger autoSearchMain if no results
+                SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
+                sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
+                tblViewPuchaseOrder.setItems(sortedData);
+
+                String currentText = txtField.getText();
+                txtField.setText(currentText + " "); // Add a space
+                txtField.setText(currentText);       // Set back to original
+            }
+        };
+        txtField.textProperty().addListener(detailSearchListener);
+    }
+
+    private void autoSearchMain(TextField txtField) {
+        mainSearchListener = (observable, oldValue, newValue) -> {
+            filteredData.setPredicate(orders -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    if (mainSearchListener != null) {
+                        txtField.textProperty().removeListener(mainSearchListener);
+                        mainSearchListener = null; // Clear reference to avoid memory leaks
+                        initDetailsGrid();
+                    }
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                return orders.getIndex04().toLowerCase().contains(lowerCaseFilter);
+            });
+        };
+        txtField.textProperty().addListener(mainSearchListener);
     }
 
     @Override
