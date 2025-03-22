@@ -874,7 +874,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
 
                     }
                 }
-            } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+            } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
                 Logger.getLogger(PurchaseOrder_EntryMonarchFoodController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }

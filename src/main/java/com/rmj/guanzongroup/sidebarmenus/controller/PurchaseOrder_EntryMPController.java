@@ -875,7 +875,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
 
                     }
                 }
-            } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+            } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
                 Logger.getLogger(PurchaseOrder_EntryMPController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }

@@ -874,7 +874,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
 
                     }
                 }
-            } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+            } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
                 Logger.getLogger(PurchaseOrder_EntrySPMCController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }

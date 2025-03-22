@@ -880,7 +880,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
 
                     }
                 }
-            } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+            } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
                 Logger.getLogger(PurchaseOrder_EntryCarController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }

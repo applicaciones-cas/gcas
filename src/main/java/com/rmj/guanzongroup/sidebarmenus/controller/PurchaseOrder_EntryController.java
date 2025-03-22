@@ -824,6 +824,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                         clearDetailFields();
                                         break;
                                     }
+
                                     loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblPODetailRow);
                                     if ("error".equals(loJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -840,6 +841,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     loadDetail();
                                     loadTablePODetail();
                                     break;
+
                             }
                             loadTableStockRequest();
                             event.consume();
@@ -870,7 +872,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
                     }
                 }
-            } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+            } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
                 Logger.getLogger(PurchaseOrder_EntryController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }

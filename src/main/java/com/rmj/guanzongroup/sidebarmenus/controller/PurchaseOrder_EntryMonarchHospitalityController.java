@@ -874,7 +874,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
 
                     }
                 }
-            } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+            } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
                 Logger.getLogger(PurchaseOrder_EntryMonarchHospitalityController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
