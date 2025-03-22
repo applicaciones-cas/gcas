@@ -273,7 +273,7 @@
                                                                 <DatePicker fx:id="dpTransactionDate" maxWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                 <DatePicker fx:id="dpExpectedDlvrDate" maxWidth="150.0" GridPane.columnIndex="8" GridPane.rowIndex="4" />
                                                                 <Label text="Adv Amount" GridPane.columnIndex="10" GridPane.rowIndex="7" />
-                                                <CheckBox fx:id="chkbPreowned" mnemonicParsing="false" text="Pre-owned" GridPane.columnIndex="10" GridPane.rowIndex="2" />
+                                                <CheckBox fx:id="chkbPreOwned" mnemonicParsing="false" text="Pre-owned" GridPane.columnIndex="10" GridPane.rowIndex="2" />
                                                             </children>
                                                         </GridPane>
                                                     </children>
