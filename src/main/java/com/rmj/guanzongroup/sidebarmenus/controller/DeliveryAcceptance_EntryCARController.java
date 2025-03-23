@@ -16,13 +16,10 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -31,7 +28,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -884,21 +880,23 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
         tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index02"));
         tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
         tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
-
-        tblViewPuchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewPuchaseOrder.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
+        
+        if (tblViewPuchaseOrder != null) {
+            tblViewPuchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+                TableHeaderRow header = (TableHeaderRow) tblViewPuchaseOrder.lookup("TableHeaderRow");
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
             });
-        });
 
-        filteredData = new FilteredList<>(main_data, b -> true);
-        SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-        tblViewPuchaseOrder.setItems(sortedData);
+            filteredData = new FilteredList<>(main_data, b -> true);
+            SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
+            tblViewPuchaseOrder.setItems(sortedData);
 
-//        tblViewPuchaseOrder.setItems(main_data);
-        tblViewPuchaseOrder.autosize();
+    //        tblViewPuchaseOrder.setItems(main_data);
+            tblViewPuchaseOrder.autosize();
+        }
     }
 
     public void clearTextFields() {

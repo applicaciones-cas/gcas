@@ -22,6 +22,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -100,7 +101,6 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
         initTableOnClick();
 
         loadTableDetail();
-//        loadRecordDetail();
     }   
     
     @Override
@@ -117,14 +117,23 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
             String lsButton = clickedButton.getId();
             switch (lsButton) {
                 case "btnOkay":
+                    //if the user clicked okay all rows must be fill up else remaining row will be allowed to remain empty.
                     //check for empty serial 1 || serial 2 is empty delete the excess row
-                    poJSON = checkSerialNo();
+                    poJSON = checkSerialNo(lsButton);
                     if("error".equals((String) poJSON.get("result"))){
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
-                    break;
+                
+                    CommonUtils.closeStage(btnClose);
                 case "btnClose":
+                    //if the user clicked okay all rows must be fill up else remaining row will be allowed to remain empty.
+                    //check for empty serial 1 || serial 2 is empty delete the excess row
+                    poJSON = checkSerialNo(lsButton);
+                    if("error".equals((String) poJSON.get("result"))){
+                        return;
+                    }
+                
                     CommonUtils.closeStage(btnClose);
                     break;
                 default:
@@ -134,26 +143,42 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
         }
     }
     
-    private JSONObject checkSerialNo(){
+    private JSONObject checkSerialNo(String lsButton){
         poJSON = new JSONObject();
         int lnRow = 1;
+        String lsMessage = "";
         for(int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount()-1; lnCtr++){
             if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo){
                 if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01().equals("")){
                     poJSON.put("result", "error");
-                    poJSON.put("message", "Engine No at row "+lnRow+" cannot be empty.");
-                    return poJSON;
+                    lsMessage = "Engine No at row "+lnRow+" cannot be empty.";
+                    
                 } 
                 if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02().equals("")){
                     poJSON.put("result", "error");
-                    poJSON.put("message", "Frame No at row "+lnRow+" cannot be empty.");
-                    return poJSON;
+                    lsMessage = "Frame No at row "+lnRow+" cannot be empty.";
                 }
                 if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getLocationId()== null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getLocationId().equals("")){
                     poJSON.put("result", "error");
-                    poJSON.put("message", "Location No at row "+lnRow+" cannot be empty.");
-                    return poJSON;
+                    lsMessage = "Location No at row "+lnRow+" cannot be empty.";
                 }
+                
+                if(lsButton.equals("btnOkay")){
+                    if("error".equals((String) poJSON.get("result"))){
+                        poJSON.put("message", lsMessage);
+                        return poJSON;
+                    }
+                } else {
+                    if(ShowMessageFX.OkayCancel(null, "Purchase Order Receiving Serial", 
+                            "There are still remaining rows that have not been filled. Are you sure you want to close without completing them?") == false){
+                        poJSON.put("result", "error");
+                        return poJSON;
+                    } else {
+                        poJSON.put("result", "success");
+                        return poJSON; 
+                    }
+                }
+                
                 lnRow++;
             }
         }
@@ -193,6 +218,10 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
             return;
         }
         
+        if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getEntryNo() != pnEntryNo){
+            return;
+        }
+        
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
@@ -220,6 +249,13 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
 
     };
 
+//    private void setToClass(){
+//        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial01(tfEngineNo.getText());
+//        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial02(tfFrameNo.getText());
+//        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setConductionStickerNo(tfCSNo.getText());
+//        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setPlateNo(tfPlateNo.getText());
+//    }
+    
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -286,7 +322,7 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
         
         try {
             for (lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount() - 1; lnCtr++) {
-                if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo){ 
+                if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo) { 
                     if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).Location().getDescription() != null){
                         lsLocation = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).Location().getDescription();
                     }
@@ -309,22 +345,29 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
                 }
             }
         
-        if (pnDetail < 0 || pnDetail
-                >= details_data.size()) {
+        if (pnDetail < 0 ) {
             if (!details_data.isEmpty()) {
                 /* FOCUS ON FIRST ROW */
                 tblViewDetail.getSelectionModel().select(0);
                 tblViewDetail.getFocusModel().focus(0);
                 ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
                 pnDetail = Integer.valueOf(selectedItem.getIndex07());
-                loadRecordDetail();
+                System.out.println("set pndetail" + pnDetail);
             }
         } else {
-            /* FOCUS ON THE ROW THAT pnDetail POINTS TO */
-            tblViewDetail.getSelectionModel().select(pnDetail);
-            tblViewDetail.getFocusModel().focus(pnDetail);
-            loadRecordDetail();
+            TableView<ModelDeliveryAcceptance_Serial> tableView = tblViewDetail;
+            SelectionModel<ModelDeliveryAcceptance_Serial> selectionModel = tableView.getSelectionModel();
+            for (ModelDeliveryAcceptance_Serial item : tblViewDetail.getItems()) {
+                // Check if the item matches the value of pnDetail
+                if (item.getIndex07() != null && Integer.valueOf(item.getIndex07()) == pnDetail) {
+                    selectionModel.select(item);
+                    tableView.scrollTo(item);
+                    break; 
+                }
+            }
         }
+        
+        loadRecordDetail();
             
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
@@ -349,7 +392,6 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
             KeyCode key = t.getCode();
             switch (key) {
                 case DOWN:
-                case TAB:
                     if (pnDetail == tblViewDetail.getItems().size()) {
                         pnDetail = tblViewDetail.getItems().size();
                     } else {
