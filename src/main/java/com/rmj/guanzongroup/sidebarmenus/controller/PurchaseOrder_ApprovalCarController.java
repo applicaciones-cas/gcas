@@ -835,8 +835,6 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
             @Override
             protected Void call() throws Exception {
                 try {
-                    // Simulate loading delay
-                    Thread.sleep(1000);
 
                     poPurchaseOrder_data.clear();
 
@@ -977,7 +975,6 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                 poDetail_data.clear();
                 try {
 
-                    Thread.sleep(300);
                     double grandTotalAmount = 0.0;
                     for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
                         double lnTotalAmount = poPurchasingController.PurchaseOrder()

@@ -817,8 +817,6 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
             protected Void call() throws Exception {
                 try {
                     // Simulate loading delay
-                    Thread.sleep(1000);
-
                     poPurchaseOrder_data.clear();
                     JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder();
                     if ("success".equals(loJSON.get("result"))) {
@@ -955,8 +953,6 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
             protected Void call() throws Exception {
                 poDetail_data.clear();
                 try {
-
-                    Thread.sleep(300);
 
                     double grandTotalAmount = 0.0;
                     for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {

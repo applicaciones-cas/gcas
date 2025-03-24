@@ -829,7 +829,6 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
             protected Void call() throws Exception {
                 try {
                     // Simulate loading delay
-                    Thread.sleep(1000);
 
                     poPurchaseOrder_data.clear();
 
@@ -926,7 +925,6 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                 poDetail_data.clear();
                 try {
 
-                    Thread.sleep(300);
                     double grandTotalAmount = 0.0;
                     for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
                         double lnTotalAmount = poPurchasingController.PurchaseOrder()

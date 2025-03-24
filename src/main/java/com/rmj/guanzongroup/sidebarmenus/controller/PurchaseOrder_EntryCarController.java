@@ -1046,6 +1046,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
             switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
                 case PurchaseOrderStatus.OPEN:
                 case PurchaseOrderStatus.CONFIRMED:
+                case PurchaseOrderStatus.RETURNED:
                     CustomCommonUtil.setVisible(true, btnPrint, btnUpdate);
                     CustomCommonUtil.setManaged(true, btnPrint, btnUpdate);
                     break;
@@ -1095,7 +1096,6 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
             protected Void call() throws Exception {
                 try {
                     // Simulate loading delay
-                    Thread.sleep(1000);
                     poApprovedStockRequest_data.clear();
                     JSONObject poJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
                     if ("success".equals(poJSON.get("result"))) {
@@ -1242,8 +1242,6 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
             protected Void call() throws Exception {
                 poDetail_data.clear();
                 try {
-
-                    Thread.sleep(300);
 
                     double grandTotalAmount = 0.0;
                     for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
