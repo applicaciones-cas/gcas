@@ -74,14 +74,14 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class DeliveryAcceptance_EntryCARController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_EntryMCController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Entry Car";
+    private final String pxeModuleName = "Purchasing Order Receiving Entry MC";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
@@ -120,9 +120,6 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
     private TextField tfTransactionNo, tfIndustry, tfCompany, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
             tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity, tfModelVariant; //tfBarcode, tfSupersede, tfDescription,;
-
-    @FXML
-    private CheckBox cbPreOwned;
 
     @FXML
     private TextArea taRemarks;
@@ -217,14 +214,17 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                 }
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCAR.fxml"));
-            DeliveryAcceptance_SerialCARController controller = new DeliveryAcceptance_SerialCARController();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMC.fxml"));
+            DeliveryAcceptance_SerialMCController controller = new DeliveryAcceptance_SerialMCController();
             loader.setController(controller);
 
             if (controller != null) {
                 controller.setGRider(oApp);
                 controller.setObject(poPurchaseReceivingController);
                 controller.setEntryNo(pnDetail + 1);
+            } else {
+                ShowMessageFX.Warning(null, pxeModuleName, "An error occurred while loading "+pxeModuleName+". Please contact the system administrator for assistance.");
+                return;
             }
 
             Parent root = loader.load();
@@ -254,9 +254,9 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -862,7 +862,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
         SortedList<ModelDeliveryAcceptance_Detail> sortedData = new SortedList<>(filteredDataDetail);
         sortedData.comparatorProperty().bind(tblViewOrderDetails.comparatorProperty());
         tblViewOrderDetails.setItems(sortedData);
-//        tblViewOrderDetails.autosize();
+        tblViewOrderDetails.autosize();
     }
 
     public void initMainGrid() {
@@ -883,14 +883,14 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                     header.setReordering(false);
                 });
             });
-            
+
             filteredData = new FilteredList<>(main_data, b -> true);
             SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
             sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
             tblViewPuchaseOrder.setItems(sortedData);
 
-            tblViewPuchaseOrder.setItems(main_data);
-//            tblViewPuchaseOrder.autosize();
+    //        tblViewPuchaseOrder.setItems(main_data);
+            tblViewPuchaseOrder.autosize();
         }
     }
 
@@ -920,8 +920,6 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
         tfCost.clear();
         tfOrderQuantity.clear();
         tfReceiveQuantity.clear();
-
-        cbPreOwned.setSelected(false);
 
         loadRecordMaster();
         loadTableDetail();
@@ -1267,10 +1265,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                         && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()) {
                     highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
                 }
-
-                if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {
-                    cbPreOwned.setSelected(poPurchaseReceivingController.Detail(lnCtr).PurchaseOrderMaster().getPreOwned());
-                }
+                
                 if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                         && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                         && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {

@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Serial;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_SerialMC;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
@@ -21,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -29,7 +29,6 @@ import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
-import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -56,45 +55,24 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
     private final String pxeModuleName = "Purchase Order Receiving Serial MC";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
-    private boolean pbState = true;
 
     private ObservableList<ModelDeliveryAcceptance_SerialMC> details_data = FXCollections.observableArrayList();
-
+    
     @FXML
-    private AnchorPane apMainAnchor;
-    @FXML
-    private AnchorPane apBrowse;
-    @FXML
-    private AnchorPane apButton;
+    private AnchorPane apBrowse, apButton;
     @FXML
     private HBox hbButtons;
     @FXML
-    private Button btnOkay;
+    private Button btnOkay, btnClose;
     @FXML
-    private Button btnClose;
-    @FXML
-    private TextField tfEngineNo;
-    @FXML
-    private TextField tfFrameNo;
+    private TextField tfEngineNo, tfFrameNo, tfLocation;
     @FXML
     private CheckBox cbApplyToAll;
     @FXML
-    private TextField tfLocation;
+    private TableView<ModelDeliveryAcceptance_SerialMC> tblViewDetail;
     @FXML
-    private TableView tblViewDetail;
-
-    @FXML
-    private TableColumn tblRowNoDetail;
-
-    @FXML
-    private TableColumn tblEngineNoDetail;
-
-    @FXML
-    private TableColumn tblFrameNoDetail;
-
-    @FXML
-    private TableColumn tblLocationDetail;
-
+    private TableColumn tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblLocationDetail;
+    
     public void setObject(PurchaseOrderReceiving foObject){
         poPurchaseReceivingController = foObject;
     } 
@@ -103,14 +81,9 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
         pnEntryNo = entryNo;
     }
     
-    public void setState(boolean fbValue){
-        pbState = fbValue;
-    }
-    
     private Stage getStage(){
          return (Stage) btnClose.getScene().getWindow();
     }
-
 
     /**
      * Initializes the controller class.
@@ -123,7 +96,6 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
         initTableOnClick();
 
         loadTableDetail();
-//        loadRecordDetail();
     }   
     
     @Override
@@ -139,8 +111,24 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
             Button clickedButton = (Button) source;
             String lsButton = clickedButton.getId();
             switch (lsButton) {
-                case "btnOkay":
+                 case "btnOkay":
+                    //if the user clicked okay all rows must be fill up else remaining row will be allowed to remain empty.
+                    //check for empty serial 1 || serial 2 is empty delete the excess row
+                    poJSON = checkSerialNo(lsButton);
+                    if("error".equals((String) poJSON.get("result"))){
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                
+                    CommonUtils.closeStage(btnClose);
                 case "btnClose":
+                    //if the user clicked okay all rows must be fill up else remaining row will be allowed to remain empty.
+                    //check for empty serial 1 || serial 2 is empty delete the excess row
+                    poJSON = checkSerialNo(lsButton);
+                    if("error".equals((String) poJSON.get("result"))){
+                        return;
+                    }
+                
                     CommonUtils.closeStage(btnClose);
                     break;
                 default:
@@ -150,6 +138,47 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
         }
     }
     
+    private JSONObject checkSerialNo(String lsButton){
+        poJSON = new JSONObject();
+        int lnRow = 1;
+        String lsMessage = "";
+        for(int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount()-1; lnCtr++){
+            if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo){
+                if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01().equals("")){
+                    poJSON.put("result", "error");
+                    lsMessage = "Engine No at row "+lnRow+" cannot be empty.";
+                    
+                } 
+                if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02().equals("")){
+                    poJSON.put("result", "error");
+                    lsMessage = "Frame No at row "+lnRow+" cannot be empty.";
+                }
+                if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getLocationId()== null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getLocationId().equals("")){
+                    poJSON.put("result", "error");
+                    lsMessage = "Location No at row "+lnRow+" cannot be empty.";
+                }
+                
+                if(lsButton.equals("btnOkay")){
+                    if("error".equals((String) poJSON.get("result"))){
+                        poJSON.put("message", lsMessage);
+                        return poJSON;
+                    }
+                } else {
+                    if(ShowMessageFX.OkayCancel(null, pxeModuleName, 
+                            "There are still remaining rows that have not been filled. Are you sure you want to close without completing them?") == false){
+                        poJSON.put("result", "error");
+                        return poJSON;
+                    } else {
+                        poJSON.put("result", "success");
+                        return poJSON; 
+                    }
+                }
+                
+                lnRow++;
+            }
+        }
+        return poJSON;
+    }
     
     @FXML
     private void cmdCheckBox_Click(ActionEvent event) {
@@ -158,11 +187,17 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
         if (source instanceof CheckBox) {
             CheckBox checkbox = (CheckBox) source;
             String lsCheckBox = checkbox.getId();
-            String lsLocation = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getLocationID();
+            String lsLocation = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getLocationId();
+            
+            if(lsLocation == null || lsLocation.equals("")){
+                ShowMessageFX.Warning(null, pxeModuleName, "Location cannot be empty.");
+                return;
+            }
+            
             if(lsCheckBox.equals("cbApplyToAll")){
                 for(int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount() - 1; lnCtr++){
                     if((lsLocation != null) || !lsLocation.equals("")){
-                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).setLocationID(lsLocation);
+                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).setLocationId(lsLocation);
                     }
                 }
                 loadTableDetail();
@@ -178,6 +213,15 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
         if (lsValue == null) {
             return;
         }
+        
+        if(pnDetail < 0){
+            return;
+        }
+        
+        if(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getEntryNo() != pnEntryNo){
+            return;
+        }
+        
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
@@ -187,15 +231,9 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
                 case "tfFrameNo":
                     poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial02(lsValue);
                     break;
-                case "tfCSNo":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setConductionStickerNo(lsValue);
-                    break;
-                case "tfPlateNo":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setPlateNo(lsValue);
-                    break;
                 case "tfLocation":
                     if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setLocationID("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setLocationId("");
                     }
                     break;
             }
@@ -280,10 +318,34 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
                                 String.valueOf(lnRow + 1),
                                 String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01()),
                                 String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02()),
-                                String.valueOf(lsLocation)));
+                                String.valueOf(lsLocation),
+                                String.valueOf(lnCtr)));
+                    lsLocation = "";
                     lnRow++;
                 }
             }
+            
+        if (pnDetail < 0 ) {
+            if (!details_data.isEmpty()) {
+                /* FOCUS ON FIRST ROW */
+                tblViewDetail.getSelectionModel().select(0);
+                tblViewDetail.getFocusModel().focus(0);
+                ModelDeliveryAcceptance_SerialMC selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
+                pnDetail = Integer.valueOf(selectedItem.getIndex05());
+            }
+        } else {
+            TableView<ModelDeliveryAcceptance_SerialMC> tableView = tblViewDetail;
+            SelectionModel<ModelDeliveryAcceptance_SerialMC> selectionModel = tableView.getSelectionModel();
+            for (ModelDeliveryAcceptance_SerialMC item : tblViewDetail.getItems()) {
+                // Check if the item matches the value of pnDetail
+                if (item.getIndex05() != null && Integer.valueOf(item.getIndex05()) == pnDetail) {
+                    selectionModel.select(item);
+                    tableView.scrollTo(item);
+                    break; 
+                }
+            }
+        }
+            
 
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
@@ -295,34 +357,35 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
     public void initTableOnClick() {
         tblViewDetail.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                ModelDeliveryAcceptance_SerialMC selectedItem =  (ModelDeliveryAcceptance_SerialMC) tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                pnDetail = Integer.valueOf(selectedItem.getIndex01());
+                ModelDeliveryAcceptance_SerialMC selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
+                pnDetail = Integer.valueOf(selectedItem.getIndex05());
                 
                 loadRecordDetail();
             }
         });
         
         tblViewDetail.setOnKeyReleased((KeyEvent t) -> {
-            ModelDeliveryAcceptance_SerialMC selectedItem = (ModelDeliveryAcceptance_SerialMC) tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
+            ModelDeliveryAcceptance_SerialMC selectedItem ;
             
             KeyCode key = t.getCode();
             switch (key) {
                 case DOWN:
-                case TAB:
-                    pnDetail = Integer.valueOf(selectedItem.getIndex01()) - 1;
                     if (pnDetail == tblViewDetail.getItems().size()) {
                         pnDetail = tblViewDetail.getItems().size();
                     } else {
+                        selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex()-1);
+                        pnDetail = Integer.valueOf(selectedItem.getIndex05());
                         pnDetail++;
                     }
                     System.out.println("Down " + pnDetail);
                     break;
 
                 case UP:
-                    pnDetail = Integer.valueOf(selectedItem.getIndex01()) + 1;
                     if(pnDetail == 0){
                         pnDetail = 0;
                     } else {
+                        selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex()+1);
+                        pnDetail = Integer.valueOf(selectedItem.getIndex05());
                         pnDetail--;
                     }
                     System.out.println("UP " + pnDetail);

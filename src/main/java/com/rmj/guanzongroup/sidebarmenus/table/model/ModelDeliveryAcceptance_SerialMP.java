@@ -51,12 +51,14 @@ public class ModelDeliveryAcceptance_SerialMP {
     public ModelDeliveryAcceptance_SerialMP(
             String index01,
             String index02,
-            String index03
+            String index03,
+            String index04
     ) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
         this.index03 = new SimpleStringProperty(index03);
+        this.index04 = new SimpleStringProperty(index04);
     }
 
     public String getIndex01() {
@@ -83,7 +85,11 @@ public class ModelDeliveryAcceptance_SerialMP {
         this.index03.set(index03);
     }
 
+    public String getIndex04() {
+        return index04.get();
+    }
 
-
-
+    public void setIndex04(String index04) {
+        this.index04.set(index04);
+    }
 }

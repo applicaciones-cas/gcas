@@ -51,10 +51,9 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
     private JSONObject poJSON;
     int pnEntryNo = 0;
     int pnDetail = -1;
-    private final String pxeModuleName = "Purchase Order Receiving Serial";
+    private final String pxeModuleName = "Purchase Order Receiving Serial Car";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
-    private boolean pbState = true;
     
     private ObservableList<ModelDeliveryAcceptance_Serial> details_data = FXCollections.observableArrayList();
 
@@ -81,14 +80,9 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
         pnEntryNo = entryNo;
     }
     
-    public void setState(boolean fbValue){
-        pbState = fbValue;
-    }
-    
     private Stage getStage(){
          return (Stage) btnClose.getScene().getWindow();
     }
-
 
     /**
      * Initializes the controller class.
@@ -169,7 +163,7 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
                         return poJSON;
                     }
                 } else {
-                    if(ShowMessageFX.OkayCancel(null, "Purchase Order Receiving Serial", 
+                    if(ShowMessageFX.OkayCancel(null, pxeModuleName, 
                             "There are still remaining rows that have not been filled. Are you sure you want to close without completing them?") == false){
                         poJSON.put("result", "error");
                         return poJSON;
@@ -194,6 +188,12 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
             CheckBox checkbox = (CheckBox) source;
             String lsCheckBox = checkbox.getId();
             String lsLocation = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getLocationId();
+            
+            if(lsLocation == null || lsLocation.equals("")){
+                ShowMessageFX.Warning(null, pxeModuleName, "Location cannot be empty.");
+                return;
+            }
+            
             if(lsCheckBox.equals("cbApplyToAll")){
                 for(int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount() - 1; lnCtr++){
                     if((lsLocation != null) || !lsLocation.equals("")){
