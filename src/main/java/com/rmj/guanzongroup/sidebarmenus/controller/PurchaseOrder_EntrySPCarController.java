@@ -525,11 +525,10 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                     // Print Transaction Prompt
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
                         loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        if ("success".equals(loJSON.get("result"))) {
-                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                        if ("error".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         }
                     }
-
                     Platform.runLater(() -> btnNew.fire());
                 } catch (ParseException ex) {
                     Logger.getLogger(PurchaseOrder_EntrySPCarController.class.getName()).log(Level.SEVERE, null, ex);
@@ -579,9 +578,9 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                     }
                     break;
                 case "btnPrint":
-                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                    loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                     }
                     break;
                 case "btnRetrieve":

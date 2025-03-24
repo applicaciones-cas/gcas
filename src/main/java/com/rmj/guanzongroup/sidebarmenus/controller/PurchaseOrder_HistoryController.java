@@ -262,24 +262,26 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
                     }
                     break;
                 case "btnPrint":
-                    if (!btnPrint.getText().equals("Reprint")) {
-                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()
-                                .equals(PurchaseOrderStatus.APPROVED)) {
+                    if (btnPrint.getText().equals("Reprint")) {
+                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                        if ("error".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                            return;
+                        }
+                    } else {
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.APPROVED)) {
                             loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
+                            if (!"success".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                return;
+                            }
+                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         } else {
                             loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        }
-
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            return;
-                        }
-                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                    } else {
-                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            return;
+                            if ("error".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                return;
+                            }
                         }
                     }
                     break;

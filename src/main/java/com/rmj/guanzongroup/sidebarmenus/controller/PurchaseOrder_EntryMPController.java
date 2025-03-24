@@ -585,8 +585,8 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                     // Print Transaction Prompt
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
                         loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        if ("success".equals(loJSON.get("result"))) {
-                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                        if ("error".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         }
                     }
 
@@ -639,9 +639,9 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                     }
                     break;
                 case "btnPrint":
-                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                    loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                     }
                     break;
                 case "btnRetrieve":
