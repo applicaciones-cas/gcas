@@ -326,15 +326,24 @@ public class PurchaseOrder_HistoryCarController implements Initializable, Screen
                     break;
                 case "btnPrint":
                     if (btnPrint.getText().equals("Reprint")) {
+                        poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            return;
+                        }
                     } else {
                         if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.APPROVED)) {
-                            poPurchasingController.PurchaseOrder().Master().setPrint("1");
+                            loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
+                        } else {
+                            loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                        }
+
+                        if (!"success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                            return;
                         }
                     }
-                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                    }
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     break;
                 case "btnTransHistory":
                     break;
