@@ -75,14 +75,14 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class DeliveryAcceptance_EntryMonarchHospitalityController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_EntryLPController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchase Order Receiving Entry Monarch Hospitality";
+    private final String pxeModuleName = "Purchase Order Receiving Entry LP";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
@@ -122,7 +122,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     private TextArea taRemarks;
 
     @FXML
-    private DatePicker dpTransactionDate, dpReferenceDate;
+    private DatePicker dpTransactionDate, dpReferenceDate, dpExpiryDate;
 
     @FXML
     private TableView tblViewOrderDetails, tblViewPuchaseOrder;
@@ -170,7 +170,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -258,9 +258,10 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
+                            poPurchaseReceivingController.Detail().clear();
+                            pnEditMode = EditMode.UNKNOWN;
                             clearTextFields();
-                            //Call new transaction
-                            btnNew.fire();
+                            loadTableDetail();
                             break;
                         } else {
                             return;
@@ -303,7 +304,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                         break;
                 }
                 initButton(pnEditMode);
-                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve")) {
+                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
 
                 } else {
                     loadRecordMaster();
@@ -312,11 +313,11 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
             }
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -597,7 +598,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             break;
 
                         case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail);
 
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -631,9 +632,9 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -731,9 +732,11 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     public void initDatePickers() {
         setDatePickerFormat(dpTransactionDate);
         setDatePickerFormat(dpReferenceDate);
+        setDatePickerFormat(dpExpiryDate);
 
         dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
         dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
+        dpExpiryDate.focusedProperty().addListener(datepicker_Focus);
     }
 
     public void initDetailsGrid() {
@@ -804,6 +807,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
+        dpExpiryDate.setValue(null);
 
         tfTransactionNo.clear();
         tfIndustry.clear();
@@ -862,9 +866,9 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -877,6 +881,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             btnPrint.setText("Print");
         }
         try {
+
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
                 case PurchaseOrderReceivingStatus.APPROVED:
@@ -957,9 +962,9 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1058,7 +1063,6 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
     public void loadTableMain() {
         // Setting data to table detail
-
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);
         progressIndicator.setStyle("-fx-progress-color: #FF8201;");
@@ -1172,11 +1176,11 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             }
 
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1247,11 +1251,11 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
