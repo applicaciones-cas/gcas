@@ -266,7 +266,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
     }
 
     private void initButtonsClickActions() {
-        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel,
+        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel,btnReturn,
                 btnPrint, btnRetrieve, btnTransHistory, btnClose, btnConfirm);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
@@ -285,31 +285,29 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                     }
                     break;
                 case "btnConfirm":
-                  try {
-                    loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                    if ("success".equals((String) loJSON.get("result"))) {
-
-                        loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            break;
-                        }
-                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                        clearMasterFields();
-                        clearDetailFields();
-                        poDetail_data.clear();
-                        pnEditMode = EditMode.UNKNOWN;
-
-                        //this code below use to highlight tblpurchase
-                        tblVwPurchaseOrder.refresh();
-                        poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
+                    loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Approved");
+                    if (!"success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        break;
                     }
-                } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                break;
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                    if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                        if ("success".equals(loJSON.get("result"))) {
+                            poPurchasingController.PurchaseOrder().Master().setPrint("1");
+                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                        }
+                    }
+                    clearMasterFields();
+                    clearDetailFields();
+                    poDetail_data.clear();
+                    pnEditMode = EditMode.UNKNOWN;
+
+                    //this code below use to highlight tblpurchase
+                    tblVwPurchaseOrder.refresh();
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.APPROVED);
+                    break;
                 case "btnSave":
-                    try {
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
                     }
@@ -335,33 +333,32 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         return;
                     }
-
                     ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                    loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-
-                    if ("success".equals(loJSON.get("result")) && poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo())).get("result"))) {
+                    if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
+                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
+                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().PostTransaction("Approved")).get("result"))) {
                             ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         }
                     }
 
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        if ("success".equals(loJSON.get("result"))) {
-                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.APPROVED)) {
+                            loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
+                        } else {
+                            loJSON = poPurchasingController.PurchaseOrder().printTransaction();
                         }
+                        if (!"success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                            return;
+                        }
+                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     }
 
                     loadMaster();
                     loadDetail();
                     loadTablePODetail();
                     pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
-
-                } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                break;
+                    break;
                 case "btnCancel":
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                         loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
@@ -374,10 +371,24 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                     }
                     break;
                 case "btnPrint":
-                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                    if (btnPrint.getText().equals("Reprint")) {
+                        poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            return;
+                        }
+                    } else {
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.APPROVED)) {
+                            loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
+                        } else {
+                            loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                        }
+                        if (!"success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                            return;
+                        }
                     }
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     break;
                 case "btnRetrieve":
                     loadTablePurchaseOrder();
@@ -386,34 +397,37 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                     break;
                 case "btnReturn":
                     //add your method here
-
                     //this code below use to highlight tblpurchase
+                    loJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("Returned");
+                    if (!"success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        break;
+                    }
+                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    clearMasterFields();
+                    clearDetailFields();
+                    poDetail_data.clear();
+                    pnEditMode = EditMode.UNKNOWN;
+
                     tblVwPurchaseOrder.refresh();
                     poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.RETURNED);
                     break;
                 case "btnVoid":
-                          try {
-                    loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                    if ("success".equals((String) loJSON.get("result"))) {
-
-                        loJSON = poPurchasingController.PurchaseOrder().VoidTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            break;
-                        }
-                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                        clearMasterFields();
-                        clearDetailFields();
-                        poDetail_data.clear();
-                        pnEditMode = EditMode.UNKNOWN;
-                        //this code below use to highlight tblpurchase
-                        tblVwPurchaseOrder.refresh();
-                        poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
+                    loJSON = poPurchasingController.PurchaseOrder().VoidTransaction("Voided");
+                    if (!"success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        break;
                     }
-                } catch (ParseException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                break;
+                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    clearMasterFields();
+                    clearDetailFields();
+                    poDetail_data.clear();
+                    pnEditMode = EditMode.UNKNOWN;  
+
+                    //this code below use to highlight tblpurchase
+                    tblVwPurchaseOrder.refresh();
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.VOID);
+                    break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
                         if (poUnload != null) {
@@ -429,11 +443,10 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
             }
             initButtons(pnEditMode);
             initFields(pnEditMode);
-        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
+            Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
     private void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(tfReferenceNo, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate, tfAdvancePAmount, tfOrderQuantity);
