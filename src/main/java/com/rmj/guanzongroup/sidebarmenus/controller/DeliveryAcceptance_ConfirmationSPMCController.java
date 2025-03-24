@@ -4,14 +4,12 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ConfirmationSPMCController.poPurchaseReceivingController;
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_EntryController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrder;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,18 +19,13 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -42,13 +35,11 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
@@ -180,6 +171,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         poPurchaseReceivingController = new PurchaseOrderReceivingControllers(oApp, null).PurchaseOrderReceiving();
         poJSON = new JSONObject();
         poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
@@ -210,15 +202,16 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
         loadRecordSearch();
 
         pgPagination.setPageCount(1);
+        
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
-
+    
     @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-
+    
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
@@ -230,17 +223,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                 Button clickedButton = (Button) source;
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
-
-                    case "btnBrowse":
-                        poJSON = poPurchaseReceivingController.searchTransaction();
-                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            tfTransactionNo.requestFocus();
-                            return;
-                        }
-                        pnEditMode = poPurchaseReceivingController.getEditMode();
-                        break;
-
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -251,17 +233,10 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-                            poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                            if (!"success".equals((String) poJSON.get("result"))) {
-                                System.err.println((String) poJSON.get("message"));
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            }
-                            clearTextFields();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
                         }
-
                     case "btnUpdate":
                         poJSON = poPurchaseReceivingController.UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -337,7 +312,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                         break;
                     case "btnConfirm":
                         poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to confirm transaction?") == true) {
+                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to confirm transaction?") == true) {
                             poJSON = poPurchaseReceivingController.ConfirmTransaction("");
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -347,18 +322,13 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
 
                                 lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
-                                poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                                if (!"success".equals((String) poJSON.get("result"))) {
-                                    System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
+                                
                                 clearTextFields();
+                                poPurchaseReceivingController.Detail().clear();
                                 pnEditMode = EditMode.UNKNOWN;
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                                 highlight(tblViewPuchaseOrder, pnMain, "#C1E1C1", highlightedRowsMain);
                                 loadTableDetail();
-                                clearTextFields();
                             }
                         } else {
                             return;
@@ -377,12 +347,8 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                                 lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
-                                poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                                if (!"success".equals((String) poJSON.get("result"))) {
-                                    System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
                                 clearTextFields();
+                                poPurchaseReceivingController.Detail().clear();
                                 pnEditMode = EditMode.UNKNOWN;
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                                 highlight(tblViewPuchaseOrder, pnMain, "#FAA0A0", highlightedRowsMain);
@@ -405,12 +371,8 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                                 lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
-                                poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                                if (!"success".equals((String) poJSON.get("result"))) {
-                                    System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
                                 clearTextFields();
+                                poPurchaseReceivingController.Detail().clear();
                                 pnEditMode = EditMode.UNKNOWN;
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                                 highlight(tblViewPuchaseOrder, pnMain, "#FAC898", highlightedRowsMain);
@@ -421,7 +383,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                         }
                         break;
                     case "btnAddAttachment":
-                try {
                         fileChooser = new FileChooser();
                         fileChooser.setTitle("Choose Image");
                         fileChooser.getExtensionFilters().addAll(
@@ -447,9 +408,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                             tblAttachments.getSelectionModel().select(pnAttachment);
 
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                     break;
                     case "btnRemoveAttachment":
                         img_data.remove(pnAttachment);
@@ -483,71 +441,18 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
 
             }
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    private void initButton(int fnValue) {
-
-        boolean lbShow1 = (fnValue == EditMode.UPDATE);
-        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
-        boolean lbShow3 = (fnValue == EditMode.READY);
-        boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
-        // Manage visibility and managed state of other buttons
-
-        btnReturn.setVisible(lbShow2);
-        btnReturn.setManaged(lbShow2);
-
-        btnClose.setVisible(lbShow4);
-        btnClose.setManaged(lbShow4);
-
-        btnSearch.setVisible(lbShow1);
-        btnSave.setVisible(lbShow1);
-        btnCancel.setVisible(lbShow1);
-
-        btnSearch.setManaged(lbShow1);
-        btnSave.setManaged(lbShow1);
-        btnCancel.setManaged(lbShow1);
-
-        btnUpdate.setVisible(lbShow3);
-        btnPrint.setVisible(lbShow3);
-        btnHistory.setVisible(lbShow3);
-
-        btnUpdate.setManaged(lbShow3);
-        btnPrint.setManaged(lbShow3);
-        btnHistory.setManaged(lbShow3);
-
-        btnConfirm.setVisible(lbShow3);
-        btnConfirm.setManaged(lbShow3);
-        btnVoid.setVisible(lbShow3);
-        btnVoid.setManaged(lbShow3);
-
-//        apBrowse.setDisable(lbShow); // no usage
-        apMaster.setDisable(!lbShow1);
-        apDetail.setDisable(!lbShow1);
-        apAttachments.setDisable(!lbShow1);
-
-        btnAddAttachment.setDisable(!lbShow2);
-        btnRemoveAttachment.setDisable(!lbShow2);
-
-        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
-            case PurchaseOrderReceivingStatus.APPROVED:
-                btnConfirm.setVisible(!lbShow3);
-                btnConfirm.setManaged(!lbShow3);
-                break;
-            case PurchaseOrderReceivingStatus.VOID:
-                btnVoid.setVisible(!lbShow3);
-                btnVoid.setManaged(!lbShow3);
-                break;
-        }
-    }
-
+    
     @FXML
     void tblAttachments_Clicked(MouseEvent event) {
         pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
@@ -556,7 +461,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
             resetImageBounds();
         }
     }
-
+    
     public void retrievePOR() {
         poJSON = new JSONObject();
 
@@ -575,256 +480,101 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
     }
+    
+    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
+        poJSON = new JSONObject();
+        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTxtFieldID = (txtPersonalInfo.getId());
+        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
+        lastFocusedTextField = txtPersonalInfo;
 
-    private void initStackPaneListener() {
-        stackPane1.widthProperty().addListener((observable, oldValue, newWidth) -> {
-            double computedWidth = newWidth.doubleValue();
-            ldstackPaneWidth = computedWidth;
-
-        });
-        stackPane1.heightProperty().addListener((observable, oldValue, newHeight) -> {
-            double computedHeight = newHeight.doubleValue();
-            ldstackPaneHeight = computedHeight;
-            loadTableAttachment();
-            loadRecordAttachment();
-            initAttachmentsGrid();
-        });
-    }
-
-    private void initAttachmentPreviewPane() {
-        stackPane1.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-            stackPane1.setClip(new javafx.scene.shape.Rectangle(
-                    newBounds.getMinX(),
-                    newBounds.getMinY(),
-                    newBounds.getWidth(),
-                    newBounds.getHeight()
-            ));
-        });
-        imageView.setOnScroll((ScrollEvent event) -> {
-            double delta = event.getDeltaY();
-            scaleFactor = Math.max(0.5, Math.min(scaleFactor * (delta > 0 ? 1.1 : 0.9), 5.0));
-            imageView.setScaleX(scaleFactor);
-            imageView.setScaleY(scaleFactor);
-        });
-
-        imageView.setOnMousePressed((MouseEvent event) -> {
-            mouseAnchorX = event.getSceneX() - imageView.getTranslateX();
-            mouseAnchorY = event.getSceneY() - imageView.getTranslateY();
-        });
-
-        imageView.setOnMouseDragged((MouseEvent event) -> {
-            double translateX = event.getSceneX() - mouseAnchorX;
-            double translateY = event.getSceneY() - mouseAnchorY;
-            imageView.setTranslateX(translateX);
-            imageView.setTranslateY(translateY);
-        });
-
-        stackPane1.widthProperty().addListener((observable, oldValue, newWidth) -> {
-            double computedWidth = newWidth.doubleValue();
-            ldstackPaneWidth = computedWidth;
-
-        });
-        stackPane1.heightProperty().addListener((observable, oldValue, newHeight) -> {
-            double computedHeight = newHeight.doubleValue();
-            ldstackPaneHeight = computedHeight;
-
-            //Placed to get height and width of stack pane in computed size before loading the image
-            initStackPaneListener();
-            initAttachmentsGrid();
-        });
-
-    }
-
-    private void adjustImageSize(Image image) {
-        double imageRatio = image.getWidth() / image.getHeight();
-        double containerRatio = ldstackPaneWidth / ldstackPaneHeight;
-
-        // Unbind before setting new values
-        imageView.fitWidthProperty().unbind();
-        imageView.fitHeightProperty().unbind();
-
-        if (imageRatio > containerRatio) {
-            // Image is wider than container → fit width
-            imageView.setFitWidth(ldstackPaneWidth);
-            imageView.setFitHeight(ldstackPaneWidth / imageRatio);
-        } else {
-            // Image is taller than container → fit height
-            imageView.setFitHeight(ldstackPaneHeight);
-            imageView.setFitWidth(ldstackPaneHeight * imageRatio);
+        if (lsValue == null) {
+            return;
         }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTxtFieldID) {
+                case "tfCompany":
+                    if (lsValue.isEmpty()) {
+                        poJSON = poPurchaseReceivingController.Master().setCompanyId("");
+                    }
+                    break;
+                case "tfSupplier":
+                    if (lsValue.isEmpty()) {
+                        poJSON = poPurchaseReceivingController.Master().setSupplierId("");
+                    }
+                    break;
+                case "tfTrucking":
+                    if (lsValue.isEmpty()) {
+                        poJSON = poPurchaseReceivingController.Master().setTruckingId("");
+                    }
+                    break;
+                case "tfAreaRemarks":
+                    break;
+                case "tfTerm":
+                    if (lsValue.isEmpty()) {
+                        poJSON = poPurchaseReceivingController.Master().setTermCode("");
+                    }
+                    break;
+                case "tfReferenceNo":
+                    if (!lsValue.isEmpty()) {
+                        poJSON = poPurchaseReceivingController.Master().setReferenceNo(lsValue);
+                    } else {
+                        poJSON = poPurchaseReceivingController.Master().setReferenceNo("");
+                    }
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfReferenceNo.setText("");
+                        break;
+                    }
+                    break;
+                case "tfDiscountRate":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Discount Rate");
+                        return;
+                    }
+                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue)));
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        break;
+                    }
+                    poJSON = poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        break;
+                    }
+                    break;
+                case "tfDiscountAmount":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Discount Amount");
+                        return;
+                    }
+                    poJSON = poPurchaseReceivingController.Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        break;
+                    }
 
-        imageView.setPreserveRatio(true);
-        imageView.setSmooth(true);
-    }
+                    poJSON = poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        break;
+                    }
+                    break;
 
-    private void loadTableAttachment() {
-//        img_data.clear(); should have data from class before calling this clear
-//        for (int i = 0; i < img_data.size(); i++) {
-//            img_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(i), img_data.get(i).getIndex2()));
-//        }
-        loadRecordAttachment();
-
-    }
-
-    private void stackPaneClip() {
-        javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(
-                stackPane1.getWidth() - 8, // Subtract 10 for padding (5 on each side)
-                stackPane1.getHeight() - 8 // Subtract 10 for padding (5 on each side)
-        );
-        clip.setArcWidth(8); // Optional: Rounded corners for aesthetics
-        clip.setArcHeight(8);
-        clip.setLayoutX(4); // Set padding offset for X
-        clip.setLayoutY(4); // Set padding offset for Y
-        stackPane1.setClip(clip);
-
-    }
-
-    public void initAttachmentsGrid() {
-        /*FOCUS ON FIRST ROW*/
-        tblRowNoAttachment.setStyle("-fx-alignment: CENTER;-fx-padding: 0 5 0 5;");
-        tblFileNameAttachment.setStyle("-fx-alignment: CENTER;-fx-padding: 0 5 0 5;");
-
-        tblRowNoAttachment.setCellValueFactory(new PropertyValueFactory<ModelDeliveryAcceptance_Attachment, String>("index01"));
-        tblFileNameAttachment.setCellValueFactory(new PropertyValueFactory<ModelDeliveryAcceptance_Attachment, String>("index02"));
-
-        tblAttachments.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblAttachments.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
-        tblAttachments.setItems(img_data);
-
-        if (pnAttachment < 0 || pnAttachment >= img_data.size()) {
-            if (!img_data.isEmpty()) {
-                /* FOCUS ON FIRST ROW */
-                tblAttachments.getSelectionModel().select(0);
-                tblAttachments.getFocusModel().focus(0);
-                pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
             }
-        } else {
-            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-            tblAttachments.getSelectionModel().select(pnAttachment);
-            tblAttachments.getFocusModel().focus(pnAttachment);
+
+            loadRecordMaster();
         }
 
-    }
-
-    public void slideImage(int direction) {
-        currentIndex = pnAttachment;
-        int newIndex = currentIndex + direction;
-
-        if (newIndex != -1 && (newIndex <= img_data.size() - 1)) {
-            ModelDeliveryAcceptance_Attachment image = img_data.get(newIndex);
-            Path filePath = Paths.get(image.getIndex02());
-            String convertedPath = filePath.toUri().toString();
-
-            Image newImage = new Image(convertedPath);
-            // Create a transition animation
-            TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
-            slideOut.setByX(direction * -400); // Move left or right
-
-            slideOut.setOnFinished(event -> {
-                imageView.setImage(newImage);
-                imageView.setTranslateX(direction * 400);
-                adjustImageSize(newImage);
-
-                TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), imageView);
-                slideIn.setToX(0);
-                slideIn.play();
-            });
-
-            slideOut.play();
-
-            tblAttachments.getFocusModel().focus(newIndex);
-            tblAttachments.getSelectionModel().select(newIndex);
-            pnAttachment = newIndex;
-
-            if (isImageViewOutOfBounds(imageView, stackPane1)) {
-                resetImageBounds();
-            }
-        }
-    }
-
-    public void initDetailsGrid() {
-
-        tblRowNoDetail.setStyle("-fx-alignment: CENTER;");
-        tblOrderNoDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblBarcodeDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblDescriptionDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
-        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblTotalDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
-
-        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-        tblReceiveQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-        tblTotalDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-
-        tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewOrderDetails.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-        filteredDataDetail = new FilteredList<>(details_data, b -> true);
-        autoSearch(tfOrderNo);
-
-        SortedList<ModelDeliveryAcceptance_Detail> sortedData = new SortedList<>(filteredDataDetail);
-        sortedData.comparatorProperty().bind(tblViewOrderDetails.comparatorProperty());
-        tblViewOrderDetails.setItems(sortedData);
-        tblViewOrderDetails.autosize();
-    }
-
-    public void initMainGrid() {
-        tblRowNo.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblSupplier.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblDate.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblReferenceNo.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-
-        tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
-
-        tblViewPuchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewPuchaseOrder.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
-        filteredData = new FilteredList<>(main_data, b -> true);
-        SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-        tblViewPuchaseOrder.setItems(sortedData);
-
-    }
-
-    private boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
-        Bounds clipBounds = stackPane.getClip().getBoundsInParent();
-        Bounds imageBounds = imageView.getBoundsInParent();
-
-        return imageBounds.getMaxX() < clipBounds.getMinX()
-                || imageBounds.getMinX() > clipBounds.getMaxX()
-                || imageBounds.getMaxY() < clipBounds.getMinY()
-                || imageBounds.getMinY() > clipBounds.getMaxY();
-    }
-
-    public void resetImageBounds() {
-        imageView.setScaleX(1.0);
-        imageView.setScaleY(1.0);
-        imageView.setTranslateX(0);
-        imageView.setTranslateY(0);
-        stackPane1.setAlignment(imageView, javafx.geometry.Pos.CENTER);
-    }
-
+    };
+    
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsID = (txtField.getId());
@@ -913,100 +663,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
             loadTableDetail();
         }
     };
-
-    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfCompany":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setCompanyId("");
-                    }
-                    break;
-                case "tfSupplier":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setSupplierId("");
-                    }
-                    break;
-                case "tfTrucking":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setTruckingId("");
-                    }
-                    break;
-                case "tfAreaRemarks":
-                    break;
-                case "tfTerm":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setTermCode("");
-                    }
-                    break;
-                case "tfReferenceNo":
-                    if (!lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setReferenceNo(lsValue);
-                    } else {
-                        poJSON = poPurchaseReceivingController.Master().setReferenceNo("");
-                    }
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        tfReferenceNo.setText("");
-                        break;
-                    }
-                    break;
-                case "tfDiscountRate":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
-                        return;
-                    }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue)));
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
-                    }
-                    poJSON = poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
-                    }
-                    break;
-                case "tfDiscountAmount":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
-                        return;
-                    }
-                    poJSON = poPurchaseReceivingController.Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
-                    }
-
-                    poJSON = poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
-                    }
-                    break;
-
-            }
-
-            loadRecordMaster();
-        }
-
-    };
+    
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
 
         poJSON = new JSONObject();
@@ -1064,7 +721,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                             }
                             retrievePOR();
                             loadRecordSearch();
-                            break;
+                            return;
                         case "tfSearchSupplier":
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
@@ -1074,17 +731,11 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                             }
                             retrievePOR();
                             loadRecordSearch();
-                            break;
+                            return;
                         case "tfSearchReferenceNo":
-//                            poJSON = poPurchaseReceivingController.searchTransaction(lsValue, false);
-//                            if ("error".equals(poJSON.get("result"))) {
-//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                                tfSupplier.setText("");
-//                                break;
-//                            }
                             poPurchaseReceivingController.Master().setTransactionNo(lsValue);
                             retrievePOR();
-                            break;
+                            return;
                         case "tfCompany":
                             /*search company*/
                             poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
@@ -1092,9 +743,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfCompany.setText("");
                                 break;
-                            }
-                            if (!poPurchaseReceivingController.Master().getSupplierId().equals("")) {
-                                retrievePOR();
                             }
                             break;
 
@@ -1104,9 +752,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupplier.setText("");
                                 break;
-                            }
-                            if (!poPurchaseReceivingController.Master().getCompanyId().equals("")) {
-                                retrievePOR();
                             }
                             break;
                         case "tfTrucking":
@@ -1124,7 +769,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                                 tfTerm.setText("");
                                 break;
                             }
-                            loadRecordMaster();
                             break;
                         case "tfOrderNo":
 
@@ -1156,11 +800,8 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                             }
                             break;
                     }
-                    if (lsID.equals("tfSearchCompany") || lsID.equals("tfSearchSupplier") || lsID.equals("tfSearchReferenceNo")) {
-                    } else {
-                        loadRecordMaster();
-                        loadTableDetail();
-                    }
+                    loadRecordMaster();
+                    loadTableDetail();
 
                     break;
                 default:
@@ -1181,41 +822,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void initTextFields() {
-        tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
-        tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
-        tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
-        tfAttachmentType.focusedProperty().addListener(txtField_Focus);
-
-        tfCompany.focusedProperty().addListener(txtMaster_Focus);
-        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
-        tfTrucking.focusedProperty().addListener(txtMaster_Focus);
-        taRemarks.focusedProperty().addListener(txtArea_Focus);
-        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
-        tfTerm.focusedProperty().addListener(txtMaster_Focus);
-        tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
-        tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
-
-        tfBarcode.focusedProperty().addListener(txtDetail_Focus);
-        tfSupersede.focusedProperty().addListener(txtDetail_Focus);
-        tfDescription.focusedProperty().addListener(txtDetail_Focus);
-        tfCost.focusedProperty().addListener(txtDetail_Focus);
-        tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
-
-        tfSearchCompany.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
-
-        tfCompany.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSupplier.setOnKeyPressed(this::txtField_KeyPressed);
-        tfTrucking.setOnKeyPressed(this::txtField_KeyPressed);
-        tfTerm.setOnKeyPressed(this::txtField_KeyPressed);
-        tfOrderNo.setOnKeyPressed(this::txtField_KeyPressed);
-        tfBarcode.setOnKeyPressed(this::txtField_KeyPressed);
-        tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
     }
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
@@ -1267,123 +873,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
             e.printStackTrace();
         }
     };
-
-    private void setDatePickerFormat(DatePicker datePicker) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        datePicker.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                return (date != null) ? date.format(formatter) : "";
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
-            }
-        });
-    }
-
-    public void initDatePickers() {
-        setDatePickerFormat(dpTransactionDate);
-        setDatePickerFormat(dpReferenceDate);
-
-        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
-        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
-    }
-
-    private TableView getFocusedTable() {
-        if (tblViewPuchaseOrder.isFocused()) {
-            return tblViewPuchaseOrder;
-        } else if (tblViewOrderDetails.isFocused()) {
-            return tblViewOrderDetails;
-        }
-        return null; // No table has focus
-    }
-
-    private int moveToNextRow(TableView table, TablePosition focusedCell) {
-        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
-        table.getSelectionModel().select(nextRow);
-        return nextRow;
-    }
-
-    private int moveToPreviousRow(TableView table, TablePosition focusedCell) {
-        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
-        table.getSelectionModel().select(previousRow);
-        return previousRow;
-    }
-
-    private void tableKeyEvents(KeyEvent event) {
-        TableView<?> currentTable = (TableView<?>) event.getSource();
-        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-        if (focusedCell != null) {
-            switch (event.getCode()) {
-                case TAB:
-                case DOWN:
-                    pnDetail = moveToNextRow(currentTable, focusedCell);
-                    break;
-                case UP:
-                    pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                    break;
-
-                default:
-                    break;
-            }
-            loadRecordDetail();
-            event.consume();
-        }
-    }
-
-    public void initTableOnClick() {
-
-        tblViewOrderDetails.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
-                loadRecordDetail();
-            }
-        });
-
-        tblViewPuchaseOrder.setOnMouseClicked(event -> {
-            pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
-            if (pnMain >= 0) {
-                if (event.getClickCount() == 2) {
-                    tfOrderNo.setText("");
-                    loadTableDetailFromMain();
-                    pnEditMode = poPurchaseReceivingController.getEditMode();
-                    initButton(pnEditMode);
-                }
-            }
-        });
-
-        tblViewPuchaseOrder.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Main>() {
-            @Override
-            protected void updateItem(ModelDeliveryAcceptance_Main item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsMain.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRowsMain.get(getIndex()) + ";");
-                } else {
-                    setStyle(""); // Default style
-                }
-            }
-        });
-        tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Detail>() {
-            @Override
-            protected void updateItem(ModelDeliveryAcceptance_Detail item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsDetail.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRowsDetail.get(getIndex()) + ";");
-                } else {
-                    setStyle(""); // Default style
-                }
-            }
-        });
-
-        tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-    }
-
+    
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
         pgPagination.setPageCount(totalPage);
@@ -1409,7 +899,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
 
         tblViewPuchaseOrder.scrollTo(0);
     }
-
+    
     public void loadTableMain() {
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -1852,7 +1342,464 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
         new Thread(task).start(); // Run task in background
 
     }
+    
+    private void loadTableAttachment() {
+//        img_data.clear(); should have data from class before calling this clear
+//        for (int i = 0; i < img_data.size(); i++) {
+//            img_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(i), img_data.get(i).getIndex2()));
+//        }
+        loadRecordAttachment();
 
+    }
+    
+    private void setDatePickerFormat(DatePicker datePicker) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        datePicker.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                return (date != null) ? date.format(formatter) : "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
+            }
+        });
+    }
+    
+    public void initDatePickers() {
+        setDatePickerFormat(dpTransactionDate);
+        setDatePickerFormat(dpReferenceDate);
+
+        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
+        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
+    }
+
+    public void initTextFields() {
+        tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
+        tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
+        tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
+        tfAttachmentType.focusedProperty().addListener(txtField_Focus);
+
+        tfCompany.focusedProperty().addListener(txtMaster_Focus);
+        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
+        tfTrucking.focusedProperty().addListener(txtMaster_Focus);
+        taRemarks.focusedProperty().addListener(txtArea_Focus);
+        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
+        tfTerm.focusedProperty().addListener(txtMaster_Focus);
+        tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
+        tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
+
+        tfBarcode.focusedProperty().addListener(txtDetail_Focus);
+        tfSupersede.focusedProperty().addListener(txtDetail_Focus);
+        tfDescription.focusedProperty().addListener(txtDetail_Focus);
+        tfCost.focusedProperty().addListener(txtDetail_Focus);
+        tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
+
+        tfSearchCompany.setOnKeyPressed(this::txtField_KeyPressed);
+        tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
+        tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
+
+        tfCompany.setOnKeyPressed(this::txtField_KeyPressed);
+        tfSupplier.setOnKeyPressed(this::txtField_KeyPressed);
+        tfTrucking.setOnKeyPressed(this::txtField_KeyPressed);
+        tfTerm.setOnKeyPressed(this::txtField_KeyPressed);
+        tfOrderNo.setOnKeyPressed(this::txtField_KeyPressed);
+        tfBarcode.setOnKeyPressed(this::txtField_KeyPressed);
+        tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
+        tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
+    }
+    
+    public void initTableOnClick() {
+
+        tblViewOrderDetails.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
+                pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
+                loadRecordDetail();
+            }
+        });
+
+        tblViewPuchaseOrder.setOnMouseClicked(event -> {
+            pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
+            if (pnMain >= 0) {
+                if (event.getClickCount() == 2) {
+                    tfOrderNo.setText("");
+                    loadTableDetailFromMain();
+                    pnEditMode = poPurchaseReceivingController.getEditMode();
+                    initButton(pnEditMode);
+                }
+            }
+        });
+
+        tblViewPuchaseOrder.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Main>() {
+            @Override
+            protected void updateItem(ModelDeliveryAcceptance_Main item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setStyle(""); // Reset for empty rows
+                } else if (highlightedRowsMain.containsKey(getIndex())) {
+                    setStyle("-fx-background-color: " + highlightedRowsMain.get(getIndex()) + ";");
+                } else {
+                    setStyle(""); // Default style
+                }
+            }
+        });
+        tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Detail>() {
+            @Override
+            protected void updateItem(ModelDeliveryAcceptance_Detail item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setStyle(""); // Reset for empty rows
+                } else if (highlightedRowsDetail.containsKey(getIndex())) {
+                    setStyle("-fx-background-color: " + highlightedRowsDetail.get(getIndex()) + ";");
+                } else {
+                    setStyle(""); // Default style
+                }
+            }
+        });
+
+        tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+    }
+    
+    private void initButton(int fnValue) {
+
+        boolean lbShow1 = (fnValue == EditMode.UPDATE);
+        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
+        boolean lbShow3 = (fnValue == EditMode.READY);
+        boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
+        // Manage visibility and managed state of other buttons
+        //Update 
+        btnSearch.setVisible(lbShow1);
+        btnSearch.setManaged(lbShow1);
+        btnSave.setVisible(lbShow1);
+        btnSave.setManaged(lbShow1);
+        btnCancel.setVisible(lbShow1);
+        btnCancel.setManaged(lbShow1);
+        
+        //Ready || Update
+        btnReturn.setVisible(lbShow2);
+        btnReturn.setManaged(lbShow2);
+        
+        //Ready
+        btnPrint.setVisible(lbShow3);
+        btnPrint.setManaged(lbShow3);
+        btnUpdate.setVisible(lbShow3);
+        btnUpdate.setManaged(lbShow3);
+        btnHistory.setVisible(lbShow3);
+        btnHistory.setManaged(lbShow3);
+        btnConfirm.setVisible(lbShow3);
+        btnConfirm.setManaged(lbShow3);
+        btnVoid.setVisible(lbShow3);
+        btnVoid.setManaged(lbShow3);
+        
+        //Unkown || Ready
+        btnClose.setVisible(lbShow4);
+        btnClose.setManaged(lbShow4);
+        
+        btnAddAttachment.setDisable(!lbShow2);
+        btnRemoveAttachment.setDisable(!lbShow2);
+        
+        apMaster.setDisable(!lbShow1);
+        apDetail.setDisable(!lbShow1);
+        apAttachments.setDisable(!lbShow1);
+
+        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
+            case PurchaseOrderReceivingStatus.APPROVED: 
+            case PurchaseOrderReceivingStatus.VOID:
+                btnConfirm.setVisible(false);
+                btnConfirm.setManaged(false);
+                btnUpdate.setVisible(false);
+                btnUpdate.setManaged(false);
+                btnReturn.setVisible(false);
+                btnReturn.setManaged(false);
+                btnVoid.setVisible(false);
+                btnVoid.setManaged(false);
+                break;
+        }
+    }
+    
+    private void initStackPaneListener() {
+        stackPane1.widthProperty().addListener((observable, oldValue, newWidth) -> {
+            double computedWidth = newWidth.doubleValue();
+            ldstackPaneWidth = computedWidth;
+
+        });
+        stackPane1.heightProperty().addListener((observable, oldValue, newHeight) -> {
+            double computedHeight = newHeight.doubleValue();
+            ldstackPaneHeight = computedHeight;
+            loadTableAttachment();
+            loadRecordAttachment();
+            initAttachmentsGrid();
+        });
+    }
+
+    private void initAttachmentPreviewPane() {
+        stackPane1.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
+            stackPane1.setClip(new javafx.scene.shape.Rectangle(
+                    newBounds.getMinX(),
+                    newBounds.getMinY(),
+                    newBounds.getWidth(),
+                    newBounds.getHeight()
+            ));
+        });
+        imageView.setOnScroll((ScrollEvent event) -> {
+            double delta = event.getDeltaY();
+            scaleFactor = Math.max(0.5, Math.min(scaleFactor * (delta > 0 ? 1.1 : 0.9), 5.0));
+            imageView.setScaleX(scaleFactor);
+            imageView.setScaleY(scaleFactor);
+        });
+
+        imageView.setOnMousePressed((MouseEvent event) -> {
+            mouseAnchorX = event.getSceneX() - imageView.getTranslateX();
+            mouseAnchorY = event.getSceneY() - imageView.getTranslateY();
+        });
+
+        imageView.setOnMouseDragged((MouseEvent event) -> {
+            double translateX = event.getSceneX() - mouseAnchorX;
+            double translateY = event.getSceneY() - mouseAnchorY;
+            imageView.setTranslateX(translateX);
+            imageView.setTranslateY(translateY);
+        });
+
+        stackPane1.widthProperty().addListener((observable, oldValue, newWidth) -> {
+            double computedWidth = newWidth.doubleValue();
+            ldstackPaneWidth = computedWidth;
+
+        });
+        stackPane1.heightProperty().addListener((observable, oldValue, newHeight) -> {
+            double computedHeight = newHeight.doubleValue();
+            ldstackPaneHeight = computedHeight;
+
+            //Placed to get height and width of stack pane in computed size before loading the image
+            initStackPaneListener();
+            initAttachmentsGrid();
+        });
+
+    }
+
+    private void adjustImageSize(Image image) {
+        double imageRatio = image.getWidth() / image.getHeight();
+        double containerRatio = ldstackPaneWidth / ldstackPaneHeight;
+
+        // Unbind before setting new values
+        imageView.fitWidthProperty().unbind();
+        imageView.fitHeightProperty().unbind();
+
+        if (imageRatio > containerRatio) {
+            // Image is wider than container → fit width
+            imageView.setFitWidth(ldstackPaneWidth);
+            imageView.setFitHeight(ldstackPaneWidth / imageRatio);
+        } else {
+            // Image is taller than container → fit height
+            imageView.setFitHeight(ldstackPaneHeight);
+            imageView.setFitWidth(ldstackPaneHeight * imageRatio);
+        }
+
+        imageView.setPreserveRatio(true);
+        imageView.setSmooth(true);
+    }
+
+    public void initAttachmentsGrid() {
+        /*FOCUS ON FIRST ROW*/
+        tblRowNoAttachment.setStyle("-fx-alignment: CENTER;-fx-padding: 0 5 0 5;");
+        tblFileNameAttachment.setStyle("-fx-alignment: CENTER;-fx-padding: 0 5 0 5;");
+
+        tblRowNoAttachment.setCellValueFactory(new PropertyValueFactory<ModelDeliveryAcceptance_Attachment, String>("index01"));
+        tblFileNameAttachment.setCellValueFactory(new PropertyValueFactory<ModelDeliveryAcceptance_Attachment, String>("index02"));
+
+        tblAttachments.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblAttachments.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+        tblAttachments.setItems(img_data);
+
+        if (pnAttachment < 0 || pnAttachment >= img_data.size()) {
+            if (!img_data.isEmpty()) {
+                /* FOCUS ON FIRST ROW */
+                tblAttachments.getSelectionModel().select(0);
+                tblAttachments.getFocusModel().focus(0);
+                pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
+            }
+        } else {
+            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+            tblAttachments.getSelectionModel().select(pnAttachment);
+            tblAttachments.getFocusModel().focus(pnAttachment);
+        }
+
+    }
+
+    public void slideImage(int direction) {
+        currentIndex = pnAttachment;
+        int newIndex = currentIndex + direction;
+
+        if (newIndex != -1 && (newIndex <= img_data.size() - 1)) {
+            ModelDeliveryAcceptance_Attachment image = img_data.get(newIndex);
+            Path filePath = Paths.get(image.getIndex02());
+            String convertedPath = filePath.toUri().toString();
+
+            Image newImage = new Image(convertedPath);
+            // Create a transition animation
+            TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
+            slideOut.setByX(direction * -400); // Move left or right
+
+            slideOut.setOnFinished(event -> {
+                imageView.setImage(newImage);
+                imageView.setTranslateX(direction * 400);
+                adjustImageSize(newImage);
+
+                TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), imageView);
+                slideIn.setToX(0);
+                slideIn.play();
+            });
+
+            slideOut.play();
+
+            tblAttachments.getFocusModel().focus(newIndex);
+            tblAttachments.getSelectionModel().select(newIndex);
+            pnAttachment = newIndex;
+
+            if (isImageViewOutOfBounds(imageView, stackPane1)) {
+                resetImageBounds();
+            }
+        }
+    }
+
+    public void initDetailsGrid() {
+
+        tblRowNoDetail.setStyle("-fx-alignment: CENTER;");
+        tblOrderNoDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblBarcodeDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblDescriptionDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
+        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblTotalDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
+
+        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+        tblReceiveQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+        tblTotalDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+
+        tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewOrderDetails.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+        filteredDataDetail = new FilteredList<>(details_data, b -> true);
+        autoSearch(tfOrderNo);
+
+        SortedList<ModelDeliveryAcceptance_Detail> sortedData = new SortedList<>(filteredDataDetail);
+        sortedData.comparatorProperty().bind(tblViewOrderDetails.comparatorProperty());
+        tblViewOrderDetails.setItems(sortedData);
+        tblViewOrderDetails.autosize();
+    }
+
+    public void initMainGrid() {
+        tblRowNo.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblSupplier.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblDate.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblReferenceNo.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+
+        tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
+
+        tblViewPuchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewPuchaseOrder.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+        filteredData = new FilteredList<>(main_data, b -> true);
+        SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
+        tblViewPuchaseOrder.setItems(sortedData);
+
+    }
+
+    private boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
+        Bounds clipBounds = stackPane.getClip().getBoundsInParent();
+        Bounds imageBounds = imageView.getBoundsInParent();
+
+        return imageBounds.getMaxX() < clipBounds.getMinX()
+                || imageBounds.getMinX() > clipBounds.getMaxX()
+                || imageBounds.getMaxY() < clipBounds.getMinY()
+                || imageBounds.getMinY() > clipBounds.getMaxY();
+    }
+
+    public void resetImageBounds() {
+        imageView.setScaleX(1.0);
+        imageView.setScaleY(1.0);
+        imageView.setTranslateX(0);
+        imageView.setTranslateY(0);
+        stackPane1.setAlignment(imageView, javafx.geometry.Pos.CENTER);
+    }
+
+    private TableView getFocusedTable() {
+        if (tblViewPuchaseOrder.isFocused()) {
+            return tblViewPuchaseOrder;
+        } else if (tblViewOrderDetails.isFocused()) {
+            return tblViewOrderDetails;
+        }
+        return null; // No table has focus
+    }
+
+    private int moveToNextRow(TableView table, TablePosition focusedCell) {
+        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
+        table.getSelectionModel().select(nextRow);
+        return nextRow;
+    }
+
+    private int moveToPreviousRow(TableView table, TablePosition focusedCell) {
+        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
+        table.getSelectionModel().select(previousRow);
+        return previousRow;
+    }
+
+    private void tableKeyEvents(KeyEvent event) {
+        TableView<?> currentTable = (TableView<?>) event.getSource();
+        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+        if (focusedCell != null) {
+            switch (event.getCode()) {
+                case TAB:
+                case DOWN:
+                    pnDetail = moveToNextRow(currentTable, focusedCell);
+                    break;
+                case UP:
+                    pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                    break;
+
+                default:
+                    break;
+            }
+            loadRecordDetail();
+            event.consume();
+        }
+    }
+    
+    private void stackPaneClip() {
+        javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(
+                stackPane1.getWidth() - 8, // Subtract 10 for padding (5 on each side)
+                stackPane1.getHeight() - 8 // Subtract 10 for padding (5 on each side)
+        );
+        clip.setArcWidth(8); // Optional: Rounded corners for aesthetics
+        clip.setArcHeight(8);
+        clip.setLayoutX(4); // Set padding offset for X
+        clip.setLayoutY(4); // Set padding offset for Y
+        stackPane1.setClip(clip);
+
+    }
+    
     public void clearTextFields() {
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
@@ -1895,7 +1842,12 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
 //        loadTableDetail();
 //        loadTableMain();
     }
+    
+    public void generateAttachment() {
+        img_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
 
+    }
+    
     public <T> void highlight(TableView<T> table, int rowIndex, String color, Map<Integer, String> highlightMap) {
         highlightMap.put(rowIndex, color);
         table.refresh(); // Refresh to apply changes
@@ -1962,11 +1914,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
             });
         };
         txtField.textProperty().addListener(mainSearchListener);
-    }
-
-    public void generateAttachment() {
-        img_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
-
     }
 
 }

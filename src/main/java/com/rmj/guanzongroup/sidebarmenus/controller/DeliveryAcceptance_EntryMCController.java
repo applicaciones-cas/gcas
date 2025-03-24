@@ -173,7 +173,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -398,11 +398,11 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                 }
             }
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -713,9 +713,9 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -941,9 +941,9 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1037,9 +1037,9 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1219,11 +1219,11 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             }
 
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1295,11 +1295,11 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

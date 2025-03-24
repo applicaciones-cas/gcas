@@ -4,7 +4,6 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ApprovalCARController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -101,7 +100,7 @@ public class DeliveryAcceptance_ApprovalCARController implements Initializable, 
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Confirmation Car";
+    private final String pxeModuleName = "Purchasing Order Receiving Approve Car";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
@@ -329,8 +328,8 @@ public class DeliveryAcceptance_ApprovalCARController implements Initializable, 
                         break;
                     case "btnApprove":
                         poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to confirm transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.ConfirmTransaction("");
+                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to approve transaction?") == true) {
+                            poJSON = poPurchaseReceivingController.ApproveTransaction("");
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;

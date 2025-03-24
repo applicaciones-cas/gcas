@@ -4,7 +4,6 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ConfirmationController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -624,13 +623,13 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
             }
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
