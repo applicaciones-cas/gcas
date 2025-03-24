@@ -326,9 +326,9 @@ public class PurchaseOrder_HistoryCarController implements Initializable, Screen
                     break;
                 case "btnPrint":
                     if (btnPrint.getText().equals("Reprint")) {
-                        poPurchasingController.PurchaseOrder().printTransaction();
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                        if ("error".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                             return;
                         }
                     } else {
@@ -340,7 +340,11 @@ public class PurchaseOrder_HistoryCarController implements Initializable, Screen
                             }
                             ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         } else {
-                            poPurchasingController.PurchaseOrder().printTransaction();
+                            loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                            if ("error".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                return;
+                            }
                         }
                     }
                     break;

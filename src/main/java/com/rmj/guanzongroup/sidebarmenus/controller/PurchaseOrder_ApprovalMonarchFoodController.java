@@ -295,11 +295,12 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                     }
                     ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        if ("success".equals(loJSON.get("result"))) {
-                            poPurchasingController.PurchaseOrder().Master().setPrint("1");
-                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                        loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
+                        if (!"success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                            return;
                         }
+                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     }
                     clearMasterFields();
                     clearDetailFields();
@@ -344,19 +345,6 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                         }
                     }
 
-                    if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.APPROVED)) {
-                            loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
-                        } else {
-                            loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        }
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            return;
-                        }
-                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                    }
-
                     loadMaster();
                     loadDetail();
                     loadTablePODetail();
@@ -375,9 +363,9 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                     break;
                 case "btnPrint":
                     if (btnPrint.getText().equals("Reprint")) {
-                        poPurchasingController.PurchaseOrder().printTransaction();
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                        if ("error".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                             return;
                         }
                     } else {
@@ -389,7 +377,11 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                             }
                             ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         } else {
-                            poPurchasingController.PurchaseOrder().printTransaction();
+                            loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                            if ("error".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                return;
+                            }
                         }
                     }
                     break;

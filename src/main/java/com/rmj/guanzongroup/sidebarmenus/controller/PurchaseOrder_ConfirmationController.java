@@ -266,7 +266,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
     }
 
     private void initButtonsClickActions() {
-        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel, btnVoid,btnReturn,
+        List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel, btnVoid, btnReturn,
                 btnPrint, btnRetrieve, btnTransHistory, btnClose, btnConfirm);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
@@ -286,18 +286,19 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     }
                     break;
                 case "btnConfirm":
-                    loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Approved");
+                    loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed");
                     if (!"success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
                     ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        if ("success".equals(loJSON.get("result"))) {
-                            poPurchasingController.PurchaseOrder().Master().setPrint("1");
-                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                        loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
+                        if (!"success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                            return;
                         }
+                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     }
                     clearMasterFields();
                     clearDetailFields();
@@ -336,23 +337,10 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     }
                     ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
-                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().PostTransaction("Approved")).get("result"))) {
+                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
                             ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         }
-                    }
-
-                    if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.APPROVED)) {
-                            loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
-                        } else {
-                            loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        }
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            return;
-                        }
-                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     }
 
                     loadMaster();
@@ -372,24 +360,10 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     }
                     break;
                 case "btnPrint":
-                    if (btnPrint.getText().equals("Reprint")) {
-                        poJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            return;
-                        }
-                    } else {
-                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.APPROVED)) {
-                            loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
-                        } else {
-                            loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        }
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            return;
-                        }
+                    loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                     }
-                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     break;
                 case "btnRetrieve":
                     loadTablePurchaseOrder();
@@ -423,7 +397,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;  
+                    pnEditMode = EditMode.UNKNOWN;
 
                     //this code below use to highlight tblpurchase
                     tblVwPurchaseOrder.refresh();
@@ -445,7 +419,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

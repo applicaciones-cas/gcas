@@ -644,9 +644,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     }
                     break;
                 case "btnPrint":
-                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                    loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                     }
                     break;
                 case "btnRetrieve":
