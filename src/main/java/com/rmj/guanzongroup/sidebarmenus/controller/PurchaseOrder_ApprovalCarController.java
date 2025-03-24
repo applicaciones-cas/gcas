@@ -334,7 +334,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
 
     private void initButtonsClickActions() {
         List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel, btnVoid,
-                btnPrint, btnRetrieve, btnTransHistory, btnClose, btnApprove);
+                btnPrint, btnRetrieve, btnTransHistory, btnClose, btnApprove, btnReturn);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }

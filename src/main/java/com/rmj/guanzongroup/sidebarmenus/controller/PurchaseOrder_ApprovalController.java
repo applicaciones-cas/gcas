@@ -269,7 +269,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
 
     private void initButtonsClickActions() {
         List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel, btnVoid,
-                btnPrint, btnRetrieve, btnTransHistory, btnClose, btnApprove);
+                btnPrint, btnRetrieve, btnTransHistory, btnClose, btnApprove, btnReturn);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }

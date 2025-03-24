@@ -418,7 +418,7 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(PurchaseOrder_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

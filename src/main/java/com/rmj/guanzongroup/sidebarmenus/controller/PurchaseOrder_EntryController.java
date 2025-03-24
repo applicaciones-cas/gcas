@@ -967,6 +967,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
                 case PurchaseOrderStatus.OPEN:
                 case PurchaseOrderStatus.CONFIRMED:
+                case PurchaseOrderStatus.RETURNED:
                     CustomCommonUtil.setVisible(true, btnPrint, btnUpdate);
                     CustomCommonUtil.setManaged(true, btnPrint, btnUpdate);
                     break;
