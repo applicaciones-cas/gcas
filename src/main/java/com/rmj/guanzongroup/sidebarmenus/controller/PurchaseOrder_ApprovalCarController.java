@@ -462,7 +462,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
-                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();
@@ -477,7 +477,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
-                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();

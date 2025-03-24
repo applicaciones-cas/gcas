@@ -377,7 +377,7 @@ public class PurchaseOrder_ConfirmationMonarchHospitalityController implements I
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
-                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();
@@ -392,7 +392,7 @@ public class PurchaseOrder_ConfirmationMonarchHospitalityController implements I
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
-                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();
