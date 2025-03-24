@@ -914,9 +914,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 header.setReordering(false);
             });
         });
-//        tblViewOrderDetails.setItems(details_data);
-//        tblViewOrderDetails.autosize();
-//        
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
         autoSearch(tfOrderNo);
 
@@ -949,7 +946,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
         tblViewPuchaseOrder.setItems(sortedData);
 
-        tblViewPuchaseOrder.autosize();
     }
 
     private boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
@@ -1284,7 +1280,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             break;
 
                         case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail);
 
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1559,7 +1555,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
     public void loadTableMain() {
         // Setting data to table detail
-        disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);
         progressIndicator.setStyle("-fx-progress-color: #FF8201;");

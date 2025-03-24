@@ -597,7 +597,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             break;
 
                         case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail);
 
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -765,16 +765,12 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             });
         });
 
-//        tblViewOrderDetails.setItems(details_data);
-//        tblViewOrderDetails.autosize();
-//        
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
         autoSearch(tfOrderNo);
 
         SortedList<ModelDeliveryAcceptance_Detail> sortedData = new SortedList<>(filteredDataDetail);
         sortedData.comparatorProperty().bind(tblViewOrderDetails.comparatorProperty());
         tblViewOrderDetails.setItems(sortedData);
-        tblViewOrderDetails.autosize();
     }
 
     public void initMainGrid() {
@@ -804,8 +800,6 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
         sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
         tblViewPuchaseOrder.setItems(sortedData);
 
-//        tblViewPuchaseOrder.setItems(main_data);
-        tblViewPuchaseOrder.autosize();
     }
 
     public void clearTextFields() {

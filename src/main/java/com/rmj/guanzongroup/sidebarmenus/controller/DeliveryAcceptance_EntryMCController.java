@@ -223,7 +223,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                 controller.setObject(poPurchaseReceivingController);
                 controller.setEntryNo(pnDetail + 1);
             } else {
-                ShowMessageFX.Warning(null, pxeModuleName, "An error occurred while loading "+pxeModuleName+". Please contact the system administrator for assistance.");
+                ShowMessageFX.Warning(null, pxeModuleName, "An error occurred while loading " + pxeModuleName + ". Please contact the system administrator for assistance.");
                 return;
             }
 
@@ -345,11 +345,10 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                             lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
-                            pnEditMode = EditMode.UNKNOWN;
                             poPurchaseReceivingController.Detail().clear();
-                            
+                            pnEditMode = EditMode.UNKNOWN;
                             clearTextFields();
-                            closeSerialDialog();
+                            loadTableDetail();
                             break;
                         } else {
                             return;
@@ -391,7 +390,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         break;
                 }
                 initButton(pnEditMode);
-                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve")) {
+                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve")|| lsButton.equals("btnCancel")) {
 
                 } else {
                     loadRecordMaster();
@@ -721,9 +720,6 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
     }
 
     public void initTextFields() {
-
-        tfTransactionNo.focusedProperty().addListener(txtMaster_Focus);
-        tfIndustry.focusedProperty().addListener(txtMaster_Focus);
         tfCompany.focusedProperty().addListener(txtMaster_Focus);
         tfSupplier.focusedProperty().addListener(txtMaster_Focus);
         tfTrucking.focusedProperty().addListener(txtMaster_Focus);
@@ -733,13 +729,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
 
-        tfOrderNo.focusedProperty().addListener(txtDetail_Focus);
         tfModelVariant.focusedProperty().addListener(txtDetail_Focus);
-        tfBrand.focusedProperty().addListener(txtDetail_Focus);
-        tfModel.focusedProperty().addListener(txtDetail_Focus);
-        tfColor.focusedProperty().addListener(txtDetail_Focus);
-        tfInventoryType.focusedProperty().addListener(txtDetail_Focus);
-        tfMeasure.focusedProperty().addListener(txtDetail_Focus);
         tfCost.focusedProperty().addListener(txtDetail_Focus);
         tfOrderQuantity.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
@@ -748,7 +738,6 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         tfSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfTrucking.setOnKeyPressed(this::txtField_KeyPressed);
         tfTerm.setOnKeyPressed(this::txtField_KeyPressed);
-        tfOrderNo.setOnKeyPressed(this::txtField_KeyPressed);
         tfBrand.setOnKeyPressed(this::txtField_KeyPressed);
         tfModel.setOnKeyPressed(this::txtField_KeyPressed);
     }
@@ -853,16 +842,12 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             });
         });
 
-//        tblViewOrderDetails.setItems(details_data);
-//        tblViewOrderDetails.autosize();
-//        
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
         autoSearch(tfOrderNo);
 
         SortedList<ModelDeliveryAcceptance_Detail> sortedData = new SortedList<>(filteredDataDetail);
         sortedData.comparatorProperty().bind(tblViewOrderDetails.comparatorProperty());
         tblViewOrderDetails.setItems(sortedData);
-        tblViewOrderDetails.autosize();
     }
 
     public void initMainGrid() {
@@ -875,7 +860,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index02"));
         tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
         tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        
+
         if (tblViewPuchaseOrder != null) {
             tblViewPuchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
                 TableHeaderRow header = (TableHeaderRow) tblViewPuchaseOrder.lookup("TableHeaderRow");
@@ -889,8 +874,6 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
             tblViewPuchaseOrder.setItems(sortedData);
 
-    //        tblViewPuchaseOrder.setItems(main_data);
-            tblViewPuchaseOrder.autosize();
         }
     }
 
@@ -928,6 +911,17 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
 
     public void loadRecordDetail() {
         try {
+            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            tfBrand.setDisable(!lbFields);
+            tfModel.setDisable(!lbFields);
+
+            if (lbFields) {
+                tfBrand.getStyleClass().remove("DisabledTextField");
+                tfModel.getStyleClass().remove("DisabledTextField");
+            } else {
+                tfBrand.getStyleClass().add("DisabledTextField");
+                tfModel.getStyleClass().add("DisabledTextField");
+            }
 
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
@@ -1265,7 +1259,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()) {
                     highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
                 }
-                
+
                 if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                         && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                         && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {

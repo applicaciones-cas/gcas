@@ -258,9 +258,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
+                            poPurchaseReceivingController.Detail().clear();
+                            pnEditMode = EditMode.UNKNOWN;
                             clearTextFields();
-                            //Call new transaction
-                            btnNew.fire();
+                            loadTableDetail();
                             break;
                         } else {
                             return;
@@ -303,7 +304,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         break;
                 }
                 initButton(pnEditMode);
-                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve")) {
+                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
 
                 } else {
                     loadRecordMaster();
@@ -638,9 +639,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     }
 
     public void initTextFields() {
-
-        tfTransactionNo.focusedProperty().addListener(txtMaster_Focus);
-        tfIndustry.focusedProperty().addListener(txtMaster_Focus);
         tfCompany.focusedProperty().addListener(txtMaster_Focus);
         tfSupplier.focusedProperty().addListener(txtMaster_Focus);
         tfTrucking.focusedProperty().addListener(txtMaster_Focus);
@@ -649,19 +647,11 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         tfTerm.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
-//        tfTotal.focusedProperty().addListener(txtMaster_Focus);
 
-//        tfOrderNo.focusedProperty().addListener(txtDetail_Focus);
         tfBarcode.focusedProperty().addListener(txtDetail_Focus);
         tfSupersede.focusedProperty().addListener(txtDetail_Focus);
         tfDescription.focusedProperty().addListener(txtDetail_Focus);
-        tfBrand.focusedProperty().addListener(txtDetail_Focus);
-        tfModel.focusedProperty().addListener(txtDetail_Focus);
-        tfColor.focusedProperty().addListener(txtDetail_Focus);
-        tfInventoryType.focusedProperty().addListener(txtDetail_Focus);
-        tfMeasure.focusedProperty().addListener(txtDetail_Focus);
         tfCost.focusedProperty().addListener(txtDetail_Focus);
-        tfOrderQuantity.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
         tfCompany.setOnKeyPressed(this::txtField_KeyPressed);
@@ -672,7 +662,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         tfBarcode.setOnKeyPressed(this::txtField_KeyPressed);
         tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
         tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
-
     }
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
@@ -777,16 +766,12 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             });
         });
 
-//        tblViewOrderDetails.setItems(details_data);
-//        tblViewOrderDetails.autosize();
-//        
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
         autoSearch(tfOrderNo);
 
         SortedList<ModelDeliveryAcceptance_Detail> sortedData = new SortedList<>(filteredDataDetail);
         sortedData.comparatorProperty().bind(tblViewOrderDetails.comparatorProperty());
         tblViewOrderDetails.setItems(sortedData);
-        tblViewOrderDetails.autosize();
     }
 
     public void initMainGrid() {
@@ -816,8 +801,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
         tblViewPuchaseOrder.setItems(sortedData);
 
-//        tblViewPuchaseOrder.setItems(main_data);
-        tblViewPuchaseOrder.autosize();
     }
 
     public void clearTextFields() {
@@ -857,6 +840,18 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     public void loadRecordDetail() {
         try {
+            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            tfBarcode.setDisable(!lbFields);
+            tfDescription.setDisable(!lbFields);
+
+            if (lbFields) {
+                tfBarcode.getStyleClass().remove("DisabledTextField");
+                tfDescription.getStyleClass().remove("DisabledTextField");
+            } else {
+                tfBarcode.getStyleClass().add("DisabledTextField");
+                tfDescription.getStyleClass().add("DisabledTextField");
+            }
+
             tfBarcode.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
             tfSupersede.setText(poPurchaseReceivingController.Detail(pnDetail).Supersede().getBarCode());
@@ -886,6 +881,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             btnPrint.setText("Print");
         }
         try {
+
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
                 case PurchaseOrderReceivingStatus.APPROVED:
@@ -1067,7 +1063,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     public void loadTableMain() {
         // Setting data to table detail
-
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);
         progressIndicator.setStyle("-fx-progress-color: #FF8201;");

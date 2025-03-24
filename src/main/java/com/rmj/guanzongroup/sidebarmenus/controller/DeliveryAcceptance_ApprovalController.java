@@ -832,8 +832,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                 header.setReordering(false);
             });
         });
-//        tblViewOrderDetails.setItems(details_data);
-//        tblViewOrderDetails.autosize();
 //        
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
         autoSearch(tfOrderNo);
@@ -841,7 +839,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         SortedList<ModelDeliveryAcceptance_Detail> sortedData = new SortedList<>(filteredDataDetail);
         sortedData.comparatorProperty().bind(tblViewOrderDetails.comparatorProperty());
         tblViewOrderDetails.setItems(sortedData);
-        tblViewOrderDetails.autosize();
     }
 
     public void initMainGrid() {
@@ -867,7 +864,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
         tblViewPuchaseOrder.setItems(sortedData);
 
-        tblViewPuchaseOrder.autosize();
     }
 
     private boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
@@ -1485,7 +1481,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
 
     public void loadTableMain() {
         // Setting data to table detail
-        disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);
