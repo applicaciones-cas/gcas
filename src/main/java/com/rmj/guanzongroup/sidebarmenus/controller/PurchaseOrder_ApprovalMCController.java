@@ -431,7 +431,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                     break;
                 case "btnPrint":
                     if (btnPrint.getText().equals("Reprint")) {
-                        poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                        poPurchasingController.PurchaseOrder().printTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             return;
@@ -439,15 +439,15 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                     } else {
                         if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.APPROVED)) {
                             loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
+                            if (!"success".equals((String) loJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                return;
+                            }
+                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         } else {
-                            loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        }
-                        if (!"success".equals((String) loJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            return;
+                            poPurchasingController.PurchaseOrder().printTransaction();
                         }
                     }
-                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     break;
                 case "btnRetrieve":
                     loadTablePurchaseOrder();
