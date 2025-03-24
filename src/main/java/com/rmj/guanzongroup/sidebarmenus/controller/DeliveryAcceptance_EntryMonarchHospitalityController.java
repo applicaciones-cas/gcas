@@ -638,9 +638,6 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     }
 
     public void initTextFields() {
-
-        tfTransactionNo.focusedProperty().addListener(txtMaster_Focus);
-        tfIndustry.focusedProperty().addListener(txtMaster_Focus);
         tfCompany.focusedProperty().addListener(txtMaster_Focus);
         tfSupplier.focusedProperty().addListener(txtMaster_Focus);
         tfTrucking.focusedProperty().addListener(txtMaster_Focus);
@@ -649,19 +646,11 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
         tfTerm.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
-//        tfTotal.focusedProperty().addListener(txtMaster_Focus);
 
-//        tfOrderNo.focusedProperty().addListener(txtDetail_Focus);
         tfBarcode.focusedProperty().addListener(txtDetail_Focus);
         tfSupersede.focusedProperty().addListener(txtDetail_Focus);
         tfDescription.focusedProperty().addListener(txtDetail_Focus);
-        tfBrand.focusedProperty().addListener(txtDetail_Focus);
-        tfModel.focusedProperty().addListener(txtDetail_Focus);
-        tfColor.focusedProperty().addListener(txtDetail_Focus);
-        tfInventoryType.focusedProperty().addListener(txtDetail_Focus);
-        tfMeasure.focusedProperty().addListener(txtDetail_Focus);
         tfCost.focusedProperty().addListener(txtDetail_Focus);
-        tfOrderQuantity.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
         tfCompany.setOnKeyPressed(this::txtField_KeyPressed);
@@ -672,7 +661,6 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
         tfBarcode.setOnKeyPressed(this::txtField_KeyPressed);
         tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
         tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
-
     }
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
@@ -857,6 +845,18 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
     public void loadRecordDetail() {
         try {
+            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            tfBarcode.setDisable(!lbFields);
+            tfDescription.setDisable(!lbFields);
+
+            if (lbFields) {
+                tfBarcode.getStyleClass().remove("DisabledTextField");
+                tfDescription.getStyleClass().remove("DisabledTextField");
+            } else {
+                tfBarcode.getStyleClass().add("DisabledTextField");
+                tfDescription.getStyleClass().add("DisabledTextField");
+            }
+
             tfBarcode.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
             tfSupersede.setText(poPurchaseReceivingController.Detail(pnDetail).Supersede().getBarCode());

@@ -346,19 +346,13 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                             //get last retrieved Company and Supplier
-
-                            poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                            if (!"success".equals((String) poJSON.get("result"))) {
-                                System.err.println((String) poJSON.get("message"));
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            }
-
                             lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
+                            poPurchaseReceivingController.Detail().clear();
                             pnEditMode = EditMode.UNKNOWN;
                             clearTextFields();
-
+                            loadTableDetail();
                             break;
                         } else {
                             return;
@@ -536,7 +530,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                         break;
                 }
                 initButton(pnEditMode);
-                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment")
+                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment") || lsButton.equals("btnCancel")
                         || lsButton.equals("btnRemoveAttachment") || lsButton.equals("btnArrowRight")
                         || lsButton.equals("btnArrowLeft") || lsButton.equals("btnVoid") || lsButton.equals("btnRetrieve")) {
 
@@ -933,55 +927,64 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         if (lsValue == null) {
             return;
         }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfDescription":
-                    break;
-                case "tfBarcode":
-                    //if value is blank then reset
-                    if (lsValue.equals("")) {
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
-                    }
+        try {
 
-                    break;
-                case "tfSupersede":
-                    //if value is blank then reset
-                    if (lsValue.equals("")) {
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setReplaceId("");
-                    }
+            if (!nv) {
+                /*Lost Focus*/
+                switch (lsTxtFieldID) {
+                    case "tfDescription":
+                        if (lsValue.equals("")) {
+                            poPurchaseReceivingController.Detail(pnDetail).Inventory().setDescription("");
+                        }
+                        break;
+                    case "tfBarcode":
+                        //if value is blank then reset
+                        if (lsValue.equals("")) {
+                            poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
+                        }
+                        break;
+                    case "tfSupersede":
+                        //if value is blank then reset
+                        if (lsValue.equals("")) {
+                            poJSON = poPurchaseReceivingController.Detail(pnDetail).setReplaceId("");
+                        }
+                        break;
+                    case "tfCost":
+                        if (lsValue.isEmpty()) {
+                            lsValue = "0.00";
+                        }
+                        if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
+                            return;
+                        }
+                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        }
 
-                    break;
-                case "tfCost":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
-                        return;
-                    }
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-
-                    break;
-                case "tfReceiveQuantity":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
+                        break;
+                    case "tfReceiveQuantity":
+                        if (lsValue.isEmpty()) {
+                            lsValue = "0";
+                        }
+                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        }
+                        break;
+                }
+                loadTableDetail();
             }
-            loadTableDetail();
+        } catch (GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     };
 
     final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
@@ -1011,8 +1014,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                     if (lsValue.isEmpty()) {
                         poJSON = poPurchaseReceivingController.Master().setTruckingId("");
                     }
-                    break;
-                case "tfAreaRemarks":
                     break;
                 case "tfTerm":
                     if (lsValue.isEmpty()) {
@@ -1209,8 +1210,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                             break;
 
                         case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail);
-
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfDescription.setText("");
@@ -1336,8 +1336,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentType.focusedProperty().addListener(txtField_Focus);
 
-        tfTransactionNo.focusedProperty().addListener(txtMaster_Focus);
-        tfIndustry.focusedProperty().addListener(txtMaster_Focus);
         tfCompany.focusedProperty().addListener(txtMaster_Focus);
         tfSupplier.focusedProperty().addListener(txtMaster_Focus);
         tfTrucking.focusedProperty().addListener(txtMaster_Focus);
@@ -1346,19 +1344,11 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         tfTerm.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
-//        tfTotal.focusedProperty().addListener(txtMaster_Focus);
 
-//        tfOrderNo.focusedProperty().addListener(txtDetail_Focus);
         tfBarcode.focusedProperty().addListener(txtDetail_Focus);
         tfSupersede.focusedProperty().addListener(txtDetail_Focus);
         tfDescription.focusedProperty().addListener(txtDetail_Focus);
-        tfBrand.focusedProperty().addListener(txtDetail_Focus);
-        tfModel.focusedProperty().addListener(txtDetail_Focus);
-        tfColor.focusedProperty().addListener(txtDetail_Focus);
-        tfInventoryType.focusedProperty().addListener(txtDetail_Focus);
-        tfMeasure.focusedProperty().addListener(txtDetail_Focus);
         tfCost.focusedProperty().addListener(txtDetail_Focus);
-        tfOrderQuantity.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
         tfSearchCompany.setOnKeyPressed(this::txtField_KeyPressed);
@@ -1373,7 +1363,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         tfBarcode.setOnKeyPressed(this::txtField_KeyPressed);
         tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
         tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
-
     }
 
     private TableView getFocusedTable() {
@@ -1659,6 +1648,18 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
 
     public void loadRecordDetail() {
         try {
+            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            tfBarcode.setDisable(!lbFields);
+            tfDescription.setDisable(!lbFields);
+
+            if (lbFields) {
+                tfBarcode.getStyleClass().remove("DisabledTextField");
+                tfDescription.getStyleClass().remove("DisabledTextField");
+            } else {
+                tfBarcode.getStyleClass().add("DisabledTextField");
+                tfDescription.getStyleClass().add("DisabledTextField");
+            }
+
             tfBarcode.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
             tfSupersede.setText(poPurchaseReceivingController.Detail(pnDetail).Supersede().getBarCode());
@@ -1865,17 +1866,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
                                 highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
-                            }
-                            boolean lbFields = (poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") || poPurchaseReceivingController.Detail(lnCtr).getOrderNo() == null);
-                            tfBarcode.setDisable(lbFields);
-                            tfDescription.setDisable(lbFields);
-
-                            if (lbFields) {
-                                tfBarcode.getStyleClass().remove("DisabledTextField");
-                                tfDescription.getStyleClass().remove("DisabledTextField");
-                            } else {
-                                tfBarcode.getStyleClass().add("DisabledTextField");
-                                tfDescription.getStyleClass().add("DisabledTextField");
                             }
 
                             details_data.add(

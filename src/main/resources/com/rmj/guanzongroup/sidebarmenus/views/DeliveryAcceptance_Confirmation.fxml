@@ -309,7 +309,7 @@
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
                                                                           <TextField fx:id="tfTrucking" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-                                                      <TextArea fx:id="taRemarks" disable="true" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="10" GridPane.rowIndex="7">
+                                                      <TextArea fx:id="taRemarks" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="10" GridPane.rowIndex="7">
                                                          <GridPane.margin>
                                                             <Insets top="1.0" />
                                                          </GridPane.margin>
@@ -411,7 +411,7 @@
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
                                                                           <TextField fx:id="tfColor" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                                                                          <TextField fx:id="tfMeasure" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                                          <TextField fx:id="tfMeasure" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                                           <Label text="Received Qty" GridPane.columnIndex="9" GridPane.rowIndex="6">
                                                                               <font>
                                                                                   <Font name="System Bold" size="15.0" />
