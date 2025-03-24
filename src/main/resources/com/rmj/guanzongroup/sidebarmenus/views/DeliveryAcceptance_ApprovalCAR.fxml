@@ -146,7 +146,7 @@
                                     <Font size="12.0" />
                                  </font>
                               </Button>
-                                        <Button fx:id="btnConfirm" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Confirm">
+                                        <Button fx:id="btnApprove" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Approve">
                                             <effect>
                                                 <Blend />
                                             </effect>
@@ -467,7 +467,7 @@
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                                 <TableColumn fx:id="tblOrderNoDetail" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Order No." />
-                                                                <TableColumn fx:id="tblBarcodeDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Brand" />
+                                                                <TableColumn fx:id="tblBrandDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Brand" />
                                                                 <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="280.0" minWidth="280.0" prefWidth="280.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
                                                                 <TableColumn fx:id="tblCostDetail" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
                                                                 <TableColumn fx:id="tblOrderQuantityDetail" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Order" />

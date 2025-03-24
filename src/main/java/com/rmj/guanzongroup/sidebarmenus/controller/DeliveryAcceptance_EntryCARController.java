@@ -185,81 +185,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-
-    public void closeSerialDialog() {
-        if (dialogStage != null && dialogStage.isShowing()) {
-            dialogStage.close();
-            dialogStage = null;
-        } else {
-        }
-    }
-
-    public void showSerialDialog() {
-        poJSON = new JSONObject();
-        try {
-            if (poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue() == 0) {
-                ShowMessageFX.Warning(null, pxeModuleName, "Received quantity cannot be empty.");
-                return;
-            }
-
-            //Populate Purchase Order Receiving Detail
-            poJSON = poPurchaseReceivingController.getPurchaseOrderReceivingSerial(pnDetail + 1);
-            if ("error".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                return;
-            }
-
-//             Check if the dialog is already open
-            if (dialogStage != null) {
-                if (dialogStage.isShowing()) {
-                    dialogStage.toFront();
-                    return;
-                }
-            }
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCAR.fxml"));
-            DeliveryAcceptance_SerialCARController controller = new DeliveryAcceptance_SerialCARController();
-            loader.setController(controller);
-
-            if (controller != null) {
-                controller.setGRider(oApp);
-                controller.setObject(poPurchaseReceivingController);
-                controller.setEntryNo(pnDetail + 1);
-            }
-
-            Parent root = loader.load();
-
-            // Handle drag events for the undecorated window
-            root.setOnMousePressed(event -> {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            });
-
-            root.setOnMouseDragged(event -> {
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setX(event.getScreenX() - xOffset);
-                stage.setY(event.getScreenY() - yOffset);
-            });
-
-            dialogStage = new Stage();
-            dialogStage.initStyle(StageStyle.UNDECORATED);
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.setTitle("Inventory Serial");
-            dialogStage.setScene(new Scene(root));
-
-            // Clear the reference when closed
-            dialogStage.setOnHidden(event -> dialogStage = null);
-            dialogStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
+    
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
@@ -287,7 +213,6 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
-
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -405,6 +330,82 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public void closeSerialDialog() {
+        if (dialogStage != null && dialogStage.isShowing()) {
+            dialogStage.close();
+            dialogStage = null;
+        } else {
+        }
+    }
+
+    public void showSerialDialog() {
+        poJSON = new JSONObject();
+        try {
+            if (poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue() == 0) {
+                ShowMessageFX.Warning(null, pxeModuleName, "Received quantity cannot be empty.");
+                return;
+            }
+
+            //Populate Purchase Order Receiving Detail
+            poJSON = poPurchaseReceivingController.getPurchaseOrderReceivingSerial(pnDetail + 1);
+            if ("error".equals((String) poJSON.get("result"))) {
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                return;
+            }
+
+//             Check if the dialog is already open
+            if (dialogStage != null) {
+                if (dialogStage.isShowing()) {
+                    dialogStage.toFront();
+                    return;
+                }
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCAR.fxml"));
+            DeliveryAcceptance_SerialCARController controller = new DeliveryAcceptance_SerialCARController();
+            loader.setController(controller);
+
+            if (controller != null) {
+                controller.setGRider(oApp);
+                controller.setObject(poPurchaseReceivingController);
+                controller.setEntryNo(pnDetail + 1);
+            }
+
+            Parent root = loader.load();
+
+            // Handle drag events for the undecorated window
+            root.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            root.setOnMouseDragged(event -> {
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            dialogStage = new Stage();
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.setTitle("Inventory Serial");
+            dialogStage.setScene(new Scene(root));
+
+            // Clear the reference when closed
+            dialogStage.setOnHidden(event -> dialogStage = null);
+            dialogStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    
 
     public void retrievePO() {
         poJSON = new JSONObject();
@@ -584,7 +585,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                         lsValue = "0.00";
                     }
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Discount Rate");
                         return;
                     }
                     poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue)));
@@ -603,7 +604,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                         lsValue = "0.00";
                     }
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Discount Amount");
                         return;
                     }
                     poJSON = poPurchaseReceivingController.Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
@@ -674,7 +675,6 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                                 tfTerm.setText("");
                                 break;
                             }
-                            loadRecordMaster();
                             break;
                         case "tfOrderNo":
 
@@ -718,31 +718,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    public void initTextFields() {
-
-        tfCompany.focusedProperty().addListener(txtMaster_Focus);
-        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
-        tfTrucking.focusedProperty().addListener(txtMaster_Focus);
-        taRemarks.focusedProperty().addListener(txtArea_Focus);
-        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
-        tfTerm.focusedProperty().addListener(txtMaster_Focus);
-        tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
-        tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
-
-        tfModelVariant.focusedProperty().addListener(txtDetail_Focus);
-        tfCost.focusedProperty().addListener(txtDetail_Focus);
-        tfOrderQuantity.focusedProperty().addListener(txtDetail_Focus);
-        tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
-
-        tfCompany.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSupplier.setOnKeyPressed(this::txtField_KeyPressed);
-        tfTrucking.setOnKeyPressed(this::txtField_KeyPressed);
-        tfTerm.setOnKeyPressed(this::txtField_KeyPressed);
-        tfBrand.setOnKeyPressed(this::txtField_KeyPressed);
-        tfModel.setOnKeyPressed(this::txtField_KeyPressed);
-    }
-
+    
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
         try {
@@ -792,127 +768,8 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             e.printStackTrace();
         }
     };
-
-    private void setDatePickerFormat(DatePicker datePicker) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        datePicker.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                return (date != null) ? date.format(formatter) : "";
-            }
-
-            @Override
-            public LocalDate fromString(String string) {
-                return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
-            }
-        });
-    }
-
-    public void initDatePickers() {
-        setDatePickerFormat(dpTransactionDate);
-        setDatePickerFormat(dpReferenceDate);
-
-        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
-        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
-    }
-
-    public void initDetailsGrid() {
-
-        tblRowNoDetail.setStyle("-fx-alignment: CENTER;");
-        tblOrderNoDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblBarcodeDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblDescriptionDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
-        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblTotalDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
-
-        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-        tblReceiveQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-        tblTotalDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-
-        tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewOrderDetails.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
-//        
-        filteredDataDetail = new FilteredList<>(details_data, b -> true);
-        autoSearch(tfOrderNo);
-
-        SortedList<ModelDeliveryAcceptance_Detail> sortedData = new SortedList<>(filteredDataDetail);
-        sortedData.comparatorProperty().bind(tblViewOrderDetails.comparatorProperty());
-        tblViewOrderDetails.setItems(sortedData);
-    }
-
-    public void initMainGrid() {
-        tblRowNo.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblSupplier.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblDate.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblReferenceNo.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-
-        tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
-
-        if (tblViewPuchaseOrder != null) {
-            tblViewPuchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-                TableHeaderRow header = (TableHeaderRow) tblViewPuchaseOrder.lookup("TableHeaderRow");
-                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    header.setReordering(false);
-                });
-            });
-
-            filteredData = new FilteredList<>(main_data, b -> true);
-            SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-            sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-            tblViewPuchaseOrder.setItems(sortedData);
-
-            tblViewPuchaseOrder.setItems(main_data);
-        }
-    }
-
-    public void clearTextFields() {
-
-        dpTransactionDate.setValue(null);
-        dpReferenceDate.setValue(null);
-
-        tfTransactionNo.clear();
-        tfIndustry.clear();
-        tfCompany.clear();
-        tfSupplier.clear();
-        tfTrucking.clear();
-        taRemarks.clear();
-        tfReferenceNo.clear();
-        tfTerm.clear();
-        tfDiscountRate.clear();
-        tfDiscountAmount.clear();
-        tfTotal.clear();
-        tfOrderNo.clear();
-        tfModelVariant.clear();
-        tfBrand.clear();
-        tfModel.clear();
-        tfColor.clear();
-        tfInventoryType.clear();
-        tfMeasure.clear();
-        tfCost.clear();
-        tfOrderQuantity.clear();
-        tfReceiveQuantity.clear();
-
-        cbPreOwned.setSelected(false);
-
-        loadRecordMaster();
-        loadTableDetail();
-        loadTableMain();
-    }
+    
+    
 
     public void loadRecordDetail() {
         try {
@@ -1048,99 +905,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
         }
 
     }
-
-    private TableView<?> getFocusedTable() {
-        if (tblViewPuchaseOrder.isFocused()) {
-            return tblViewPuchaseOrder;
-        } else if (tblViewOrderDetails.isFocused()) {
-            return tblViewOrderDetails;
-        }
-        return null; // No table has focus
-    }
-
-    private int moveToNextRow(TableView table, TablePosition focusedCell) {
-        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
-        table.getSelectionModel().select(nextRow);
-        return nextRow;
-    }
-
-    private int moveToPreviousRow(TableView table, TablePosition focusedCell) {
-        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
-        table.getSelectionModel().select(previousRow);
-        return previousRow;
-    }
-
-    private void tableKeyEvents(KeyEvent event) {
-        TableView<?> currentTable = (TableView<?>) event.getSource();
-        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-        if (focusedCell != null) {
-            switch (event.getCode()) {
-                case TAB:
-                case DOWN:
-                    pnDetail = moveToNextRow(currentTable, focusedCell);
-                    break;
-                case UP:
-                    pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                    break;
-
-                default:
-                    break;
-            }
-            loadRecordDetail();
-            event.consume();
-        }
-    }
-
-    public void initTableOnClick() {
-
-        tblViewOrderDetails.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
-                loadRecordDetail();
-            }
-        });
-
-        tblViewPuchaseOrder.setOnMouseClicked(event -> {
-            pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
-            if (pnMain >= 0) {
-                if (event.getClickCount() == 2) {
-                    tfOrderNo.setText("");
-                    loadTableDetailFromMain();
-                    pnEditMode = poPurchaseReceivingController.getEditMode();
-                    initButton(pnEditMode);
-                }
-            }
-        });
-
-        tblViewPuchaseOrder.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Main>() {
-            @Override
-            protected void updateItem(ModelDeliveryAcceptance_Main item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsMain.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRowsMain.get(getIndex()) + ";");
-                } else {
-                    setStyle(""); // Default style
-                }
-            }
-        });
-        tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Detail>() {
-            @Override
-            protected void updateItem(ModelDeliveryAcceptance_Detail item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsDetail.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRowsDetail.get(getIndex()) + ";");
-                } else {
-                    setStyle(""); // Default style
-                }
-            }
-        });
-        tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-    }
-
+    
     public void loadTableMain() {
         // Setting data to table detail
         main_data.clear();
@@ -1308,29 +1073,218 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void clearTextFields() {
 
+        dpTransactionDate.setValue(null);
+        dpReferenceDate.setValue(null);
+
+        tfTransactionNo.clear();
+        tfIndustry.clear();
+        tfCompany.clear();
+        tfSupplier.clear();
+        tfTrucking.clear();
+        taRemarks.clear();
+        tfReferenceNo.clear();
+        tfTerm.clear();
+        tfDiscountRate.clear();
+        tfDiscountAmount.clear();
+        tfTotal.clear();
+        tfOrderNo.clear();
+        tfModelVariant.clear();
+        tfBrand.clear();
+        tfModel.clear();
+        tfColor.clear();
+        tfInventoryType.clear();
+        tfMeasure.clear();
+        tfCost.clear();
+        tfOrderQuantity.clear();
+        tfReceiveQuantity.clear();
+
+        cbPreOwned.setSelected(false);
+
+        loadRecordMaster();
+        loadTableDetail();
+        loadTableMain();
+    }
+
+    public void initTextFields() {
+
+        tfCompany.focusedProperty().addListener(txtMaster_Focus);
+        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
+        tfTrucking.focusedProperty().addListener(txtMaster_Focus);
+        taRemarks.focusedProperty().addListener(txtArea_Focus);
+        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
+        tfTerm.focusedProperty().addListener(txtMaster_Focus);
+        tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
+        tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
+
+        tfModelVariant.focusedProperty().addListener(txtDetail_Focus);
+        tfCost.focusedProperty().addListener(txtDetail_Focus);
+        tfOrderQuantity.focusedProperty().addListener(txtDetail_Focus);
+        tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
+
+        tfCompany.setOnKeyPressed(this::txtField_KeyPressed);
+        tfSupplier.setOnKeyPressed(this::txtField_KeyPressed);
+        tfTrucking.setOnKeyPressed(this::txtField_KeyPressed);
+        tfTerm.setOnKeyPressed(this::txtField_KeyPressed);
+        tfBrand.setOnKeyPressed(this::txtField_KeyPressed);
+        tfModel.setOnKeyPressed(this::txtField_KeyPressed);
+    }
+
+    private void setDatePickerFormat(DatePicker datePicker) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        datePicker.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                return (date != null) ? date.format(formatter) : "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
+            }
+        });
+    }
+
+    public void initDatePickers() {
+        setDatePickerFormat(dpTransactionDate);
+        setDatePickerFormat(dpReferenceDate);
+
+        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
+        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
+    }
+
+    public void initDetailsGrid() {
+
+        tblRowNoDetail.setStyle("-fx-alignment: CENTER;");
+        tblOrderNoDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblBarcodeDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblDescriptionDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
+        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblTotalDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
+
+        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+        tblReceiveQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+        tblTotalDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+
+        tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewOrderDetails.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+//        
+        filteredDataDetail = new FilteredList<>(details_data, b -> true);
+        autoSearch(tfOrderNo);
+
+        SortedList<ModelDeliveryAcceptance_Detail> sortedData = new SortedList<>(filteredDataDetail);
+        sortedData.comparatorProperty().bind(tblViewOrderDetails.comparatorProperty());
+        tblViewOrderDetails.setItems(sortedData);
+    }
+
+    public void initMainGrid() {
+        tblRowNo.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblSupplier.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblDate.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblReferenceNo.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+
+        tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
+
+        if (tblViewPuchaseOrder != null) {
+            tblViewPuchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+                TableHeaderRow header = (TableHeaderRow) tblViewPuchaseOrder.lookup("TableHeaderRow");
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
+            });
+
+            filteredData = new FilteredList<>(main_data, b -> true);
+            SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
+            tblViewPuchaseOrder.setItems(sortedData);
+
+            tblViewPuchaseOrder.setItems(main_data);
+        }
+    }
+
+    public void initTableOnClick() {
+
+        tblViewOrderDetails.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
+                pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
+                loadRecordDetail();
+            }
+        });
+
+        tblViewPuchaseOrder.setOnMouseClicked(event -> {
+            pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
+            if (pnMain >= 0) {
+                if (event.getClickCount() == 2) {
+                    tfOrderNo.setText("");
+                    loadTableDetailFromMain();
+                    pnEditMode = poPurchaseReceivingController.getEditMode();
+                    initButton(pnEditMode);
+                }
+            }
+        });
+
+        tblViewPuchaseOrder.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Main>() {
+            @Override
+            protected void updateItem(ModelDeliveryAcceptance_Main item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setStyle(""); // Reset for empty rows
+                } else if (highlightedRowsMain.containsKey(getIndex())) {
+                    setStyle("-fx-background-color: " + highlightedRowsMain.get(getIndex()) + ";");
+                } else {
+                    setStyle(""); // Default style
+                }
+            }
+        });
+        tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Detail>() {
+            @Override
+            protected void updateItem(ModelDeliveryAcceptance_Detail item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setStyle(""); // Reset for empty rows
+                } else if (highlightedRowsDetail.containsKey(getIndex())) {
+                    setStyle("-fx-background-color: " + highlightedRowsDetail.get(getIndex()) + ";");
+                } else {
+                    setStyle(""); // Default style
+                }
+            }
+        });
+        tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+    }
+    
     private void initButton(int fnValue) {
-        // Manage visibility and managed state of other buttons
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-//        btnRetrieve.setVisible(!lbShow);// Requires no change to state
-//        btnRetrieve.setManaged(!lbShow);
-        btnBrowse.setVisible(!lbShow);
-        btnBrowse.setManaged(!lbShow);
-
+        boolean lbShow2 = fnValue == EditMode.READY;
+        boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
+        
+        // Manage visibility and managed state of other buttons
         btnNew.setVisible(!lbShow);
         btnNew.setManaged(!lbShow);
-        btnSerials.setVisible(lbShow);
-        btnSerials.setManaged(lbShow);
         btnSearch.setVisible(lbShow);
         btnSearch.setManaged(lbShow);
+        btnSerials.setVisible(lbShow);
+        btnSerials.setManaged(lbShow);
         btnSave.setVisible(lbShow);
         btnSave.setManaged(lbShow);
         btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
-
-        boolean lbShow2 = fnValue == EditMode.READY;
-        btnClose.setVisible(lbShow2);
-        btnClose.setManaged(lbShow2);
 
         btnUpdate.setVisible(lbShow2);
         btnUpdate.setManaged(lbShow2);
@@ -1339,14 +1293,21 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
         btnHistory.setVisible(lbShow2);
         btnHistory.setManaged(lbShow2);
 
-        //Only Show close button during ready / unknown editmode
-        boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
+        btnBrowse.setVisible(lbShow3);
+        btnBrowse.setManaged(lbShow3);
         btnClose.setVisible(lbShow3);
         btnClose.setManaged(lbShow3);
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
-
+        
+        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
+            case PurchaseOrderReceivingStatus.APPROVED: 
+            case PurchaseOrderReceivingStatus.VOID:
+                btnUpdate.setVisible(false);
+                btnUpdate.setManaged(false);
+                break;
+        }
     }
 
     private void loadTab() {
@@ -1356,6 +1317,48 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
         changeTableView(0, ROWS_PER_PAGE);
         pgPagination.currentPageIndexProperty().addListener(
                 (observable, oldValue, newValue) -> changeTableView(newValue.intValue(), ROWS_PER_PAGE));
+    }
+    
+    private TableView<?> getFocusedTable() {
+        if (tblViewPuchaseOrder.isFocused()) {
+            return tblViewPuchaseOrder;
+        } else if (tblViewOrderDetails.isFocused()) {
+            return tblViewOrderDetails;
+        }
+        return null; // No table has focus
+    }
+
+    private int moveToNextRow(TableView table, TablePosition focusedCell) {
+        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
+        table.getSelectionModel().select(nextRow);
+        return nextRow;
+    }
+
+    private int moveToPreviousRow(TableView table, TablePosition focusedCell) {
+        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
+        table.getSelectionModel().select(previousRow);
+        return previousRow;
+    }
+
+    private void tableKeyEvents(KeyEvent event) {
+        TableView<?> currentTable = (TableView<?>) event.getSource();
+        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+        if (focusedCell != null) {
+            switch (event.getCode()) {
+                case TAB:
+                case DOWN:
+                    pnDetail = moveToNextRow(currentTable, focusedCell);
+                    break;
+                case UP:
+                    pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                    break;
+
+                default:
+                    break;
+            }
+            loadRecordDetail();
+            event.consume();
+        }
     }
 
     private void changeTableView(int index, int limit) {

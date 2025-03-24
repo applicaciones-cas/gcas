@@ -1261,54 +1261,94 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        boolean lbShow2 = fnValue == EditMode.READY;
+        boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
+        
         // Manage visibility and managed state of other buttons
-        boolean lbShow3 = fnValue == EditMode.ADDNEW;
-
-        btnBrowse.setVisible(!lbShow3); // Requires no change to state
-
         btnNew.setVisible(!lbShow);
-//        btnRetrieve.setVisible(!lbShow);
-        btnClose.setVisible(!lbShow);
-
-        btnSearch.setVisible(lbShow);
-        btnSave.setVisible(lbShow);
-        btnCancel.setVisible(lbShow);
-
-        btnBrowse.setManaged(!lbShow3);
-
         btnNew.setManaged(!lbShow);
-//        btnRetrieve.setManaged(!lbShow);
-        btnClose.setManaged(!lbShow);
-
+        btnSearch.setVisible(lbShow);
         btnSearch.setManaged(lbShow);
+        btnSave.setVisible(lbShow);
         btnSave.setManaged(lbShow);
+        btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
 
-        boolean lbShow2 = fnValue == EditMode.READY;
-
         btnUpdate.setVisible(lbShow2);
-        btnPrint.setVisible(lbShow2);
-        btnHistory.setVisible(lbShow2);
-
         btnUpdate.setManaged(lbShow2);
+        btnPrint.setVisible(lbShow2);
         btnPrint.setManaged(lbShow2);
+        btnHistory.setVisible(lbShow2);
         btnHistory.setManaged(lbShow2);
 
-        btnClose.setVisible(lbShow2);
-        btnClose.setManaged(lbShow2);
+        btnBrowse.setVisible(lbShow3);
+        btnBrowse.setManaged(lbShow3);
+        btnClose.setVisible(lbShow3);
+        btnClose.setManaged(lbShow3);
 
-//        apBrowse.setDisable(lbShow); // no usage
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
-//        apTable.setDisable(!lbShow); // disable upon for viewing?
-//        if (Integer.valueOf(poPurchaseReceivingController.getMasterModel().getTransactionStatus()) != 0) {
-//            btnVoid.setDisable(false);
-//        } else {
-//            btnVoid.setDisable(true);
-//        }
-//        poPurchaseReceivingController.setTransType("SP");
+        
+        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
+            case PurchaseOrderReceivingStatus.APPROVED: 
+            case PurchaseOrderReceivingStatus.VOID:
+                btnUpdate.setVisible(false);
+                btnUpdate.setManaged(false);
+                break;
+        }
     }
+    
+//    private void initButton(int fnValue) {
+//        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+//        // Manage visibility and managed state of other buttons
+//        boolean lbShow3 = fnValue == EditMode.ADDNEW;
 //
+//        btnBrowse.setVisible(!lbShow3); // Requires no change to state
+//
+//        btnNew.setVisible(!lbShow);
+////        btnRetrieve.setVisible(!lbShow);
+//        btnClose.setVisible(!lbShow);
+//
+//        btnSearch.setVisible(lbShow);
+//        btnSave.setVisible(lbShow);
+//        btnCancel.setVisible(lbShow);
+//
+//        btnBrowse.setManaged(!lbShow3);
+//
+//        btnNew.setManaged(!lbShow);
+////        btnRetrieve.setManaged(!lbShow);
+//        btnClose.setManaged(!lbShow);
+//
+//        btnSearch.setManaged(lbShow);
+//        btnSave.setManaged(lbShow);
+//        btnCancel.setManaged(lbShow);
+//
+//        boolean lbShow2 = fnValue == EditMode.READY;
+//
+//        btnUpdate.setVisible(lbShow2);
+//        btnPrint.setVisible(lbShow2);
+//        btnHistory.setVisible(lbShow2);
+//
+//        btnUpdate.setManaged(lbShow2);
+//        btnPrint.setManaged(lbShow2);
+//        btnHistory.setManaged(lbShow2);
+//
+//        btnClose.setVisible(lbShow2);
+//        btnClose.setManaged(lbShow2);
+//
+////        apBrowse.setDisable(lbShow); // no usage
+//        apMaster.setDisable(!lbShow);
+//        apDetail.setDisable(!lbShow);
+////        apTable.setDisable(!lbShow); // disable upon for viewing?
+////        if (Integer.valueOf(poPurchaseReceivingController.getMasterModel().getTransactionStatus()) != 0) {
+////            btnVoid.setDisable(false);
+////        } else {
+////            btnVoid.setDisable(true);
+////        }
+////        poPurchaseReceivingController.setTransType("SP");
+//
+//
+//    }
 
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
