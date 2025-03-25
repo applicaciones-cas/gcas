@@ -270,7 +270,7 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
 
     private void initButtonsClickActions() {
         List<Button> buttons = Arrays.asList(btnUpdate, btnSave, btnCancel, btnVoid,
-                btnPrint, btnRetrieve, btnTransHistory, btnClose, btnApprove);
+                btnPrint, btnRetrieve, btnTransHistory, btnClose, btnApprove, btnReturn);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -398,7 +398,7 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
-                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();
@@ -413,7 +413,7 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
-                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();
@@ -774,7 +774,6 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
             protected Void call() throws Exception {
                 try {
                     // Simulate loading delay
-                    Thread.sleep(1000);
 
                     poPurchaseOrder_data.clear();
 
@@ -871,7 +870,6 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                 poDetail_data.clear();
                 try {
 
-                    Thread.sleep(300);
                     double grandTotalAmount = 0.0;
                     for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
                         double lnTotalAmount = poPurchasingController.PurchaseOrder()

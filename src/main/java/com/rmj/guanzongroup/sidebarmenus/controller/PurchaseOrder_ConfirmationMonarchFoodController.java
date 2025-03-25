@@ -377,7 +377,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
-                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();
@@ -392,7 +392,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
-                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();
@@ -753,8 +753,6 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
             protected Void call() throws Exception {
                 try {
                     // Simulate loading delay
-                    Thread.sleep(1000);
-
                     poPurchaseOrder_data.clear();
                     JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder();
                     if ("success".equals(loJSON.get("result"))) {
@@ -891,8 +889,6 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
             protected Void call() throws Exception {
                 poDetail_data.clear();
                 try {
-
-                    Thread.sleep(300);
 
                     double grandTotalAmount = 0.0;
                     for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {

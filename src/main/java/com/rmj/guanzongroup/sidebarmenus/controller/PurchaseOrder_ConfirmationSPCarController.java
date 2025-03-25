@@ -377,7 +377,7 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
-                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();
@@ -392,7 +392,7 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
                     }
-                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     clearMasterFields();
                     clearDetailFields();
                     poDetail_data.clear();
@@ -418,7 +418,7 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(PurchaseOrder_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -752,8 +752,6 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
             protected Void call() throws Exception {
                 try {
                     // Simulate loading delay
-                    Thread.sleep(1000);
-
                     poPurchaseOrder_data.clear();
                     JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder();
                     if ("success".equals(loJSON.get("result"))) {
@@ -890,8 +888,6 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
             protected Void call() throws Exception {
                 poDetail_data.clear();
                 try {
-
-                    Thread.sleep(300);
 
                     double grandTotalAmount = 0.0;
                     for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {

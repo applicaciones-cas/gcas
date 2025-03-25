@@ -109,7 +109,7 @@ public class PurchaseOrder_HistoryCarController implements Initializable, Screen
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);
-            poPurchasingController.PurchaseOrder().setTransactionStatus("01234");
+            poPurchasingController.PurchaseOrder().setTransactionStatus("01234567");
             JSONObject loJSON = new JSONObject();
             loJSON = poPurchasingController.PurchaseOrder().InitTransaction();
             if (!"success".equals(loJSON.get("result"))) {
@@ -171,7 +171,7 @@ public class PurchaseOrder_HistoryCarController implements Initializable, Screen
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
             String lsIndustryName = "";
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
-                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
+                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
             tfIndustry.setText(lsIndustryName);
 
