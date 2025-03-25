@@ -59,13 +59,17 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order History SPCar";
+    private String psFormName = "Purchase Order History";
     private LogWrapper logWrapper;
     private int pnEditMode;
     private JSONObject poJSON;
     unloadForm poUnload = new unloadForm();
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblPODetailRow = -1;
+    private String psIndustryID = "";
+    private String psCompanyID = "";
+    private String psSupplierID = "";
+    private String psReferID = "";
     @FXML
     private AnchorPane apBrowse, apButton;
     @FXML
@@ -126,14 +130,15 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
             tfSearchIndustry.setText(lsIndustryName);
-            initButtonsClickActions();
+            initButtonsClickActions();;
             initTextFieldKeyPressed();
+            initTextFieldsProperty();
             initTablePODetail();
             tblVwOrderDetails.setOnMouseClicked(this::tblVwOrderDetails_Clicked);
             pnEditMode = EditMode.UNKNOWN;
             initButtons(pnEditMode);
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistorySPCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -209,7 +214,7 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistorySPCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -236,7 +241,7 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
                 tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistorySPCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -252,7 +257,11 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("");
+                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("",
+                            psIndustryID,
+                            psCompanyID,
+                            psSupplierID,
+                            psReferID);
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();
@@ -338,34 +347,28 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
                                     tfSearchIndustry.setText("");
                                     break;
                                 }
+                                psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
                                 tfSearchIndustry.setText(poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
                                 break;
                             case "tfSearchCompany":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfCompany.setText("");
+                                    tfSearchCompany.setText("");
                                     break;
                                 }
+                                psCompanyID = poPurchasingController.PurchaseOrder().Master().getCompanyID();
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfSupplier.setText("");
+                                    tfSearchSupplier.setText("");
                                     break;
                                 }
+                                psSupplierID = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
-                                break;
-                            case "tfDestination":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchDestination(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfDestination.setText("");
-                                    break;
-                                }
-                                tfDestination.setText(poPurchasingController.PurchaseOrder().Master().Branch().getBranchName());
                                 break;
                         }
                         event.consume();
@@ -384,7 +387,7 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistorySPCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
 //        }
     }
@@ -462,7 +465,7 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistorySPCarController.class
+            Logger.getLogger(PurchaseOrder_HistoryController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -554,4 +557,36 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
         }
     }
 
+    private void initTextFieldsProperty() {
+        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
+                    tfSearchCompany.setText("");
+                    psCompanyID = "";
+                }
+            }
+        });
+        tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                    poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                    poPurchasingController.PurchaseOrder().Master().setContactID("");
+                    tfSearchSupplier.setText("");
+                    psSupplierID = "";
+                }
+
+            }
+        });
+        tfSearchReferenceNo.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setReference("");
+                    tfSearchReferenceNo.setText("");
+                    psReferID = "";
+                }
+            }
+        });
+    }
 }

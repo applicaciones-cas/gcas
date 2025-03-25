@@ -66,7 +66,7 @@
                                                         <Insets right="10.0" />
                                                     </GridPane.margin>
                                                 </Text>
-                                                <TextField fx:id="tfSearchIndustry" styleClass="text-field" GridPane.columnIndex="2" />
+                                                <TextField fx:id="tfSearchIndustry" disable="true" editable="false" styleClass="text-field" GridPane.columnIndex="2" />
                                                 <TextField fx:id="tfSearchCompany" promptText="Press F3: Search" styleClass="text-field" GridPane.columnIndex="5" />
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Supplier" GridPane.columnIndex="6" GridPane.halignment="RIGHT">
                                                     <font>

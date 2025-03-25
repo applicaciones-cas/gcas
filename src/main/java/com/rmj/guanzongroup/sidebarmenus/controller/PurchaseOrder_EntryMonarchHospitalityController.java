@@ -987,8 +987,13 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
 
     private void initFields(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
-
-        CustomCommonUtil.setDisable(!lbShow, AnchorMaster, AnchorDetails);
+        /*Master Fields */
+        CustomCommonUtil.setDisable(!lbShow,
+                dpTransactionDate, tfDestination, taRemarks,
+                dpExpectedDlvrDate, tfReferenceNo, tfTerm,
+                chkbAdvancePayment);
+        CustomCommonUtil.setDisable(!lbShow,
+                tfBarcode, tfDescription, tfOrderQuantity);
 
         CustomCommonUtil.setDisable(true, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate, tfAdvancePAmount);
@@ -1276,22 +1281,23 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
 
     private void initTextFieldsProperty() {
         tfCompany.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        poPurchasingController.PurchaseOrder().Master().setCompanyID("");
-                        tfCompany.setText("");
-                    }
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
+                    tfCompany.setText("");
+                    loadTableStockRequest();
                 }
+
             }
         });
         tfSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        poPurchasingController.PurchaseOrder().Master().setSupplierID("");
-                        tfSupplier.setText("");
-                    }
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                    poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                    poPurchasingController.PurchaseOrder().Master().setContactID("");
+                    tfSupplier.setText("");
+                    loadTableStockRequest();
                 }
             }
         });

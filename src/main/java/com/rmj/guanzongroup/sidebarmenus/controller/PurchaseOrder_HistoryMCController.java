@@ -67,6 +67,10 @@ public class PurchaseOrder_HistoryMCController implements Initializable, ScreenI
     unloadForm poUnload = new unloadForm();
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblPODetailRow = -1;
+    private String psIndustryID = "";
+    private String psCompanyID = "";
+    private String psSupplierID = "";
+    private String psReferID = "";
     @FXML
     private AnchorPane AnchorMaster, AnchorDetails, AnchorMain, apBrowse, apButton;
     @FXML
@@ -129,6 +133,7 @@ public class PurchaseOrder_HistoryMCController implements Initializable, ScreenI
             initButtonsClickActions();;
             initTextFieldKeyPressed();
             initTablePODetail();
+            initTextFieldsProperty();
             tblVwOrderDetails.setOnMouseClicked(this::tblVwOrderDetails_Clicked);
             pnEditMode = EditMode.UNKNOWN;
             initButtons(pnEditMode);
@@ -309,7 +314,11 @@ public class PurchaseOrder_HistoryMCController implements Initializable, ScreenI
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("");
+                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("",
+                            psIndustryID,
+                            psCompanyID,
+                            psSupplierID,
+                            psReferID);
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();
@@ -611,4 +620,36 @@ public class PurchaseOrder_HistoryMCController implements Initializable, ScreenI
         }
     }
 
+    private void initTextFieldsProperty() {
+        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
+                    tfSearchCompany.setText("");
+                    psCompanyID = "";
+                }
+            }
+        });
+        tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                    poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                    poPurchasingController.PurchaseOrder().Master().setContactID("");
+                    tfSearchSupplier.setText("");
+                    psSupplierID = "";
+                }
+
+            }
+        });
+        tfSearchReferenceNo.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setReference("");
+                    tfSearchReferenceNo.setText("");
+                    psReferID = "";
+                }
+            }
+        });
+    }
 }

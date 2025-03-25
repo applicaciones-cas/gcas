@@ -751,136 +751,134 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            TextField lsTxtField = (TextField) event.getSource();
-            String txtFieldID = ((TextField) event.getSource()).getId();
-            String lsValue = "";
-            if (lsTxtField.getText() == null) {
-                lsValue = "";
-            } else {
-                lsValue = lsTxtField.getText();
-            }
-            JSONObject loJSON = new JSONObject();
-            try {
-                if (null != event.getCode()) {
-                    switch (event.getCode()) {
-                        case TAB:
-                        case ENTER:
-                        case F3:
-                            switch (txtFieldID) {
-                                case "tfCompany":
-                                    loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
-                                    if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                        tfCompany.setText("");
-                                        break;
-                                    }
-                                    tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
+        TextField lsTxtField = (TextField) event.getSource();
+        String txtFieldID = ((TextField) event.getSource()).getId();
+        String lsValue = "";
+        if (lsTxtField.getText() == null) {
+            lsValue = "";
+        } else {
+            lsValue = lsTxtField.getText();
+        }
+        JSONObject loJSON = new JSONObject();
+        try {
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case F3:
+                        switch (txtFieldID) {
+                            case "tfCompany":
+                                loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
+                                if ("error".equals(loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                    tfCompany.setText("");
                                     break;
-                                case "tfSupplier":
-                                    loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
-                                    if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                        tfSupplier.setText("");
-                                        break;
-                                    }
-                                    tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
+                                }
+                                tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
+                                break;
+                            case "tfSupplier":
+                                loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
+                                if ("error".equals(loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                    tfSupplier.setText("");
                                     break;
-                                case "tfDestination":
-                                    loJSON = poPurchasingController.PurchaseOrder().SearchDestination(lsValue, false);
-                                    if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                        tfDestination.setText("");
-                                        break;
-                                    }
-                                    tfDestination.setText(poPurchasingController.PurchaseOrder().Master().Branch().getBranchName());
+                                }
+                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
+                                break;
+                            case "tfDestination":
+                                loJSON = poPurchasingController.PurchaseOrder().SearchDestination(lsValue, false);
+                                if ("error".equals(loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                    tfDestination.setText("");
                                     break;
-                                case "tfTerm":
-                                    loJSON = poPurchasingController.PurchaseOrder().SearchTerm(lsValue, false);
-                                    if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                        tfTerm.setText("");
-                                        break;
-                                    }
-                                    tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
+                                }
+                                tfDestination.setText(poPurchasingController.PurchaseOrder().Master().Branch().getBranchName());
+                                break;
+                            case "tfTerm":
+                                loJSON = poPurchasingController.PurchaseOrder().SearchTerm(lsValue, false);
+                                if ("error".equals(loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                    tfTerm.setText("");
                                     break;
-                                case "tfBarcode":
-                                    if (pnTblPODetailRow < 0) {
-                                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                        clearDetailFields();
-                                        break;
-                                    }
-                                    loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblPODetailRow);
-                                    if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                        tfBarcode.setText("");
-                                        break;
-                                    }
-                                    if (pnTblPODetailRow >= 0) {
-                                        tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
-                                    }
+                                }
+                                tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
+                                break;
+                            case "tfBarcode":
+                                if (pnTblPODetailRow < 0) {
+                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                    clearDetailFields();
+                                    break;
+                                }
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblPODetailRow);
+                                if ("error".equals(loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                    tfBarcode.setText("");
+                                    break;
+                                }
+                                if (pnTblPODetailRow >= 0) {
+                                    tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
+                                }
 
-                                    tfOrderQuantity.requestFocus();
+                                tfOrderQuantity.requestFocus();
 
-                                    loadDetail();
-                                    loadTablePODetail();
+                                loadDetail();
+                                loadTablePODetail();
+                                break;
+                            case "tfDescription":
+                                if (pnTblPODetailRow < 0) {
+                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                    clearDetailFields();
                                     break;
-                                case "tfDescription":
-                                    if (pnTblPODetailRow < 0) {
-                                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                        clearDetailFields();
-                                        break;
-                                    }
-                                    loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblPODetailRow);
-                                    if ("error".equals(loJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                        tfDescription.setText("");
-                                        break;
-                                    }
-                                    if (pnTblPODetailRow >= 0) {
-                                        tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
-                                    } else {
-                                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                        tfDescription.setText("");
-                                    }
-                                    tfOrderQuantity.requestFocus();
-                                    loadDetail();
-                                    loadTablePODetail();
+                                }
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblPODetailRow);
+                                if ("error".equals(loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                    tfDescription.setText("");
                                     break;
-                            }
-                            loadTableStockRequest();
-                            event.consume();
-                            switch (txtFieldID) {
-                                case "tfCompany":
-                                case "tfSupplier":
-                                case "tfDestination":
-                                case "tfTerm":
-                                case "tfAdvancePAmount":
-                                case "tfAdvancePRate":
-                                case "tfDiscountRate":
-                                case "tfDiscountAmount":
-                                case "tfOrderQuantity":
-                                    CommonUtils.SetNextFocus((TextField) event.getSource());
-                                    break;
-                            }
-                            break;
-                        case UP:
-                            event.consume();
-                            CommonUtils.SetPreviousFocus((TextField) event.getSource());
-                            break;
-                        case DOWN:
-                            event.consume();
-                            CommonUtils.SetNextFocus((TextField) event.getSource());
-                            break;
-                        default:
-                            break;
+                                }
+                                if (pnTblPODetailRow >= 0) {
+                                    tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
+                                } else {
+                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                    tfDescription.setText("");
+                                }
+                                tfOrderQuantity.requestFocus();
+                                loadDetail();
+                                loadTablePODetail();
+                                break;
+                        }
+                        loadTableStockRequest();
+                        event.consume();
+                        switch (txtFieldID) {
+                            case "tfCompany":
+                            case "tfSupplier":
+                            case "tfDestination":
+                            case "tfTerm":
+                            case "tfAdvancePAmount":
+                            case "tfAdvancePRate":
+                            case "tfDiscountRate":
+                            case "tfDiscountAmount":
+                            case "tfOrderQuantity":
+                                CommonUtils.SetNextFocus((TextField) event.getSource());
+                                break;
+                        }
+                        break;
+                    case UP:
+                        event.consume();
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        break;
+                    case DOWN:
+                        event.consume();
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        break;
+                    default:
+                        break;
 
-                    }
                 }
-            } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
-                Logger.getLogger(PurchaseOrder_EntryLPController.class
-                        .getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
+            Logger.getLogger(PurchaseOrder_EntryLPController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -987,8 +985,13 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
 
     private void initFields(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
-
-        CustomCommonUtil.setDisable(!lbShow, AnchorMaster, AnchorDetails);
+        /*Master Fields */
+        CustomCommonUtil.setDisable(!lbShow,
+                dpTransactionDate, tfDestination, taRemarks,
+                dpExpectedDlvrDate, tfReferenceNo, tfTerm,
+                chkbAdvancePayment);
+        CustomCommonUtil.setDisable(!lbShow,
+                tfBarcode, tfDescription, tfOrderQuantity);
 
         CustomCommonUtil.setDisable(true, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate, tfAdvancePAmount);
@@ -1276,22 +1279,22 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
 
     private void initTextFieldsProperty() {
         tfCompany.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        poPurchasingController.PurchaseOrder().Master().setCompanyID("");
-                        tfCompany.setText("");
-                    }
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
+                    tfCompany.setText("");
+                    loadTableStockRequest();
                 }
             }
         });
         tfSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (newValue != null) {
-                    if (newValue.isEmpty()) {
-                        poPurchasingController.PurchaseOrder().Master().setSupplierID("");
-                        tfSupplier.setText("");
-                    }
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                    poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                    poPurchasingController.PurchaseOrder().Master().setContactID("");
+                    tfSupplier.setText("");
+                    loadTableStockRequest();
                 }
             }
         });

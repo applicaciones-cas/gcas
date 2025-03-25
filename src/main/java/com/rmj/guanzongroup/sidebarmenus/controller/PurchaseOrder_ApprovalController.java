@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -80,6 +81,10 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
     private int pnTblPurchaseOrderRow = -1;
     private int pnTblPODetailRow = -1;
     private static final int ROWS_PER_PAGE = 30;
+    private String psIndustryID = "";
+    private String psCompanyID = "";
+    private String psSupplierID = "";
+    private String psReferID = "";
     @FXML
     private AnchorPane apBrowse, apButton;
     @FXML
@@ -154,6 +159,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             initTextFieldPattern();
             initTablePurchaseOrder();
             initTablePODetail();
+            initTextFieldsProperty();
             tblVwPurchaseOrder.setOnMouseClicked(this::tblVwPurchaseOrder_Clicked);
             tblVwOrderDetails.setOnMouseClicked(this::tblVwOrderDetails_Clicked);
             pnEditMode = EditMode.UNKNOWN;
@@ -576,6 +582,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                                     tfSearchIndustry.setText("");
                                     break;
                                 }
+                                psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
                                 tfSearchIndustry.setText(poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
                                 break;
                             case "tfSearchCompany":
@@ -585,6 +592,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                                     tfCompany.setText("");
                                     break;
                                 }
+                                psCompanyID = poPurchasingController.PurchaseOrder().Master().getCompanyID();
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
@@ -594,6 +602,7 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                                     tfSupplier.setText("");
                                     break;
                                 }
+                                psSupplierID = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
                             case "tfDestination":
@@ -614,28 +623,28 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                                 }
                                 tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
                                 break;
-//                            case "tfBarcode":
+//                            case "tfBrand":
 //                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false);
 //                                if ("error".equals(loJSON.get("result"))) {
 //                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-//                                    tfBarcode.setText("");
+//                                    tfBrand.setText("");
 //                                    break;
 //                                }
 //                                if (pnTblPODetailRow >= 0) {
-//                                    tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
+//                                    tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
 //                                } else {
 //                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
 //                                }
 //                                break;
-//                            case "tfDescription":
+//                            case "tfModel":
 //                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false);
 //                                if ("error".equals(loJSON.get("result"))) {
 //                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-//                                    tfDescription.setText("");
+//                                    tfModel.setText("");
 //                                    break;
 //                                }
 //                                if (pnTblPODetailRow >= 0) {
-//                                    tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
+//                                    tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
 //                                } else {
 //                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
 //
@@ -656,12 +665,10 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         break;
                     default:
                         break;
-
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_ApprovalController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -775,32 +782,44 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             @Override
             protected Void call() throws Exception {
                 try {
-                    // Simulate loading delay
-
                     poPurchaseOrder_data.clear();
-
-                    poPurchaseOrder_data.clear();
-                    JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder();
+                    JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder(psIndustryID,
+                            psCompanyID,
+                            psSupplierID,
+                            psReferID);
                     if ("success".equals(loJSON.get("result"))) {
-                        for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getPOMasterCount() - 1; lnCntr++) {
-                            poPurchaseOrder_data.add(new ModelPurchaseOrder(
-                                    String.valueOf(lnCntr + 1),
-                                    poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionNo(),
-                                    SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
-                                    poPurchasingController.PurchaseOrder().POMaster(lnCntr).Supplier().getCompanyName(),
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    ""));
-                            tblVwPurchaseOrder.setItems(poPurchaseOrder_data);
-
+                        if (poPurchasingController.PurchaseOrder().getPOMasterCount() > 0) {
+                            for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getPOMasterCount() - 1; lnCntr++) {
+                                poPurchaseOrder_data.add(new ModelPurchaseOrder(
+                                        String.valueOf(lnCntr + 1),
+                                        poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionNo(),
+                                        SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
+                                        poPurchasingController.PurchaseOrder().POMaster(lnCntr).Supplier().getCompanyName(),
+                                        "",
+                                        "",
+                                        "",
+                                        "",
+                                        "",
+                                        ""));
+                                tblVwPurchaseOrder.setItems(poPurchaseOrder_data);
+                            }
+                        } else {
+                            // Ensure poApprovedStockRequest_data remains empty
+                            poPurchaseOrder_data.clear();
                         }
                     }
+
+                    Platform.runLater(() -> {
+                        if (poPurchaseOrder_data.isEmpty()) {
+                            tblVwPurchaseOrder.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                            tblVwPurchaseOrder.setItems(FXCollections.observableArrayList(poPurchaseOrder_data));
+                        } else {
+                            tblVwPurchaseOrder.setItems(FXCollections.observableArrayList(poPurchaseOrder_data));
+                        }
+                    });
+
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationCarController.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
             }
@@ -1100,5 +1119,41 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
             }
 
         }
+    }
+
+    private void initTextFieldsProperty() {
+        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
+                    tfSearchCompany.setText("");
+                    psCompanyID = "";
+                    loadTablePurchaseOrder();
+                }
+            }
+        });
+        tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                    poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                    poPurchasingController.PurchaseOrder().Master().setContactID("");
+                    tfSearchSupplier.setText("");
+                    psSupplierID = "";
+                    loadTablePurchaseOrder();
+                }
+
+            }
+        });
+        tfSearchReferenceNo.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setReference("");
+                    tfSearchReferenceNo.setText("");
+                    psReferID = "";
+                    loadTablePurchaseOrder();
+                }
+            }
+        });
     }
 }
