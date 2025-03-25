@@ -95,7 +95,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Confirmation Monarch Hospitality";
+    private final String pxeModuleName = "Purchase Order Receiving Confirmation MH";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 

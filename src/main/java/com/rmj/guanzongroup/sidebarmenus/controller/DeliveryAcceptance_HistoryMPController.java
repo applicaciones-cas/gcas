@@ -11,7 +11,6 @@ import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
@@ -95,14 +94,14 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class DeliveryAcceptance_ApprovalCarController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_HistoryMPController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchase Order Receiving Approval Car";
+    private final String pxeModuleName = "Purchase Order Receiving History MC";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
@@ -139,15 +138,13 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     @FXML
     private HBox hbButtons, hboxid;
     @FXML
-    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose, btnSerials, btnApprove, btnVoid, btnReturn;
+    private Button  btnPrint, btnHistory, btnRetrieve, btnClose; 
     @FXML
     private Label lblStatus;
     @FXML
     private TextField tfTransactionNo, tfIndustry, tfCompany, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
-            tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity, tfModelVariant; //tfBarcode, tfSupersede, tfDescription,;
-    @FXML
-    private CheckBox cbPreOwned;
+            tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity, tfModelVariant; 
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -168,22 +165,12 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     @FXML
     private TableColumn tblRowNoAttachment, tblFileNameAttachment;
     @FXML
-    private Button btnAddAttachment, btnRemoveAttachment;
-    @FXML
     private StackPane stackPane1;
     @FXML
     private ImageView imageView;
     @FXML
     private Button btnArrowLeft, btnArrowRight;
-
-//    @FXML
-//    private TextField tfDescription;
-//    @FXML
-//    private TextField tfBarcode;
-//    @FXML
-//    private TextField tfSupersede;
-//    @FXML
-//    private DatePicker dpExpiryDate;
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -198,9 +185,9 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
             poPurchaseReceivingController.Master().Industry().getDescription();
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         initTextFields();
@@ -401,40 +388,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             return;
                         }
                         break;
-                    case "btnAddAttachment":
-                        fileChooser = new FileChooser();
-                        fileChooser.setTitle("Choose Image");
-                        fileChooser.getExtensionFilters().addAll(
-                                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif")
-                        );
-                        java.io.File selectedFile = fileChooser.showOpenDialog((Stage) btnAddAttachment.getScene().getWindow());
-
-                        if (selectedFile != null) {
-                            // Read image from the selected file
-                            Path imgPath = selectedFile.toPath();
-                            Image loimage = new Image(Files.newInputStream(imgPath));
-                            imageView.setImage(loimage);
-
-                            String imgPath2 = selectedFile.toString();
-                            img_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(img_data.size()), imgPath2));
-
-                            if (img_data.size() > 1) {
-                                pnAttachment = img_data.size() - 1;
-                            }
-                            loadTableAttachment();
-
-                            tblAttachments.getFocusModel().focus(pnAttachment);
-                            tblAttachments.getSelectionModel().select(pnAttachment);
-                        }
-                        break;
-                    case "btnRemoveAttachment":
-                        img_data.remove(pnAttachment);
-                        if (pnAttachment != 0) {
-                            pnAttachment -= 1;
-                        }
-                        loadTableAttachment();
-                        initAttachmentsGrid();
-                        break;
                     case "btnArrowRight":
                         slideImage(1);
                         break;
@@ -448,10 +401,8 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                 }
                 initButton(pnEditMode);
 
-                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment")
-                        || lsButton.equals("btnRemoveAttachment") || lsButton.equals("btnArrowRight")
-                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnVoid") || lsButton.equals("btnRetrieve")
-                        || lsButton.equals("btnApprove") || lsButton.equals("btnReturn")) {
+                if (lsButton.equals("btnPrint") || lsButton.equals("btnArrowRight")
+                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
 
                 } else {
                     loadRecordMaster();
@@ -460,15 +411,13 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
             }
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -893,9 +842,9 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1033,9 +982,9 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                                     String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                             ));
                         } catch (SQLException ex) {
-                            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (GuanzonException ex) {
-                            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
                     }
@@ -1090,9 +1039,9 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1163,27 +1112,14 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = pnEditMode == EditMode.UPDATE;
-        if (lbDisable) {
-            tfCompany.setDisable(lbDisable);
-            tfCompany.setDisable(lbDisable);
-            tfCompany.getStyleClass().add("DisabledTextField");
-            tfSupplier.getStyleClass().add("DisabledTextField");
-        } else {
-            tfCompany.setDisable(lbDisable);
-            tfCompany.setDisable(lbDisable);
-            tfCompany.getStyleClass().remove("DisabledTextField");
-            tfSupplier.getStyleClass().remove("DisabledTextField");
-        }
-
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
             btnPrint.setText("Reprint");
@@ -1272,9 +1208,9 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1292,16 +1228,16 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                 highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
-
+                
                 loadTableDetail();
             }
 
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1333,8 +1269,8 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                     int lnCtr;
 
                     try {
-
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        
+                        if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
                             lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
                             while (lnCtr > 0) {
                                 if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
@@ -1353,9 +1289,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
-                            if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {
-                                cbPreOwned.setSelected(poPurchaseReceivingController.Detail(lnCtr).PurchaseOrderMaster().getPreOwned());
-                            }
                             try {
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
 
@@ -1398,11 +1331,11 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                         }
 
                     } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
 
@@ -1598,62 +1531,17 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     }
 
     private void initButton(int fnValue) {
-
-        boolean lbShow1 = (fnValue == EditMode.UPDATE);
-        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
-        boolean lbShow3 = (fnValue == EditMode.READY);
-        boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
+        boolean lbShow = (fnValue == EditMode.READY);
         // Manage visibility and managed state of other buttons
-        //Update 
-        btnSearch.setVisible(lbShow1);
-        btnSearch.setManaged(lbShow1);
-        btnSerials.setVisible(lbShow1);
-        btnSerials.setManaged(lbShow1);
-        btnSave.setVisible(lbShow1);
-        btnSave.setManaged(lbShow1);
-        btnCancel.setVisible(lbShow1);
-        btnCancel.setManaged(lbShow1);
-
-        //Ready || Update
-        btnReturn.setVisible(lbShow2);
-        btnReturn.setManaged(lbShow2);
-
         //Ready
-        btnPrint.setVisible(lbShow3);
-        btnPrint.setManaged(lbShow3);
-        btnUpdate.setVisible(lbShow3);
-        btnUpdate.setManaged(lbShow3);
-        btnHistory.setVisible(lbShow3);
-        btnHistory.setManaged(lbShow3);
-        btnApprove.setVisible(lbShow3);
-        btnApprove.setManaged(lbShow3);
-        btnVoid.setVisible(lbShow3);
-        btnVoid.setManaged(lbShow3);
+        btnPrint.setVisible(lbShow);
+        btnPrint.setManaged(lbShow);
+        btnHistory.setVisible(lbShow);
+        btnHistory.setManaged(lbShow);
 
-        //Unkown || Ready
-        btnClose.setVisible(lbShow4);
-        btnClose.setManaged(lbShow4);
-
-        btnAddAttachment.setDisable(!lbShow2);
-        btnRemoveAttachment.setDisable(!lbShow2);
-
-        apMaster.setDisable(!lbShow1);
-        apDetail.setDisable(!lbShow1);
-        apAttachments.setDisable(!lbShow1);
-
-        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
-            case PurchaseOrderReceivingStatus.APPROVED:
-            case PurchaseOrderReceivingStatus.VOID:
-                btnApprove.setVisible(false);
-                btnApprove.setManaged(false);
-                btnUpdate.setVisible(false);
-                btnUpdate.setManaged(false);
-                btnReturn.setVisible(false);
-                btnReturn.setManaged(false);
-                btnVoid.setVisible(false);
-                btnVoid.setManaged(false);
-                break;
-        }
+        apMaster.setDisable(!lbShow);
+        apDetail.setDisable(!lbShow);
+        apAttachments.setDisable(!lbShow);
     }
 
     private void initStackPaneListener() {

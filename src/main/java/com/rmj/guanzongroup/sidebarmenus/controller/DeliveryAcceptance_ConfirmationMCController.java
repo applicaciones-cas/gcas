@@ -102,7 +102,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Confirmation MC";
+    private final String pxeModuleName = "Purchase Order Receiving Confirmation MC";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 

@@ -94,7 +94,7 @@ public class DeliveryAcceptance_ApprovalMonarchFoodController implements Initial
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Approval Monarch Food";
+    private final String pxeModuleName = "Purchase Order Receiving Approval MF";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 

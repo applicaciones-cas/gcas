@@ -81,7 +81,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Entry MC";
+    private final String pxeModuleName = "Purchase Order Receiving Entry MC";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 

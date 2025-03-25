@@ -95,7 +95,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Confirmation SP Car";
+    private final String pxeModuleName = "Purchase Order Receiving Confirmation SP Car";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 

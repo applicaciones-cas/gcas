@@ -104,7 +104,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Confirmation Car";
+    private final String pxeModuleName = "Purchase Order Receiving Confirmation Car";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
@@ -1353,8 +1353,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
 
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
+                            if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {
+                                cbPreOwned.setSelected(poPurchaseReceivingController.Detail(lnCtr).PurchaseOrderMaster().getPreOwned());
+                            }
                             try {
-
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
 
                             } catch (Exception e) {

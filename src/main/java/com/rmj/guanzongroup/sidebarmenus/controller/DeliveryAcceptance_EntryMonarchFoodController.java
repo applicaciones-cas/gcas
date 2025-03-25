@@ -78,7 +78,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchase Order Receiving Entry Monarch Food";
+    private final String pxeModuleName = "Purchase Order Receiving Entry MF";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
