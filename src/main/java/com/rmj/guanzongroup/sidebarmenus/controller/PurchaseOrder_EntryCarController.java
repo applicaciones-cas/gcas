@@ -421,7 +421,6 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                 case "btnUpdate":
                     loJSON = poPurchasingController.PurchaseOrder().UpdateTransaction();
                     pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
-                    loJSON = poPurchasingController.PurchaseOrder().AddDetail();
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -573,14 +572,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     }
 
                     // Save Transaction
-                    // Save Transaction
                     if (!"success".equals((loJSON = poPurchasingController.PurchaseOrder().SaveTransaction()).get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                        String lsMessage = (String) loJSON.get("message");
-                        if (!lsMessage.equals("All items have zero quantity. Please enter a valid quantity.")) {
-                            loJSON = poPurchasingController.PurchaseOrder().AddDetail();
-                        }
-                        loadTablePODetail();;
+                        loadTablePODetail();
                         return;
                     }
 
@@ -606,6 +600,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     Platform.runLater(() -> btnNew.fire());
 
                     break;
+
                 case "btnCancel":
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                         if (pnEditMode == EditMode.ADDNEW) {
@@ -1123,10 +1118,12 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     ""
                             );
                             poApprovedStockRequest_data.add(loApprovedStockRequest);
+
                         }
                     }
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_EntryCarController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
             }
@@ -1248,24 +1245,41 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
             protected Void call() throws Exception {
                 poDetail_data.clear();
                 try {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        int lnCntr;
+                        lnCntr = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
+                        while (lnCntr > 0) {
+                            if (poPurchasingController.PurchaseOrder().Detail(lnCntr).getStockID() == null
+                                    || poPurchasingController.PurchaseOrder().Detail(lnCntr).getStockID().equals("")) {
+                                poPurchasingController.PurchaseOrder().Detail().remove(lnCntr);
+                            }
+                            lnCntr--;
+                        }
+                        if ((poPurchasingController.PurchaseOrder().getDetailCount() - 1) >= 0) {
+                            if (poPurchasingController.PurchaseOrder().Detail(poPurchasingController.PurchaseOrder().getDetailCount() - 1).getStockID() != null
+                                    && !poPurchasingController.PurchaseOrder().Detail(poPurchasingController.PurchaseOrder().getDetailCount() - 1).getStockID().equals("")) {
+                                poPurchasingController.PurchaseOrder().AddDetail();
+                            }
+                        }
+                    }
 
                     double grandTotalAmount = 0.0;
-                    for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
+                    for (int lnCtr = 0; lnCtr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCtr++) {
                         double lnTotalAmount = poPurchasingController.PurchaseOrder()
-                                .Detail(lnCntr)
+                                .Detail(lnCtr)
                                 .Inventory().getCost().doubleValue() * poPurchasingController.PurchaseOrder()
-                                        .Detail(lnCntr)
+                                        .Detail(lnCtr)
                                         .getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
                         poDetail_data.add(new ModelPurchaseOrderDetail(
-                                String.valueOf(lnCntr + 1),
-                                poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
-                                poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
-                                poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
+                                String.valueOf(lnCtr + 1),
+                                poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo(),
+                                poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getBarCode(),
+                                poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getDescription(),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getCost()),
                                 "",
-                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getQuantity()),
-                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
+                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getQuantity()),
+                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""
                         ));
@@ -1277,13 +1291,14 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
                 } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryCarController.class
+                    Logger.getLogger(PurchaseOrder_EntryController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
             }
 
             @Override
+
             protected void succeeded() {
                 tblVwOrderDetails.setItems(poDetail_data);
                 progressIndicator.setVisible(false);
@@ -1303,7 +1318,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
 
                     for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
                         if (listPODetail.equals(master.getIndex06())) {
-                            if (master.getIndex07() != PurchaseOrderStatus.CONFIRMED) {
+                            if (!master.getIndex07().equals(PurchaseOrderStatus.CONFIRMED)) {
                                 master.setIndex07(PurchaseOrderStatus.CONFIRMED);
                             }
                             break; // Exit inner loop once matched
