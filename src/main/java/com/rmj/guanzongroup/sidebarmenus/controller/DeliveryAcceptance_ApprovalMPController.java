@@ -107,8 +107,8 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
-    private String lsCompanyId = "";
-    private String lsSupplierId = "";
+    private String psCompanyId = "";
+    private String psSupplierId = "";
 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
@@ -278,8 +278,8 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                            lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                             poPurchaseReceivingController.Detail().clear();
                             pnEditMode = EditMode.UNKNOWN;
@@ -316,8 +316,8 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 }
 
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 pnEditMode = EditMode.UNKNOWN;
                                 clearTextFields();
@@ -337,8 +337,8 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
 
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
@@ -361,8 +361,8 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 //get last retrieved Company and Supplier
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
@@ -385,8 +385,8 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 //get last retrieved Company and Supplier
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
@@ -486,7 +486,7 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
         poJSON.put("result", "success");
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true, tfSearchReferenceNo.getText());
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true,psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {
@@ -769,16 +769,17 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                // remove master transNox if contains blank
                 case "tfSearchCompany":
                     if (lsValue.equals("")) {
                         poPurchaseReceivingController.Master().setCompanyId("");
-                    }
+                    } 
+                    psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                     break;
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
                         poPurchaseReceivingController.Master().setSupplierId("");
                     }
+                    psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                     break;
                 case "tfAttachmentNo":
                     break;
@@ -803,8 +804,12 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfCompany.setText("");
+                                psCompanyId = "";
                                 break;
+                            } else {
+                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             }
+                            
                             retrievePOR();
                             loadRecordSearch();
                             return;
@@ -813,7 +818,10 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupplier.setText("");
+                                psSupplierId = "";
                                 break;
+                            } else {
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                             }
                             retrievePOR();
                             loadRecordSearch();
