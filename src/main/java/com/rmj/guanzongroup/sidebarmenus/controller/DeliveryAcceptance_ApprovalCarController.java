@@ -102,7 +102,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving Approve Car";
+    private final String pxeModuleName = "Purchasing Order Receiving Approval Car";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
