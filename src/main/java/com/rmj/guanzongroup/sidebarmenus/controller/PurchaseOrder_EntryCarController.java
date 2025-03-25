@@ -305,7 +305,12 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     lnModel = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription();
                 }
                 tfModel.setText(lnModel);
-                tfVariant.setText(lnModel);
+
+                String lnVariant = "";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription() != null) {
+                    lnVariant = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription();
+                }
+                tfVariant.setText(lnVariant);
 
                 String lnInventoryType = "";
                 if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().InventoryType().getDescription() != null) {
@@ -568,8 +573,14 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     }
 
                     // Save Transaction
+                    // Save Transaction
                     if (!"success".equals((loJSON = poPurchasingController.PurchaseOrder().SaveTransaction()).get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        String lsMessage = (String) loJSON.get("message");
+                        if (!lsMessage.equals("All items have zero quantity. Please enter a valid quantity.")) {
+                            loJSON = poPurchasingController.PurchaseOrder().AddDetail();
+                        }
+                        loadTablePODetail();;
                         return;
                     }
 
@@ -579,7 +590,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     // Confirmation Prompt
                     if ("success".equals(loJSON.get("result")) && poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo())).get("result"))) {
+                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
                             ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         }
                     }
@@ -875,7 +886,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                         break;
                                     }
                                     if (pnTblPODetailRow >= 0) {
-                                        tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
+                                        tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription());
                                     }
 
                                     tfOrderQuantity.requestFocus();
@@ -1368,15 +1379,6 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                 ModelPurchaseOrder loSelectedStockRequest = (ModelPurchaseOrder) tblVwStockRequest.getSelectionModel().getSelectedItem();
                 if (loSelectedStockRequest != null) {
                     String lsTransactionNo = loSelectedStockRequest.getIndex06();
-                    if (!tblVwOrderDetails.getItems().isEmpty()) {
-                        boolean alreadyExists = poDetail_data.stream()
-                                .anyMatch(detail -> detail.getIndex02().equals(lsTransactionNo));
-                        if (alreadyExists) {
-                            ShowMessageFX.Warning("This stock request has already been selected.", "Warning", null);
-                            return;
-                        }
-                    }
-
                     try {
                         JSONObject loJSON = poPurchasingController.PurchaseOrder().addStockRequestOrdersToPODetail(lsTransactionNo);
                         if ("success".equals(loJSON.get("result"))) {
