@@ -583,6 +583,10 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     }
                     break;
                 case "btnRetrieve":
+                    if (poPurchasingController.PurchaseOrder().Master().getIndustryID().equals("")) {
+                        ShowMessageFX.Warning("Invalid to retrieve stock request, industy is empty.", psFormName, null);
+                        return;
+                    }
                     loadTableStockRequest();
                     break;
                 case "btnTransHistory":
@@ -1020,29 +1024,45 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     // Simulate loading delay
                     poApprovedStockRequest_data.clear();
                     JSONObject poJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
+
                     if ("success".equals(poJSON.get("result"))) {
                         JSONArray approvedRequests = (JSONArray) poJSON.get("data");
-                        poApprovedStockRequest_data.clear();
-                        for (Object requestObj : approvedRequests) {
-                            JSONObject obj = (JSONObject) requestObj;
+                        poApprovedStockRequest_data.clear();  // Ensure old data is removed
 
-                            ModelPurchaseOrder loApprovedStockRequest = new ModelPurchaseOrder(
-                                    String.valueOf(poApprovedStockRequest_data.size() + 1),
-                                    obj.get("sBranchNm") != null ? obj.get("sBranchNm").toString() : "",
-                                    obj.get("dTransact") != null ? obj.get("dTransact").toString() : "",
-                                    obj.get("sReferNox") != null ? obj.get("sReferNox").toString() : "",
-                                    obj.get("total_details") != null ? obj.get("total_details").toString() : "",
-                                    obj.get("sTransNox") != null ? obj.get("sTransNox").toString() : "",
-                                    "0",
-                                    "",
-                                    "",
-                                    ""
-                            );
-                            poApprovedStockRequest_data.add(loApprovedStockRequest);
+                        if (approvedRequests != null && !approvedRequests.isEmpty()) {
+                            for (Object requestObj : approvedRequests) {
+                                JSONObject obj = (JSONObject) requestObj;
+                                ModelPurchaseOrder loApprovedStockRequest = new ModelPurchaseOrder(
+                                        String.valueOf(poApprovedStockRequest_data.size() + 1),
+                                        obj.get("sBranchNm") != null ? obj.get("sBranchNm").toString() : "",
+                                        obj.get("dTransact") != null ? obj.get("dTransact").toString() : "",
+                                        obj.get("sReferNox") != null ? obj.get("sReferNox").toString() : "",
+                                        obj.get("total_details") != null ? obj.get("total_details").toString() : "",
+                                        obj.get("sTransNox") != null ? obj.get("sTransNox").toString() : "",
+                                        "0",
+                                        "",
+                                        "",
+                                        ""
+                                );
+                                poApprovedStockRequest_data.add(loApprovedStockRequest);
+                            }
+                        } else {
+                            // Ensure poApprovedStockRequest_data remains empty
+                            poApprovedStockRequest_data.clear();
                         }
                     }
+
+                    Platform.runLater(() -> {
+                        if (poApprovedStockRequest_data.isEmpty()) {
+                            tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                            tblVwStockRequest.setItems(FXCollections.observableArrayList(poApprovedStockRequest_data));
+                        } else {
+                            tblVwStockRequest.setItems(FXCollections.observableArrayList(poApprovedStockRequest_data));
+                        }
+                    });
+
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
             }
