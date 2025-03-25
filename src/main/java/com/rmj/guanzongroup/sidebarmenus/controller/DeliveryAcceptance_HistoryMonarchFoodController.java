@@ -59,6 +59,7 @@ import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -87,14 +88,14 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class DeliveryAcceptance_HistoryController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_HistoryMonarchFoodController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving History";
+    private final String pxeModuleName = "Purchasing Order Receiving History Monarch Food";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
