@@ -1190,18 +1190,20 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
         try {
 
-            lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
-            while (lnCtr > 0) {
-                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
-                    poPurchaseReceivingController.Detail().remove(lnCtr);
-                }
-                lnCtr--;
-            }
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
+                    while (lnCtr > 0) {
+                        if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
+                            poPurchaseReceivingController.Detail().remove(lnCtr);
+                        }
+                        lnCtr--;
+                    }
 
-            if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
-                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
-                    poPurchaseReceivingController.AddDetail();
-                }
+                    if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
+                        if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
+                            poPurchaseReceivingController.AddDetail();
+                        }
+                    }
             }
 
             double lnTotal = 0.0;

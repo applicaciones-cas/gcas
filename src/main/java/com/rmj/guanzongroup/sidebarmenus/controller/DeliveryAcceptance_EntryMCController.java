@@ -1237,17 +1237,19 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
 
         try {
 
-            lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
-            while (lnCtr > 0) {
-                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
-                    poPurchaseReceivingController.Detail().remove(lnCtr);
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
+                while (lnCtr > 0) {
+                    if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
+                        poPurchaseReceivingController.Detail().remove(lnCtr);
+                    }
+                    lnCtr--;
                 }
-                lnCtr--;
-            }
 
-            if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
-                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
-                    poPurchaseReceivingController.AddDetail();
+                if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
+                    if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
+                        poPurchaseReceivingController.AddDetail();
+                    }
                 }
             }
 

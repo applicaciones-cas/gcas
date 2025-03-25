@@ -471,7 +471,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         poJSON.put("result", "success");
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(false, poPurchaseReceivingController.Master().getReferenceNo());
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true, poPurchaseReceivingController.Master().getReferenceNo());
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {
@@ -1200,14 +1200,8 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                     return;
                 }
 
-                poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-                if ("error".equals((String) poJSON.get("message"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    return;
-                } else {
-                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                    highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
-                }
+                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
+                highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
 
                 loadTableDetail();
             }
@@ -1249,19 +1243,21 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                     int lnCtr;
 
                     try {
-
-                        lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
-                        while (lnCtr > 0) {
-                            if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
-                                poPurchaseReceivingController.Detail().remove(lnCtr);
+                        
+                        if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
+                            lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
+                            while (lnCtr > 0) {
+                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
+                                    poPurchaseReceivingController.Detail().remove(lnCtr);
+                                }
+                                lnCtr--;
                             }
-                            lnCtr--;
-                        }
 
-                        if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
-                            if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
-                                poPurchaseReceivingController.AddDetail();
+                            if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
+                                    poPurchaseReceivingController.AddDetail();
 
+                                }
                             }
                         }
 

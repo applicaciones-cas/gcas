@@ -1202,14 +1202,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     return;
                 }
 
-                poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-                if ("error".equals((String) poJSON.get("message"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    return;
-                } else {
-                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                    highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
-                }
+                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
+                highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
 
                 loadTableDetail();
             }
@@ -1517,6 +1511,10 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         apAttachments.setDisable(!lbShow1);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
+            case PurchaseOrderReceivingStatus.CONFIRMED:
+                btnConfirm.setVisible(false);
+                btnConfirm.setManaged(false);
+                break;
             case PurchaseOrderReceivingStatus.APPROVED:
             case PurchaseOrderReceivingStatus.VOID:
                 btnConfirm.setVisible(false);

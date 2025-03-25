@@ -1202,14 +1202,8 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                     return;
                 }
 
-                poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-                if ("error".equals((String) poJSON.get("message"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    return;
-                } else {
-                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                    highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
-                }
+                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
+                highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
 
                 loadTableDetail();
             }
@@ -1252,18 +1246,20 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
 
                     try {
 
-                        lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
-                        while (lnCtr > 0) {
-                            if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
-                                poPurchaseReceivingController.Detail().remove(lnCtr);
+                        if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
+                            lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
+                            while (lnCtr > 0) {
+                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
+                                    poPurchaseReceivingController.Detail().remove(lnCtr);
+                                }
+                                lnCtr--;
                             }
-                            lnCtr--;
-                        }
 
-                        if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
-                            if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
-                                poPurchaseReceivingController.AddDetail();
+                            if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
+                                    poPurchaseReceivingController.AddDetail();
 
+                                }
                             }
                         }
 
@@ -1514,6 +1510,10 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
         apAttachments.setDisable(!lbShow1);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
+            case PurchaseOrderReceivingStatus.CONFIRMED:
+                btnConfirm.setVisible(false);
+                btnConfirm.setManaged(false);
+                break;
             case PurchaseOrderReceivingStatus.APPROVED:
             case PurchaseOrderReceivingStatus.VOID:
                 btnConfirm.setVisible(false);
