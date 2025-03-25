@@ -390,7 +390,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         break;
                 }
                 initButton(pnEditMode);
-                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve")|| lsButton.equals("btnCancel")) {
+                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
 
                 } else {
                     loadRecordMaster();
@@ -949,6 +949,19 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
     }
 
     public void loadRecordMaster() {
+        boolean lbDisable = pnEditMode == EditMode.UPDATE;
+        if (lbDisable) {
+            tfCompany.setDisable(lbDisable);
+            tfCompany.setDisable(lbDisable);
+            tfCompany.getStyleClass().add("DisabledTextField");
+            tfSupplier.getStyleClass().add("DisabledTextField");
+        } else {
+            tfCompany.setDisable(lbDisable);
+            tfCompany.setDisable(lbDisable);
+            tfCompany.getStyleClass().remove("DisabledTextField");
+            tfSupplier.getStyleClass().remove("DisabledTextField");
+        }
+
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
             btnPrint.setText("Reprint");

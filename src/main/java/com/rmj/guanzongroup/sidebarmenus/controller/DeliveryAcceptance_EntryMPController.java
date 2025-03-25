@@ -390,7 +390,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                         break;
                 }
                 initButton(pnEditMode);
-                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve")|| lsButton.equals("btnCancel")) {
+                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
 
                 } else {
                     loadRecordMaster();
@@ -884,7 +884,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
             sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
             tblViewPuchaseOrder.setItems(sortedData);
 
-
         }
     }
 
@@ -934,8 +933,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                 tfBrand.getStyleClass().add("DisabledTextField");
                 tfModel.getStyleClass().add("DisabledTextField");
             }
-            
-            
+
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
                 poPurchaseReceivingController.Detail(pnDetail).setModelVariantId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getVariantId());
@@ -962,6 +960,19 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
     }
 
     public void loadRecordMaster() {
+        boolean lbDisable = pnEditMode == EditMode.UPDATE;
+        if (lbDisable) {
+            tfCompany.setDisable(lbDisable);
+            tfCompany.setDisable(lbDisable);
+            tfCompany.getStyleClass().add("DisabledTextField");
+            tfSupplier.getStyleClass().add("DisabledTextField");
+        } else {
+            tfCompany.setDisable(lbDisable);
+            tfCompany.setDisable(lbDisable);
+            tfCompany.getStyleClass().remove("DisabledTextField");
+            tfSupplier.getStyleClass().remove("DisabledTextField");
+        }
+
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
             btnPrint.setText("Reprint");

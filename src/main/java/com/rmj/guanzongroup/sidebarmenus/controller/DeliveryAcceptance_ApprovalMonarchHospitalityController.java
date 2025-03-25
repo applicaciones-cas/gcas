@@ -1095,6 +1095,19 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
     }
 
     public void loadRecordMaster() {
+        boolean lbDisable = pnEditMode == EditMode.UPDATE;
+        if (lbDisable) {
+            tfCompany.setDisable(lbDisable);
+            tfCompany.setDisable(lbDisable);
+            tfCompany.getStyleClass().add("DisabledTextField");
+            tfSupplier.getStyleClass().add("DisabledTextField");
+        } else {
+            tfCompany.setDisable(lbDisable);
+            tfCompany.setDisable(lbDisable);
+            tfCompany.getStyleClass().remove("DisabledTextField");
+            tfSupplier.getStyleClass().remove("DisabledTextField");
+        }
+
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
             btnPrint.setText("Reprint");
@@ -1244,7 +1257,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                     int lnCtr;
 
                     try {
-                        if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
                             while (lnCtr > 0) {
                                 if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {

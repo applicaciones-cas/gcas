@@ -185,7 +185,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
@@ -404,8 +404,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    
 
     public void retrievePO() {
         poJSON = new JSONObject();
@@ -718,7 +716,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
         try {
@@ -768,8 +766,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             e.printStackTrace();
         }
     };
-    
-    
 
     public void loadRecordDetail() {
         try {
@@ -811,6 +807,19 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
     }
 
     public void loadRecordMaster() {
+        boolean lbDisable = pnEditMode == EditMode.UPDATE;
+        if (lbDisable) {
+            tfCompany.setDisable(lbDisable);
+            tfCompany.setDisable(lbDisable);
+            tfCompany.getStyleClass().add("DisabledTextField");
+            tfSupplier.getStyleClass().add("DisabledTextField");
+        } else {
+            tfCompany.setDisable(lbDisable);
+            tfCompany.setDisable(lbDisable);
+            tfCompany.getStyleClass().remove("DisabledTextField");
+            tfSupplier.getStyleClass().remove("DisabledTextField");
+        }
+
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
             btnPrint.setText("Reprint");
@@ -905,7 +914,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
         }
 
     }
-    
+
     public void loadTableMain() {
         // Setting data to table detail
         main_data.clear();
@@ -982,7 +991,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                     disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
                     highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
                 }
-
                 loadTableDetail();
             }
 
@@ -1075,7 +1083,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void clearTextFields() {
 
         dpTransactionDate.setValue(null);
@@ -1270,12 +1278,12 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
         });
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
     }
-    
+
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
-        
+
         // Manage visibility and managed state of other buttons
         btnNew.setVisible(!lbShow);
         btnNew.setManaged(!lbShow);
@@ -1302,9 +1310,9 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
-        
+
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
-            case PurchaseOrderReceivingStatus.APPROVED: 
+            case PurchaseOrderReceivingStatus.APPROVED:
             case PurchaseOrderReceivingStatus.VOID:
                 btnUpdate.setVisible(false);
                 btnUpdate.setManaged(false);
@@ -1320,7 +1328,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
         pgPagination.currentPageIndexProperty().addListener(
                 (observable, oldValue, newValue) -> changeTableView(newValue.intValue(), ROWS_PER_PAGE));
     }
-    
+
     private TableView<?> getFocusedTable() {
         if (tblViewPuchaseOrder.isFocused()) {
             return tblViewPuchaseOrder;

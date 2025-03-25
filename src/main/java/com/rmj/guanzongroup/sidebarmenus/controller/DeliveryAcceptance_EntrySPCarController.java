@@ -867,6 +867,19 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
     }
 
     public void loadRecordMaster() {
+        boolean lbDisable = pnEditMode == EditMode.UPDATE;
+        if (lbDisable) {
+            tfCompany.setDisable(lbDisable);
+            tfCompany.setDisable(lbDisable);
+            tfCompany.getStyleClass().add("DisabledTextField");
+            tfSupplier.getStyleClass().add("DisabledTextField");
+        } else {
+            tfCompany.setDisable(lbDisable);
+            tfCompany.setDisable(lbDisable);
+            tfCompany.getStyleClass().remove("DisabledTextField");
+            tfSupplier.getStyleClass().remove("DisabledTextField");
+        }
+
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
             btnPrint.setText("Reprint");
@@ -1258,7 +1271,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
-        
+
         // Manage visibility and managed state of other buttons
         btnNew.setVisible(!lbShow);
         btnNew.setManaged(!lbShow);
@@ -1283,16 +1296,16 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
 
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
-        
+
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
-            case PurchaseOrderReceivingStatus.APPROVED: 
+            case PurchaseOrderReceivingStatus.APPROVED:
             case PurchaseOrderReceivingStatus.VOID:
                 btnUpdate.setVisible(false);
                 btnUpdate.setManaged(false);
                 break;
         }
     }
-    
+
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
         pgPagination.setPageCount(totalPage);
