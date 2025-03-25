@@ -1290,6 +1290,8 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
                         poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                        poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                        poPurchasingController.PurchaseOrder().Master().setContactID("");
                         tfSupplier.setText("");
                     }
                 }

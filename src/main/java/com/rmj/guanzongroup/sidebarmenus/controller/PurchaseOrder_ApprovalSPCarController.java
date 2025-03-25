@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -80,6 +81,10 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
     private int pnTblPurchaseOrderRow = -1;
     private int pnTblPODetailRow = -1;
     private int ROWS_PER_PAGE = 10;
+    private String psIndustryID = "";
+    private String psCompanyID = "";
+    private String psSupplierID = "";
+    private String psReferID = "";
     @FXML
     private AnchorPane apBrowse, apButton;
     @FXML
@@ -155,6 +160,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
             initTextFieldPattern();
             initTablePurchaseOrder();
             initTablePODetail();
+            initTextFieldsProperty();
             tblVwPurchaseOrder.setOnMouseClicked(this::tblVwPurchaseOrder_Clicked);
             tblVwOrderDetails.setOnMouseClicked(this::tblVwOrderDetails_Clicked);
             pnEditMode = EditMode.UNKNOWN;
@@ -574,6 +580,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                                     tfSearchIndustry.setText("");
                                     break;
                                 }
+                                psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
                                 tfSearchIndustry.setText(poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
                                 break;
                             case "tfSearchCompany":
@@ -583,6 +590,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                                     tfCompany.setText("");
                                     break;
                                 }
+                                psCompanyID = poPurchasingController.PurchaseOrder().Master().getCompanyID();
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
@@ -592,6 +600,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                                     tfSupplier.setText("");
                                     break;
                                 }
+                                psSupplierID = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
                             case "tfDestination":
@@ -771,29 +780,42 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
             @Override
             protected Void call() throws Exception {
                 try {
-                    // Simulate loading delay
-
                     poPurchaseOrder_data.clear();
-
-                    poPurchaseOrder_data.clear();
-                    JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder();
+                    JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder(psIndustryID,
+                            psCompanyID,
+                            psSupplierID,
+                            psReferID);
                     if ("success".equals(loJSON.get("result"))) {
-                        for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getPOMasterCount() - 1; lnCntr++) {
-                            poPurchaseOrder_data.add(new ModelPurchaseOrder(
-                                    String.valueOf(lnCntr + 1),
-                                    poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionNo(),
-                                    SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
-                                    poPurchasingController.PurchaseOrder().POMaster(lnCntr).Supplier().getCompanyName(),
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    ""));
-                            tblVwPurchaseOrder.setItems(poPurchaseOrder_data);
-
+                        if (poPurchasingController.PurchaseOrder().getPOMasterCount() > 0) {
+                            for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getPOMasterCount() - 1; lnCntr++) {
+                                poPurchaseOrder_data.add(new ModelPurchaseOrder(
+                                        String.valueOf(lnCntr + 1),
+                                        poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionNo(),
+                                        SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().POMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
+                                        poPurchasingController.PurchaseOrder().POMaster(lnCntr).Supplier().getCompanyName(),
+                                        "",
+                                        "",
+                                        "",
+                                        "",
+                                        "",
+                                        ""));
+                                tblVwPurchaseOrder.setItems(poPurchaseOrder_data);
+                            }
+                        } else {
+                            // Ensure poApprovedStockRequest_data remains empty
+                            poPurchaseOrder_data.clear();
                         }
                     }
+
+                    Platform.runLater(() -> {
+                        if (poPurchaseOrder_data.isEmpty()) {
+                            tblVwPurchaseOrder.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                            tblVwPurchaseOrder.setItems(FXCollections.observableArrayList(poPurchaseOrder_data));
+                        } else {
+                            tblVwPurchaseOrder.setItems(FXCollections.observableArrayList(poPurchaseOrder_data));
+                        }
+                    });
+
                 } catch (SQLException | GuanzonException ex) {
                     Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1094,5 +1116,41 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
             }
 
         }
+    }
+
+    private void initTextFieldsProperty() {
+        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
+                    tfSearchCompany.setText("");
+                    psCompanyID = "";
+                    loadTablePurchaseOrder();
+                }
+            }
+        });
+        tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                    poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                    poPurchasingController.PurchaseOrder().Master().setContactID("");
+                    tfSearchSupplier.setText("");
+                    psSupplierID = "";
+                    loadTablePurchaseOrder();
+                }
+
+            }
+        });
+        tfSearchReferenceNo.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setReference("");
+                    tfSearchReferenceNo.setText("");
+                    psReferID = "";
+                    loadTablePurchaseOrder();
+                }
+            }
+        });
     }
 }

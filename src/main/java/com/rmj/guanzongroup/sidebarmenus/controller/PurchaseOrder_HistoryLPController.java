@@ -59,13 +59,17 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order History LP";
+    private String psFormName = "Purchase Order History";
     private LogWrapper logWrapper;
     private int pnEditMode;
     private JSONObject poJSON;
     unloadForm poUnload = new unloadForm();
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblPODetailRow = -1;
+    private String psIndustryID = "";
+    private String psCompanyID = "";
+    private String psSupplierID = "";
+    private String psReferID = "";
     @FXML
     private AnchorPane apBrowse, apButton;
     @FXML
@@ -120,20 +124,21 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
                 ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                 return;
             }
+            tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             String lsIndustryName = "";
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
-            tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             tfSearchIndustry.setText(lsIndustryName);
-            initButtonsClickActions();
+            initButtonsClickActions();;
             initTextFieldKeyPressed();
+            initTextFieldsProperty();
             initTablePODetail();
             tblVwOrderDetails.setOnMouseClicked(this::tblVwOrderDetails_Clicked);
             pnEditMode = EditMode.UNKNOWN;
             initButtons(pnEditMode);
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -209,7 +214,7 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -236,7 +241,7 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
                 tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -252,7 +257,11 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("");
+                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("",
+                            psIndustryID,
+                            psCompanyID,
+                            psSupplierID,
+                            psReferID);
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();
@@ -338,36 +347,28 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
                                     tfSearchIndustry.setText("");
                                     break;
                                 }
+                                psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
                                 tfSearchIndustry.setText(poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
                                 break;
                             case "tfSearchCompany":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfCompany.setText("");
+                                    tfSearchCompany.setText("");
                                     break;
                                 }
-                                tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
+                                psCompanyID = poPurchasingController.PurchaseOrder().Master().getCompanyID();
                                 tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 break;
                             case "tfSearchSupplier":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfSupplier.setText("");
+                                    tfSearchSupplier.setText("");
                                     break;
                                 }
-                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
+                                psSupplierID = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
-                                break;
-                            case "tfDestination":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchDestination(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfDestination.setText("");
-                                    break;
-                                }
-                                tfDestination.setText(poPurchasingController.PurchaseOrder().Master().Branch().getBranchName());
                                 break;
                         }
                         event.consume();
@@ -386,7 +387,7 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryLPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
 //        }
     }
@@ -464,7 +465,7 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryLPController.class
+            Logger.getLogger(PurchaseOrder_HistoryController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -556,4 +557,36 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
         }
     }
 
+    private void initTextFieldsProperty() {
+        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
+                    tfSearchCompany.setText("");
+                    psCompanyID = "";
+                }
+            }
+        });
+        tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                    poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                    poPurchasingController.PurchaseOrder().Master().setContactID("");
+                    tfSearchSupplier.setText("");
+                    psSupplierID = "";
+                }
+
+            }
+        });
+        tfSearchReferenceNo.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poPurchasingController.PurchaseOrder().Master().setReference("");
+                    tfSearchReferenceNo.setText("");
+                    psReferID = "";
+                }
+            }
+        });
+    }
 }

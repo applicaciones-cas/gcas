@@ -1290,6 +1290,8 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
                         poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                        poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                        poPurchasingController.PurchaseOrder().Master().setContactID("");
                         tfSupplier.setText("");
                     }
                 }

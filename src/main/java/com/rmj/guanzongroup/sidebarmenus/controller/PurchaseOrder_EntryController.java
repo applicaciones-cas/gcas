@@ -1288,6 +1288,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 if (newValue != null) {
                     if (newValue.isEmpty()) {
                         poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                        poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                        poPurchasingController.PurchaseOrder().Master().setContactID("");
                         tfSupplier.setText("");
                     }
                 }
