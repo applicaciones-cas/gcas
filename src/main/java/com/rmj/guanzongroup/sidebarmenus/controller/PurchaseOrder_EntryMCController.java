@@ -416,7 +416,6 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                 case "btnUpdate":
                     loJSON = poPurchasingController.PurchaseOrder().UpdateTransaction();
                     pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
-                    loJSON = poPurchasingController.PurchaseOrder().AddDetail();
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -571,11 +570,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     // Save Transaction
                     if (!"success".equals((loJSON = poPurchasingController.PurchaseOrder().SaveTransaction()).get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                        String lsMessage = (String) loJSON.get("message");
-                        if (!lsMessage.equals("All items have zero quantity. Please enter a valid quantity.")) {
-                            loJSON = poPurchasingController.PurchaseOrder().AddDetail();
-                        }
-                        loadTablePODetail();;
+                        loadTablePODetail();
                         return;
                     }
 
@@ -651,6 +646,10 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     }
                     break;
                 case "btnRetrieve":
+                    if (poPurchasingController.PurchaseOrder().Master().getIndustryID().equals("")) {
+                        ShowMessageFX.Warning("Invalid to retrieve stock request, industy is empty.", psFormName, null);
+                        return;
+                    }
                     loadTableStockRequest();
                     break;
                 case "btnTransHistory":
@@ -1089,29 +1088,45 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     // Simulate loading delay
                     poApprovedStockRequest_data.clear();
                     JSONObject poJSON = poPurchasingController.PurchaseOrder().getApprovedStockRequests();
+
                     if ("success".equals(poJSON.get("result"))) {
                         JSONArray approvedRequests = (JSONArray) poJSON.get("data");
-                        poApprovedStockRequest_data.clear();
-                        for (Object requestObj : approvedRequests) {
-                            JSONObject obj = (JSONObject) requestObj;
+                        poApprovedStockRequest_data.clear();  // Ensure old data is removed
 
-                            ModelPurchaseOrder loApprovedStockRequest = new ModelPurchaseOrder(
-                                    String.valueOf(poApprovedStockRequest_data.size() + 1),
-                                    obj.get("sBranchNm") != null ? obj.get("sBranchNm").toString() : "",
-                                    obj.get("dTransact") != null ? obj.get("dTransact").toString() : "",
-                                    obj.get("sReferNox") != null ? obj.get("sReferNox").toString() : "",
-                                    obj.get("total_details") != null ? obj.get("total_details").toString() : "",
-                                    obj.get("sTransNox") != null ? obj.get("sTransNox").toString() : "",
-                                    "0",
-                                    "",
-                                    "",
-                                    ""
-                            );
-                            poApprovedStockRequest_data.add(loApprovedStockRequest);
+                        if (approvedRequests != null && !approvedRequests.isEmpty()) {
+                            for (Object requestObj : approvedRequests) {
+                                JSONObject obj = (JSONObject) requestObj;
+                                ModelPurchaseOrder loApprovedStockRequest = new ModelPurchaseOrder(
+                                        String.valueOf(poApprovedStockRequest_data.size() + 1),
+                                        obj.get("sBranchNm") != null ? obj.get("sBranchNm").toString() : "",
+                                        obj.get("dTransact") != null ? obj.get("dTransact").toString() : "",
+                                        obj.get("sReferNox") != null ? obj.get("sReferNox").toString() : "",
+                                        obj.get("total_details") != null ? obj.get("total_details").toString() : "",
+                                        obj.get("sTransNox") != null ? obj.get("sTransNox").toString() : "",
+                                        "0",
+                                        "",
+                                        "",
+                                        ""
+                                );
+                                poApprovedStockRequest_data.add(loApprovedStockRequest);
+                            }
+                        } else {
+                            // Ensure poApprovedStockRequest_data remains empty
+                            poApprovedStockRequest_data.clear();
                         }
                     }
+
+                    Platform.runLater(() -> {
+                        if (poApprovedStockRequest_data.isEmpty()) {
+                            tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                            tblVwStockRequest.setItems(FXCollections.observableArrayList(poApprovedStockRequest_data));
+                        } else {
+                            tblVwStockRequest.setItems(FXCollections.observableArrayList(poApprovedStockRequest_data));
+                        }
+                    });
+
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
             }
@@ -1233,24 +1248,41 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
             protected Void call() throws Exception {
                 poDetail_data.clear();
                 try {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        int lnCntr;
+                        lnCntr = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
+                        while (lnCntr > 0) {
+                            if (poPurchasingController.PurchaseOrder().Detail(lnCntr).getStockID() == null
+                                    || poPurchasingController.PurchaseOrder().Detail(lnCntr).getStockID().equals("")) {
+                                poPurchasingController.PurchaseOrder().Detail().remove(lnCntr);
+                            }
+                            lnCntr--;
+                        }
+                        if ((poPurchasingController.PurchaseOrder().getDetailCount() - 1) >= 0) {
+                            if (poPurchasingController.PurchaseOrder().Detail(poPurchasingController.PurchaseOrder().getDetailCount() - 1).getStockID() != null
+                                    && !poPurchasingController.PurchaseOrder().Detail(poPurchasingController.PurchaseOrder().getDetailCount() - 1).getStockID().equals("")) {
+                                poPurchasingController.PurchaseOrder().AddDetail();
+                            }
+                        }
+                    }
 
                     double grandTotalAmount = 0.0;
-                    for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
+                    for (int lnCtr = 0; lnCtr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCtr++) {
                         double lnTotalAmount = poPurchasingController.PurchaseOrder()
-                                .Detail(lnCntr)
+                                .Detail(lnCtr)
                                 .Inventory().getCost().doubleValue() * poPurchasingController.PurchaseOrder()
-                                        .Detail(lnCntr)
+                                        .Detail(lnCtr)
                                         .getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
                         poDetail_data.add(new ModelPurchaseOrderDetail(
-                                String.valueOf(lnCntr + 1),
-                                poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
-                                poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
-                                poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
+                                String.valueOf(lnCtr + 1),
+                                poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo(),
+                                poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getBarCode(),
+                                poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getDescription(),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getCost()),
                                 "",
-                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getQuantity()),
-                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
+                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getQuantity()),
+                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""
                         ));
@@ -1262,13 +1294,14 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
                 } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryMCController.class
+                    Logger.getLogger(PurchaseOrder_EntryController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
             }
 
             @Override
+
             protected void succeeded() {
                 tblVwOrderDetails.setItems(poDetail_data);
                 progressIndicator.setVisible(false);
@@ -1288,7 +1321,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
 
                     for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
                         if (listPODetail.equals(master.getIndex06())) {
-                            if (master.getIndex07() != PurchaseOrderStatus.CONFIRMED) {
+                            if (!master.getIndex07().equals(PurchaseOrderStatus.CONFIRMED)) {
                                 master.setIndex07(PurchaseOrderStatus.CONFIRMED);
                             }
                             break; // Exit inner loop once matched
