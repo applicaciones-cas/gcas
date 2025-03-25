@@ -263,9 +263,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
+                            
                             poPurchaseReceivingController.Detail().clear();
                             pnEditMode = EditMode.UNKNOWN;
                             clearTextFields();
@@ -301,9 +299,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 }
 
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
                                 pnEditMode = EditMode.UNKNOWN;
                                 clearTextFields();
                             }
@@ -321,9 +316,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
@@ -345,10 +337,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                //get last retrieved Company and Supplier
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
+                                
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
                                 pnEditMode = EditMode.UNKNOWN;
@@ -369,10 +358,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                //get last retrieved Company and Supplier
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
+                                
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
                                 pnEditMode = EditMode.UNKNOWN;

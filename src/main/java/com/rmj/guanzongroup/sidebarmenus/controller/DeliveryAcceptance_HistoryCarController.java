@@ -106,8 +106,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
-    private String lsCompanyId = "";
-    private String lsSupplierId = "";
+    private String psCompanyId = "";
+    private String psSupplierId = "";
 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
@@ -232,205 +232,83 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         poJSON = new JSONObject();
         String tabText = "";
 
-        try {
-            Object source = event.getSource();
-            if (source instanceof Button) {
-                Button clickedButton = (Button) source;
-                String lsButton = clickedButton.getId();
-                switch (lsButton) {
-                    case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord();
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        }
-                        break;
-                    case "btnClose":
-                        unloadForm appUnload = new unloadForm();
-                        if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-                            appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
-                        } else {
-                            return;
-                        }
-                    case "btnSerials":
-                        showSerialDialog();
+        Object source = event.getSource();
+        if (source instanceof Button) {
+            Button clickedButton = (Button) source;
+            String lsButton = clickedButton.getId();
+            switch (lsButton) {
+                case "btnPrint":
+                    poJSON = poPurchaseReceivingController.printRecord();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    }
+                    break;
+                case "btnClose":
+                    unloadForm appUnload = new unloadForm();
+                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                        appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
+                    } else {
                         return;
-                    case "btnUpdate":
-                        poJSON = poPurchaseReceivingController.UpdateTransaction();
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            return;
-                        }
-                        pnEditMode = poPurchaseReceivingController.getEditMode();
-                        break;
-                    case "btnSearch":
-                        if (lastFocusedTextField != null) {
-                            // Create a simulated KeyEvent for F3 key press
-                            KeyEvent keyEvent = new KeyEvent(
-                                    KeyEvent.KEY_PRESSED,
-                                    "",
-                                    "F3",
-                                    KeyCode.F3,
-                                    false, false, false, false);
-
-                            lastFocusedTextField.fireEvent(keyEvent);
-                        } else {
-                            ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
-                        }
-                        break;
-                    case "btnCancel":
-                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                            lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
-                            poPurchaseReceivingController.Detail().clear();
-                            pnEditMode = EditMode.UNKNOWN;
-                            clearTextFields();
-                            loadTableDetail();
-                            break;
-                        } else {
-                            return;
-                        }
-                    case "btnHistory":
-                        break;
-                    case "btnRetrieve":
-                        //Retrieve data from purchase order to table main
-                        if (mainSearchListener != null) {
-                            tfOrderNo.textProperty().removeListener(mainSearchListener);
-                            mainSearchListener = null; // Clear reference to avoid memory leaks
-                        }
-                        retrievePOR();
-                        disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
-
-                        break;
-                    case "btnSave":
-                        //Validator
-                        poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.SaveTransaction();
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                return;
-                            } else {
-                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                                if (!"success".equals((String) poJSON.get("result"))) {
-                                    System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
-                                pnEditMode = EditMode.UNKNOWN;
-                                clearTextFields();
-                            }
-                        } else {
-                            return;
-                        }
-
-                        break;
-                    case "btnApprove":
-                        poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to approve transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.ApproveTransaction("");
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                return;
-                            } else {
-                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
-                                clearTextFields();
-                                poPurchaseReceivingController.Detail().clear();
-                                pnEditMode = EditMode.UNKNOWN;
-                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain, "#C1E1C1", highlightedRowsMain);
-                                loadTableDetail();
-                            }
-                        } else {
-                            return;
-                        }
-                        break;
-                    case "btnVoid":
-                        poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.VoidTransaction("");
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                return;
-                            } else {
-                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                //get last retrieved Company and Supplier
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
-                                clearTextFields();
-                                poPurchaseReceivingController.Detail().clear();
-                                pnEditMode = EditMode.UNKNOWN;
-                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain, "#FAA0A0", highlightedRowsMain);
-                                loadTableDetail();
-                            }
-                        } else {
-                            return;
-                        }
-                        break;
-                    case "btnReturn":
-                        poJSON = new JSONObject();
-                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to return transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.ReturnTransaction("");
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                return;
-                            } else {
-                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                //get last retrieved Company and Supplier
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
-                                clearTextFields();
-                                poPurchaseReceivingController.Detail().clear();
-                                pnEditMode = EditMode.UNKNOWN;
-                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain, "#FAC898", highlightedRowsMain);
-                                loadTableDetail();
-                            }
-                        } else {
-                            return;
-                        }
-                        break;
-                    case "btnArrowRight":
-                        slideImage(1);
-                        break;
-                    case "btnArrowLeft":
-                        slideImage(-1);
-                        break;
-
-                    default:
-                        ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
-                        break;
-                }
-                initButton(pnEditMode);
-
-                if (lsButton.equals("btnPrint") || lsButton.equals("btnArrowRight")
-                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
-
-                } else {
-                    loadRecordMaster();
-                    loadTableDetail();
-                }
-
+                    }
+                case "btnSerials":
+                    showSerialDialog();
+                    return;
+                case "btnUpdate":
+                    poJSON = poPurchaseReceivingController.UpdateTransaction();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    pnEditMode = poPurchaseReceivingController.getEditMode();
+                    break;
+                case "btnSearch":
+                    if (lastFocusedTextField != null) {
+                        // Create a simulated KeyEvent for F3 key press
+                        KeyEvent keyEvent = new KeyEvent(
+                                KeyEvent.KEY_PRESSED,
+                                "",
+                                "F3",
+                                KeyCode.F3,
+                                false, false, false, false);
+                        
+                        lastFocusedTextField.fireEvent(keyEvent);
+                    } else {
+                        ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
+                    }
+                    break;
+                case "btnHistory":
+                    break;
+                case "btnRetrieve":
+                    //Retrieve data from purchase order to table main
+                    if (mainSearchListener != null) {
+                        tfOrderNo.textProperty().removeListener(mainSearchListener);
+                        mainSearchListener = null; // Clear reference to avoid memory leaks
+                    }
+                    retrievePOR();
+                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                    
+                    break;
+                case "btnArrowRight":
+                    slideImage(1);
+                    break;
+                case "btnArrowLeft":
+                    slideImage(-1);
+                    break;
+                    
+                default:
+                    ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                    break;
             }
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
+            initButton(pnEditMode);
+            
+            if (lsButton.equals("btnPrint") || lsButton.equals("btnArrowRight")
+                    || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
+                
+            } else {
+                loadRecordMaster();
+                loadTableDetail();
+            }
+            
         }
     }
 
@@ -450,7 +328,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         poJSON.put("result", "success");
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true, tfSearchReferenceNo.getText());
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true,psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
+            
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {
@@ -733,16 +612,17 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                // remove master transNox if contains blank
                 case "tfSearchCompany":
                     if (lsValue.equals("")) {
                         poPurchaseReceivingController.Master().setCompanyId("");
-                    }
+                    } 
+                    psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                     break;
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
                         poPurchaseReceivingController.Master().setSupplierId("");
                     }
+                    psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                     break;
                 case "tfAttachmentNo":
                     break;
@@ -767,8 +647,12 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfCompany.setText("");
+                                psCompanyId = "";
                                 break;
+                            } else {
+                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             }
+                            
                             retrievePOR();
                             loadRecordSearch();
                             return;
@@ -777,7 +661,10 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupplier.setText("");
+                                psSupplierId = "";
                                 break;
+                            } else {
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                             }
                             retrievePOR();
                             loadRecordSearch();

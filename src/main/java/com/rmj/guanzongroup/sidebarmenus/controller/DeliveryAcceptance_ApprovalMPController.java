@@ -278,9 +278,7 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
+                           
                             poPurchaseReceivingController.Detail().clear();
                             pnEditMode = EditMode.UNKNOWN;
                             clearTextFields();
@@ -315,10 +313,6 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                                     System.err.println((String) poJSON.get("message"));
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 }
-
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
                                 pnEditMode = EditMode.UNKNOWN;
                                 clearTextFields();
                             }
@@ -336,9 +330,6 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
@@ -360,10 +351,7 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                //get last retrieved Company and Supplier
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
+                                
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
                                 pnEditMode = EditMode.UNKNOWN;
@@ -384,10 +372,7 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                //get last retrieved Company and Supplier
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
+                                
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
                                 pnEditMode = EditMode.UNKNOWN;
