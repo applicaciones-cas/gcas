@@ -19,7 +19,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -116,8 +118,8 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     double ldstackPaneWidth = 0;
     double ldstackPaneHeight = 0;
 
-    private final Map<Integer, String> highlightedRowsMain = new HashMap<>();
-    private final Map<Integer, String> highlightedRowsDetail = new HashMap<>();
+    private final Map<Integer, List<String>> highlightedRowsMain = new HashMap<>();
+    private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
     private TextField lastFocusedTextField = null;
 
     private ChangeListener<String> detailSearchListener;
@@ -202,16 +204,16 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         loadRecordSearch();
 
         pgPagination.setPageCount(1);
-        
+
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
-    
+
     @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
@@ -282,6 +284,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                             mainSearchListener = null; // Clear reference to avoid memory leaks
                         }
                         retrievePOR();
+                        disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
                         break;
                     case "btnSave":
                         //Validator
@@ -322,7 +325,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
 
                                 lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                                
+
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
                                 pnEditMode = EditMode.UNKNOWN;
@@ -408,7 +411,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                             tblAttachments.getSelectionModel().select(pnAttachment);
 
                         }
-                    break;
+                        break;
                     case "btnRemoveAttachment":
                         img_data.remove(pnAttachment);
                         if (pnAttachment != 0) {
@@ -432,7 +435,8 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
 
                 if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment")
                         || lsButton.equals("btnRemoveAttachment") || lsButton.equals("btnArrowRight")
-                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnVoid") || lsButton.equals("btnRetrieve")) {
+                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnVoid") || lsButton.equals("btnRetrieve")
+                        || lsButton.equals("btnConfirm") || lsButton.equals("btnReturn")) {
 
                 } else {
                     loadRecordMaster();
@@ -452,7 +456,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @FXML
     void tblAttachments_Clicked(MouseEvent event) {
         pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
@@ -461,7 +465,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             resetImageBounds();
         }
     }
-    
+
     public void retrievePOR() {
         poJSON = new JSONObject();
 
@@ -480,7 +484,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
     }
-    
+
     final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -574,7 +578,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         }
 
     };
-    
+
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsID = (txtField.getId());
@@ -663,7 +667,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             loadTableDetail();
         }
     };
-    
+
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
 
         poJSON = new JSONObject();
@@ -873,7 +877,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             e.printStackTrace();
         }
     };
-    
+
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
         pgPagination.setPageCount(totalPage);
@@ -899,7 +903,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
 
         tblViewPuchaseOrder.scrollTo(0);
     }
-    
+
     public void loadTableMain() {
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -1203,7 +1207,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 } else {
-                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                     highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
                 }
 
@@ -1342,7 +1346,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         new Thread(task).start(); // Run task in background
 
     }
-    
+
     private void loadTableAttachment() {
 //        img_data.clear(); should have data from class before calling this clear
 //        for (int i = 0; i < img_data.size(); i++) {
@@ -1351,7 +1355,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         loadRecordAttachment();
 
     }
-    
+
     private void setDatePickerFormat(DatePicker datePicker) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         datePicker.setConverter(new StringConverter<LocalDate>() {
@@ -1366,7 +1370,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             }
         });
     }
-    
+
     public void initDatePickers() {
         setDatePickerFormat(dpTransactionDate);
         setDatePickerFormat(dpReferenceDate);
@@ -1409,7 +1413,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
         tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
     }
-    
+
     public void initTableOnClick() {
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
@@ -1438,7 +1442,10 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                 if (item == null || empty) {
                     setStyle(""); // Reset for empty rows
                 } else if (highlightedRowsMain.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRowsMain.get(getIndex()) + ";");
+                    List<String> colors = highlightedRowsMain.get(getIndex());
+                    if (!colors.isEmpty()) {
+                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply the latest color
+                    }
                 } else {
                     setStyle(""); // Default style
                 }
@@ -1451,7 +1458,10 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                 if (item == null || empty) {
                     setStyle(""); // Reset for empty rows
                 } else if (highlightedRowsDetail.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRowsDetail.get(getIndex()) + ";");
+                    List<String> colors = highlightedRowsDetail.get(getIndex());
+                    if (!colors.isEmpty()) {
+                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply the latest color
+                    }
                 } else {
                     setStyle(""); // Default style
                 }
@@ -1460,7 +1470,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
     }
-    
+
     private void initButton(int fnValue) {
 
         boolean lbShow1 = (fnValue == EditMode.UPDATE);
@@ -1475,11 +1485,11 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         btnSave.setManaged(lbShow1);
         btnCancel.setVisible(lbShow1);
         btnCancel.setManaged(lbShow1);
-        
+
         //Ready || Update
         btnReturn.setVisible(lbShow2);
         btnReturn.setManaged(lbShow2);
-        
+
         //Ready
         btnPrint.setVisible(lbShow3);
         btnPrint.setManaged(lbShow3);
@@ -1491,20 +1501,20 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         btnConfirm.setManaged(lbShow3);
         btnVoid.setVisible(lbShow3);
         btnVoid.setManaged(lbShow3);
-        
+
         //Unkown || Ready
         btnClose.setVisible(lbShow4);
         btnClose.setManaged(lbShow4);
-        
+
         btnAddAttachment.setDisable(!lbShow2);
         btnRemoveAttachment.setDisable(!lbShow2);
-        
+
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
         apAttachments.setDisable(!lbShow1);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
-            case PurchaseOrderReceivingStatus.APPROVED: 
+            case PurchaseOrderReceivingStatus.APPROVED:
             case PurchaseOrderReceivingStatus.VOID:
                 btnConfirm.setVisible(false);
                 btnConfirm.setManaged(false);
@@ -1517,7 +1527,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                 break;
         }
     }
-    
+
     private void initStackPaneListener() {
         stackPane1.widthProperty().addListener((observable, oldValue, newWidth) -> {
             double computedWidth = newWidth.doubleValue();
@@ -1786,7 +1796,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             event.consume();
         }
     }
-    
+
     private void stackPaneClip() {
         javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(
                 stackPane1.getWidth() - 8, // Subtract 10 for padding (5 on each side)
@@ -1799,7 +1809,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         stackPane1.setClip(clip);
 
     }
-    
+
     public void clearTextFields() {
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
@@ -1842,29 +1852,34 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
 //        loadTableDetail();
 //        loadTableMain();
     }
-    
+
     public void generateAttachment() {
         img_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
 
     }
-    
-    public <T> void highlight(TableView<T> table, int rowIndex, String color, Map<Integer, String> highlightMap) {
-        highlightMap.put(rowIndex, color);
+
+// Generic method to highlight with specific color
+    public <T> void highlight(TableView<T> table, int rowIndex, String color, Map<Integer, List<String>> highlightMap) {
+        highlightMap.computeIfAbsent(rowIndex, k -> new ArrayList<>()).add(color);
         table.refresh(); // Refresh to apply changes
     }
 
-    public <T> void disableHighlight(TableView<T> table, int rowIndex, Map<Integer, String> highlightMap) {
+// Generic method to remove highlight from a specific row
+    public <T> void disableHighlight(TableView<T> table, int rowIndex, Map<Integer, List<String>> highlightMap) {
         highlightMap.remove(rowIndex);
         table.refresh();
     }
 
-    public <T> void disableAllHighlight(TableView<T> table, Map<Integer, String> highlightMap) {
+// Generic method to remove all highlights
+    public <T> void disableAllHighlight(TableView<T> table, Map<Integer, List<String>> highlightMap) {
         highlightMap.clear();
         table.refresh();
     }
 
-    public <T> void disableAllHighlightByColor(TableView<T> table, String color, Map<Integer, String> highlightMap) {
-        highlightMap.entrySet().removeIf(entry -> entry.getValue().equals(color));
+// Generic method to remove all highlights of a specific color
+    public <T> void disableAllHighlightByColor(TableView<T> table, String color, Map<Integer, List<String>> highlightMap) {
+        highlightMap.forEach((key, colors) -> colors.removeIf(c -> c.equals(color)));
+        highlightMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         table.refresh();
     }
 

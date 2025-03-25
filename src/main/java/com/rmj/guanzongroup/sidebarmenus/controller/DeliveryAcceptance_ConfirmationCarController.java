@@ -21,7 +21,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -127,13 +129,13 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
     double ldstackPaneWidth = 0;
     double ldstackPaneHeight = 0;
 
-    private final Map<Integer, String> highlightedRowsMain = new HashMap<>();
-    private final Map<Integer, String> highlightedRowsDetail = new HashMap<>();
+    private final Map<Integer, List<String>> highlightedRowsMain = new HashMap<>();
+    private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
     private TextField lastFocusedTextField = null;
     private Stage dialogStage = null;
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
-    
+
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apAttachments, apAttachmentButtons;
     @FXML
@@ -175,7 +177,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
     private ImageView imageView;
     @FXML
     private Button btnArrowLeft, btnArrowRight;
-    
+
 //    @FXML
 //    private TextField tfDescription;
 //    @FXML
@@ -184,7 +186,6 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
 //    private TextField tfSupersede;
 //    @FXML
 //    private DatePicker dpExpiryDate;
-    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -218,11 +219,11 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         loadRecordSearch();
 
         pgPagination.setPageCount(1);
-        
+
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
-    
+
     @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
@@ -300,6 +301,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                             mainSearchListener = null; // Clear reference to avoid memory leaks
                         }
                         retrievePOR();
+                        disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
                         break;
                     case "btnSave":
                         //Validator
@@ -340,7 +342,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
 
                                 lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                                
+
                                 clearTextFields();
                                 poPurchaseReceivingController.Detail().clear();
                                 pnEditMode = EditMode.UNKNOWN;
@@ -425,7 +427,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                             tblAttachments.getFocusModel().focus(pnAttachment);
                             tblAttachments.getSelectionModel().select(pnAttachment);
                         }
-                    break;
+                        break;
                     case "btnRemoveAttachment":
                         img_data.remove(pnAttachment);
                         if (pnAttachment != 0) {
@@ -449,7 +451,8 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
 
                 if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment")
                         || lsButton.equals("btnRemoveAttachment") || lsButton.equals("btnArrowRight")
-                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnVoid") || lsButton.equals("btnRetrieve")) {
+                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnVoid") || lsButton.equals("btnRetrieve")
+                        || lsButton.equals("btnConfirm") || lsButton.equals("btnReturn")) {
 
                 } else {
                     loadRecordMaster();
@@ -469,7 +472,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     @FXML
     void tblAttachments_Clicked(MouseEvent event) {
         pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
@@ -478,7 +481,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             resetImageBounds();
         }
     }
-    
+
     public void retrievePOR() {
         poJSON = new JSONObject();
 
@@ -497,7 +500,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
     }
-    
+
     public void showSerialDialog() {
         poJSON = new JSONObject();
         try {
@@ -563,7 +566,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void closeSerialDialog() {
         if (dialogStage != null && dialogStage.isShowing()) {
             dialogStage.close();
@@ -571,7 +574,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         } else {
         }
     }
-    
+
     final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -665,7 +668,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         }
 
     };
-    
+
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsID = (txtField.getId());
@@ -694,7 +697,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             txtField.selectAll();
         }
     };
-    
+
     // Method to handle focus change and track the last focused TextField
     final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
@@ -754,7 +757,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             loadTableDetail();
         }
     };
-    
+
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
 
         poJSON = new JSONObject();
@@ -946,7 +949,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             e.printStackTrace();
         }
     };
-    
+
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
         pgPagination.setPageCount(totalPage);
@@ -1147,10 +1150,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
                 poPurchaseReceivingController.Detail(pnDetail).setModelVariantId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getVariantId());
             }
-            
+
             tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription()); //TODO
             tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).ModelVariant().getDescription()); //TODO
-            
+
             tfModel.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Model().getDescription());
             tfColor.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Color().getDescription());
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
@@ -1280,7 +1283,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 } else {
-                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                     highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
                 }
 
@@ -1419,7 +1422,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         new Thread(task).start(); // Run task in background
 
     }
-    
+
     private void loadTableAttachment() {
 //        img_data.clear(); should have data from class before calling this clear
 //        for (int i = 0; i < img_data.size(); i++) {
@@ -1451,8 +1454,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
         dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
     }
-    
-    
+
     public void initTextFields() {
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
@@ -1467,7 +1469,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         tfTerm.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
-        
+
         tfBrand.focusedProperty().addListener(txtDetail_Focus);
         tfModel.focusedProperty().addListener(txtDetail_Focus);
         tfCost.focusedProperty().addListener(txtDetail_Focus);
@@ -1485,7 +1487,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         tfBrand.setOnKeyPressed(this::txtField_KeyPressed);
         tfModel.setOnKeyPressed(this::txtField_KeyPressed);
     }
-    
+
     public void initTableOnClick() {
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
@@ -1514,7 +1516,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 if (item == null || empty) {
                     setStyle(""); // Reset for empty rows
                 } else if (highlightedRowsMain.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRowsMain.get(getIndex()) + ";");
+                    List<String> colors = highlightedRowsMain.get(getIndex());
+                    if (!colors.isEmpty()) {
+                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply the latest color
+                    }
                 } else {
                     setStyle(""); // Default style
                 }
@@ -1527,7 +1532,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 if (item == null || empty) {
                     setStyle(""); // Reset for empty rows
                 } else if (highlightedRowsDetail.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRowsDetail.get(getIndex()) + ";");
+                    List<String> colors = highlightedRowsDetail.get(getIndex());
+                    if (!colors.isEmpty()) {
+                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply the latest color
+                    }
                 } else {
                     setStyle(""); // Default style
                 }
@@ -1536,7 +1544,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
     }
-    
+
     private TableView getFocusedTable() {
         if (tblViewPuchaseOrder.isFocused()) {
             return tblViewPuchaseOrder;
@@ -1578,8 +1586,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             event.consume();
         }
     }
-    
-    
+
     private void initButton(int fnValue) {
 
         boolean lbShow1 = (fnValue == EditMode.UPDATE);
@@ -1596,11 +1603,11 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         btnSave.setManaged(lbShow1);
         btnCancel.setVisible(lbShow1);
         btnCancel.setManaged(lbShow1);
-        
+
         //Ready || Update
         btnReturn.setVisible(lbShow2);
         btnReturn.setManaged(lbShow2);
-        
+
         //Ready
         btnPrint.setVisible(lbShow3);
         btnPrint.setManaged(lbShow3);
@@ -1612,20 +1619,20 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         btnConfirm.setManaged(lbShow3);
         btnVoid.setVisible(lbShow3);
         btnVoid.setManaged(lbShow3);
-        
+
         //Unkown || Ready
         btnClose.setVisible(lbShow4);
         btnClose.setManaged(lbShow4);
-        
+
         btnAddAttachment.setDisable(!lbShow2);
         btnRemoveAttachment.setDisable(!lbShow2);
-        
+
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
         apAttachments.setDisable(!lbShow1);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
-            case PurchaseOrderReceivingStatus.APPROVED: 
+            case PurchaseOrderReceivingStatus.APPROVED:
             case PurchaseOrderReceivingStatus.VOID:
                 btnConfirm.setVisible(false);
                 btnConfirm.setManaged(false);
@@ -1697,8 +1704,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         });
 
     }
-    
-    
+
     public void initAttachmentsGrid() {
         /*FOCUS ON FIRST ROW*/
         tblRowNoAttachment.setStyle("-fx-alignment: CENTER;-fx-padding: 0 5 0 5;");
@@ -1729,7 +1735,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             tblAttachments.getFocusModel().focus(pnAttachment);
         }
     }
-    
+
     public void initDetailsGrid() {
 
         tblRowNoDetail.setStyle("-fx-alignment: CENTER;");
@@ -1865,7 +1871,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         imageView.setPreserveRatio(true);
         imageView.setSmooth(true);
     }
-    
+
     private void stackPaneClip() {
         javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(
                 stackPane1.getWidth() - 8, // Subtract 10 for padding (5 on each side)
@@ -1878,7 +1884,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         stackPane1.setClip(clip);
 
     }
-    
+
     public void clearTextFields() {
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
@@ -1920,24 +1926,29 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         img_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
 
     }
-    
-    public <T> void highlight(TableView<T> table, int rowIndex, String color, Map<Integer, String> highlightMap) {
-        highlightMap.put(rowIndex, color);
+
+// Generic method to highlight with specific color
+    public <T> void highlight(TableView<T> table, int rowIndex, String color, Map<Integer, List<String>> highlightMap) {
+        highlightMap.computeIfAbsent(rowIndex, k -> new ArrayList<>()).add(color);
         table.refresh(); // Refresh to apply changes
     }
 
-    public <T> void disableHighlight(TableView<T> table, int rowIndex, Map<Integer, String> highlightMap) {
+// Generic method to remove highlight from a specific row
+    public <T> void disableHighlight(TableView<T> table, int rowIndex, Map<Integer, List<String>> highlightMap) {
         highlightMap.remove(rowIndex);
         table.refresh();
     }
 
-    public <T> void disableAllHighlight(TableView<T> table, Map<Integer, String> highlightMap) {
+// Generic method to remove all highlights
+    public <T> void disableAllHighlight(TableView<T> table, Map<Integer, List<String>> highlightMap) {
         highlightMap.clear();
         table.refresh();
     }
 
-    public <T> void disableAllHighlightByColor(TableView<T> table, String color, Map<Integer, String> highlightMap) {
-        highlightMap.entrySet().removeIf(entry -> entry.getValue().equals(color));
+// Generic method to remove all highlights of a specific color
+    public <T> void disableAllHighlightByColor(TableView<T> table, String color, Map<Integer, List<String>> highlightMap) {
+        highlightMap.forEach((key, colors) -> colors.removeIf(c -> c.equals(color)));
+        highlightMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         table.refresh();
     }
 
@@ -1989,5 +2000,4 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         txtField.textProperty().addListener(mainSearchListener);
     }
 
-    
 }
