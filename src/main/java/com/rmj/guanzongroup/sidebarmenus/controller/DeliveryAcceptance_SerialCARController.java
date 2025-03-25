@@ -45,7 +45,7 @@ import org.json.simple.JSONObject;
  *
  * @author Arsiela
  */
-public class DeliveryAcceptance_SerialCARController implements Initializable, ScreenInterface{
+public class DeliveryAcceptance_SerialCarController implements Initializable, ScreenInterface{
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
@@ -307,9 +307,9 @@ public class DeliveryAcceptance_SerialCARController implements Initializable, Sc
                 tfLocation.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).Location().getDescription());
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_SerialCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_SerialCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_SerialCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_SerialCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

@@ -74,7 +74,7 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class DeliveryAcceptance_EntryCARController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_EntryCarController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
@@ -176,7 +176,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -323,11 +323,11 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                 }
             }
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -363,7 +363,7 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCAR.fxml"));
-            DeliveryAcceptance_SerialCARController controller = new DeliveryAcceptance_SerialCARController();
+            DeliveryAcceptance_SerialCarController controller = new DeliveryAcceptance_SerialCarController();
             loader.setController(controller);
 
             if (controller != null) {
@@ -399,9 +399,9 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -713,9 +713,9 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -803,9 +803,9 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -899,9 +899,9 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -987,11 +987,11 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             }
 
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1066,11 +1066,11 @@ public class DeliveryAcceptance_EntryCARController implements Initializable, Scr
             }
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

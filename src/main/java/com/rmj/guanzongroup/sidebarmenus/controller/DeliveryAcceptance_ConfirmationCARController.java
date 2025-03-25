@@ -4,8 +4,8 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ConfirmationCARController.poPurchaseReceivingController;
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_EntryCARController.poPurchaseReceivingController;
+import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ConfirmationCarController.poPurchaseReceivingController;
+import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_EntryCarController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -95,7 +95,7 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class DeliveryAcceptance_ConfirmationCARController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_ConfirmationCarController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
@@ -199,9 +199,9 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
             poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
             poPurchaseReceivingController.Master().Industry().getDescription();
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         initTextFields();
@@ -466,7 +466,7 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
         } catch (ParseException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -522,7 +522,7 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCAR.fxml"));
-            DeliveryAcceptance_SerialCARController controller = new DeliveryAcceptance_SerialCARController();
+            DeliveryAcceptance_SerialCarController controller = new DeliveryAcceptance_SerialCarController();
             loader.setController(controller);
 
             if (controller != null) {
@@ -558,9 +558,9 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -891,9 +891,9 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1031,9 +1031,9 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
                                     String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                             ));
                         } catch (SQLException ex) {
-                            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (GuanzonException ex) {
-                            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
                     }
@@ -1088,9 +1088,9 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
             tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1161,9 +1161,9 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1257,9 +1257,9 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1288,11 +1288,11 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
             }
 
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1385,11 +1385,11 @@ public class DeliveryAcceptance_ConfirmationCARController implements Initializab
                         }
 
                     } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationCARController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
 
