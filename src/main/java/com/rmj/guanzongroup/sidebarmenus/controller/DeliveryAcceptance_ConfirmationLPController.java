@@ -247,6 +247,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                         } else {
                             return;
                         }
+                        break;
                     case "btnUpdate":
                         poJSON = poPurchaseReceivingController.UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -1517,6 +1518,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                 break;
             case PurchaseOrderReceivingStatus.APPROVED:
             case PurchaseOrderReceivingStatus.VOID:
+            case PurchaseOrderReceivingStatus.RETURNED:
                 btnConfirm.setVisible(false);
                 btnConfirm.setManaged(false);
                 btnUpdate.setVisible(false);
@@ -1868,7 +1870,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
         dpReferenceDate.setValue(null);
         dpExpiryDate.setValue(null);
 
-        tfSearchIndustry.clear();
+        
         tfSearchCompany.clear();
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();

@@ -4,6 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_EntryCarController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
@@ -59,6 +60,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
+import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
@@ -82,8 +84,8 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
-    private String lsCompanyId = "";
-    private String lsSupplierId = "";
+    private String psCompanyId = "";
+    private String psSupplierId = "";
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
@@ -170,9 +172,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -201,6 +203,8 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             return;
                         }
                         pnEditMode = poPurchaseReceivingController.getEditMode();
+                        psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                        psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                         retrievePO();
                         break;
                     case "btnPrint":
@@ -217,6 +221,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         } else {
                             return;
                         }
+                        break;
                     case "btnNew":
                         poJSON = poPurchaseReceivingController.NewTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -227,11 +232,11 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
                         poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
 
-                        if (!lsCompanyId.isEmpty()) {
-                            poPurchaseReceivingController.SearchCompany(lsCompanyId, true);
+                        if (!psCompanyId.isEmpty()) {
+                            poPurchaseReceivingController.SearchCompany(psCompanyId, true);
                         }
-                        if (!lsSupplierId.isEmpty()) {
-                            poPurchaseReceivingController.SearchSupplier(lsSupplierId, true);
+                        if (!psSupplierId.isEmpty()) {
+                            poPurchaseReceivingController.SearchSupplier(psSupplierId, true);
                         }
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
@@ -261,8 +266,8 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                             //get last retrieved Company and Supplier
-                            lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                             poPurchaseReceivingController.Detail().clear();
                             pnEditMode = EditMode.UNKNOWN;
@@ -293,8 +298,8 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 //get last retrieved Company and Supplier
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 clearTextFields();
                                 //Call new transaction
@@ -319,11 +324,11 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
             }
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -556,11 +561,13 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfCompany.setText("");
+                                psCompanyId = "";
                                 break;
                             }
                             if (!poPurchaseReceivingController.Master().getSupplierId().equals("")) {
                                 retrievePO();
                             }
+                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             break;
 
                         case "tfSupplier":
@@ -568,11 +575,13 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupplier.setText("");
+                                psSupplierId = "";
                                 break;
                             }
                             if (!poPurchaseReceivingController.Master().getCompanyId().equals("")) {
                                 retrievePO();
                             }
+                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                             break;
                         case "tfTrucking":
                             poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
@@ -638,9 +647,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -891,9 +900,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -905,12 +914,13 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             tfSupplier.setDisable(lbDisable);
             tfCompany.getStyleClass().add("DisabledTextField");
             tfSupplier.getStyleClass().add("DisabledTextField");
-        } else {
-            tfCompany.setDisable(lbDisable);
-            tfSupplier.setDisable(lbDisable);
-            tfCompany.getStyleClass().remove("DisabledTextField");
-            tfSupplier.getStyleClass().remove("DisabledTextField");
-        }
+        } 
+//        else {
+//            tfCompany.setDisable(lbDisable);
+//            tfSupplier.setDisable(lbDisable);
+//            tfCompany.getStyleClass().remove("DisabledTextField");
+//            tfSupplier.getStyleClass().remove("DisabledTextField");
+//        }
 
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
@@ -969,9 +979,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1183,11 +1193,11 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             }
 
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1278,11 +1288,11 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         }
 
                     } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
                 });
@@ -1341,7 +1351,16 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         btnClose.setVisible(lbShow3);
         btnClose.setManaged(lbShow3);
 
-        apMaster.setDisable(!lbShow);
+        //apMaster.setDisable(!lbShow);
+        dpTransactionDate.setDisable(!lbShow);
+        dpReferenceDate.setDisable(!lbShow);
+        tfTrucking.setDisable(!lbShow);
+        taRemarks.setDisable(!lbShow);
+        tfReferenceNo.setDisable(!lbShow);
+        tfTerm.setDisable(!lbShow);
+        tfDiscountRate.setDisable(!lbShow);
+        tfDiscountAmount.setDisable(!lbShow);
+        
         apDetail.setDisable(!lbShow);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {

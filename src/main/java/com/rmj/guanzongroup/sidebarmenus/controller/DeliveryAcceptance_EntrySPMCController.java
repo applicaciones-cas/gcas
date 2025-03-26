@@ -59,6 +59,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
+import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
@@ -82,8 +83,8 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
-    private String lsCompanyId = "";
-    private String lsSupplierId = "";
+    private String psCompanyId = "";
+    private String psSupplierId = "";
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
@@ -170,9 +171,9 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -201,7 +202,8 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                             return;
                         }
                         pnEditMode = poPurchaseReceivingController.getEditMode();
-                        retrievePO();
+                        psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                        psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                         break;
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord();
@@ -217,6 +219,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                         } else {
                             return;
                         }
+                        break;
                     case "btnNew":
                         poJSON = poPurchaseReceivingController.NewTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -227,11 +230,11 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                         poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
                         poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
 
-                        if (!lsCompanyId.isEmpty()) {
-                            poPurchaseReceivingController.SearchCompany(lsCompanyId, true);
+                        if (!psCompanyId.isEmpty()) {
+                            poPurchaseReceivingController.SearchCompany(psCompanyId, true);
                         }
-                        if (!lsSupplierId.isEmpty()) {
-                            poPurchaseReceivingController.SearchSupplier(lsSupplierId, true);
+                        if (!psSupplierId.isEmpty()) {
+                            poPurchaseReceivingController.SearchSupplier(psSupplierId, true);
                         }
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
@@ -261,8 +264,8 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                             //get last retrieved Company and Supplier
-                            lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                             poPurchaseReceivingController.Detail().clear();
                             pnEditMode = EditMode.UNKNOWN;
@@ -293,8 +296,8 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 //get last retrieved Company and Supplier
-                                lsCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                lsSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 clearTextFields();
                                 //Call new transaction
@@ -319,11 +322,11 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
 
             }
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -556,11 +559,13 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfCompany.setText("");
+                                psCompanyId = "";
                                 break;
                             }
                             if (!poPurchaseReceivingController.Master().getSupplierId().equals("")) {
                                 retrievePO();
                             }
+                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             break;
 
                         case "tfSupplier":
@@ -568,11 +573,13 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupplier.setText("");
+                                psSupplierId = "";
                                 break;
                             }
                             if (!poPurchaseReceivingController.Master().getCompanyId().equals("")) {
                                 retrievePO();
                             }
+                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                             break;
                         case "tfTrucking":
                             poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
@@ -638,9 +645,9 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -872,9 +879,9 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -950,9 +957,9 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1164,11 +1171,11 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
             }
 
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1259,11 +1266,11 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                         }
 
                     } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
                 });
@@ -1321,7 +1328,16 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
         btnClose.setVisible(lbShow3);
         btnClose.setManaged(lbShow3);
 
-        apMaster.setDisable(!lbShow);
+        //apMaster.setDisable(!lbShow);
+        dpTransactionDate.setDisable(!lbShow);
+        dpReferenceDate.setDisable(!lbShow);
+        tfTrucking.setDisable(!lbShow);
+        taRemarks.setDisable(!lbShow);
+        tfReferenceNo.setDisable(!lbShow);
+        tfTerm.setDisable(!lbShow);
+        tfDiscountRate.setDisable(!lbShow);
+        tfDiscountAmount.setDisable(!lbShow);
+        
         apDetail.setDisable(!lbShow);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
