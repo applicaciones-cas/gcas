@@ -270,7 +270,7 @@
                                                                               <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="5" />
                                                                               <TextField fx:id="tfDiscountRate" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="11" GridPane.rowIndex="3" />
                                                                               <DatePicker fx:id="dpTransactionDate" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                              <CheckBox mnemonicParsing="false" text="Pre-owned" GridPane.columnIndex="9">
+                                                                              <CheckBox fx:id="cbPreOwned" mnemonicParsing="false" text="Pre-owned" GridPane.columnIndex="9">
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font>
