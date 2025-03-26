@@ -139,7 +139,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
             if (!"success".equals(loJSON.get("result"))) {
                 ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
             }
-            poJSON = poPurchasingController.PurchaseOrder().SearchIndustry("05", true);
+            poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
             if ("error".equals((String) loJSON.get("result"))) {
                 ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
 
@@ -149,6 +149,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
+            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
@@ -887,9 +888,11 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
                         case PurchaseOrderStatus.RETURNED:
-                            setStyle("-fx-background-color: #FAC898");
+                            setStyle("-fx-background-color: #FAC898;");
+                            break;
                         default:
                             setStyle("");
+                            break;
                     }
                     tblVwPurchaseOrder.refresh();
                 }

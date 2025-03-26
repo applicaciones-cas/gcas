@@ -149,6 +149,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
+            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();

@@ -149,6 +149,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
+            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldFocus();
@@ -1030,9 +1031,11 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
                         case PurchaseOrderStatus.RETURNED:
-                            setStyle("-fx-background-color: #FAC898");
+                            setStyle("-fx-background-color: #FAC898;");
+                            break;
                         default:
                             setStyle("");
+                            break;
                     }
                     tblVwPurchaseOrder.refresh();
                 }

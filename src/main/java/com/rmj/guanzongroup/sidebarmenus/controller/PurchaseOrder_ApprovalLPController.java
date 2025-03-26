@@ -145,6 +145,7 @@ public class PurchaseOrder_ApprovalLPController implements Initializable, Screen
 
                 return;
             }
+            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             String lsIndustryName = "";
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
@@ -982,7 +983,8 @@ public class PurchaseOrder_ApprovalLPController implements Initializable, Screen
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
                         case PurchaseOrderStatus.RETURNED:
-                            setStyle("-fx-background-color: #FAC898");
+                            setStyle("-fx-background-color: #FAC898;");
+                            break;
                         default:
                             setStyle("");
                     }

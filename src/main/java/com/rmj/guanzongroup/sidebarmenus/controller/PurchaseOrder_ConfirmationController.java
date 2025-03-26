@@ -149,6 +149,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
+            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
@@ -888,9 +889,11 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
                         case PurchaseOrderStatus.RETURNED:
-                            setStyle("-fx-background-color: #FAC898");
+                            setStyle("-fx-background-color: #FAC898;");
+                            break;
                         default:
                             setStyle("");
+                            break;
                     }
                     tblVwPurchaseOrder.refresh();
                 }

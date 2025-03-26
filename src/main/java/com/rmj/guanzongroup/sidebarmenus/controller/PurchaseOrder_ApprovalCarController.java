@@ -148,6 +148,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
+            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
 
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
 
@@ -970,9 +971,11 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
                         case PurchaseOrderStatus.RETURNED:
-                            setStyle("-fx-background-color: #FAC898");
+                            setStyle("-fx-background-color: #FAC898;");
+                            break;
                         default:
                             setStyle("");
+                            break;
                     }
                     tblVwPurchaseOrder.refresh();
                 }
