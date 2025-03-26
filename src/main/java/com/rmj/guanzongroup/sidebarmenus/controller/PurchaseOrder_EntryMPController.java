@@ -650,6 +650,14 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                         ShowMessageFX.Warning("Invalid to retrieve stock request, industy is empty.", psFormName, null);
                         return;
                     }
+                    if (tfCompany.getText().isEmpty()) {
+                        ShowMessageFX.Warning("Invalid to retrieve stock request, company is empty.", psFormName, null);
+                        return;
+                    }
+                    if (tfSupplier.getText().isEmpty()) {
+                        ShowMessageFX.Warning("Invalid to retrieve stock request, supplier is empty.", psFormName, null);
+                        return;
+                    }
                     loadTableStockRequest();
                     break;
                 case "btnTransHistory":

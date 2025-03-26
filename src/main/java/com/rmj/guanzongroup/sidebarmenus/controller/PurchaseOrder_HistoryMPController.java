@@ -370,7 +370,7 @@ public class PurchaseOrder_HistoryMPController implements Initializable, ScreenI
             }
             initButtons(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

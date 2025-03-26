@@ -7,7 +7,6 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrder;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderDetail;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
-import com.sun.deploy.uitoolkit.impl.fx.ui.FXUIFactory;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
@@ -585,6 +584,14 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         ShowMessageFX.Warning("Invalid to retrieve stock request, industy is empty.", psFormName, null);
                         return;
                     }
+                    if (tfCompany.getText().isEmpty()) {
+                        ShowMessageFX.Warning("Invalid to retrieve stock request, company is empty.", psFormName, null);
+                        return;
+                    }
+                    if (tfSupplier.getText().isEmpty()) {
+                        ShowMessageFX.Warning("Invalid to retrieve stock request, supplier is empty.", psFormName, null);
+                        return;
+                    }
                     loadTableStockRequest();
                     break;
                 case "btnTransHistory":
@@ -795,6 +802,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 }
 
                                 tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
+                                clearDetailFields();
                                 loadTablePODetail();
                                 break;
 
