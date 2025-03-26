@@ -129,8 +129,9 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
+            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
             tfSearchIndustry.setText(lsIndustryName);
-            initButtonsClickActions();;
+            initButtonsClickActions();
             initTextFieldKeyPressed();
             initTextFieldsProperty();
             initTablePODetail();

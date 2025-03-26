@@ -59,7 +59,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order History";
+    private String psFormName = "Purchase Order History SPMC";
     private LogWrapper logWrapper;
     private int pnEditMode;
     private JSONObject poJSON;
@@ -129,8 +129,9 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
+            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
             tfSearchIndustry.setText(lsIndustryName);
-            initButtonsClickActions();;
+            initButtonsClickActions();
             initTextFieldKeyPressed();
             initTextFieldsProperty();
             initTablePODetail();
@@ -138,7 +139,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
             pnEditMode = EditMode.UNKNOWN;
             initButtons(pnEditMode);
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -214,7 +215,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -241,7 +242,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
                 tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -387,7 +388,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
 //        }
     }
@@ -465,7 +466,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class
+            Logger.getLogger(PurchaseOrder_HistorySPMCController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }

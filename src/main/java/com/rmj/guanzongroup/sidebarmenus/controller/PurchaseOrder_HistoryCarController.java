@@ -129,8 +129,9 @@ public class PurchaseOrder_HistoryCarController implements Initializable, Screen
             if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
+            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
             tfSearchIndustry.setText(lsIndustryName);
-            initButtonsClickActions();;
+            initButtonsClickActions();
             initTextFieldKeyPressed();
             initTablePODetail();
             initTextFieldsProperty();
@@ -449,7 +450,7 @@ public class PurchaseOrder_HistoryCarController implements Initializable, Screen
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
