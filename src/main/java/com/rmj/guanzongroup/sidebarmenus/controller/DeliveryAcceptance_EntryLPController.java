@@ -162,6 +162,10 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             initTableOnClick();
             clearTextFields();
 
+            poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
+            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
+            poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
+
             loadRecordMaster();
             loadTableDetail();
 
@@ -170,6 +174,8 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
         } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -221,6 +227,10 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
+                        poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
+                        poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
+                        poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
+
                         if (!lsCompanyId.isEmpty()) {
                             poPurchaseReceivingController.SearchCompany(lsCompanyId, true);
                         }
@@ -662,6 +672,8 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
         tfBarcode.setOnKeyPressed(this::txtField_KeyPressed);
         tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
         tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
+
     }
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
@@ -683,7 +695,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            return;
+                            break;
                         } else {
                             poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
                             if (localDate != null) {
@@ -696,9 +708,22 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            return;
+                            break;
                         } else {
                             poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+                            if (localDate != null) {
+                                datePicker.setValue(localDate);
+                            }
+                        }
+                        break;
+                    case "dpExpiryDate":
+                        if (selectedDate.isAfter(currentDate)) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "Invalid Date.");
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            break;
+                        } else {
+                            poPurchaseReceivingController.Detail(pnDetail).setExpiryDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
                             if (localDate != null) {
                                 datePicker.setValue(localDate);
                             }
@@ -708,6 +733,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                         System.out.println("Unknown DatePicker.");
                         break;
                 }
+                loadRecordMaster();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -851,6 +877,9 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                 tfBarcode.getStyleClass().add("DisabledTextField");
                 tfDescription.getStyleClass().add("DisabledTextField");
             }
+            // Expiry Date
+            String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Detail(pnDetail).getExpiryDate());
+            dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
 
             tfBarcode.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
@@ -877,12 +906,12 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
         boolean lbDisable = pnEditMode == EditMode.UPDATE;
         if (lbDisable) {
             tfCompany.setDisable(lbDisable);
-            tfCompany.setDisable(lbDisable);
+            tfSupplier.setDisable(lbDisable);
             tfCompany.getStyleClass().add("DisabledTextField");
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
             tfCompany.setDisable(lbDisable);
-            tfCompany.setDisable(lbDisable);
+            tfSupplier.setDisable(lbDisable);
             tfCompany.getStyleClass().remove("DisabledTextField");
             tfSupplier.getStyleClass().remove("DisabledTextField");
         }
@@ -921,43 +950,12 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             }
 
             poPurchaseReceivingController.computeFields();
-            poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
-            poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
-            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-
             // Transaction Date
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
-            if (!lsTransactionDate.equals("")) {
-                Object lpoPurchaseReceivingControllerDate = poPurchaseReceivingController.Master().getTransactionDate();
-                if (lpoPurchaseReceivingControllerDate == null) {
-                    dpTransactionDate.setValue(LocalDate.now());
-                } else if (lpoPurchaseReceivingControllerDate instanceof Timestamp) {
-                    Timestamp timestamp = (Timestamp) lpoPurchaseReceivingControllerDate;
-                    LocalDate localDate = timestamp.toLocalDateTime().toLocalDate();
-                    dpTransactionDate.setValue(localDate);
-                } else if (lpoPurchaseReceivingControllerDate instanceof Date) {
-                    Date sqlDate = (Date) lpoPurchaseReceivingControllerDate;
-                    LocalDate localDate = sqlDate.toLocalDate();
-                    dpTransactionDate.setValue(localDate);
-                }
-            }
+            dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
             //ReferenceDate
             String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getReferenceDate());
-            if (!poPurchaseReceivingController.Master().getReferenceDate().equals("")) {
-                Object loReferenceDate = poPurchaseReceivingController.Master().getReferenceDate();
-                if (loReferenceDate == null) {
-                    dpReferenceDate.setValue(LocalDate.now());
-                } else if (loReferenceDate instanceof Timestamp) {
-                    Timestamp timestamp = (Timestamp) loReferenceDate;
-                    LocalDate localDate = timestamp.toLocalDateTime().toLocalDate();
-                    dpReferenceDate.setValue(localDate);
-                } else if (loReferenceDate instanceof Date) {
-                    Date sqlDate = (Date) loReferenceDate;
-                    LocalDate localDate = sqlDate.toLocalDate();
-                    dpReferenceDate.setValue(localDate);
-                } else {
-                }
-            }
+            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
             tfIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());

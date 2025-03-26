@@ -213,6 +213,14 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
         initAttachmentPreviewPane();
 
+        poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
+        poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
+        try {
+            poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
+        } catch (SQLException ex) {
+            Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         initStackPaneListener();
         loadRecordSearch();
 
@@ -748,55 +756,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         }
     }
 
-    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
-        poJSON = new JSONObject();
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            if (!newValue) { // Lost focus
-                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
-                String lsID = datePicker.getId();
-                LocalDate selectedDate = datePicker.getValue();
-                LocalDate localbdate = LocalDate.parse(selectedDate.toString(), formatter);
-                String formattedDate = formatter.format(selectedDate);
-                LocalDate currentDate = LocalDate.now();
 
-                LocalDate localDate = (selectedDate != null) ? LocalDate.parse(selectedDate.toString(), formatter) : null;
-                switch (lsID) {
-                    case "dpTransactionDate":
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            return;
-                        } else {
-                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
-                            if (localDate != null) {
-                                datePicker.setValue(localDate);
-                            }
-                        }
-                        break;
-                    case "dpReferenceDate":
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            return;
-                        } else {
-                            poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
-                            if (localDate != null) {
-                                datePicker.setValue(localDate);
-                            }
-                        }
-                        break;
-                    default:
-                        System.out.println("Unknown DatePicker.");
-                        break;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    };
 
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
@@ -1053,43 +1013,12 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
             }
 
             poPurchaseReceivingController.computeFields();
-            poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
-            poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
-            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-
             // Transaction Date
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
-            if (!lsTransactionDate.equals("")) {
-                Object lpoPurchaseReceivingControllerDate = poPurchaseReceivingController.Master().getTransactionDate();
-                if (lpoPurchaseReceivingControllerDate == null) {
-                    dpTransactionDate.setValue(LocalDate.now());
-                } else if (lpoPurchaseReceivingControllerDate instanceof Timestamp) {
-                    Timestamp timestamp = (Timestamp) lpoPurchaseReceivingControllerDate;
-                    LocalDate localDate = timestamp.toLocalDateTime().toLocalDate();
-                    dpTransactionDate.setValue(localDate);
-                } else if (lpoPurchaseReceivingControllerDate instanceof Date) {
-                    Date sqlDate = (Date) lpoPurchaseReceivingControllerDate;
-                    LocalDate localDate = sqlDate.toLocalDate();
-                    dpTransactionDate.setValue(localDate);
-                }
-            }
+            dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
             //ReferenceDate
             String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getReferenceDate());
-            if (!poPurchaseReceivingController.Master().getReferenceDate().equals("")) {
-                Object loReferenceDate = poPurchaseReceivingController.Master().getReferenceDate();
-                if (loReferenceDate == null) {
-                    dpReferenceDate.setValue(LocalDate.now());
-                } else if (loReferenceDate instanceof Timestamp) {
-                    Timestamp timestamp = (Timestamp) loReferenceDate;
-                    LocalDate localDate = timestamp.toLocalDateTime().toLocalDate();
-                    dpReferenceDate.setValue(localDate);
-                } else if (loReferenceDate instanceof Date) {
-                    Date sqlDate = (Date) loReferenceDate;
-                    LocalDate localDate = sqlDate.toLocalDate();
-                    dpReferenceDate.setValue(localDate);
-                } else {
-                }
-            }
+            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
             tfIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
@@ -1297,8 +1226,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         setDatePickerFormat(dpTransactionDate);
         setDatePickerFormat(dpReferenceDate);
 
-        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
-        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
     }
 
     public void initTextFields() {
