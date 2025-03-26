@@ -223,7 +223,7 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                 lsDestinationName = poPurchasingController.PurchaseOrder().Master().Branch().getBranchName();
             }
             tfDestination.setText(lsDestinationName);
-
+            tfReferenceNo.setText(poPurchasingController.PurchaseOrder().Master().getReference());
             String lsTermCode = "";
             if (poPurchasingController.PurchaseOrder().Master().Term().getDescription() != null) {
                 lsTermCode = poPurchasingController.PurchaseOrder().Master().Term().getDescription();
@@ -982,7 +982,7 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                         case PurchaseOrderStatus.VOID:
                             setStyle("-fx-background-color: #FAA0A0;");
                             break;
-                       case PurchaseOrderStatus.RETURNED:
+                        case PurchaseOrderStatus.RETURNED:
                             setStyle("-fx-background-color: #FAC898;");
                             break;
                         default:

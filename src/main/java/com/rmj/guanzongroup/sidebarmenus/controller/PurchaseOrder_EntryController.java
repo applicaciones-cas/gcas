@@ -260,11 +260,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 lsDestinationName = poPurchasingController.PurchaseOrder().Master().Branch().getBranchName();
             }
             tfDestination.setText(lsDestinationName);
-
+            tfReferenceNo.setText(poPurchasingController.PurchaseOrder().Master().getReference());
             String lsTermCode = "";
             if (poPurchasingController.PurchaseOrder().Master().Term().getDescription() != null) {
                 lsTermCode = poPurchasingController.PurchaseOrder().Master().Term().getDescription();
             }
+
             tfTerm.setText(lsTermCode);
 
             taRemarks.setText(poPurchasingController.PurchaseOrder().Master().getRemarks());
@@ -454,7 +455,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     }
                     break;
                 case "btnSave":
-
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
                     }

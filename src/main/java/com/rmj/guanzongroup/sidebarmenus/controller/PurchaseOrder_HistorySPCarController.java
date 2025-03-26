@@ -193,7 +193,7 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
                 lsDestinationName = poPurchasingController.PurchaseOrder().Master().Branch().getBranchName();
             }
             tfDestination.setText(lsDestinationName);
-
+            tfReferenceNo.setText(poPurchasingController.PurchaseOrder().Master().getReference());
             String lsTermCode = "";
             if (poPurchasingController.PurchaseOrder().Master().Term().getDescription() != null) {
                 lsTermCode = poPurchasingController.PurchaseOrder().Master().Term().getDescription();
