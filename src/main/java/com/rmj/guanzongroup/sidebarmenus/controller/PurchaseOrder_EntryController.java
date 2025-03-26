@@ -150,6 +150,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+
             tfIndustry.setText(lsIndustryName);
             Platform.runLater(() -> btnNew.fire());
             initButtonsClickActions();
@@ -325,7 +326,11 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("");
+                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("",
+                            poPurchasingController.PurchaseOrder().Master().getIndustryID(),
+                            poPurchasingController.PurchaseOrder().Master().getCompanyID(),
+                            poPurchasingController.PurchaseOrder().Master().getSupplierID(),
+                            "");
                     if (!"error".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();
@@ -446,8 +451,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             default:
                                 System.out.println("Unknown TextField");
                         }
-                        loadTableStockRequest();
-
                     }
                     break;
                 case "btnSave":
@@ -487,10 +490,11 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     }
 
                     // Backend validations for EditMode
-                    if (pnEditMode == EditMode.UPDATE && (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)
-                            || !"success".equals((loJSON = ShowDialogFX.getUserApproval(poApp)).get("result")))) {
-                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                        return;
+                    if (pnEditMode == EditMode.UPDATE && (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED))) {
+                        if (!"success".equals((loJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                            return;
+                        }
                     }
 
                     // Assign modification details for Update Mode
@@ -774,10 +778,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     case F3:
                         switch (txtFieldID) {
                             case "tfCompany":
-                                if (poPurchasingController.PurchaseOrder().getDetailCount() >= 1) {
-                                    if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
-                                            || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0)) {
-                                        isHaveQuantityAndStockId = true;
+                                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                    if (poPurchasingController.PurchaseOrder().getDetailCount() >= 1) {
+                                        if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
+                                                || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0)) {
+                                            isHaveQuantityAndStockId = true;
+                                        }
                                     }
                                 }
                                 if (isHaveQuantityAndStockId) {
@@ -793,7 +799,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                         }
                                     }
                                 }
-
                                 loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -802,8 +807,10 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 }
 
                                 tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
-                                clearDetailFields();
-                                loadTablePODetail();
+                                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                    clearDetailFields();
+                                    loadTablePODetail();
+                                }
                                 break;
 
                             case "tfSupplier":
@@ -877,7 +884,9 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 loadTablePODetail();
                                 break;
                         }
-                        loadTableStockRequest();
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            loadTableStockRequest();
+                        }
                         event.consume();
                         switch (txtFieldID) {
                             case "tfCompany":

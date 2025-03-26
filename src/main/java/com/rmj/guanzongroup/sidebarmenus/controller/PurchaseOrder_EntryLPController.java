@@ -325,7 +325,11 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("");
+                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("",
+                            poPurchasingController.PurchaseOrder().Master().getIndustryID(),
+                            poPurchasingController.PurchaseOrder().Master().getCompanyID(),
+                            poPurchasingController.PurchaseOrder().Master().getSupplierID(),
+                            "");
                     if (!"error".equals((String) loJSON.get("result"))) {
                         loadMaster();
                         loadDetail();
@@ -487,10 +491,11 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     }
 
                     // Backend validations for EditMode
-                    if (pnEditMode == EditMode.UPDATE && (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)
-                            || !"success".equals((loJSON = ShowDialogFX.getUserApproval(poApp)).get("result")))) {
-                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                        return;
+                    if (pnEditMode == EditMode.UPDATE && (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED))) {
+                        if (!"success".equals((loJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                            return;
+                        }
                     }
 
                     // Assign modification details for Update Mode
