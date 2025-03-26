@@ -288,7 +288,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
                             poJSON = poPurchaseReceivingController.SaveTransaction();
-                            if ("error".equals((String) poJSON.get("result"))) {
+                            if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
                             } else {
@@ -419,7 +419,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                 }
                 initButton(pnEditMode);
 
-                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment")
+                if (lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment")
                         || lsButton.equals("btnRemoveAttachment") || lsButton.equals("btnArrowRight")
                         || lsButton.equals("btnArrowLeft") || lsButton.equals("btnVoid") || lsButton.equals("btnRetrieve")
                         || lsButton.equals("btnApprove") || lsButton.equals("btnReturn")) {
@@ -459,7 +459,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
         poJSON.put("result", "success");
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true, psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("approval", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {

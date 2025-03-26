@@ -298,7 +298,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
                             poJSON = poPurchaseReceivingController.SaveTransaction();
-                            if ("error".equals((String) poJSON.get("result"))) {
+                            if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
                             } else {
@@ -320,7 +320,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         break;
                 }
                 initButton(pnEditMode);
-                if (lsButton.equals("btnUpdate") || lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
+                if (lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
 
                 } else {
                     loadRecordMaster();
