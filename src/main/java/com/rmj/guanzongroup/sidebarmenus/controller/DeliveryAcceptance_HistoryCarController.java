@@ -139,7 +139,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     @FXML
     private HBox hbButtons, hboxid;
     @FXML
-    private Button  btnPrint, btnHistory, btnRetrieve, btnClose; //btnUpdate, btnSearch, btnSave, btnCancel, btnSerials, btnApprove, btnVoid, btnReturn
+    private Button btnPrint, btnHistory, btnRetrieve, btnClose; //btnUpdate, btnSearch, btnSave, btnCancel, btnSerials, btnApprove, btnVoid, btnReturn
     @FXML
     private Label lblStatus;
     @FXML
@@ -270,7 +270,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                                 "F3",
                                 KeyCode.F3,
                                 false, false, false, false);
-                        
+
                         lastFocusedTextField.fireEvent(keyEvent);
                     } else {
                         ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
@@ -286,7 +286,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                     }
                     retrievePOR();
                     disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
-                    
+
                     break;
                 case "btnArrowRight":
                     slideImage(1);
@@ -294,21 +294,21 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                 case "btnArrowLeft":
                     slideImage(-1);
                     break;
-                    
+
                 default:
                     ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                     break;
             }
             initButton(pnEditMode);
-            
+
             if (lsButton.equals("btnPrint") || lsButton.equals("btnArrowRight")
                     || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
-                
+
             } else {
                 loadRecordMaster();
                 loadTableDetail();
             }
-            
+
         }
     }
 
@@ -328,8 +328,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         poJSON.put("result", "success");
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true,psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
-            
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true, psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
+
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {
@@ -615,7 +615,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                 case "tfSearchCompany":
                     if (lsValue.equals("")) {
                         poPurchaseReceivingController.Master().setCompanyId("");
-                    } 
+                    }
                     psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                     break;
                 case "tfSearchSupplier":
@@ -652,7 +652,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                             } else {
                                 psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             }
-                            
+
                             retrievePOR();
                             loadRecordSearch();
                             return;
@@ -834,8 +834,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         tblViewPuchaseOrder.setPlaceholder(loadingPane);
         progressIndicator.setVisible(true);
 
-        main_data.clear();
-
         Label placeholderLabel = new Label("NO RECORD TO LOAD");
         placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
 
@@ -846,6 +844,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
+                    main_data.clear();
                     String lsMainDate = "";
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
 
@@ -1128,7 +1127,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                 highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
-                
+
                 loadTableDetail();
             }
 
@@ -1145,7 +1144,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     public void loadTableDetail() {
         // Setting data to table detail
         loadRecordMaster();
-        details_data.clear();
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
         // Setting data to table detail
@@ -1166,11 +1164,11 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 //                Thread.sleep(1000);
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
+                    details_data.clear();
                     int lnCtr;
-
                     try {
-                        
-                        if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
+
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
                             while (lnCtr > 0) {
                                 if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
@@ -1189,11 +1187,11 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
-                            
+
                             if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {
                                 cbPreOwned.setSelected(poPurchaseReceivingController.Detail(lnCtr).PurchaseOrderMaster().getPreOwned());
                             }
-                            
+
                             try {
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
 

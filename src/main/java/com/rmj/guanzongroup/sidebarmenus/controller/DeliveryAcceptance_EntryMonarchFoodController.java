@@ -1079,7 +1079,6 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         loadingPane.setAlignment(Pos.CENTER);
         tblViewPuchaseOrder.setPlaceholder(loadingPane);
         progressIndicator.setVisible(true);
-        main_data.clear();
 
         Label placeholderLabel = new Label("NO RECORD TO LOAD");
         placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
@@ -1089,6 +1088,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             protected Void call() throws Exception {
 //                Thread.sleep(1000);
                 Platform.runLater(() -> {
+                    main_data.clear();
                     String lsMainDate = "";
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
                     // Simulate loading delay
@@ -1197,77 +1197,123 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     public void loadTableDetail() {
         // Setting data to table detail
         loadRecordMaster();
-        int lnCtr;
-        details_data.clear();
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
-        try {
+        // Setting data to table detail
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMaxHeight(50);
+        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
+        StackPane loadingPane = new StackPane(progressIndicator);
+        loadingPane.setAlignment(Pos.CENTER);
+        tblViewOrderDetails.setPlaceholder(loadingPane);
+        progressIndicator.setVisible(true);
 
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
-                while (lnCtr > 0) {
-                    if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
-                        poPurchaseReceivingController.Detail().remove(lnCtr);
+        Label placeholderLabel = new Label("NO RECORD TO LOAD");
+        placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+//                Thread.sleep(1000);
+                // contains try catch, for loop of loading data to observable list until loadTab()
+                Platform.runLater(() -> {
+                    int lnCtr;
+                    details_data.clear();
+                    try {
+
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
+                            while (lnCtr > 0) {
+                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
+                                    poPurchaseReceivingController.Detail().remove(lnCtr);
+                                }
+                                lnCtr--;
+                            }
+
+                            if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
+                                    poPurchaseReceivingController.AddDetail();
+                                }
+                            }
+                        }
+
+                        double lnTotal = 0.0;
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
+                            try {
+
+                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
+                            } catch (Exception e) {
+                            }
+
+                            if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
+                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
+                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
+                                highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
+                            }
+
+                            details_data.add(
+                                    new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce()),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
+                                            String.valueOf(lnTotal) //identify total
+                                    ));
+                        }
+
+                        if (pnDetail < 0 || pnDetail
+                                >= details_data.size()) {
+                            if (!details_data.isEmpty()) {
+                                /* FOCUS ON FIRST ROW */
+                                tblViewOrderDetails.getSelectionModel().select(0);
+                                tblViewOrderDetails.getFocusModel().focus(0);
+                                pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
+                                loadRecordDetail();
+                            }
+                        } else {
+                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                            tblViewOrderDetails.getSelectionModel().select(pnDetail);
+                            tblViewOrderDetails.getFocusModel().focus(pnDetail);
+                            loadRecordDetail();
+                        }
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (GuanzonException ex) {
+                        Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (CloneNotSupportedException ex) {
+                        Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    lnCtr--;
-                }
 
-                if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
-                    if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
-                        poPurchaseReceivingController.AddDetail();
-                    }
-                }
+                });
+
+                return null;
             }
 
-            double lnTotal = 0.0;
-            for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
-                try {
-
-                    lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
-                } catch (Exception e) {
+            @Override
+            protected void succeeded() {
+                if (details_data == null || details_data.isEmpty()) {
+                    tblViewOrderDetails.setPlaceholder(placeholderLabel);
+                } else {
+                    tblViewOrderDetails.toFront();
                 }
+                progressIndicator.setVisible(false);
 
-                if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                        && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
-                        && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                    highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
-                }
-
-                details_data.add(
-                        new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
-                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
-                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
-                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce()),
-                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
-                                String.valueOf(lnTotal) //identify total
-                        ));
             }
 
-            if (pnDetail < 0 || pnDetail
-                    >= details_data.size()) {
-                if (!details_data.isEmpty()) {
-                    /* FOCUS ON FIRST ROW */
-                    tblViewOrderDetails.getSelectionModel().select(0);
-                    tblViewOrderDetails.getFocusModel().focus(0);
-                    pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
-                    loadRecordDetail();
+            @Override
+            protected void failed() {
+                if (details_data == null || details_data.isEmpty()) {
+                    tblViewOrderDetails.setPlaceholder(placeholderLabel);
                 }
-            } else {
-                /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                tblViewOrderDetails.getSelectionModel().select(pnDetail);
-                tblViewOrderDetails.getFocusModel().focus(pnDetail);
-                loadRecordDetail();
+                progressIndicator.setVisible(false);
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        };
+        new Thread(task).start(); // Run task in background
+
     }
 
     private void initButton(int fnValue) {

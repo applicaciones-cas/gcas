@@ -279,7 +279,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                            
+
                             poPurchaseReceivingController.Detail().clear();
                             pnEditMode = EditMode.UNKNOWN;
                             clearTextFields();
@@ -474,7 +474,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         poJSON.put("result", "success");
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true,psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving(true, psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {
@@ -760,7 +760,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                 case "tfSearchCompany":
                     if (lsValue.equals("")) {
                         poPurchaseReceivingController.Master().setCompanyId("");
-                    } 
+                    }
                     psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                     break;
                 case "tfSearchSupplier":
@@ -797,7 +797,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             } else {
                                 psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             }
-                            
+
                             retrievePOR();
                             loadRecordSearch();
                             return;
@@ -979,8 +979,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         tblViewPuchaseOrder.setPlaceholder(loadingPane);
         progressIndicator.setVisible(true);
 
-        main_data.clear();
-
         Label placeholderLabel = new Label("NO RECORD TO LOAD");
         placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
 
@@ -991,6 +989,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
+                    main_data.clear();
                     String lsMainDate = "";
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
 
@@ -1303,7 +1302,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     public void loadTableDetail() {
         // Setting data to table detail
         loadRecordMaster();
-        details_data.clear();
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
         // Setting data to table detail
@@ -1324,8 +1322,9 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 //                Thread.sleep(1000);
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
-                    int lnCtr;
+                    details_data.clear();
 
+                    int lnCtr;
                     try {
 
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
