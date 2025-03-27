@@ -424,7 +424,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, pnTblPODetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfBarcode.setText("");
@@ -442,7 +442,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblPODetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfDescription.setText("");
@@ -859,7 +859,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfBarcode.setText("");
@@ -880,7 +880,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfDescription.setText("");
@@ -1413,6 +1413,9 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                     if (pnTblPODetailRow >= 0) {
                         loadDetail();
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
+                            tfBarcode.setDisable(isSourceNotEmpty);
+                            tfDescription.setDisable(isSourceNotEmpty);
                             if (!tfBarcode.getText().isEmpty()) {
                                 tfOrderQuantity.requestFocus();
                             } else {

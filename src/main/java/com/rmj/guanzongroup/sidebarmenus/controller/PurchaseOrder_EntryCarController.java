@@ -493,7 +493,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, pnTblPODetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false,
+                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfBrand.setText("");
@@ -511,7 +513,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblPODetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false,
+                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfModel.setText("");
@@ -933,7 +937,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false,
+                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                );
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfBrand.setText("");
@@ -954,7 +960,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false,
+                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                );
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfModel.setText("");
@@ -1494,6 +1502,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     if (pnTblPODetailRow >= 0) {
                         loadDetail();
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
+                            tfBrand.setDisable(isSourceNotEmpty);
+                            tfModel.setDisable(isSourceNotEmpty);
                             if (!tfBrand.getText().isEmpty()) {
                                 tfOrderQuantity.requestFocus();
                             } else {
