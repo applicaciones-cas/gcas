@@ -74,6 +74,12 @@ import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
+import static org.apache.poi.ss.usermodel.TableStyleType.lastColumn;
+import javafx.scene.control.TableColumnBase;
+import javafx.scene.control.ScrollBar;
+import javafx.geometry.Orientation;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 
 /**
  * FXML Controller class
@@ -954,10 +960,12 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
             tfBrand.setDisable(!lbFields);
             tfModel.setDisable(!lbFields);
-
             if (lbFields) {
-                tfBrand.getStyleClass().remove("DisabledTextField");
-                tfModel.getStyleClass().remove("DisabledTextField");
+                while (tfBrand.getStyleClass().contains("DisabledTextField") || tfModel.getStyleClass().contains("DisabledTextField")) {
+                    tfBrand.getStyleClass().remove("DisabledTextField");
+                    tfModel.getStyleClass().remove("DisabledTextField");
+                }
+
             } else {
                 tfBrand.getStyleClass().add("DisabledTextField");
                 tfModel.getStyleClass().add("DisabledTextField");
@@ -1066,15 +1074,6 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
 
     }
 
-    private TableView<?> getFocusedTable() {
-        if (tblViewPuchaseOrder.isFocused()) {
-            return tblViewPuchaseOrder;
-        } else if (tblViewOrderDetails.isFocused()) {
-            return tblViewOrderDetails;
-        }
-        return null; // No table has focus
-    }
-
     private int moveToNextRow(TableView table, TablePosition focusedCell) {
         int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
         table.getSelectionModel().select(nextRow);
@@ -1156,6 +1155,53 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             }
         });
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
+        adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+    }
+
+    public void adjustLastColumnForScrollbar(TableView<?> tableView) {
+        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            if (!(newSkin instanceof TableViewSkin<?>)) {
+                return;
+            }
+
+            TableViewSkin<?> skin = (TableViewSkin<?>) newSkin;
+            VirtualFlow<?> flow = skin.getChildren().stream()
+                    .filter(node -> node instanceof VirtualFlow<?>)
+                    .map(node -> (VirtualFlow<?>) node)
+                    .findFirst().orElse(null);
+
+            if (flow == null) {
+                return;
+            }
+
+            ScrollBar vScrollBar = flow.getChildrenUnmodifiable().stream()
+                    .filter(node -> node instanceof ScrollBar && ((ScrollBar) node).getOrientation() == Orientation.VERTICAL)
+                    .map(node -> (ScrollBar) node)
+                    .findFirst().orElse(null);
+
+            if (vScrollBar == null || tableView.getColumns().isEmpty()) {
+                return;
+            }
+
+            TableColumn<?, ?> lastColumn = (TableColumn<?, ?>) tableView.getColumns()
+                    .get(tableView.getColumns().size() - 1);
+
+            vScrollBar.visibleProperty().addListener((observable, oldValue, newValue) -> {
+                Platform.runLater(() -> {
+                    double scrollBarWidth = newValue ? vScrollBar.getWidth() : 0;
+                    double remainingWidth = tableView.getWidth() - scrollBarWidth;
+
+                    double totalFixedWidth = tableView.getColumns().stream()
+                            .filter(col -> col != lastColumn)
+                            .mapToDouble(col -> ((TableColumn<?, ?>) col).getWidth())
+                            .sum();
+
+                    double newWidth = Math.max(0, remainingWidth - totalFixedWidth);
+                    lastColumn.setPrefWidth(newWidth - 5);
+                });
+            });
+        });
     }
 
     public void loadTableMain() {

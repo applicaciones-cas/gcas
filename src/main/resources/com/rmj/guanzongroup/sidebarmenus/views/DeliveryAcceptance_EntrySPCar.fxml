@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="apMainAnchor" minWidth="1377.0" prefHeight="789.0" prefWidth="1443.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" fx:id="apMainAnchor" minWidth="1377.0" prefHeight="789.0" prefWidth="1463.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -398,10 +398,10 @@
                                                                 <TableColumn fx:id="tblOrderNoDetail" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Order No." />
                                                                 <TableColumn fx:id="tblBarcodeDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Barcode" />
                                                                 <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="280.0" minWidth="280.0" prefWidth="280.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
-                                                                <TableColumn fx:id="tblCostDetail" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
+                                                                <TableColumn fx:id="tblCostDetail" editable="false" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
                                                                 <TableColumn fx:id="tblOrderQuantityDetail" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Order" />
                                                                 <TableColumn fx:id="tblReceiveQuantityDetail" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Received" />
-                                                                <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
+                                                                <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="119.0" minWidth="-1.0" prefWidth="119.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
                                                             </columns>
                                              <columnResizePolicy>
                                              </columnResizePolicy>
@@ -441,7 +441,7 @@
                                                                   <TableColumn fx:id="tblRowNo" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                                   <TableColumn fx:id="tblSupplier" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Supplier" />
                                                                   <TableColumn fx:id="tblDate" editable="false" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Date" />
-                                                                  <TableColumn fx:id="tblReferenceNo" editable="false" maxWidth="109.0" minWidth="100.0" prefWidth="109.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Refer No." />
+                                                                  <TableColumn fx:id="tblReferenceNo" editable="false" maxWidth="128.0" minWidth="-1.0" prefWidth="128.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Refer No." />
                                                               </columns>
                                                               <GridPane.margin>
                                                                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

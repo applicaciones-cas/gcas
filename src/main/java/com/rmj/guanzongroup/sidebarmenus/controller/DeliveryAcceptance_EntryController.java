@@ -9,6 +9,8 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Det
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -32,13 +34,16 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -56,6 +61,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.StringConverter;
+import static org.apache.poi.ss.usermodel.TableStyleType.lastColumn;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -67,6 +73,13 @@ import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
+import static org.apache.poi.ss.usermodel.TableStyleType.lastColumn;
+import javafx.scene.control.TableColumnBase;
+import javafx.scene.control.ScrollBar;
+import javafx.geometry.Orientation;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import javafx.scene.input.MouseEvent;
 
 /**
  * FXML Controller class
@@ -891,14 +904,16 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
             tfBarcode.setDisable(!lbFields);
             tfDescription.setDisable(!lbFields);
-
             if (lbFields) {
-                tfBarcode.getStyleClass().remove("DisabledTextField");
-                tfDescription.getStyleClass().remove("DisabledTextField");
+                while (tfBarcode.getStyleClass().contains("DisabledTextField") || tfDescription.getStyleClass().contains("DisabledTextField")) {
+                    tfBarcode.getStyleClass().remove("DisabledTextField");
+                    tfDescription.getStyleClass().remove("DisabledTextField");
+                }
             } else {
                 tfBarcode.getStyleClass().add("DisabledTextField");
                 tfDescription.getStyleClass().add("DisabledTextField");
             }
+
             // Expiry Date
             String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Detail(pnDetail).getExpiryDate());
             dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
@@ -1002,15 +1017,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     }
 
-    private TableView<?> getFocusedTable() {
-        if (tblViewPuchaseOrder.isFocused()) {
-            return tblViewPuchaseOrder;
-        } else if (tblViewOrderDetails.isFocused()) {
-            return tblViewOrderDetails;
-        }
-        return null; // No table has focus
-    }
-
     private int moveToNextRow(TableView table, TablePosition focusedCell) {
         int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
         table.getSelectionModel().select(nextRow);
@@ -1092,6 +1098,53 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             }
         });
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
+        adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+    }
+
+    public void adjustLastColumnForScrollbar(TableView<?> tableView) {
+        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            if (!(newSkin instanceof TableViewSkin<?>)) {
+                return;
+            }
+
+            TableViewSkin<?> skin = (TableViewSkin<?>) newSkin;
+            VirtualFlow<?> flow = skin.getChildren().stream()
+                    .filter(node -> node instanceof VirtualFlow<?>)
+                    .map(node -> (VirtualFlow<?>) node)
+                    .findFirst().orElse(null);
+
+            if (flow == null) {
+                return;
+            }
+
+            ScrollBar vScrollBar = flow.getChildrenUnmodifiable().stream()
+                    .filter(node -> node instanceof ScrollBar && ((ScrollBar) node).getOrientation() == Orientation.VERTICAL)
+                    .map(node -> (ScrollBar) node)
+                    .findFirst().orElse(null);
+
+            if (vScrollBar == null || tableView.getColumns().isEmpty()) {
+                return;
+            }
+
+            TableColumn<?, ?> lastColumn = (TableColumn<?, ?>) tableView.getColumns()
+                    .get(tableView.getColumns().size() - 1);
+
+            vScrollBar.visibleProperty().addListener((observable, oldValue, newValue) -> {
+                Platform.runLater(() -> {
+                    double scrollBarWidth = newValue ? vScrollBar.getWidth() : 0;
+                    double remainingWidth = tableView.getWidth() - scrollBarWidth;
+
+                    double totalFixedWidth = tableView.getColumns().stream()
+                            .filter(col -> col != lastColumn)
+                            .mapToDouble(col -> ((TableColumn<?, ?>) col).getWidth())
+                            .sum();
+
+                    double newWidth = Math.max(0, remainingWidth - totalFixedWidth);
+                    lastColumn.setPrefWidth(newWidth - 5);
+                });
+            });
+        });
     }
 
     public void loadTableMain() {
@@ -1388,57 +1441,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         }
     }
 
-//    private void initButton(int fnValue) {
-//        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-//        // Manage visibility and managed state of other buttons
-//        boolean lbShow3 = fnValue == EditMode.ADDNEW;
-//
-//        btnBrowse.setVisible(!lbShow3); // Requires no change to state
-//
-//        btnNew.setVisible(!lbShow);
-////        btnRetrieve.setVisible(!lbShow);
-//        btnClose.setVisible(!lbShow);
-//
-//        btnSearch.setVisible(lbShow);
-//        btnSave.setVisible(lbShow);
-//        btnCancel.setVisible(lbShow);
-//
-//        btnBrowse.setManaged(!lbShow3);
-//
-//        btnNew.setManaged(!lbShow);
-////        btnRetrieve.setManaged(!lbShow);
-//        btnClose.setManaged(!lbShow);
-//
-//        btnSearch.setManaged(lbShow);
-//        btnSave.setManaged(lbShow);
-//        btnCancel.setManaged(lbShow);
-//
-//        boolean lbShow2 = fnValue == EditMode.READY;
-//
-//        btnUpdate.setVisible(lbShow2);
-//        btnPrint.setVisible(lbShow2);
-//        btnHistory.setVisible(lbShow2);
-//
-//        btnUpdate.setManaged(lbShow2);
-//        btnPrint.setManaged(lbShow2);
-//        btnHistory.setManaged(lbShow2);
-//
-//        btnClose.setVisible(lbShow2);
-//        btnClose.setManaged(lbShow2);
-//
-////        apBrowse.setDisable(lbShow); // no usage
-//        apMaster.setDisable(!lbShow);
-//        apDetail.setDisable(!lbShow);
-////        apTable.setDisable(!lbShow); // disable upon for viewing?
-////        if (Integer.valueOf(poPurchaseReceivingController.getMasterModel().getTransactionStatus()) != 0) {
-////            btnVoid.setDisable(false);
-////        } else {
-////            btnVoid.setDisable(true);
-////        }
-////        poPurchaseReceivingController.setTransType("SP");
-//
-//
-//    }
+
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
         pgPagination.setPageCount(totalPage);
