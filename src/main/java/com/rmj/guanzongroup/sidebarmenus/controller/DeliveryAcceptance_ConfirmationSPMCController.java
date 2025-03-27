@@ -833,18 +833,36 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             if (!newValue) { // Lost focus
                 DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
                 String lsID = datePicker.getId();
-                LocalDate selectedDate = datePicker.getValue();
-                LocalDate localbdate = LocalDate.parse(selectedDate.toString(), formatter);
-                String formattedDate = formatter.format(selectedDate);
+                String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
+                LocalDate selectedDate = null;
 
-                LocalDate localDate = (selectedDate != null) ? LocalDate.parse(selectedDate.toString(), formatter) : null;
+                // Check if the user typed something in the text field
+                if (inputText != null && !inputText.trim().isEmpty()) {
+                    try {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        selectedDate = LocalDate.parse(inputText, formatter);
+                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
+                    } catch (Exception ex) {
+                        poJSON.put("result", "error");
+                        poJSON.put("message", "Invalid date format. Please use yyyy-MM-dd.");
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                } else {
+                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
+                }
+
+                String formattedDate = selectedDate.toString();
+
                 switch (lsID) {
                     case "dpTransactionDate":
+                        if (selectedDate == null) {
+                            break;
+                        }
                         if (selectedDate.isAfter(currentDate)) {
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
@@ -852,34 +870,32 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                             break;
                         } else {
                             poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
-                            if (localDate != null) {
-                                datePicker.setValue(localDate);
-                            }
                         }
                         break;
                     case "dpReferenceDate":
+                        if (selectedDate == null) {
+                            break;
+                        }
                         if (selectedDate.isAfter(currentDate)) {
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            break;
                         } else {
-                            poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
-                            if (localDate != null) {
-                                datePicker.setValue(localDate);
-                            }
+                            poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
                         break;
                     default:
                         System.out.println("Unknown DatePicker.");
                         break;
                 }
+                datePicker.getEditor().setText(formattedDate);
                 loadRecordMaster();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     };
+
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
         pgPagination.setPageCount(totalPage);
@@ -1799,7 +1815,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        
         tfSearchCompany.clear();
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
@@ -1883,7 +1898,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
             });
             // If no results and autoSearchMain is enabled, remove listener and trigger autoSearchMain
             if (filteredDataDetail.isEmpty()) {
-                txtField.textProperty().removeListener(mainSearchListener);
+                txtField.textProperty().removeListener(detailSearchListener);
                 filteredData = new FilteredList<>(main_data, b -> true);
                 autoSearchMain(txtField); // Trigger autoSearchMain if no results
                 SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);

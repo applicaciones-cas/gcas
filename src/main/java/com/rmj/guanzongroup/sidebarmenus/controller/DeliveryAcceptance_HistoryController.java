@@ -1354,7 +1354,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
             });
             // If no results and autoSearchMain is enabled, remove listener and trigger autoSearchMain
             if (filteredDataDetail.isEmpty()) {
-                txtField.textProperty().removeListener(mainSearchListener);
+                txtField.textProperty().removeListener(detailSearchListener);
                 filteredData = new FilteredList<>(main_data, b -> true);
                 autoSearchMain(txtField); // Trigger autoSearchMain if no results
                 SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
