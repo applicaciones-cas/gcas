@@ -273,11 +273,6 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-
-                            poPurchaseReceivingController.Detail().clear();
-                            pnEditMode = EditMode.UNKNOWN;
-                            clearTextFields();
-                            loadTableDetail();
                             break;
                         } else {
                             return;
@@ -303,15 +298,6 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
-                                if (!"success".equals((String) poJSON.get("result"))) {
-                                    System.err.println((String) poJSON.get("message"));
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
-
-                                clearTextFields();
-                                poPurchaseReceivingController.Detail().clear();
-                                pnEditMode = EditMode.UNKNOWN;
                             }
                         } else {
                             return;
@@ -327,10 +313,6 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-
-                                clearTextFields();
-                                poPurchaseReceivingController.Detail().clear();
-                                pnEditMode = EditMode.UNKNOWN;
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                                 highlight(tblViewPuchaseOrder, pnMain, "#C1E1C1", highlightedRowsMain);
                             }
@@ -347,10 +329,6 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-
-                                clearTextFields();
-                                poPurchaseReceivingController.Detail().clear();
-                                pnEditMode = EditMode.UNKNOWN;
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                                 highlight(tblViewPuchaseOrder, pnMain, "#FAA0A0", highlightedRowsMain);
                             }
@@ -367,10 +345,6 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-
-                                clearTextFields();
-                                poPurchaseReceivingController.Detail().clear();
-                                pnEditMode = EditMode.UNKNOWN;
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                                 highlight(tblViewPuchaseOrder, pnMain, "#FAC898", highlightedRowsMain);
                             }
@@ -424,27 +398,27 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
-                initButton(pnEditMode);
-
-                if (lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment")
-                        || lsButton.equals("btnRemoveAttachment") || lsButton.equals("btnArrowRight")
-                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
-
+                
+                if (lsButton.equals("btnSave") || lsButton.equals("btnApprove") || lsButton.equals("btnReturn") 
+                        || lsButton.equals("btnVoid") || lsButton.equals("btnCancel") ) {
+                    poPurchaseReceivingController.resetMaster();
+                    poPurchaseReceivingController.resetOthers();
+                    poPurchaseReceivingController.Detail().clear();
+                    pnEditMode = EditMode.UNKNOWN;
+                    clearTextFields();
+                }
+                
+                if (lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment") || lsButton.equals("btnRemoveAttachment") 
+                        || lsButton.equals("btnArrowRight") || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                 }
+                
+                initButton(pnEditMode);
 
             }
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (ParseException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (IOException ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException | IOException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -1190,26 +1164,21 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
 
     public void loadTableDetailFromMain() {
         try {
+            poJSON = new JSONObject();
+
+            poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+            if ("error".equals((String) poJSON.get("message"))) {
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                return;
+            }
+                
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                poJSON = new JSONObject();
-
-                poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-                if ("error".equals((String) poJSON.get("message"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    return;
-                }
-
                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                 highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
-
                 loadTableDetail();
             }
 
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
