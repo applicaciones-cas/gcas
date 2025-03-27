@@ -299,12 +299,10 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
                     }
                     ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
+                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            return;
                         }
-                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     }
                     clearMasterFields();
                     clearDetailFields();
@@ -366,9 +364,9 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
                     }
                     break;
                 case "btnPrint":
-                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                    loJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if ("error".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                     }
                     break;
                 case "btnRetrieve":

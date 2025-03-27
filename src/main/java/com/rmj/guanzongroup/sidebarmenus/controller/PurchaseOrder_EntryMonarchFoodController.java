@@ -530,8 +530,8 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                     // Print Transaction Prompt
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
                         loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        if ("success".equals(loJSON.get("result"))) {
-                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                        if (!"success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), "Print Purchase Order", null);
                         }
                     }
 

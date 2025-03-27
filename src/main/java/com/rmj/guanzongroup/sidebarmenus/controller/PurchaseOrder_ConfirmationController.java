@@ -300,12 +300,10 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     }
                     ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        loJSON = poPurchasingController.PurchaseOrder().PrintTransaction();
+                        loJSON = poPurchasingController.PurchaseOrder().printTransaction();
                         if (!"success".equals((String) loJSON.get("result"))) {
                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            return;
                         }
-                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     }
                     clearMasterFields();
                     clearDetailFields();

@@ -529,7 +529,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     // Print Transaction Prompt
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
                         loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                        if ("success".equals(loJSON.get("result"))) {
+                        if (!"success".equals((String) loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), "Print Purchase Order", null);
                         }
                     }
                     Platform.runLater(() -> btnNew.fire());
