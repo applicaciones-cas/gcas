@@ -198,27 +198,28 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 switch (event.getCode()) {
                     case TAB:
                     case DOWN:
-//                        pnTblPODetailRow = pnTblPODetailRow + 1;
-                        moveToNextRow(currentTable, focusedCell);
+                        pnTblPODetailRow = pnTblPODetailRow + 1;
+                        currentTable.getSelectionModel().select(pnTblPODetailRow);
                         break;
                     case UP:
-//                        pnTblPODetailRow = pnTblPODetailRow - 1;
-                        moveToPreviousRow(currentTable, focusedCell);
+                        pnTblPODetailRow = pnTblPODetailRow - 1;
+                        currentTable.getSelectionModel().select(pnTblPODetailRow);
                         break;
                     default:
                         return; // Ignore other keys
                 }
-
                 loadDetail();
                 loadTablePODetail();
                 if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                    boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
-                    tfBarcode.setDisable(isSourceNotEmpty);
-                    tfDescription.setDisable(isSourceNotEmpty);
-                    if (!tfBarcode.getText().isEmpty()) {
-                        tfOrderQuantity.requestFocus();
-                    } else {
-                        tfBarcode.requestFocus();
+                    if (pnTblPODetailRow > 0) {
+                        boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
+                        tfBarcode.setDisable(isSourceNotEmpty);
+                        tfDescription.setDisable(isSourceNotEmpty);
+                        if (!tfBarcode.getText().isEmpty()) {
+                            tfOrderQuantity.requestFocus();
+                        } else {
+                            tfBarcode.requestFocus();
+                        }
                     }
                 }
                 event.consume();
@@ -383,7 +384,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 case "btnSearch":
                     if (activeField != null) {
                         JSONObject poJSON = new JSONObject();
-
                         String loTextFieldId = activeField.getId();
                         String lsValue = activeField.getText().trim();
                         switch (loTextFieldId) {
@@ -597,7 +597,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             }
                         }
                     }
-                    if (pnTblStockRequestRow >= 0) {
+                    if (pnTblStockRequestRow > 0) {
                         tblVwStockRequest.refresh();
                         poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.OPEN);
                     }
@@ -734,22 +734,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
                     break;
                 case "tfOrderQuantity":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    if (Integer.parseInt(lsValue) < 0) {
-                        ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
-                        lsValue = "0";
-                    }
-                    if (pnTblPODetailRow >= 0) {
-                        poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
-                    } else {
-                        lsValue = "0";
-                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                        clearDetailFields();
-                    }
-                    tfOrderQuantity.setText(lsValue);
-                    pnTblPODetailRow = pnTblPODetailRow + 1;
+
                     loadDetail();
                     loadTablePODetail();
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -940,17 +925,37 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             case "tfAdvancePRate":
                             case "tfDiscountRate":
                             case "tfDiscountAmount":
+                                CommonUtils.SetNextFocus((TextField) event.getSource());
+                                break;
                             case "tfOrderQuantity":
+                                if (lsValue.isEmpty()) {
+                                    lsValue = "0";
+                                }
+                                if (Integer.parseInt(lsValue) < 0) {
+                                    ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
+                                    lsValue = "0";
+                                }
+                                if (pnTblPODetailRow >= 0) {
+                                    poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
+                                } else {
+                                    lsValue = "0";
+                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                    clearDetailFields();
+                                }
+                                tfOrderQuantity.setText(lsValue);
+                                pnTblPODetailRow = pnTblPODetailRow + 1;
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
                                 break;
                         }
                         break;
                     case UP:
                         event.consume();
+                        pnTblPODetailRow = pnTblPODetailRow - 1;
                         CommonUtils.SetPreviousFocus((TextField) event.getSource());
                         break;
                     case DOWN:
                         event.consume();
+                        pnTblPODetailRow = pnTblPODetailRow + 1;
                         CommonUtils.SetNextFocus((TextField) event.getSource());
                         break;
                     default:
@@ -1018,8 +1023,9 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         taRemarks.setText("");
         CustomCommonUtil.setSelected(false, chkbAdvancePayment);
         CustomCommonUtil.setText("", tfTransactionNo, tfCompany, tfSupplier,
-                tfDestination, tfReferenceNo, tfTerm, tfDiscountRate,
-                tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount);
+                tfDestination, tfReferenceNo, tfTerm);
+        CustomCommonUtil.setText("0.00", tfTotalAmount, tfAdvancePAmount, tfAdvancePRate,
+                tfDiscountAmount, tfDiscountRate);
     }
 
     private void clearDetailFields() {
@@ -1322,7 +1328,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             }
 
             @Override
-
             protected void failed() {
                 progressIndicator.setVisible(false);
             }
@@ -1389,6 +1394,14 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     }
 
+// Method to reselect the last clicked row
+    private void reselectLastRow() {
+        if (pnTblPODetailRow >= 0 && pnTblPODetailRow < tblVwOrderDetails.getItems().size()) {
+            tblVwOrderDetails.getSelectionModel().clearAndSelect(pnTblPODetailRow);
+            tblVwOrderDetails.scrollTo(pnTblPODetailRow); // Scroll to the selected row if needed
+        }
+    }
+
     private void initTablePODetail() {
         tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -1400,13 +1413,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
         tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
 
-        // Track last clicked row
-        tblVwOrderDetails.getSelectionModel().selectedIndexProperty().addListener((obs, oldIndex, newIndex) -> {
-            if (newIndex.intValue() >= 0) {
-                pnTblStockRequestRow = newIndex.intValue();
-            }
-        });
-
         // Prevent column reordering
         tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
@@ -1417,33 +1423,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             }
         });
     }
-
-// Method to reselect the last clicked row
-    private void reselectLastRow() {
-        if (pnTblPODetailRow >= 0 && pnTblPODetailRow < tblVwOrderDetails.getItems().size()) {
-            tblVwOrderDetails.getSelectionModel().clearAndSelect(pnTblPODetailRow);
-            tblVwOrderDetails.scrollTo(pnTblPODetailRow); // Scroll to the selected row if needed
-        }
-    }
-//
-//    private void initTablePODetail() {
-//        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-//        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-//        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-//        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-//        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-//        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-//        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-//        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-//        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
-//
-//        tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-//            TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
-//            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-//                header.setReordering(false);
-//            });
-//        });
-//    }
 
     private void tblVwStockRequest_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
