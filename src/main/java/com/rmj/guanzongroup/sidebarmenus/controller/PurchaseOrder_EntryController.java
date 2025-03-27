@@ -424,7 +424,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false,
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, true,
                                         poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
@@ -444,7 +444,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false,
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, true,
                                         poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
@@ -863,7 +863,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false,
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, true,
                                         poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
                                 );
                                 if ("error".equals(loJSON.get("result"))) {
@@ -886,7 +886,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false,
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, true,
                                         poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
                                 );
                                 if ("error".equals(loJSON.get("result"))) {
@@ -1423,7 +1423,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
                             tfBarcode.setDisable(isSourceNotEmpty);
-                            tfBarcode.setDisable(isSourceNotEmpty);
+                            tfDescription.setDisable(isSourceNotEmpty);
                             if (!tfBarcode.getText().isEmpty()) {
                                 tfOrderQuantity.requestFocus();
                             } else {

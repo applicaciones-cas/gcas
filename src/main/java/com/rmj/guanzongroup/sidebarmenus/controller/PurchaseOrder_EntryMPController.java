@@ -484,7 +484,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfBrand.setText("");
@@ -502,7 +502,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfModel.setText("");
@@ -922,7 +922,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfBrand.setText("");
@@ -943,7 +943,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfModel.setText("");

@@ -424,7 +424,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfBarcode.setText("");
@@ -442,7 +442,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfDescription.setText("");
@@ -859,7 +859,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfBarcode.setText("");
@@ -880,7 +880,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfDescription.setText("");

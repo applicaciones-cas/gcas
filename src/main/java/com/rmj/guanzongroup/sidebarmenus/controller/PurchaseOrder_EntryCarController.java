@@ -434,7 +434,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     if (activeField != null) {
                         JSONObject poJSON = new JSONObject();
 
-                        String loTextFieldId = activeField.getId().toString();
+                        String loTextFieldId = activeField.getId();
                         String lsValue = activeField.getText().trim();
                         switch (loTextFieldId) {
                             case "tfCompany":
@@ -493,9 +493,8 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false,
-                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
-                                );
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, true,
+                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfBrand.setText("");
@@ -513,7 +512,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false,
+                                poJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, true,
                                         poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
@@ -937,7 +936,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false,
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, true,
                                         poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
                                 );
                                 if ("error".equals(loJSON.get("result"))) {
@@ -960,7 +959,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false,
+                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, true,
                                         poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
                                 );
                                 if ("error".equals(loJSON.get("result"))) {
