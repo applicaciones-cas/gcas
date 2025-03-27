@@ -82,6 +82,12 @@ import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import static org.apache.poi.ss.usermodel.TableStyleType.lastColumn;
+import javafx.scene.control.TableColumnBase;
+import javafx.scene.control.ScrollBar;
+import javafx.geometry.Orientation;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 
 /**
  * FXML Controller class
@@ -398,23 +404,23 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
-                
-                if (lsButton.equals("btnSave") || lsButton.equals("btnApprove") || lsButton.equals("btnReturn") 
-                        || lsButton.equals("btnVoid") || lsButton.equals("btnCancel") ) {
+
+                if (lsButton.equals("btnSave") || lsButton.equals("btnApprove") || lsButton.equals("btnReturn")
+                        || lsButton.equals("btnVoid") || lsButton.equals("btnCancel")) {
                     poPurchaseReceivingController.resetMaster();
                     poPurchaseReceivingController.resetOthers();
                     poPurchaseReceivingController.Detail().clear();
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
                 }
-                
-                if (lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment") || lsButton.equals("btnRemoveAttachment") 
+
+                if (lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment") || lsButton.equals("btnRemoveAttachment")
                         || lsButton.equals("btnArrowRight") || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                 }
-                
+
                 initButton(pnEditMode);
 
             }
@@ -1166,7 +1172,7 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                 return;
             }
-                
+
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                 highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
@@ -1425,6 +1431,53 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
         });
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
+        adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+    }
+
+    public void adjustLastColumnForScrollbar(TableView<?> tableView) {
+        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            if (!(newSkin instanceof TableViewSkin<?>)) {
+                return;
+            }
+
+            TableViewSkin<?> skin = (TableViewSkin<?>) newSkin;
+            VirtualFlow<?> flow = skin.getChildren().stream()
+                    .filter(node -> node instanceof VirtualFlow<?>)
+                    .map(node -> (VirtualFlow<?>) node)
+                    .findFirst().orElse(null);
+
+            if (flow == null) {
+                return;
+            }
+
+            ScrollBar vScrollBar = flow.getChildrenUnmodifiable().stream()
+                    .filter(node -> node instanceof ScrollBar && ((ScrollBar) node).getOrientation() == Orientation.VERTICAL)
+                    .map(node -> (ScrollBar) node)
+                    .findFirst().orElse(null);
+
+            if (vScrollBar == null || tableView.getColumns().isEmpty()) {
+                return;
+            }
+
+            TableColumn<?, ?> lastColumn = (TableColumn<?, ?>) tableView.getColumns()
+                    .get(tableView.getColumns().size() - 1);
+
+            vScrollBar.visibleProperty().addListener((observable, oldValue, newValue) -> {
+                Platform.runLater(() -> {
+                    double scrollBarWidth = newValue ? vScrollBar.getWidth() : 0;
+                    double remainingWidth = tableView.getWidth() - scrollBarWidth;
+
+                    double totalFixedWidth = tableView.getColumns().stream()
+                            .filter(col -> col != lastColumn)
+                            .mapToDouble(col -> ((TableColumn<?, ?>) col).getWidth())
+                            .sum();
+
+                    double newWidth = Math.max(0, remainingWidth - totalFixedWidth);
+                    lastColumn.setPrefWidth(newWidth - 5);
+                });
+            });
+        });
     }
 
     private void initButton(int fnValue) {
@@ -1710,15 +1763,6 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
         imageView.setTranslateX(0);
         imageView.setTranslateY(0);
         stackPane1.setAlignment(imageView, javafx.geometry.Pos.CENTER);
-    }
-
-    private TableView getFocusedTable() {
-        if (tblViewPuchaseOrder.isFocused()) {
-            return tblViewPuchaseOrder;
-        } else if (tblViewOrderDetails.isFocused()) {
-            return tblViewOrderDetails;
-        }
-        return null; // No table has focus
     }
 
     private int moveToNextRow(TableView table, TablePosition focusedCell) {
