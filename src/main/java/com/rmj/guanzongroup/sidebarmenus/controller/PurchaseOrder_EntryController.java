@@ -198,17 +198,31 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 switch (event.getCode()) {
                     case TAB:
                     case DOWN:
-                        pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
+//                        pnTblPODetailRow = pnTblPODetailRow + 1;
+                        moveToNextRow(currentTable, focusedCell);
                         break;
                     case UP:
-                        pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
+//                        pnTblPODetailRow = pnTblPODetailRow - 1;
+                        moveToPreviousRow(currentTable, focusedCell);
                         break;
                     default:
                         return; // Ignore other keys
                 }
 
                 loadDetail();
+                loadTablePODetail();
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
+                    tfBarcode.setDisable(isSourceNotEmpty);
+                    tfDescription.setDisable(isSourceNotEmpty);
+                    if (!tfBarcode.getText().isEmpty()) {
+                        tfOrderQuantity.requestFocus();
+                    } else {
+                        tfBarcode.requestFocus();
+                    }
+                }
                 event.consume();
+
             }
 
         }
@@ -349,6 +363,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     poPurchasingController.PurchaseOrder().Master().setIndustryID(poApp.getIndustry());
                     poPurchasingController.PurchaseOrder().Master().setDestinationID(poPurchasingController.PurchaseOrder().Master().Branch().getBranchCode());
                     if ("success".equals((String) loJSON.get("result"))) {
+                        pnTblPODetailRow = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
                         loadMaster();
                         loadDetail();
                         loadTablePODetail();
@@ -734,7 +749,19 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         clearDetailFields();
                     }
                     tfOrderQuantity.setText(lsValue);
+                    pnTblPODetailRow = pnTblPODetailRow + 1;
+                    loadDetail();
                     loadTablePODetail();
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
+                        tfBarcode.setDisable(isSourceNotEmpty);
+                        tfDescription.setDisable(isSourceNotEmpty);
+                        if (!tfBarcode.getText().isEmpty()) {
+                            tfOrderQuantity.requestFocus();
+                        } else {
+                            tfBarcode.requestFocus();
+                        }
+                    }
                     break;
             }
         } else {
@@ -876,9 +903,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 }
 
                                 tfOrderQuantity.requestFocus();
-
-                                loadDetail();
-                                loadTablePODetail();
                                 break;
                             case "tfDescription":
                                 if (pnTblPODetailRow < 0) {
@@ -904,6 +928,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 loadDetail();
                                 loadTablePODetail();
                                 break;
+
                         }
                         event.consume();
                         switch (txtFieldID) {
@@ -920,7 +945,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 break;
                         }
                         break;
-
                     case UP:
                         event.consume();
                         CommonUtils.SetPreviousFocus((TextField) event.getSource());
@@ -1292,10 +1316,13 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             protected void succeeded() {
                 tblVwOrderDetails.setItems(poDetail_data);
                 progressIndicator.setVisible(false);
-
+                Platform.runLater(() -> {
+                    reselectLastRow();
+                });
             }
 
             @Override
+
             protected void failed() {
                 progressIndicator.setVisible(false);
             }
@@ -1373,13 +1400,50 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
         tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
 
+        // Track last clicked row
+        tblVwOrderDetails.getSelectionModel().selectedIndexProperty().addListener((obs, oldIndex, newIndex) -> {
+            if (newIndex.intValue() >= 0) {
+                pnTblStockRequestRow = newIndex.intValue();
+            }
+        });
+
+        // Prevent column reordering
         tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
+            if (header != null) {
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
+            }
         });
     }
+
+// Method to reselect the last clicked row
+    private void reselectLastRow() {
+        if (pnTblPODetailRow >= 0 && pnTblPODetailRow < tblVwOrderDetails.getItems().size()) {
+            tblVwOrderDetails.getSelectionModel().clearAndSelect(pnTblPODetailRow);
+            tblVwOrderDetails.scrollTo(pnTblPODetailRow); // Scroll to the selected row if needed
+        }
+    }
+//
+//    private void initTablePODetail() {
+//        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+//        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+//        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+//        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+//        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+//        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+//        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+//        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+//        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
+//
+//        tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+//            TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
+//            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+//                header.setReordering(false);
+//            });
+//        });
+//    }
 
     private void tblVwStockRequest_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -1392,6 +1456,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         JSONObject loJSON = poPurchasingController.PurchaseOrder().addStockRequestOrdersToPODetail(lsTransactionNo);
                         if ("success".equals(loJSON.get("result"))) {
                             if (poPurchasingController.PurchaseOrder().getDetailCount() > 0) {
+                                pnTblPODetailRow = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
                                 loadTablePODetail();
                                 tblVwStockRequest.refresh();
                                 poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.CONFIRMED);
