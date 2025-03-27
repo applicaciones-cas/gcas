@@ -446,6 +446,13 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                 }
                                 tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
                                 tfCompany.requestFocus();
+                                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                    clearDetailFields();
+                                    loadTablePODetail();
+                                }
+                                if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                                    loadTableStockRequest();
+                                }
                                 break;
                             case "tfSupplier":
                                 poJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
@@ -456,6 +463,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                 }
                                 tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 tfSupplier.requestFocus();
+                                if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                                    loadTableStockRequest();
+                                }
                                 break;
                             case "tfDestination":
                                 poJSON = poPurchasingController.PurchaseOrder().SearchDestination(lsValue, false);
@@ -517,8 +527,6 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                             default:
                                 System.out.println("Unknown TextField");
                         }
-                        loadTableStockRequest();
-
                     }
                     break;
                 case "btnSave":
@@ -669,7 +677,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                         return;
                     }
 
-                    loadTableStockRequest();
+                    if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                        loadTableStockRequest();
+                    }
                     break;
                 case "btnTransHistory":
                     break;
@@ -850,13 +860,42 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     case F3:
                         switch (txtFieldID) {
                             case "tfCompany":
+//                                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                                    if (poPurchasingController.PurchaseOrder().getDetailCount() >= 1) {
+//                                        if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
+//                                                || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0)) {
+//                                            isHaveQuantityAndStockId = true;
+//                                        }
+//                                    }
+//                                }
+//                                if (isHaveQuantityAndStockId) {
+//                                    if (ShowMessageFX.YesNo("PO Details have already items, are you sure you want to change company?", lsValue, lsValue)) {
+//                                        int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+//                                        for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
+//                                            if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()
+//                                                    && poPurchasingController.PurchaseOrder().Detail(lnCtr).getStockID().isEmpty()
+//                                                    && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().equals(0)) {
+//                                                continue; // Skip deleting this row
+//                                            }
+//                                            poPurchasingController.PurchaseOrder().Detail().remove(lnCtr);
+//                                        }
+//                                    }
+//                                }
                                 loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfCompany.setText("");
                                     break;
                                 }
+
                                 tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
+                                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                    clearDetailFields();
+                                    loadTablePODetail();
+                                }
+                                if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                                    loadTableStockRequest();
+                                }
                                 break;
                             case "tfSupplier":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
@@ -866,6 +905,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                     break;
                                 }
                                 tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
+                                if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                                    loadTableStockRequest();
+                                }
                                 break;
                             case "tfDestination":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchDestination(lsValue, false);
@@ -929,7 +971,6 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                 loadTablePODetail();
                                 break;
                         }
-                        loadTableStockRequest();
                         event.consume();
                         switch (txtFieldID) {
                             case "tfCompany":
@@ -1278,26 +1319,14 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                poDetail_data.clear();
                 try {
+                    poDetail_data.clear();
                     if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        int lnCntr;
-                        lnCntr = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
-                        while (lnCntr > 0) {
-                            if (poPurchasingController.PurchaseOrder().Detail(lnCntr).getStockID() == null
-                                    || poPurchasingController.PurchaseOrder().Detail(lnCntr).getStockID().equals("")) {
-                                poPurchasingController.PurchaseOrder().Detail().remove(lnCntr);
-                            }
-                            lnCntr--;
-                        }
-                        if ((poPurchasingController.PurchaseOrder().getDetailCount() - 1) >= 0) {
-                            if (poPurchasingController.PurchaseOrder().Detail(poPurchasingController.PurchaseOrder().getDetailCount() - 1).getStockID() != null
-                                    && !poPurchasingController.PurchaseOrder().Detail(poPurchasingController.PurchaseOrder().getDetailCount() - 1).getStockID().equals("")) {
-                                poPurchasingController.PurchaseOrder().AddDetail();
-                            }
+                        if (poPurchasingController.PurchaseOrder().Detail(poPurchasingController.PurchaseOrder().getDetailCount() - 1).getStockID() != null
+                                && !poPurchasingController.PurchaseOrder().Detail(poPurchasingController.PurchaseOrder().getDetailCount() - 1).getStockID().equals("")) {
+                            poPurchasingController.PurchaseOrder().AddDetail();
                         }
                     }
-
                     double grandTotalAmount = 0.0;
                     for (int lnCtr = 0; lnCtr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCtr++) {
                         double lnTotalAmount = poPurchasingController.PurchaseOrder()
@@ -1375,7 +1404,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                 if (newValue.isEmpty()) {
                     poPurchasingController.PurchaseOrder().Master().setCompanyID("");
                     tfCompany.setText("");
-                    loadTableStockRequest();
+                    if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                        loadTableStockRequest();
+                    }
                 }
             }
         });
@@ -1386,7 +1417,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     poPurchasingController.PurchaseOrder().Master().setAddressID("");
                     poPurchasingController.PurchaseOrder().Master().setContactID("");
                     tfSupplier.setText("");
-                    loadTableStockRequest();
+                    if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                        loadTableStockRequest();
+                    }
                 }
             }
         });
