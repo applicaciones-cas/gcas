@@ -190,9 +190,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
         try {
             poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
             poPurchaseReceivingController.Master().Industry().getDescription();
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -801,9 +799,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -956,9 +952,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                                     String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionDate()),
                                     String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                             ));
-                        } catch (SQLException ex) {
-                            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                        } catch (GuanzonException ex) {
+                        } catch (SQLException | GuanzonException ex) {
                             Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
 
@@ -1013,9 +1007,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
             tfSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
             tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1082,9 +1074,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1160,9 +1150,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
             }
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1277,11 +1265,7 @@ public class DeliveryAcceptance_ApprovalMonarchHospitalityController implements 
                             loadRecordDetail();
                         }
 
-                    } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (CloneNotSupportedException ex) {
+                    } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                         Logger.getLogger(DeliveryAcceptance_ApprovalMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
                 });

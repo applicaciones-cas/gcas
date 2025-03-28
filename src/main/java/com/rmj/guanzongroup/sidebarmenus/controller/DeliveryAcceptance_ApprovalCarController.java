@@ -179,15 +179,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     private ImageView imageView;
     @FXML
     private Button btnArrowLeft, btnArrowRight;
-
-//    @FXML
-//    private TextField tfDescription;
-//    @FXML
-//    private TextField tfBarcode;
-//    @FXML
-//    private TextField tfSupersede;
-//    @FXML
-//    private DatePicker dpExpiryDate;
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -201,9 +193,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         try {
             poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
             poPurchaseReceivingController.Master().Industry().getDescription();
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -529,9 +519,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -871,9 +859,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -1026,9 +1012,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                                     String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionDate()),
                                     String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                             ));
-                        } catch (SQLException ex) {
-                            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                        } catch (GuanzonException ex) {
+                        } catch (SQLException | GuanzonException ex) {
                             Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
 
@@ -1083,9 +1067,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             tfSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
             tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1156,9 +1138,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1351,11 +1331,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             loadRecordDetail();
                         }
 
-                    } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (CloneNotSupportedException ex) {
+                    } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                         Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
                 });
