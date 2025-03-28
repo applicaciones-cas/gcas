@@ -79,6 +79,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.time.format.DateTimeParseException;
 import javafx.scene.input.MouseEvent;
 
 /**
@@ -239,7 +240,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         poPurchaseReceivingController.resetOthers();
                         poPurchaseReceivingController.Detail().clear();
                         clearTextFields();
-                        
+
                         poJSON = poPurchaseReceivingController.NewTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -285,13 +286,13 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             //get last retrieved Company and Supplier
                             psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                            
+
                             //Clear data
                             poPurchaseReceivingController.resetMaster();
                             poPurchaseReceivingController.resetOthers();
                             poPurchaseReceivingController.Detail().clear();
                             clearTextFields();
-                            
+
                             pnEditMode = EditMode.UNKNOWN;
                             break;
                         } else {
@@ -332,13 +333,13 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
-                
+
                 if (lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                 }
-                
+
                 initButton(pnEditMode);
 
             }
@@ -698,7 +699,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
+
             if (!newValue) { // Lost focus
                 DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
                 String lsID = datePicker.getId();
@@ -706,10 +709,18 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
 
+                if (inputText != null && !inputText.trim().isEmpty()) {
+                    try {
+                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                        datePicker.setValue(parsedDate);
+                        datePicker.getEditor().setText(formatter.format(parsedDate));
+                        inputText = datePicker.getEditor().getText();
+                    } catch (DateTimeParseException ignored) {
+                    }
+                }
                 // Check if the user typed something in the text field
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                         selectedDate = LocalDate.parse(inputText, formatter);
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
@@ -756,7 +767,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         }
                         if (selectedDate.isBefore(currentDate)) {
                             poJSON.put("result", "error");
-                            poJSON.put("message", "Invalid Date.");
+                            poJSON.put("message", "The selected date cannot be earlier than the current date.");
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         } else {
                             poPurchaseReceivingController.Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
@@ -801,6 +812,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
         dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
         dpExpiryDate.focusedProperty().addListener(datepicker_Focus);
+
     }
 
     public void initDetailsGrid() {
@@ -1439,7 +1451,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 break;
         }
     }
-
 
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));

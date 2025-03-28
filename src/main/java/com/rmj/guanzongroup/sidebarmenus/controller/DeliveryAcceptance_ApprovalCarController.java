@@ -1112,10 +1112,12 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
             tfBrand.setDisable(!lbFields);
             tfModel.setDisable(!lbFields);
-
             if (lbFields) {
-                tfBrand.getStyleClass().remove("DisabledTextField");
-                tfModel.getStyleClass().remove("DisabledTextField");
+                while (tfBrand.getStyleClass().contains("DisabledTextField") || tfModel.getStyleClass().contains("DisabledTextField")) {
+                    tfBrand.getStyleClass().remove("DisabledTextField");
+                    tfModel.getStyleClass().remove("DisabledTextField");
+                }
+
             } else {
                 tfBrand.getStyleClass().add("DisabledTextField");
                 tfModel.getStyleClass().add("DisabledTextField");

@@ -1066,10 +1066,11 @@ public class DeliveryAcceptance_ApprovalLPController implements Initializable, S
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
             tfBarcode.setDisable(!lbFields);
             tfDescription.setDisable(!lbFields);
-
             if (lbFields) {
-                tfBarcode.getStyleClass().remove("DisabledTextField");
-                tfDescription.getStyleClass().remove("DisabledTextField");
+                while (tfBarcode.getStyleClass().contains("DisabledTextField") || tfDescription.getStyleClass().contains("DisabledTextField")) {
+                    tfBarcode.getStyleClass().remove("DisabledTextField");
+                    tfDescription.getStyleClass().remove("DisabledTextField");
+                }
             } else {
                 tfBarcode.getStyleClass().add("DisabledTextField");
                 tfDescription.getStyleClass().add("DisabledTextField");
