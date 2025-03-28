@@ -11,6 +11,7 @@ import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.time.format.DateTimeParseException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
@@ -699,7 +700,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
         try {
 
             if (!newValue) { // Lost focus
@@ -708,7 +709,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
-
+                
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
                         LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));

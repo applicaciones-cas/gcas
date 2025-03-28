@@ -72,6 +72,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.time.format.DateTimeParseException;
 
 /**
  * FXML Controller class
@@ -691,18 +692,45 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             if (!newValue) { // Lost focus
                 DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
                 String lsID = datePicker.getId();
-                LocalDate selectedDate = datePicker.getValue();
-                LocalDate localbdate = LocalDate.parse(selectedDate.toString(), formatter);
-                String formattedDate = formatter.format(selectedDate);
+                String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
+                LocalDate selectedDate = null;
+                
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                if (inputText != null && !inputText.trim().isEmpty()) {
+                    try {
+                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                        datePicker.setValue(parsedDate);
+                        datePicker.getEditor().setText(formatter.format(parsedDate));
+                        inputText = datePicker.getEditor().getText();
+                    } catch (DateTimeParseException ignored) {
+                    }
+                }
+                // Check if the user typed something in the text field
+                if (inputText != null && !inputText.trim().isEmpty()) {
+                    try {
+                        selectedDate = LocalDate.parse(inputText, formatter);
+                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
+                    } catch (Exception ex) {
+                        poJSON.put("result", "error");
+                        poJSON.put("message", "Invalid date format. Please use yyyy-MM-dd.");
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                } else {
+                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
+                }
 
-                LocalDate localDate = (selectedDate != null) ? LocalDate.parse(selectedDate.toString(), formatter) : null;
+                String formattedDate = selectedDate.toString();
+
                 switch (lsID) {
                     case "dpTransactionDate":
+                        if (selectedDate == null) {
+                            break;
+                        }
                         if (selectedDate.isAfter(currentDate)) {
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
@@ -710,28 +738,25 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             break;
                         } else {
                             poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
-                            if (localDate != null) {
-                                datePicker.setValue(localDate);
-                            }
                         }
                         break;
                     case "dpReferenceDate":
+                        if (selectedDate == null) {
+                            break;
+                        }
                         if (selectedDate.isAfter(currentDate)) {
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            break;
                         } else {
-                            poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
-                            if (localDate != null) {
-                                datePicker.setValue(localDate);
-                            }
+                            poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
                         break;
                     default:
                         System.out.println("Unknown DatePicker.");
                         break;
                 }
+                datePicker.getEditor().setText(formattedDate);
                 loadRecordMaster();
             }
         } catch (Exception e) {

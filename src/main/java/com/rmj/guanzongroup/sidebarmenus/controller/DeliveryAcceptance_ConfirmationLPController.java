@@ -88,6 +88,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.time.format.DateTimeParseException;
 import org.guanzon.appdriver.base.MiscUtil;
 
 /**
@@ -819,11 +820,21 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
+                
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                if (inputText != null && !inputText.trim().isEmpty()) {
+                    try {
+                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                        datePicker.setValue(parsedDate);
+                        datePicker.getEditor().setText(formatter.format(parsedDate));
+                        inputText = datePicker.getEditor().getText();
+                    } catch (DateTimeParseException ignored) {
+                    }
+                }
 
                 // Check if the user typed something in the text field
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                         selectedDate = LocalDate.parse(inputText, formatter);
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
@@ -864,18 +875,33 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                             poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
                         break;
+                    case "dpExpiryDate":
+                        if (selectedDate == null) {
+                            break;
+                        }
+                        if (selectedDate.isBefore(currentDate)) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "The selected date cannot be earlier than the current date.");
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        } else {
+                            poPurchaseReceivingController.Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
+                        }
+                        break;
                     default:
                         System.out.println("Unknown DatePicker.");
                         break;
                 }
                 datePicker.getEditor().setText(formattedDate);
-                loadRecordMaster();
+                if (lsID.equals("dpExpiryDate")) {
+                    loadRecordDetail();
+                } else {
+                    loadRecordMaster();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     };
-
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
         pgPagination.setPageCount(totalPage);

@@ -73,6 +73,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.time.format.DateTimeParseException;
 
 /**
  * FXML Controller class
@@ -698,11 +699,21 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
+                
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                if (inputText != null && !inputText.trim().isEmpty()) {
+                    try {
+                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                        datePicker.setValue(parsedDate);
+                        datePicker.getEditor().setText(formatter.format(parsedDate));
+                        inputText = datePicker.getEditor().getText();
+                    } catch (DateTimeParseException ignored) {
+                    }
+                }
 
                 // Check if the user typed something in the text field
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                         selectedDate = LocalDate.parse(inputText, formatter);
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
@@ -749,7 +760,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                         }
                         if (selectedDate.isBefore(currentDate)) {
                             poJSON.put("result", "error");
-                            poJSON.put("message", "Invalid Date.");
+                            poJSON.put("message", "The selected date cannot be earlier than the current date.");
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         } else {
                             poPurchaseReceivingController.Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));

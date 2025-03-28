@@ -89,6 +89,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.time.format.DateTimeParseException;
 
 /**
  * FXML Controller class
@@ -405,23 +406,23 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
-                
-                if (lsButton.equals("btnSave") || lsButton.equals("btnConfirm") || lsButton.equals("btnReturn") 
-                        || lsButton.equals("btnVoid") || lsButton.equals("btnCancel") ) {
+
+                if (lsButton.equals("btnSave") || lsButton.equals("btnConfirm") || lsButton.equals("btnReturn")
+                        || lsButton.equals("btnVoid") || lsButton.equals("btnCancel")) {
                     poPurchaseReceivingController.resetMaster();
                     poPurchaseReceivingController.resetOthers();
                     poPurchaseReceivingController.Detail().clear();
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
                 }
-                
-                if (lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment") || lsButton.equals("btnRemoveAttachment") 
+
+                if (lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment") || lsButton.equals("btnRemoveAttachment")
                         || lsButton.equals("btnArrowRight") || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                 }
-                
+
                 initButton(pnEditMode);
 
             }
@@ -820,10 +821,20 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
 
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                if (inputText != null && !inputText.trim().isEmpty()) {
+                    try {
+                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                        datePicker.setValue(parsedDate);
+                        datePicker.getEditor().setText(formatter.format(parsedDate));
+                        inputText = datePicker.getEditor().getText();
+                    } catch (DateTimeParseException ignored) {
+                    }
+                }
+
                 // Check if the user typed something in the text field
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                         selectedDate = LocalDate.parse(inputText, formatter);
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
@@ -864,12 +875,28 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                             poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
                         break;
+                    case "dpExpiryDate":
+                        if (selectedDate == null) {
+                            break;
+                        }
+                        if (selectedDate.isBefore(currentDate)) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "The selected date cannot be earlier than the current date.");
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        } else {
+                            poPurchaseReceivingController.Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
+                        }
+                        break;
                     default:
                         System.out.println("Unknown DatePicker.");
                         break;
                 }
                 datePicker.getEditor().setText(formattedDate);
-                loadRecordMaster();
+                if (lsID.equals("dpExpiryDate")) {
+                    loadRecordDetail();
+                } else {
+                    loadRecordMaster();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1183,7 +1210,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                 return;
             }
-                
+
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                 highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
