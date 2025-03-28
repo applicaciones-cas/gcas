@@ -90,8 +90,6 @@ import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import static org.apache.poi.ss.usermodel.TableStyleType.lastColumn;
-import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
@@ -244,8 +242,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
-        String tabText = "";
-
         try {
             Object source = event.getSource();
             if (source instanceof Button) {

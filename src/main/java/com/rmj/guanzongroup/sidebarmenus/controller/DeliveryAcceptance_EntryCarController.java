@@ -207,7 +207,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
-        String tabText = "";
 
         try {
             Object source = event.getSource();
@@ -222,7 +221,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        poPurchaseReceivingController.resetOthers();
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
@@ -247,6 +245,12 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         showSerialDialog();
                         return;
                     case "btnNew":
+                        //Clear data
+                        poPurchaseReceivingController.resetMaster();
+                        poPurchaseReceivingController.resetOthers();
+                        poPurchaseReceivingController.Detail().clear();
+                        clearTextFields();
+                        
                         poJSON = poPurchaseReceivingController.NewTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -262,7 +266,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         if (!psSupplierId.isEmpty()) {
                             poPurchaseReceivingController.SearchSupplier(psSupplierId, true);
                         }
-                        poPurchaseReceivingController.resetOthers();
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnUpdate":
@@ -293,11 +296,14 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             //get last retrieved Company and Supplier
                             psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
+                            
+                            //Clear data
+                            poPurchaseReceivingController.resetMaster();
+                            poPurchaseReceivingController.resetOthers();
                             poPurchaseReceivingController.Detail().clear();
-                            pnEditMode = EditMode.UNKNOWN;
                             clearTextFields();
-                            loadTableDetail();
+                            
+                            pnEditMode = EditMode.UNKNOWN;
                             break;
                         } else {
                             return;
@@ -326,7 +332,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
-                                clearTextFields();
                                 //Call new transaction
                                 btnNew.fire();
                             }
@@ -338,19 +343,17 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
-                initButton(pnEditMode);
+                
                 if (lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
-
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                 }
+                
+                initButton(pnEditMode);
+                
             }
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -1036,7 +1039,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
         new Thread(task).start(); // Run task in background
 
     }
-
+    
     public void loadTableDetailFromMain() {
         try {
             if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
@@ -1052,11 +1055,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                 loadTableDetail();
             }
 
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 

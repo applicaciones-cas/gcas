@@ -193,7 +193,6 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
-        String tabText = "";
 
         try {
             Object source = event.getSource();
@@ -228,6 +227,12 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                         }
                         break;
                     case "btnNew":
+                        //Clear data
+                        poPurchaseReceivingController.resetMaster();
+                        poPurchaseReceivingController.resetOthers();
+                        poPurchaseReceivingController.Detail().clear();
+                        clearTextFields();
+                        
                         poJSON = poPurchaseReceivingController.NewTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -273,11 +278,14 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                             //get last retrieved Company and Supplier
                             psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
+                            
+                            //Clear data
+                            poPurchaseReceivingController.resetMaster();
+                            poPurchaseReceivingController.resetOthers();
                             poPurchaseReceivingController.Detail().clear();
-                            pnEditMode = EditMode.UNKNOWN;
                             clearTextFields();
-                            loadTableDetail();
+                            
+                            pnEditMode = EditMode.UNKNOWN;
                             break;
                         } else {
                             return;
@@ -306,34 +314,29 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                 psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
-                                clearTextFields();
                                 //Call new transaction
                                 btnNew.fire();
                             }
                         } else {
                             return;
                         }
-
                         break;
                     default:
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
-                initButton(pnEditMode);
+                
                 if (lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
-
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                 }
+                
+                initButton(pnEditMode);
 
             }
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1253,11 +1256,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                 loadTableDetail();
             }
 
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 

@@ -1037,29 +1037,23 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
 
     public void loadTableDetailFromMain() {
         try {
+            poJSON = new JSONObject();
+
+            poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+            if ("error".equals((String) poJSON.get("message"))) {
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                return;
+            }
+                
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                poJSON = new JSONObject();
-
-                poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-                if ("error".equals((String) poJSON.get("message"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    return;
-                }
-
                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                 highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
-
                 loadTableDetail();
             }
 
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
-
     }
 
     public void loadTableDetail() {

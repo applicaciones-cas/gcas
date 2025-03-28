@@ -295,7 +295,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        poPurchaseReceivingController.resetOthers();
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
@@ -306,7 +305,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
-
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -321,12 +319,17 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                         showSerialDialog();
                         return;
                     case "btnNew":
+                        //Clear data
+                        poPurchaseReceivingController.resetMaster();
+                        poPurchaseReceivingController.resetOthers();
+                        poPurchaseReceivingController.Detail().clear();
+                        clearTextFields();
+                        
                         poJSON = poPurchaseReceivingController.NewTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-
                         poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
                         poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
                         poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
@@ -337,7 +340,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                         if (!psSupplierId.isEmpty()) {
                             poPurchaseReceivingController.SearchSupplier(psSupplierId, true);
                         }
-                        poPurchaseReceivingController.resetOthers();
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnUpdate":
@@ -368,11 +370,14 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             //get last retrieved Company and Supplier
                             psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-
+                            
+                            //Clear data
+                            poPurchaseReceivingController.resetMaster();
+                            poPurchaseReceivingController.resetOthers();
                             poPurchaseReceivingController.Detail().clear();
-                            pnEditMode = EditMode.UNKNOWN;
                             clearTextFields();
-                            loadTableDetail();
+                            
+                            pnEditMode = EditMode.UNKNOWN;
                             break;
                         } else {
                             return;
@@ -401,7 +406,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                                 psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
-                                clearTextFields();
                                 //Call new transaction
                                 btnNew.fire();
                             }
@@ -413,19 +417,17 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
-                initButton(pnEditMode);
+                
                 if (lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
-
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                 }
+                
+                initButton(pnEditMode);
+                
             }
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -1334,11 +1336,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                 loadTableDetail();
             }
 
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
