@@ -10,11 +10,14 @@ import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -58,6 +61,7 @@ import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.purchasing.model.Model_PO_Detail;
 import org.guanzon.cas.purchasing.services.PurchaseOrderControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 import org.json.simple.JSONArray;
@@ -140,8 +144,8 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                 ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
             }
             poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
-            if ("error".equals((String) loJSON.get("result"))) {
-                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+            if ("error".equals((String) poJSON.get("result"))) {
+                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
 
                 return;
             }
@@ -150,6 +154,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
             }
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+
             tfIndustry.setText(lsIndustryName);
             Platform.runLater(() -> btnNew.fire());
             initButtonsClickActions();
@@ -192,24 +197,31 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
     private void tableKeyEvents(KeyEvent event) {
         TableView<?> currentTable = (TableView<?>) event.getSource();
         TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-        if (focusedCell != null) {
-            if ("tblVwOrderDetails".equals(currentTable.getId())) {
-                switch (event.getCode()) {
-                    case TAB:
-                    case DOWN:
-                        pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
-                        break;
-                    case UP:
-                        pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
-                        break;
-                    default:
-                        return; // Ignore other keys
-                }
 
-                loadDetail();
-                event.consume();
+        if (focusedCell != null && "tblVwOrderDetails".equals(currentTable.getId())) {
+            switch (event.getCode()) {
+                case TAB:
+                case DOWN:
+                    pnTblPODetailRow = pnTblPODetailRow;
+                    if (pnEditMode != EditMode.ADDNEW || pnEditMode != EditMode.UPDATE) {
+                        pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
+                    }
+                    break;
+                case UP:
+                    pnTblPODetailRow = pnTblPODetailRow;
+                    if (pnEditMode != EditMode.ADDNEW || pnEditMode != EditMode.UPDATE) {
+                        pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
+                    }
+                    break;
+                default:
+                    return;
             }
 
+            currentTable.getSelectionModel().select(pnTblPODetailRow);
+            currentTable.getFocusModel().focus(pnTblPODetailRow);
+            loadDetail();
+            initDetailFocus();
+            event.consume();
         }
     }
 
@@ -264,6 +276,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
             if (poPurchasingController.PurchaseOrder().Master().Term().getDescription() != null) {
                 lsTermCode = poPurchasingController.PurchaseOrder().Master().Term().getDescription();
             }
+
             tfTerm.setText(lsTermCode);
 
             taRemarks.setText(poPurchasingController.PurchaseOrder().Master().getRemarks());
@@ -393,6 +406,8 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                             poPurchasingController.PurchaseOrder().Master().getSupplierID(),
                             "");
                     if (!"error".equals((String) loJSON.get("result"))) {
+                        tblVwStockRequest.getSelectionModel().clearSelection(pnTblPODetailRow);
+                        pnTblPODetailRow = -1;
                         loadMaster();
                         loadDetail();
                         loadTablePODetail();
@@ -409,6 +424,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     poPurchasingController.PurchaseOrder().Master().setIndustryID(poApp.getIndustry());
                     poPurchasingController.PurchaseOrder().Master().setDestinationID(poPurchasingController.PurchaseOrder().Master().Branch().getBranchCode());
                     if ("success".equals((String) loJSON.get("result"))) {
+                        pnTblPODetailRow = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
                         loadMaster();
                         loadDetail();
                         loadTablePODetail();
@@ -423,13 +439,13 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
+
                     loadTablePODetail();
                     break;
                 case "btnSearch":
                     if (activeField != null) {
                         JSONObject poJSON = new JSONObject();
-
-                        String loTextFieldId = activeField.getId().toString();
+                        String loTextFieldId = activeField.getId();
                         String lsValue = activeField.getText().trim();
                         switch (loTextFieldId) {
                             case "tfCompany":
@@ -484,16 +500,21 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, true,
+                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                    tfBrand.setText("");
-                                    break;
+//                                    tfBrand.setText("");
+//                                    break;
                                 }
-                                tfBrand.setText(poPurchasingController.PurchaseOrder().Master().Inventory().Brand().getDescription());
-
-                                tfOrderQuantity.requestFocus();
+                                String lsBarcode = "";
+                                if (poPurchasingController.PurchaseOrder().Master().Inventory().getBarCode() != null) {
+                                    lsBarcode = poPurchasingController.PurchaseOrder().Master().Inventory().Brand().getDescription();
+                                }
+                                tfBrand.setText(lsBarcode);
                                 loadDetail();
+                                tfOrderQuantity.requestFocus();
                                 loadTablePODetail();
                                 break;
                             case "tfModel":
@@ -502,19 +523,19 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, true,
+                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfModel.setText("");
                                     break;
                                 }
                                 tfModel.setText(poPurchasingController.PurchaseOrder().Master().Inventory().Model().getDescription());
-
-                                tfOrderQuantity.requestFocus();
                                 loadDetail();
+                                tfOrderQuantity.requestFocus();
                                 loadTablePODetail();
                                 break;
-
                             default:
                                 System.out.println("Unknown TextField");
                         }
@@ -575,7 +596,6 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     }
 
                     // Save Transaction
-                    // Save Transaction
                     if (!"success".equals((loJSON = poPurchasingController.PurchaseOrder().SaveTransaction()).get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         loadTablePODetail();
@@ -600,9 +620,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                             ShowMessageFX.Warning((String) loJSON.get("message"), "Print Purchase Order", null);
                         }
                     }
-
                     Platform.runLater(() -> btnNew.fire());
-
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
@@ -610,6 +628,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                             clearDetailFields();
                             clearMasterFields();
                             poDetail_data.clear();
+                            tblVwOrderDetails.getItems().clear();
                             pnEditMode = EditMode.UNKNOWN;
                             loJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
                             if ("error".equals((String) loJSON.get("result"))) {
@@ -633,16 +652,22 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                             }
                             tfSupplier.setText(lsSupplierName);
                         } else {
+                            clearMasterFields();
+                            clearDetailFields();
+                            poDetail_data.clear();
                             loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                             if ("success".equals((String) loJSON.get("result"))) {
+                                pnTblPODetailRow = -1;
                                 loadMaster();
-                                loadDetail();
-                                loadTablePODetail();
+                                clearDetailFields();
                                 pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                                loadTablePODetail();
                             }
                         }
                     }
-                    if (pnTblStockRequestRow >= 0) {
+                    tblVwOrderDetails.getSelectionModel().clearSelection();
+                    tblVwStockRequest.getSelectionModel().clearSelection();
+                    if (pnTblStockRequestRow > 0) {
                         tblVwStockRequest.refresh();
                         poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.OPEN);
                     }
@@ -666,7 +691,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                         ShowMessageFX.Warning("Invalid to retrieve stock request, supplier is empty.", psFormName, null);
                         return;
                     }
-                    if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                    if (!tfSupplier.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
                         loadTableStockRequest();
                     }
                     break;
@@ -776,25 +801,14 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(lnAmountA);
                     tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnAdvPercentageA));
                     tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnAmountA));
-
                     break;
                 case "tfOrderQuantity":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    if (Integer.parseInt(lsValue) < 0) {
-                        ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
-                        lsValue = "0";
-                    }
                     if (pnTblPODetailRow >= 0) {
-                        poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
-                    } else {
-                        lsValue = "0";
-                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                         clearDetailFields();
+                        loadTablePODetail();
+                        loadDetail();
+                        initDetailFocus();
                     }
-                    tfOrderQuantity.setText(lsValue);
-                    loadTablePODetail();
                     break;
             }
         } else {
@@ -834,6 +848,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
     private void txtField_KeyPressed(KeyEvent event) {
         TextField lsTxtField = (TextField) event.getSource();
         String txtFieldID = ((TextField) event.getSource()).getId();
+        boolean isHaveQuantityAndStockId = false;
         String lsValue = "";
         if (lsTxtField.getText() == null) {
             lsValue = "";
@@ -922,20 +937,26 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, true,
+                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                );
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfBrand.setText("");
                                     break;
                                 }
                                 if (pnTblPODetailRow >= 0) {
-                                    tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription());
+                                    tfBrand.setText(poPurchasingController.PurchaseOrder().Master().Inventory().Brand().getDescription());
+
+                                    if (!poDetail_data.isEmpty() && pnTblPODetailRow < poDetail_data.size() - 1) {
+                                        pnTblPODetailRow++;
+                                    }
+                                    clearDetailFields();
+                                    loadTablePODetail();
+//                                    pnTblPODetailRow = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
+                                    loadDetail();
+                                    initDetailFocus();
                                 }
-
-                                tfOrderQuantity.requestFocus();
-
-                                loadDetail();
-                                loadTablePODetail();
                                 break;
                             case "tfModel":
                                 if (pnTblPODetailRow < 0) {
@@ -943,21 +964,23 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, true, poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, true,
+                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                );
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfModel.setText("");
                                     break;
                                 }
                                 if (pnTblPODetailRow >= 0) {
-                                    tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription());
+                                    tfModel.setText(poPurchasingController.PurchaseOrder().Master().Inventory().Model().getDescription());
                                 } else {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     tfModel.setText("");
                                 }
-                                tfOrderQuantity.requestFocus();
-                                loadDetail();
                                 loadTablePODetail();
+                                loadDetail();
+                                tfOrderQuantity.requestFocus();
                                 break;
                         }
                         event.consume();
@@ -970,19 +993,58 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                             case "tfAdvancePRate":
                             case "tfDiscountRate":
                             case "tfDiscountAmount":
-                            case "tfOrderQuantity":
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
                                 break;
+                            case "tfOrderQuantity":
+                                if (lsValue.isEmpty()) {
+                                    lsValue = "0";
+                                }
+                                if (Integer.parseInt(lsValue) < 0) {
+                                    ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
+                                    lsValue = "0";
+                                }
+                                if (pnTblPODetailRow < 0) {
+                                    lsValue = "0";
+                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                    clearDetailFields();
+                                    int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+                                    pnTblPODetailRow = detailCount > 0 ? detailCount - 1 : 0;
+                                }
+                                tfOrderQuantity.setText(lsValue);
+                                poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
+
+                                if (!poDetail_data.isEmpty() && pnTblPODetailRow < poDetail_data.size() - 1) {
+                                    pnTblPODetailRow++;
+                                }
+                                CommonUtils.SetNextFocus((TextField) event.getSource());
                         }
                         break;
                     case UP:
                         event.consume();
-                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        // Check if the source of the event is tfBrand
+                        if (!((TextField) event.getSource()).getId().equals("tfBrand")) {
+                            if (!((TextField) event.getSource()).getId().equals("tfModel") || !((TextField) event.getSource()).getId().equals("tfModel")) {
+                                if (pnTblPODetailRow > 0 && !poDetail_data.isEmpty()) {
+                                    pnTblPODetailRow--;
+                                }
+                            }
+                            CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        }
                         break;
                     case DOWN:
                         event.consume();
-                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                        // Get the current source of the event
+                        TextField currentField = (TextField) event.getSource();
+
+                        // Only increment if the focus is on tfOrderQuantity
+                        if (currentField.getId().equals("tfOrderQuantity")) {
+                            if (!poDetail_data.isEmpty() && pnTblPODetailRow < poDetail_data.size() - 1) {
+                                pnTblPODetailRow++;
+                            }
+                        }
+                        CommonUtils.SetNextFocus(currentField);
                         break;
+
                     default:
                         break;
 
@@ -1038,7 +1100,6 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                 initFields(pnEditMode);
             }
         });
-
     }
 
     private void clearMasterFields() {
@@ -1049,16 +1110,17 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
         taRemarks.setText("");
         CustomCommonUtil.setSelected(false, chkbAdvancePayment);
         CustomCommonUtil.setText("", tfTransactionNo, tfCompany, tfSupplier,
-                tfDestination, tfReferenceNo, tfTerm, tfDiscountRate,
-                tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount);
+                tfDestination, tfReferenceNo, tfTerm);
+        CustomCommonUtil.setText("0.00", tfTotalAmount, tfAdvancePAmount, tfAdvancePRate,
+                tfDiscountAmount, tfDiscountRate);
     }
 
     private void clearDetailFields() {
         /* Detail Fields*/
-        CustomCommonUtil.setText("", tfBrand, tfModel, tfBrand, tfVariant,
-                tfColor, tfInventoryType, tfClass,
-                tfAMC, tfROQ, tfRO, tfBO, tfQOH,
-                tfCost, tfRequestQuantity, tfOrderQuantity);
+        CustomCommonUtil.setText("", tfBrand, tfModel, tfVariant, tfInventoryType, tfColor, tfClass, tfAMC, tfROQ,
+                tfRO, tfBO, tfQOH, tfRequestQuantity);
+        tfCost.setText("0.00");
+        CustomCommonUtil.setText("0", tfOrderQuantity);
     }
 
     private void initButtons(int fnEditMode) {
@@ -1178,7 +1240,8 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     });
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_EntryMCController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
             }
@@ -1295,59 +1358,61 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
 
         tblVwOrderDetails.setPlaceholder(loadingPane);
         progressIndicator.setVisible(true);
+
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-
                 try {
-                    poDetail_data.clear();
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        if (poPurchasingController.PurchaseOrder().Detail(poPurchasingController.PurchaseOrder().getDetailCount() - 1).getStockID() != null
-                                && !poPurchasingController.PurchaseOrder().Detail(poPurchasingController.PurchaseOrder().getDetailCount() - 1).getStockID().equals("")) {
+                    Platform.runLater(poDetail_data::clear);
+                    int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+                    if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                        Model_PO_Detail lastDetail = poPurchasingController.PurchaseOrder().Detail(detailCount - 1);
+                        if (lastDetail.getStockID() != null && !lastDetail.getStockID().isEmpty()) {
                             poPurchasingController.PurchaseOrder().AddDetail();
+                            detailCount++;
                         }
                     }
-
                     double grandTotalAmount = 0.0;
-                    for (int lnCtr = 0; lnCtr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCtr++) {
-                        double lnTotalAmount = poPurchasingController.PurchaseOrder()
-                                .Detail(lnCtr)
-                                .Inventory().getCost().doubleValue() * poPurchasingController.PurchaseOrder()
-                                        .Detail(lnCtr)
-                                        .getQuantity().doubleValue();
+                    List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
+                    for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
+                        Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
+                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
-                        poDetail_data.add(new ModelPurchaseOrderDetail(
+
+                        detailsList.add(new ModelPurchaseOrderDetail(
                                 String.valueOf(lnCtr + 1),
-                                poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo(),
-                                poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getBarCode(),
-                                poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getDescription(),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getCost()),
+                                orderDetail.getSouceNo(),
+                                orderDetail.Inventory().getBarCode(),
+                                orderDetail.Inventory().getDescription(),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
                                 "",
-                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getQuantity()),
-                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity()),
+                                String.valueOf(orderDetail.InvStockRequestDetail().getQuantity()),
+                                String.valueOf(orderDetail.getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""
                         ));
-
                     }
-                    tblVwOrderDetails.setItems(poDetail_data);
-                    computeTotalAmount(grandTotalAmount);
-                    poPurchasingController.PurchaseOrder().Master().setTranTotal(grandTotalAmount);
-                    tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
+
+                    final double totalAmountFinal = grandTotalAmount;
+
+                    Platform.runLater(() -> {
+                        poDetail_data.setAll(detailsList);
+                        tblVwOrderDetails.setItems(poDetail_data);
+                        computeTotalAmount(totalAmountFinal);
+                        poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
+                        tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
+                        reselectLastRow();
+                    });
 
                 } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryController.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
             }
 
             @Override
-
             protected void succeeded() {
-                tblVwOrderDetails.setItems(poDetail_data);
                 progressIndicator.setVisible(false);
-
             }
 
             @Override
@@ -1357,27 +1422,59 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
         };
 
         if (!poApprovedStockRequest_data.isEmpty()) {
-            if (!poDetail_data.isEmpty()) {
-                for (ModelPurchaseOrderDetail detail : poDetail_data) {
-                    String listPODetail = detail.getIndex02();
+            Set<String> existingDetailIds = poDetail_data.stream()
+                    .map(ModelPurchaseOrderDetail::getIndex02)
+                    .collect(Collectors.toSet());
 
-                    for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
-                        if (listPODetail.equals(master.getIndex06())) {
-                            if (!master.getIndex07().equals(PurchaseOrderStatus.CONFIRMED)) {
-                                master.setIndex07(PurchaseOrderStatus.CONFIRMED);
-                            }
-                            break; // Exit inner loop once matched
-                        }
-                    }
-                }
-            } else {
-                for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
-                    master.setIndex07(PurchaseOrderStatus.OPEN);
-                }
+            for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                master.setIndex07(existingDetailIds.contains(master.getIndex06())
+                        ? PurchaseOrderStatus.CONFIRMED : PurchaseOrderStatus.OPEN);
             }
-            tblVwStockRequest.refresh(); // Refresh only once after updates
+
+            tblVwStockRequest.refresh();
         }
-        new Thread(task).start(); // Run task in background
+
+        new Thread(task).start();
+    }
+
+    private void initTablePODetail() {
+        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
+
+        // Prevent column reordering
+        tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
+            if (header != null) {
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
+            }
+        });
+    }
+
+// Method to reselect the last clicked row
+    private void reselectLastRow() {
+        if (pnTblPODetailRow >= 0 && pnTblPODetailRow < tblVwOrderDetails.getItems().size()) {
+            tblVwOrderDetails.getSelectionModel().clearAndSelect(pnTblPODetailRow);
+            tblVwOrderDetails.getSelectionModel().focus(pnTblPODetailRow); // Scroll to the selected row if needed
+        }
+    }
+
+    private void computeTotalAmount(double fnGrandTotal) {
+        double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
+        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(amount));
+        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
+        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(advpercentage));
+        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
+        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(amount);
+
     }
 
     private void initTextFieldsProperty() {
@@ -1407,35 +1504,6 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
         });
     }
 
-    private void computeTotalAmount(double fnGrandTotal) {
-        double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
-        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(amount));
-        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
-        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(advpercentage));
-        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
-        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(amount);
-
-    }
-
-    private void initTablePODetail() {
-        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
-
-        tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-    }
-
     private void tblVwStockRequest_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             pnTblStockRequestRow = tblVwStockRequest.getSelectionModel().getSelectedIndex();
@@ -1447,7 +1515,12 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                         JSONObject loJSON = poPurchasingController.PurchaseOrder().addStockRequestOrdersToPODetail(lsTransactionNo);
                         if ("success".equals(loJSON.get("result"))) {
                             if (poPurchasingController.PurchaseOrder().getDetailCount() > 0) {
+                                pnTblPODetailRow = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
                                 loadTablePODetail();
+                                tblVwOrderDetails.getSelectionModel().select(pnTblPODetailRow);
+//                                tblVwOrderDetails.requestFocus();
+                                loadDetail();
+                                initDetailFocus();
                                 tblVwStockRequest.refresh();
                                 poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.CONFIRMED);
                             }
@@ -1475,19 +1548,28 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                 if (selectedItem != null) {
                     if (pnTblPODetailRow >= 0) {
                         loadDetail();
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
-                            tfBrand.setDisable(isSourceNotEmpty);
-                            tfModel.setDisable(isSourceNotEmpty);
-                            if (!tfBrand.getText().isEmpty()) {
-                                tfOrderQuantity.requestFocus();
-                            } else {
-                                tfBrand.requestFocus();
-                            }
-                        }
+                        initDetailFocus();
                     }
                 }
             }
+        }
+    }
+
+    private void initDetailFocus() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (pnTblPODetailRow >= 0) {
+                boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
+                tfBrand.setDisable(isSourceNotEmpty);
+                tfModel.setDisable(isSourceNotEmpty);
+                if (isSourceNotEmpty) {
+                    if (!tfBrand.getText().isEmpty()) {
+                        tfOrderQuantity.requestFocus();
+                    }
+                } else {
+                    tfBrand.requestFocus();
+                }
+            }
+
         }
     }
 }

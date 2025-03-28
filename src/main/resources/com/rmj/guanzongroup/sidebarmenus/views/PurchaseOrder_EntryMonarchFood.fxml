@@ -8,7 +8,6 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -172,6 +171,23 @@
                                                             </rowConstraints>
                                                             <children>
                                                                 <AnchorPane maxWidth="-Infinity" minWidth="-Infinity" prefHeight="27.0" prefWidth="140.0" style="-fx-background-color: FF8201;" GridPane.columnIndex="12" GridPane.rowIndex="2" />
+                                                                <DatePicker fx:id="dpTransactionDate" maxWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                <TextField fx:id="tfCompany" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Search F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="6" />
+                                                                <TextField fx:id="tfSupplier" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Search F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" />
+                                                                <TextField fx:id="tfDestination" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Search F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="8" />
+                                                                <DatePicker fx:id="dpExpectedDlvrDate" maxWidth="150.0" GridPane.columnIndex="8" GridPane.rowIndex="4" />
+                                                                <TextField fx:id="tfReferenceNo" maxHeight="25.0" GridPane.columnIndex="8" GridPane.rowIndex="5" />
+                                                                <TextField fx:id="tfTerm" maxHeight="25.0" promptText="Search F3: Search" GridPane.columnIndex="8" GridPane.rowIndex="6" />
+                                                                <TextField fx:id="tfDiscountRate" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="4" />
+                                                                <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="5" />
+                                                                <CheckBox fx:id="chkbAdvancePayment" mnemonicParsing="false" text="w/ Adv Rate (%)" GridPane.columnIndex="10" GridPane.rowIndex="6" />
+                                                                <TextField fx:id="tfAdvancePRate" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="6" />
+                                                                <TextField fx:id="tfAdvancePAmount" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" prefWidth="139.0" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="7" />
+                                                                <TextArea fx:id="taRemarks" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="841.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9">
+                                                                    <GridPane.margin>
+                                                                        <Insets top="1.0" />
+                                                                    </GridPane.margin>
+                                                                </TextArea>
                                                                 <Label fx:id="lblTransactionStatus" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="142.0" text="STATUS" textAlignment="CENTER" GridPane.columnIndex="12" GridPane.rowIndex="2">
                                                                     <font>
                                                                         <Font name="System Bold" size="14.0" />
@@ -188,21 +204,6 @@
                                                                 <Label text="Supplier" GridPane.rowIndex="7" />
                                                                 <Label text="Remarks" GridPane.rowIndex="9" />
                                                                 <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                                <TextField fx:id="tfCompany" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Search F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="6" />
-                                                                <TextField fx:id="tfSupplier" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Search F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" />
-                                                                <TextField fx:id="tfDestination" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Search F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="8" />
-                                                                <TextArea fx:id="taRemarks" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="26.0" prefWidth="841.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9">
-                                                                    <GridPane.margin>
-                                                                        <Insets top="1.0" />
-                                                                    </GridPane.margin>
-                                                                </TextArea>
-                                                                <TextField fx:id="tfReferenceNo" maxHeight="25.0" GridPane.columnIndex="8" GridPane.rowIndex="5" />
-                                                                <TextField fx:id="tfTerm" maxHeight="25.0" promptText="Search F3: Search" GridPane.columnIndex="8" GridPane.rowIndex="6" />
-                                                                <TextField fx:id="tfDiscountRate" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="4" />
-                                                                <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="5" />
-                                                                <TextField fx:id="tfAdvancePRate" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="6" />
-                                                                <TextField fx:id="tfAdvancePAmount" alignment="CENTER_RIGHT" maxHeight="25.0" maxWidth="1.7976931348623157E308" prefWidth="139.0" promptText="0.00" GridPane.columnIndex="12" GridPane.rowIndex="7" />
-                                                                <CheckBox fx:id="chkbAdvancePayment" mnemonicParsing="false" text="w/ Adv Rate (%)" GridPane.columnIndex="10" GridPane.rowIndex="6" />
                                                                 <TextField fx:id="tfTotalAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" style="-fx-font-weight: bold;" GridPane.columnIndex="12" GridPane.rowIndex="8" />
                                                                 <Label text="Disc. Rate (%)" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                                 <Label text="Total" GridPane.columnIndex="10" GridPane.rowIndex="8">
@@ -216,8 +217,6 @@
                                                                 <Label text="Expected Delivery Date" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                 <Label text="Industry" GridPane.rowIndex="5" />
                                                                 <TextField fx:id="tfIndustry" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="5" />
-                                                                <DatePicker fx:id="dpTransactionDate" maxWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                                <DatePicker fx:id="dpExpectedDlvrDate" maxWidth="150.0" GridPane.columnIndex="8" GridPane.rowIndex="4" />
                                                                 <Label text="Adv Amount" GridPane.columnIndex="10" GridPane.rowIndex="7" />
                                                             </children>
                                                         </GridPane>
@@ -347,7 +346,7 @@
                                                         </Label>
                                                     </children>
                                                 </AnchorPane>
-                                                <TableView fx:id="tblVwStockRequest" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="40.0">
+                                                <TableView fx:id="tblVwStockRequest" editable="true" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="40.0">
                                                     <columns>
                                                         <TableColumn fx:id="tblRowNo" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="No." />
                                                         <TableColumn fx:id="tblBranchName" maxWidth="236.0" minWidth="236.0" prefWidth="236.0" resizable="false" sortable="false" text="Branch" />
