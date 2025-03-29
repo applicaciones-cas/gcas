@@ -518,13 +518,11 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setModelVariantId("");
                     }
                 case "tfModel":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setModelVariantId("");
                     }
                     break;
                 case "tfCost":
@@ -842,7 +840,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
-                poPurchaseReceivingController.Detail(pnDetail).setModelVariantId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getVariantId());
             }
 
             tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription());
@@ -1100,7 +1097,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
-                            while (lnCtr > 0) {
+                            while (lnCtr >= 0) {
                                 if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
                                     poPurchaseReceivingController.Detail().remove(lnCtr);
                                 }
@@ -1111,6 +1108,10 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
                                     poPurchaseReceivingController.AddDetail();
                                 }
+                            }
+
+                            if ((poPurchaseReceivingController.getDetailCount() - 1) < 0) {
+                                poPurchaseReceivingController.AddDetail();
                             }
                         }
 

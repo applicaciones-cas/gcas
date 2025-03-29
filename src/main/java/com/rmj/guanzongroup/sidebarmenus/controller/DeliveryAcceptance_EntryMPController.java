@@ -518,13 +518,11 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setModelVariantId("");
                     }
                 case "tfModel":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setModelVariantId("");
                     }
                     break;
                 case "tfCost":
@@ -994,7 +992,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
 
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
-                poPurchaseReceivingController.Detail(pnDetail).setModelVariantId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getVariantId());
             }
 
             tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription());
