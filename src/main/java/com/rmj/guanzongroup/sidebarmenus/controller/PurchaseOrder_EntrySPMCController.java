@@ -1500,12 +1500,14 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                 boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
                 tfBarcode.setDisable(isSourceNotEmpty);
                 tfDescription.setDisable(isSourceNotEmpty);
-                if (isSourceNotEmpty) {
-                    if (!tfBarcode.getText().isEmpty()) {
-                        tfOrderQuantity.requestFocus();
-                    }
+                if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {
+                    tfOrderQuantity.requestFocus();
                 } else {
-                    tfBarcode.requestFocus();
+                    if (!tfBarcode.getText().isEmpty() && pnEditMode == EditMode.UPDATE) {
+                        tfOrderQuantity.requestFocus();
+                    } else {
+                        tfBarcode.requestFocus();
+                    }
                 }
             }
 

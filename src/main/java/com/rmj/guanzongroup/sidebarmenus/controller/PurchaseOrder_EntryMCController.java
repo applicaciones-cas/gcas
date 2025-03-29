@@ -1561,12 +1561,14 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                 boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getSouceNo().isEmpty();
                 tfBrand.setDisable(isSourceNotEmpty);
                 tfModel.setDisable(isSourceNotEmpty);
-                if (isSourceNotEmpty) {
-                    if (!tfBrand.getText().isEmpty()) {
-                        tfOrderQuantity.requestFocus();
-                    }
+                if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {
+                    tfOrderQuantity.requestFocus();
                 } else {
-                    tfBrand.requestFocus();
+                    if (!tfBrand.getText().isEmpty() && pnEditMode == EditMode.UPDATE) {
+                        tfOrderQuantity.requestFocus();
+                    } else {
+                        tfBrand.requestFocus();
+                    }
                 }
             }
 
