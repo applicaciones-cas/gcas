@@ -1140,7 +1140,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             }
 
             tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription()); //TODO
-            tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).ModelVariant().getDescription()); //TODO
+            tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Variant().getDescription()); //TODO
 
             tfModel.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Model().getDescription());
             tfColor.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Color().getDescription());

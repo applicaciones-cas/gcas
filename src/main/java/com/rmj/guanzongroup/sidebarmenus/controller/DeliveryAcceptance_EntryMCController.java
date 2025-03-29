@@ -990,7 +990,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             }
 
             tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription());
-            tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).ModelVariant().getDescription());
+            tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Variant().getDescription());
 
             tfModel.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Model().getDescription());
             tfColor.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Color().getDescription());
