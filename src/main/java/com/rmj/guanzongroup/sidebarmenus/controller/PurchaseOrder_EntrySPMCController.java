@@ -362,11 +362,10 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                     poPurchasingController.PurchaseOrder().Master().setIndustryID(poApp.getIndustry());
                     poPurchasingController.PurchaseOrder().Master().setDestinationID(poPurchasingController.PurchaseOrder().Master().Branch().getBranchCode());
                     if ("success".equals((String) loJSON.get("result"))) {
-                        pnTblPODetailRow = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
                         loadMaster();
-                        loadDetail();
-                        loadTablePODetail();
+                        pnTblPODetailRow = - 1;
                         pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                        loadTablePODetail();
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -376,8 +375,10 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                     pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
+                        break;
                     }
-
+                    pnTblPODetailRow = - 1;
+                    pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                     loadTablePODetail();
                     break;
                 case "btnSearch":
