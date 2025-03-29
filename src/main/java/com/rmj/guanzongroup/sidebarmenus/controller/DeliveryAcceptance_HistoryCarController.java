@@ -1020,6 +1020,13 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
             }
 
             poPurchaseReceivingController.computeFields();
+            if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
+                poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
+            } else {
+                if (poPurchaseReceivingController.Master().getDiscount().doubleValue() > 0.00) {
+                    poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
+                }
+            }
             // Transaction Date
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
@@ -1140,10 +1147,10 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(lnTotal) //identify total
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
                         }
 
@@ -1510,8 +1517,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         tblBrandDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         tblDescriptionDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
-        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER;");
+        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER;");
         tblTotalDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
 
         tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
@@ -1539,10 +1546,10 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     }
 
     public void initMainGrid() {
-        tblRowNo.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblRowNo.setStyle("-fx-alignment: CENTER;");
         tblSupplier.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblDate.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblReferenceNo.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblDate.setStyle("-fx-alignment: CENTER;");
+        tblReferenceNo.setStyle("-fx-alignment: CENTER;");
 
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index02"));

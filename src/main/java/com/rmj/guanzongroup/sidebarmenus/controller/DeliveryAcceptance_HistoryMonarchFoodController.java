@@ -601,6 +601,9 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
 
     public void loadRecordDetail() {
         try {
+            if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
+                return;
+            }
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
             tfBarcode.setDisable(!lbFields);
             tfDescription.setDisable(!lbFields);
@@ -686,6 +689,13 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
             }
 
             poPurchaseReceivingController.computeFields();
+            if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
+                poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
+            } else {
+                if (poPurchaseReceivingController.Master().getDiscount().doubleValue() > 0.00) {
+                    poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
+                }
+            }
             // Transaction Date
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
@@ -702,10 +712,12 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
             tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
             taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
 
-            double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
-            if (!Double.isNaN(lnValue)) {
-                tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
-            }
+            Platform.runLater(() -> {
+                double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
+                if (!Double.isNaN(lnValue)) {
+                    tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+                }
+            });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException ex) {
@@ -725,10 +737,14 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                 return;
             }
-                
+
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
+                ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
+                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                    highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
+                }
                 loadTableDetail();
             }
 
@@ -766,7 +782,7 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
 
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
-                            while (lnCtr > 0) {
+                            while (lnCtr >= 0) {
                                 if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
                                     poPurchaseReceivingController.Detail().remove(lnCtr);
                                 }
@@ -776,8 +792,11 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                             if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
                                 if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
                                     poPurchaseReceivingController.AddDetail();
-
                                 }
+                            }
+
+                            if ((poPurchaseReceivingController.getDetailCount() - 1) < 0) {
+                                poPurchaseReceivingController.AddDetail();
                             }
                         }
 
@@ -802,10 +821,10 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(lnTotal) //identify total
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
                         }
 
@@ -1189,8 +1208,8 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
         tblBarcodeDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         tblDescriptionDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
-        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER;");
+        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER;");
         tblTotalDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
 
         tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
@@ -1218,10 +1237,10 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
     }
 
     public void initMainGrid() {
-        tblRowNo.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblRowNo.setStyle("-fx-alignment: CENTER;");
         tblSupplier.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblDate.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblReferenceNo.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblDate.setStyle("-fx-alignment: CENTER;");
+        tblReferenceNo.setStyle("-fx-alignment: CENTER;");
 
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -1391,16 +1410,18 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
             });
             // If no results and autoSearchMain is enabled, remove listener and trigger autoSearchMain
             if (filteredDataDetail.isEmpty()) {
-                txtField.textProperty().removeListener(detailSearchListener);
-                filteredData = new FilteredList<>(main_data, b -> true);
-                autoSearchMain(txtField); // Trigger autoSearchMain if no results
-                SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-                sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-                tblViewPuchaseOrder.setItems(sortedData);
+                if (main_data.size() > 0) {
+                    txtField.textProperty().removeListener(detailSearchListener);
+                    filteredData = new FilteredList<>(main_data, b -> true);
+                    autoSearchMain(txtField); // Trigger autoSearchMain if no results
+                    SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
+                    sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
+                    tblViewPuchaseOrder.setItems(sortedData);
 
-                String currentText = txtField.getText();
-                txtField.setText(currentText + " "); // Add a space
-                txtField.setText(currentText);       // Set back to original
+                    String currentText = txtField.getText();
+                    txtField.setText(currentText + " "); // Add a space
+                    txtField.setText(currentText);       // Set back to original
+                }
             }
         };
         txtField.textProperty().addListener(detailSearchListener);
