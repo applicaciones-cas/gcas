@@ -507,10 +507,11 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Discount Rate");
-                        return;
+                    if (Double.parseDouble(lsValue) < 0.00 || Double.parseDouble(lsValue) > 100.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Discount rate cannot be negative or exceed 100.00");
+                        break;
                     }
+
                     poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue)));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -526,9 +527,10 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Discount Amount");
-                        return;
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00
+                            || Double.parseDouble(lsValue.replace(",", "")) > poPurchaseReceivingController.Master().getTransactionTotal().doubleValue()) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Discount amount cannot be negative or exceed the transaction total.");
+                        break;
                     }
                     poJSON = poPurchaseReceivingController.Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
@@ -636,11 +638,11 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                     break;
             }
             Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.50)); 
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                 delay.setOnFinished(event -> {
                     loadTableDetail();
                 });
-                delay.play();  
+                delay.play();
             });
         }
     };
@@ -692,6 +694,18 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
             switch (event.getCode()) {
+                case BACK_SPACE:
+                    switch (lsID) {
+                        case "tfOrderNo":
+                            if (mainSearchListener != null) {
+                                txtField.textProperty().removeListener(mainSearchListener);
+                                mainSearchListener = null; // Clear reference to avoid memory leaks
+                                initDetailsGrid();
+                                initMainGrid();
+                            }
+                            break;
+                    }
+                    break;
                 case F3:
                     switch (lsID) {
                         case "tfSearchCompany":
@@ -826,7 +840,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
-                
+
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
@@ -1072,7 +1086,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
 
     public void loadRecordDetail() {
         try {
-            if(pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount()-1){
+            if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
                 return;
             }
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
@@ -1154,6 +1168,13 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
             }
 
             poPurchaseReceivingController.computeFields();
+            if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
+                poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
+            } else {
+                if (poPurchaseReceivingController.Master().getDiscount().doubleValue() > 0.00) {
+                    poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
+                }
+            }
             // Transaction Date
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
@@ -1170,10 +1191,12 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
             tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
             taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
 
-            double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
-            if (!Double.isNaN(lnValue)) {
-                tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
-            }
+            Platform.runLater(() -> {
+                double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
+                if (!Double.isNaN(lnValue)) {
+                    tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+                }
+            });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
         } catch (SQLException | GuanzonException ex) {
@@ -1193,8 +1216,12 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
             }
 
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                highlight(tblViewPuchaseOrder, pnMain, "#A7C7E7", highlightedRowsMain);
+                ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
+                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                    highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
+                }
                 loadTableDetail();
             }
 
@@ -1271,10 +1298,10 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(lnTotal) //identify total
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
                         }
 
@@ -1400,7 +1427,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
-                if(poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")){
+                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
                     tfReceiveQuantity.requestFocus();
                 } else {
                     tfBarcode.requestFocus();
@@ -1717,8 +1744,8 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
         tblBarcodeDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         tblDescriptionDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
-        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER;");
+        tblReceiveQuantityDetail.setStyle("-fx-alignment: CENTER;");
         tblTotalDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
 
         tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
@@ -1746,10 +1773,10 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
     }
 
     public void initMainGrid() {
-        tblRowNo.setStyle("-fx-alignment: CENTER 0 5 0 5;");
+        tblRowNo.setStyle("-fx-alignment: CENTER;");
         tblSupplier.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblDate.setStyle("-fx-alignment: CENTER 0 5 0 5;");
-        tblReferenceNo.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblDate.setStyle("-fx-alignment: CENTER;");
+        tblReferenceNo.setStyle("-fx-alignment: CENTER;");
 
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -1817,7 +1844,8 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                     break;
             }
             loadRecordDetail();
-            if(poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")){
+            tfOrderNo.setText("");
+            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
                 tfReceiveQuantity.requestFocus();
             } else {
                 tfBarcode.requestFocus();
@@ -1926,16 +1954,18 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
             });
             // If no results and autoSearchMain is enabled, remove listener and trigger autoSearchMain
             if (filteredDataDetail.isEmpty()) {
-                txtField.textProperty().removeListener(detailSearchListener);
-                filteredData = new FilteredList<>(main_data, b -> true);
-                autoSearchMain(txtField); // Trigger autoSearchMain if no results
-                SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-                sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-                tblViewPuchaseOrder.setItems(sortedData);
+                if (main_data.size() > 0) {
+                    txtField.textProperty().removeListener(detailSearchListener);
+                    filteredData = new FilteredList<>(main_data, b -> true);
+                    autoSearchMain(txtField); // Trigger autoSearchMain if no results
+                    SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
+                    sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
+                    tblViewPuchaseOrder.setItems(sortedData);
 
-                String currentText = txtField.getText();
-                txtField.setText(currentText + " "); // Add a space
-                txtField.setText(currentText);       // Set back to original
+                    String currentText = txtField.getText();
+                    txtField.setText(currentText + " "); // Add a space
+                    txtField.setText(currentText);       // Set back to original
+                }
             }
         };
         txtField.textProperty().addListener(detailSearchListener);
