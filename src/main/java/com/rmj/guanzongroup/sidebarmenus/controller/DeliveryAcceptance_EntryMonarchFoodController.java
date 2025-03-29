@@ -1085,6 +1085,12 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     break;
             }
             loadRecordDetail();
+            tfOrderNo.setText("");
+            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
+                tfReceiveQuantity.requestFocus();
+            } else {
+                tfBarcode.requestFocus();
+            }
             event.consume();
         }
     }
@@ -1095,6 +1101,11 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
+                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
+                    tfReceiveQuantity.requestFocus();
+                } else {
+                    tfBarcode.requestFocus();
+                }
             }
         });
 

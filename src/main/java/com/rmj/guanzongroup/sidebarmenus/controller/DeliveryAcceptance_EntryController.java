@@ -189,9 +189,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (CloneNotSupportedException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -601,8 +599,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 retrievePO();
                             }
                             psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                            loadRecordMaster();
                             break;
-
                         case "tfSupplier":
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
@@ -615,6 +613,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 retrievePO();
                             }
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                            loadRecordMaster();
                             break;
                         case "tfTrucking":
                             poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
@@ -623,6 +622,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 tfTrucking.setText("");
                                 break;
                             }
+                            loadRecordMaster();
                             break;
                         case "tfTerm":
                             poJSON = poPurchaseReceivingController.SearchTerm(lsValue, false);
@@ -642,8 +642,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 tfBarcode.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            tfReceiveQuantity.requestFocus();
                             break;
-
                         case "tfDescription":
                             poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail);
 
@@ -652,6 +653,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 tfDescription.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            tfReceiveQuantity.requestFocus();
                             break;
                         case "tfSupersede":
                             poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail);
@@ -660,10 +663,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 tfSupersede.setText("");
                                 break;
                             }
+                            loadRecordDetail();
                             break;
                     }
-                    loadRecordMaster();
-                    loadTableDetail();
                     break;
                 default:
                     break;
@@ -678,9 +680,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -966,9 +966,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1054,9 +1052,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1092,13 +1088,13 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     break;
             }
             loadRecordDetail();
-            event.consume();
             tfOrderNo.setText("");
-            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
+            if(poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")){
                 tfReceiveQuantity.requestFocus();
             } else {
-                tfBarcode.requestFocus();
+                tfBrand.requestFocus();
             }
+            event.consume();
         }
     }
 
@@ -1107,12 +1103,12 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         tblViewOrderDetails.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
+                loadRecordDetail();
                 if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
                     tfReceiveQuantity.requestFocus();
                 } else {
                     tfBarcode.requestFocus();
                 }
-                loadRecordDetail();
             }
         });
 
@@ -1419,11 +1415,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             loadRecordDetail();
                         }
 
-                    } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (CloneNotSupportedException ex) {
+                    } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 

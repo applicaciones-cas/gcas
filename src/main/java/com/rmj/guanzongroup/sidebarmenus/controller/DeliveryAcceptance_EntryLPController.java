@@ -180,9 +180,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
 
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (CloneNotSupportedException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -592,6 +590,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                 retrievePO();
                             }
                             psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                            loadRecordMaster();
                             break;
 
                         case "tfSupplier":
@@ -606,6 +605,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                 retrievePO();
                             }
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                            loadRecordMaster();
                             break;
                         case "tfTrucking":
                             poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
@@ -614,6 +614,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                 tfTrucking.setText("");
                                 break;
                             }
+                            loadRecordMaster();
                             break;
                         case "tfTerm":
                             poJSON = poPurchaseReceivingController.SearchTerm(lsValue, false);
@@ -634,6 +635,8 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                 tfBarcode.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            tfReceiveQuantity.requestFocus();
                             break;
 
                         case "tfDescription":
@@ -644,6 +647,8 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                 tfDescription.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            tfReceiveQuantity.requestFocus();
                             break;
                         case "tfSupersede":
                             poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail);
@@ -652,10 +657,9 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                 tfSupersede.setText("");
                                 break;
                             }
+                            loadRecordDetail();
                             break;
                     }
-                    loadRecordMaster();
-                    loadTableDetail();
                     break;
                 default:
                     break;
@@ -670,9 +674,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -960,9 +962,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                 tfBarcode.requestFocus();
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1047,9 +1047,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1084,6 +1082,12 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                     break;
             }
             loadRecordDetail();
+            tfOrderNo.setText("");
+            if(poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")){
+                tfReceiveQuantity.requestFocus();
+            } else {
+                tfBrand.requestFocus();
+            }
             event.consume();
         }
     }
@@ -1094,6 +1098,11 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
+                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
+                    tfReceiveQuantity.requestFocus();
+                } else {
+                    tfBarcode.requestFocus();
+                }
             }
         });
 
@@ -1398,11 +1407,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                             loadRecordDetail();
                         }
 
-                    } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (CloneNotSupportedException ex) {
+                    } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
