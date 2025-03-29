@@ -501,22 +501,14 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, true,
-                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
-                                );
-                                if ("error".equals(poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-//                                    tfBrand.setText("");
-//                                    break;
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, pnTblPODetailRow);
+                                if (!"success".equals(loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                    tfBrand.setText("");
+                                    break;
                                 }
-                                String lsBarcode = "";
-                                if (poPurchasingController.PurchaseOrder().Master().Inventory().getBarCode() != null) {
-                                    lsBarcode = poPurchasingController.PurchaseOrder().Master().Inventory().Brand().getDescription();
-                                }
-                                tfBrand.setText(lsBarcode);
-                                loadDetail();
-                                tfOrderQuantity.requestFocus();
-                                loadTablePODetail();
+                                    tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Brand().getDescription());
+                               
                                 break;
                             case "tfModel":
                                 if (pnTblPODetailRow < 0) {
@@ -524,18 +516,19 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, true,
-                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, pnTblPODetailRow
                                 );
-                                if ("error".equals(poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                if ("error".equals(loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfModel.setText("");
                                     break;
                                 }
-                                tfModel.setText(poPurchasingController.PurchaseOrder().Master().Inventory().Model().getDescription());
+                                
+                                tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
+                                
+                                loadTablePODetail();
                                 loadDetail();
                                 tfOrderQuantity.requestFocus();
-                                loadTablePODetail();
                                 break;
                             default:
                                 System.out.println("Unknown TextField");
@@ -938,26 +931,14 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, true,
-                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
-                                );
-                                if ("error".equals(loJSON.get("result"))) {
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, pnTblPODetailRow);
+                                if (!"success".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfBrand.setText("");
                                     break;
                                 }
-                                if (pnTblPODetailRow >= 0) {
-                                    tfBrand.setText(poPurchasingController.PurchaseOrder().Master().Inventory().Brand().getDescription());
-
-                                    if (!poDetail_data.isEmpty() && pnTblPODetailRow < poDetail_data.size() - 1) {
-                                        pnTblPODetailRow++;
-                                    }
-                                    clearDetailFields();
-                                    loadTablePODetail();
-//                                    pnTblPODetailRow = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
-                                    loadDetail();
-                                    initDetailFocus();
-                                }
+                                    tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Brand().getDescription());
+                               
                                 break;
                             case "tfModel":
                                 if (pnTblPODetailRow < 0) {
@@ -965,20 +946,16 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, true,
-                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                loJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, pnTblPODetailRow
                                 );
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfModel.setText("");
                                     break;
                                 }
-                                if (pnTblPODetailRow >= 0) {
-                                    tfModel.setText(poPurchasingController.PurchaseOrder().Master().Inventory().Model().getDescription());
-                                } else {
-                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                    tfModel.setText("");
-                                }
+                                
+                                tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
+                                
                                 loadTablePODetail();
                                 loadDetail();
                                 tfOrderQuantity.requestFocus();
@@ -1051,7 +1028,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
 
                 }
             }
-        } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
+        } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
             Logger.getLogger(PurchaseOrder_EntryMPController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
