@@ -959,13 +959,12 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                         break;
                     case UP:
                         event.consume();
-                        // Check if the source of the event is tfBarcode
-                        if (!((TextField) event.getSource()).getId().equals("tfBarcode")) {
-                            if (!((TextField) event.getSource()).getId().equals("tfDescription") || !((TextField) event.getSource()).getId().equals("tfDescription")) {
-                                if (pnTblPODetailRow > 0 && !poDetail_data.isEmpty()) {
-                                    pnTblPODetailRow--;
-                                }
+                        if (!((TextField) event.getSource()).getId().equals("tfBarcode") || !((TextField) event.getSource()).getId().equals("tfDescription")) {
+                            if (pnTblPODetailRow > 0 && !poDetail_data.isEmpty()) {
+                                pnTblPODetailRow--;
                             }
+                        }
+                        if (!((TextField) event.getSource()).getId().equals("tfBarcode")) {
                             CommonUtils.SetPreviousFocus((TextField) event.getSource());
                         }
                         break;
@@ -982,7 +981,6 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                         }
                         CommonUtils.SetNextFocus(currentField);
                         break;
-
                     default:
                         break;
 

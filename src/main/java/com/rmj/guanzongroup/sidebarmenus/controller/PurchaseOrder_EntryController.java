@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -54,6 +55,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -195,6 +197,36 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         return previousRow;
     }
 
+//    private void tableKeyEvents(KeyEvent event) {
+//        TableView<?> currentTable = (TableView<?>) event.getSource();
+//        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+//
+//        if (focusedCell != null && "tblVwOrderDetails".equals(currentTable.getId())) {
+//            switch (event.getCode()) {
+//                case TAB:
+//                case DOWN:
+//                    pnTblPODetailRow = pnTblPODetailRow;
+//                    if (pnEditMode != EditMode.ADDNEW || pnEditMode != EditMode.UPDATE) {
+//                        pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
+//                    }
+//                    break;
+//                case UP:
+//                    pnTblPODetailRow = pnTblPODetailRow;
+//                    if (pnEditMode != EditMode.ADDNEW || pnEditMode != EditMode.UPDATE) {
+//                        pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
+//                    }
+//                    break;
+//                default:
+//                    return;
+//            }
+//
+//            currentTable.getSelectionModel().select(pnTblPODetailRow);
+//            currentTable.getFocusModel().focus(pnTblPODetailRow);
+//            loadDetail();
+//            initDetailFocus();
+//            event.consume();
+//        }
+//    }
     private void tableKeyEvents(KeyEvent event) {
         TableView<?> currentTable = (TableView<?>) event.getSource();
         TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
@@ -217,7 +249,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 default:
                     return;
             }
-
             currentTable.getSelectionModel().select(pnTblPODetailRow);
             currentTable.getFocusModel().focus(pnTblPODetailRow);
             loadDetail();
@@ -742,13 +773,31 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnAdvPercentageA));
                     tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnAmountA));
                     break;
+//                case "tfOrderQuantity":
+//                    if (pnTblPODetailRow >= 0) {
+////                        clearDetailFields();
+//                        loadTablePODetail();
+//                        loadDetail();
+//                        initDetailFocus();
+//                    }
+//                    break;
                 case "tfOrderQuantity":
-                    if (pnTblPODetailRow >= 0) {
-                        clearDetailFields();
-                        loadTablePODetail();
-                        loadDetail();
-                        initDetailFocus();
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0";
                     }
+                    if (Integer.parseInt(lsValue) < 0) {
+                        ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
+                        lsValue = "0";
+                    }
+                    if (pnTblPODetailRow < 0) {
+                        lsValue = "0";
+                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                        clearDetailFields();
+                        int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+                        pnTblPODetailRow = detailCount > 0 ? detailCount - 1 : 0;
+                    }
+                    tfOrderQuantity.setText(lsValue);
+                    poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
                     break;
             }
         } else {
@@ -956,18 +1005,52 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     pnTblPODetailRow++;
                                 }
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
+
+                                if (pnTblPODetailRow >= 0) {
+                                    Platform.runLater(() -> {
+                                        // Run a delay after the UI thread is free
+                                        PauseTransition delay = new PauseTransition(Duration.millis(50));
+                                        delay.setOnFinished(event2 -> {
+                                            Platform.runLater(() -> { // Run UI updates in the next cycle
+                                                loadTablePODetail();
+                                                loadDetail();
+                                                initDetailFocus();
+                                            });
+                                        });
+                                        delay.play();
+                                    });
+                                }
+
+                                break;
                         }
                         break;
                     case UP:
                         event.consume();
-                        // Check if the source of the event is tfBarcode
-                        if (!((TextField) event.getSource()).getId().equals("tfBarcode")) {
-                            if (!((TextField) event.getSource()).getId().equals("tfDescription") || !((TextField) event.getSource()).getId().equals("tfDescription")) {
-                                if (pnTblPODetailRow > 0 && !poDetail_data.isEmpty()) {
-                                    pnTblPODetailRow--;
-                                }
+
+                        String id = ((TextField) event.getSource()).getId();
+
+                        if (!id.equals("tfBarcode") && !id.equals("tfDescription")) {
+                            if (pnTblPODetailRow > 0 && !poDetail_data.isEmpty()) {
+                                pnTblPODetailRow--;
                             }
+                        }
+
+                        if (!id.equals("tfBarcode")) {
                             CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        }
+                        if (pnTblPODetailRow >= 0) {
+                            Platform.runLater(() -> {
+                                // Run a delay after the UI thread is free
+                                PauseTransition delay = new PauseTransition(Duration.millis(50));
+                                delay.setOnFinished(event2 -> {
+                                    Platform.runLater(() -> { // Run UI updates in the next cycle
+                                        loadTablePODetail();
+                                        loadDetail();
+                                        initDetailFocus();
+                                    });
+                                });
+                                delay.play();
+                            });
                         }
                         break;
                     case DOWN:
@@ -981,9 +1064,23 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 pnTblPODetailRow++;
                             }
                         }
-                        CommonUtils.SetNextFocus(currentField);
-                        break;
 
+                        CommonUtils.SetNextFocus(currentField);
+                        if (pnTblPODetailRow >= 0) {
+                            Platform.runLater(() -> {
+                                // Run a delay after the UI thread is free
+                                PauseTransition delay = new PauseTransition(Duration.millis(50));
+                                delay.setOnFinished(event2 -> {
+                                    Platform.runLater(() -> { // Run UI updates in the next cycle
+                                        loadTablePODetail();
+                                        loadDetail();
+                                        initDetailFocus();
+                                    });
+                                });
+                                delay.play();
+                            });
+                        }
+                        break;
                     default:
                         break;
 
@@ -1287,8 +1384,84 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         });
     }
 
+//    private void loadTablePODetail() {
+//        // Configure ProgressIndicator
+//        ProgressIndicator progressIndicator = new ProgressIndicator();
+//        progressIndicator.setMaxSize(50, 50);
+//        progressIndicator.setStyle("-fx-accent: #FF8201;");
+//
+//        StackPane loadingPane = new StackPane(progressIndicator);
+//        loadingPane.setAlignment(Pos.CENTER);
+//        loadingPane.setStyle("-fx-background-color: transparent;");
+//
+//        tblVwOrderDetails.setPlaceholder(loadingPane);
+//        progressIndicator.setVisible(true);
+//
+//        Task<Void> task = new Task<Void>() {
+//            @Override
+//            protected Void call() throws Exception {
+//                try {
+//                    Platform.runLater(poDetail_data::clear);
+//                    int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+//                    if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+//                        Model_PO_Detail lastDetail = poPurchasingController.PurchaseOrder().Detail(detailCount - 1);
+//                        if (lastDetail.getStockID() != null && !lastDetail.getStockID().isEmpty()) {
+//                            poPurchasingController.PurchaseOrder().AddDetail();
+//                            detailCount++;
+//                        }
+//                    }
+//                    double grandTotalAmount = 0.0;
+//                    List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
+//                    for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
+//                        Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
+//                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
+//                        grandTotalAmount += lnTotalAmount;
+//
+//                        detailsList.add(new ModelPurchaseOrderDetail(
+//                                String.valueOf(lnCtr + 1),
+//                                orderDetail.getSouceNo(),
+//                                orderDetail.Inventory().getBarCode(),
+//                                orderDetail.Inventory().getDescription(),
+//                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
+//                                "",
+//                                String.valueOf(orderDetail.InvStockRequestDetail().getQuantity()),
+//                                String.valueOf(orderDetail.getQuantity()),
+//                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
+//                                ""
+//                        ));
+//                    }
+//
+//                    final double totalAmountFinal = grandTotalAmount;
+//
+//                    Platform.runLater(() -> {
+//                        poDetail_data.setAll(detailsList);
+//                        tblVwOrderDetails.setItems(poDetail_data);
+//                        computeTotalAmount(totalAmountFinal);
+//                        poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
+//                        tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
+//                        reselectLastRow();
+//                    });
+//
+//                } catch (GuanzonException | SQLException ex) {
+//                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            protected void succeeded() {
+//                progressIndicator.setVisible(false);
+//            }
+//
+//            @Override
+//            protected void failed() {
+//                progressIndicator.setVisible(false);
+//            }
+//        };
+//
+//        new Thread(task).start();
+//    }
     private void loadTablePODetail() {
-        // Configure ProgressIndicator
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxSize(50, 50);
         progressIndicator.setStyle("-fx-accent: #FF8201;");
@@ -1300,11 +1473,10 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         tblVwOrderDetails.setPlaceholder(loadingPane);
         progressIndicator.setVisible(true);
 
-        Task<Void> task = new Task<Void>() {
+        Task<List<ModelPurchaseOrderDetail>> task = new Task<List<ModelPurchaseOrderDetail>>() {
             @Override
-            protected Void call() throws Exception {
+            protected List<ModelPurchaseOrderDetail> call() throws Exception {
                 try {
-                    Platform.runLater(poDetail_data::clear);
                     int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
                     if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                         Model_PO_Detail lastDetail = poPurchasingController.PurchaseOrder().Detail(detailCount - 1);
@@ -1315,6 +1487,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     }
                     double grandTotalAmount = 0.0;
                     List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
+
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
@@ -1335,9 +1508,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     }
 
                     final double totalAmountFinal = grandTotalAmount;
-
                     Platform.runLater(() -> {
-                        poDetail_data.setAll(detailsList);
+                        poDetail_data.setAll(detailsList); // Properly update list
                         tblVwOrderDetails.setItems(poDetail_data);
                         computeTotalAmount(totalAmountFinal);
                         poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
@@ -1345,10 +1517,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         reselectLastRow();
                     });
 
+                    return detailsList;
+
                 } catch (GuanzonException | SQLException ex) {
                     Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    return null;
                 }
-                return null;
             }
 
             @Override
@@ -1361,7 +1535,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 progressIndicator.setVisible(false);
             }
         };
-
         if (!poApprovedStockRequest_data.isEmpty()) {
             Set<String> existingDetailIds = poDetail_data.stream()
                     .map(ModelPurchaseOrderDetail::getIndex02)
@@ -1374,7 +1547,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
             tblVwStockRequest.refresh();
         }
-
         new Thread(task).start();
     }
 
