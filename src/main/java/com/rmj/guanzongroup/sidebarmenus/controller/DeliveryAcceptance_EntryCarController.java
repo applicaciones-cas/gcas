@@ -81,6 +81,8 @@ import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
 
 /**
  * FXML Controller class
@@ -192,9 +194,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (CloneNotSupportedException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -530,7 +530,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         lsValue = "0.00";
                     }
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                         return;
                     }
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
@@ -553,7 +553,13 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                     }
                     break;
             }
-            loadTableDetail();
+            Platform.runLater(() -> {
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.50)); 
+                delay.setOnFinished(event -> {
+                    loadTableDetail();
+                });
+                delay.play();  
+            });
         }
     };
 
@@ -673,6 +679,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 retrievePO();
 
                             }
+                            loadRecordMaster();
                             break;
 
                         case "tfSupplier":
@@ -686,6 +693,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             if (!poPurchaseReceivingController.Master().getCompanyId().equals("")) {
                                 retrievePO();
                             }
+                            loadRecordMaster();
                             break;
                         case "tfTrucking":
                             poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
@@ -694,6 +702,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 tfTrucking.setText("");
                                 break;
                             }
+                            loadRecordMaster();
                             break;
                         case "tfTerm":
                             poJSON = poPurchaseReceivingController.SearchTerm(lsValue, false);
@@ -702,6 +711,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 tfTerm.setText("");
                                 break;
                             }
+                            loadRecordMaster();
                             break;
                         case "tfOrderNo":
 
@@ -713,6 +723,8 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 tfBrand.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            tfModel.requestFocus();
                             break;
                         case "tfModel":
                             poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail);
@@ -721,10 +733,10 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 tfModel.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            tfReceiveQuantity.requestFocus();
                             break;
                     }
-                    loadRecordMaster();
-                    loadTableDetail();
                     break;
                 default:
                     break;
@@ -739,9 +751,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -824,6 +834,10 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
     public void loadRecordDetail() {
         try {
+            if(pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount()-1){
+                return;
+            }
+            
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
             tfBrand.setDisable(!lbFields);
             tfModel.setDisable(!lbFields);
@@ -854,9 +868,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -932,9 +944,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             }
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1161,11 +1171,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             loadRecordDetail();
                         }
 
-                    } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (CloneNotSupportedException ex) {
+                    } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
                 });
@@ -1348,6 +1354,12 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
+                
+                if(poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")){
+                    tfReceiveQuantity.requestFocus();
+                } else {
+                    tfBrand.requestFocus();
+                }
             }
         });
 
@@ -1527,6 +1539,11 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                     break;
             }
             loadRecordDetail();
+            if(poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")){
+                tfReceiveQuantity.requestFocus();
+            } else {
+                tfBrand.requestFocus();
+            }
             event.consume();
         }
     }

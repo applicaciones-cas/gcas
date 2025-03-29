@@ -95,6 +95,7 @@ import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
+import javafx.animation.PauseTransition;
 /**
  * FXML Controller class
  *
@@ -690,7 +691,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                         lsValue = "0.00";
                     }
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Downpayment Amount");
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                         return;
                     }
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
@@ -713,7 +714,13 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                     }
                     break;
             }
-            loadTableDetail();
+            Platform.runLater(() -> {
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.50)); 
+                delay.setOnFinished(event -> {
+                    loadTableDetail();
+                });
+                delay.play();  
+            });
         }
     };
 
@@ -799,6 +806,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                                 tfCompany.setText("");
                                 break;
                             }
+                            loadRecordMaster();
                             break;
                         case "tfSupplier":
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
@@ -807,6 +815,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                                 tfSupplier.setText("");
                                 break;
                             }
+                            loadRecordMaster();
                             break;
                         case "tfTrucking":
                             poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
@@ -815,6 +824,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                                 tfTrucking.setText("");
                                 break;
                             }
+                            loadRecordMaster();
                             break;
                         case "tfTerm":
                             poJSON = poPurchaseReceivingController.SearchTerm(lsValue, false);
@@ -823,6 +833,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                                 tfTerm.setText("");
                                 break;
                             }
+                            loadRecordMaster();
                             break;
                         case "tfOrderNo":
 
@@ -834,6 +845,8 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                                 tfBrand.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            tfModel.requestFocus();
                             break;
                         case "tfModel":
                             poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail);
@@ -842,10 +855,10 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                                 tfModel.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            tfReceiveQuantity.requestFocus();
                             break;
                     }
-                    loadRecordMaster();
-                    loadTableDetail();
                     break;
                 default:
                     break;
@@ -1120,6 +1133,9 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
     public void loadRecordDetail() {
         try {
+            if(pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount()-1){
+                return;
+            }
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
             tfBrand.setDisable(!lbFields);
             tfModel.setDisable(!lbFields);
@@ -1149,7 +1165,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
-
+         
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -1283,7 +1299,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
-                            while (lnCtr > 0) {
+                            while (lnCtr >= 0) {
                                 if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
                                     poPurchaseReceivingController.Detail().remove(lnCtr);
                                 }
@@ -1293,8 +1309,11 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
                                 if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
                                     poPurchaseReceivingController.AddDetail();
-
                                 }
+                            }
+
+                            if ((poPurchaseReceivingController.getDetailCount() - 1) < 0) {
+                                poPurchaseReceivingController.AddDetail();
                             }
                         }
 
@@ -1447,6 +1466,11 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
+                if(poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")){
+                    tfReceiveQuantity.requestFocus();
+                } else {
+                    tfBrand.requestFocus();
+                }
             }
         });
 
@@ -1574,6 +1598,11 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                     break;
             }
             loadRecordDetail();
+            if(poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")){
+                tfReceiveQuantity.requestFocus();
+            } else {
+                tfBrand.requestFocus();
+            }
             event.consume();
         }
     }
