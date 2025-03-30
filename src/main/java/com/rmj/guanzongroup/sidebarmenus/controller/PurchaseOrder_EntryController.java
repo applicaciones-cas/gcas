@@ -476,8 +476,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-//                                    tfBarcode.setText("");
-//                                    break;
+                                    tfBarcode.setText("");
+                                    break;
                                 }
                                 String lsBarcode = "";
                                 if (poPurchasingController.PurchaseOrder().Master().Inventory().getBarCode() != null) {
@@ -782,22 +782,24 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 //                    }
 //                    break;
                 case "tfOrderQuantity":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    if (Integer.parseInt(lsValue) < 0) {
-                        ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
-                        lsValue = "0";
-                    }
-                    if (pnTblPODetailRow < 0) {
-                        lsValue = "0";
-                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                        clearDetailFields();
-                        int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
-                        pnTblPODetailRow = detailCount > 0 ? detailCount - 1 : 0;
-                    }
-                    tfOrderQuantity.setText(lsValue);
-                    poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
+//                    Platform.runLater(() -> {
+//                    });
+//                    if (lsValue.isEmpty()) {
+//                        lsValue = "0";
+//                    }
+//                    if (Integer.parseInt(lsValue) < 0) {
+//                        ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
+//                        lsValue = "0";
+//                    }
+//                    if (pnTblPODetailRow < 0) {
+//                        lsValue = "0";
+//                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+//                        clearDetailFields();
+//                        int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+//                        pnTblPODetailRow = detailCount > 0 ? detailCount - 1 : 0;
+//                    }
+//                    tfOrderQuantity.setText(lsValue);
+//                    poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
                     break;
             }
         } else {
@@ -971,7 +973,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 tfOrderQuantity.requestFocus();
                                 break;
                         }
-                        event.consume();
                         switch (txtFieldID) {
                             case "tfCompany":
                             case "tfSupplier":
@@ -1005,81 +1006,34 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                     pnTblPODetailRow++;
                                 }
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
-
-                                if (pnTblPODetailRow >= 0) {
-                                    Platform.runLater(() -> {
-                                        // Run a delay after the UI thread is free
-                                        PauseTransition delay = new PauseTransition(Duration.millis(50));
-                                        delay.setOnFinished(event2 -> {
-                                            Platform.runLater(() -> { // Run UI updates in the next cycle
-                                                loadTablePODetail();
-                                                loadDetail();
-                                                initDetailFocus();
-                                            });
-                                        });
-                                        delay.play();
-                                    });
-                                }
-
+                                loadTablePODetailAndSelectedRow();
                                 break;
                         }
+                        event.consume();
                         break;
                     case UP:
-                        event.consume();
-
-                        String id = ((TextField) event.getSource()).getId();
-
-                        if (!id.equals("tfBarcode") && !id.equals("tfDescription")) {
+                        if (!lsTxtField.equals("tfBarcode") && !lsTxtField.equals("tfDescription")) {
                             if (pnTblPODetailRow > 0 && !poDetail_data.isEmpty()) {
                                 pnTblPODetailRow--;
                             }
                         }
 
-                        if (!id.equals("tfBarcode")) {
+                        // Prevent going from 'tfOrderQuantity' to 'taRemarks'
+                        if (!lsTxtField.equals("tfBarcode") && !lsTxtField.equals("tfOrderQuantity")) {
                             CommonUtils.SetPreviousFocus((TextField) event.getSource());
                         }
-                        if (pnTblPODetailRow >= 0) {
-                            Platform.runLater(() -> {
-                                // Run a delay after the UI thread is free
-                                PauseTransition delay = new PauseTransition(Duration.millis(50));
-                                delay.setOnFinished(event2 -> {
-                                    Platform.runLater(() -> { // Run UI updates in the next cycle
-                                        loadTablePODetail();
-                                        loadDetail();
-                                        initDetailFocus();
-                                    });
-                                });
-                                delay.play();
-                            });
-                        }
+                        loadTablePODetailAndSelectedRow();
+                        event.consume();
                         break;
                     case DOWN:
-                        event.consume();
-                        // Get the current source of the event
-                        TextField currentField = (TextField) event.getSource();
-
-                        // Only increment if the focus is on tfOrderQuantity
-                        if (currentField.getId().equals("tfOrderQuantity")) {
+                        if ("tfOrderQuantity".equals(lsTxtField.getId())) {
                             if (!poDetail_data.isEmpty() && pnTblPODetailRow < poDetail_data.size() - 1) {
                                 pnTblPODetailRow++;
                             }
                         }
-
-                        CommonUtils.SetNextFocus(currentField);
-                        if (pnTblPODetailRow >= 0) {
-                            Platform.runLater(() -> {
-                                // Run a delay after the UI thread is free
-                                PauseTransition delay = new PauseTransition(Duration.millis(50));
-                                delay.setOnFinished(event2 -> {
-                                    Platform.runLater(() -> { // Run UI updates in the next cycle
-                                        loadTablePODetail();
-                                        loadDetail();
-                                        initDetailFocus();
-                                    });
-                                });
-                                delay.play();
-                            });
-                        }
+                        CommonUtils.SetNextFocus(lsTxtField);
+                        loadTablePODetailAndSelectedRow();
+                        event.consume(); // Consume event after handling focus
                         break;
                     default:
                         break;
@@ -1629,11 +1583,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         if ("success".equals(loJSON.get("result"))) {
                             if (poPurchasingController.PurchaseOrder().getDetailCount() > 0) {
                                 pnTblPODetailRow = poPurchasingController.PurchaseOrder().getDetailCount() - 1;
-                                loadTablePODetail();
-                                tblVwOrderDetails.getSelectionModel().select(pnTblPODetailRow);
-//                                tblVwOrderDetails.requestFocus();
-                                loadDetail();
-                                initDetailFocus();
+                                loadTablePODetailAndSelectedRow();
                                 tblVwStockRequest.refresh();
                                 poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.CONFIRMED);
                             }
@@ -1677,7 +1627,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {
                     tfOrderQuantity.requestFocus();
                 } else {
-                    if (!tfBarcode.getText().isEmpty() && pnEditMode == EditMode.UPDATE) {
+                    if (!tfBarcode.getText().isEmpty() && (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW)) {
                         tfOrderQuantity.requestFocus();
                     } else {
                         tfBarcode.requestFocus();
@@ -1685,6 +1635,24 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 }
             }
 
+        }
+    }
+
+    private void loadTablePODetailAndSelectedRow() {
+        if (pnTblPODetailRow >= 0) {
+            Platform.runLater(() -> {
+                // Run a delay after the UI thread is free
+                PauseTransition delay = new PauseTransition(Duration.millis(10));
+                delay.setOnFinished(event -> {
+                    Platform.runLater(() -> { // Run UI updates in the next cycle
+                        loadTablePODetail();
+
+                    });
+                });
+                delay.play();
+            });
+            loadDetail();
+            initDetailFocus();
         }
     }
 }
