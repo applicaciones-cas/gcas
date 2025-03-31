@@ -264,6 +264,8 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
                             psSupplierID,
                             psReferID);
                     if ("success".equals((String) loJSON.get("result"))) {
+                        clearDetailFields();
+                        pnTblPODetailRow = -1;
                         loadMaster();
                         loadDetail();
                         loadTablePODetail();
@@ -486,7 +488,7 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
             pnTblPODetailRow = tblVwOrderDetails.getSelectionModel().getSelectedIndex();
 
             ModelPurchaseOrderDetail selectedItem = tblVwOrderDetails.getSelectionModel().getSelectedItem();
-            if (event.getClickCount() == 2) {
+            if (event.getClickCount() == 1) {
                 clearDetailFields();
                 if (selectedItem != null) {
                     if (pnTblPODetailRow >= 0) {
