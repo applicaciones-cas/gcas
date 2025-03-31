@@ -934,7 +934,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
-            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
+            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 tfReceiveQuantity.requestFocus();
             } else {
                 tfBarcode.requestFocus();
@@ -1046,42 +1046,46 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
     }
 
     private void tableKeyEvents(KeyEvent event) {
-        TableView<?> currentTable = (TableView<?>) event.getSource();
-        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-        if (focusedCell != null) {
-            switch (event.getCode()) {
-                case TAB:
-                case DOWN:
-                    pnDetail = moveToNextRow(currentTable, focusedCell);
-                    break;
-                case UP:
-                    pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                    break;
+        if (details_data.size() > 0) {
+            TableView<?> currentTable = (TableView<?>) event.getSource();
+            TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+            if (focusedCell != null) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case DOWN:
+                        pnDetail = moveToNextRow(currentTable, focusedCell);
+                        break;
+                    case UP:
+                        pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+                loadRecordDetail();
+                tfOrderNo.setText("");
+                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                    tfReceiveQuantity.requestFocus();
+                } else {
+                    tfBarcode.requestFocus();
+                }
+                event.consume();
             }
-            loadRecordDetail();
-            tfOrderNo.setText("");
-            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
-                tfReceiveQuantity.requestFocus();
-            } else {
-                tfBarcode.requestFocus();
-            }
-            event.consume();
         }
     }
 
     public void initTableOnClick() {
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
-                loadRecordDetail();
-                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
-                    tfReceiveQuantity.requestFocus();
-                } else {
-                    tfBarcode.requestFocus();
+            if (details_data.size() > 0) {
+                if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
+                    pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
+                    loadRecordDetail();
+                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                        tfReceiveQuantity.requestFocus();
+                    } else {
+                        tfBarcode.requestFocus();
+                    }
                 }
             }
         });

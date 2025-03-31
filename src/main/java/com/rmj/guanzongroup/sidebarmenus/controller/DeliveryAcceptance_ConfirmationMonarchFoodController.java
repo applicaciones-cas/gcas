@@ -442,19 +442,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
     }
 
     public void retrievePOR() {
-        if (psCompanyId.equals("")) {
-            poPurchaseReceivingController.Master().setCompanyId("");
-        }
-        if (psSupplierId.equals("")) {
-            poPurchaseReceivingController.Master().setSupplierId("");
-        }
-        try {
-            if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
-                poPurchaseReceivingController.Master().setTransactionNo("");
-            }
-        } catch (Exception e) {
-            poPurchaseReceivingController.Master().setTransactionNo("");
-        }
+
         poJSON = new JSONObject();
 
         String lsMessage = "";
@@ -659,13 +647,11 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
     };
 
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
         lastFocusedTextField = txtPersonalInfo;
-
         if (lsValue == null) {
             return;
         }
@@ -674,28 +660,26 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
             switch (lsTxtFieldID) {
                 case "tfSearchCompany":
                     if (lsValue.equals("")) {
-                        poPurchaseReceivingController.Master().setCompanyId("");
+                        psCompanyId = "";
                     }
-                    psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                     break;
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
-                        poPurchaseReceivingController.Master().setSupplierId("");
+                        psSupplierId = "";
                     }
-                    psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                     break;
                 case "tfSearchReferenceNo":
-                    if (lsValue.equals("")) {
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
-                    }
                     break;
                 case "tfAttachmentNo":
                     break;
                 case "tfAttachmentType":
                     break;
             }
+            if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier")
+                    || lsTxtFieldID.equals("tfSearchReferenceNo")) {
+                loadRecordSearch();
+            }
         }
-
     };
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -723,7 +707,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                             poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfCompany.setText("");
+                                tfSearchCompany.setText("");
                                 psCompanyId = "";
                                 break;
                             } else {
@@ -737,7 +721,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSupplier.setText("");
+                                tfSearchSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             } else {
@@ -1067,17 +1051,30 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
 
     public void loadRecordSearch() {
         try {
-
             tfSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            tfSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
-            tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
-            tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
+            if (psCompanyId.equals("")) {
+                tfSearchCompany.setText("");
+            } else {
+                tfSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            }
+            if (psSupplierId.equals("")) {
+                tfSearchSupplier.setText("");
+            } else {
+                tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
+            }
+            try {
+                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
+                    tfSearchReferenceNo.setText("");
+                } else {
+                    tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
+                }
+            } catch (Exception e) {
+                tfSearchReferenceNo.setText("");
+            }
 
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
     }
 
     public void loadRecordAttachment() {
@@ -1147,7 +1144,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
-            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
+            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 tfReceiveQuantity.requestFocus();
             } else {
                 tfBarcode.requestFocus();
@@ -1475,13 +1472,15 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
     public void initTableOnClick() {
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
-                loadRecordDetail();
-                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
-                    tfReceiveQuantity.requestFocus();
-                } else {
-                    tfBarcode.requestFocus();
+            if (details_data.size() > 0) {
+                if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
+                    pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
+                    loadRecordDetail();
+                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                        tfReceiveQuantity.requestFocus();
+                    } else {
+                        tfBarcode.requestFocus();
+                    }
                 }
             }
         });
@@ -1935,29 +1934,31 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
     }
 
     private void tableKeyEvents(KeyEvent event) {
-        TableView<?> currentTable = (TableView<?>) event.getSource();
-        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-        if (focusedCell != null) {
-            switch (event.getCode()) {
-                case TAB:
-                case DOWN:
-                    pnDetail = moveToNextRow(currentTable, focusedCell);
-                    break;
-                case UP:
-                    pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                    break;
+        if (details_data.size() > 0) {
+            TableView<?> currentTable = (TableView<?>) event.getSource();
+            TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+            if (focusedCell != null) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case DOWN:
+                        pnDetail = moveToNextRow(currentTable, focusedCell);
+                        break;
+                    case UP:
+                        pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+                loadRecordDetail();
+                tfOrderNo.setText("");
+                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                    tfReceiveQuantity.requestFocus();
+                } else {
+                    tfBarcode.requestFocus();
+                }
+                event.consume();
             }
-            loadRecordDetail();
-            tfOrderNo.setText("");
-            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).equals("")) {
-                tfReceiveQuantity.requestFocus();
-            } else {
-                tfBarcode.requestFocus();
-            }
-            event.consume();
         }
     }
 

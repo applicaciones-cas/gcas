@@ -325,19 +325,7 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
     }
 
     public void retrievePOR() {
-        if (psCompanyId.equals("")) {
-            poPurchaseReceivingController.Master().setCompanyId("");
-        }
-        if (psSupplierId.equals("")) {
-            poPurchaseReceivingController.Master().setSupplierId("");
-        }
-        try {
-            if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
-                poPurchaseReceivingController.Master().setTransactionNo("");
-            }
-        } catch (Exception e) {
-            poPurchaseReceivingController.Master().setTransactionNo("");
-        }
+
         poJSON = new JSONObject();
 
         String lsMessage = "";
@@ -629,26 +617,21 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
                 case "tfSearchCompany":
                     if (lsValue.equals("")) {
                         psCompanyId = "";
-                        poPurchaseReceivingController.Master().setCompanyId("");
                     }
                     break;
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
                         psSupplierId = "";
-                        poPurchaseReceivingController.Master().setSupplierId("");
                     }
                     break;
                 case "tfSearchReferenceNo":
-                    if (lsValue.equals("")) {
-                        poPurchaseReceivingController.Master().setTransactionNo("");
-                    }
                     break;
                 case "tfAttachmentNo":
                     break;
                 case "tfAttachmentType":
                     break;
             }
-            if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier") 
+            if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             }
@@ -683,7 +666,7 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSupplier.setText("");
+                                tfSearchSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             } else {
@@ -905,17 +888,30 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
 
     public void loadRecordSearch() {
         try {
-
             tfSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            tfSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
-            tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
-            tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_HistoryMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+            if (psCompanyId.equals("")) {
+                tfSearchCompany.setText("");
+            } else {
+                tfSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            }
+            if (psSupplierId.equals("")) {
+                tfSearchSupplier.setText("");
+            } else {
+                tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
+            }
+            try {
+                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
+                    tfSearchReferenceNo.setText("");
+                } else {
+                    tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
+                }
+            } catch (Exception e) {
+                tfSearchReferenceNo.setText("");
+            }
+
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
-
     }
 
     public void loadRecordAttachment() {
@@ -1285,9 +1281,11 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
     public void initTableOnClick() {
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
-                loadRecordDetail();
+            if (details_data.size() > 0) {
+                if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
+                    pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
+                    loadRecordDetail();
+                }
             }
         });
 
@@ -1399,23 +1397,25 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
     }
 
     private void tableKeyEvents(KeyEvent event) {
-        TableView<?> currentTable = (TableView<?>) event.getSource();
-        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-        if (focusedCell != null) {
-            switch (event.getCode()) {
-                case TAB:
-                case DOWN:
-                    pnDetail = moveToNextRow(currentTable, focusedCell);
-                    break;
-                case UP:
-                    pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                    break;
+        if (details_data.size() > 0) {
+            TableView<?> currentTable = (TableView<?>) event.getSource();
+            TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+            if (focusedCell != null) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case DOWN:
+                        pnDetail = moveToNextRow(currentTable, focusedCell);
+                        break;
+                    case UP:
+                        pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+                loadRecordDetail();
+                event.consume();
             }
-            loadRecordDetail();
-            event.consume();
         }
     }
 

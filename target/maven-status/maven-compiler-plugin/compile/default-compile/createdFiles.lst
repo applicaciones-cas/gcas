@@ -19,7 +19,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntrySPCarContro
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationCarController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\Log_InController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationMonarchFoodController$1.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryController$4.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationController$6.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryMCController$5.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryMPController$6.class
@@ -27,7 +26,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationCont
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationMonarchHospitalityController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalLPController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalMCController$5.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryCarController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalSPCarController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationCarController$6.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationSPCarController$3.class
@@ -46,7 +44,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationController.cla
 com\rmj\guanzongroup\sidebarmenus\controller\AccountsAccreditationHistoryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationMCController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\SampleForm2Controller.class
-com\rmj\guanzongroup\sidebarmenus\controller\LaborModelController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistorySPCarController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalMonarchFoodController$6.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryMonarchHospitalityController.class
@@ -65,7 +62,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalCarContr
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationSPMCController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntrySPCarController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryMonarchFoodController$3.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalSPMCController$3.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvSerialLedger.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventorySerialParamController.class
@@ -73,7 +69,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryMonarchHosp
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntrySPMCController$6.class
 com\rmj\guanzongroup\sidebarmenus\controller\ProvinceController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistorySPMCController$2.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistorySPCarController$5.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalMonarchFoodController$5.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryLPController.class
@@ -134,7 +129,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryLPControlle
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationLPController$3.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryController$6.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryMonarchHospitalityController$5.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelAddress.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntrySPMCController$1.class
@@ -154,7 +148,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\ModelController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationSPCarController$5.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryLPController$5.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalMonarchHospitalityController$2.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalController$5.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalLPController$4.class
 com\rmj\guanzongroup\sidebarmenus\controller\SectionController.class
@@ -198,7 +191,6 @@ com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvSerial.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalMPController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationLPController$6.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_SerialMCController$2.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryController$5.class
 com\rmj\guanzongroup\sidebarmenus\utility\CustomCommonUtil.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationMCController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryMonarchHospitalityController$1.class
@@ -215,7 +207,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryLPControl
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistorySPCarController$4.class
 com\rmj\guanzongroup\sidebarmenus\controller\DefaultScreenController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelDeliveryAcceptance_Attachment.class
-com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryController$3.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistorySPMCController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\ColorDetailController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ApprovalCarController$5.class
