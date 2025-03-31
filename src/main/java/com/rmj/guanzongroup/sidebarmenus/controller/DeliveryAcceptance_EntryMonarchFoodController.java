@@ -954,11 +954,6 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
-            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
-                tfReceiveQuantity.requestFocus();
-            } else {
-                tfBarcode.requestFocus();
-            }
 
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -993,7 +988,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
                 case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVE");
+                    lblStatus.setText("APPROVED");
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");

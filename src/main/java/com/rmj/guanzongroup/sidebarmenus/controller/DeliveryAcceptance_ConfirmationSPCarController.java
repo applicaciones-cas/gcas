@@ -1055,7 +1055,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
             }
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1154,7 +1154,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
                 case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVE");
+                    lblStatus.setText("APPROVED");
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");

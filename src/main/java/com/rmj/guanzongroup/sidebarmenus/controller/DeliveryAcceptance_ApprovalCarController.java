@@ -118,7 +118,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
-    private final ObservableList<ModelDeliveryAcceptance_Attachment> img_data = FXCollections.observableArrayList();
+    private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
 
@@ -378,10 +378,10 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             imageView.setImage(loimage);
 
                             String imgPath2 = selectedFile.toString();
-                            img_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(img_data.size()), imgPath2));
+                            attachment_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(attachment_data.size()), imgPath2));
 
-                            if (img_data.size() > 1) {
-                                pnAttachment = img_data.size() - 1;
+                            if (attachment_data.size() > 1) {
+                                pnAttachment = attachment_data.size() - 1;
                             }
                             loadTableAttachment();
 
@@ -390,7 +390,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                         }
                         break;
                     case "btnRemoveAttachment":
-                        img_data.remove(pnAttachment);
+                        attachment_data.remove(pnAttachment);
                         if (pnAttachment != 0) {
                             pnAttachment -= 1;
                         }
@@ -1126,12 +1126,12 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     }
 
     public void loadRecordAttachment() {
-
         if (pnAttachment >= 0) {
-            tfAttachmentNo.setText("");
-            tfAttachmentType.setText("");
+            tfAttachmentNo.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getSourceNo());
+            tfAttachmentType.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType());
+            
             try {
-                String filePath = (String) img_data.get(pnAttachment).getIndex02();
+                String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
 
                 if (filePath.length() != 0) {
                     Path imgPath = Paths.get(filePath);
@@ -1140,7 +1140,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                     imageView.setImage(loimage);
                     adjustImageSize(loimage);
                     stackPaneClip();
-                    stackPaneClip();
+                    stackPaneClip(); // dont remove duplicate
                 } else {
                     imageView.setImage(null);
                     stackPaneClip();
@@ -1225,7 +1225,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
                 case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVE");
+                    lblStatus.setText("APPROVED");
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");
@@ -1437,11 +1437,104 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     }
 
     private void loadTableAttachment() {
-//        img_data.clear(); should have data from class before calling this clear
-//        for (int i = 0; i < img_data.size(); i++) {
-//            img_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(i), img_data.get(i).getIndex2()));
-//        }
-        loadRecordAttachment();
+
+        // Setting data to table detail
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMaxHeight(50);
+        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
+        StackPane loadingPane = new StackPane(progressIndicator);
+        loadingPane.setAlignment(Pos.CENTER);
+        tblAttachments.setPlaceholder(loadingPane);
+        progressIndicator.setVisible(true);
+
+        Label placeholderLabel = new Label("NO RECORD TO LOAD");
+        placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+//                Thread.sleep(1000);
+                Platform.runLater(() -> {
+                    attachment_data.clear();
+
+                    int lnCtr;
+                    try {
+
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            lnCtr = poPurchaseReceivingController.getTransactionAttachmentCount() - 1;
+                            while (lnCtr >= 0) {
+                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
+                                    poPurchaseReceivingController.Detail().remove(lnCtr);
+                                }
+                                lnCtr--;
+                            }
+
+                            if ((poPurchaseReceivingController.getTransactionAttachmentCount() - 1) >= 0) {
+                                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
+                                    poPurchaseReceivingController.addAttachment();
+                                }
+                            }
+
+                            if ((poPurchaseReceivingController.getDetailCount() - 1) < 0) {
+                                poPurchaseReceivingController.addAttachment();
+                            }
+                        }
+
+                        double lnTotal = 0.0;
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getTransactionAttachmentCount(); lnCtr++) {
+                            attachment_data.add(
+                                    new ModelDeliveryAcceptance_Attachment(String.valueOf(lnCtr + 1),
+                                            String.valueOf(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getFileName())
+                                    ));
+                        }
+
+                        if (pnDetail < 0 || pnDetail
+                                >= details_data.size()) {
+                            if (!details_data.isEmpty()) {
+                                /* FOCUS ON FIRST ROW */
+                                tblAttachments.getSelectionModel().select(0);
+                                tblAttachments.getFocusModel().focus(0);
+                                pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
+                                loadRecordAttachment();
+                            }
+                        } else {
+                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                            tblAttachments.getSelectionModel().select(pnAttachment);
+                            tblAttachments.getFocusModel().focus(pnAttachment);
+                            loadRecordAttachment();
+                        }
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (GuanzonException ex) {
+                        Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                if (details_data == null || details_data.isEmpty()) {
+                    tblViewOrderDetails.setPlaceholder(placeholderLabel);
+                } else {
+                    tblViewOrderDetails.toFront();
+                }
+                progressIndicator.setVisible(false);
+
+            }
+
+            @Override
+            protected void failed() {
+                if (details_data == null || details_data.isEmpty()) {
+                    tblViewOrderDetails.setPlaceholder(placeholderLabel);
+                }
+                progressIndicator.setVisible(false);
+            }
+
+        };
+        new Thread(task).start(); // Run task in background
 
     }
 
@@ -1789,10 +1882,10 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             });
         });
 
-        tblAttachments.setItems(img_data);
+        tblAttachments.setItems(attachment_data);
 
-        if (pnAttachment < 0 || pnAttachment >= img_data.size()) {
-            if (!img_data.isEmpty()) {
+        if (pnAttachment < 0 || pnAttachment >= attachment_data.size()) {
+            if (!attachment_data.isEmpty()) {
                 /* FOCUS ON FIRST ROW */
                 tblAttachments.getSelectionModel().select(0);
                 tblAttachments.getFocusModel().focus(0);
@@ -1887,8 +1980,8 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         currentIndex = pnAttachment;
         int newIndex = currentIndex + direction;
 
-        if (newIndex != -1 && (newIndex <= img_data.size() - 1)) {
-            ModelDeliveryAcceptance_Attachment image = img_data.get(newIndex);
+        if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
+            ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
             Path filePath = Paths.get(image.getIndex02());
             String convertedPath = filePath.toUri().toString();
 
@@ -1991,7 +2084,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     }
 
     public void generateAttachment() {
-        img_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
+        attachment_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
 
     }
 

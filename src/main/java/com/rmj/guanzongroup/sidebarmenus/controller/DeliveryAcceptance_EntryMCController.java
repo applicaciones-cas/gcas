@@ -520,7 +520,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                     //if value is blank then reset
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                        poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
                     }
                 case "tfModel":
                     //if value is blank then reset
@@ -1054,7 +1054,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
                 case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVE");
+                    lblStatus.setText("APPROVED");
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");

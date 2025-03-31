@@ -686,7 +686,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         }
     };
 
-
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -1075,9 +1074,10 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             }
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
+
     public void loadRecordAttachment() {
 
         if (pnAttachment >= 0) {
@@ -1181,7 +1181,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
                 case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVE");
+                    lblStatus.setText("APPROVED");
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");
