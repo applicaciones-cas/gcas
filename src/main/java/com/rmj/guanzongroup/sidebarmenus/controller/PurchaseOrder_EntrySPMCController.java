@@ -460,8 +460,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, true,
-                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblPODetailRow
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -486,8 +485,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, true,
-                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblPODetailRow
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -883,8 +881,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, true,
-                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblPODetailRow
                                 );
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -909,8 +906,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, true,
-                                        poPurchasingController.PurchaseOrder().Master().getSupplierID(), pnTblPODetailRow
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblPODetailRow
                                 );
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
