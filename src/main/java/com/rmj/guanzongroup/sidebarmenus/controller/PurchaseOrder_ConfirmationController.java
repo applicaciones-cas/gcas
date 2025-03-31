@@ -14,13 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -507,52 +503,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(Double.valueOf(lsValue.replace(",", "")));
                     tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue));
                     break;
-//                case "tfOrderQuantity":
-//                    if (pnTblPODetailRow >= 0) {
-//                        Platform.runLater(() -> {
-//                            PauseTransition delay = new PauseTransition(Duration.millis(10));
-//                            delay.setOnFinished(event -> {
-//                                loadTablePODetail();  // Reload table first
-//
-//                                Platform.runLater(() -> {
-//                                    loadDetail();       // Ensure data is loaded correctly
-//                                    initDetailFocus();  // Set focus after data is ready
-//                                });
-//                            });
-//                            delay.play();
-//                        });
-//                    }
-//                    break;
-//                case "tfOrderQuantity":
-//                    if (pnTblPODetailRow >= 0) {
-//                        Platform.runLater(() -> {
-//                            PauseTransition delay = new PauseTransition(Duration.millis(10));
-//                            delay.setOnFinished(event -> {
-//                                loadTablePODetail();  // Reload table
-//                                Platform.runLater(() -> {
-//                                    loadDetail();
-//                                    initDetailFocus();
-//                                    reselectLastRow(true); // Ensure last row is reselected only when necessary
-//                                });
-//                            });
-//                            delay.play();
-//                        });
-//                    }
-//                    break;
                 case "tfOrderQuantity":
-                    if (pnTblPODetailRow >= 0) {
-                        Platform.runLater(() -> {
-                            PauseTransition delay = new PauseTransition(Duration.millis(10));
-                            delay.setOnFinished(event -> {
-                                loadTablePODetail();
-                                Platform.runLater(() -> {
-                                    loadDetail();
-                                    initDetailFocus();
-                                });
-                            });
-                            delay.play();
-                        });
-                    }
                     break;
 
             }
@@ -560,60 +511,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
             loTextField.selectAll();
         }
     };
-//                case "tfOrderQuantity":
-//                    if (pnTblPODetailRow >= 0) {
-//                        Platform.runLater(() -> {
-//                            // Show a temporary loading indicator if needed (optional)
-//                            showLoadingIndicator(true);
-//
-//                            // Run in background thread to keep UI responsive
-//                            Task<Void> task = new Task<>() {
-//                                @Override
-//                                protected Void call() throws Exception {
-//                                    // Simulate short delay for smooth transition (adjust if needed)
-//                                    Thread.sleep(150);
-//
-//                                    Platform.runLater(() -> {
-//                                        clearDetailFields();
-//                                        loadTablePODetail();
-//                                        loadDetail();
-//                                        initDetailFocus();
-//
-//                                        // Hide loading indicator after update
-//                                        showLoadingIndicator(false);
-//                                    });
-//                                    return null;
-//                                }
-//                            };
-//
-//                            new Thread(task).start();
-//                        });
-//                    }
-//                    break;
 
-//                case "tfOrderQuantity":
-//                    if (pnTblPODetailRow >= 0) {
-//                        clearDetailFields();
-//                        Platform.runLater(() -> {
-//                            PauseTransition delay = new PauseTransition(Duration.millis(10));
-//                            delay.setOnFinished(event -> {
-//                                if (!tblVwOrderDetails.isFocused()) {  // Prevent duplicate loading if table is already focused
-//                                    loadTablePODetail();
-//                                    loadDetail();
-//                                    initDetailFocus();
-//                                }
-//                            });
-//                            delay.play();
-//                        });
-//                    }
-//                    break;
-//                    Platform.runLater(() -> {
-//                        PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-//                        delay.setOnFinished(event -> {
-//                            loadTableDetail();
-//                        });
-//                        delay.play();
-//                    });
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         TextArea loTextArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTextAreaID = loTextArea.getId();
@@ -735,27 +633,34 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                                     pnTblPODetailRow++;
                                 }
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
+                                loadTablePODetailAndSelectedRow();
+                                break;
                         }
+                        event.consume();
                         break;
                     case UP:
-                        event.consume();
-                        // Check if the source of the event is tfBarcode
-                        if (lsTxtField.getId().equals("tfOrderQuantity")) {
+                        if (!lsTxtField.equals("tfBarcode") && !lsTxtField.equals("tfDescription")) {
                             if (pnTblPODetailRow > 0 && !poDetail_data.isEmpty()) {
                                 pnTblPODetailRow--;
                             }
                         }
-                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+
+                        // Prevent going from 'tfOrderQuantity' to 'taRemarks'
+                        if (!lsTxtField.equals("tfBarcode") && !lsTxtField.equals("tfOrderQuantity")) {
+                            CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        }
+                        loadTablePODetailAndSelectedRow();
+                        event.consume();
                         break;
                     case DOWN:
-                        event.consume();
-                        // Only increment if the focus is on tfOrderQuantity
-                        if (lsTxtField.getId().equals("tfOrderQuantity")) {
+                        if ("tfOrderQuantity".equals(lsTxtField.getId())) {
                             if (!poDetail_data.isEmpty() && pnTblPODetailRow < poDetail_data.size() - 1) {
                                 pnTblPODetailRow++;
                             }
                         }
                         CommonUtils.SetNextFocus(lsTxtField);
+                        loadTablePODetailAndSelectedRow();
+                        event.consume(); // Consume event after handling focus
                         break;
                     default:
                         break;
@@ -1019,146 +924,6 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
         });
     }
 
-//    private void loadTablePODetail() {
-//        // Configure ProgressIndicator
-//        ProgressIndicator progressIndicator = new ProgressIndicator();
-//        progressIndicator.setMaxSize(50, 50); // Ensure consistent size
-//        progressIndicator.setStyle("-fx-accent: #FF8201;"); // Set custom progress color
-//
-//// Center ProgressIndicator inside TableView using StackPane
-//        StackPane loadingPane = new StackPane(progressIndicator);
-//        loadingPane.setAlignment(Pos.CENTER); // Center it
-//        loadingPane.setStyle("-fx-background-color: transparent;"); // Make background transparent
-//
-//        tblVwOrderDetails.setPlaceholder(loadingPane); // Show while loading
-//        progressIndicator.setVisible(true); // Make sure it's visible
-//
-//        Task<Void> task = new Task<Void>() {
-//            @Override
-//            protected Void call() throws Exception {
-//                poDetail_data.clear();
-//                try {
-//
-//                    double grandTotalAmount = 0.0;
-//                    for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
-//                        double lnTotalAmount = poPurchasingController.PurchaseOrder()
-//                                .Detail(lnCntr)
-//                                .Inventory().getCost().doubleValue() * poPurchasingController.PurchaseOrder()
-//                                        .Detail(lnCntr)
-//                                        .getQuantity().doubleValue();
-//                        grandTotalAmount += lnTotalAmount;
-//                        poDetail_data.add(new ModelPurchaseOrderDetail(
-//                                String.valueOf(lnCntr + 1),
-//                                poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
-//                                poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
-//                                poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
-//                                CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
-//                                "",
-//                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getQuantity()),
-//                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
-//                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
-//                                ""
-//                        ));
-//
-//                    }
-//                    tblVwOrderDetails.setItems(poDetail_data);
-//
-//                    computeTotalAmount(grandTotalAmount);
-//                    poPurchasingController.PurchaseOrder().Master().setTranTotal(grandTotalAmount);
-//                    tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
-//
-//                } catch (GuanzonException | SQLException ex) {
-//                    Logger.getLogger(PurchaseOrder_EntryMCController.class
-//                            .getName()).log(Level.SEVERE, null, ex);
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            protected void succeeded() {
-//                tblVwOrderDetails.setItems(poDetail_data);
-//                progressIndicator.setVisible(false); // Hide when done
-//
-//            }
-//
-//            @Override
-//            protected void failed() {
-//                progressIndicator.setVisible(false);
-//            }
-//        };
-//
-//        new Thread(task).start(); // Run task in background
-//    }
-//    private void loadTablePODetail() {
-//        // Configure ProgressIndicator
-//        ProgressIndicator progressIndicator = new ProgressIndicator();
-//        progressIndicator.setMaxSize(50, 50);
-//        progressIndicator.setStyle("-fx-accent: #FF8201;");
-//
-//        StackPane loadingPane = new StackPane(progressIndicator);
-//        loadingPane.setAlignment(Pos.CENTER);
-//        loadingPane.setStyle("-fx-background-color: transparent;");
-//
-//        tblVwOrderDetails.setPlaceholder(loadingPane);
-//        progressIndicator.setVisible(true);
-//
-//        Task<Void> task = new Task<Void>() {
-//            @Override
-//            protected Void call() throws Exception {
-//                try {
-//                    Platform.runLater(poDetail_data::clear);
-//                    int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
-//                    double grandTotalAmount = 0.0;
-//                    List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
-//                    for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
-//                        Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
-//                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
-//                        grandTotalAmount += lnTotalAmount;
-//
-//                        detailsList.add(new ModelPurchaseOrderDetail(
-//                                String.valueOf(lnCtr + 1),
-//                                orderDetail.getSouceNo(),
-//                                orderDetail.Inventory().getBarCode(),
-//                                orderDetail.Inventory().getDescription(),
-//                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
-//                                "",
-//                                String.valueOf(orderDetail.InvStockRequestDetail().getQuantity()),
-//                                String.valueOf(orderDetail.getQuantity()),
-//                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
-//                                ""
-//                        ));
-//                    }
-//
-//                    final double totalAmountFinal = grandTotalAmount;
-//
-//                    Platform.runLater(() -> {
-//                        poDetail_data.setAll(detailsList);
-//                        tblVwOrderDetails.setItems(poDetail_data);
-//                        computeTotalAmount(totalAmountFinal);
-//                        poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
-//                        tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
-//                        reselectLastRow();
-//                    });
-//
-//                } catch (GuanzonException | SQLException ex) {
-//                    Logger.getLogger(PurchaseOrder_EntryController.class
-//                            .getName()).log(Level.SEVERE, null, ex);
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            protected void succeeded() {
-//                progressIndicator.setVisible(false);
-//            }
-//
-//            @Override
-//            protected void failed() {
-//                progressIndicator.setVisible(false);
-//            }
-//        };
-//        new Thread(task).start();
-//    }
     private void loadTablePODetail() {
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxSize(50, 50);
@@ -1205,7 +970,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                         computeTotalAmount(totalAmountFinal);
                         poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
                         tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
-                        reselectLastRow(true);
+                        reselectLastRow();
                     });
 
                     return detailsList;
@@ -1230,25 +995,18 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
         new Thread(task).start();
     }
 
-    private void reselectLastRow(boolean forceReselect) {
-        if (forceReselect && pnTblPODetailRow >= 0 && pnTblPODetailRow < tblVwOrderDetails.getItems().size()) {
+    private void reselectLastRow() {
+        if (pnTblPODetailRow >= 0 && pnTblPODetailRow < tblVwOrderDetails.getItems().size()) {
             tblVwOrderDetails.getSelectionModel().clearAndSelect(pnTblPODetailRow);
             tblVwOrderDetails.getSelectionModel().focus(pnTblPODetailRow);
-            tblVwOrderDetails.scrollTo(pnTblPODetailRow); // Ensure visibility
         }
     }
 
-//    private void reselectLastRow() {
-//        if (pnTblPODetailRow >= 0 && pnTblPODetailRow < tblVwOrderDetails.getItems().size()) {
-//            tblVwOrderDetails.getSelectionModel().clearAndSelect(pnTblPODetailRow);
-//            tblVwOrderDetails.getSelectionModel().focus(pnTblPODetailRow); // Scroll to the selected row if needed
-//        }
-//    }
     private void tblVwOrderDetails_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
             pnTblPODetailRow = tblVwOrderDetails.getSelectionModel().getSelectedIndex();
             ModelPurchaseOrderDetail selectedItem = tblVwOrderDetails.getSelectionModel().getSelectedItem();
-            if (event.getClickCount() == 2) {
+            if (event.getClickCount() == 1) {
                 clearDetailFields();
                 if (selectedItem != null) {
                     if (pnTblPODetailRow >= 0) {
@@ -1347,29 +1105,6 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
         return previousRow;
     }
 
-//    private void tableKeyEvents(KeyEvent event) {
-//        TableView<?> currentTable = (TableView<?>) event.getSource();
-//        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-//        if (focusedCell != null) {
-//            if ("tblVwOrderDetails".equals(currentTable.getId())) {
-//                switch (event.getCode()) {
-//                    case TAB:
-//                    case DOWN:
-//                        pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
-//                        break;
-//                    case UP:
-//                        pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
-//                        break;
-//                    default:
-//                        return; // Ignore other keys
-//                }
-//
-//                loadDetail();
-//                event.consume();
-//            }
-//
-//        }
-//    }
     private void tableKeyEvents(KeyEvent event) {
         TableView<?> currentTable = (TableView<?>) event.getSource();
         TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
@@ -1443,6 +1178,23 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     tfOrderQuantity.requestFocus();
                 }
             }
+        }
+    }
+
+    private void loadTablePODetailAndSelectedRow() {
+        if (pnTblPODetailRow >= 0) {
+            Platform.runLater(() -> {
+                PauseTransition delay = new PauseTransition(Duration.millis(10));
+                delay.setOnFinished(event -> {
+                    Platform.runLater(() -> {
+                        loadTablePODetail();
+
+                    });
+                });
+                delay.play();
+            });
+            loadDetail();
+            initDetailFocus();
         }
     }
 }
