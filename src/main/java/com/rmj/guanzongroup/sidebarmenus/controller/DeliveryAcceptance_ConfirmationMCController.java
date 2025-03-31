@@ -456,6 +456,19 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     }
 
     public void retrievePOR() {
+        if (psCompanyId.equals("")) {
+            poPurchaseReceivingController.Master().setCompanyId("");
+        }
+        if (psSupplierId.equals("")) {
+            poPurchaseReceivingController.Master().setSupplierId("");
+        }
+        try {
+            if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
+                poPurchaseReceivingController.Master().setTransactionNo("");
+            }
+        } catch (Exception e) {
+            poPurchaseReceivingController.Master().setTransactionNo("");
+        }
         poJSON = new JSONObject();
 
         String lsMessage = "";
@@ -740,13 +753,11 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     };
 
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
         lastFocusedTextField = txtPersonalInfo;
-
         if (lsValue == null) {
             return;
         }
@@ -755,24 +766,33 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
             switch (lsTxtFieldID) {
                 case "tfSearchCompany":
                     if (lsValue.equals("")) {
+                        psCompanyId = "";
                         poPurchaseReceivingController.Master().setCompanyId("");
                     }
-                    psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                     break;
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
+                        psSupplierId = "";
                         poPurchaseReceivingController.Master().setSupplierId("");
                     }
-                    psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                    break;
+                case "tfSearchReferenceNo":
+                    if (lsValue.equals("")) {
+                        poPurchaseReceivingController.Master().setTransactionNo("");
+                    }
                     break;
                 case "tfAttachmentNo":
                     break;
                 case "tfAttachmentType":
                     break;
             }
+            if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier") 
+                    || lsTxtFieldID.equals("tfSearchReferenceNo")) {
+                loadRecordSearch();
+            }
         }
-
     };
+
 
     private void txtField_KeyPressed(KeyEvent event) {
         try {
@@ -1193,18 +1213,18 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = pnEditMode == EditMode.UPDATE;
+        boolean lbDisable = poPurchaseReceivingController.getEditMode() == EditMode.UPDATE;
         if (lbDisable) {
-            tfCompany.setDisable(lbDisable);
-            tfSupplier.setDisable(lbDisable);
             tfCompany.getStyleClass().add("DisabledTextField");
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
-            tfCompany.setDisable(lbDisable);
-            tfSupplier.setDisable(lbDisable);
-            tfCompany.getStyleClass().remove("DisabledTextField");
-            tfSupplier.getStyleClass().remove("DisabledTextField");
+            while (tfCompany.getStyleClass().contains("DisabledTextField") || tfSupplier.getStyleClass().contains("DisabledTextField")) {
+                tfCompany.getStyleClass().remove("DisabledTextField");
+                tfSupplier.getStyleClass().remove("DisabledTextField");
+            }
         }
+        tfCompany.setDisable(lbDisable);
+        tfSupplier.setDisable(lbDisable);
 
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
@@ -1293,7 +1313,8 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
                 if (selected != null) {
                     int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
-                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                    pnMain = pnRowMain;
+                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7",highlightedRowsMain);
                     highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
                 }
                 loadTableDetail();
@@ -1463,6 +1484,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     }
 
     public void initTextFields() {
+        tfSearchCompany.focusedProperty().addListener(txtField_Focus);
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);

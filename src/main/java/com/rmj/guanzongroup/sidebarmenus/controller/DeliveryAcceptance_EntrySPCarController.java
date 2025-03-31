@@ -949,18 +949,18 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = pnEditMode == EditMode.UPDATE;
+        boolean lbDisable = poPurchaseReceivingController.getEditMode() == EditMode.UPDATE;
         if (lbDisable) {
-            tfCompany.setDisable(lbDisable);
-            tfSupplier.setDisable(lbDisable);
             tfCompany.getStyleClass().add("DisabledTextField");
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
-            tfCompany.setDisable(lbDisable);
-            tfSupplier.setDisable(lbDisable);
-            tfCompany.getStyleClass().remove("DisabledTextField");
-            tfSupplier.getStyleClass().remove("DisabledTextField");
+            while (tfCompany.getStyleClass().contains("DisabledTextField") || tfSupplier.getStyleClass().contains("DisabledTextField")) {
+                tfCompany.getStyleClass().remove("DisabledTextField");
+                tfSupplier.getStyleClass().remove("DisabledTextField");
+            }
         }
+        tfCompany.setDisable(lbDisable);
+        tfSupplier.setDisable(lbDisable);
 
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
@@ -1286,6 +1286,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                     ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
                     if (selected != null) {
                         int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
+                        pnMain = pnRowMain;
                         disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
                         highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
                     }
