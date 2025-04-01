@@ -1380,19 +1380,21 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                     List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
-                        Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
-                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
+//                        
+//                        Model_PO_Detail orderDetail =  new Model_PO_Detail();
+//                        orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
+                        double lnTotalAmount = poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getCost().doubleValue() * poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
 
                         detailsList.add(new ModelPurchaseOrderDetail(
                                 String.valueOf(lnCtr + 1),
-                                orderDetail.getSouceNo(),
-                                orderDetail.Inventory().getBarCode(),
-                                orderDetail.Inventory().getDescription(),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
+                                poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo(),
+                                poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getBarCode(),
+                                poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getDescription(),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCtr).Inventory().getCost()),
                                 "",
-                                String.valueOf(orderDetail.InvStockRequestDetail().getQuantity()),
-                                String.valueOf(orderDetail.getQuantity()),
+                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved()),
+                                String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""
                         ));
