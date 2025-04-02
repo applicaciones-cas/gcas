@@ -133,9 +133,6 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
         poApp = foValue;
     }
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -368,6 +365,11 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         pnTblPODetailRow = - 1;
                         isNewUpdate = true;
                         pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                        tblVwStockRequest.getItems().clear();
+                        tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                        if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                            loadTableStockRequest();
+                        }
                         loadTablePODetail();
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
@@ -413,6 +415,11 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                 selectTheExistedDetailFromStockRequest();
                                 break;
                             case "tfSupplier":
+                                if (isNewUpdate) {
+                                    if (!isExchangingSupplier()) {
+                                        return;
+                                    }
+                                }
                                 poJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -467,11 +474,6 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     tfBarcode.setText("");
                                     break;
                                 }
-                                String lsBarcode = "";
-                                if (poPurchasingController.PurchaseOrder().Master().Inventory().getBarCode() != null) {
-                                    lsBarcode = poPurchasingController.PurchaseOrder().Master().Inventory().getBarCode();
-                                }
-                                tfBarcode.setText(lsBarcode);
                                 loadDetail();
                                 if (!tfDescription.getText().isEmpty()) {
                                     tfOrderQuantity.requestFocus();
@@ -492,7 +494,6 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     tfDescription.setText("");
                                     break;
                                 }
-                                tfDescription.setText(poPurchasingController.PurchaseOrder().Master().Inventory().getDescription());
                                 loadDetail();
                                 if (!tfDescription.getText().isEmpty()) {
                                     tfOrderQuantity.requestFocus();
@@ -605,17 +606,38 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                 lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
                             }
                             tfIndustry.setText(lsIndustryName);
+                            if (!tfCompany.getText().isEmpty()) {
+                                loJSON = poPurchasingController.PurchaseOrder().SearchCompany(poPurchasingController.PurchaseOrder().Master().getCompanyID(), true);
+                                if ("error".equals((String) loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
+
                             String lsCompanyName = "";
                             if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
                                 lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
                             }
                             tfCompany.setText(lsCompanyName);
 
+                            if (!tfSupplier.getText().isEmpty()) {
+                                loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(poPurchasingController.PurchaseOrder().Master().getSupplierID(), true);
+                                if ("error".equals((String) loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
                             String lsSupplierName = "";
                             if (poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null) {
                                 lsSupplierName = poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName();
                             }
                             tfSupplier.setText(lsSupplierName);
+                            pnTblStockRequestRow = -1;
+                            tblVwStockRequest.getItems().clear();
+                            tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                            if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                                loadTableStockRequest();
+                            }
                         } else {
                             clearMasterFields();
                             clearDetailFields();
@@ -632,7 +654,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                     }
                     tblVwOrderDetails.getSelectionModel().clearSelection();
                     tblVwStockRequest.getSelectionModel().clearSelection();
-                    if (pnTblStockRequestRow > 0) {
+                    if (pnTblStockRequestRow >= 0) {
                         tblVwStockRequest.refresh();
                         poApprovedStockRequest_data.get(pnTblStockRequestRow).setIndex07(PurchaseOrderStatus.OPEN);
                     }
@@ -843,6 +865,11 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                 selectTheExistedDetailFromStockRequest();
                                 break;
                             case "tfSupplier":
+                                if (isNewUpdate) {
+                                    if (!isExchangingSupplier()) {
+                                        return;
+                                    }
+                                }
                                 loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -888,16 +915,9 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     tfBarcode.setText("");
                                     break;
                                 }
-                                if (pnTblPODetailRow >= 0) {
-                                    tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
-                                    if (!poDetail_data.isEmpty() && pnTblPODetailRow < poDetail_data.size() - 1) {
-                                        pnTblPODetailRow++;
-                                    }
-                                    clearDetailFields();
-                                    loadTablePODetail();
-                                    loadDetail();
-                                    initDetailFocus();
-                                }
+                                loadTablePODetail();
+                                loadDetail();
+                                tfOrderQuantity.requestFocus();
                                 selectTheExistedDetailFromStockRequest();
                                 break;
                             case "tfDescription":
@@ -912,12 +932,6 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfDescription.setText("");
                                     break;
-                                }
-                                if (pnTblPODetailRow >= 0) {
-                                    tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
-                                } else {
-                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                    tfDescription.setText("");
                                 }
                                 loadTablePODetail();
                                 loadDetail();
@@ -937,23 +951,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
                                 break;
                             case "tfOrderQuantity":
-                                if (lsValue.isEmpty()) {
-                                    lsValue = "0";
-                                }
-                                if (Integer.parseInt(lsValue) < 0) {
-                                    ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
-                                    lsValue = "0";
-                                }
-                                if (pnTblPODetailRow < 0) {
-                                    lsValue = "0";
-                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                    clearDetailFields();
-                                    int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
-                                    pnTblPODetailRow = detailCount > 0 ? detailCount - 1 : 0;
-                                }
-                                tfOrderQuantity.setText(lsValue);
-                                poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(lsValue));
-
+                                setOrderQuantityToDetail(lsValue);
                                 if (!poDetail_data.isEmpty() && pnTblPODetailRow < poDetail_data.size() - 1) {
                                     pnTblPODetailRow++;
                                 }
@@ -964,6 +962,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         event.consume();
                         break;
                     case UP:
+                        setOrderQuantityToDetail(lsValue);
                         if (!lsTxtField.equals("tfBarcode") && !lsTxtField.equals("tfDescription")) {
                             if (pnTblPODetailRow > 0 && !poDetail_data.isEmpty()) {
                                 pnTblPODetailRow--;
@@ -978,6 +977,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         event.consume();
                         break;
                     case DOWN:
+                        setOrderQuantityToDetail(lsValue);
                         if ("tfOrderQuantity".equals(lsTxtField.getId())) {
                             if (!poDetail_data.isEmpty() && pnTblPODetailRow < poDetail_data.size() - 1) {
                                 pnTblPODetailRow++;
@@ -996,6 +996,25 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
             Logger.getLogger(PurchaseOrder_EntryMonarchHospitalityController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void setOrderQuantityToDetail(String fsValue) {
+        if (fsValue.isEmpty()) {
+            fsValue = "0";
+        }
+        if (Integer.parseInt(fsValue) < 0) {
+            ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
+            fsValue = "0";
+        }
+        if (pnTblPODetailRow < 0) {
+            fsValue = "0";
+            ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+            clearDetailFields();
+            int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+            pnTblPODetailRow = detailCount > 0 ? detailCount - 1 : 0;
+        }
+        tfOrderQuantity.setText(fsValue);
+        poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).setQuantity(Integer.valueOf(fsValue));
     }
 
     private void initTextFieldPattern() {
@@ -1052,7 +1071,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
         dpExpectedDlvrDate.setValue(null);
         taRemarks.setText("");
         CustomCommonUtil.setSelected(false, chkbAdvancePayment);
-        CustomCommonUtil.setText("", tfTransactionNo, tfCompany, tfSupplier,
+        CustomCommonUtil.setText("", tfTransactionNo,
                 tfDestination, tfReferenceNo, tfTerm);
         CustomCommonUtil.setText("0.00", tfTotalAmount, tfAdvancePAmount, tfAdvancePRate,
                 tfDiscountAmount, tfDiscountRate);
@@ -1433,9 +1452,8 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                     }
                     poPurchasingController.PurchaseOrder().Master().setCompanyID("");
                     tfCompany.setText("");
-                    if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
-                        loadTableStockRequest();
-                    }
+                    tblVwStockRequest.getItems().clear();
+                    loadTableStockRequest();
                 }
             }
         });
@@ -1443,13 +1461,17 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
                         if (newValue.isEmpty()) {
+                            if (isNewUpdate) {
+                                if (!isExchangingSupplier()) {
+                                    return;
+                                }
+                            }
                             poPurchasingController.PurchaseOrder().Master().setSupplierID("");
                             poPurchasingController.PurchaseOrder().Master().setAddressID("");
                             poPurchasingController.PurchaseOrder().Master().setContactID("");
                             tfSupplier.setText("");
-                            if (!tfCompany.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
-                                loadTableStockRequest();
-                            }
+                            tblVwStockRequest.getItems().clear();
+                            loadTableStockRequest();
                         }
                     }
                 }
@@ -1460,10 +1482,13 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             boolean isHaveQuantityAndStockId = false;
             if (poPurchasingController.PurchaseOrder().getDetailCount() >= 1) {
-                if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
-                        || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0)) {
-                    isHaveQuantityAndStockId = true;
+                if (poPurchasingController.PurchaseOrder().Detail(0).getStockID() != null && poPurchasingController.PurchaseOrder().Detail(0).getQuantity() != null) {
+                    if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
+                            || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0)) {
+                        isHaveQuantityAndStockId = true;
+                    }
                 }
+
             }
             if (isHaveQuantityAndStockId) {
                 if (ShowMessageFX.YesNo("PO Details have already items, are you sure you want to change company?", psFormName, null)) {
@@ -1490,6 +1515,55 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                             return false;
                         }
                         tfCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
+                        selectTheExistedDetailFromStockRequest();
+                        return false;
+
+                    } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+                        Logger.getLogger(PurchaseOrder_EntryMonarchHospitalityController.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isExchangingSupplier() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            boolean isHaveQuantityAndStockId = false;
+            if (poPurchasingController.PurchaseOrder().getDetailCount() >= 1) {
+                if (poPurchasingController.PurchaseOrder().Detail(0).getStockID() != null && poPurchasingController.PurchaseOrder().Detail(0).getQuantity() != null) {
+                    if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
+                            || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0)) {
+                        isHaveQuantityAndStockId = true;
+                    }
+                }
+            }
+            if (isHaveQuantityAndStockId) {
+                if (ShowMessageFX.YesNo("PO Details have already items, are you sure you want to change supplier?", psFormName, null)) {
+                    int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+                    for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
+                        if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()
+                                && poPurchasingController.PurchaseOrder().Detail(lnCtr).getStockID().isEmpty()
+                                && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().equals(0)) {
+                            continue; // Skip deleting this row
+                        }
+                        poPurchasingController.PurchaseOrder().Detail().remove(lnCtr);
+                    }
+                    pnTblPODetailRow = -1;
+                    pnTblStockRequestRow = -1;
+                    tblVwStockRequest.getSelectionModel().clearSelection();
+                    clearDetailFields();
+                    loadTablePODetail();
+                } else {
+                    try {
+                        poJSON = new JSONObject();
+                        poJSON = poPurchasingController.PurchaseOrder().SearchSupplier(poPurchasingController.PurchaseOrder().Master().getSupplierID(), true);
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            return false;
+                        }
+                        tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                         selectTheExistedDetailFromStockRequest();
                         return false;
 
