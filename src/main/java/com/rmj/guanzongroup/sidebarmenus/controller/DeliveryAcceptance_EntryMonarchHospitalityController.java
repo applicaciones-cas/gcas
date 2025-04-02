@@ -74,6 +74,7 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
+import javafx.scene.control.ComboBox;
 import javafx.util.Duration;
 
 /**
@@ -335,6 +336,14 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                 }
 
                 initButton(pnEditMode);
+
+                if (lsButton.equals("btnUpdate")) {
+                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                        tfReceiveQuantity.requestFocus();
+                    } else {
+                        tfBarcode.requestFocus();
+                    }
+                }
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -637,7 +646,13 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                                 break;
                             }
                             loadTableDetail();
-                            tfReceiveQuantity.requestFocus();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
                             break;
 
                         case "tfDescription":
@@ -649,7 +664,13 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                                 break;
                             }
                             loadTableDetail();
-                            tfReceiveQuantity.requestFocus();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
                             break;
                         case "tfSupersede":
                             poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail);
@@ -675,9 +696,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -707,7 +726,6 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
         tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
         tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
-
     }
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
@@ -937,7 +955,6 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
-
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
@@ -1075,7 +1092,6 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     }
 
     public void initTableOnClick() {
-
         tblViewOrderDetails.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)

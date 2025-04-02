@@ -4,6 +4,7 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -483,14 +484,14 @@
                                                                            </font>
                                                                         </Label>
                                                                         <TextField fx:id="tfAttachmentNo" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="154.0" GridPane.columnIndex="2" />
-                                                                        <TextField fx:id="tfAttachmentType" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                        <ComboBox fx:id="cmbAttachmentType" prefHeight="26.0" prefWidth="207.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                      </children>
                                                                   </GridPane>
                                                                </children>
                                                             </AnchorPane>
                                                             <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                                                                <children>
-                                          <TableView fx:id="tblAttachments" onMouseClicked="#tblAttachments_Clicked" prefHeight="200.0" prefWidth="850.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                          <TableView fx:id="tblAttachments" prefHeight="200.0" prefWidth="850.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                             <columns>
                                               <TableColumn fx:id="tblRowNoAttachment" prefWidth="37.00006103515625" style="-fx-font-size: 12;" text="No" />
                                               <TableColumn fx:id="tblFileNameAttachment" maxWidth="1.7976931348623157E308" prefWidth="268.9999694824219" style="-fx-font-size: 12;" text="File Name" />

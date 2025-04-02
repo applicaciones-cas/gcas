@@ -3,8 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.rmj.guanzongroup.sidebarmenus.table.model;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -32,6 +35,7 @@ public class ModelDeliveryAcceptance_Attachment {
     public StringProperty index18;
     public StringProperty index19;
     public StringProperty index20;
+    public static ObservableList<String> documentType = FXCollections.observableArrayList("Other", "Delivery Receipt", "Sales Invoice", "Official Receipt");
 
     public ModelDeliveryAcceptance_Attachment(String index01,
             String index02,
@@ -81,7 +85,7 @@ public class ModelDeliveryAcceptance_Attachment {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
-  
+
     }
 
     public String getIndex01() {
@@ -99,6 +103,5 @@ public class ModelDeliveryAcceptance_Attachment {
     public void setIndex02(String index02) {
         this.index02.set(index02);
     }
-
 
 }

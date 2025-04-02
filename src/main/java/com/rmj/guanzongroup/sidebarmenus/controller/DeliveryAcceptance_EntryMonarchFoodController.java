@@ -75,6 +75,7 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
+import javafx.scene.control.ComboBox;
 import javafx.util.Duration;
 
 /**
@@ -337,6 +338,14 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
                 initButton(pnEditMode);
 
+                if (lsButton.equals("btnUpdate")) {
+                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                        tfReceiveQuantity.requestFocus();
+                    } else {
+                        tfBarcode.requestFocus();
+                    }
+                }
+
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -592,6 +601,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 retrievePO();
                             }
                             psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                            loadRecordMaster();
                             break;
 
                         case "tfSupplier":
@@ -606,6 +616,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 retrievePO();
                             }
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                            loadRecordMaster();
                             break;
                         case "tfTrucking":
                             poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
@@ -614,6 +625,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 tfTrucking.setText("");
                                 break;
                             }
+                            loadRecordMaster();
                             break;
                         case "tfTerm":
                             poJSON = poPurchaseReceivingController.SearchTerm(lsValue, false);
@@ -634,6 +646,14 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 tfBarcode.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
                             break;
 
                         case "tfDescription":
@@ -644,6 +664,14 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 tfDescription.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
                             break;
                         case "tfSupersede":
                             poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail);
@@ -652,10 +680,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 tfSupersede.setText("");
                                 break;
                             }
+                            loadRecordDetail();
                             break;
                     }
-                    loadRecordMaster();
-                    loadTableDetail();
                     break;
                 default:
                     break;
@@ -670,9 +697,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -702,7 +727,6 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
         tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
-
     }
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
@@ -1092,7 +1116,6 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     }
 
     public void initTableOnClick() {
-
         tblViewOrderDetails.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
