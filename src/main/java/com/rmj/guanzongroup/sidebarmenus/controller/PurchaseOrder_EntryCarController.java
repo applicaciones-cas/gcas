@@ -1418,7 +1418,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
                                 "",
-                                String.valueOf(orderDetail.InvStockRequestDetail().getApproved()),
+                                String.valueOf(orderDetail.InvStockRequestDetailx().getApproved()),
                                 String.valueOf(orderDetail.getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""

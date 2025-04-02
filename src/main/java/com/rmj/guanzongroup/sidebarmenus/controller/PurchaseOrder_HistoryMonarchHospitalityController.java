@@ -437,7 +437,7 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
                         CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
                         "",
-                        String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getQuantity()),
+                        String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetailx().getApproved()),
                         String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
                         CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                         ""

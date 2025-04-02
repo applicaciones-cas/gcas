@@ -1020,7 +1020,7 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
                                 "",
-                                String.valueOf(orderDetail.InvStockRequestDetail().getQuantity()),
+                                String.valueOf(orderDetail.InvStockRequestDetailx().getApproved()),
                                 String.valueOf(orderDetail.getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""
