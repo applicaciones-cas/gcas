@@ -683,20 +683,17 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                case "tfDescription":
-                case "tfBarcode":
+                case "tfBrand":
+                    //if value is blank then reset
+                    if (lsValue.equals("")) {
+                        poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
+                    }
+                case "tfModel":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
                     }
-
-                    break;
-                case "tfSupersede":
-                    //if value is blank then reset
-                    if (lsValue.equals("")) {
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setReplaceId("");
-                    }
-
                     break;
                 case "tfCost":
                     if (lsValue.isEmpty()) {
@@ -717,6 +714,14 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                 case "tfReceiveQuantity":
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
+                    }
+                    if(Integer.valueOf(lsValue) < poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()){
+                        poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail+1,Integer.valueOf(lsValue));
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        }
                     }
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -872,7 +877,13 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                                 break;
                             }
                             loadTableDetail();
-                            tfModel.requestFocus();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(e -> {
+                                    tfModel.requestFocus();
+                                });
+                                delay.play();
+                            });
                             break;
                         case "tfModel":
                             poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail);
@@ -882,7 +893,13 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                                 break;
                             }
                             loadTableDetail();
-                            tfReceiveQuantity.requestFocus();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(e -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
                             break;
                     }
                     break;
@@ -1352,16 +1369,25 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                     int lnCtr;
                     try {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            String lsBrandId = "";
                             lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
+                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || "".equals(poPurchaseReceivingController.Detail(lnCtr).getStockId())
+                                    ){
+                                    if(poPurchaseReceivingController.Detail(lnCtr).getBrandId() != null 
+                                            || !"".equals(poPurchaseReceivingController.Detail(lnCtr).getBrandId())){
+                                        lsBrandId = poPurchaseReceivingController.Detail(lnCtr).getBrandId();
+                                    }
+                                    //remove por detail
                                     poPurchaseReceivingController.Detail().remove(lnCtr);
+                                    //remove por serial
+                                    poPurchaseReceivingController.removePurchaseOrderReceivingSerial(lnCtr);
                                 }
                                 lnCtr--;
                             }
 
                             if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
-                                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
+                                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !"".equals(poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId())) {
                                     poPurchaseReceivingController.AddDetail();
                                 }
                             }
@@ -1369,9 +1395,15 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                             if ((poPurchaseReceivingController.getDetailCount() - 1) < 0) {
                                 poPurchaseReceivingController.AddDetail();
                             }
+                            
+                            //Set brand Id to last row
+                            if(!lsBrandId.isEmpty()){
+                                poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).setBrandId(lsBrandId);
+                            }
+                            //Check for PO Serial Update Entry No TODO
                         }
 
-                        double lnTotal = 0.0;
+                        double lnTotal = 0.00;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             try {
 
