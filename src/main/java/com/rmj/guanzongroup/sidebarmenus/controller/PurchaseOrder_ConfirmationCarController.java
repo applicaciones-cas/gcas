@@ -1029,7 +1029,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
                                 "",
-                                String.valueOf(orderDetail.InvStockRequestDetailx().getApproved()),
+                                String.valueOf(orderDetail.InvStockRequestDetail().getApproved()),
                                 String.valueOf(orderDetail.getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""

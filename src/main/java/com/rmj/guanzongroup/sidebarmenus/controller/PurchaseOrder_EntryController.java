@@ -1345,6 +1345,14 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
+                        int lnRequestQuantity;
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getCancelled() + orderDetail.InvStockRequestDetail().getIssued());
+                        } else {
+                            lnRequestQuantity = (orderDetail.InvStockRequestDetail().getApproved()
+                                    - (orderDetail.InvStockRequestDetail().getCancelled() + orderDetail.InvStockRequestDetail().getIssued()))
+                                    - orderDetail.getQuantity().intValue();
+                        }
 
                         detailsList.add(new ModelPurchaseOrderDetail(
                                 String.valueOf(lnCtr + 1),
@@ -1353,7 +1361,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
                                 "",
-                                String.valueOf(orderDetail.InvStockRequestDetailx().getApproved()),
+                                String.valueOf(lnRequestQuantity),
                                 String.valueOf(orderDetail.getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""

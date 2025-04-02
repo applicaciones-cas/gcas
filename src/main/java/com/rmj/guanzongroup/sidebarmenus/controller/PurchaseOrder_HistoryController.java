@@ -437,7 +437,7 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
                         CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
                         "",
-                        String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetailx().getApproved()),
+                        String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getApproved()),
                         String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
                         CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                         ""

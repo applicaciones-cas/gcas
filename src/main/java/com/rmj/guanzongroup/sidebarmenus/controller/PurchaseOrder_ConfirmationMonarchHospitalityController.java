@@ -956,7 +956,7 @@ public class PurchaseOrder_ConfirmationMonarchHospitalityController implements I
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
                                 "",
-                                String.valueOf(orderDetail.InvStockRequestDetailx().getApproved()),
+                                String.valueOf(orderDetail.InvStockRequestDetail().getApproved()),
                                 String.valueOf(orderDetail.getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""
