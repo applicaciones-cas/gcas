@@ -137,7 +137,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);
-            poPurchasingController.PurchaseOrder().setTransactionStatus("01");
+            poPurchasingController.PurchaseOrder().setTransactionStatus("017");
             JSONObject loJSON = new JSONObject();
             loJSON = poPurchasingController.PurchaseOrder().InitTransaction();
             if (!"success".equals(loJSON.get("result"))) {
@@ -172,7 +172,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntrySPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -293,7 +293,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntrySPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -316,11 +316,13 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                 tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getBackOrder()));
                 tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantityOnHand()));
                 tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost()));
-                tfRequestQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantity()));
+                int lnRequestQuantity = 0;
+                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getIssued());
+                tfRequestQuantity.setText(String.valueOf(lnRequestQuantity));
                 tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntrySPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -362,6 +364,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                     poPurchasingController.PurchaseOrder().Master().setDestinationID(poPurchasingController.PurchaseOrder().Master().Branch().getBranchCode());
                     if ("success".equals((String) loJSON.get("result"))) {
                         loadMaster();
+                        poPurchasingController.PurchaseOrder().Master().setInventoryTypeCode(poPurchasingController.PurchaseOrder().getInventoryTypeCode());
                         pnTblPODetailRow = - 1;
                         isNewUpdate = true;
                         pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
@@ -699,7 +702,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | ParseException | NullPointerException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntrySPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -994,7 +997,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException | NullPointerException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class
+            Logger.getLogger(PurchaseOrder_EntrySPCarController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -1206,7 +1209,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                     });
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryController.class
+                    Logger.getLogger(PurchaseOrder_EntrySPCarController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
@@ -1372,7 +1375,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                     return detailsList;
 
                 } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_EntrySPCarController.class.getName()).log(Level.SEVERE, null, ex);
                     return null;
                 }
             }
@@ -1521,7 +1524,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                         return false;
 
                     } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-                        Logger.getLogger(PurchaseOrder_EntryController.class
+                        Logger.getLogger(PurchaseOrder_EntrySPCarController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -1570,7 +1573,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                         return false;
 
                     } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-                        Logger.getLogger(PurchaseOrder_EntryController.class
+                        Logger.getLogger(PurchaseOrder_EntrySPCarController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -1600,7 +1603,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
 
                         }
                     } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                        Logger.getLogger(PurchaseOrder_EntryController.class
+                        Logger.getLogger(PurchaseOrder_EntrySPCarController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                         ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
                     }

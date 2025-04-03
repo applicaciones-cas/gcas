@@ -238,7 +238,9 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
                 tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getBackOrder()));
                 tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantityOnHand()));
                 tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost()));
-                tfRequestQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantity()));
+                int lnRequestQuantity = 0;
+                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getIssued());
+                tfRequestQuantity.setText(String.valueOf(lnRequestQuantity));
                 tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {

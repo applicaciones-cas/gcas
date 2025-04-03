@@ -137,7 +137,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);
-            poPurchasingController.PurchaseOrder().setTransactionStatus("01");
+            poPurchasingController.PurchaseOrder().setTransactionStatus("017");
             JSONObject loJSON = new JSONObject();
             loJSON = poPurchasingController.PurchaseOrder().InitTransaction();
             if (!"success".equals(loJSON.get("result"))) {
@@ -306,7 +306,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
         try {
             if (pnTblPODetailRow >= 0) {
                 String lsBrand = "";
-                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Brand().getDescription() != null) {
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription() != null) {
                     lsBrand = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Brand().getDescription();
                 }
                 tfBrand.setText(lsBrand);
@@ -373,11 +373,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                 }
                 tfCost.setText(lsCost);
 
-                String lsRequestQuantity = "0";
-                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantity() != 0) {
-                    lsRequestQuantity = String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantity());
-                }
-                tfRequestQuantity.setText(lsRequestQuantity);
+                int lnRequestQuantity = 0;
+                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getIssued());
+                tfRequestQuantity.setText(String.valueOf(lnRequestQuantity));
 
                 String lsOrderQuantity = "0";
                 if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity() != null) {
@@ -427,6 +425,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     poPurchasingController.PurchaseOrder().Master().setIndustryID(poApp.getIndustry());
                     poPurchasingController.PurchaseOrder().Master().setDestinationID(poPurchasingController.PurchaseOrder().Master().Branch().getBranchCode());
                     if ("success".equals((String) loJSON.get("result"))) {
+                        poPurchasingController.PurchaseOrder().Master().setInventoryTypeCode(poPurchasingController.PurchaseOrder().getInventoryTypeCode());
                         loadMaster();
                         pnTblPODetailRow = - 1;
                         isNewUpdate = true;

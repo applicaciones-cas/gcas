@@ -290,12 +290,9 @@ public class PurchaseOrder_HistoryMCController implements Initializable, ScreenI
                     lsCost = CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost());
                 }
                 tfCost.setText(lsCost);
-
-                String lsRequestQuantity = "0";
-                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantity() != 0) {
-                    lsRequestQuantity = String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantity());
-                }
-                tfRequestQuantity.setText(lsRequestQuantity);
+                int lnRequestQuantity = 0;
+                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getIssued());
+                tfRequestQuantity.setText(String.valueOf(lnRequestQuantity));
 
                 String lsOrderQuantity = "0";
                 if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity() != null) {
