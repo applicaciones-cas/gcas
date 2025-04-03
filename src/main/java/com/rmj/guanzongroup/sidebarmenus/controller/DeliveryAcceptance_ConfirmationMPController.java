@@ -98,6 +98,8 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
+import javafx.scene.control.ComboBox;
+import org.guanzon.appdriver.constant.DocumentType;
 
 /**
  * FXML Controller class
@@ -120,7 +122,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
-    private final ObservableList<ModelDeliveryAcceptance_Attachment> img_data = FXCollections.observableArrayList();
+    private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
+    ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
 
@@ -171,7 +174,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     @FXML
     private TextField tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo;
     @FXML
-    private TextField tfAttachmentNo, tfAttachmentType;
+    private TextField tfAttachmentNo;
     @FXML
     private TableView tblAttachments;
     @FXML
@@ -182,6 +185,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     private StackPane stackPane1;
     @FXML
     private ImageView imageView;
+    @FXML
+    private ComboBox cmbAttachmentType;
     @FXML
     private Button btnArrowLeft, btnArrowRight;
 
@@ -391,19 +396,21 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             imageView.setImage(loimage);
 
                             String imgPath2 = selectedFile.toString();
-                            img_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(img_data.size()), imgPath2));
 
-                            if (img_data.size() > 1) {
-                                pnAttachment = img_data.size() - 1;
+                            poJSON = poPurchaseReceivingController.addAttachment();
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             }
+                            pnAttachment = poPurchaseReceivingController.getTransactionAttachmentCount() - 1;
+                            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setFileName(imgPath2);
+                            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setSourceNo(poPurchaseReceivingController.Master().getTransactionNo());
                             loadTableAttachment();
-
                             tblAttachments.getFocusModel().focus(pnAttachment);
                             tblAttachments.getSelectionModel().select(pnAttachment);
                         }
                         break;
                     case "btnRemoveAttachment":
-                        img_data.remove(pnAttachment);
+                        attachment_data.remove(pnAttachment);
                         if (pnAttachment != 0) {
                             pnAttachment -= 1;
                         }
@@ -439,19 +446,17 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 }
 
                 initButton(pnEditMode);
+                if (lsButton.equals("btnUpdate")) {
+                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                        tfReceiveQuantity.requestFocus();
+                    } else {
+                        tfBrand.requestFocus();
+                    }
+                }
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException | IOException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
-    }
-
-    @FXML
-    void tblAttachments_Clicked(MouseEvent event) {
-        pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
-        if (pnAttachment >= 0) {
-            loadRecordAttachment();
-            resetImageBounds();
         }
     }
 
@@ -719,8 +724,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    if(Integer.valueOf(lsValue) < poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()){
-                        poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail+1,Integer.valueOf(lsValue));
+                    if (Integer.valueOf(lsValue) < poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()) {
+                        poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -770,18 +775,20 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 case "tfSearchReferenceNo":
                     break;
                 case "tfAttachmentNo":
-                    break;
-                case "tfAttachmentType":
+                    if (lsValue.equals("")) {
+                        break;
+                    }
+                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setTransactionNo(lsValue);
                     break;
             }
             if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
+            } else {
+                loadRecordAttachment();
             }
         }
     };
-
-
 
     private void txtField_KeyPressed(KeyEvent event) {
         try {
@@ -889,7 +896,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                 });
                                 delay.play();
                             });
-                            
+
                             break;
                         case "tfModel":
                             poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail);
@@ -1166,37 +1173,46 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     }
 
     public void loadRecordAttachment() {
+        try {
+            if (pnAttachment >= 0) {
+                tfAttachmentNo.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getSourceNo());
+                String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                if (lsAttachmentType.equals("")) {
+                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
+                    lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                }
+                int lnAttachmentType = 0;
+                lnAttachmentType = Integer.parseInt(lsAttachmentType);
+                cmbAttachmentType.getSelectionModel().select(lnAttachmentType);
+                try {
+                    String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
 
-        if (pnAttachment >= 0) {
-            tfAttachmentNo.setText("");
-            tfAttachmentType.setText("");
-            try {
-                String filePath = (String) img_data.get(pnAttachment).getIndex02();
+                    if (filePath != null && !filePath.isEmpty()) {
+                        Path imgPath = Paths.get(filePath);
+                        String convertedPath = imgPath.toUri().toString();
+                        Image loimage = new Image(convertedPath);
+                        imageView.setImage(loimage);
+                        adjustImageSize(loimage);
+                        stackPaneClip();
+                        stackPaneClip(); // dont remove duplicate
+                    } else {
+                        imageView.setImage(null);
+                        stackPaneClip();
+                    }
 
-                if (filePath.length() != 0) {
-                    Path imgPath = Paths.get(filePath);
-                    String convertedPath = imgPath.toUri().toString();
-                    Image loimage = new Image(convertedPath);
-                    imageView.setImage(loimage);
-                    adjustImageSize(loimage);
-                    stackPaneClip();
-                    stackPaneClip();
-                } else {
+                } catch (Exception e) {
                     imageView.setImage(null);
                     stackPaneClip();
                 }
-
-            } catch (Exception e) {
+            } else {
                 imageView.setImage(null);
                 stackPaneClip();
+                pnAttachment = 0;
+
             }
-        } else {
-            imageView.setImage(null);
-            stackPaneClip();
-            pnAttachment = 0;
-
+        } catch (Exception e) {
         }
-
+        resetImageBounds();
     }
 
     public void loadRecordDetail() {
@@ -1341,10 +1357,17 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 if (selected != null) {
                     int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                     pnMain = pnRowMain;
-                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7",highlightedRowsMain);
+                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                     highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
                 }
+                poPurchaseReceivingController.loadAttachments();
                 loadTableDetail();
+                tfAttachmentNo.clear();
+                cmbAttachmentType.setItems(documentType);
+                cmbAttachmentType.getSelectionModel().select(0);
+                imageView.setImage(null);
+                stackPaneClip();
+                loadTableAttachment();
             }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -1382,10 +1405,9 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             String lsBrandId = "";
                             lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || "".equals(poPurchaseReceivingController.Detail(lnCtr).getStockId())
-                                    ){
-                                    if(poPurchaseReceivingController.Detail(lnCtr).getBrandId() != null 
-                                            || !"".equals(poPurchaseReceivingController.Detail(lnCtr).getBrandId())){
+                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || "".equals(poPurchaseReceivingController.Detail(lnCtr).getStockId())) {
+                                    if (poPurchaseReceivingController.Detail(lnCtr).getBrandId() != null
+                                            || !"".equals(poPurchaseReceivingController.Detail(lnCtr).getBrandId())) {
                                         lsBrandId = poPurchaseReceivingController.Detail(lnCtr).getBrandId();
                                     }
                                     //remove por detail
@@ -1405,9 +1427,9 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             if ((poPurchaseReceivingController.getDetailCount() - 1) < 0) {
                                 poPurchaseReceivingController.AddDetail();
                             }
-                            
+
                             //Set brand Id to last row
-                            if(!lsBrandId.isEmpty()){
+                            if (!lsBrandId.isEmpty()) {
                                 poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).setBrandId(lsBrandId);
                             }
                             //Check for PO Serial Update Entry No TODO
@@ -1494,11 +1516,77 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     }
 
     private void loadTableAttachment() {
-//        img_data.clear(); should have data from class before calling this clear
-//        for (int i = 0; i < img_data.size(); i++) {
-//            img_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(i), img_data.get(i).getIndex2()));
-//        }
-        loadRecordAttachment();
+        // Setting data to table detail
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMaxHeight(50);
+        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
+        StackPane loadingPane = new StackPane(progressIndicator);
+        loadingPane.setAlignment(Pos.CENTER);
+        tblAttachments.setPlaceholder(loadingPane);
+        progressIndicator.setVisible(true);
+
+        Label placeholderLabel = new Label("NO RECORD TO LOAD");
+        placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+//                Thread.sleep(1000);
+                Platform.runLater(() -> {
+                    try {
+                        attachment_data.clear();
+                        int lnCtr;
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getTransactionAttachmentCount(); lnCtr++) {
+                            attachment_data.add(
+                                    new ModelDeliveryAcceptance_Attachment(String.valueOf(lnCtr + 1),
+                                            String.valueOf(poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getFileName())
+                                    ));
+                        }
+                        if (pnAttachment < 0 || pnAttachment
+                                >= attachment_data.size()) {
+                            if (!attachment_data.isEmpty()) {
+                                /* FOCUS ON FIRST ROW */
+                                tblAttachments.getSelectionModel().select(0);
+                                tblAttachments.getFocusModel().focus(0);
+                                pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
+                                loadRecordAttachment();
+                            }
+                        } else {
+                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                            tblAttachments.getSelectionModel().select(pnAttachment);
+                            tblAttachments.getFocusModel().focus(pnAttachment);
+                            loadRecordAttachment();
+                        }
+                    } catch (Exception e) {
+
+                    }
+
+                });
+
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                if (attachment_data == null || attachment_data.isEmpty()) {
+                    tblAttachments.setPlaceholder(placeholderLabel);
+                } else {
+                    tblAttachments.toFront();
+                }
+                progressIndicator.setVisible(false);
+
+            }
+
+            @Override
+            protected void failed() {
+                if (attachment_data == null || attachment_data.isEmpty()) {
+                    tblAttachments.setPlaceholder(placeholderLabel);
+                }
+                progressIndicator.setVisible(false);
+            }
+
+        };
+        new Thread(task).start(); // Run task in background
 
     }
 
@@ -1530,7 +1618,6 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
-        tfAttachmentType.focusedProperty().addListener(txtField_Focus);
 
         tfCompany.focusedProperty().addListener(txtMaster_Focus);
         tfSupplier.focusedProperty().addListener(txtMaster_Focus);
@@ -1558,9 +1645,23 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         tfBrand.setOnKeyPressed(this::txtField_KeyPressed);
         tfModel.setOnKeyPressed(this::txtField_KeyPressed);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
+        // Combobox
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.setOnAction(event -> {
+            int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+            cmbAttachmentType.getSelectionModel().select(selectedIndex);
+            loadRecordAttachment();
+        });
     }
 
     public void initTableOnClick() {
+        tblAttachments.setOnMouseClicked(event -> {
+            pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
+            if (pnAttachment >= 0) {
+                loadRecordAttachment();
+            }
+        });
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
@@ -1624,6 +1725,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
         adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+        adjustLastColumnForScrollbar(tblAttachments);
     }
 
     public void adjustLastColumnForScrollbar(TableView<?> tableView) {
@@ -1749,8 +1851,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         btnClose.setVisible(lbShow4);
         btnClose.setManaged(lbShow4);
 
-        btnAddAttachment.setDisable(!lbShow2);
-        btnRemoveAttachment.setDisable(!lbShow2);
+        btnAddAttachment.setDisable(!lbShow1);
+        btnRemoveAttachment.setDisable(!lbShow1);
 
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
@@ -1850,10 +1952,10 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
             });
         });
 
-        tblAttachments.setItems(img_data);
+        tblAttachments.setItems(attachment_data);
 
-        if (pnAttachment < 0 || pnAttachment >= img_data.size()) {
-            if (!img_data.isEmpty()) {
+        if (pnAttachment < 0 || pnAttachment >= attachment_data.size()) {
+            if (!attachment_data.isEmpty()) {
                 /* FOCUS ON FIRST ROW */
                 tblAttachments.getSelectionModel().select(0);
                 tblAttachments.getFocusModel().focus(0);
@@ -1948,8 +2050,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         currentIndex = pnAttachment;
         int newIndex = currentIndex + direction;
 
-        if (newIndex != -1 && (newIndex <= img_data.size() - 1)) {
-            ModelDeliveryAcceptance_Attachment image = img_data.get(newIndex);
+        if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
+            ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
             Path filePath = Paths.get(image.getIndex02());
             String convertedPath = filePath.toUri().toString();
 
@@ -2023,7 +2125,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
-        tfAttachmentType.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
         tfIndustry.clear();
@@ -2048,11 +2151,12 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         tfReceiveQuantity.clear();
 
         tfAttachmentNo.clear();
-        tfAttachmentType.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
     }
 
     public void generateAttachment() {
-        img_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
+        attachment_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
 
     }
 

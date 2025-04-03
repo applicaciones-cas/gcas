@@ -96,6 +96,8 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
+import javafx.scene.control.ComboBox;
+import org.guanzon.appdriver.constant.DocumentType;
 
 /**
  * FXML Controller class
@@ -119,6 +121,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
+    ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
 
@@ -169,7 +172,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     @FXML
     private TextField tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo;
     @FXML
-    private TextField tfAttachmentNo, tfAttachmentType;
+    private TextField tfAttachmentNo;
     @FXML
     private TableView tblAttachments;
     @FXML
@@ -180,6 +183,8 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     private StackPane stackPane1;
     @FXML
     private ImageView imageView;
+    @FXML
+    private ComboBox cmbAttachmentType;
     @FXML
     private Button btnArrowLeft, btnArrowRight;
 
@@ -378,13 +383,15 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             imageView.setImage(loimage);
 
                             String imgPath2 = selectedFile.toString();
-                            attachment_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(attachment_data.size()), imgPath2));
 
-                            if (attachment_data.size() > 1) {
-                                pnAttachment = attachment_data.size() - 1;
+                            poJSON = poPurchaseReceivingController.addAttachment();
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             }
+                            pnAttachment = poPurchaseReceivingController.getTransactionAttachmentCount() - 1;
+                            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setFileName(imgPath2);
+                            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setSourceNo(poPurchaseReceivingController.Master().getTransactionNo());
                             loadTableAttachment();
-
                             tblAttachments.getFocusModel().focus(pnAttachment);
                             tblAttachments.getSelectionModel().select(pnAttachment);
                         }
@@ -426,6 +433,13 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                 }
 
                 initButton(pnEditMode);
+                if (lsButton.equals("btnUpdate")) {
+                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                        tfReceiveQuantity.requestFocus();
+                    } else {
+                        tfBrand.requestFocus();
+                    }
+                }
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
@@ -705,8 +719,8 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    if(Integer.valueOf(lsValue) < poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()){
-                        poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail+1,Integer.valueOf(lsValue));
+                    if (Integer.valueOf(lsValue) < poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()) {
+                        poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -756,13 +770,17 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                 case "tfSearchReferenceNo":
                     break;
                 case "tfAttachmentNo":
-                    break;
-                case "tfAttachmentType":
+                    if (lsValue.equals("")) {
+                        break;
+                    }
+                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setTransactionNo(lsValue);
                     break;
             }
             if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
+            } else {
+                loadRecordAttachment();
             }
         }
     };
@@ -1143,37 +1161,46 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     }
 
     public void loadRecordAttachment() {
-        if (pnAttachment >= 0) {
-            tfAttachmentNo.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getSourceNo());
-            tfAttachmentType.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType());
-            
-            try {
-                String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
+        try {
+            if (pnAttachment >= 0) {
+                tfAttachmentNo.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getSourceNo());
+                String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                if (lsAttachmentType.equals("")) {
+                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
+                    lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                }
+                int lnAttachmentType = 0;
+                lnAttachmentType = Integer.parseInt(lsAttachmentType);
+                cmbAttachmentType.getSelectionModel().select(lnAttachmentType);
+                try {
+                    String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
 
-                if (filePath.length() != 0) {
-                    Path imgPath = Paths.get(filePath);
-                    String convertedPath = imgPath.toUri().toString();
-                    Image loimage = new Image(convertedPath);
-                    imageView.setImage(loimage);
-                    adjustImageSize(loimage);
-                    stackPaneClip();
-                    stackPaneClip(); // dont remove duplicate
-                } else {
+                    if (filePath != null && !filePath.isEmpty()) {
+                        Path imgPath = Paths.get(filePath);
+                        String convertedPath = imgPath.toUri().toString();
+                        Image loimage = new Image(convertedPath);
+                        imageView.setImage(loimage);
+                        adjustImageSize(loimage);
+                        stackPaneClip();
+                        stackPaneClip(); // dont remove duplicate
+                    } else {
+                        imageView.setImage(null);
+                        stackPaneClip();
+                    }
+
+                } catch (Exception e) {
                     imageView.setImage(null);
                     stackPaneClip();
                 }
-
-            } catch (Exception e) {
+            } else {
                 imageView.setImage(null);
                 stackPaneClip();
+                pnAttachment = 0;
+
             }
-        } else {
-            imageView.setImage(null);
-            stackPaneClip();
-            pnAttachment = 0;
-
+        } catch (Exception e) {
         }
-
+        resetImageBounds();
     }
 
     public void loadRecordDetail() {
@@ -1320,7 +1347,14 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                     disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                     highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
                 }
+                poPurchaseReceivingController.loadAttachments();
                 loadTableDetail();
+                tfAttachmentNo.clear();
+                cmbAttachmentType.setItems(documentType);
+                cmbAttachmentType.getSelectionModel().select(0);
+                imageView.setImage(null);
+                stackPaneClip();
+                loadTableAttachment();
             }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -1360,17 +1394,16 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             String lsBrandId = "";
                             lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || "".equals(poPurchaseReceivingController.Detail(lnCtr).getStockId())
-                                    ){
-                                    if(poPurchaseReceivingController.Detail(lnCtr).getBrandId() != null 
-                                            || !"".equals(poPurchaseReceivingController.Detail(lnCtr).getBrandId())){
+                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || "".equals(poPurchaseReceivingController.Detail(lnCtr).getStockId())) {
+                                    if (poPurchaseReceivingController.Detail(lnCtr).getBrandId() != null
+                                            || !"".equals(poPurchaseReceivingController.Detail(lnCtr).getBrandId())) {
                                         lsBrandId = poPurchaseReceivingController.Detail(lnCtr).getBrandId();
                                     }
                                     //remove por detail
                                     poPurchaseReceivingController.Detail().remove(lnCtr);
                                     //remove por serial
                                     poPurchaseReceivingController.removePurchaseOrderReceivingSerial(lnCtr);
-                                    
+
                                 }
                                 lnCtr--;
                             }
@@ -1384,9 +1417,9 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             if ((poPurchaseReceivingController.getDetailCount() - 1) < 0) {
                                 poPurchaseReceivingController.AddDetail();
                             }
-                            
+
                             //Set brand Id to last row
-                            if(!lsBrandId.isEmpty()){
+                            if (!lsBrandId.isEmpty()) {
                                 poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).setBrandId(lsBrandId);
                             }
                             //Check for PO Serial Update Entry No TODO
@@ -1470,7 +1503,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     }
 
     private void loadTableAttachment() {
-
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);
@@ -1488,42 +1520,18 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             protected Void call() throws Exception {
 //                Thread.sleep(1000);
                 Platform.runLater(() -> {
-                    attachment_data.clear();
-
-                    int lnCtr;
                     try {
-
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnCtr = poPurchaseReceivingController.getTransactionAttachmentCount() - 1;
-                            while (lnCtr >= 0) {
-                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
-                                    poPurchaseReceivingController.Detail().remove(lnCtr);
-                                }
-                                lnCtr--;
-                            }
-
-                            if ((poPurchaseReceivingController.getTransactionAttachmentCount() - 1) >= 0) {
-                                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
-                                    poPurchaseReceivingController.addAttachment();
-                                }
-                            }
-
-                            if ((poPurchaseReceivingController.getDetailCount() - 1) < 0) {
-                                poPurchaseReceivingController.addAttachment();
-                            }
-                        }
-
-                        double lnTotal = 0.0;
+                        attachment_data.clear();
+                        int lnCtr;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getTransactionAttachmentCount(); lnCtr++) {
                             attachment_data.add(
                                     new ModelDeliveryAcceptance_Attachment(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getFileName())
+                                            String.valueOf(poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getFileName())
                                     ));
                         }
-
-                        if (pnDetail < 0 || pnDetail
-                                >= details_data.size()) {
-                            if (!details_data.isEmpty()) {
+                        if (pnAttachment < 0 || pnAttachment
+                                >= attachment_data.size()) {
+                            if (!attachment_data.isEmpty()) {
                                 /* FOCUS ON FIRST ROW */
                                 tblAttachments.getSelectionModel().select(0);
                                 tblAttachments.getFocusModel().focus(0);
@@ -1536,12 +1544,10 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             tblAttachments.getFocusModel().focus(pnAttachment);
                             loadRecordAttachment();
                         }
+                    } catch (Exception e) {
 
-                    } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
                     }
+
                 });
 
                 return null;
@@ -1549,10 +1555,10 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
             @Override
             protected void succeeded() {
-                if (details_data == null || details_data.isEmpty()) {
-                    tblViewOrderDetails.setPlaceholder(placeholderLabel);
+                if (attachment_data == null || attachment_data.isEmpty()) {
+                    tblAttachments.setPlaceholder(placeholderLabel);
                 } else {
-                    tblViewOrderDetails.toFront();
+                    tblAttachments.toFront();
                 }
                 progressIndicator.setVisible(false);
 
@@ -1560,8 +1566,8 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
             @Override
             protected void failed() {
-                if (details_data == null || details_data.isEmpty()) {
-                    tblViewOrderDetails.setPlaceholder(placeholderLabel);
+                if (attachment_data == null || attachment_data.isEmpty()) {
+                    tblAttachments.setPlaceholder(placeholderLabel);
                 }
                 progressIndicator.setVisible(false);
             }
@@ -1599,7 +1605,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
-        tfAttachmentType.focusedProperty().addListener(txtField_Focus);
 
         tfCompany.focusedProperty().addListener(txtMaster_Focus);
         tfSupplier.focusedProperty().addListener(txtMaster_Focus);
@@ -1627,9 +1632,23 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         tfBrand.setOnKeyPressed(this::txtField_KeyPressed);
         tfModel.setOnKeyPressed(this::txtField_KeyPressed);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
+        // Combobox
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.setOnAction(event -> {
+            int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+            cmbAttachmentType.getSelectionModel().select(selectedIndex);
+            loadRecordAttachment();
+        });
     }
 
     public void initTableOnClick() {
+        tblAttachments.setOnMouseClicked(event -> {
+            pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
+            if (pnAttachment >= 0) {
+                loadRecordAttachment();
+            }
+        });
         tblViewOrderDetails.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
@@ -1692,6 +1711,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
         adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+        adjustLastColumnForScrollbar(tblAttachments);
     }
 
     public void adjustLastColumnForScrollbar(TableView<?> tableView) {
@@ -1818,8 +1838,8 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         btnClose.setVisible(lbShow4);
         btnClose.setManaged(lbShow4);
 
-        btnAddAttachment.setDisable(!lbShow2);
-        btnRemoveAttachment.setDisable(!lbShow2);
+        btnAddAttachment.setDisable(!lbShow1);
+        btnRemoveAttachment.setDisable(!lbShow1);
 
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
@@ -2088,7 +2108,8 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
-        tfAttachmentType.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
         tfIndustry.clear();
@@ -2113,12 +2134,12 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         tfReceiveQuantity.clear();
 
         tfAttachmentNo.clear();
-        tfAttachmentType.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
     }
 
     public void generateAttachment() {
         attachment_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
-
     }
 
 // Generic method to highlight with specific color

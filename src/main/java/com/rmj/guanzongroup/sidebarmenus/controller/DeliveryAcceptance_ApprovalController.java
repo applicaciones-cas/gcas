@@ -92,7 +92,6 @@ import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
-import org.guanzon.appdriver.constant.DocumentType;
 
 /**
  * FXML Controller class
@@ -1114,7 +1113,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         } catch (Exception e) {
         }
         resetImageBounds();
-
     }
 
     public void loadRecordDetail() {
@@ -1615,6 +1613,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
         adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+        adjustLastColumnForScrollbar(tblAttachments);
     }
 
     public void adjustLastColumnForScrollbar(TableView<?> tableView) {

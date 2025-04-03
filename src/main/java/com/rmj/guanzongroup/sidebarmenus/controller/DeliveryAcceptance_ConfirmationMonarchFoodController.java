@@ -1642,6 +1642,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
         adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+        adjustLastColumnForScrollbar(tblAttachments);
     }
 
     public void adjustLastColumnForScrollbar(TableView<?> tableView) {

@@ -83,6 +83,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import javafx.scene.control.ComboBox;
 
 /**
  * FXML Controller class
@@ -105,7 +106,8 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
-    private final ObservableList<ModelDeliveryAcceptance_Attachment> img_data = FXCollections.observableArrayList();
+    private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
+    ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
 
@@ -134,8 +136,8 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
             tfTransactionNo, tfCompany, tfSupplier, tfTerm, tfTrucking, tfReferenceNo,
             tfIndustry, tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
             tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost,
-            tfOrderQuantity, tfReceiveQuantity, tfOrderNo, tfSupersede, tfAttachmentNo,
-            tfAttachmentType;
+            tfOrderQuantity, tfReceiveQuantity, tfOrderNo, tfSupersede, tfAttachmentNo
+            ;
 
     @FXML
     private Button btnPrint, btnHistory, btnRetrieve, btnClose, btnArrowLeft, btnArrowRight;
@@ -169,6 +171,8 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
 
     @FXML
     private ImageView imageView;
+    @FXML
+    private ComboBox cmbAttachmentType;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -285,15 +289,6 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
 
     }
 
-    @FXML
-    void tblAttachments_Clicked(MouseEvent event) {
-        pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
-        if (pnAttachment >= 0) {
-            loadRecordAttachment();
-            resetImageBounds();
-        }
-    }
-
     public void retrievePOR() {
 
         poJSON = new JSONObject();
@@ -339,10 +334,6 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
                     break;
                 case "tfSearchReferenceNo":
                     break;
-                case "tfAttachmentNo":
-                    break;
-                case "tfAttachmentType":
-                    break;
             }
             if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
@@ -350,7 +341,6 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
             }
         }
     };
-
 
     private void txtField_KeyPressed(KeyEvent event) {
         try {
@@ -580,9 +570,8 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
 
         if (pnAttachment >= 0) {
             tfAttachmentNo.setText("");
-            tfAttachmentType.setText("");
             try {
-                String filePath = (String) img_data.get(pnAttachment).getIndex02();
+                String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
 
                 if (filePath.length() != 0) {
                     Path imgPath = Paths.get(filePath);
@@ -751,7 +740,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
                 if (selected != null) {
                     int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                     pnMain = pnRowMain;
-                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7",highlightedRowsMain);
+                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                     highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
                 }
                 loadTableDetail();
@@ -887,9 +876,9 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
     }
 
     private void loadTableAttachment() {
-//        img_data.clear(); should have data from class before calling this clear
-//        for (int i = 0; i < img_data.size(); i++) {
-//            img_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(i), img_data.get(i).getIndex2()));
+//        attachment_data.clear(); should have data from class before calling this clear
+//        for (int i = 0; i < attachment_data.size(); i++) {
+//            attachment_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(i), attachment_data.get(i).getIndex2()));
 //        }
         loadRecordAttachment();
 
@@ -920,12 +909,19 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         tfSearchCompany.focusedProperty().addListener(txtField_Focus);
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
-        tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
-        tfAttachmentType.focusedProperty().addListener(txtField_Focus);
 
         tfSearchCompany.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
+
+        // Combobox
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.setOnAction(event -> {
+            int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+            cmbAttachmentType.getSelectionModel().select(selectedIndex);
+            loadRecordAttachment();
+        });
 
     }
 
@@ -988,6 +984,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
         adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+        adjustLastColumnForScrollbar(tblAttachments);
     }
 
     public void adjustLastColumnForScrollbar(TableView<?> tableView) {
@@ -1156,10 +1153,10 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
             });
         });
 
-        tblAttachments.setItems(img_data);
+        tblAttachments.setItems(attachment_data);
 
-        if (pnAttachment < 0 || pnAttachment >= img_data.size()) {
-            if (!img_data.isEmpty()) {
+        if (pnAttachment < 0 || pnAttachment >= attachment_data.size()) {
+            if (!attachment_data.isEmpty()) {
                 /* FOCUS ON FIRST ROW */
                 tblAttachments.getSelectionModel().select(0);
                 tblAttachments.getFocusModel().focus(0);
@@ -1177,8 +1174,8 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         currentIndex = pnAttachment;
         int newIndex = currentIndex + direction;
 
-        if (newIndex != -1 && (newIndex <= img_data.size() - 1)) {
-            ModelDeliveryAcceptance_Attachment image = img_data.get(newIndex);
+        if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
+            ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
             Path filePath = Paths.get(image.getIndex02());
             String convertedPath = filePath.toUri().toString();
 
@@ -1343,7 +1340,8 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
-        tfAttachmentType.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
         tfIndustry.clear();
@@ -1370,12 +1368,12 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         tfReceiveQuantity.clear();
 
         tfAttachmentNo.clear();
-        tfAttachmentType.clear();
-
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
     }
 
     public void generateAttachment() {
-        img_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
+        attachment_data.add(new ModelDeliveryAcceptance_Attachment("0", "C:/Users/User/Downloads/a4-blank-template_page-0001.jpg"));
 
     }
 

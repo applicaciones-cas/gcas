@@ -635,10 +635,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                     break;
                 case "tfSearchReferenceNo":
                     break;
-                case "tfAttachmentNo":
-                    break;
-                case "":
-                    break;
             }
             if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
@@ -674,7 +670,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSearchSupplier.setText("");
+                                tfSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             } else {
@@ -684,60 +680,10 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
+                            poPurchaseReceivingController.Master().setTransactionNo(lsValue);
                             retrievePOR();
                             return;
-                        case "tfCompany":
-                            /*search company*/
-                            poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfCompany.setText("");
-                                break;
-                            }
-                            break;
-                        case "tfSupplier":
-                            poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSupplier.setText("");
-                                break;
-                            }
-                            break;
-                        case "tfTrucking":
-                            poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfTrucking.setText("");
-                                break;
-                            }
-                            break;
-                        case "tfTerm":
-                            poJSON = poPurchaseReceivingController.SearchTerm(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfTerm.setText("");
-                                break;
-                            }
-                            break;
-                        case "tfOrderNo":
 
-                            break;
-                        case "tfBrand":
-                            poJSON = poPurchaseReceivingController.SearchBrand(lsValue, false, pnDetail);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfBrand.setText("");
-                                break;
-                            }
-                            break;
-                        case "tfModel":
-                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfModel.setText("");
-                                break;
-                            }
-                            break;
                     }
                     loadRecordMaster();
                     loadTableDetail();
@@ -1099,6 +1045,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                 poPurchaseReceivingController.loadAttachments();
                 loadTableDetail();
                 tfAttachmentNo.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
                 cmbAttachmentType.setItems(documentType);
                 cmbAttachmentType.getSelectionModel().select(0);
                 imageView.setImage(null);
@@ -1342,31 +1290,18 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
 
-        tfCompany.focusedProperty().addListener(txtMaster_Focus);
-        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
-        tfTrucking.focusedProperty().addListener(txtMaster_Focus);
-        taRemarks.focusedProperty().addListener(txtArea_Focus);
-        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
-        tfTerm.focusedProperty().addListener(txtMaster_Focus);
-        tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
-        tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
-
-        tfBrand.focusedProperty().addListener(txtDetail_Focus);
-        tfModel.focusedProperty().addListener(txtDetail_Focus);
-        tfCost.focusedProperty().addListener(txtDetail_Focus);
-        tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
-
         tfSearchCompany.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
-        tfCompany.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSupplier.setOnKeyPressed(this::txtField_KeyPressed);
-        tfTrucking.setOnKeyPressed(this::txtField_KeyPressed);
-        tfTerm.setOnKeyPressed(this::txtField_KeyPressed);
-        tfOrderNo.setOnKeyPressed(this::txtField_KeyPressed);
-        tfBrand.setOnKeyPressed(this::txtField_KeyPressed);
-        tfModel.setOnKeyPressed(this::txtField_KeyPressed);
+        // Combobox
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.setOnAction(event -> {
+            int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+            cmbAttachmentType.getSelectionModel().select(selectedIndex);
+            loadRecordAttachment();
+        });
     }
 
     public void initTableOnClick() {
@@ -1434,6 +1369,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
         adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+        adjustLastColumnForScrollbar(tblAttachments);
     }
 
     public void adjustLastColumnForScrollbar(TableView<?> tableView) {
@@ -1777,6 +1713,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
         tfIndustry.clear();
@@ -1801,6 +1739,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         tfReceiveQuantity.clear();
 
         tfAttachmentNo.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
     }
 
     public void generateAttachment() {

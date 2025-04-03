@@ -334,10 +334,6 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
                     break;
                 case "tfSearchReferenceNo":
                     break;
-                case "tfAttachmentNo":
-                    break;
-                case "":
-                    break;
             }
             if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
@@ -767,6 +763,8 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
                 poPurchaseReceivingController.loadAttachments();
                 loadTableDetail();
                 tfAttachmentNo.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
                 cmbAttachmentType.setItems(documentType);
                 cmbAttachmentType.getSelectionModel().select(0);
                 imageView.setImage(null);
@@ -1013,6 +1011,15 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
+        // Combobox
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.setOnAction(event -> {
+            int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+            cmbAttachmentType.getSelectionModel().select(selectedIndex);
+            loadRecordAttachment();
+        });
+
     }
 
     public void initTableOnClick() {
@@ -1080,6 +1087,7 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
         adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+        adjustLastColumnForScrollbar(tblAttachments);
     }
 
     public void adjustLastColumnForScrollbar(TableView<?> tableView) {
@@ -1436,6 +1444,8 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
         tfIndustry.clear();
@@ -1462,6 +1472,8 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
         tfReceiveQuantity.clear();
 
         tfAttachmentNo.clear();
+        cmbAttachmentType.setItems(documentType);
+        cmbAttachmentType.getSelectionModel().select(0);
 
     }
 

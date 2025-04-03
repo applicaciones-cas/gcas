@@ -335,6 +335,13 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                 }
 
                 initButton(pnEditMode);
+                if (lsButton.equals("btnUpdate")) {
+                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                        tfReceiveQuantity.requestFocus();
+                    } else {
+                        tfBrand.requestFocus();
+                    }
+                }
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -642,7 +649,13 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                                 break;
                             }
                             loadTableDetail();
-                            tfReceiveQuantity.requestFocus();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
                             break;
 
                         case "tfDescription":
@@ -654,7 +667,13 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                                 break;
                             }
                             loadTableDetail();
-                            tfReceiveQuantity.requestFocus();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
                             break;
                         case "tfSupersede":
                             poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail);
