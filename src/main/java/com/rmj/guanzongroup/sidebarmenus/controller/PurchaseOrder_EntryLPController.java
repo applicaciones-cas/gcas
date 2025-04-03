@@ -389,7 +389,6 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     break;
                 case "btnSearch":
                     if (activeField != null) {
-                        JSONObject poJSON = new JSONObject();
                         String loTextFieldId = activeField.getId();
                         String lsValue = activeField.getText().trim();
                         switch (loTextFieldId) {
@@ -699,7 +698,7 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
             }
             initButtons(pnEditMode);
             initFields(pnEditMode);
-        } catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | ParseException ex) {
+        } catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | ParseException | NullPointerException ex) {
             Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -920,6 +919,7 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                                 tfOrderQuantity.requestFocus();
                                 selectTheExistedDetailFromStockRequest();
                                 break;
+
                             case "tfDescription":
                                 if (pnTblPODetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
@@ -937,6 +937,7 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                                 loadDetail();
                                 tfOrderQuantity.requestFocus();
                                 selectTheExistedDetailFromStockRequest();
+
                                 break;
                         }
                         switch (txtFieldID) {
@@ -992,7 +993,7 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
 
                 }
             }
-        } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
+        } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException | NullPointerException ex) {
             Logger.getLogger(PurchaseOrder_EntryController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
@@ -1342,6 +1343,14 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
+                        int lnRequestQuantity;
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getCancelled() + orderDetail.InvStockRequestDetail().getIssued());
+                        } else {
+                            lnRequestQuantity = (orderDetail.InvStockRequestDetail().getApproved()
+                                    - (orderDetail.InvStockRequestDetail().getCancelled() + orderDetail.InvStockRequestDetail().getIssued()))
+                                    - orderDetail.getQuantity().intValue();
+                        }
 
                         detailsList.add(new ModelPurchaseOrderDetail(
                                 String.valueOf(lnCtr + 1),
@@ -1350,7 +1359,7 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
                                 "",
-                                String.valueOf(orderDetail.InvStockRequestDetail().getApproved()),
+                                String.valueOf(lnRequestQuantity),
                                 String.valueOf(orderDetail.getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""

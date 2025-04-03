@@ -392,7 +392,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     break;
                 case "btnSearch":
                     if (activeField != null) {
-                        JSONObject poJSON = new JSONObject();
                         String loTextFieldId = activeField.getId();
                         String lsValue = activeField.getText().trim();
                         switch (loTextFieldId) {
@@ -702,7 +701,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             }
             initButtons(pnEditMode);
             initFields(pnEditMode);
-        } catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | ParseException ex) {
+        } catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | ParseException | NullPointerException ex) {
             Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -923,6 +922,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 tfOrderQuantity.requestFocus();
                                 selectTheExistedDetailFromStockRequest();
                                 break;
+
                             case "tfDescription":
                                 if (pnTblPODetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
@@ -940,6 +940,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                                 loadDetail();
                                 tfOrderQuantity.requestFocus();
                                 selectTheExistedDetailFromStockRequest();
+
                                 break;
                         }
                         switch (txtFieldID) {
@@ -995,7 +996,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
                 }
             }
-        } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException ex) {
+        } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException | NullPointerException ex) {
             Logger.getLogger(PurchaseOrder_EntryController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
@@ -1345,13 +1346,19 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
-                        int lnRequestQuantity;
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getCancelled() + orderDetail.InvStockRequestDetail().getIssued());
+                        int lnRequestQuantity = 0;
+                        if (!poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)) {
+                            lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getQuantity() + orderDetail.InvStockRequestDetail().getIssued());
                         } else {
-                            lnRequestQuantity = (orderDetail.InvStockRequestDetail().getApproved()
-                                    - (orderDetail.InvStockRequestDetail().getCancelled() + orderDetail.InvStockRequestDetail().getIssued()))
-                                    - orderDetail.getQuantity().intValue();
+                            if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)) {
+                                if (pnEditMode == EditMode.UPDATE) {
+                                    lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getQuantity() + orderDetail.InvStockRequestDetail().getIssued());
+                                } else {
+                                    lnRequestQuantity = (orderDetail.InvStockRequestDetail().getApproved()
+                                            - (orderDetail.InvStockRequestDetail().getQuantity() + orderDetail.InvStockRequestDetail().getIssued()))
+                                            - orderDetail.getQuantity().intValue();
+                                }
+                            }
                         }
 
                         detailsList.add(new ModelPurchaseOrderDetail(
@@ -1387,6 +1394,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             }
 
             @Override
+
             protected void succeeded() {
                 progressIndicator.setVisible(false);
                 if (!poApprovedStockRequest_data.isEmpty()) {
