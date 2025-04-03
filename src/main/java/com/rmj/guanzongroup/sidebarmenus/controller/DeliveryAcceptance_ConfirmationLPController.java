@@ -739,25 +739,6 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                             poPurchaseReceivingController.Master().setTransactionNo(lsValue);
                             retrievePOR();
                             return;
-                        case "tfCompany":
-                            /*search company*/
-                            poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfCompany.setText("");
-                                break;
-                            }
-                            loadRecordMaster();
-                            break;
-                        case "tfSupplier":
-                            poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSupplier.setText("");
-                                break;
-                            }
-                            loadRecordMaster();
-                            break;
                         case "tfTrucking":
                             poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
@@ -1529,8 +1510,6 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
 
-        tfCompany.focusedProperty().addListener(txtMaster_Focus);
-        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
         tfTrucking.focusedProperty().addListener(txtMaster_Focus);
         taRemarks.focusedProperty().addListener(txtArea_Focus);
         tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
@@ -1548,8 +1527,6 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
-        tfCompany.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfTrucking.setOnKeyPressed(this::txtField_KeyPressed);
         tfTerm.setOnKeyPressed(this::txtField_KeyPressed);
         tfOrderNo.setOnKeyPressed(this::txtField_KeyPressed);
