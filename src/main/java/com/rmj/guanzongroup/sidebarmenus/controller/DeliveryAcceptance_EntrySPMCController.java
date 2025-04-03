@@ -355,10 +355,10 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
             poJSON.put("result", "error");
             lsMessage += lsMessage.isEmpty() ? "Company" : " & Company";
         }
-        if (poPurchaseReceivingController.Master().getSupplierId().equals("")) {
-            poJSON.put("result", "error");
-            lsMessage += lsMessage.isEmpty() ? "Supplier" : " & Supplier";
-        }
+//        if (poPurchaseReceivingController.Master().getSupplierId().equals("")) {
+//            poJSON.put("result", "error");
+//            lsMessage += lsMessage.isEmpty() ? "Supplier" : " & Supplier";
+//        }
 
         if ("success".equals((String) poJSON.get("result"))) {
             poJSON = poPurchaseReceivingController.getApprovedPurchaseOrder();
@@ -579,7 +579,21 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                 case F3:
                     switch (lsID) {
                         case "tfCompany":
-                            /*search company*/
+                            if(pnEditMode == EditMode.ADDNEW){
+                                if(poPurchaseReceivingController.Master().getCompanyId() != null 
+                                        && !"".equals(poPurchaseReceivingController.Master().getCompanyId())){
+                                    if (poPurchaseReceivingController.getDetailCount() > 1) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName, 
+                                                "Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                            poPurchaseReceivingController.removePORDetails();
+                                            loadTableDetail();
+                                        } else {
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+
                             poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -587,14 +601,31 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                                 psCompanyId = "";
                                 break;
                             }
-                            if (!poPurchaseReceivingController.Master().getSupplierId().equals("")) {
-                                retrievePO();
-                            }
                             psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                            if (!"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
+                                retrievePO();
+
+                            }
                             loadRecordMaster();
                             break;
 
                         case "tfSupplier":
+                            if(poPurchaseReceivingController.Master().getCompanyId() == null 
+                                    || "".equals(poPurchaseReceivingController.Master().getCompanyId())){
+                                ShowMessageFX.Warning(null, pxeModuleName, "Company Name is not set.");
+                                return;
+                            }
+                            
+                            if (poPurchaseReceivingController.getDetailCount() > 1) {
+                                if (ShowMessageFX.YesNo(null, pxeModuleName, 
+                                        "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                    poPurchaseReceivingController.removePORDetails();
+                                    loadTableDetail();
+                                } else {
+                                    return;
+                                }
+                            }
+                            
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -602,10 +633,11 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                                 psSupplierId = "";
                                 break;
                             }
-                            if (!poPurchaseReceivingController.Master().getCompanyId().equals("")) {
+                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                            
+                            if (!"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
                                 retrievePO();
                             }
-                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                             loadRecordMaster();
                             break;
                         case "tfTrucking":

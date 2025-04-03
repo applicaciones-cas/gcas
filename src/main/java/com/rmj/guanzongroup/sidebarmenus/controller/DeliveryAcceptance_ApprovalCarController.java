@@ -269,6 +269,12 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
+                        
+                        //Populate purhcase receiving serials
+                        for(int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getDetailCount()-1; lnCtr++){
+                            poPurchaseReceivingController.getPurchaseOrderReceivingSerial(poPurchaseReceivingController.Detail(lnCtr).getEntryNo());
+                        }
+                        
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnSearch":
@@ -719,14 +725,14 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    if (Integer.valueOf(lsValue) < poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()) {
-                        poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            return;
-                        }
+                    
+                    poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail+1,Integer.valueOf(lsValue));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
                     }
+                    
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -836,25 +842,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                         case "tfSearchReferenceNo":
                             retrievePOR();
                             return;
-                        case "tfCompany":
-                            /*search company*/
-                            poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfCompany.setText("");
-                                break;
-                            }
-                            loadRecordMaster();
-                            break;
-                        case "tfSupplier":
-                            poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSupplier.setText("");
-                                break;
-                            }
-                            loadRecordMaster();
-                            break;
                         case "tfTrucking":
                             poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
@@ -1209,6 +1196,11 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                 return;
             }
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            poJSON = poPurchaseReceivingController.checkExistingSerialId(pnDetail+1);
+            if("error".equals((String) poJSON.get("result"))){
+                lbFields = false;
+            } 
+            
             tfBrand.setDisable(!lbFields);
             tfModel.setDisable(!lbFields);
             if (lbFields) {
@@ -1606,8 +1598,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
 
-        tfCompany.focusedProperty().addListener(txtMaster_Focus);
-        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
         tfTrucking.focusedProperty().addListener(txtMaster_Focus);
         taRemarks.focusedProperty().addListener(txtArea_Focus);
         tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
@@ -1624,8 +1614,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
-        tfCompany.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfTrucking.setOnKeyPressed(this::txtField_KeyPressed);
         tfTerm.setOnKeyPressed(this::txtField_KeyPressed);
         tfOrderNo.setOnKeyPressed(this::txtField_KeyPressed);
