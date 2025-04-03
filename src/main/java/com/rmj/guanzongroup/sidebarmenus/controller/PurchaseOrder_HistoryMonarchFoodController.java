@@ -429,6 +429,8 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
                                 .Detail(lnCntr)
                                 .getQuantity().doubleValue();
                 grandTotalAmount += lnTotalAmount;
+                int lnRequestQuantity = 0;
+                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getIssued());
                 poDetail_data.add(new ModelPurchaseOrderDetail(
                         String.valueOf(lnCntr + 1),
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
@@ -436,7 +438,7 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
                         CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
                         "",
-                        String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getApproved()),
+                        String.valueOf(lnRequestQuantity),
                         String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
                         CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                         ""

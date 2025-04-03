@@ -1013,6 +1013,8 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
 
+                        int lnRequestQuantity = 0;
+                        lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getPurchase() + orderDetail.InvStockRequestDetail().getIssued());
                         detailsList.add(new ModelPurchaseOrderDetail(
                                 String.valueOf(lnCtr + 1),
                                 orderDetail.getSouceNo(),
@@ -1020,7 +1022,7 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
                                 "",
-                                String.valueOf(orderDetail.InvStockRequestDetail().getApproved()),
+                                String.valueOf(lnRequestQuantity),
                                 String.valueOf(orderDetail.getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
                                 ""

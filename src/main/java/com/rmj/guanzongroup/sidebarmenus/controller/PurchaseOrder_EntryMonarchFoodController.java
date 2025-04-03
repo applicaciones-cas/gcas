@@ -1344,15 +1344,8 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
-                        int lnRequestQuantity;
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getCancelled() + orderDetail.InvStockRequestDetail().getIssued());
-                        } else {
-                            lnRequestQuantity = (orderDetail.InvStockRequestDetail().getApproved()
-                                    - (orderDetail.InvStockRequestDetail().getCancelled() + orderDetail.InvStockRequestDetail().getIssued()))
-                                    - orderDetail.getQuantity().intValue();
-                        }
-
+                        int lnRequestQuantity = 0;
+                        lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getPurchase() + orderDetail.InvStockRequestDetail().getIssued());
                         detailsList.add(new ModelPurchaseOrderDetail(
                                 String.valueOf(lnCtr + 1),
                                 orderDetail.getSouceNo(),

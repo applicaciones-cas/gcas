@@ -1410,19 +1410,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
                         int lnRequestQuantity = 0;
-                        if (!poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)) {
-                            lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getIssued() + orderDetail.InvStockRequestDetail().getPurchase());
-                        } else {
-                            if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)) {
-                                if (pnEditMode == EditMode.UPDATE) {
-                                    lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getIssued() + orderDetail.InvStockRequestDetail().getPurchase());
-                                } else {
-                                    lnRequestQuantity = (orderDetail.InvStockRequestDetail().getApproved()
-                                            - (orderDetail.InvStockRequestDetail().getIssued() + orderDetail.InvStockRequestDetail().getPurchase()))
-                                            - orderDetail.getQuantity().intValue();
-                                }
-                            }
-                        }
+                        lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getPurchase() + orderDetail.InvStockRequestDetail().getIssued());
                         detailsList.add(new ModelPurchaseOrderDetail(
                                 String.valueOf(lnCtr + 1),
                                 orderDetail.getSouceNo(),
