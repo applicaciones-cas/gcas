@@ -1686,8 +1686,8 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
         btnClose.setVisible(lbShow4);
         btnClose.setManaged(lbShow4);
 
-        btnAddAttachment.setDisable(!lbShow2);
-        btnRemoveAttachment.setDisable(!lbShow2);
+        btnAddAttachment.setDisable(!lbShow1);
+        btnRemoveAttachment.setDisable(!lbShow1);
 
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);

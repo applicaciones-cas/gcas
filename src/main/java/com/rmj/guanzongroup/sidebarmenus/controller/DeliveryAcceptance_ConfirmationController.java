@@ -1789,8 +1789,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 //        apDetail.setDisable(!lbShow1);
 //        apAttachments.setDisable(!lbShow1);
 //
-//        btnAddAttachment.setDisable(!lbShow2);
-//        btnRemoveAttachment.setDisable(!lbShow2);
+//        btnAddAttachment.setDisable(!lbShow1);
+//        btnRemoveAttachment.setDisable(!lbShow1);
 //        
 //        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
 //            case PurchaseOrderReceivingStatus.APPROVED: 

@@ -1720,8 +1720,8 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
         btnClose.setVisible(lbShow4);
         btnClose.setManaged(lbShow4);
 
-        btnAddAttachment.setDisable(!lbShow2);
-        btnRemoveAttachment.setDisable(!lbShow2);
+        btnAddAttachment.setDisable(!lbShow1);
+        btnRemoveAttachment.setDisable(!lbShow1);
 
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
@@ -1785,8 +1785,8 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
 //        apDetail.setDisable(!lbShow1);
 //        apAttachments.setDisable(!lbShow1);
 //
-//        btnAddAttachment.setDisable(!lbShow2);
-//        btnRemoveAttachment.setDisable(!lbShow2);
+//        btnAddAttachment.setDisable(!lbShow1);
+//        btnRemoveAttachment.setDisable(!lbShow1);
 //        
 //        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
 //            case PurchaseOrderReceivingStatus.APPROVED: 

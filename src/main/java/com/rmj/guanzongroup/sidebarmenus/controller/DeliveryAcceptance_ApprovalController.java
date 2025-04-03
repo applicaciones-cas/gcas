@@ -1668,7 +1668,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
         boolean lbShow3 = (fnValue == EditMode.READY);
         boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
-        boolean lbShow5 = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         // Manage visibility and managed state of other buttons
         //Update 
         btnSearch.setVisible(lbShow1);
@@ -1698,8 +1697,8 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         btnClose.setVisible(lbShow4);
         btnClose.setManaged(lbShow4);
 
-        btnAddAttachment.setDisable(!lbShow5);
-        btnRemoveAttachment.setDisable(!lbShow5);
+        btnAddAttachment.setDisable(!lbShow1);
+        btnRemoveAttachment.setDisable(!lbShow1);
 
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
