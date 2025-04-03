@@ -186,7 +186,7 @@
                                               <children>
                                                   <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                       <children>
-                                                          <AnchorPane fx:id="apMaster" style="-fx-border-color: FF8201;">
+                                                            <AnchorPane fx:id="apMaster" style="-fx-border-color: FF8201;">
                                                               <children>
                                                                   <GridPane layoutX="11.0" layoutY="6.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                                       <columnConstraints>

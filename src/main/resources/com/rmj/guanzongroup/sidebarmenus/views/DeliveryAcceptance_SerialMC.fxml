@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="apMainAnchor" prefHeight="488.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" fx:id="apMainAnchor" prefHeight="488.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -106,9 +106,9 @@
                                                               <TextField fx:id="tfEngineNo" maxHeight="26.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                               <TextField fx:id="tfFrameNo" maxHeight="26.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                           <Label text="Location" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                          <TextField fx:id="tfLocation" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                           <CheckBox fx:id="cbApplyToAll" mnemonicParsing="false" onAction="#cmdCheckBox_Click" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                           <Label text="Apply to all" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                          <TextField fx:id="tfLocation" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                           </children>
                                                       </GridPane>
                                                   </children>
@@ -129,10 +129,10 @@
                                                     <children>
                                                         <TableView fx:id="tblViewDetail" prefHeight="200.0" prefWidth="200.0">
                                                             <columns>
-                                                                <TableColumn fx:id="tblRowNoDetail" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" style="-fx-font-size: 12;" text="No." />
+                                                                <TableColumn fx:id="tblRowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                                 <TableColumn fx:id="tblEngineNoDetail" maxWidth="200.0" minWidth="161.0" prefWidth="173.0" resizable="false" style="-fx-font-size: 12;" text="Engine No." />
                                                                 <TableColumn fx:id="tblFrameNoDetail" maxWidth="204.0" minWidth="160.0" prefWidth="165.0" resizable="false" style="-fx-font-size: 12;" text="Frame No." />
-                                                <TableColumn fx:id="tblLocationDetail" maxWidth="1.7976931348623157E308" minWidth="189.0" prefWidth="219.0" resizable="false" style="-fx-font-size: 12;" text="Location" />
+                                                <TableColumn fx:id="tblLocationDetail" maxWidth="219.0" minWidth="-1.0" prefWidth="219.0" resizable="false" style="-fx-font-size: 12;" text="Location" />
                                                             </columns>
                                              <columnResizePolicy>
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

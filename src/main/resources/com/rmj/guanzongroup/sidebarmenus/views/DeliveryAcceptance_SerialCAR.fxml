@@ -142,12 +142,12 @@
                                                     <children>
                                                         <TableView fx:id="tblViewDetail" prefHeight="200.0" prefWidth="200.0">
                                                             <columns>
-                                                                <TableColumn fx:id="tblRowNoDetail" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" style="-fx-font-size: 12;" text="No." />
-                                                                <TableColumn fx:id="tblEngineNoDetail" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" style="-fx-font-size: 12;" text="Engine No." />
-                                                                <TableColumn fx:id="tblFrameNoDetail" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" style="-fx-font-size: 12;" text="Frame No." />
-                                                <TableColumn fx:id="tblConductionStickerNoDetail" maxWidth="80.0" minWidth="80.0" resizable="false" style="-fx-font-size: 12;" text="CS No." />
-                                                <TableColumn fx:id="tblPlateNoDetail" maxWidth="80.0" minWidth="80.0" resizable="false" style="-fx-font-size: 12;" text="Plate No." />
-                                                <TableColumn fx:id="tblLocationDetail" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" style="-fx-font-size: 12;" text="Location" />
+                                                                <TableColumn fx:id="tblRowNoDetail" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
+                                                                <TableColumn fx:id="tblEngineNoDetail" editable="false" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Engine No." />
+                                                                <TableColumn fx:id="tblFrameNoDetail" editable="false" maxWidth="160.0" minWidth="160.0" prefWidth="160.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Frame No." />
+                                                <TableColumn fx:id="tblConductionStickerNoDetail" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="CS No." />
+                                                <TableColumn fx:id="tblPlateNoDetail" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Plate No." />
+                                                <TableColumn fx:id="tblLocationDetail" editable="false" maxWidth="160.0" minWidth="-1.0" prefWidth="160.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Location" />
                                                             </columns>
                                              <columnResizePolicy>
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

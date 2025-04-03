@@ -66,20 +66,20 @@
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfSearchIndustry" disable="true" editable="false" styleClass="DisabledTextField" GridPane.columnIndex="2" />
-                                    <TextField fx:id="tfSearchSupplier" promptText="Press F3: Search" GridPane.columnIndex="9" />
                                     <Label text="Industry">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfSearchReferenceNo" promptText="Press F3: Search" GridPane.columnIndex="12" />
                                     <Label text="Reference No." GridPane.columnIndex="10">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
+                                    <TextField fx:id="tfSearchIndustry" disable="true" editable="false" styleClass="DisabledTextField" GridPane.columnIndex="2" />
                                     <TextField fx:id="tfSearchCompany" promptText="Press F3: Search" GridPane.columnIndex="6" />
+                                    <TextField fx:id="tfSearchSupplier" promptText="Press F3: Search" GridPane.columnIndex="9" />
+                                    <TextField fx:id="tfSearchReferenceNo" promptText="Press F3: Search" GridPane.columnIndex="12" />
                                  </children>
                               </GridPane>
                            </children></AnchorPane>
