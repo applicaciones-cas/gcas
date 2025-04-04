@@ -313,11 +313,10 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                 tfQOH.setText(lsQOH);
 
                 String lsCost = "0.00";
-                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost() != null) {
-                    lsCost = CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost());
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getUnitPrice() != null) {
+                    lsCost = CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getUnitPrice());
                 }
                 tfCost.setText(lsCost);
-
                 int lnRequestQuantity = 0;
                 lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getIssued());
                 tfRequestQuantity.setText(String.valueOf(lnRequestQuantity));
@@ -1012,7 +1011,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                                 orderDetail.getSouceNo(),
                                 orderDetail.Inventory().getBarCode(),
                                 orderDetail.Inventory().getDescription(),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice()),
                                 "",
                                 String.valueOf(lnRequestQuantity),
                                 String.valueOf(orderDetail.getQuantity()),

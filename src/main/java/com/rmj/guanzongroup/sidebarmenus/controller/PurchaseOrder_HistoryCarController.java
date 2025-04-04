@@ -291,8 +291,8 @@ public class PurchaseOrder_HistoryCarController implements Initializable, Screen
                 tfQOH.setText(lsQOH);
 
                 String lsCost = "0.00";
-                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost() != null) {
-                    lsCost = CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost());
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getUnitPrice() != null) {
+                    lsCost = CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getUnitPrice());
                 }
                 tfCost.setText(lsCost);
 
@@ -502,7 +502,7 @@ public class PurchaseOrder_HistoryCarController implements Initializable, Screen
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
-                        CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
+                        CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).getUnitPrice()),
                         "",
                         String.valueOf(lnRequestQuantity),
                         String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),

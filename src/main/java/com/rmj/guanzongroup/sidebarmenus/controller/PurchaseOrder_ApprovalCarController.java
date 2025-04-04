@@ -321,8 +321,8 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                 tfQOH.setText(lsQOH);
 
                 String lsCost = "0.00";
-                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost() != null) {
-                    lsCost = CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost());
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getUnitPrice() != null) {
+                    lsCost = CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getUnitPrice());
                 }
                 tfCost.setText(lsCost);
 
@@ -1020,7 +1020,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                                 orderDetail.getSouceNo(),
                                 orderDetail.Inventory().getBarCode(),
                                 orderDetail.Inventory().getDescription(),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.Inventory().getCost()),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice()),
                                 "",
                                 String.valueOf(lnRequestQuantity),
                                 String.valueOf(orderDetail.getQuantity()),

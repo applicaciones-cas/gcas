@@ -237,7 +237,7 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
                 tfRO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getReceived()));
                 tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getBackOrder()));
                 tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantityOnHand()));
-                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getCost()));
+                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getUnitPrice()));
                 int lnRequestQuantity = 0;
                 lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getIssued());
                 tfRequestQuantity.setText(String.valueOf(lnRequestQuantity));
@@ -439,7 +439,7 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
-                        CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost()),
+                        CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).getUnitPrice()),
                         "",
                         String.valueOf(lnRequestQuantity),
                         String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
