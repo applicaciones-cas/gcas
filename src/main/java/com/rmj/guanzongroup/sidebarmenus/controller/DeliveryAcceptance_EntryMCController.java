@@ -303,6 +303,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
+                        loadRecordMaster();
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -1367,36 +1368,37 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                     } catch (Exception e) {
 
                     }
+                    if (poPurchaseReceivingController.getPurchaseOrderCount() > 0) {
+                        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderCount() - 1; lnCtr++) {
+                            try {
+                                main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
+                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderList(lnCtr).Supplier().getCompanyName()),
+                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderList(lnCtr).getTransactionDate()),
+                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderList(lnCtr).getTransactionNo())
+                                ));
+                            } catch (Exception e) {
 
-                    for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderCount() - 1; lnCtr++) {
-                        try {
-                            main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
-                                    String.valueOf(poPurchaseReceivingController.PurchaseOrderList(lnCtr).Supplier().getCompanyName()),
-                                    String.valueOf(poPurchaseReceivingController.PurchaseOrderList(lnCtr).getTransactionDate()),
-                                    String.valueOf(poPurchaseReceivingController.PurchaseOrderList(lnCtr).getTransactionNo())
-                            ));
-                        } catch (Exception e) {
-
-                        }
-
-                    }
-
-                    if (pnMain < 0 || pnMain
-                            >= main_data.size()) {
-                        if (!main_data.isEmpty()) {
-                            /* FOCUS ON FIRST ROW */
-                            tblViewPuchaseOrder.getSelectionModel().select(0);
-                            tblViewPuchaseOrder.getFocusModel().focus(0);
-                            pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
+                            }
 
                         }
-                    } else {
-                        /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                        tblViewPuchaseOrder.getSelectionModel().select(pnMain);
-                        tblViewPuchaseOrder.getFocusModel().focus(pnMain);
-                    }
-                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
-                        loadTab();
+
+                        if (pnMain < 0 || pnMain
+                                >= main_data.size()) {
+                            if (!main_data.isEmpty()) {
+                                /* FOCUS ON FIRST ROW */
+                                tblViewPuchaseOrder.getSelectionModel().select(0);
+                                tblViewPuchaseOrder.getFocusModel().focus(0);
+                                pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
+
+                            }
+                        } else {
+                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                            tblViewPuchaseOrder.getSelectionModel().select(pnMain);
+                            tblViewPuchaseOrder.getFocusModel().focus(pnMain);
+                        }
+                        if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
+                            loadTab();
+                        }
                     }
                 });
 
@@ -1445,7 +1447,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                 }
 
                 loadTableDetail();
-            } else{
+            } else {
                 ShowMessageFX.Warning(null, pxeModuleName, "Data can only be viewed when in ADD or UPDATE mode.");
             }
 
@@ -1517,6 +1519,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                             //Check for PO Serial Update Entry No TODO
                         }
 
+                        if (poPurchaseReceivingController.getDetailCount() > 0) {
                         double lnTotal = 0.00;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue();
