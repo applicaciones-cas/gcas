@@ -184,15 +184,6 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
-        try {
-            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-            poPurchaseReceivingController.Master().Industry().getDescription();
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
-
         initTextFields();
         initDatePickers();
         initMainGrid();
@@ -202,14 +193,6 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
         clearTextFields();
 
         initAttachmentPreviewPane();
-
-        poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
-        poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-        try {
-            poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_HistoryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
 
         initStackPaneListener();
         loadRecordSearch();
@@ -510,7 +493,9 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                         tblViewPuchaseOrder.getSelectionModel().select(pnMain);
                         tblViewPuchaseOrder.getFocusModel().focus(pnMain);
                     }
-                    loadTab();
+                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
+                        loadTab();
+                    }
                 });
 
                 return null;
@@ -760,8 +745,8 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                 poPurchaseReceivingController.loadAttachments();
                 loadTableDetail();
                 tfAttachmentNo.clear();
-        cmbAttachmentType.setItems(documentType);
-        cmbAttachmentType.getSelectionModel().select(0);
+                cmbAttachmentType.setItems(documentType);
+                cmbAttachmentType.getSelectionModel().select(0);
                 cmbAttachmentType.setItems(documentType);
                 cmbAttachmentType.getSelectionModel().select(0);
                 imageView.setImage(null);
@@ -1011,10 +996,12 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
         // Combobox
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
-            int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
-            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
-            cmbAttachmentType.getSelectionModel().select(selectedIndex);
-            loadRecordAttachment();
+            if (attachment_data.size() > 0) {
+                int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+                poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+                cmbAttachmentType.getSelectionModel().select(selectedIndex);
+                loadRecordAttachment();
+            }
         });
 
     }

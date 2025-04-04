@@ -111,8 +111,8 @@ public class DeliveryAcceptance_SerialMPController implements Initializable, Scr
         initTextFields();
         initDetailsGrid();
         initTableOnClick();
-
         loadTableDetail();
+        Platform.runLater(() -> tfIMEI1.requestFocus());
     }
 
     @Override
@@ -237,7 +237,7 @@ public class DeliveryAcceptance_SerialMPController implements Initializable, Scr
     };
 
     public void loadRecordDetail() {
-        if (pnDetail >= 0) {
+        if (details_data.size() > 0) {
             tfIMEI1.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial01());
             tfIMEI2.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial02());
         }
@@ -274,7 +274,6 @@ public class DeliveryAcceptance_SerialMPController implements Initializable, Scr
                                 if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).Location().getDescription() != null) {
                                     lsLocation = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).Location().getDescription();
                                 }
-
                                 details_data.add(
                                         new ModelDeliveryAcceptance_SerialMP(
                                                 String.valueOf(lnRow + 1),
@@ -291,21 +290,14 @@ public class DeliveryAcceptance_SerialMPController implements Initializable, Scr
                                 /* FOCUS ON FIRST ROW */
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
-                                ModelDeliveryAcceptance_SerialMP selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                                pnDetail = Integer.valueOf(selectedItem.getIndex04());
+                                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                             }
                         } else {
-                            TableView<ModelDeliveryAcceptance_SerialMP> tableView = tblViewDetail;
-                            SelectionModel<ModelDeliveryAcceptance_SerialMP> selectionModel = tableView.getSelectionModel();
-                            for (ModelDeliveryAcceptance_SerialMP item : tblViewDetail.getItems()) {
-                                // Check if the item matches the value of pnDetail
-                                if (item.getIndex04() != null && Integer.valueOf(item.getIndex04()) == pnDetail) {
-                                    selectionModel.select(item);
-                                    tblViewDetail.getFocusModel().focus(pnDetail);
-                                    break;
-                                }
-                            }
+                            // Check if the item matches the value of pnDetail
+                            tblViewDetail.getSelectionModel().select(pnDetail);
+                            tblViewDetail.getFocusModel().focus(pnDetail);
                         }
+                        loadRecordDetail();
 
                     } catch (SQLException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
@@ -424,10 +416,9 @@ public class DeliveryAcceptance_SerialMPController implements Initializable, Scr
     public void initTableOnClick() {
         tblViewDetail.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                ModelDeliveryAcceptance_SerialMP selectedItem = (ModelDeliveryAcceptance_SerialMP) tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                pnDetail = Integer.valueOf(selectedItem.getIndex04());
-                tfIMEI1.requestFocus();
+                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
+                tfIMEI1.requestFocus();
             }
         });
         tblViewDetail.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);

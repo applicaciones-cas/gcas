@@ -94,14 +94,4 @@ public class ModelDeliveryAcceptance_SerialMC {
     public void setIndex04(String index04) {
         this.index04.set(index04);
     }
-
-    public String getIndex05() {
-        return index05.get();
-    }
-
-    public void setIndex05(String index05) {
-        this.index05.set(index05);
-    }
-
-
 }

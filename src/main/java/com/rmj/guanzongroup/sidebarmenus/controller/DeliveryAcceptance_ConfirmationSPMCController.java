@@ -194,14 +194,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
-        try {
-            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-            poPurchaseReceivingController.Master().Industry().getDescription();
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
 
         initTextFields();
         initDatePickers();
@@ -212,14 +204,6 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
         clearTextFields();
 
         initAttachmentPreviewPane();
-
-        poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
-        poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-        try {
-            poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
 
         initStackPaneListener();
         loadRecordSearch();
@@ -851,7 +835,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
                         poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-MM-dd.");
+                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
@@ -1003,7 +987,9 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                         tblViewPuchaseOrder.getSelectionModel().select(pnMain);
                         tblViewPuchaseOrder.getFocusModel().focus(pnMain);
                     }
-                    loadTab();
+                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
+                        loadTab();
+                    }
                 });
 
                 return null;
@@ -1519,10 +1505,12 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
         // Combobox
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
-            int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
-            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
-            cmbAttachmentType.getSelectionModel().select(selectedIndex);
-            loadRecordAttachment();
+            if (attachment_data.size() > 0) {
+                int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+                poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+                cmbAttachmentType.getSelectionModel().select(selectedIndex);
+                loadRecordAttachment();
+            }
         });
 
     }

@@ -111,8 +111,8 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
         initTextFields();
         initDetailsGrid();
         initTableOnClick();
-
         loadTableDetail();
+        Platform.runLater(() -> tfEngineNo.requestFocus());
     }
 
     @Override
@@ -235,7 +235,7 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
         }
     }
 
-    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
+    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
@@ -321,7 +321,7 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
 
     public void loadRecordDetail() {
         try {
-            if (pnDetail >= 0) {
+            if (details_data.size() > 0) {
                 tfEngineNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial01());
                 tfFrameNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial02());
                 tfLocation.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).Location().getDescription());
@@ -382,21 +382,14 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
                                 /* FOCUS ON FIRST ROW */
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
-                                ModelDeliveryAcceptance_SerialMC selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                                pnDetail = Integer.valueOf(selectedItem.getIndex05());
+                                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                             }
                         } else {
-                            TableView<ModelDeliveryAcceptance_SerialMC> tableView = tblViewDetail;
-                            SelectionModel<ModelDeliveryAcceptance_SerialMC> selectionModel = tableView.getSelectionModel();
-                            for (ModelDeliveryAcceptance_SerialMC item : tblViewDetail.getItems()) {
-                                // Check if the item matches the value of pnDetail
-                                if (item.getIndex05() != null && Integer.valueOf(item.getIndex05()) == pnDetail) {
-                                    selectionModel.select(item);
-                                    tblViewDetail.getFocusModel().focus(pnDetail);
-                                    break;
-                                }
-                            }
+                            // Check if the item matches the value of pnDetail
+                            tblViewDetail.getSelectionModel().select(pnDetail);
+                            tblViewDetail.getFocusModel().focus(pnDetail);
                         }
+                        loadRecordDetail();
 
                     } catch (SQLException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
@@ -518,10 +511,9 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
 
         tblViewDetail.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                ModelDeliveryAcceptance_SerialMC selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                pnDetail = Integer.valueOf(selectedItem.getIndex05());
-                tfEngineNo.requestFocus();
+                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
+                tfEngineNo.requestFocus();
             }
         });
         tblViewDetail.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
@@ -530,12 +522,11 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
     }
 
     public void initTextFields() {
-        tfEngineNo.focusedProperty().addListener(txtMaster_Focus);
-        tfFrameNo.focusedProperty().addListener(txtMaster_Focus);
-        tfLocation.focusedProperty().addListener(txtMaster_Focus);
+        tfEngineNo.focusedProperty().addListener(txtDetail_Focus);
+        tfFrameNo.focusedProperty().addListener(txtDetail_Focus);
+        tfLocation.focusedProperty().addListener(txtDetail_Focus);
 
         tfLocation.setOnKeyPressed(this::txtField_KeyPressed);
-
     }
 
     public void initDetailsGrid() {

@@ -206,13 +206,6 @@ public class DeliveryAcceptance_ApprovalMCController implements Initializable, S
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
-        try {
-            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-            poPurchaseReceivingController.Master().Industry().getDescription();
-        } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
-
         initTextFields();
         initDatePickers();
         initMainGrid();
@@ -222,14 +215,6 @@ public class DeliveryAcceptance_ApprovalMCController implements Initializable, S
         clearTextFields();
 
         initAttachmentPreviewPane();
-
-        poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
-        poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-        try {
-            poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
 
         initStackPaneListener();
         loadRecordSearch();
@@ -727,14 +712,14 @@ public class DeliveryAcceptance_ApprovalMCController implements Initializable, S
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    
-                    poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail+1,Integer.valueOf(lsValue));
+
+                    poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -945,7 +930,7 @@ public class DeliveryAcceptance_ApprovalMCController implements Initializable, S
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
                         poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-MM-dd.");
+                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
@@ -1096,7 +1081,9 @@ public class DeliveryAcceptance_ApprovalMCController implements Initializable, S
                         tblViewPuchaseOrder.getSelectionModel().select(pnMain);
                         tblViewPuchaseOrder.getFocusModel().focus(pnMain);
                     }
-                    loadTab();
+                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
+                        loadTab();
+                    }
                 });
 
                 return null;
@@ -1201,11 +1188,11 @@ public class DeliveryAcceptance_ApprovalMCController implements Initializable, S
                 return;
             }
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
-            poJSON = poPurchaseReceivingController.checkExistingSerialId(pnDetail+1);
-            if("error".equals((String) poJSON.get("result"))){
+            poJSON = poPurchaseReceivingController.checkExistingSerialId(pnDetail + 1);
+            if ("error".equals((String) poJSON.get("result"))) {
                 lbFields = false;
-            } 
-            
+            }
+
             tfBrand.setDisable(!lbFields);
             tfModel.setDisable(!lbFields);
             if (lbFields) {
@@ -1398,7 +1385,7 @@ public class DeliveryAcceptance_ApprovalMCController implements Initializable, S
                                     //remove por detail
                                     poPurchaseReceivingController.Detail().remove(lnCtr);
                                     //remove por serial
-                                    poPurchaseReceivingController.removePurchaseOrderReceivingSerial(lnCtr);
+                                    poPurchaseReceivingController.removePurchaseOrderReceivingSerial(lnCtr + 1);
                                 }
                                 lnCtr--;
                             }
@@ -1625,10 +1612,12 @@ public class DeliveryAcceptance_ApprovalMCController implements Initializable, S
         // Combobox
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
-            int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
-            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
-            cmbAttachmentType.getSelectionModel().select(selectedIndex);
-            loadRecordAttachment();
+            if (attachment_data.size() > 0) {
+                int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+                poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+                cmbAttachmentType.getSelectionModel().select(selectedIndex);
+                loadRecordAttachment();
+            }
         });
     }
 

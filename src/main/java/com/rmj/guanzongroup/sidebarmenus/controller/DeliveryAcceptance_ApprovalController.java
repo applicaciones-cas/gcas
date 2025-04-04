@@ -182,7 +182,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
     @FXML
     private ComboBox cmbAttachmentType;
 
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -192,12 +191,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-        }
-        try {
-            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-            poPurchaseReceivingController.Master().Industry().getDescription();
-        } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
         initTextFields();
@@ -209,14 +202,6 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         clearTextFields();
 
         initAttachmentPreviewPane();
-
-        poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
-        poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-        try {
-            poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
 
         initStackPaneListener();
         loadRecordSearch();
@@ -831,7 +816,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
                         poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-MM-dd.");
+                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
@@ -997,7 +982,9 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                         tblViewPuchaseOrder.getSelectionModel().select(pnMain);
                         tblViewPuchaseOrder.getFocusModel().focus(pnMain);
                     }
-                    loadTab();
+                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
+                        loadTab();
+                    }
                 });
 
                 return null;
@@ -1513,10 +1500,12 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         // Combobox
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
-            int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
-            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
-            cmbAttachmentType.getSelectionModel().select(selectedIndex);
-            loadRecordAttachment();
+            if (attachment_data.size() > 0) {
+                int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+                poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+                cmbAttachmentType.getSelectionModel().select(selectedIndex);
+                loadRecordAttachment();
+            }
         });
     }
 

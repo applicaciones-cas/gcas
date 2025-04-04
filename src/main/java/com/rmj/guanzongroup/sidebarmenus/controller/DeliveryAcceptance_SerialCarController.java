@@ -109,14 +109,15 @@ public class DeliveryAcceptance_SerialCarController implements Initializable, Sc
         initTextFields();
         initDetailsGrid();
         initTableOnClick();
-
         loadTableDetail();
+        Platform.runLater(() -> tfEngineNo.requestFocus());
     }
 
     @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
+    
 
     @FXML
     private void cmdButton_Click(ActionEvent event) {
@@ -325,7 +326,7 @@ public class DeliveryAcceptance_SerialCarController implements Initializable, Sc
 
     public void loadRecordDetail() {
         try {
-            if (pnDetail >= 0) {
+            if (details_data.size() > 0) {
                 tfEngineNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial01());
                 tfFrameNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial02());
                 tfCSNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getConductionStickerNo());
@@ -393,22 +394,12 @@ public class DeliveryAcceptance_SerialCarController implements Initializable, Sc
                                 /* FOCUS ON FIRST ROW */
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
-                                ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                                pnDetail = Integer.valueOf(selectedItem.getIndex07());
-                                System.out.println("set pndetail" + pnDetail);
+                                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                             }
                         } else {
-                            TableView<ModelDeliveryAcceptance_Serial> tableView = tblViewDetail;
-                            SelectionModel<ModelDeliveryAcceptance_Serial> selectionModel = tableView.getSelectionModel();
-                            for (ModelDeliveryAcceptance_Serial item : tblViewDetail.getItems()) {
-                                // Check if the item matches the value of pnDetail
-                                if (item.getIndex07() != null && Integer.valueOf(item.getIndex07()) == pnDetail) {
-                                    selectionModel.select(item);
-                                    tblViewDetail.getFocusModel().focus(pnDetail);
-//                                    tableView.scrollTo(item);
-                                    break;
-                                }
-                            }
+                            // Check if the item matches the value of pnDetail
+                            tblViewDetail.getSelectionModel().select(pnDetail);
+                            tblViewDetail.getFocusModel().focus(pnDetail);
                         }
 
                         loadRecordDetail();
@@ -531,8 +522,7 @@ public class DeliveryAcceptance_SerialCarController implements Initializable, Sc
     public void initTableOnClick() {
         tblViewDetail.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                pnDetail = Integer.valueOf(selectedItem.getIndex07());
+                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
                 tfEngineNo.requestFocus();
             }

@@ -180,10 +180,6 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             initTableOnClick();
             clearTextFields();
 
-            poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
-            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-            poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
-
             loadRecordMaster();
             loadTableDetail();
 
@@ -192,8 +188,6 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -334,9 +328,6 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
-                        poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-                        poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
 
                         if (!psCompanyId.isEmpty()) {
                             poPurchaseReceivingController.SearchCompany(psCompanyId, true);
@@ -352,12 +343,12 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        
+
                         //Populate purhcase receiving serials
-                        for(int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getDetailCount()-1; lnCtr++){
+                        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getDetailCount() - 1; lnCtr++) {
                             poPurchaseReceivingController.getPurchaseOrderReceivingSerial(poPurchaseReceivingController.Detail(lnCtr).getEntryNo());
                         }
-                        
+
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnSearch":
@@ -561,14 +552,14 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    
-                    poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail+1,Integer.valueOf(lsValue));
+
+                    poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -704,11 +695,11 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                 case F3:
                     switch (lsID) {
                         case "tfCompany":
-                            if(pnEditMode == EditMode.ADDNEW){
-                                if(poPurchaseReceivingController.Master().getCompanyId() != null 
-                                        && !"".equals(poPurchaseReceivingController.Master().getCompanyId())){
+                            if (pnEditMode == EditMode.ADDNEW) {
+                                if (poPurchaseReceivingController.Master().getCompanyId() != null
+                                        && !"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
                                     if (poPurchaseReceivingController.getDetailCount() > 1) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName, 
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
                                             poPurchaseReceivingController.removePORDetails();
                                             loadTableDetail();
@@ -735,14 +726,14 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                             break;
 
                         case "tfSupplier":
-                            if(poPurchaseReceivingController.Master().getCompanyId() == null 
-                                    || "".equals(poPurchaseReceivingController.Master().getCompanyId())){
+                            if (poPurchaseReceivingController.Master().getCompanyId() == null
+                                    || "".equals(poPurchaseReceivingController.Master().getCompanyId())) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Company Name is not set.");
                                 return;
                             }
-                            
+
                             if (poPurchaseReceivingController.getDetailCount() > 1) {
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, 
+                                if (ShowMessageFX.YesNo(null, pxeModuleName,
                                         "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
                                     poPurchaseReceivingController.removePORDetails();
                                     loadTableDetail();
@@ -750,7 +741,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                                     return;
                                 }
                             }
-                            
+
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -759,7 +750,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                                 break;
                             }
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                            
+
                             if (!"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
                                 retrievePO();
                             }
@@ -890,7 +881,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
                         poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-MM-dd.");
+                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
@@ -1061,11 +1052,11 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                 return;
             }
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
-            poJSON = poPurchaseReceivingController.checkExistingSerialId(pnDetail+1);
-            if("error".equals((String) poJSON.get("result"))){
+            poJSON = poPurchaseReceivingController.checkExistingSerialId(pnDetail + 1);
+            if ("error".equals((String) poJSON.get("result"))) {
                 lbFields = false;
-            } 
-            
+            }
+
             tfBrand.setDisable(!lbFields);
             tfModel.setDisable(!lbFields);
             if (lbFields) {
@@ -1250,7 +1241,6 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                 if (event.getClickCount() == 2) {
                     tfOrderNo.setText("");
                     loadTableDetailFromMain();
-                    pnEditMode = poPurchaseReceivingController.getEditMode();
                     initButton(pnEditMode);
                 }
             }
@@ -1405,7 +1395,9 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         tblViewPuchaseOrder.getSelectionModel().select(pnMain);
                         tblViewPuchaseOrder.getFocusModel().focus(pnMain);
                     }
-                    loadTab();
+                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
+                        loadTab();
+                    }
                 });
 
                 return null;
@@ -1436,7 +1428,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
 
     public void loadTableDetailFromMain() {
         try {
-            if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 poJSON = new JSONObject();
                 poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderList(pnMain).getTransactionNo());
                 if ("error".equals((String) poJSON.get("message"))) {
@@ -1453,6 +1445,8 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                 }
 
                 loadTableDetail();
+            } else{
+                ShowMessageFX.Warning(null, pxeModuleName, "Data can only be viewed when in ADD or UPDATE mode.");
             }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -1501,7 +1495,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                                     //remove por detail
                                     poPurchaseReceivingController.Detail().remove(lnCtr);
                                     //remove por serial
-                                    poPurchaseReceivingController.removePurchaseOrderReceivingSerial(lnCtr);
+                                    poPurchaseReceivingController.removePurchaseOrderReceivingSerial(lnCtr + 1);
                                 }
                                 lnCtr--;
                             }
@@ -1637,7 +1631,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         btnClose.setVisible(lbShow3);
         btnClose.setManaged(lbShow3);
 
-        //apMaster.setDisable(!lbShow);
+        apMaster.setDisable(!lbShow);
         dpTransactionDate.setDisable(!lbShow);
         dpReferenceDate.setDisable(!lbShow);
         tfTrucking.setDisable(!lbShow);

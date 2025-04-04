@@ -170,10 +170,6 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             initTableOnClick();
             clearTextFields();
 
-            poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
-            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-            poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
-
             loadRecordMaster();
             loadTableDetail();
 
@@ -183,10 +179,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             initButton(pnEditMode);
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
-
     }
 
     @Override
@@ -242,9 +235,6 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        poPurchaseReceivingController.Master().setBranchCode(oApp.getBranchCode());
-                        poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
-                        poPurchaseReceivingController.Master().setTransactionDate(oApp.getServerDate());
 
                         if (!psCompanyId.isEmpty()) {
                             poPurchaseReceivingController.SearchCompany(psCompanyId, true);
@@ -589,11 +579,11 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 case F3:
                     switch (lsID) {
                         case "tfCompany":
-                            if(pnEditMode == EditMode.ADDNEW){
-                                if(poPurchaseReceivingController.Master().getCompanyId() != null 
-                                        && !"".equals(poPurchaseReceivingController.Master().getCompanyId())){
+                            if (pnEditMode == EditMode.ADDNEW) {
+                                if (poPurchaseReceivingController.Master().getCompanyId() != null
+                                        && !"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
                                     if (poPurchaseReceivingController.getDetailCount() > 1) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName, 
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
                                             poPurchaseReceivingController.removePORDetails();
                                             loadTableDetail();
@@ -620,14 +610,14 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             break;
 
                         case "tfSupplier":
-                            if(poPurchaseReceivingController.Master().getCompanyId() == null 
-                                    || "".equals(poPurchaseReceivingController.Master().getCompanyId())){
+                            if (poPurchaseReceivingController.Master().getCompanyId() == null
+                                    || "".equals(poPurchaseReceivingController.Master().getCompanyId())) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Company Name is not set.");
                                 return;
                             }
-                            
+
                             if (poPurchaseReceivingController.getDetailCount() > 1) {
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, 
+                                if (ShowMessageFX.YesNo(null, pxeModuleName,
                                         "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
                                     poPurchaseReceivingController.removePORDetails();
                                     loadTableDetail();
@@ -635,7 +625,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                     return;
                                 }
                             }
-                            
+
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -644,7 +634,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 break;
                             }
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                            
+
                             if (!"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
                                 retrievePO();
                             }
@@ -789,7 +779,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
                         poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-MM-dd.");
+                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
@@ -1168,7 +1158,6 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 if (event.getClickCount() == 2) {
                     tfOrderNo.setText("");
                     loadTableDetailFromMain();
-                    pnEditMode = poPurchaseReceivingController.getEditMode();
                     initButton(pnEditMode);
                 }
             }
@@ -1320,7 +1309,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         tblViewPuchaseOrder.getSelectionModel().select(pnMain);
                         tblViewPuchaseOrder.getFocusModel().focus(pnMain);
                     }
-                    loadTab();
+                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
+                        loadTab();
+                    }
                 });
                 return null;
             }
@@ -1350,7 +1341,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
     public void loadTableDetailFromMain() {
         try {
-            if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 poJSON = new JSONObject();
                 poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderList(pnMain).getTransactionNo());
                 if ("error".equals((String) poJSON.get("message"))) {
@@ -1367,6 +1358,8 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 }
 
                 loadTableDetail();
+            } else{
+                ShowMessageFX.Warning(null, pxeModuleName, "Data can only be viewed when in ADD or UPDATE mode.");
             }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -1527,7 +1520,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         btnClose.setVisible(lbShow3);
         btnClose.setManaged(lbShow3);
 
-        //apMaster.setDisable(!lbShow);
+        apMaster.setDisable(!lbShow);
         dpTransactionDate.setDisable(!lbShow);
         dpReferenceDate.setDisable(!lbShow);
         tfTrucking.setDisable(!lbShow);
