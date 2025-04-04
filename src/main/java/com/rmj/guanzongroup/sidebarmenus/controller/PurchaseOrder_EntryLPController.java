@@ -1146,6 +1146,8 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
             pagination.setVisible(false);
             pagination.setManaged(false);
         }
+        tfCompany.setDisable(fnEditMode == EditMode.UPDATE);
+        tfSupplier.setDisable(fnEditMode == EditMode.UPDATE);
         CustomCommonUtil.setVisible(false, piTableDetailLoading, piTableStockRequestLoading, apTableDetailLoading, apTableStockRequestLoading);
         CustomCommonUtil.setManaged(false, piTableDetailLoading, piTableStockRequestLoading, apTableDetailLoading, apTableStockRequestLoading);
     }

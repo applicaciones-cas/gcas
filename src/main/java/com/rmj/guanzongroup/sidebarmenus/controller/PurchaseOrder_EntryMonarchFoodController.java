@@ -1147,6 +1147,8 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
             pagination.setVisible(false);
             pagination.setManaged(false);
         }
+        tfCompany.setDisable(fnEditMode == EditMode.UPDATE);
+        tfSupplier.setDisable(fnEditMode == EditMode.UPDATE);
         CustomCommonUtil.setVisible(false, piTableDetailLoading, piTableStockRequestLoading, apTableDetailLoading, apTableStockRequestLoading);
         CustomCommonUtil.setManaged(false, piTableDetailLoading, piTableStockRequestLoading, apTableDetailLoading, apTableStockRequestLoading);
     }
