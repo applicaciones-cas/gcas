@@ -676,6 +676,10 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                         }
                         event.consume();
                         switch (txtFieldID) {
+                            case "tfSearchCompany":
+                            case "tfSearchSupplier":
+                                CommonUtils.SetNextFocus((TextField) event.getSource());
+                                break;
                             case "tfOrderQuantity":
                                 if (lsValue.isEmpty()) {
                                     lsValue = "0";

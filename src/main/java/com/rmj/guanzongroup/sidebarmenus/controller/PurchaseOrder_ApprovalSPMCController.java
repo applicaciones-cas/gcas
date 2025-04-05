@@ -613,6 +613,10 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                         }
                         event.consume();
                         switch (txtFieldID) {
+                            case "tfSearchCompany":
+                            case "tfSearchSupplier":
+                                CommonUtils.SetNextFocus((TextField) event.getSource());
+                                break;
                             case "tfOrderQuantity":
                                 if (lsValue.isEmpty()) {
                                     lsValue = "0";

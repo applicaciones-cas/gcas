@@ -613,6 +613,10 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                         }
                         event.consume();
                         switch (txtFieldID) {
+                            case "tfSearchCompany":
+                            case "tfSearchSupplier":
+                                CommonUtils.SetNextFocus((TextField) event.getSource());
+                                break;
                             case "tfOrderQuantity":
                                 if (lsValue.isEmpty()) {
                                     lsValue = "0";

@@ -1182,23 +1182,49 @@ public class DashboardController implements Initializable {
         btnHelp.setSelected(false);
     }
 
+    private void logOutCloseAllTabs(TabPane tabPane, GRiderCAS oApp) {
+        if (tabPane == null) {
+            System.out.println("tabPane is null");
+            return;
+        }
+
+        if (tabName != null) {
+            tabName.clear();
+        } else {
+            System.out.println("tabName is null");
+        }
+
+        tabPane.getTabs().clear();
+
+        unloadForm unload = new unloadForm();
+
+        if (tabPane.getParent() == null) {
+            System.out.println("Parent of tabPane is null");
+            return;
+        }
+
+        StackPane myBox = (StackPane) tabPane.getParent();
+        myBox.getChildren().clear();
+        myBox.getChildren().add(unload.getScene(psDefaultScreenFXML2, oApp));
+    }
+
     @FXML
     private void switchLogout(ActionEvent event) {
-
         if (LoginControllerHolder.getLogInStatus()) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("GUANZON GROUP OF COMPANIES");
-            alert.setHeaderText("Are you sure you want to logout?");
+            if (ShowMessageFX.YesNo(null, "GUANZON GROUP OF COMPANIES", "Are you sure you want to logout?")) {
+                if (ShowMessageFX.YesNo(null, "GUANZON GROUP OF COMPANIES", "You have open tabs. Are you sure you want to logout?")) {
+                    logOutCloseAllTabs(tabpane, oApp);
 
-            Optional<ButtonType> result = alert.showAndWait();
-
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
-                setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
-                ToggleGroupControlLowerLeftSideBar();
-                setScene(loadAnimateAnchor(psDefaultScreenFXML));
-                btnLogout.setSelected(false);
-                LoginControllerHolder.setLogInStatus(false);
+                    setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
+                    setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
+                    ToggleGroupControlLowerLeftSideBar();
+                    setScene(loadAnimateAnchor(psDefaultScreenFXML));
+                    btnLogout.setSelected(false);
+                    sformname = "";
+                    LoginControllerHolder.setLogInStatus(false);
+                } else {
+                    btnLogout.setSelected(false);
+                }
             } else {
                 btnLogout.setSelected(false);
             }
@@ -1207,7 +1233,6 @@ public class DashboardController implements Initializable {
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
         }
-
     }
 
     /**

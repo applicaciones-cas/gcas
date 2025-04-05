@@ -613,6 +613,10 @@ public class PurchaseOrder_ConfirmationSPMCController implements Initializable, 
                         }
                         event.consume();
                         switch (txtFieldID) {
+                            case "tfSearchCompany":
+                            case "tfSearchSupplier":
+                                CommonUtils.SetNextFocus((TextField) event.getSource());
+                                break;
                             case "tfOrderQuantity":
                                 if (lsValue.isEmpty()) {
                                     lsValue = "0";
