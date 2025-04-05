@@ -466,7 +466,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 
                     }
 
-                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
+                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() >= 0) {
                         //pending
                         //retreiving using column index
                         for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingCount() - 1; lnCtr++) {
@@ -810,7 +810,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                                 poPurchaseReceivingController.AddDetail();
                             }
                         }
-                        if (poPurchaseReceivingController.getDetailCount() > 0) {
+                        if (poPurchaseReceivingController.getDetailCount() >= 0) {
                             double lnTotal = 0.0;
                             for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                                 try {

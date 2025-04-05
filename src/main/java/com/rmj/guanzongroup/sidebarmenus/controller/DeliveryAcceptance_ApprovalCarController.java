@@ -1059,7 +1059,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
                     }
 
-                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
+                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() >= 0) {
                         //retreiving using column index
                         for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingCount() - 1; lnCtr++) {
                             try {
@@ -1416,7 +1416,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             }
                             //Check for PO Serial Update Entry No TODO
                         }
-                        if (poPurchaseReceivingController.getDetailCount() > 0) {
+                        if (poPurchaseReceivingController.getDetailCount() >= 0) {
                             double lnTotal = 0.00;
                             for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                                 if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {

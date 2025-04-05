@@ -1317,7 +1317,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                     } catch (Exception e) {
 
                     }
-                    if (poPurchaseReceivingController.getPurchaseOrderCount() > 0) {
+                    if (poPurchaseReceivingController.getPurchaseOrderCount() >= 0) {
                         for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderCount() - 1; lnCtr++) {
                             try {
                                 main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
@@ -1451,7 +1451,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                             }
                         }
 
-                        if (poPurchaseReceivingController.getDetailCount() > 0) {
+                        if (poPurchaseReceivingController.getDetailCount() >= 0) {
                             double lnTotal = 0.0;
                             for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                                 try {

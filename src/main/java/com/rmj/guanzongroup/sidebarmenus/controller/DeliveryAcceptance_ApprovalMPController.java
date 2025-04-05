@@ -1059,7 +1059,7 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                     } catch (Exception e) {
 
                     }
-                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
+                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() >= 0) {
 
                         //pending
                         //retreiving using column index
@@ -1416,7 +1416,7 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                             }
                             //Check for PO Serial Update Entry No TODO
                         }
-                        if (poPurchaseReceivingController.getDetailCount() > 0) {
+                        if (poPurchaseReceivingController.getDetailCount() >= 0) {
                             double lnTotal = 0.00;
                             for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                                 try {

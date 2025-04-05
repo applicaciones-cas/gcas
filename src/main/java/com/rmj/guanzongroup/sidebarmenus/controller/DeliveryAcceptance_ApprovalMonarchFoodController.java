@@ -974,7 +974,7 @@ public class DeliveryAcceptance_ApprovalMonarchFoodController implements Initial
                     } catch (Exception e) {
 
                     }
-                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
+                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() >= 0) {
 
                         //pending
                         //retreiving using column index
@@ -1315,7 +1315,7 @@ public class DeliveryAcceptance_ApprovalMonarchFoodController implements Initial
                             }
                         }
 
-                        if (poPurchaseReceivingController.getDetailCount() > 0) {
+                        if (poPurchaseReceivingController.getDetailCount() >= 0) {
                             double lnTotal = 0.0;
                             for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                                 try {

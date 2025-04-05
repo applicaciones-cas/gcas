@@ -1072,7 +1072,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     } catch (Exception e) {
 
                     }
-                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
+                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() >= 0) {
 
                         //pending
                         //retreiving using column index
@@ -1432,7 +1432,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                             //Check for PO Serial Update Entry No TODO
                         }
 
-                        if (poPurchaseReceivingController.getDetailCount() > 0) {
+                        if (poPurchaseReceivingController.getDetailCount() >= 0) {
                             double lnTotal = 0.00;
                             for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                                 if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {

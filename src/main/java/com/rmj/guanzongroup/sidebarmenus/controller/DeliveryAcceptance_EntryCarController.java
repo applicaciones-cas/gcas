@@ -1107,7 +1107,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             }
                         } catch (Exception e) {
                         }
-                        if (poPurchaseReceivingController.getPurchaseOrderCount() > 0) {
+                        if (poPurchaseReceivingController.getPurchaseOrderCount() >= 0) {
                             //retreiving using column index
                             for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderCount() - 1; lnCtr++) {
                                 try {
@@ -1257,7 +1257,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             //Check for PO Serial Update Entry No TODO
                         }
 
-                        if (poPurchaseReceivingController.getDetailCount() > 0) {
+                        if (poPurchaseReceivingController.getDetailCount() >= 0) {
                             double lnTotal = 0.00;
                             for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue();

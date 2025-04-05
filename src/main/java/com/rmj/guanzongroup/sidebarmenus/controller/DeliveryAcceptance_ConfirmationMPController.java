@@ -1057,7 +1057,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
 
                     }
 
-                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
+                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() >= 0) {
                         //pending
                         //retreiving using column index
                         for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingCount() - 1; lnCtr++) {
@@ -1416,7 +1416,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             //Check for PO Serial Update Entry No TODO
                         }
 
-                        if (poPurchaseReceivingController.getDetailCount() > 0) {
+                        if (poPurchaseReceivingController.getDetailCount() >= 0) {
                             double lnTotal = 0.00;
                             for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                                 try {
