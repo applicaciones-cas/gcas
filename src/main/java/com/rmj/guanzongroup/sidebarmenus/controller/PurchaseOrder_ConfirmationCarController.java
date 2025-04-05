@@ -390,7 +390,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                     pnTblPODetailRow = -1;
                     //this code below use to highlight tblpurchase
                     tblVwPurchaseOrder.refresh();
-                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.APPROVED);
+                    poPurchaseOrder_data.get(pnTblPurchaseOrderRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
                     pagination.toBack();
                     break;
                 case "btnSave":
