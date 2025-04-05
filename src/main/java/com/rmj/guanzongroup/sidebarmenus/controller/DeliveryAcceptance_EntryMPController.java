@@ -108,6 +108,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
     private final Map<Integer, String> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, String> highlightedRowsDetail = new HashMap<>();
     private TextField lastFocusedTextField = null;
+    private TextField previousSearchedTextField = null;
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -176,6 +177,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
             initDetailsGrid();
             initTableOnClick();
             clearTextFields();
+            poPurchaseReceivingController.initFields();
 
             loadRecordMaster();
             loadTableDetail();
@@ -351,6 +353,11 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnSearch":
+                        if (lastFocusedTextField == previousSearchedTextField && (lastFocusedTextField != null)) {
+                            System.out.println("Search skipped: Same field clicked twice.");
+                            break;
+                        }
+                        previousSearchedTextField = lastFocusedTextField;
                         if (lastFocusedTextField != null) {
                             // Create a simulated KeyEvent for F3 key press
                             KeyEvent keyEvent = new KeyEvent(
@@ -1040,6 +1047,8 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
     }
 
     public void clearTextFields() {
+        previousSearchedTextField = null;
+        lastFocusedTextField = null;
 
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
@@ -1362,6 +1371,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
+                Thread.sleep(100);
 //                Thread.sleep(1000);
 
                 // contains try catch, for loop of loading data to observable list until loadTab()

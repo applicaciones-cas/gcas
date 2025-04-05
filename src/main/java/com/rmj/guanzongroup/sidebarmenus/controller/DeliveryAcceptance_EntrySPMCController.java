@@ -101,6 +101,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
     private final Map<Integer, String> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, String> highlightedRowsDetail = new HashMap<>();
     private TextField lastFocusedTextField = null;
+    private TextField previousSearchedTextField = null;
 
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
@@ -165,6 +166,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
             initDetailsGrid();
             initTableOnClick();
             clearTextFields();
+            poPurchaseReceivingController.initFields();
 
             loadRecordMaster();
             loadTableDetail();
@@ -251,6 +253,11 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnSearch":
+                        if (lastFocusedTextField == previousSearchedTextField && (lastFocusedTextField != null)) {
+                            System.out.println("Search skipped: Same field clicked twice.");
+                            break;
+                        }
+                        previousSearchedTextField = lastFocusedTextField;
                         if (lastFocusedTextField != null) {
                             // Create a simulated KeyEvent for F3 key press
                             KeyEvent keyEvent = new KeyEvent(
@@ -926,6 +933,8 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
     }
 
     public void clearTextFields() {
+        previousSearchedTextField = null;
+        lastFocusedTextField = null;
 
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
@@ -1240,6 +1249,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
+                Thread.sleep(100);
 //                Thread.sleep(1000);
                 Platform.runLater(() -> {
                     main_data.clear();

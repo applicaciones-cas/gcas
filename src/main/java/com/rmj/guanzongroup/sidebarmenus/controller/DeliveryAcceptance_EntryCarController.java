@@ -109,6 +109,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
     private final Map<Integer, String> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, String> highlightedRowsDetail = new HashMap<>();
     private TextField lastFocusedTextField = null;
+    private TextField previousSearchedTextField = null;
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -180,7 +181,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             initDetailsGrid();
             initTableOnClick();
             clearTextFields();
-
+            poPurchaseReceivingController.initFields();
             loadRecordMaster();
             loadTableDetail();
 
@@ -278,6 +279,11 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnSearch":
+                        if (lastFocusedTextField == previousSearchedTextField && (lastFocusedTextField != null)) {
+                            System.out.println("Search skipped: Same field clicked twice.");
+                            break;
+                        }
+                        previousSearchedTextField = lastFocusedTextField;
                         if (lastFocusedTextField != null) {
                             // Create a simulated KeyEvent for F3 key press
                             KeyEvent keyEvent = new KeyEvent(
@@ -321,8 +327,8 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             mainSearchListener = null; // Clear reference to avoid memory leaks
                         }
                         poJSON = retrievePO();
-                        if("error".equals((String) poJSON.get("result"))){
-                            if(!(boolean) poJSON.get("continue")){
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            if (!(boolean) poJSON.get("continue")) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             }
                         }
@@ -465,7 +471,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             poJSON.put("continue", false);
             poJSON.put("message", lsMessage + " cannot be empty.");
         }
-        
+
         return poJSON;
     }
 
@@ -715,8 +721,8 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 delay.setOnFinished(e -> {
                                     if (!"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
                                         poJSON = retrievePO();
-                                        if("error".equals((String) poJSON.get("result"))){
-                                            if(!(boolean) poJSON.get("continue")){
+                                        if ("error".equals((String) poJSON.get("result"))) {
+                                            if (!(boolean) poJSON.get("continue")) {
                                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                             }
                                         }
@@ -733,8 +739,8 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 ShowMessageFX.Warning(null, pxeModuleName, "Company Name is not set.");
                                 return;
                             }
-                            
-                            if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
+
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poPurchaseReceivingController.getDetailCount() > 1) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
@@ -754,14 +760,14 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 break;
                             }
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                            
+
                             Platform.runLater(() -> {
                                 PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                 delay.setOnFinished(e -> {
                                     if (!"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
                                         poJSON = retrievePO();
-                                        if("error".equals((String) poJSON.get("result"))){
-                                            if(!(boolean) poJSON.get("continue")){
+                                        if ("error".equals((String) poJSON.get("result"))) {
+                                            if (!(boolean) poJSON.get("continue")) {
                                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                             }
                                         }
@@ -769,7 +775,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 });
                                 delay.play();
                             });
-                            
+
                             loadRecordMaster();
                             break;
                         case "tfTrucking":
@@ -1071,12 +1077,12 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-//                Thread.sleep(1000);
+                Thread.sleep(100);
+                Thread.sleep(100);
 
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
-                    if (poPurchaseReceivingController.getPurchaseOrderCount() > 0) {
                         String lsMainDate = "";
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
 
@@ -1134,7 +1140,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 loadTab();
                             }
                         }
-                    }
                 });
 
                 return null;
@@ -1331,6 +1336,8 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
     }
 
     public void clearTextFields() {
+        previousSearchedTextField = null;
+        lastFocusedTextField = null;
 
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);

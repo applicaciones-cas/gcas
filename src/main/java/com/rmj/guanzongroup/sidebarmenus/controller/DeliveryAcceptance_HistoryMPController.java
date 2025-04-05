@@ -135,7 +135,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
 
     private final Map<Integer, List<String>> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
-    private TextField lastFocusedTextField = null;
+
     private Stage dialogStage = null;
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
@@ -197,6 +197,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
+            poPurchaseReceivingController.initFields();
 
         initAttachmentPreviewPane();
 
@@ -249,21 +250,6 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
                         return;
                     }
                     pnEditMode = poPurchaseReceivingController.getEditMode();
-                    break;
-                case "btnSearch":
-                    if (lastFocusedTextField != null) {
-                        // Create a simulated KeyEvent for F3 key press
-                        KeyEvent keyEvent = new KeyEvent(
-                                KeyEvent.KEY_PRESSED,
-                                "",
-                                "F3",
-                                KeyCode.F3,
-                                false, false, false, false);
-
-                        lastFocusedTextField.fireEvent(keyEvent);
-                    } else {
-                        ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
-                    }
                     break;
                 case "btnHistory":
                     break;
@@ -401,7 +387,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
+
 
         if (lsValue == null) {
             return;
@@ -525,7 +511,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
+
         if (lsValue == null) {
             return;
         }
@@ -584,7 +570,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
+
         if (lsValue == null) {
             return;
         }
@@ -718,6 +704,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
+                Thread.sleep(100);
 //                Thread.sleep(1000);
 
                 // contains try catch, for loop of loading data to observable list until loadTab()
@@ -829,7 +816,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
                 if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
                     tfSearchReferenceNo.setText("");
                 } else {
-                    tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
+
                 }
             } catch (Exception e) {
                 tfSearchReferenceNo.setText("");
@@ -1679,6 +1666,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     }
 
     public void clearTextFields() {
+
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 

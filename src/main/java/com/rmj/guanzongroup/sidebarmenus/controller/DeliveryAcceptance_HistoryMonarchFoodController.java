@@ -124,7 +124,7 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
 
     private final Map<Integer, List<String>> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
-    private TextField lastFocusedTextField = null;
+
 
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
@@ -191,6 +191,7 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
+            poPurchaseReceivingController.initFields();
 
         initAttachmentPreviewPane();
 
@@ -298,7 +299,7 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
+
         if (lsValue == null) {
             return;
         }
@@ -433,6 +434,7 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
+                Thread.sleep(100);
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
@@ -543,7 +545,7 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                 if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
                     tfSearchReferenceNo.setText("");
                 } else {
-                    tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
+
                 }
             } catch (Exception e) {
                 tfSearchReferenceNo.setText("");
@@ -1422,6 +1424,7 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
     }
 
     public void clearTextFields() {
+
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
         dpExpiryDate.setValue(null);

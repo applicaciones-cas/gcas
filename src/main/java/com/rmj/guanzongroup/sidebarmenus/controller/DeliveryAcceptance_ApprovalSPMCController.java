@@ -132,6 +132,7 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
     private final Map<Integer, List<String>> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
     private TextField lastFocusedTextField = null;
+    private TextField previousSearchedTextField = null;
 
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
@@ -201,6 +202,7 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
+            poPurchaseReceivingController.initFields();
 
         initAttachmentPreviewPane();
 
@@ -253,6 +255,11 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnSearch":
+                        if (lastFocusedTextField == previousSearchedTextField && (lastFocusedTextField != null)) {
+                            System.out.println("Search skipped: Same field clicked twice.");
+                            break;
+                        }
+                        previousSearchedTextField = lastFocusedTextField;
                         if (lastFocusedTextField != null) {
                             // Create a simulated KeyEvent for F3 key press
                             KeyEvent keyEvent = new KeyEvent(
@@ -921,6 +928,7 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
+                Thread.sleep(100);
 //                Thread.sleep(1000);
 
                 // contains try catch, for loop of loading data to observable list until loadTab()
@@ -1030,7 +1038,7 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
                 if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
                     tfSearchReferenceNo.setText("");
                 } else {
-                    tfSearchReferenceNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
+
                 }
             } catch (Exception e) {
                 tfSearchReferenceNo.setText("");
@@ -1962,6 +1970,8 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
     }
 
     public void clearTextFields() {
+        previousSearchedTextField = null;
+        lastFocusedTextField = null;
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
