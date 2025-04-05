@@ -66,15 +66,12 @@ import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
-import static org.apache.poi.ss.usermodel.TableStyleType.lastColumn;
-import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
-import javafx.scene.control.ComboBox;
 import javafx.util.Duration;
 
 /**
@@ -245,6 +242,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnUpdate":
+                        poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                         poJSON = poPurchaseReceivingController.UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -279,6 +277,9 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             poPurchaseReceivingController.Detail().clear();
                             clearTextFields();
 
+                            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
+                            poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+                            poPurchaseReceivingController.Master().setSupplierId(psSupplierId);
                             pnEditMode = EditMode.UNKNOWN;
                             break;
                         } else {
@@ -292,7 +293,12 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             tfOrderNo.textProperty().removeListener(mainSearchListener);
                             mainSearchListener = null; // Clear reference to avoid memory leaks
                         }
-                        retrievePO();
+                        poJSON = retrievePO();
+                        if("error".equals((String) poJSON.get("result"))){
+                            if(!(boolean) poJSON.get("continue")){
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            }
+                        }
                         break;
                     case "btnSave":
                         //Validator
@@ -320,7 +326,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                         break;
                 }
 
-                if (lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve") || lsButton.equals("btnCancel")) {
+                if (lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve")) { // || lsButton.equals("btnCancel")
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
@@ -342,7 +348,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
         }
     }
 
-    public void retrievePO() {
+    public JSONObject retrievePO() {
         poJSON = new JSONObject();
         String lsMessage = "";
         poJSON.put("result", "success");
@@ -362,15 +368,14 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
         if ("success".equals((String) poJSON.get("result"))) {
             poJSON = poPurchaseReceivingController.getApprovedPurchaseOrder();
-            if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-            } else {
-                loadTableMain();
-            }
+            loadTableMain();
         } else {
+            poJSON.put("result", "error");
+            poJSON.put("continue", false);
             poJSON.put("message", lsMessage + " cannot be empty.");
-            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
+        
+        return poJSON;
     }
 
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
@@ -602,10 +607,20 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                                 break;
                             }
                             psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            if (!"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
-                                retrievePO();
-
-                            }
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(e -> {
+                                    if (!"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
+                                        poJSON = retrievePO();
+                                        if("error".equals((String) poJSON.get("result"))){
+                                            if(!(boolean) poJSON.get("continue")){
+                                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                            }
+                                        }
+                                    }
+                                });
+                                delay.play();
+                            });
                             loadRecordMaster();
                             break;
 
@@ -616,13 +631,15 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                                 return;
                             }
 
-                            if (poPurchaseReceivingController.getDetailCount() > 1) {
-                                if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                        "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
-                                    poPurchaseReceivingController.removePORDetails();
-                                    loadTableDetail();
-                                } else {
-                                    return;
+                            if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
+                                if (poPurchaseReceivingController.getDetailCount() > 1) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                        poPurchaseReceivingController.removePORDetails();
+                                        loadTableDetail();
+                                    } else {
+                                        return;
+                                    }
                                 }
                             }
 
@@ -635,9 +652,20 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             }
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
-                            if (!"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
-                                retrievePO();
-                            }
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(e -> {
+                                    if (!"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
+                                        poJSON = retrievePO();
+                                        if("error".equals((String) poJSON.get("result"))){
+                                            if(!(boolean) poJSON.get("continue")){
+                                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                            }
+                                        }
+                                    }
+                                });
+                                delay.play();
+                            });
                             loadRecordMaster();
                             break;
                         case "tfTrucking":
@@ -987,7 +1015,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = poPurchaseReceivingController.getEditMode() == EditMode.UPDATE;
+        boolean lbDisable = pnEditMode == EditMode.UPDATE;
         if (lbDisable) {
             tfCompany.getStyleClass().add("DisabledTextField");
             tfSupplier.getStyleClass().add("DisabledTextField");
@@ -1499,7 +1527,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
         btnClose.setVisible(lbShow3);
         btnClose.setManaged(lbShow3);
 
-        apMaster.setDisable(!lbShow);
+//        apMaster.setDisable(!lbShow);
         dpTransactionDate.setDisable(!lbShow);
         dpReferenceDate.setDisable(!lbShow);
         tfTrucking.setDisable(!lbShow);
