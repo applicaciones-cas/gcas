@@ -405,9 +405,12 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                         tblVwStockRequest.getSelectionModel().clearSelection(pnTblPODetailRow);
                         pnTblPODetailRow = -1;
                         loadMaster();
+                        pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                         loadDetail();
                         loadTablePODetail();
-                        pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                        if (!tfCost.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                            loadTableStockRequest();
+                        }
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
                     }
@@ -444,6 +447,9 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                     pnTblPODetailRow = - 1;
                     pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                     loadTablePODetail();
+                    if (!tfCost.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
+                        loadTableStockRequest();
+                    }
                     break;
                 case "btnSearch":
                     if (activeField != null) {
