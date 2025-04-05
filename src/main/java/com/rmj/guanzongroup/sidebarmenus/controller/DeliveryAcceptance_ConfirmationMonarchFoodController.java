@@ -203,7 +203,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
-            poPurchaseReceivingController.initFields();
+        poPurchaseReceivingController.initFields();
 
         initAttachmentPreviewPane();
 
@@ -980,7 +980,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
 
                     }
 
-                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() >= 0) {
+                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
                         //pending
                         //retreiving using column index
                         for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingCount() - 1; lnCtr++) {
@@ -1323,50 +1323,48 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                             }
                         }
 
-                        if (poPurchaseReceivingController.getDetailCount() >= 0) {
-                            double lnTotal = 0.0;
-                            for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
-                                try {
+                        double lnTotal = 0.0;
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
+                            try {
 
-                                    lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
+                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
 
-                                } catch (Exception e) {
+                            } catch (Exception e) {
 
-                                }
-
-                                if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                                        && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
-                                        && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                    highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
-                                }
-
-                                details_data.add(
-                                        new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
-                                        ));
                             }
 
-                            if (pnDetail < 0 || pnDetail
-                                    >= details_data.size()) {
-                                if (!details_data.isEmpty()) {
-                                    /* FOCUS ON FIRST ROW */
-                                    tblViewOrderDetails.getSelectionModel().select(0);
-                                    tblViewOrderDetails.getFocusModel().focus(0);
-                                    pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
-                                    loadRecordDetail();
-                                }
-                            } else {
-                                /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                                tblViewOrderDetails.getSelectionModel().select(pnDetail);
-                                tblViewOrderDetails.getFocusModel().focus(pnDetail);
+                            if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
+                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
+                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
+                                highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
+                            }
+
+                            details_data.add(
+                                    new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
+                                    ));
+                        }
+
+                        if (pnDetail < 0 || pnDetail
+                                >= details_data.size()) {
+                            if (!details_data.isEmpty()) {
+                                /* FOCUS ON FIRST ROW */
+                                tblViewOrderDetails.getSelectionModel().select(0);
+                                tblViewOrderDetails.getFocusModel().focus(0);
+                                pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
                                 loadRecordDetail();
                             }
+                        } else {
+                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                            tblViewOrderDetails.getSelectionModel().select(pnDetail);
+                            tblViewOrderDetails.getFocusModel().focus(pnDetail);
+                            loadRecordDetail();
                         }
                     } catch (SQLException ex) {
                         Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
