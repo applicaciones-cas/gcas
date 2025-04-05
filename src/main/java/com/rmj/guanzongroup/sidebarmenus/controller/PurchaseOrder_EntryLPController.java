@@ -380,8 +380,14 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     }
                     break;
                 case "btnUpdate":
-                    loJSON = poPurchasingController.PurchaseOrder().UpdateTransaction();
+                    loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+                    if (!"success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
+                        break;
+                    }
                     pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                    loadMaster();
+                    loJSON = poPurchasingController.PurchaseOrder().UpdateTransaction();
                     if ("error".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                         break;
@@ -1464,13 +1470,9 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     }
                     poPurchasingController.PurchaseOrder().Master().setCompanyID("");
                     tfCompany.setText("");
-                    if (pnEditMode != EditMode.ADDNEW) {
-                        loadTableStockRequest();
-                    } else {
-                        tblVwStockRequest.getItems().clear();
-                        poApprovedStockRequest_data.clear();
-                        tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
-                    }
+                    tblVwStockRequest.getItems().clear();
+                    poApprovedStockRequest_data.clear();
+                    tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
                 }
             }
         });
@@ -1487,13 +1489,9 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                             poPurchasingController.PurchaseOrder().Master().setAddressID("");
                             poPurchasingController.PurchaseOrder().Master().setContactID("");
                             tfSupplier.setText("");
-                            if (pnEditMode != EditMode.ADDNEW) {
-                                loadTableStockRequest();
-                            } else {
-                                tblVwStockRequest.getItems().clear();
-                                poApprovedStockRequest_data.clear();
-                                tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
-                            }
+                            tblVwStockRequest.getItems().clear();
+                            poApprovedStockRequest_data.clear();
+                            tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
                         }
                     }
                 }
