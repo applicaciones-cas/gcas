@@ -219,7 +219,7 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
             String lsButton = clickedButton.getId();
             switch (lsButton) {
                 case "btnPrint":
-                    poJSON = poPurchaseReceivingController.printRecord();
+                    poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
@@ -754,9 +754,7 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
                 loadTableDetail();
                 tfAttachmentNo.clear();
                 cmbAttachmentType.setItems(documentType);
-                cmbAttachmentType.getSelectionModel().select(0);
-                cmbAttachmentType.setItems(documentType);
-                cmbAttachmentType.getSelectionModel().select(0);
+
                 imageView.setImage(null);
                 stackPaneClip();
                 loadTableAttachment();

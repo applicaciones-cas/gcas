@@ -220,7 +220,9 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
             String lsButton = clickedButton.getId();
             switch (lsButton) {
                 case "btnPrint":
-                    poJSON = poPurchaseReceivingController.printRecord();
+                    poJSON = poPurchaseReceivingController.printRecord(() -> {
+                        loadRecordMaster();
+                    });
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
@@ -745,7 +747,14 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
                     disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                     highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
                 }
+                poPurchaseReceivingController.loadAttachments();
                 loadTableDetail();
+                tfAttachmentNo.clear();
+                cmbAttachmentType.setItems(documentType);
+
+                imageView.setImage(null);
+                stackPaneClip();
+                loadTableAttachment();
             }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {

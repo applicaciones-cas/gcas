@@ -233,7 +233,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord();
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
@@ -1258,7 +1258,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                 loadTableDetail();
                 tfAttachmentNo.clear();
                 cmbAttachmentType.setItems(documentType);
-                cmbAttachmentType.getSelectionModel().select(0);
+
                 imageView.setImage(null);
                 stackPaneClip();
                 loadTableAttachment();

@@ -225,7 +225,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         break;
 
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord();
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }

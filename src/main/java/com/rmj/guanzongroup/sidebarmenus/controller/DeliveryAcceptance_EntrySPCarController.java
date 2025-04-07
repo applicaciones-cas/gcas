@@ -209,7 +209,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                         break;
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord();
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }

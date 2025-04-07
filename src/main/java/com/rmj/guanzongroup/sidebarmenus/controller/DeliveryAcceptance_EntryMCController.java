@@ -299,7 +299,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         break;
 
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord();
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }

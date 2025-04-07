@@ -209,7 +209,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                         break;
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord();
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
@@ -1363,7 +1363,6 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                         highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
                     }
                 }
-
                 loadTableDetail();
             } else {
                 ShowMessageFX.Warning(null, pxeModuleName, "Data can only be viewed when in ADD or UPDATE mode.");
