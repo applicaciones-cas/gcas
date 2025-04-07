@@ -429,7 +429,7 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                        <TextField fx:id="tfOrderNo" promptText="Press F3: Search" GridPane.columnIndex="2" />
+                                                                        <TextField fx:id="tfOrderNo" promptText="Type: Search" GridPane.columnIndex="2" />
                                                                           <TextField fx:id="tfBrand" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                               <TextField fx:id="tfModel" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="1" />
                                                                           <TextField fx:id="tfModelVariant" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="3" />

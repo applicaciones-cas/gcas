@@ -256,7 +256,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
                         break;
                     case "btnSearch":
                         if ((lastFocusedTextField != null)) {
-                            if (!Arrays.asList("tfCompany", "tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
+                            if (!Arrays.asList("tfSearchCompany","tfSearchSupplier","tfSearchReferenceNo","tfCompany", "tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
                                     "tfDescription", "tfSupersede").contains(lastFocusedTextField.getId())) {
                                 ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
                                 break;

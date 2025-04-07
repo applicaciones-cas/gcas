@@ -280,7 +280,7 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                         break;
                     case "btnSearch":
                         if ((lastFocusedTextField != null)) {
-                            if (!Arrays.asList("tfCompany", "tfSupplier", "tfTrucking", "tfTerm", "tfBrand","tfModel").contains(lastFocusedTextField.getId())) {
+                            if (!Arrays.asList("tfSearchCompany","tfSearchSupplier","tfSearchReferenceNo","tfCompany", "tfSupplier", "tfTrucking", "tfTerm", "tfBrand","tfModel").contains(lastFocusedTextField.getId())) {
                                 ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
                                 break;
                             }
