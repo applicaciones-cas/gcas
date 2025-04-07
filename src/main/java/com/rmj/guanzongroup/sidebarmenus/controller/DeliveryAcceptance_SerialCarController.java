@@ -394,12 +394,23 @@ public class DeliveryAcceptance_SerialCarController implements Initializable, Sc
                                 /* FOCUS ON FIRST ROW */
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
-                                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
+                                ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
+                                pnDetail = Integer.valueOf(selectedItem.getIndex07());
+                                System.out.println("set pndetail" + pnDetail);
                             }
                         } else {
                             // Check if the item matches the value of pnDetail
-                            tblViewDetail.getSelectionModel().select(pnDetail);
-                            tblViewDetail.getFocusModel().focus(pnDetail);
+                            TableView<ModelDeliveryAcceptance_Serial> tableView = tblViewDetail;
+                            SelectionModel<ModelDeliveryAcceptance_Serial> selectionModel = tableView.getSelectionModel();
+                            for (ModelDeliveryAcceptance_Serial item : tblViewDetail.getItems()) {
+                                // Check if the item matches the value of pnDetail
+                                if (item.getIndex07() != null && Integer.valueOf(item.getIndex07()) == pnDetail) {
+                                    selectionModel.select(item);
+                                    tblViewDetail.getFocusModel().focus(pnDetail);
+//                                    tableView.scrollTo(item);
+                                    break;
+                                }
+                            }
                         }
 
                         loadRecordDetail();

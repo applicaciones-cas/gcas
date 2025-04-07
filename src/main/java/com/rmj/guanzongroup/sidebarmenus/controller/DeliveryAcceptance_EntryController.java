@@ -73,6 +73,7 @@ import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
+import java.util.Arrays;
 
 /**
  * FXML Controller class
@@ -251,6 +252,13 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnSearch":
+                        if ((lastFocusedTextField != null)) {
+                            if (!Arrays.asList("tfCompany", "tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
+                                    "tfDescription", "tfSupersede").contains(lastFocusedTextField.getId())) {
+                                ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
+                                break;
+                            }
+                        }
                         if (lastFocusedTextField == previousSearchedTextField && (lastFocusedTextField != null)) {
                             System.out.println("Search skipped: Same field clicked twice.");
                             break;
@@ -419,6 +427,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
         lastFocusedTextField = txtPersonalInfo;
+        previousSearchedTextField = null;
+
         if (lsValue == null) {
             return;
         }
@@ -479,7 +489,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
         lastFocusedTextField = txtPersonalInfo;
-
+        previousSearchedTextField = null;
         if (lsValue == null) {
             return;
         }

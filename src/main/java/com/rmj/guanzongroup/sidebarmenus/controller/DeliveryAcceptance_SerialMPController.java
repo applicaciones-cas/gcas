@@ -290,12 +290,21 @@ public class DeliveryAcceptance_SerialMPController implements Initializable, Scr
                                 /* FOCUS ON FIRST ROW */
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
-                                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
+                                ModelDeliveryAcceptance_SerialMP selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
+                                pnDetail = Integer.valueOf(selectedItem.getIndex04());
                             }
                         } else {
                             // Check if the item matches the value of pnDetail
-                            tblViewDetail.getSelectionModel().select(pnDetail);
-                            tblViewDetail.getFocusModel().focus(pnDetail);
+                            TableView<ModelDeliveryAcceptance_SerialMP> tableView = tblViewDetail;
+                            SelectionModel<ModelDeliveryAcceptance_SerialMP> selectionModel = tableView.getSelectionModel();
+                            for (ModelDeliveryAcceptance_SerialMP item : tblViewDetail.getItems()) {
+                                // Check if the item matches the value of pnDetail
+                                if (item.getIndex04() != null && Integer.valueOf(item.getIndex04()) == pnDetail) {
+                                    selectionModel.select(item);
+                                    tblViewDetail.getFocusModel().focus(pnDetail);
+                                    break;
+                                }
+                            }
                         }
                         loadRecordDetail();
 

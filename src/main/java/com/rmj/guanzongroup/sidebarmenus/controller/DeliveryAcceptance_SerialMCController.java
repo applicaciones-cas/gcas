@@ -386,8 +386,16 @@ public class DeliveryAcceptance_SerialMCController implements Initializable, Scr
                             }
                         } else {
                             // Check if the item matches the value of pnDetail
-                            tblViewDetail.getSelectionModel().select(pnDetail);
-                            tblViewDetail.getFocusModel().focus(pnDetail);
+                            TableView<ModelDeliveryAcceptance_SerialMC> tableView = tblViewDetail;
+                            SelectionModel<ModelDeliveryAcceptance_SerialMC> selectionModel = tableView.getSelectionModel();
+                            for (ModelDeliveryAcceptance_SerialMC item : tblViewDetail.getItems()) {
+                                // Check if the item matches the value of pnDetail
+                                if (item.getIndex05() != null && Integer.valueOf(item.getIndex05()) == pnDetail) {
+                                    selectionModel.select(item);
+                                    tblViewDetail.getFocusModel().focus(pnDetail);
+                                    break;
+                                }
+                            }
                         }
                         loadRecordDetail();
 

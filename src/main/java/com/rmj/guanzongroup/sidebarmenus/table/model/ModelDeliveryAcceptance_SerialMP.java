@@ -84,4 +84,12 @@ public class ModelDeliveryAcceptance_SerialMP {
     public void setIndex03(String index03) {
         this.index03.set(index03);
     }
+
+    public String getIndex04() {
+        return index04.get();
+    }
+
+    public void setIndex04(String index04) {
+        this.index04.set(index04);
+    }
 }

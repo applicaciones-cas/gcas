@@ -69,6 +69,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import java.util.Arrays;
 import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -255,6 +256,13 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnSearch":
+                        if ((lastFocusedTextField != null)) {
+                            if (!Arrays.asList("tfCompany", "tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
+                                    "tfDescription", "tfSupersede").contains(lastFocusedTextField.getId())) {
+                                ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
+                                break;
+                            }
+                        }
                         if (lastFocusedTextField == previousSearchedTextField && (lastFocusedTextField != null)) {
                             System.out.println("Search skipped: Same field clicked twice.");
                             break;
@@ -459,6 +467,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
         lastFocusedTextField = txtPersonalInfo;
+        previousSearchedTextField = null;
 
         if (lsValue == null) {
             return;
@@ -585,6 +594,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
         lastFocusedTextField = txtPersonalInfo;
+        previousSearchedTextField = null;
         if (lsValue == null) {
             return;
         }
@@ -650,6 +660,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
         lastFocusedTextField = txtPersonalInfo;
+        previousSearchedTextField = null;
         if (lsValue == null) {
             return;
         }
