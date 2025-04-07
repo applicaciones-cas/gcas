@@ -378,7 +378,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                             Image loimage = new Image(Files.newInputStream(imgPath));
                             imageView.setImage(loimage);
 
-                            String imgPath2 = selectedFile.toString();
+                            String imgPath2 = selectedFile.getName().toString();
 
                             poJSON = poPurchaseReceivingController.addAttachment();
                             if ("error".equals((String) poJSON.get("result"))) {
@@ -692,7 +692,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             } else {
-                loadRecordAttachment();
+                loadRecordAttachment(true);
             }
         }
     };
@@ -1064,7 +1064,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         }
     }
 
-    public void loadRecordAttachment() {
+    public void loadRecordAttachment(boolean lbloadImage) {
         try {
             if (pnAttachment >= 0) {
                 tfAttachmentNo.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getSourceNo());
@@ -1076,35 +1076,37 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                 int lnAttachmentType = 0;
                 lnAttachmentType = Integer.parseInt(lsAttachmentType);
                 cmbAttachmentType.getSelectionModel().select(lnAttachmentType);
-                try {
-                    String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
 
-                    if (filePath != null && !filePath.isEmpty()) {
-                        Path imgPath = Paths.get(filePath);
-                        String convertedPath = imgPath.toUri().toString();
-                        Image loimage = new Image(convertedPath);
-                        imageView.setImage(loimage);
-                        adjustImageSize(loimage);
-                        stackPaneClip();
-                        stackPaneClip(); // dont remove duplicate
-                    } else {
+                if (lbloadImage) {
+                    try {
+                        String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
+                        String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + (String) attachment_data.get(pnAttachment).getIndex02();
+                        if (filePath != null && !filePath.isEmpty()) {
+                            Path imgPath = Paths.get(filePath2);
+                            String convertedPath = imgPath.toUri().toString();
+                            Image loimage = new Image(convertedPath);
+                            imageView.setImage(loimage);
+                            adjustImageSize(loimage);
+                            stackPaneClip();
+                            stackPaneClip(); // dont remove duplicate
+
+                        } else {
+                            imageView.setImage(null);
+                        }
+
+                    } catch (Exception e) {
                         imageView.setImage(null);
-                        stackPaneClip();
                     }
-
-                } catch (Exception e) {
-                    imageView.setImage(null);
-                    stackPaneClip();
                 }
             } else {
-                imageView.setImage(null);
-                stackPaneClip();
-                pnAttachment = 0;
-
+                if (!lbloadImage) {
+                    imageView.setImage(null);
+                    stackPaneClip();
+                    pnAttachment = 0;
+                }
             }
         } catch (Exception e) {
         }
-        resetImageBounds();
     }
 
     public void loadRecordDetail() {
@@ -1422,13 +1424,13 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                                 tblAttachments.getSelectionModel().select(0);
                                 tblAttachments.getFocusModel().focus(0);
                                 pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
-                                loadRecordAttachment();
+                                loadRecordAttachment(true);
                             }
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
                             tblAttachments.getSelectionModel().select(pnAttachment);
                             tblAttachments.getFocusModel().focus(pnAttachment);
-                            loadRecordAttachment();
+                            loadRecordAttachment(true);
                         }
                     } catch (Exception e) {
 
@@ -1523,7 +1525,6 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                 int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
                 poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
                 cmbAttachmentType.getSelectionModel().select(selectedIndex);
-                loadRecordAttachment();
             }
         });
 
@@ -1533,7 +1534,9 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         tblAttachments.setOnMouseClicked(event -> {
             pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
             if (pnAttachment >= 0) {
-                loadRecordAttachment();
+                scaleFactor = 1.0;
+                loadRecordAttachment(true);
+                resetImageBounds();
             }
         });
         tblViewOrderDetails.setOnMouseClicked(event -> {
@@ -1717,7 +1720,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
             double computedHeight = newHeight.doubleValue();
             ldstackPaneHeight = computedHeight;
             loadTableAttachment();
-            loadRecordAttachment();
+            loadRecordAttachment(true);
             initAttachmentsGrid();
         });
     }

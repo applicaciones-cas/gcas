@@ -831,37 +831,49 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
         }
     }
 
-    public void loadRecordAttachment() {
+    public void loadRecordAttachment(boolean lbloadImage) {
+        try {
+            if (pnAttachment >= 0) {
+                tfAttachmentNo.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getSourceNo());
+                String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                if (lsAttachmentType.equals("")) {
+                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
+                    lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                }
+                int lnAttachmentType = 0;
+                lnAttachmentType = Integer.parseInt(lsAttachmentType);
+                cmbAttachmentType.getSelectionModel().select(lnAttachmentType);
 
-        if (pnAttachment >= 0) {
-            tfAttachmentNo.setText("");
-            try {
-                String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
+                if (lbloadImage) {
+                    try {
+                        String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
+                        String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + (String) attachment_data.get(pnAttachment).getIndex02();
+                        if (filePath != null && !filePath.isEmpty()) {
+                            Path imgPath = Paths.get(filePath2);
+                            String convertedPath = imgPath.toUri().toString();
+                            Image loimage = new Image(convertedPath);
+                            imageView.setImage(loimage);
+                            adjustImageSize(loimage);
+                            stackPaneClip();
+                            stackPaneClip(); // dont remove duplicate
 
-                if (filePath.length() != 0) {
-                    Path imgPath = Paths.get(filePath);
-                    String convertedPath = imgPath.toUri().toString();
-                    Image loimage = new Image(convertedPath);
-                    imageView.setImage(loimage);
-                    adjustImageSize(loimage);
-                    stackPaneClip();
-                    stackPaneClip();
-                } else {
+                        } else {
+                            imageView.setImage(null);
+                        }
+
+                    } catch (Exception e) {
+                        imageView.setImage(null);
+                    }
+                }
+            } else {
+                if (!lbloadImage) {
                     imageView.setImage(null);
                     stackPaneClip();
+                    pnAttachment = 0;
                 }
-
-            } catch (Exception e) {
-                imageView.setImage(null);
-                stackPaneClip();
             }
-        } else {
-            imageView.setImage(null);
-            stackPaneClip();
-            pnAttachment = 0;
-
+        } catch (Exception e) {
         }
-
     }
 
     public void loadRecordDetail() {
@@ -1173,13 +1185,13 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
                                 tblAttachments.getSelectionModel().select(0);
                                 tblAttachments.getFocusModel().focus(0);
                                 pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
-                                loadRecordAttachment();
+                                loadRecordAttachment(true);
                             }
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
                             tblAttachments.getSelectionModel().select(pnAttachment);
                             tblAttachments.getFocusModel().focus(pnAttachment);
-                            loadRecordAttachment();
+                            loadRecordAttachment(true);
                         }
                     } catch (Exception e) {
 
@@ -1251,7 +1263,6 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
                 int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
                 poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
                 cmbAttachmentType.getSelectionModel().select(selectedIndex);
-                loadRecordAttachment();
             }
         });
     }
@@ -1260,7 +1271,9 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
         tblAttachments.setOnMouseClicked(event -> {
             pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
             if (pnAttachment >= 0) {
-                loadRecordAttachment();
+                scaleFactor = 1.0;
+                loadRecordAttachment(true);
+                resetImageBounds();
             }
         });
 
@@ -1428,7 +1441,7 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
             double computedHeight = newHeight.doubleValue();
             ldstackPaneHeight = computedHeight;
             loadTableAttachment();
-            loadRecordAttachment();
+            loadRecordAttachment(true);
             initAttachmentsGrid();
         });
     }

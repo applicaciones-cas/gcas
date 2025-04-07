@@ -84,6 +84,7 @@ import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import javafx.scene.control.ComboBox;
+import org.guanzon.appdriver.constant.DocumentType;
 
 /**
  * FXML Controller class
@@ -555,37 +556,49 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         }
     }
 
-    public void loadRecordAttachment() {
+    public void loadRecordAttachment(boolean lbloadImage) {
+        try {
+            if (pnAttachment >= 0) {
+                tfAttachmentNo.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getSourceNo());
+                String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                if (lsAttachmentType.equals("")) {
+                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
+                    lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                }
+                int lnAttachmentType = 0;
+                lnAttachmentType = Integer.parseInt(lsAttachmentType);
+                cmbAttachmentType.getSelectionModel().select(lnAttachmentType);
 
-        if (pnAttachment >= 0) {
-            tfAttachmentNo.setText("");
-            try {
-                String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
+                if (lbloadImage) {
+                    try {
+                        String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
+                        String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + (String) attachment_data.get(pnAttachment).getIndex02();
+                        if (filePath != null && !filePath.isEmpty()) {
+                            Path imgPath = Paths.get(filePath2);
+                            String convertedPath = imgPath.toUri().toString();
+                            Image loimage = new Image(convertedPath);
+                            imageView.setImage(loimage);
+                            adjustImageSize(loimage);
+                            stackPaneClip();
+                            stackPaneClip(); // dont remove duplicate
 
-                if (filePath.length() != 0) {
-                    Path imgPath = Paths.get(filePath);
-                    String convertedPath = imgPath.toUri().toString();
-                    Image loimage = new Image(convertedPath);
-                    imageView.setImage(loimage);
-                    adjustImageSize(loimage);
-                    stackPaneClip();
-                    stackPaneClip();
-                } else {
+                        } else {
+                            imageView.setImage(null);
+                        }
+
+                    } catch (Exception e) {
+                        imageView.setImage(null);
+                    }
+                }
+            } else {
+                if (!lbloadImage) {
                     imageView.setImage(null);
                     stackPaneClip();
+                    pnAttachment = 0;
                 }
-
-            } catch (Exception e) {
-                imageView.setImage(null);
-                stackPaneClip();
             }
-        } else {
-            imageView.setImage(null);
-            stackPaneClip();
-            pnAttachment = 0;
-
+        } catch (Exception e) {
         }
-
     }
 
     public void loadRecordDetail() {
@@ -868,7 +881,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
 //        for (int i = 0; i < attachment_data.size(); i++) {
 //            attachment_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(i), attachment_data.get(i).getIndex2()));
 //        }
-        loadRecordAttachment();
+        loadRecordAttachment(true);
 
     }
 
@@ -909,13 +922,20 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
                 int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
                 poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
                 cmbAttachmentType.getSelectionModel().select(selectedIndex);
-                loadRecordAttachment();
             }
         });
 
     }
 
     public void initTableOnClick() {
+        tblAttachments.setOnMouseClicked(event -> {
+            pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
+            if (pnAttachment >= 0) {
+                scaleFactor = 1.0;
+                loadRecordAttachment(true);
+                resetImageBounds();
+            }
+        });
 
         tblViewOrderDetails.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
@@ -1057,7 +1077,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
             double computedHeight = newHeight.doubleValue();
             ldstackPaneHeight = computedHeight;
             loadTableAttachment();
-            loadRecordAttachment();
+            loadRecordAttachment(true);
             initAttachmentsGrid();
         });
     }

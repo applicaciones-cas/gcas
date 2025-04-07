@@ -269,7 +269,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                         break;
                     case "btnSearch":
                         if ((lastFocusedTextField != null)) {
-                            if (!Arrays.asList("tfCompany", "tfSupplier", "tfTrucking", "tfTerm", "tfBrand","tfModel").contains(lastFocusedTextField.getId())) {
+                            if (!Arrays.asList("tfCompany", "tfSupplier", "tfTrucking", "tfTerm", "tfBrand", "tfModel").contains(lastFocusedTextField.getId())) {
                                 ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
                                 break;
                             }
@@ -389,7 +389,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             Image loimage = new Image(Files.newInputStream(imgPath));
                             imageView.setImage(loimage);
 
-                            String imgPath2 = selectedFile.toString();
+                            String imgPath2 = selectedFile.getName().toString();
 
                             poJSON = poPurchaseReceivingController.addAttachment();
                             if ("error".equals((String) poJSON.get("result"))) {
@@ -460,7 +460,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     void tblAttachments_Clicked(MouseEvent event) {
         pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
         if (pnAttachment >= 0) {
-            loadRecordAttachment();
+            loadRecordAttachment(true);
             resetImageBounds();
         }
     }
@@ -790,7 +790,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             } else {
-                loadRecordAttachment();
+                loadRecordAttachment(true);
             }
         }
     };
@@ -1157,7 +1157,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         }
     }
 
-    public void loadRecordAttachment() {
+    public void loadRecordAttachment(boolean lbloadImage) {
         try {
             if (pnAttachment >= 0) {
                 tfAttachmentNo.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getSourceNo());
@@ -1169,35 +1169,37 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                 int lnAttachmentType = 0;
                 lnAttachmentType = Integer.parseInt(lsAttachmentType);
                 cmbAttachmentType.getSelectionModel().select(lnAttachmentType);
-                try {
-                    String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
 
-                    if (filePath != null && !filePath.isEmpty()) {
-                        Path imgPath = Paths.get(filePath);
-                        String convertedPath = imgPath.toUri().toString();
-                        Image loimage = new Image(convertedPath);
-                        imageView.setImage(loimage);
-                        adjustImageSize(loimage);
-                        stackPaneClip();
-                        stackPaneClip(); // dont remove duplicate
-                    } else {
+                if (lbloadImage) {
+                    try {
+                        String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
+                        String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + (String) attachment_data.get(pnAttachment).getIndex02();
+                        if (filePath != null && !filePath.isEmpty()) {
+                            Path imgPath = Paths.get(filePath2);
+                            String convertedPath = imgPath.toUri().toString();
+                            Image loimage = new Image(convertedPath);
+                            imageView.setImage(loimage);
+                            adjustImageSize(loimage);
+                            stackPaneClip();
+                            stackPaneClip(); // dont remove duplicate
+
+                        } else {
+                            imageView.setImage(null);
+                        }
+
+                    } catch (Exception e) {
                         imageView.setImage(null);
-                        stackPaneClip();
                     }
-
-                } catch (Exception e) {
-                    imageView.setImage(null);
-                    stackPaneClip();
                 }
             } else {
-                imageView.setImage(null);
-                stackPaneClip();
-                pnAttachment = 0;
-
+                if (!lbloadImage) {
+                    imageView.setImage(null);
+                    stackPaneClip();
+                    pnAttachment = 0;
+                }
             }
         } catch (Exception e) {
         }
-        resetImageBounds();
     }
 
     public void loadRecordDetail() {
@@ -1537,13 +1539,13 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                                 tblAttachments.getSelectionModel().select(0);
                                 tblAttachments.getFocusModel().focus(0);
                                 pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
-                                loadRecordAttachment();
+                                loadRecordAttachment(true);
                             }
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
                             tblAttachments.getSelectionModel().select(pnAttachment);
                             tblAttachments.getFocusModel().focus(pnAttachment);
-                            loadRecordAttachment();
+                            loadRecordAttachment(true);
                         }
                     } catch (Exception e) {
 
@@ -1636,7 +1638,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                 int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
                 poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
                 cmbAttachmentType.getSelectionModel().select(selectedIndex);
-                loadRecordAttachment();
             }
         });
     }
@@ -1645,7 +1646,9 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         tblAttachments.setOnMouseClicked(event -> {
             pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
             if (pnAttachment >= 0) {
-                loadRecordAttachment();
+                scaleFactor = 1.0;
+                loadRecordAttachment(true);
+                resetImageBounds();
             }
         });
         tblViewOrderDetails.setOnMouseClicked(event -> {
@@ -1870,7 +1873,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             double computedHeight = newHeight.doubleValue();
             ldstackPaneHeight = computedHeight;
             loadTableAttachment();
-            loadRecordAttachment();
+            loadRecordAttachment(true);
             initAttachmentsGrid();
         });
     }
@@ -2034,33 +2037,29 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
             ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
-            Path filePath = Paths.get(image.getIndex02());
-            String convertedPath = filePath.toUri().toString();
-
-            Image newImage = new Image(convertedPath);
-            // Create a transition animation
+            String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + image.getIndex02();
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
-
-            slideOut.setOnFinished(event -> {
-                imageView.setImage(newImage);
-                imageView.setTranslateX(direction * 400);
-                adjustImageSize(newImage);
-
-                TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), imageView);
-                slideIn.setToX(0);
-                slideIn.play();
-            });
-
-            slideOut.play();
 
             tblAttachments.getFocusModel().focus(newIndex);
             tblAttachments.getSelectionModel().select(newIndex);
             pnAttachment = newIndex;
+            loadRecordAttachment(false);
 
-            if (isImageViewOutOfBounds(imageView, stackPane1)) {
-                resetImageBounds();
-            }
+            // Create a transition animation
+            slideOut.setOnFinished(event -> {
+                imageView.setTranslateX(direction * 400);
+                TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), imageView);
+                slideIn.setToX(0);
+                slideIn.play();
+                
+                loadRecordAttachment(true);
+            });
+
+            slideOut.play();
+        }
+        if (isImageViewOutOfBounds(imageView, stackPane1)) {
+            resetImageBounds();
         }
     }
 
