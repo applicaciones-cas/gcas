@@ -358,7 +358,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                     pagination.toFront();
                     break;
                 case "btnApprove":
-                    loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Approved");
+                    loJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved");
                     if (!"success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
@@ -410,7 +410,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
 
                     if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
-                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Approved")).get("result"))) {
+                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved")).get("result"))) {
                             ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         }
                     } else {
@@ -797,13 +797,9 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
         }
         if (fnEditMode == EditMode.READY) {
             switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
-                case PurchaseOrderStatus.OPEN:
+                case PurchaseOrderStatus.CONFIRMED:
                     CustomCommonUtil.setVisible(true, btnApprove, btnReturn, btnVoid, btnUpdate, btnPrint);
                     CustomCommonUtil.setManaged(true, btnApprove, btnReturn, btnVoid, btnUpdate, btnPrint);
-                    break;
-                case PurchaseOrderStatus.CONFIRMED:
-                    CustomCommonUtil.setVisible(true, btnReturn, btnVoid, btnUpdate, btnPrint);
-                    CustomCommonUtil.setManaged(true, btnReturn, btnVoid, btnUpdate, btnPrint);
                     break;
                 case PurchaseOrderStatus.APPROVED:
                     btnPrint.setVisible(true);

@@ -90,6 +90,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
     private int pnTblStockRequestRow = -1;
     private int pnTblPODetailRow = -1;
     private int pnSTOCK_REQUEST_PAGE = 50;
+    private String prevCompany = "";
+    private String prevSupplier = "";
     private TextField activeField;
     @FXML
     private AnchorPane AnchorMaster, AnchorDetails, AnchorMain, apBrowse, apButton;
@@ -354,6 +356,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                         loadDetail();
                         loadTablePODetail();
+                        selectTheExistedDetailFromStockRequest();
                         if (!tfCost.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
                             loadTableStockRequest();
                         }
@@ -367,6 +370,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     poDetail_data.clear();
                     loJSON = poPurchasingController.PurchaseOrder().NewTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
+                        poPurchasingController.PurchaseOrder().Master().setCompanyID(prevCompany);
+                        poPurchasingController.PurchaseOrder().Master().setSupplierID(prevSupplier);
                         poPurchasingController.PurchaseOrder().Master().setIndustryID(poApp.getIndustry());
                         poPurchasingController.PurchaseOrder().Master().setDestinationID(poPurchasingController.PurchaseOrder().Master().Branch().getBranchCode());
                         poPurchasingController.PurchaseOrder().Master().setInventoryTypeCode(poPurchasingController.PurchaseOrder().getInventoryTypeCode());
@@ -374,9 +379,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         pnTblPODetailRow = - 1;
                         isNewUpdate = true;
                         pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
-                        tblVwStockRequest.getItems().clear();
-                        poApprovedStockRequest_data.clear();
-                        tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
                         loadTablePODetail();
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
@@ -399,6 +401,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     pnTblPODetailRow = - 1;
                     pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                     loadTablePODetail();
+                    selectTheExistedDetailFromStockRequest();
                     if (!tfCost.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
                         loadTableStockRequest();
                     }
@@ -525,6 +528,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
                     }
+                    prevCompany = poPurchasingController.PurchaseOrder().Master().getCompanyID();
+                    prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
 
                     // Validate Detail Count Before Backend Processing
                     int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
@@ -575,7 +580,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).setOldPrice(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost());
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).setModifiedDate(poApp.getServerDate());
                     }
-
                     // Save Transaction
                     if (!"success".equals((loJSON = poPurchasingController.PurchaseOrder().SaveTransaction()).get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -601,6 +605,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             ShowMessageFX.Warning((String) loJSON.get("message"), "Print Purchase Order", null);
                         }
                     }
+
                     Platform.runLater(() -> btnNew.fire());
                     break;
                 case "btnCancel":
@@ -612,6 +617,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             poDetail_data.clear();
                             tblVwOrderDetails.getItems().clear();
                             pnEditMode = EditMode.UNKNOWN;
+                            prevCompany = poPurchasingController.PurchaseOrder().Master().getCompanyID();
+                            prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                             loJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
                             if ("error".equals((String) loJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -1316,7 +1323,6 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 if (item == null || empty) {
                     setStyle("");
                 } else {
-                    // Assuming empIndex05 corresponds to an employee status
                     String status = item.getIndex07(); // Replace with actual getter
                     switch (status) {
                         case PurchaseOrderStatus.CONFIRMED:
@@ -1397,21 +1403,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             }
 
             @Override
-
             protected void succeeded() {
                 progressIndicator.setVisible(false);
-                if (!poApprovedStockRequest_data.isEmpty()) {
-                    Set<String> existingDetailIds = poDetail_data.stream()
-                            .map(ModelPurchaseOrderDetail::getIndex02)
-                            .collect(Collectors.toSet());
-
-                    for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
-                        master.setIndex07(existingDetailIds.contains(master.getIndex06())
-                                ? PurchaseOrderStatus.CONFIRMED : PurchaseOrderStatus.OPEN);
-                    }
-
-                    tblVwStockRequest.refresh();
-                }
             }
 
             @Override
@@ -1658,9 +1651,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     .map(ModelPurchaseOrderDetail::getIndex02)
                     .collect(Collectors.toSet());
 
-            for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
-                master.setIndex07(existingDetailIds.contains(master.getIndex06()) ? PurchaseOrderStatus.CONFIRMED : PurchaseOrderStatus.OPEN);
+            if (pnEditMode != EditMode.ADDNEW) {
+                for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                    master.setIndex07(existingDetailIds.contains(master.getIndex06()) ? PurchaseOrderStatus.CONFIRMED : PurchaseOrderStatus.OPEN);
+                }
             }
+
             tblVwStockRequest.refresh();
         }
     }

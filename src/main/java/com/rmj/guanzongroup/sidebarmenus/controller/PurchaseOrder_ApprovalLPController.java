@@ -303,7 +303,7 @@ public class PurchaseOrder_ApprovalLPController implements Initializable, Screen
                     pagination.toFront();
                     break;
                 case "btnApprove":
-                    loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Approved");
+                    loJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved");
                     if (!"success".equals((String) loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         break;
@@ -355,7 +355,7 @@ public class PurchaseOrder_ApprovalLPController implements Initializable, Screen
 
                     if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
-                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Approved")).get("result"))) {
+                        if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved")).get("result"))) {
                             ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                         }
                     } else {
