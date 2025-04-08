@@ -386,14 +386,14 @@ public class DeliveryAcceptance_SerialMPController implements Initializable, Scr
         });
     }
 
-    private int moveToNextRow(TableView table, TablePosition focusedCell) {
-        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
+    private int moveToNextRow(TableView table, int focusedCell) {
+        int nextRow = (focusedCell + 1) % table.getItems().size();
         table.getSelectionModel().select(nextRow);
         return nextRow;
     }
 
-    private int moveToPreviousRow(TableView table, TablePosition focusedCell) {
-        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
+    private int moveToPreviousRow(TableView table, int focusedCell) {
+        int previousRow = (focusedCell - 1 + table.getItems().size()) % table.getItems().size();
         table.getSelectionModel().select(previousRow);
         return previousRow;
     }
@@ -402,14 +402,16 @@ public class DeliveryAcceptance_SerialMPController implements Initializable, Scr
         if (details_data.size() > 0) {
             TableView<?> currentTable = (TableView<?>) event.getSource();
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+            ModelDeliveryAcceptance_SerialMP selectedItem = (ModelDeliveryAcceptance_SerialMP) tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
+            pnDetail = Integer.valueOf(selectedItem.getIndex04());
             if (focusedCell != null) {
                 switch (event.getCode()) {
                     case TAB:
                     case DOWN:
-                        pnDetail = moveToNextRow(currentTable, focusedCell);
+                        pnDetail = moveToNextRow(currentTable, pnDetail);
                         break;
                     case UP:
-                        pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                        pnDetail = moveToPreviousRow(currentTable, pnDetail);
                         break;
 
                     default:
@@ -425,9 +427,10 @@ public class DeliveryAcceptance_SerialMPController implements Initializable, Scr
     public void initTableOnClick() {
         tblViewDetail.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
-                loadRecordDetail();
+                ModelDeliveryAcceptance_SerialMP selectedItem = (ModelDeliveryAcceptance_SerialMP) tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
+                pnDetail = Integer.valueOf(selectedItem.getIndex04());
                 tfIMEI1.requestFocus();
+                loadRecordDetail();
             }
         });
         tblViewDetail.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
