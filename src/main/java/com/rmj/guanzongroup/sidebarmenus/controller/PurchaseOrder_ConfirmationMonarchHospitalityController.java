@@ -744,8 +744,8 @@ public class PurchaseOrder_ConfirmationMonarchHospitalityController implements I
         if (fnEditMode == EditMode.READY) {
             switch (poPurchasingController.PurchaseOrder().Master().getTransactionStatus()) {
                 case PurchaseOrderStatus.OPEN:
-                    CustomCommonUtil.setVisible(true, btnConfirm, btnReturn, btnVoid, btnUpdate, btnPrint);
-                    CustomCommonUtil.setManaged(true, btnConfirm, btnReturn, btnVoid, btnUpdate, btnPrint);
+                    CustomCommonUtil.setVisible(true, btnConfirm, btnVoid, btnUpdate, btnPrint);
+                    CustomCommonUtil.setManaged(true, btnConfirm, btnVoid, btnUpdate, btnPrint);
                     break;
                 case PurchaseOrderStatus.CONFIRMED:
                     CustomCommonUtil.setVisible(true, btnReturn, btnVoid, btnUpdate, btnPrint);
