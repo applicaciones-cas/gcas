@@ -4,6 +4,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
@@ -24,7 +25,7 @@
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-            <BorderPane prefHeight="200.0" prefWidth="200.0">
+            <BorderPane prefHeight="890.0" prefWidth="1219.0">
                <center>
                       <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" style="-fx-border-color: orange; -fx-border-radius: 10;" BorderPane.alignment="CENTER">
                           <children>
@@ -52,11 +53,15 @@
                                               <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
                                               <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="40.0" vgrow="SOMETIMES" />
                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                                               <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
                                           </rowConstraints>
                                           <children>
-                                                <Button fx:id="btnSignIn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="26.0" style="-fx-background-radius: 20;" styleClass="button_process2" stylesheets="@../css/StyleSheet.css" text="Sign in" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                <Button fx:id="btnSignIn" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="26.0" style="-fx-background-radius: 20;" styleClass="button_process2" stylesheets="@../css/StyleSheet.css" text="Sign in" GridPane.columnIndex="1" GridPane.rowIndex="8">
                                                     <font>
                                                         <Font size="13.0" />
                                                     </font>
@@ -88,7 +93,7 @@
                                                 <Insets />
                                              </HBox.margin>
                                                     </StackPane>
-                                                      <Button fx:id="btnEyeIcon" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" style="-fx-background-color: transparent;">
+                                                      <Button fx:id="btnEyeIcon" alignment="CENTER_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#cmdButton_Click" style="-fx-background-color: transparent;">
                                                           <cursor>
                                                               <Cursor fx:constant="HAND" />
                                                           </cursor>
@@ -118,6 +123,8 @@
                                                     </TextField>
                                        </children>
                                     </HBox>
+                                    <ComboBox fx:id="cmbIndustry" maxHeight="-Infinity" minHeight="-Infinity" minWidth="500.0" prefHeight="53.0" prefWidth="500.0" promptText="Industry" styleClass="LogInCombobox" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <ComboBox fx:id="cmbCompany" prefWidth="150.0" promptText="Company" styleClass="LogInCombobox" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                           </children>
                                       </GridPane>
                                   </children>
