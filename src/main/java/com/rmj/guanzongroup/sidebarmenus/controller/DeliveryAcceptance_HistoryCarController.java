@@ -151,9 +151,9 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     @FXML
     private Button btnPrint, btnHistory, btnRetrieve, btnClose; //btnUpdate, btnSearch, btnSave, btnCancel, btnSerials, btnApprove, btnVoid, btnReturn
     @FXML
-    private Label lblStatus;
+    private Label lblStatus, lblSearchIndustry, lblSearchCompany;
     @FXML
-    private TextField tfTransactionNo, tfIndustry, tfCompany, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
+    private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
             tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity, tfModelVariant; //tfBarcode, tfSupersede, tfDescription,;
     @FXML
@@ -170,7 +170,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     @FXML
     private Pagination pgPagination;
     @FXML
-    private TextField tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo;
+    private TextField  tfSearchSupplier, tfSearchReferenceNo;
     @FXML
     private TextField tfAttachmentNo;
     @FXML
@@ -411,11 +411,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                case "tfCompany":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setCompanyId("");
-                    }
-                    break;
                 case "tfSupplier":
                     if (lsValue.isEmpty()) {
                         poJSON = poPurchaseReceivingController.Master().setSupplierId("");
@@ -593,11 +588,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                case "tfSearchCompany":
-                    if (lsValue.equals("")) {
-                        psCompanyId = "";
-                    }
-                    break;
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
                         psSupplierId = "";
@@ -606,7 +596,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                 case "tfSearchReferenceNo":
                     break;
             }
-            if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier")
+            if ( lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             }
@@ -622,20 +612,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
             switch (event.getCode()) {
                 case F3:
                     switch (lsID) {
-                        case "tfSearchCompany":
-                            poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfCompany.setText("");
-                                psCompanyId = "";
-                                break;
-                            } else {
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            }
-
-                            retrievePOR();
-                            loadRecordSearch();
-                            return;
                         case "tfSearchSupplier":
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
@@ -817,11 +793,11 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
     public void loadRecordSearch() {
         try {
-            tfSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
+            lblSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
             if (psCompanyId.equals("")) {
-                tfSearchCompany.setText("");
+                lblSearchCompany.setText("");
             } else {
-                tfSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+                lblSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
             }
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
@@ -977,8 +953,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            tfIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            tfCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            
+            
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -1255,12 +1231,12 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     }
 
     public void initTextFields() {
-        tfSearchCompany.focusedProperty().addListener(txtField_Focus);
+        
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
 
-        tfSearchCompany.setOnKeyPressed(this::txtField_KeyPressed);
+        
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
         // Combobox
@@ -1682,7 +1658,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        tfSearchCompany.clear();
+        lblSearchCompany.setText("");
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
@@ -1690,8 +1666,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
-        tfIndustry.clear();
-        tfCompany.clear();
+        
+        
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();

@@ -132,9 +132,9 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apAttachments, apAttachmentButtons;
 
     @FXML
-    private TextField tfSearchIndustry, tfSearchSupplier, tfSearchReferenceNo, tfSearchCompany,
-            tfTransactionNo, tfCompany, tfSupplier, tfTerm, tfTrucking, tfReferenceNo,
-            tfIndustry, tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
+    private TextField  tfSearchSupplier, tfSearchReferenceNo,
+            tfTransactionNo, tfSupplier, tfTerm, tfTrucking, tfReferenceNo,
+             tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
             tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost,
             tfOrderQuantity, tfReceiveQuantity, tfOrderNo, tfSupersede, tfAttachmentNo;
 
@@ -157,7 +157,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus;
+    private Label lblStatus, lblSearchIndustry, lblSearchCompany;
 
     @FXML
     private TextArea taRemarks;
@@ -305,11 +305,6 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                case "tfSearchCompany":
-                    if (lsValue.equals("")) {
-                        psCompanyId = "";
-                    }
-                    break;
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
                         psSupplierId = "";
@@ -318,7 +313,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
                 case "tfSearchReferenceNo":
                     break;
             }
-            if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier")
+            if ( lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             }
@@ -334,20 +329,6 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
             switch (event.getCode()) {
                 case F3:
                     switch (lsID) {
-                        case "tfSearchCompany":
-                            poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfCompany.setText("");
-                                psCompanyId = "";
-                                break;
-                            } else {
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            }
-
-                            retrievePOR();
-                            loadRecordSearch();
-                            return;
                         case "tfSearchSupplier":
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
@@ -529,11 +510,11 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
 
     public void loadRecordSearch() {
         try {
-            tfSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
+            lblSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
             if (psCompanyId.equals("")) {
-                tfSearchCompany.setText("");
+                lblSearchCompany.setText("");
             } else {
-                tfSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+                lblSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
             }
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
@@ -642,14 +623,14 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.UPDATE;
         if (lbDisable) {
-            tfCompany.setDisable(lbDisable);
-            tfCompany.setDisable(lbDisable);
-            tfCompany.getStyleClass().add("DisabledTextField");
+            
+            
+            
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
-            tfCompany.setDisable(lbDisable);
-            tfCompany.setDisable(lbDisable);
-            tfCompany.getStyleClass().remove("DisabledTextField");
+            
+            
+            
             tfSupplier.getStyleClass().remove("DisabledTextField");
         }
 
@@ -702,8 +683,8 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            tfIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            tfCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            
+            
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -983,12 +964,12 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
     }
 
     public void initTextFields() {
-        tfSearchCompany.focusedProperty().addListener(txtField_Focus);
+        
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
 
-        tfSearchCompany.setOnKeyPressed(this::txtField_KeyPressed);
+        
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
@@ -1423,7 +1404,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        tfSearchCompany.clear();
+        lblSearchCompany.setText("");
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
@@ -1431,8 +1412,8 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
         cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
-        tfIndustry.clear();
-        tfCompany.clear();
+        
+        
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();

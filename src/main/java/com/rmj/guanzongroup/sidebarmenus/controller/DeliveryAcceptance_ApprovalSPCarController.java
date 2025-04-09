@@ -132,8 +132,9 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
 
     private final Map<Integer, List<String>> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
-    private TextField lastFocusedTextField = null;
-    private TextField previousSearchedTextField = null;
+    private Object lastFocusedTextField = null;
+    private Object previousSearchedTextField = null;
+
 
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
@@ -142,9 +143,9 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apAttachments, apAttachmentButtons;
 
     @FXML
-    private TextField tfSearchIndustry, tfSearchSupplier, tfSearchReferenceNo, tfSearchCompany,
-            tfTransactionNo, tfCompany, tfSupplier, tfTerm, tfTrucking, tfReferenceNo,
-            tfIndustry, tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
+    private TextField  tfSearchSupplier, tfSearchReferenceNo,
+            tfTransactionNo, tfSupplier, tfTerm, tfTrucking, tfReferenceNo,
+             tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
             tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost,
             tfOrderQuantity, tfReceiveQuantity, tfOrderNo, tfSupersede, tfAttachmentNo;
 
@@ -169,7 +170,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus;
+    private Label lblStatus, lblSearchIndustry, lblSearchCompany;
 
     @FXML
     private TextArea taRemarks;
@@ -256,30 +257,33 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnSearch":
+                        String lsMessage = "Focus a searchable textfield to search";
                         if ((lastFocusedTextField != null)) {
-                            if (!Arrays.asList("tfSearchCompany","tfSearchSupplier","tfSearchReferenceNo","tfCompany", "tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
-                                    "tfDescription", "tfSupersede").contains(lastFocusedTextField.getId())) {
-                                ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
-                                break;
-                            }
-                        }
-                        if (lastFocusedTextField == previousSearchedTextField && (lastFocusedTextField != null)) {
-                            System.out.println("Search skipped: Same field clicked twice.");
-                            break;
-                        }
-                        previousSearchedTextField = lastFocusedTextField;
-                        if (lastFocusedTextField != null) {
-                            // Create a simulated KeyEvent for F3 key press
-                            KeyEvent keyEvent = new KeyEvent(
-                                    KeyEvent.KEY_PRESSED,
-                                    "",
-                                    "F3",
-                                    KeyCode.F3,
-                                    false, false, false, false);
+                            if (lastFocusedTextField instanceof TextField) {
+                                TextField tf = (TextField) lastFocusedTextField;
+                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
+                                        "tfDescription", "tfSupersede").contains(tf.getId())) {
 
-                            lastFocusedTextField.fireEvent(keyEvent);
+                                    if (lastFocusedTextField == previousSearchedTextField) {
+                                        System.out.println("Search skipped: Same field clicked twice.");
+                                        break;
+                                    }
+                                    previousSearchedTextField = lastFocusedTextField;
+                                    // Create a simulated KeyEvent for F3 key press
+                                    KeyEvent keyEvent = new KeyEvent(
+                                            KeyEvent.KEY_PRESSED,
+                                            "",
+                                            "",
+                                            KeyCode.F3,
+                                            false, false, false, false
+                                    );
+                                    tf.fireEvent(keyEvent);
+                                }
+                            } else {
+                                ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+                            }
                         } else {
-                            ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
+                            ShowMessageFX.Information(null, pxeModuleName, lsMessage);
                         }
                         break;
                     case "btnCancel":
@@ -475,11 +479,6 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                case "tfCompany":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setCompanyId("");
-                    }
-                    break;
                 case "tfSupplier":
                     if (lsValue.isEmpty()) {
                         poJSON = poPurchaseReceivingController.Master().setSupplierId("");
@@ -562,6 +561,9 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
         TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsID = (txtField.getId());
         String lsValue = txtField.getText();
+
+        lastFocusedTextField = txtField;
+        previousSearchedTextField = null;
 
         if (lsValue == null) {
             return;
@@ -667,11 +669,6 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                case "tfSearchCompany":
-                    if (lsValue.equals("")) {
-                        psCompanyId = "";
-                    }
-                    break;
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
                         psSupplierId = "";
@@ -686,7 +683,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                     poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setTransactionNo(lsValue);
                     break;
             }
-            if (lsTxtFieldID.equals("tfSearchCompany") || lsTxtFieldID.equals("tfSearchSupplier")
+            if ( lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             } else {
@@ -716,20 +713,6 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                     break;
                 case F3:
                     switch (lsID) {
-                        case "tfSearchCompany":
-                            poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSearchCompany.setText("");
-                                psCompanyId = "";
-                                break;
-                            } else {
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            }
-
-                            retrievePOR();
-                            loadRecordSearch();
-                            return;
                         case "tfSearchSupplier":
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
@@ -840,6 +823,9 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
+                
+                lastFocusedTextField = datePicker;
+                previousSearchedTextField = null;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 if (inputText != null && !inputText.trim().isEmpty()) {
@@ -1044,11 +1030,11 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
 
     public void loadRecordSearch() {
         try {
-            tfSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
+            lblSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
             if (psCompanyId.equals("")) {
-                tfSearchCompany.setText("");
+                lblSearchCompany.setText("");
             } else {
-                tfSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+                lblSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
             }
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
@@ -1154,15 +1140,15 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
     public void loadRecordMaster() {
         boolean lbDisable = poPurchaseReceivingController.getEditMode() == EditMode.UPDATE;
         if (lbDisable) {
-            tfCompany.getStyleClass().add("DisabledTextField");
+            
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
-            while (tfCompany.getStyleClass().contains("DisabledTextField") || tfSupplier.getStyleClass().contains("DisabledTextField")) {
-                tfCompany.getStyleClass().remove("DisabledTextField");
+            while ( tfSupplier.getStyleClass().contains("DisabledTextField")) {
+                
                 tfSupplier.getStyleClass().remove("DisabledTextField");
             }
         }
-        tfCompany.setDisable(lbDisable);
+        
         tfSupplier.setDisable(lbDisable);
 
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
@@ -1214,8 +1200,8 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            tfIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            tfCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            
+            
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -1490,7 +1476,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
     }
 
     public void initTextFields() {
-        tfSearchCompany.focusedProperty().addListener(txtField_Focus);
+        
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
@@ -1508,7 +1494,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
         tfCost.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
-        tfSearchCompany.setOnKeyPressed(this::txtField_KeyPressed);
+        
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
@@ -1994,7 +1980,7 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        tfSearchCompany.clear();
+        lblSearchCompany.setText("");
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
@@ -2002,8 +1988,8 @@ public class DeliveryAcceptance_ApprovalSPCarController implements Initializable
         cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
-        tfIndustry.clear();
-        tfCompany.clear();
+        
+        
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();

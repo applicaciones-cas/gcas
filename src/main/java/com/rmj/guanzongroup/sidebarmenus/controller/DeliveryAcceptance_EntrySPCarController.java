@@ -71,9 +71,13 @@ import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * FXML Controller class
@@ -99,10 +103,12 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
 
-    private final Map<Integer, String> highlightedRowsMain = new HashMap<>();
-    private final Map<Integer, String> highlightedRowsDetail = new HashMap<>();
-    private TextField lastFocusedTextField = null;
-    private TextField previousSearchedTextField = null;
+    private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
+    private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
+    
+    private Object lastFocusedTextField = null;
+    private Object previousSearchedTextField = null;
+
 
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
@@ -117,10 +123,10 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose;
 
     @FXML
-    private Label lblStatus;
+    private Label lblStatus, lblSearchIndustry, lblSearchCompany;
 
     @FXML
-    private TextField tfTransactionNo, tfIndustry, tfCompany, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
+    private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBarcode, tfSupersede, tfDescription, tfBrand, tfModel, tfColor, tfInventoryType,
             tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity;
 
@@ -173,6 +179,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
             loadTableDetail();
 
             pgPagination.setPageCount(1);
+            loadRecordSearch();
 
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
@@ -254,30 +261,33 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         break;
                     case "btnSearch":
+                        String lsMessage = "Focus a searchable textfield to search";
                         if ((lastFocusedTextField != null)) {
-                            if (!Arrays.asList("tfCompany", "tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
-                                    "tfDescription", "tfSupersede").contains(lastFocusedTextField.getId())) {
-                                ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
-                                break;
-                            }
-                        }
-                        if (lastFocusedTextField == previousSearchedTextField && (lastFocusedTextField != null)) {
-                            System.out.println("Search skipped: Same field clicked twice.");
-                            break;
-                        }
-                        previousSearchedTextField = lastFocusedTextField;
-                        if (lastFocusedTextField != null) {
-                            // Create a simulated KeyEvent for F3 key press
-                            KeyEvent keyEvent = new KeyEvent(
-                                    KeyEvent.KEY_PRESSED,
-                                    "",
-                                    "F3",
-                                    KeyCode.F3,
-                                    false, false, false, false);
+                            if (lastFocusedTextField instanceof TextField) {
+                                TextField tf = (TextField) lastFocusedTextField;
+                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
+                                        "tfDescription", "tfSupersede").contains(tf.getId())) {
 
-                            lastFocusedTextField.fireEvent(keyEvent);
+                                    if (lastFocusedTextField == previousSearchedTextField) {
+                                        System.out.println("Search skipped: Same field clicked twice.");
+                                        break;
+                                    }
+                                    previousSearchedTextField = lastFocusedTextField;
+                                    // Create a simulated KeyEvent for F3 key press
+                                    KeyEvent keyEvent = new KeyEvent(
+                                            KeyEvent.KEY_PRESSED,
+                                            "",
+                                            "",
+                                            KeyCode.F3,
+                                            false, false, false, false
+                                    );
+                                    tf.fireEvent(keyEvent);
+                                }
+                            } else {
+                                ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+                            }
                         } else {
-                            ShowMessageFX.Information(null, pxeModuleName, "Focus a searchable textfield to search");
+                            ShowMessageFX.Information(null, pxeModuleName, lsMessage);
                         }
                         break;
                     case "btnCancel":
@@ -397,6 +407,9 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
         String lsID = (txtField.getId());
         String lsValue = txtField.getText();
 
+        lastFocusedTextField = txtField;
+        previousSearchedTextField = null;
+
         if (lsValue == null) {
             return;
         }
@@ -502,11 +515,6 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                case "tfCompany":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setCompanyId("");
-                    }
-                    break;
                 case "tfSupplier":
                     if (lsValue.isEmpty()) {
                         poJSON = poPurchaseReceivingController.Master().setSupplierId("");
@@ -624,7 +632,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                             poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfCompany.setText("");
+                                
                                 psCompanyId = "";
                                 break;
                             }
@@ -776,7 +784,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
     }
 
     public void initTextFields() {
-        tfCompany.focusedProperty().addListener(txtMaster_Focus);
+        
         tfSupplier.focusedProperty().addListener(txtMaster_Focus);
         tfTrucking.focusedProperty().addListener(txtMaster_Focus);
         taRemarks.focusedProperty().addListener(txtArea_Focus);
@@ -791,7 +799,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
         tfCost.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
-        tfCompany.setOnKeyPressed(this::txtField_KeyPressed);
+        
         tfSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfTrucking.setOnKeyPressed(this::txtField_KeyPressed);
         tfTerm.setOnKeyPressed(this::txtField_KeyPressed);
@@ -812,6 +820,9 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
+                
+                lastFocusedTextField = datePicker;
+                previousSearchedTextField = null;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 if (inputText != null && !inputText.trim().isEmpty()) {
@@ -974,8 +985,8 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
         dpReferenceDate.setValue(null);
 
         tfTransactionNo.clear();
-        tfIndustry.clear();
-        tfCompany.clear();
+        
+        
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();
@@ -1001,7 +1012,18 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
         loadTableDetail();
         loadTableMain();
     }
-
+    public void loadRecordSearch() {
+        try {
+            lblSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
+            if (psCompanyId.equals("")) {
+                lblSearchCompany.setText("");
+            } else {
+                lblSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            }
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+    }
     public void loadRecordDetail() {
         try {
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
@@ -1041,15 +1063,15 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.UPDATE;
         if (lbDisable) {
-            tfCompany.getStyleClass().add("DisabledTextField");
+            
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
-            while (tfCompany.getStyleClass().contains("DisabledTextField") || tfSupplier.getStyleClass().contains("DisabledTextField")) {
-                tfCompany.getStyleClass().remove("DisabledTextField");
+            while ( tfSupplier.getStyleClass().contains("DisabledTextField")) {
+                
                 tfSupplier.getStyleClass().remove("DisabledTextField");
             }
         }
-        tfCompany.setDisable(lbDisable);
+        
         tfSupplier.setDisable(lbDisable);
 
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
@@ -1101,8 +1123,8 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            tfIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            tfCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            
+            
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -1199,10 +1221,16 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                 super.updateItem(item, empty);
                 if (item == null || empty) {
                     setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsMain.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRowsMain.get(getIndex()) + ";");
                 } else {
-                    setStyle(""); // Default style
+                    String key = item.getIndex04(); // defines the ReferenceNo
+                    if (highlightedRowsMain.containsKey(key)) {
+                        List<String> colors = highlightedRowsMain.get(key);
+                        if (!colors.isEmpty()) {
+                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply latest color
+                        }
+                    } else {
+                        setStyle(""); // Default style
+                    }
                 }
             }
         });
@@ -1385,8 +1413,8 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                     if (selected != null) {
                         int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                         pnMain = pnRowMain;
-                        disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
-                        highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
+                        
+                        
                     }
                 }
 
@@ -1448,6 +1476,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                             }
                         }
 
+                        List<String> lOrderNo = new ArrayList<>();
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             try {
@@ -1462,6 +1491,8 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                                 highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
                             }
 
+                            lOrderNo.add(poPurchaseReceivingController.Detail(lnCtr).getOrderNo());
+
                             details_data.add(
                                     new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
@@ -1472,6 +1503,19 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
+                        }
+
+                        List<String> cleanedList = lOrderNo.stream()
+                                .filter(Objects::nonNull) // remove nulls
+                                .map(String::trim) // trim whitespaces
+                                .filter(s -> !s.isEmpty()) // remove empty strings
+                                .distinct() // remove duplicates
+                                .collect(Collectors.toList());         // collect into list
+
+                        disableAllHighlightByKey(tblViewPuchaseOrder, highlightedRowsMain);
+                        // Use cleaned list
+                        for (String item : cleanedList) {
+                            highlightByKey(tblViewPuchaseOrder, item, "#A7C7E7", highlightedRowsMain);
                         }
 
                         if (pnDetail < 0 || pnDetail
@@ -1597,22 +1641,55 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
 
         tblViewPuchaseOrder.scrollTo(0);
     }
-
-    public <T> void highlight(TableView<T> table, int rowIndex, String color, Map<Integer, String> highlightMap) {
-        highlightMap.put(rowIndex, color);
+// Generic method to highlight with specific color
+    public <T> void highlight(TableView<T> table, int rowIndex, String color, Map<Integer, List<String>> highlightMap) {
+        highlightMap.computeIfAbsent(rowIndex, k -> new ArrayList<>()).add(color);
         table.refresh(); // Refresh to apply changes
     }
 
-    public <T> void disableHighlight(TableView<T> table, int rowIndex, Map<Integer, String> highlightMap) {
+// Generic method to remove highlight from a specific row
+    public <T> void disableHighlight(TableView<T> table, int rowIndex, Map<Integer, List<String>> highlightMap) {
         highlightMap.remove(rowIndex);
         table.refresh();
     }
 
-    public <T> void disableAllHighlight(TableView<T> table, Map<Integer, String> highlightMap) {
+// Generic method to remove all highlights
+    public <T> void disableAllHighlight(TableView<T> table, Map<Integer, List<String>> highlightMap) {
         highlightMap.clear();
         table.refresh();
     }
 
+// Generic method to remove all highlights of a specific color
+    public <T> void disableAllHighlightByColor(TableView<T> table, String color, Map<Integer, List<String>> highlightMap) {
+        highlightMap.forEach((key, colors) -> colors.removeIf(c -> c.equals(color)));
+        highlightMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        table.refresh();
+    }
+
+    public <T> void highlightByKey(TableView<T> table, String key, String color, Map<String, List<String>> highlightMap) {
+        highlightMap.computeIfAbsent(key, k -> new ArrayList<>()).add(color);
+        table.refresh(); // Refresh to apply changes
+        System.out.println("Highlighted by Key: " + key + " = " + highlightMap.get(key));
+    }
+
+    public <T> void disableHighlightByKey(TableView<T> table, String key, Map<String, List<String>> highlightMap) {
+        highlightMap.remove(key);
+        table.refresh();
+        System.out.println("Disabled highlight for key: " + key);
+    }
+
+    public <T> void disableAllHighlightByKey(TableView<T> table, Map<String, List<String>> highlightMap) {
+        highlightMap.clear();
+        table.refresh();
+        System.out.println("Cleared all highlights by key.");
+    }
+
+    public <T> void disableAllHighlightByColorForKey(TableView<T> table, String color, Map<String, List<String>> highlightMap) {
+        highlightMap.forEach((key, colors) -> colors.removeIf(c -> c.equals(color)));
+        highlightMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+        table.refresh();
+        System.out.println("Removed color " + color + " from all keys.");
+    }
     private void autoSearch(TextField txtField) {
         detailSearchListener = (observable, oldValue, newValue) -> {
             filteredDataDetail.setPredicate(orders -> {
