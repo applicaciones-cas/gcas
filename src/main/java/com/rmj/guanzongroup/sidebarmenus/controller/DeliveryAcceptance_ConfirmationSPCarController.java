@@ -111,6 +111,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
+    private String psIndustryId = "";
     private String psCompanyId = "";
     private String psSupplierId = "";
 
@@ -221,6 +222,16 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
     @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+    
+    @Override
+    public void setIndustryID(String fsValue) {
+        psIndustryId = fsValue;
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        psCompanyId = fsValue;
     }
 
     @FXML

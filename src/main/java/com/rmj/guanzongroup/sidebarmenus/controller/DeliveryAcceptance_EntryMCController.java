@@ -102,6 +102,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
+    private String psIndustryId = "";
     private String psCompanyId = "";
     private String psSupplierId = "";
 
@@ -203,6 +204,16 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
     @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+    
+    @Override
+    public void setIndustryID(String fsValue) {
+        psIndustryId = fsValue;
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        psCompanyId = fsValue;
     }
 
     public void closeSerialDialog() {

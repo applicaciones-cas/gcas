@@ -60,7 +60,7 @@ import org.json.simple.JSONObject;
  *
  * @author Arsiela
  */
-public class DeliveryAcceptance_SerialCarController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_SerialCarController implements Initializable {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
@@ -113,7 +113,7 @@ public class DeliveryAcceptance_SerialCarController implements Initializable, Sc
         Platform.runLater(() -> tfEngineNo.requestFocus());
     }
 
-    @Override
+//    @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }

@@ -4,6 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ApprovalCarController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -110,6 +111,7 @@ public class DeliveryAcceptance_ApprovalLPController implements Initializable, S
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
+    private String psIndustryId = "";
     private String psCompanyId = "";
     private String psSupplierId = "";
 
@@ -170,7 +172,7 @@ public class DeliveryAcceptance_ApprovalLPController implements Initializable, S
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus, lblSearchIndustry, lblSearchCompany;
+    private Label lblStatus, lblSource; //, lblSearchIndustry, lblSearchCompany;
 
     @FXML
     private TextArea taRemarks;
@@ -205,11 +207,18 @@ public class DeliveryAcceptance_ApprovalLPController implements Initializable, S
         initTableOnClick();
         clearTextFields();
         poPurchaseReceivingController.initFields();
+//        psIndustryId = oApp.getIndustry();
+//        psCompanyId = poPurchaseReceivingController.getCompanyId();
+        
+        Platform.runLater(() -> {
+            poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
+            poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+            loadRecordSearch();
+        });
 
         initAttachmentPreviewPane();
 
         initStackPaneListener();
-        loadRecordSearch();
 
         pgPagination.setPageCount(1);
 
@@ -220,6 +229,16 @@ public class DeliveryAcceptance_ApprovalLPController implements Initializable, S
     @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+    
+    @Override
+    public void setIndustryID(String fsValue) {
+        psIndustryId = fsValue;
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        psCompanyId = fsValue;
     }
 
     @FXML
@@ -1032,12 +1051,8 @@ public class DeliveryAcceptance_ApprovalLPController implements Initializable, S
 
     public void loadRecordSearch() {
         try {
-            lblSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            if (psCompanyId.equals("")) {
-                lblSearchCompany.setText("");
-            } else {
-                lblSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
-            }
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
+            
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
@@ -1991,7 +2006,7 @@ public class DeliveryAcceptance_ApprovalLPController implements Initializable, S
         dpReferenceDate.setValue(null);
         dpExpiryDate.setValue(null);
 
-        lblSearchCompany.setText("");
+        lblSource.setText("");
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
 

@@ -95,6 +95,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
+    private String psIndustryId = "";
     private String psCompanyId = "";
     private String psSupplierId = "";
 
@@ -191,6 +192,16 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+    
+    @Override
+    public void setIndustryID(String fsValue) {
+        psIndustryId = fsValue;
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        psCompanyId = fsValue;
     }
 
     @FXML

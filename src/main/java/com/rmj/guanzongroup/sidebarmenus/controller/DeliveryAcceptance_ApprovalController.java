@@ -109,7 +109,8 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
     private final String pxeModuleName = "Purchase Order Receiving Approval";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
-
+    
+    private String psIndustryId = "";
     private String psCompanyId = "";
     private String psSupplierId = "";
 
@@ -169,7 +170,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus, lblSearchIndustry, lblSearchCompany;
+    private Label lblStatus, lblSource; //, lblSearchIndustry, lblSearchCompany;
 
     @FXML
     private TextArea taRemarks;
@@ -204,11 +205,19 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         initTableOnClick();
         clearTextFields();
         poPurchaseReceivingController.initFields();
+        
+//        psIndustryId = oApp.getIndustry();
+//        psCompanyId = poPurchaseReceivingController.getCompanyId();
+        
+        Platform.runLater(() -> {
+            poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
+            poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+            loadRecordSearch();
+        });
 
         initAttachmentPreviewPane();
 
         initStackPaneListener();
-        loadRecordSearch();
 
         pgPagination.setPageCount(1);
 
@@ -219,6 +228,16 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
     @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+    
+    @Override
+    public void setIndustryID(String fsValue) {
+        psIndustryId = fsValue;
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        psCompanyId = fsValue;
     }
 
     @FXML
@@ -1021,12 +1040,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
 
     public void loadRecordSearch() {
         try {
-            lblSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            if (psCompanyId.equals("")) {
-                lblSearchCompany.setText("");
-            } else {
-                lblSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
-            }
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
@@ -1966,12 +1980,11 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         dpReferenceDate.setValue(null);
         dpExpiryDate.setValue(null);
 
-        lblSearchCompany.setText("");
+        lblSource.setText("");
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
 
         tfTransactionNo.clear();
-        
         
         tfSupplier.clear();
         tfTrucking.clear();
