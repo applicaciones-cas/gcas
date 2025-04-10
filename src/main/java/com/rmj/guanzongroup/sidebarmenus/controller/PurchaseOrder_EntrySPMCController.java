@@ -1416,55 +1416,6 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                 );
     }
 
-    private boolean isExchangingCompany() {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            boolean isHaveQuantityAndStockId = false;
-            if (poPurchasingController.PurchaseOrder().getDetailCount() >= 1) {
-                if (poPurchasingController.PurchaseOrder().Detail(0).getStockID() != null && poPurchasingController.PurchaseOrder().Detail(0).getQuantity() != null) {
-                    if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
-                            || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0)) {
-                        isHaveQuantityAndStockId = true;
-                    }
-                }
-
-            }
-            if (isHaveQuantityAndStockId) {
-                if (ShowMessageFX.YesNo("PO Details have already items, are you sure you want to change company?", psFormName, null)) {
-                    int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
-                    for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
-                        if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()
-                                && poPurchasingController.PurchaseOrder().Detail(lnCtr).getStockID().isEmpty()
-                                && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().equals(0)) {
-                            continue; // Skip deleting this row
-                        }
-                        poPurchasingController.PurchaseOrder().Detail().remove(lnCtr);
-                    }
-                    pnTblPODetailRow = -1;
-                    pnTblStockRequestRow = -1;
-                    tblVwStockRequest.getSelectionModel().clearSelection();
-                    clearDetailFields();
-                    loadTablePODetail();
-                } else {
-                    try {
-                        poJSON = new JSONObject();
-                        poJSON = poPurchasingController.PurchaseOrder().SearchCompany(poPurchasingController.PurchaseOrder().Master().getCompanyID(), true);
-                        if (!"success".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            return false;
-                        }
-                        selectTheExistedDetailFromStockRequest();
-                        return false;
-
-                    } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-                        Logger.getLogger(PurchaseOrder_EntrySPMCController.class
-                                .getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
     private boolean isExchangingSupplier() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             boolean isHaveQuantityAndStockId = false;
