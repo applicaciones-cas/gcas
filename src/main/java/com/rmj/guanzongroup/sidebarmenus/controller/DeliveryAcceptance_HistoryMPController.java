@@ -13,9 +13,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -47,7 +45,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
@@ -58,7 +55,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -86,8 +82,6 @@ import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
-import static org.apache.poi.ss.usermodel.TableStyleType.lastColumn;
-import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
@@ -147,7 +141,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     @FXML
     private Button btnPrint, btnHistory, btnClose;
     @FXML
-    private Label lblStatus, lblSource; // lblSearchIndustry, lblSearchCompany;
+    private Label lblStatus, lblSource; 
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
@@ -196,11 +190,12 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
-        poPurchaseReceivingController.initFields();
-
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.setIndustryId(psIndustryId);
+            poPurchaseReceivingController.setCompanyId(psCompanyId);
+            poPurchaseReceivingController.initFields();
             loadRecordSearch();
         });
 

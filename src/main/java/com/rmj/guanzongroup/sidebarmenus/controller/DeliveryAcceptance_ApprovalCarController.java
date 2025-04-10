@@ -155,7 +155,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     @FXML
     private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose, btnSerials, btnApprove, btnVoid, btnReturn;
     @FXML
-    private Label lblStatus, lblSource; //, lblSearchIndustry, lblSearchCompany
+    private Label lblStatus, lblSource; 
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
@@ -210,18 +210,17 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
-        poPurchaseReceivingController.initFields();
-//        psIndustryId = oApp.getIndustry();
-//        psCompanyId = poPurchaseReceivingController.getCompanyId();
         
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.setIndustryId(psIndustryId);
+            poPurchaseReceivingController.setCompanyId(psCompanyId);
+            poPurchaseReceivingController.initFields();
             loadRecordSearch();
         });
 
         initAttachmentPreviewPane();
-
         initStackPaneListener();
 
         pgPagination.setPageCount(1);
@@ -343,6 +342,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                             poJSON = poPurchaseReceivingController.SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                poPurchaseReceivingController.AddDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
@@ -491,22 +491,12 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     }
 
     public void retrievePOR() {
-
         poJSON = new JSONObject();
-
-        String lsMessage = "";
-        poJSON.put("result", "success");
-
-        if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("approval", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
-            if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-            } else {
-                loadTableMain();
-            }
-        } else {
-            poJSON.put("message", lsMessage + " cannot be empty.");
+        poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("approval", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
+        if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+        } else {
+            loadTableMain();
         }
     }
 

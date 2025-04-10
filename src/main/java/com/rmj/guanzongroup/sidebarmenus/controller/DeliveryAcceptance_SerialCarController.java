@@ -40,7 +40,6 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.F3;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
@@ -272,7 +271,7 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                     break;
             }
             Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.10));
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                 delay.setOnFinished(event -> {
                     loadTableDetail();
                 });

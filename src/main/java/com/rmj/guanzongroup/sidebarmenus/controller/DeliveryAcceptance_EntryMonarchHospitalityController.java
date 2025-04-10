@@ -124,7 +124,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose;
 
     @FXML
-    private Label lblStatus, lblSource; // lblSearchIndustry, lblSearchCompany;
+    private Label lblStatus, lblSource; 
 
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
@@ -174,10 +174,12 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             initDetailsGrid();
             initTableOnClick();
             clearTextFields();
-            poPurchaseReceivingController.initFields();
             Platform.runLater(() -> {
                 poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
                 poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+                poPurchaseReceivingController.setIndustryId(psIndustryId);
+                poPurchaseReceivingController.setCompanyId(psCompanyId);
+                poPurchaseReceivingController.initFields();
                 loadRecordSearch();
             });
 
@@ -227,7 +229,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             return;
                         }
                         pnEditMode = poPurchaseReceivingController.getEditMode();
-                        psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+//                        psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                         break;
                     case "btnPrint":
@@ -308,7 +310,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                             //get last retrieved Company and Supplier
-                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+//                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                             psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                             //Clear data
@@ -317,7 +319,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             poPurchaseReceivingController.Detail().clear();
                             clearTextFields();
 
-                            poPurchaseReceivingController.Master().setIndustryId(oApp.getIndustry());
+                            poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
                             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
                             poPurchaseReceivingController.Master().setSupplierId(psSupplierId);
                             pnEditMode = EditMode.UNKNOWN;
@@ -347,11 +349,12 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             poJSON = poPurchaseReceivingController.SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                poPurchaseReceivingController.AddDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 //get last retrieved Company and Supplier
-                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+//                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 //Call new transaction
@@ -623,46 +626,46 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                     break;
                 case F3:
                     switch (lsID) {
-                        case "tfCompany":
-                            if (pnEditMode == EditMode.ADDNEW) {
-                                if (poPurchaseReceivingController.Master().getCompanyId() != null
-                                        && !"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
-                                    if (poPurchaseReceivingController.getDetailCount() > 1) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
-                                            poPurchaseReceivingController.removePORDetails();
-                                            loadTableDetail();
-                                        } else {
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-
-                            poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                
-                                psCompanyId = "";
-                                break;
-                            }
-                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(e -> {
-                                    if (!"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
-                                        poJSON = retrievePO();
-                                        if ("error".equals((String) poJSON.get("result"))) {
-                                            if (!(boolean) poJSON.get("continue")) {
-                                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                            }
-                                        }
-                                    }
-                                });
-                                delay.play();
-                            });
-                            loadRecordMaster();
-                            break;
+//                        case "tfCompany":
+//                            if (pnEditMode == EditMode.ADDNEW) {
+//                                if (poPurchaseReceivingController.Master().getCompanyId() != null
+//                                        && !"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
+//                                    if (poPurchaseReceivingController.getDetailCount() > 1) {
+//                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
+//                                                "Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+//                                            poPurchaseReceivingController.removePORDetails();
+//                                            loadTableDetail();
+//                                        } else {
+//                                            return;
+//                                        }
+//                                    }
+//                                }
+//                            }
+//
+//                            poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
+//                            if ("error".equals(poJSON.get("result"))) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                
+//                                psCompanyId = "";
+//                                break;
+//                            }
+//                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+//                            Platform.runLater(() -> {
+//                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+//                                delay.setOnFinished(e -> {
+//                                    if (!"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
+//                                        poJSON = retrievePO();
+//                                        if ("error".equals((String) poJSON.get("result"))) {
+//                                            if (!(boolean) poJSON.get("continue")) {
+//                                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                            }
+//                                        }
+//                                    }
+//                                });
+//                                delay.play();
+//                            });
+//                            loadRecordMaster();
+//                            break;
 
                         case "tfSupplier":
                             if (poPurchaseReceivingController.Master().getCompanyId() == null

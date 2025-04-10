@@ -39,7 +39,6 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -268,7 +267,6 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                     break;
             }
             Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.10));
                 delay.setOnFinished(event -> {
                     loadTableDetail();
                 });

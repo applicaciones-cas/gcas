@@ -84,8 +84,6 @@ import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import static org.apache.poi.ss.usermodel.TableStyleType.lastColumn;
-import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
@@ -172,7 +170,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus,lblSource;// lblSearchIndustry, lblSearchCompany;
+    private Label lblStatus,lblSource;
 
     @FXML
     private TextArea taRemarks;
@@ -206,18 +204,18 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
-        poPurchaseReceivingController.initFields();
         
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.setIndustryId(psIndustryId);
+            poPurchaseReceivingController.setCompanyId(psCompanyId);
+            poPurchaseReceivingController.initFields();
             loadRecordSearch();
         });
 
         initAttachmentPreviewPane();
-
         initStackPaneListener();
-        loadRecordSearch();
 
         pgPagination.setPageCount(1);
 
@@ -328,6 +326,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             poJSON = poPurchaseReceivingController.SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                poPurchaseReceivingController.AddDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
@@ -466,21 +465,12 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     }
 
     public void retrievePOR() {
-
         poJSON = new JSONObject();
-        String lsMessage = "";
-        poJSON.put("result", "success");
-        if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("confirmation", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
-
-            if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-            } else {
-                loadTableMain();
-            }
-        } else {
-            poJSON.put("message", lsMessage + " cannot be empty.");
+        poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("confirmation", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
+        if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+        } else {
+            loadTableMain();
         }
     }
 

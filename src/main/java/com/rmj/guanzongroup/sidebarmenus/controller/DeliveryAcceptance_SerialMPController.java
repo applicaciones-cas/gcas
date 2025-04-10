@@ -4,8 +4,6 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_SerialMCController.poPurchaseReceivingController;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_SerialMP;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_SerialMP;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
@@ -39,10 +37,7 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
-import static javafx.scene.input.KeyCode.ENTER;
-import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
@@ -82,7 +77,7 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
     @FXML
     private Button btnOkay, btnClose;
     @FXML
-    private TextField tfIMEI1, tfIMEI2; //, tfLocation;
+    private TextField tfIMEI1, tfIMEI2; 
     @FXML
     private CheckBox cbApplyToAll;
     @FXML
@@ -227,6 +222,7 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
             }
             Platform.runLater(() -> {
                 PauseTransition delay = new PauseTransition(Duration.seconds(0.10));
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                 delay.setOnFinished(event -> {
                     loadTableDetail();
                 });

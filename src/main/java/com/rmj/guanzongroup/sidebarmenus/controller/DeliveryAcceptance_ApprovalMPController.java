@@ -220,11 +220,13 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
-        poPurchaseReceivingController.initFields();
         
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.setIndustryId(psIndustryId);
+            poPurchaseReceivingController.setCompanyId(psCompanyId);
+            poPurchaseReceivingController.initFields();
             loadRecordSearch();
         });
 
@@ -351,6 +353,7 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
                             poJSON = poPurchaseReceivingController.SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                poPurchaseReceivingController.AddDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
@@ -490,22 +493,12 @@ public class DeliveryAcceptance_ApprovalMPController implements Initializable, S
     }
 
     public void retrievePOR() {
-
         poJSON = new JSONObject();
-
-        String lsMessage = "";
-        poJSON.put("result", "success");
-
-        if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("approval", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
-            if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-            } else {
-                loadTableMain();
-            }
-        } else {
-            poJSON.put("message", lsMessage + " cannot be empty.");
+        poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("approval", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
+        if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+        } else {
+            loadTableMain();
         }
     }
 

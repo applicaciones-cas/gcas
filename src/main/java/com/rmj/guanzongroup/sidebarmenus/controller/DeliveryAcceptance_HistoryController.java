@@ -12,9 +12,7 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -42,7 +40,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
@@ -76,8 +73,6 @@ import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
-import static org.apache.poi.ss.usermodel.TableStyleType.lastColumn;
-import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
@@ -155,7 +150,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus, lblSource; // lblSearchIndustry, lblSearchCompany;
+    private Label lblStatus, lblSource; 
 
     @FXML
     private TextArea taRemarks;
@@ -186,11 +181,12 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
-        poPurchaseReceivingController.initFields();
-
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.setIndustryId(psIndustryId);
+            poPurchaseReceivingController.setCompanyId(psCompanyId);
+            poPurchaseReceivingController.initFields();
             loadRecordSearch();
         });
 
