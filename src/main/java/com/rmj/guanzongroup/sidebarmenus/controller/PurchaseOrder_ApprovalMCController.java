@@ -98,10 +98,10 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
     private Button btnUpdate, btnSave, btnCancel, btnApprove, btnReturn, btnVoid, btnPrint,
             btnRetrieve, btnTransHistory, btnClose;
     @FXML
-    private TextField tfTransactionNo, tfIndustry, tfCompany, tfSupplier, tfDestination, tfReferenceNo,
+    private TextField tfTransactionNo, tfSupplier, tfDestination, tfReferenceNo,
             tfTerm, tfDiscountRate, tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount;
     @FXML
-    private Label lblTransactionStatus;
+    private Label lblTransactionStatus, lblSource;
     @FXML
     private CheckBox chkbAdvancePayment;
     @FXML
@@ -110,7 +110,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
     private TextField tfBrand, tfModel, tfVariant, tfInventoryType, tfColor, tfClass, tfAMC, tfROQ,
             tfRO, tfBO, tfQOH, tfCost, tfRequestQuantity, tfOrderQuantity;
     @FXML
-    private TextField tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo;
+    private TextField tfSearchSupplier, tfSearchReferenceNo;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -132,13 +132,17 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
 
     @Override
     public void setIndustryID(String fsValue) {
-
+        psIndustryID = fsValue;
     }
 
     @Override
     public void setCompanyID(String fsValue) {
+        psCompanyID = fsValue;
     }
 
+    /**
+     * Initializes the controller class.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -149,19 +153,12 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             if (!"success".equals(loJSON.get("result"))) {
                 ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
             }
-            poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
-            if ("error".equals((String) loJSON.get("result"))) {
-                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-
-                return;
-            }
-            String lsIndustryName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
-                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
-            }
-            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
+            Platform.runLater((() -> {
+                poPurchasingController.PurchaseOrder().Master().setIndustryID(psIndustryID);
+                poPurchasingController.PurchaseOrder().Master().setCompanyID(psCompanyID);
+                loadRecordSearch();
+            }));
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-            tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldFocus();
             initTextAreaFocus();
@@ -176,9 +173,18 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             pnEditMode = EditMode.UNKNOWN;
             initButtons(pnEditMode);
             initFields(pnEditMode);
-        } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+        } catch (ExceptionInInitializerError ex) {
             Logger.getLogger(PurchaseOrder_ApprovalMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void loadRecordSearch() {
+        try {
+            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
+        } catch (GuanzonException | SQLException ex) {
+            Logger.getLogger(PurchaseOrder_ApprovalMCController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     private void loadMaster() {
@@ -208,17 +214,6 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-            String lsIndustryName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
-                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
-            }
-            tfIndustry.setText(lsIndustryName);
-            String lsCompanyName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
-                lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
-            }
-            tfCompany.setText(lsCompanyName);
-
             String lsSupplierName = "";
             if (poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null) {
                 lsSupplierName = poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName();
@@ -601,7 +596,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
         List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount,
                 tfReferenceNo, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate,
-                tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo);
+                tfOrderQuantity, tfSearchSupplier, tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
@@ -623,28 +618,6 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                     case ENTER:
                     case F3:
                         switch (txtFieldID) {
-                            case "tfSearchIndustry":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchIndustry(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfSearchIndustry.setText("");
-                                    break;
-                                }
-                                psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
-                                tfSearchIndustry.setText(poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
-                                loadTablePurchaseOrder();
-                                break;
-                            case "tfSearchCompany":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfCompany.setText("");
-                                    break;
-                                }
-                                psCompanyID = poPurchasingController.PurchaseOrder().Master().getCompanyID();
-                                tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
-                                loadTablePurchaseOrder();
-                                break;
                             case "tfSearchSupplier":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
@@ -772,7 +745,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
         dpExpectedDlvrDate.setValue(null);
         taRemarks.setText("");
         chkbAdvancePayment.setSelected(false);
-        CustomCommonUtil.setText("", tfTransactionNo, tfCompany, tfSupplier,
+        CustomCommonUtil.setText("", tfTransactionNo, tfSupplier,
                 tfDestination, tfReferenceNo, tfTerm, tfDiscountRate,
                 tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount);
     }
@@ -1202,16 +1175,6 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
     }
 
     private void initTextFieldsProperty() {
-        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
-                    tfSearchCompany.setText("");
-                    psCompanyID = "";
-                    loadTablePurchaseOrder();
-                }
-            }
-        });
         tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {

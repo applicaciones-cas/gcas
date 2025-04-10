@@ -249,6 +249,7 @@ public class DashboardController implements Initializable {
             for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
                 toggleBtnRightSideBar[i].setSelected(false);
             }
+
         });
     }
 
@@ -1089,7 +1090,9 @@ public class DashboardController implements Initializable {
             for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
                 toggleBtnRightSideBar[i].setSelected(false);
             }
-            sformname = getFormName(tabpane.getSelectionModel().getSelectedItem().getText());
+            if (tabpane.getSelectionModel().getSelectedItem() != null) {
+                sformname = getFormName(tabpane.getSelectionModel().getSelectedItem().getText());
+            }
         });
 
         tabpane.setOnDragDetected(event -> {

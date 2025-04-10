@@ -79,13 +79,12 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
     private String psFormName = "Purchase Order Confirmation Car";
     private LogWrapper logWrapper;
     private int pnEditMode;
-    private JSONObject poJSON;
     unloadForm poUnload = new unloadForm();
     private ObservableList<ModelPurchaseOrder> poPurchaseOrder_data = FXCollections.observableArrayList();
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblPurchaseOrderRow = -1;
     private int pnTblPODetailRow = -1;
-    private static final int ROWS_PER_PAGE = 30;
+    private static final int ROWS_PER_PAGE = 50;
     private String psIndustryID = "";
     private String psCompanyID = "";
     private String psSupplierID = "";
@@ -98,10 +97,10 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
     private Button btnUpdate, btnSave, btnCancel, btnConfirm, btnReturn, btnVoid, btnPrint,
             btnRetrieve, btnTransHistory, btnClose;
     @FXML
-    private TextField tfTransactionNo, tfIndustry, tfCompany, tfSupplier, tfDestination, tfReferenceNo,
+    private TextField tfTransactionNo, tfSupplier, tfDestination, tfReferenceNo,
             tfTerm, tfDiscountRate, tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount;
     @FXML
-    private Label lblTransactionStatus;
+    private Label lblTransactionStatus, lblSource;
     @FXML
     private CheckBox chkbAdvancePayment, chkbPreOwned;
     @FXML
@@ -181,21 +180,11 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
 
     private void loadRecordSearch() {
         try {
-            String lsIndustryName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
-                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
-            }
-            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
-            tfSearchIndustry.setText(lsIndustryName);
-            String lsCompanyName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
-                lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
-            }
-            psCompanyID = poPurchasingController.PurchaseOrder().Master().getCompanyID();
-            tfSearchCompany.setText(lsCompanyName);
+            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     private void loadMaster() {
@@ -230,18 +219,6 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-
-            String lsIndustryName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
-                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
-            }
-            tfIndustry.setText(lsIndustryName);
-
-            String lsCompanyName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
-                lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
-            }
-            tfCompany.setText(lsCompanyName);
 
             String lsSupplierName = "";
             if (poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null) {
@@ -647,28 +624,6 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                     case ENTER:
                     case F3:
                         switch (txtFieldID) {
-                            case "tfSearchIndustry":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchIndustry(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfSearchIndustry.setText("");
-                                    break;
-                                }
-                                psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
-                                tfSearchIndustry.setText(poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
-                                loadTablePurchaseOrder();
-                                break;
-                            case "tfSearchCompany":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfCompany.setText("");
-                                    break;
-                                }
-                                psCompanyID = poPurchasingController.PurchaseOrder().Master().getCompanyID();
-                                tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
-                                loadTablePurchaseOrder();
-                                break;
                             case "tfSearchSupplier":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
@@ -797,7 +752,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
         taRemarks.setText("");
         chkbPreOwned.setSelected(false);
         chkbAdvancePayment.setSelected(false);
-        CustomCommonUtil.setText("", tfTransactionNo, tfCompany, tfSupplier,
+        CustomCommonUtil.setText("", tfTransactionNo, tfSupplier,
                 tfDestination, tfReferenceNo, tfTerm, tfDiscountRate,
                 tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount);
     }

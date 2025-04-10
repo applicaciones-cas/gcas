@@ -313,7 +313,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
             if (pnTblPODetailRow >= 0) {
                 String lsBrand = "";
                 if (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription() != null) {
-                    lsBrand = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Brand().getDescription();
+                    lsBrand = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription();
                 }
                 tfBrand.setText(lsBrand);
 

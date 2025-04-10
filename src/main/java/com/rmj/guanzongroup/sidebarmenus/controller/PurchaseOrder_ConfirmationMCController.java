@@ -79,13 +79,12 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
     private String psFormName = "Purchase Order Confirmation MC";
     private LogWrapper logWrapper;
     private int pnEditMode;
-    private JSONObject poJSON;
     unloadForm poUnload = new unloadForm();
     private ObservableList<ModelPurchaseOrder> poPurchaseOrder_data = FXCollections.observableArrayList();
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblPurchaseOrderRow = -1;
     private int pnTblPODetailRow = -1;
-    private static final int ROWS_PER_PAGE = 30;
+    private static final int ROWS_PER_PAGE = 50;
     private String psIndustryID = "";
     private String psCompanyID = "";
     private String psSupplierID = "";
@@ -98,10 +97,10 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
     private Button btnUpdate, btnSave, btnCancel, btnConfirm, btnReturn, btnVoid, btnPrint,
             btnRetrieve, btnTransHistory, btnClose;
     @FXML
-    private TextField tfTransactionNo, tfIndustry, tfCompany, tfSupplier, tfDestination, tfReferenceNo,
+    private TextField tfTransactionNo, tfSupplier, tfDestination, tfReferenceNo,
             tfTerm, tfDiscountRate, tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount;
     @FXML
-    private Label lblTransactionStatus;
+    private Label lblTransactionStatus, lblSource;
     @FXML
     private CheckBox chkbAdvancePayment;
     @FXML
@@ -110,7 +109,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
     private TextField tfBrand, tfModel, tfVariant, tfInventoryType, tfColor, tfClass, tfAMC, tfROQ,
             tfRO, tfBO, tfQOH, tfCost, tfRequestQuantity, tfOrderQuantity;
     @FXML
-    private TextField tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo;
+    private TextField tfSearchSupplier, tfSearchReferenceNo;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -132,16 +131,14 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
 
     @Override
     public void setIndustryID(String fsValue) {
-
+        psIndustryID = fsValue;
     }
 
     @Override
     public void setCompanyID(String fsValue) {
+        psCompanyID = fsValue;
     }
 
-    /**
-     * Initializes the controller class.
-     */
     /**
      * Initializes the controller class.
      */
@@ -155,19 +152,12 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
             if (!"success".equals(loJSON.get("result"))) {
                 ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
             }
-            poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
-            if ("error".equals((String) loJSON.get("result"))) {
-                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-
-                return;
-            }
-            String lsIndustryName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
-                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
-            }
-            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
+            Platform.runLater((() -> {
+                poPurchasingController.PurchaseOrder().Master().setIndustryID(psIndustryID);
+                poPurchasingController.PurchaseOrder().Master().setCompanyID(psCompanyID);
+                loadRecordSearch();
+            }));
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-            tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldFocus();
             initTextAreaFocus();
@@ -182,9 +172,18 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
             pnEditMode = EditMode.UNKNOWN;
             initButtons(pnEditMode);
             initFields(pnEditMode);
-        } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+        } catch (ExceptionInInitializerError ex) {
             Logger.getLogger(PurchaseOrder_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void loadRecordSearch() {
+        try {
+            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
+        } catch (GuanzonException | SQLException ex) {
+            Logger.getLogger(PurchaseOrder_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     private void loadMaster() {
@@ -214,16 +213,6 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-            String lsIndustryName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
-                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
-            }
-            tfIndustry.setText(lsIndustryName);
-            String lsCompanyName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
-                lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
-            }
-            tfCompany.setText(lsCompanyName);
 
             String lsSupplierName = "";
             if (poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null) {
@@ -257,7 +246,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -516,7 +505,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -606,7 +595,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
         List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount,
                 tfReferenceNo, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate,
-                tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo);
+                tfOrderQuantity, tfSearchSupplier, tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
@@ -628,28 +617,6 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                     case ENTER:
                     case F3:
                         switch (txtFieldID) {
-                            case "tfSearchIndustry":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchIndustry(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfSearchIndustry.setText("");
-                                    break;
-                                }
-                                psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
-                                tfSearchIndustry.setText(poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
-                                loadTablePurchaseOrder();
-                                break;
-                            case "tfSearchCompany":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfCompany.setText("");
-                                    break;
-                                }
-                                psCompanyID = poPurchasingController.PurchaseOrder().Master().getCompanyID();
-                                tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
-                                loadTablePurchaseOrder();
-                                break;
                             case "tfSearchSupplier":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
@@ -742,7 +709,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationMCController.class
+            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -777,7 +744,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
         dpExpectedDlvrDate.setValue(null);
         taRemarks.setText("");
         chkbAdvancePayment.setSelected(false);
-        CustomCommonUtil.setText("", tfTransactionNo, tfCompany, tfSupplier,
+        CustomCommonUtil.setText("", tfTransactionNo, tfSupplier,
                 tfDestination, tfReferenceNo, tfTerm, tfDiscountRate,
                 tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount);
     }
@@ -1022,6 +989,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
+
                         int lnRequestQuantity = 0;
                         lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getPurchase() + orderDetail.InvStockRequestDetail().getIssued());
                         detailsList.add(new ModelPurchaseOrderDetail(
@@ -1154,7 +1122,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
 
                     }
                 } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationMCController.class
+                    Logger.getLogger(PurchaseOrder_ConfirmationMPController.class
                             .getName()).log(Level.SEVERE, null, ex);
                     ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
                 }
@@ -1211,16 +1179,6 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
     }
 
     private void initTextFieldsProperty() {
-        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
-                    tfSearchCompany.setText("");
-                    psCompanyID = "";
-                    loadTablePurchaseOrder();
-                }
-            }
-        });
         tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {

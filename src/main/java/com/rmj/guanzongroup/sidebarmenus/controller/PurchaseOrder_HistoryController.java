@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,7 +25,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -62,7 +62,6 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
     private String psFormName = "Purchase Order History";
     private LogWrapper logWrapper;
     private int pnEditMode;
-    private JSONObject poJSON;
     unloadForm poUnload = new unloadForm();
     private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
     private int pnTblPODetailRow = -1;
@@ -77,11 +76,11 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
     @FXML
     private Button btnBrowse, btnPrint, btnTransHistory, btnClose;
     @FXML
-    private Label lblTransactionStatus;
+    private Label lblTransactionStatus, lblSource;
     @FXML
-    private TextField tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo;
+    private TextField tfSearchSupplier, tfSearchReferenceNo;
     @FXML
-    private TextField tfTransactionNo, tfIndustry, tfCompany, tfSupplier, tfDestination, tfReferenceNo,
+    private TextField tfTransactionNo, tfSupplier, tfDestination, tfReferenceNo,
             tfTerm, tfDiscountRate, tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount;
     @FXML
     private TextField tfBarcode, tfDescription, tfBrand, tfModel, tfColor, tfCategory, tfInventoryType,
@@ -98,8 +97,6 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
     private TableColumn<ModelPurchaseOrderDetail, String> tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail,
             tblDescriptionDetail, tblCostDetail, tblROQDetail, tblRequestQuantityDetail, tblOrderQuantityDetail,
             tblTotalAmountDetail;
-    @FXML
-    private Pagination pagination;
 
     @Override
     public void setGRider(GRiderCAS foValue) {
@@ -108,11 +105,12 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
 
     @Override
     public void setIndustryID(String fsValue) {
-
+        psIndustryID = fsValue;
     }
 
     @Override
     public void setCompanyID(String fsValue) {
+        psCompanyID = fsValue;
     }
 
     /**
@@ -128,18 +126,13 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
             if (!"success".equals(loJSON.get("result"))) {
                 ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
             }
-            poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
-            if ("error".equals((String) loJSON.get("result"))) {
-                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                return;
-            }
-            tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-            String lsIndustryName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
-                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
-            }
-            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
-            tfSearchIndustry.setText(lsIndustryName);
+
+            Platform.runLater((() -> {
+                poPurchasingController.PurchaseOrder().Master().setIndustryID(psIndustryID);
+                poPurchasingController.PurchaseOrder().Master().setCompanyID(psCompanyID);
+                loadRecordSearch();
+            }));
+
             initButtonsClickActions();
             initTextFieldKeyPressed();
             initTextFieldsProperty();
@@ -147,9 +140,18 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
             tblVwOrderDetails.setOnMouseClicked(this::tblVwOrderDetails_Clicked);
             pnEditMode = EditMode.UNKNOWN;
             initButtons(pnEditMode);
-        } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+        } catch (ExceptionInInitializerError ex) {
             Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void loadRecordSearch() {
+        try {
+            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
+        } catch (GuanzonException | SQLException ex) {
+            Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     private void loadMaster() {
@@ -179,17 +181,6 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-            String lsIndustryName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
-                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
-            }
-            tfIndustry.setText(lsIndustryName);
-
-            String lsCompanyName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
-                lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
-            }
-            tfCompany.setText(lsCompanyName);
 
             String lsSupplierName = "";
             if (poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null) {
@@ -313,7 +304,7 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
     }
 
     private void initTextFieldKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(tfSearchIndustry, tfSearchCompany, tfSearchSupplier,
+        List<TextField> loTxtField = Arrays.asList(tfSearchSupplier,
                 tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
@@ -336,26 +327,6 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
                     case ENTER:
                     case F3:
                         switch (txtFieldID) {
-                            case "tfSearchIndustry":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchIndustry(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfSearchIndustry.setText("");
-                                    break;
-                                }
-                                psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
-                                tfSearchIndustry.setText(poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
-                                break;
-                            case "tfSearchCompany":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchCompany(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    tfSearchCompany.setText("");
-                                    break;
-                                }
-                                psCompanyID = poPurchasingController.PurchaseOrder().Master().getCompanyID();
-                                tfSearchCompany.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
-                                break;
                             case "tfSearchSupplier":
                                 loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
                                 if ("error".equals(loJSON.get("result"))) {
@@ -385,19 +356,6 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
             Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        }
-    }
-
-    private void clearMasterFields() {
-        /* Master Fields*/
-        pnTblPODetailRow = -1;
-        dpTransactionDate.setValue(null);
-        dpExpectedDlvrDate.setValue(null);
-        taRemarks.setText("");
-        chkbAdvancePayment.setSelected(false);
-        CustomCommonUtil.setText("", tfTransactionNo, tfCompany, tfSupplier,
-                tfDestination, tfReferenceNo, tfTerm, tfDiscountRate,
-                tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount);
     }
 
     private void clearDetailFields() {
@@ -556,15 +514,6 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
     }
 
     private void initTextFieldsProperty() {
-        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
-                    tfSearchCompany.setText("");
-                    psCompanyID = "";
-                }
-            }
-        });
         tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
