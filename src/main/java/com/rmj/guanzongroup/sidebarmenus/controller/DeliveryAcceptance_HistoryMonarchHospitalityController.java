@@ -110,7 +110,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
     ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
-   
+
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
 
     private double mouseAnchorX;
@@ -127,15 +127,14 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
     private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
 
     private ChangeListener<String> detailSearchListener;
-    
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apAttachments, apAttachmentButtons;
 
     @FXML
-    private TextField  tfSearchSupplier,
-            tfTransactionNo, tfSupplier, tfTerm, tfTrucking, tfReferenceNo, 
-             tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
+    private TextField tfSearchSupplier, tfSearchReferenceNo,
+            tfTransactionNo, tfSupplier, tfTerm, tfTrucking, tfReferenceNo,
+            tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
             tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost,
             tfOrderQuantity, tfReceiveQuantity, tfOrderNo, tfSupersede, tfAttachmentNo;
 
@@ -148,7 +147,6 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
     @FXML
     private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail,
             tblCostDetail, tblOrderQuantityDetail, tblReceiveQuantityDetail, tblTotalDetail,
-            
             tblRowNoAttachment, tblFileNameAttachment;
 
     @FXML
@@ -162,7 +160,6 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
 
     @FXML
     private TextArea taRemarks;
-
 
     @FXML
     private StackPane stackPane1;
@@ -185,13 +182,13 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
 
         initTextFields();
         initDatePickers();
-        
+
         initDetailsGrid();
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
         poPurchaseReceivingController.initFields();
-        
+
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
@@ -201,8 +198,6 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
         initAttachmentPreviewPane();
         initStackPaneListener();
 
-        
-
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
@@ -211,7 +206,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     @Override
     public void setIndustryID(String fsValue) {
         psIndustryId = fsValue;
@@ -234,19 +229,21 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(),"");
+                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        
+
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                         break;
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {
+                            loadRecordMaster();
+                        });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
@@ -259,7 +256,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
                         } else {
                             return;
                         }
-                        
+
                         break;
                     case "btnHistory":
                         break;
@@ -269,17 +266,17 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
                     case "btnArrowLeft":
                         slideImage(-1);
                         break;
-                        
+
                     default:
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
                 initButton(pnEditMode);
-                
+
                 if (lsButton.equals("btnPrint")
                         || lsButton.equals("btnArrowRight")
                         || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
-                    
+
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
@@ -304,12 +301,12 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
         poJSON.put("result", "success");
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId,"");
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId, "");
 
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {
-                
+
             }
         } else {
             poJSON.put("message", lsMessage + " cannot be empty.");
@@ -337,8 +334,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
                 case "tfSearchReferenceNo":
                     break;
             }
-            if ( lsTxtFieldID.equals("tfSearchSupplier")
-                    ) {
+            if (lsTxtFieldID.equals("tfSearchSupplier") || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             }
         }
@@ -396,15 +392,24 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
         }
     }
 
-
     public void loadRecordSearch() {
         try {
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-            
+
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
                 tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
+            }
+
+            try {
+                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
+                    tfSearchReferenceNo.setText("");
+                } else {
+
+                }
+            } catch (Exception e) {
+                tfSearchReferenceNo.setText("");
             }
 
         } catch (SQLException | GuanzonException ex) {
@@ -499,14 +504,10 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.UPDATE;
         if (lbDisable) {
-            
-            
-            
+
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
-            
-            
-            
+
             tfSupplier.getStyleClass().remove("DisabledTextField");
         }
 
@@ -559,8 +560,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            
-            
+
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -832,13 +832,11 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
     }
 
     public void initTextFields() {
-        
-        tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
-        
 
-        
+        tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
+        tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
+
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
-        
 
         // Combobox
         cmbAttachmentType.setItems(documentType);
@@ -870,7 +868,6 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
             }
         });
 
-
         tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Detail>() {
             @Override
             protected void updateItem(ModelDeliveryAcceptance_Detail item, boolean empty) {
@@ -890,7 +887,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
-        
+
         adjustLastColumnForScrollbar(tblAttachments);
     }
 
@@ -1148,8 +1145,6 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
         tblViewOrderDetails.autosize();
     }
 
-
-
     private boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
         Bounds clipBounds = stackPane.getClip().getBoundsInParent();
         Bounds imageBounds = imageView.getBoundsInParent();
@@ -1221,21 +1216,20 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        
         tfSearchSupplier.clear();
-        
+        tfSearchReferenceNo.clear();
+
         tfAttachmentNo.clear();
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
-        
-        
+
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();
         tfReferenceNo.clear();
-        
+
         tfTerm.clear();
         tfDiscountRate.clear();
         tfDiscountAmount.clear();

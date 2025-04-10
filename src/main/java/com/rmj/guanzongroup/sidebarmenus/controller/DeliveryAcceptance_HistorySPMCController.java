@@ -110,7 +110,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
     ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
-   
+
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
 
     private double mouseAnchorX;
@@ -132,8 +132,8 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apAttachments, apAttachmentButtons;
 
     @FXML
-    private TextField tfSearchSupplier,
-            tfTransactionNo, tfSupplier, tfTerm, tfTrucking, tfReferenceNo, 
+    private TextField tfSearchSupplier, tfSearchReferenceNo,
+            tfTransactionNo, tfSupplier, tfTerm, tfTrucking, tfReferenceNo,
             tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
             tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost,
             tfOrderQuantity, tfReceiveQuantity, tfOrderNo, tfSupersede, tfAttachmentNo;
@@ -228,7 +228,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(),"");
+                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
@@ -301,7 +301,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
         poJSON.put("result", "success");
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId,"");
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId, "");
 
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -334,8 +334,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
                 case "tfSearchReferenceNo":
                     break;
             }
-            if (lsTxtFieldID.equals("tfSearchSupplier")
-                    ) {
+            if (lsTxtFieldID.equals("tfSearchSupplier") || lsTxtFieldID.equals("tfSearchReferenceNo") ) {
                 loadRecordSearch();
             }
         }
@@ -401,6 +400,16 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
                 tfSearchSupplier.setText("");
             } else {
                 tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
+            }
+
+            try {
+                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
+                    tfSearchReferenceNo.setText("");
+                } else {
+
+                }
+            } catch (Exception e) {
+                tfSearchReferenceNo.setText("");
             }
 
         } catch (SQLException | GuanzonException ex) {
@@ -826,11 +835,11 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
     public void initTextFields() {
 
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
-        
+        tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
+
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
 
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
-        
 
         // Combobox
         cmbAttachmentType.setItems(documentType);
@@ -1211,7 +1220,8 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
         dpReferenceDate.setValue(null);
 
         tfSearchSupplier.clear();
-        
+        tfSearchReferenceNo.clear();
+
         tfAttachmentNo.clear();
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.getSelectionModel().select(0);
@@ -1222,7 +1232,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
         tfTrucking.clear();
         taRemarks.clear();
         tfReferenceNo.clear();
-        
+
         tfTerm.clear();
         tfDiscountRate.clear();
         tfDiscountAmount.clear();

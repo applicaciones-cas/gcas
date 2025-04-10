@@ -119,7 +119,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
     ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
-   
+
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
 
     private double mouseAnchorX;
@@ -139,7 +139,6 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
 
     private Stage dialogStage = null;
     private ChangeListener<String> detailSearchListener;
-    
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apAttachments, apAttachmentButtons;
@@ -150,7 +149,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     @FXML
     private Label lblStatus, lblSource; // lblSearchIndustry, lblSearchCompany;
     @FXML
-    private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo,  tfTerm, tfDiscountRate,
+    private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
             tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity, tfModelVariant;
     @FXML
@@ -158,13 +157,13 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate;
     @FXML
-    private TableView tblViewOrderDetails;
+    private TableView tblViewOrderDetails, tblViewPuchaseOrder;
     @FXML
     private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBrandDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail,
             tblReceiveQuantityDetail, tblTotalDetail;
 
     @FXML
-    private TextField  tfSearchSupplier;
+    private TextField tfSearchSupplier, tfSearchReferenceNo;
     @FXML
     private TextField tfAttachmentNo;
     @FXML
@@ -192,23 +191,21 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         }
         initTextFields();
         initDatePickers();
-        
+
         initDetailsGrid();
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
         poPurchaseReceivingController.initFields();
-        
+
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
             loadRecordSearch();
         });
-        
+
         initAttachmentPreviewPane();
         initStackPaneListener();
-
-        
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
@@ -218,7 +215,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     @Override
     public void setIndustryID(String fsValue) {
         psIndustryId = fsValue;
@@ -241,19 +238,21 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(),"");
+                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        
+
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                         break;
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {
+                            loadRecordMaster();
+                        });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
@@ -286,16 +285,16 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
                     case "btnArrowLeft":
                         slideImage(-1);
                         break;
-                        
+
                     default:
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
                 initButton(pnEditMode);
-                
+
                 if (lsButton.equals("btnPrint") || lsButton.equals("btnArrowRight")
                         || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
-                    
+
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
@@ -319,12 +318,12 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         poJSON.put("result", "success");
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId,"");
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId, "");
 
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {
-                
+
             }
         } else {
             poJSON.put("message", lsMessage + " cannot be empty.");
@@ -603,8 +602,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
                 case "tfSearchReferenceNo":
                     break;
             }
-            if ( lsTxtFieldID.equals("tfSearchSupplier")
-                    ) {
+            if (lsTxtFieldID.equals("tfSearchSupplier") || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             }
         }
@@ -661,16 +659,24 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         }
     }
 
-
-
     public void loadRecordSearch() {
         try {
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-            
+
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
                 tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
+            }
+
+            try {
+                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
+                    tfSearchReferenceNo.setText("");
+                } else {
+
+                }
+            } catch (Exception e) {
+                tfSearchReferenceNo.setText("");
             }
 
         } catch (SQLException | GuanzonException ex) {
@@ -816,8 +822,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            
-            
+
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -1089,13 +1094,11 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     }
 
     public void initTextFields() {
-        
-        tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
-        
 
-        
+        tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
+        tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
+
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
-        
 
         // Combobox
         cmbAttachmentType.setItems(documentType);
@@ -1126,7 +1129,6 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
             }
         });
 
-
         tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Detail>() {
             @Override
             protected void updateItem(ModelDeliveryAcceptance_Detail item, boolean empty) {
@@ -1146,7 +1148,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
-        
+
         adjustLastColumnForScrollbar(tblAttachments);
     }
 
@@ -1378,8 +1380,6 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         tblViewOrderDetails.autosize();
     }
 
-
-
     private boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
         Bounds clipBounds = stackPane.getClip().getBoundsInParent();
         Bounds imageBounds = imageView.getBoundsInParent();
@@ -1474,21 +1474,20 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        
         tfSearchSupplier.clear();
-        
+        tfSearchReferenceNo.clear();
+
         tfAttachmentNo.clear();
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
-        
-        
+
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();
         tfReferenceNo.clear();
-        
+
         tfTerm.clear();
         tfDiscountRate.clear();
         tfDiscountAmount.clear();
