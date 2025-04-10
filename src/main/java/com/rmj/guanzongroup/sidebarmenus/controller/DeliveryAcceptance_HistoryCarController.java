@@ -254,66 +254,82 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
         Object source = event.getSource();
         if (source instanceof Button) {
-            Button clickedButton = (Button) source;
-            String lsButton = clickedButton.getId();
-            switch (lsButton) {
-                case "btnPrint":
-                    poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
+            try {
+                Button clickedButton = (Button) source;
+                String lsButton = clickedButton.getId();
+                switch (lsButton) {
+                    case "btnBrowse":
+                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            tfTransactionNo.requestFocus();
+                            return;
+                        }
+                        
+                        pnEditMode = poPurchaseReceivingController.getEditMode();
+                        psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                        psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                        break;
+                    case "btnPrint":
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
+                        loadRecordMaster();
+                        break;
+                    case "btnClose":
+                        unloadForm appUnload = new unloadForm();
+                        if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
+                        } else {
+                            return;
+                        }
+                        break;
+                    case "btnSerials":
+                        showSerialDialog();
+                        return;
+                    case "btnUpdate":
+                        poJSON = poPurchaseReceivingController.UpdateTransaction();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        }
+                        pnEditMode = poPurchaseReceivingController.getEditMode();
+                        break;
+                    case "btnHistory":
+                        break;
+                    case "btnRetrieve":
+                        //Retrieve data from purchase order to table main
+                        if (mainSearchListener != null) {
+                            tfOrderNo.textProperty().removeListener(mainSearchListener);
+                            mainSearchListener = null; // Clear reference to avoid memory leaks
+                        }
+                        retrievePOR();
+                        disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                        
+                        break;
+                    case "btnArrowRight":
+                        slideImage(1);
+                        break;
+                    case "btnArrowLeft":
+                        slideImage(-1);
+                        break;
+                        
+                    default:
+                        ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                        break;
+                }
+                initButton(pnEditMode);
+                
+                if (lsButton.equals("btnPrint") || lsButton.equals("btnArrowRight")
+                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
+                    
+                } else {
                     loadRecordMaster();
-                    break;
-                case "btnClose":
-                    unloadForm appUnload = new unloadForm();
-                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-                        appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
-                    } else {
-                        return;
-                    }
-                    break;
-                case "btnSerials":
-                    showSerialDialog();
-                    return;
-                case "btnUpdate":
-                    poJSON = poPurchaseReceivingController.UpdateTransaction();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    pnEditMode = poPurchaseReceivingController.getEditMode();
-                    break;
-                case "btnHistory":
-                    break;
-                case "btnRetrieve":
-                    //Retrieve data from purchase order to table main
-                    if (mainSearchListener != null) {
-                        tfOrderNo.textProperty().removeListener(mainSearchListener);
-                        mainSearchListener = null; // Clear reference to avoid memory leaks
-                    }
-                    retrievePOR();
-                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
-
-                    break;
-                case "btnArrowRight":
-                    slideImage(1);
-                    break;
-                case "btnArrowLeft":
-                    slideImage(-1);
-                    break;
-
-                default:
-                    ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
-                    break;
-            }
-            initButton(pnEditMode);
-
-            if (lsButton.equals("btnPrint") || lsButton.equals("btnArrowRight")
-                    || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
-
-            } else {
-                loadRecordMaster();
-                loadTableDetail();
+                    loadTableDetail();
+                }
+            } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+                Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }

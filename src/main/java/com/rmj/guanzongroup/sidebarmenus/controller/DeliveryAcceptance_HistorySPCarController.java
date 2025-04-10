@@ -232,59 +232,79 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
 
         Object source = event.getSource();
         if (source instanceof Button) {
-            Button clickedButton = (Button) source;
-            String lsButton = clickedButton.getId();
-            switch (lsButton) {
-                case "btnPrint":
-                    poJSON = poPurchaseReceivingController.printRecord(() -> {
+            try {
+                Button clickedButton = (Button) source;
+                String lsButton = clickedButton.getId();
+                switch (lsButton) {
+                    case "btnBrowse":
+                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            tfTransactionNo.requestFocus();
+                            return;
+                        }
+                        
+                        pnEditMode = poPurchaseReceivingController.getEditMode();
+                        psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                        psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                        break;
+                    case "btnPrint":
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {
+                            loadRecordMaster();
+                        });
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
                         loadRecordMaster();
-                    });
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
+                        break;
+                    case "btnClose":
+                        unloadForm appUnload = new unloadForm();
+                        if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
+                        } else {
+                            return;
+                        }
+                        
+                        break;
+                    case "btnHistory":
+                        break;
+                    case "btnRetrieve":
+                        //Retrieve data from purchase order to table main
+                        if (mainSearchListener != null) {
+                            tfOrderNo.textProperty().removeListener(mainSearchListener);
+                            mainSearchListener = null; // Clear reference to avoid memory leaks
+                        }
+                        retrievePOR();
+                        disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                        break;
+                        
+                    case "btnArrowRight":
+                        slideImage(1);
+                        break;
+                    case "btnArrowLeft":
+                        slideImage(-1);
+                        break;
+                        
+                    default:
+                        ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                        break;
+                }
+                initButton(pnEditMode);
+                
+                if (lsButton.equals("btnPrint")
+                        || lsButton.equals("btnArrowRight")
+                        || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
+                    
+                } else {
                     loadRecordMaster();
-                    break;
-                case "btnClose":
-                    unloadForm appUnload = new unloadForm();
-                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-                        appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
-                    } else {
-                        return;
-                    }
-
-                    break;
-                case "btnHistory":
-                    break;
-                case "btnRetrieve":
-                    //Retrieve data from purchase order to table main
-                    if (mainSearchListener != null) {
-                        tfOrderNo.textProperty().removeListener(mainSearchListener);
-                        mainSearchListener = null; // Clear reference to avoid memory leaks
-                    }
-                    retrievePOR();
-                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
-                    break;
-
-                case "btnArrowRight":
-                    slideImage(1);
-                    break;
-                case "btnArrowLeft":
-                    slideImage(-1);
-                    break;
-
-                default:
-                    ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
-                    break;
-            }
-            initButton(pnEditMode);
-
-            if (lsButton.equals("btnPrint")
-                    || lsButton.equals("btnArrowRight")
-                    || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
-
-            } else {
-                loadRecordMaster();
-                loadTableDetail();
+                    loadTableDetail();
+                }
+            } catch (CloneNotSupportedException ex) {
+                Logger.getLogger(DeliveryAcceptance_HistorySPCarController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(DeliveryAcceptance_HistorySPCarController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (GuanzonException ex) {
+                Logger.getLogger(DeliveryAcceptance_HistorySPCarController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
