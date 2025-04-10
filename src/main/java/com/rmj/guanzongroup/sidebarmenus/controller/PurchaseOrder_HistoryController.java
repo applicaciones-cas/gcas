@@ -106,6 +106,15 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
         poApp = foValue;
     }
 
+    @Override
+    public void setIndustryID(String fsValue) {
+
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
     /**
      * Initializes the controller class.
      */

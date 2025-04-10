@@ -65,4 +65,13 @@ public class SampleForm1Controller implements Initializable, ScreenInterface {
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
 }

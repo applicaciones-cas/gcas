@@ -400,4 +400,13 @@ public class LaborController implements Initializable, ScreenInterface {
 //            oParameters.Labor().getModel().setLaborType(String.valueOf(cmbField01.getSelectionModel().getSelectedIndex()));
 //        });
 //    }
+    @Override
+    public void setIndustryID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

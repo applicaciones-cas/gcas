@@ -355,4 +355,13 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
 //        tblInventoryLedger.autosize();
 //    }
 
+    @Override
+    public void setIndustryID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

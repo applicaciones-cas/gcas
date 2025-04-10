@@ -29,4 +29,14 @@ public class DefaultScreenController implements Initializable, ScreenInterface {
     public void setGRider(GRiderCAS foValue) {
 
     }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+
+    }
 }

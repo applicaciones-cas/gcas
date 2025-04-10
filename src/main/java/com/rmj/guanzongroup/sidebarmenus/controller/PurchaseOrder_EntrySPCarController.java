@@ -136,6 +136,15 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
     }
 
     @Override
+    public void setIndustryID(String fsValue) {
+
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);

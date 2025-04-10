@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,9 +32,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -50,6 +49,8 @@ import javafx.scene.control.TreeView;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -57,7 +58,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -97,6 +100,14 @@ public class DashboardController implements Initializable {
     private int userLevel; // User's access level
     private int targetTabIndex = -1;
     private int intIndex = -1;
+    private double xOffset = 0;
+    private double yOffset = 0;
+    private boolean isFromFilter;
+    private String psIndustryID = "";
+    private String psCompanyID = "";
+    private String psCategoryID = "";
+    public String psUserIndustryId = "";
+    public String psUserCompanyId = "";
     List<String> tabName = new ArrayList<>();
     String sformname = "";
     @FXML
@@ -146,6 +157,14 @@ public class DashboardController implements Initializable {
         oApp = foValue;
     }
 
+    public void setUserIndustry(String lsIndustryId) {
+        psUserIndustryId = lsIndustryId;
+    }
+
+    public void setUserCompany(String lsCompanyId) {
+        psUserCompanyId = lsCompanyId;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
@@ -161,13 +180,35 @@ public class DashboardController implements Initializable {
             getTime();
             initButtonClickActions();
             notificationChecker();
-
             setTreeViewStyle(tvLeftSideBar);
             setTreeViewStyle(tvRightSideBar);
 
+            psIndustryID = psUserIndustryId;
+            psCompanyID = psUserCompanyId;
+
             setDropShadowEffectsLeftSideBar(anchorLeftSideBarMenu);
             setDropShadowEffectsRightSideBar(anchorRightSideBarMenu);
-
+            Platform.runLater(() -> {
+                AnchorPane root = (AnchorPane) MainAnchor;
+                Scene scene = root.getScene();
+                if (scene != null) {
+                    setKeyEvent(scene);
+                } else {
+                    root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+                        if (newScene != null) {
+                            setKeyEvent(newScene);
+                        }
+                    });
+                }
+                for (Tab tab : tabpane.getTabs()) {
+                    Node tabHeaderNode = tab.getGraphic();
+                    if (tabHeaderNode != null) {
+                        tabHeaderNode.setOnMouseClicked(event -> {
+                            System.out.println("Clicked on tab: " + tab.getText());
+                        });
+                    }
+                }
+            });
             monitorMenuItems();
         } catch (Exception e) {
             e.printStackTrace();
@@ -237,7 +278,7 @@ public class DashboardController implements Initializable {
      *
      * @param menuaction
      */
-    public String setTabTitle(String menuaction) {
+    public String SetTabTitle(String menuaction) {
         if (menuaction.contains(".fxml")) {
             switch (menuaction) {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
@@ -250,12 +291,16 @@ public class DashboardController implements Initializable {
 
                 /*Purchase Order*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml":
+                    psIndustryID = "06";
                     return "Purchase Order";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Confirmation.fxml":
+                    psIndustryID = "06";
                     return "Purchase Order Confirmation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Approval.fxml":
+                    psIndustryID = "06";
                     return "Purchase Order Approval";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml":
+                    psIndustryID = "06";
                     return "Purchase Order History";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
                     return "Purchase Order Receiving";
@@ -263,75 +308,107 @@ public class DashboardController implements Initializable {
                     return "Purchasing Receiving Confirmation";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryLP.fxml":
+                    psIndustryID = "05";
                     return "Purchase Order LP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationLP.fxml":
+                    psIndustryID = "05";
                     return "Purchase Order Confirmation LP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalLP.fxml":
+                    psIndustryID = "05";
                     return "Purchase Order Approval LP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryLP.fxml":
+                    psIndustryID = "05";
                     return "Purchase Order History LP";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchFood.fxml":
+                    psIndustryID = "04";
                     return "Purchase Order MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchFood.fxml":
+                    psIndustryID = "04";
                     return "Purchase Order Confirmation MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchFood.fxml":
+                    psIndustryID = "04";
                     return "Purchase Order Approval MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchFood.fxml":
+                    psIndustryID = "04";
                     return "Purchase Order History MF";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchHospitality.fxml":
+                    psIndustryID = "04";
                     return "Purchase Order MH";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchHospitality.fxml":
+                    psIndustryID = "04";
                     return "Purchase Order Confirmation MH";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchHospitality.fxml":
+                    psIndustryID = "04";
                     return "Purchase Order Approval MH";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchHospitality.fxml":
+                    psIndustryID = "04";
                     return "Purchase Order History MH";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPCar.fxml":
+                    psIndustryID = "03";
                     return "Purchase Order SPCar";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPCar.fxml":
+                    psIndustryID = "03";
                     return "Purchase Order Confirmation SPCar";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPCar.fxml":
+                    psIndustryID = "03";
                     return "Purchase Order Approval SPCar";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPCar.fxml":
+                    psIndustryID = "03";
                     return "Purchase Order History SPCar";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPMC.fxml":
+                    psIndustryID = "02";
                     return "Purchase Order SPMC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPMC.fxml":
+                    psIndustryID = "02";
                     return "Purchase Order Confirmation SPMC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPMC.fxml":
+                    psIndustryID = "02";
                     return "Purchase Order Approval SPMC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPMC.fxml":
+                    psIndustryID = "02";
                     return "Purchase Order History SPMC";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMC.fxml":
+                    psIndustryID = "02";
                     return "Purchase Order MC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMC.fxml":
+                    psIndustryID = "02";
                     return "Purchase Order Confirmation MC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMC.fxml":
+                    psIndustryID = "02";
                     return "Purchase Order Approval MC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMC.fxml":
+                    psIndustryID = "02";
                     return "Purchase Order History MC";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMP.fxml":
+                    psIndustryID = "01";
                     return "Purchase Order MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMP.fxml":
+                    psIndustryID = "01";
                     return "Purchase Order Confirmation MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMP.fxml":
+                    psIndustryID = "01";
                     return "Purchase Order Approval MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMP.fxml":
+                    psIndustryID = "01";
                     return "Purchase Order History MP";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryCar.fxml":
+                    psIndustryID = "03";
                     return "Purchase Order Car";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationCar.fxml":
+                    psIndustryID = "03";
                     return "Purchase Order Confirmation Car";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalCar.fxml":
+                    psIndustryID = "03";
                     return "Purchase Order Approval Car";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryCar.fxml":
+                    psIndustryID = "03";
                     return "Purchase Order History Car";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
@@ -437,6 +514,193 @@ public class DashboardController implements Initializable {
             }
         }
         return null;
+    }
+
+    public String getFormName(String fsTabTitle) {
+        switch (fsTabTitle) {
+
+            /*Purchase Order*/
+            case "Purchase Order":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml";
+            case "Purchase Order Confirmation":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Confirmation.fxml";
+            case "Purchase Order Approval":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Approval.fxml";
+            case "Purchase Order History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml";
+            case "Purchase Order Receiving":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml";
+            case "Purchasing Receiving Confirmation":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml";
+
+            case "Purchase Order LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryLP.fxml";
+            case "Purchase Order Confirmation LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationLP.fxml";
+            case "Purchase Order Approval LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalLP.fxml";
+            case "Purchase Order History LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryLP.fxml";
+
+            case "Purchase Order MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchFood.fxml";
+            case "Purchase Order Confirmation MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchFood.fxml";
+            case "Purchase Order Approval MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchFood.fxml";
+            case "Purchase Order History MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchFood.fxml";
+
+            case "Purchase Order MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchHospitality.fxml";
+            case "Purchase Order Confirmation MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchHospitality.fxml";
+            case "Purchase Order Approval MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchHospitality.fxml";
+            case "Purchase Order History MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchHospitality.fxml";
+
+            case "Purchase Order SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPCar.fxml";
+            case "Purchase Order Confirmation SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPCar.fxml";
+            case "Purchase Order Approval SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPCar.fxml";
+            case "Purchase Order History SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPCar.fxml";
+
+            case "Purchase Order SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPMC.fxml";
+            case "Purchase Order Confirmation SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPMC.fxml";
+            case "Purchase Order Approval SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPMC.fxml";
+            case "Purchase Order History SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPMC.fxml";
+
+            case "Purchase Order MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMC.fxml";
+            case "Purchase Order Confirmation MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMC.fxml";
+            case "Purchase Order Approval MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMC.fxml";
+            case "Purchase Order History MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMC.fxml";
+
+            case "Purchase Order MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMP.fxml";
+            case "Purchase Order Confirmation MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMP.fxml";
+            case "Purchase Order Approval MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMP.fxml";
+            case "Purchase Order History MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMP.fxml";
+
+            case "Purchase Order Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryCar.fxml";
+            case "Purchase Order Confirmation Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationCar.fxml";
+            case "Purchase Order Approval Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalCar.fxml";
+            case "Purchase Order History Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryCar.fxml";
+            /*END PURCHASE ORDER*/
+
+ /*PURCHASE ORDER RECEIVING*/
+            // General
+            case "Purchase Order Receiving Entry":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml";
+            case "Purchase Order Receiving Confirmation":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml";
+            case "Purchase Order Receiving Approval":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml";
+            case "Purchase Order Receiving History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_History.fxml";
+
+            // Car
+            case "Purchase Order Receiving Entry Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryCar.fxml";
+            case "Purchase Order Receiving Confirmation Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationCar.fxml";
+            case "Purchase Order Receiving Approval Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalCar.fxml";
+            case "Purchase Order Receiving History Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryCar.fxml";
+
+            // Motorcycle
+            case "Purchase Order Receiving Entry MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMC.fxml";
+            case "Purchase Order Receiving Confirmation MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMC.fxml";
+            case "Purchase Order Receiving Approval MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMC.fxml";
+            case "Purchase Order Receiving History MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMC.fxml";
+
+            // Mobile Phone
+            case "Purchase Order Receiving Entry MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMP.fxml";
+            case "Purchase Order Receiving Confirmation MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMP.fxml";
+            case "Purchase Order Receiving Approval MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMP.fxml";
+            case "Purchase Order Receiving History MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMP.fxml";
+
+            // Los Pedritos
+            case "Purchase Order Receiving Entry LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryLP.fxml";
+            case "Purchase Order Receiving Confirmation LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationLP.fxml";
+            case "Purchase Order Receiving Approval LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalLP.fxml";
+            case "Purchase Order Receiving History LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryLP.fxml";
+
+            // Spare Parts Car
+            case "Purchase Order Receiving Entry SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntrySPCar.fxml";
+            case "Purchase Order Receiving Confirmation SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationSPCar.fxml";
+            case "Purchase Order Receiving Approval SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPCar.fxml";
+            case "Purchase Order Receiving History SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistorySPCar.fxml";
+
+            // Spare Parts Motorcycle
+            case "Purchase Order Receiving Entry SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntrySPMC.fxml";
+            case "Purchase Order Receiving Confirmation SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationSPMC.fxml";
+            case "Purchase Order Receiving Approval SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPMC.fxml";
+            case "Purchase Order Receiving History SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistorySPMC.fxml";
+
+            // Monarch Food
+            case "Purchase Order Receiving Entry MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMonarchFood.fxml";
+            case "Purchase Order Receiving Confirmation MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchFood.fxml";
+            case "Purchase Order Receiving Approval MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchFood.fxml";
+            case "Purchase Order Receiving History MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchFood.fxml";
+
+            // Monarch Hospitality
+            case "Purchase Order Receiving Entry MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMonarchHospitality.fxml";
+            case "Purchase Order Receiving Confirmation MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchHospitality.fxml";
+            case "Purchase Order Receiving Approval MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchHospitality.fxml";
+            case "Purchase Order Receiving History MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml";
+
+            /*END PURCHASE ORDER RECEIVING*/
+        }
+
+        return "";
     }
 
     /**
@@ -787,22 +1051,26 @@ public class DashboardController implements Initializable {
         if (tabpane.getTabs().isEmpty()) {
             tabpane = new TabPane();
         }
+        psIndustryID = psUserIndustryId;
+        psCompanyID = psUserCompanyId;
 
         setTabPane();
         setPane();
 
         ScreenInterface fxObj = getController(fsFormName);
         fxObj.setGRider(oApp);
+        fxObj.setIndustryID(psIndustryID);
+        fxObj.setCompanyID(psCompanyID);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
         fxmlLoader.setController(fxObj);
 
-        Tab newTab = new Tab(setTabTitle(fsFormName));
+        Tab newTab = new Tab(SetTabTitle(fsFormName));
         newTab.setContent(new javafx.scene.control.Label("Content of Tab " + fsFormName));
         newTab.setContextMenu(createContextMenu(tabpane, newTab, oApp));
 
-        tabName.add(setTabTitle(fsFormName));
+        tabName.add(SetTabTitle(fsFormName));
 
         try {
             Node content = fxmlLoader.load();
@@ -2259,7 +2527,7 @@ public class DashboardController implements Initializable {
         }
 
         if (oApp != null) {
-            boolean isNewTab = (checktabs(setTabTitle(sformname)) == 1);
+            boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
             if (isNewTab) {
                 if (!sformname.isEmpty() && sformname.contains(".fxml")) {
                     setScene2(loadAnimate(sformname));
@@ -2355,7 +2623,7 @@ public class DashboardController implements Initializable {
 
                             // Load the corresponding form
                             if (oApp != null) {
-                                boolean isNewTab = (checktabs(setTabTitle(sformname)) == 1);
+                                boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
                                 if (isNewTab) {
                                     if (!sformname.isEmpty() && sformname.contains(".fxml")) {
                                         setScene2(loadAnimate(sformname));
@@ -2503,4 +2771,315 @@ public class DashboardController implements Initializable {
             System.out.println("File not found: " + pdfFile.getAbsolutePath());
         }
     }
+
+    private void setKeyEvent(Scene scene) {
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.F12) {
+                if (LoginControllerHolder.getLogInStatus()) {
+                    //check here if the user level is supervisor
+                    //check if the current tab is not entry
+                    if (LoginControllerHolder.getLogInStatus()) {
+                        Tab currentTab = tabpane.getSelectionModel().getSelectedItem();
+//                        if (currentTab != null && !"Entry".equals(currentTab.getText())) {
+                        if (currentTab != null) {
+                            try {
+                                loadSelectIndustryAndCompany();
+                            } catch (IOException e) {
+                                ShowMessageFX.Warning("Unable to load selection window.", "Error", e.getMessage());
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+        );
+
+    }
+
+    private void loadSelectIndustryAndCompany() throws IOException {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/SelectIndustryCompany.fxml"));
+            SelectIndustryCompany loControl = new SelectIndustryCompany();
+            loControl.setGRider(oApp);
+            loControl.setOldIndsutryID(psUserIndustryId);
+            loControl.setOldCompanyID(psUserCompanyId);
+            loControl.setOldCategoryID(psCategoryID);
+            fxmlLoader.setController(loControl);
+
+            //get industry of current opend form
+            SetTabTitle(sformname);
+            String lsOldForm = getFormIndustry(psIndustryID, psCategoryID);
+            String lsOldCompany = psCompanyID;
+
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            //set the main interface as the scene/*
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
+            stage.setTitle("");
+            stage.showAndWait();
+            if (loControl.isFromFilter()) {
+                psIndustryID = loControl.getSelectedIndustryID();
+                psCompanyID = loControl.getSelectedCompanyID();
+                psCategoryID = loControl.getSelectedCategoryID();
+                String lsIndustry = getFormIndustry(psIndustryID, psCategoryID);
+                //change form name base on selected industry
+                //  /com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationCar.fxml
+
+                System.out.println("OLD : " + sformname);
+                String originalString = sformname;
+                String updatedString = originalString.replace(lsOldForm + ".fxml", lsIndustry + ".fxml");
+
+                // Print the updated string
+                System.out.println(originalString);
+                System.out.println(updatedString);
+                sformname = updatedString;
+
+                System.out.println("NEW : " + sformname);
+                if (oApp != null) {
+                    boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
+                    if (isNewTab || !lsOldCompany.equals(psCompanyID)) {
+                        if (!sformname.isEmpty() && sformname.contains(".fxml")) {
+                            setScene2(loadAnimateExchange(sformname));
+                        } else {
+                            ShowMessageFX.Warning("This form is currently unavailable.", "Computerized Accounting System", pxeModuleName);
+                        }
+                    } else {
+                        ShowMessageFX.Warning("This form is already active.", "Computerized Accounting System", pxeModuleName);
+                    }
+                    setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
+                    for (ToggleButton navButton : toggleBtnLeftUpperSideBar) {
+                        navButton.setSelected(false);
+                    }
+                    pane.requestFocus();
+                }
+
+                isFromFilter = loControl.isFromFilter();
+            }
+        } catch (IOException e) {
+            ShowMessageFX.Warning(e.getMessage(), "Warning", null);
+            System.exit(1);
+
+        }
+    }
+
+    private String getFormIndustry(String industryId, String categoryId) {
+        String concatName = "";
+        switch (industryId) {
+            case "04":
+                if ("0021".equals(categoryId)) {
+                    concatName = "MF";  // Food Service
+                }
+                if ("0023".equals(categoryId)) {
+                    concatName = "MH";  // Hospitality
+                }
+                break;
+            case "02":
+                if ("0010".equals(categoryId)) {
+                    concatName = "MC";   // Motorcycle
+                }
+                if ("0011".equals(categoryId)) {
+                    concatName = "SPMC"; // Spare Parts
+                }
+            case "03":
+                if ("0015".equals(categoryId)) {
+                    concatName = "Car";   // Vehicle
+                }
+                if ("0016".equals(categoryId)) {
+                    concatName = "SPCar"; // Spare Parts
+                }
+                break;
+            case "01":
+                concatName = "MP";
+                break;
+            case "05":
+                concatName = "LP";
+                break;
+            case "06":
+                concatName = "";
+                break;
+            default:
+                concatName = "";
+                break;
+        }
+        return concatName;
+    }
+
+    public TabPane loadAnimateExchange(String fsFormName) {
+        setTabPane();
+        setPane();
+
+        ScreenInterface fxObj = getController(fsFormName);
+        fxObj.setGRider(oApp);
+        fxObj.setCompanyID(psCompanyID);
+        fxObj.setIndustryID(psIndustryID);
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
+        fxmlLoader.setController(fxObj);
+
+        try {
+            Node content = fxmlLoader.load();
+            Tab selectedTab = tabpane.getSelectionModel().getSelectedItem();
+
+            if (selectedTab != null) {
+                // Update title and content of the selected tab
+                String newTitle = SetTabTitle(fsFormName);
+
+                // Update tab name in the tracking list
+                int index = tabName.indexOf(selectedTab.getText());
+                if (index != -1) {
+                    tabName.set(index, newTitle);
+                }
+
+                selectedTab.setText(newTitle);
+                selectedTab.setContent(content);
+                selectedTab.setContextMenu(createContextMenu(tabpane, selectedTab, oApp));
+
+                selectedTab.setOnCloseRequest(event -> {
+                    if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
+                        tabName.remove(selectedTab.getText());
+                        Tabclose();
+                    } else {
+                        event.consume();
+                    }
+                });
+
+                selectedTab.setOnSelectionChanged(event -> {
+                    ObservableList<Tab> tabs = tabpane.getTabs();
+                    for (Tab tab : tabs) {
+                        if (tab.getText().equals(selectedTab.getText())) {
+                            tabName.remove(selectedTab.getText());
+                            tabName.add(selectedTab.getText());
+                            break;
+                        }
+                    }
+                });
+            }
+
+            return tabpane;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(e.getMessage(), "FXML Load Error", null);
+            return null;
+        }
+    }
+
+//    private void loadSelectIndustryAndCompany() throws IOException {
+//        try {
+//            Stage stage = new Stage();
+//            FXMLLoader fxmlLoader = new FXMLLoader();
+//            fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/SelectIndustryCompany.fxml"));
+//            SelectIndustryCompany loControl = new SelectIndustryCompany();
+//            loControl.setGRider(oApp);
+//            loControl.setOldIndsutryID(psIndustryID);
+//            loControl.setOldCompanyID(psCompanyID);
+//            fxmlLoader.setController(loControl);
+//
+//            //load the main interface
+//            Parent parent = fxmlLoader.load();
+//
+//            parent.setOnMousePressed((MouseEvent event) -> {
+//                xOffset = event.getSceneX();
+//                yOffset = event.getSceneY();
+//            });
+//
+//            parent.setOnMouseDragged((MouseEvent event) -> {
+//                stage.setX(event.getScreenX() - xOffset);
+//                stage.setY(event.getScreenY() - yOffset);
+//            });
+//
+//            //set the main interface as the scene/*
+//            Scene scene = new Scene(parent);
+//            stage.setScene(scene);
+//            stage.initStyle(StageStyle.TRANSPARENT);
+//            stage.initModality(Modality.APPLICATION_MODAL);
+//            scene.setFill(Color.TRANSPARENT);
+//            stage.setTitle("");
+//            stage.showAndWait();
+//            if (loControl.isFromFilter()) {
+//                psIndustryID = loControl.getSelectedIndustryID();
+//                psCompanyID = loControl.getSelectedCompanyID();
+//                String lsIndustry = "";
+//                switch (psIndustryID) {
+//                    case "01":
+//                        lsIndustry = "MP";
+//                        break;
+//                    case "02":
+//                        lsIndustry = "MC";
+//                        break;
+//                    case "03":
+//                        lsIndustry = "Car";
+//                        break;
+//                    case "04":
+//                        lsIndustry = "MonarchHospitality"; //TODO
+//                        break;
+//                    case "05":
+//                        lsIndustry = "LP";
+//                        break;
+//                    case "06":
+//                        lsIndustry = "";
+//                        break;
+//                }
+//                String baseFormName = sformname;
+//                int lastSlash = baseFormName.lastIndexOf('/');
+//                int lastDot = baseFormName.lastIndexOf(".fxml");
+//
+//                String path = baseFormName.substring(0, lastSlash + 1); // e.g., "/com/rmj/guanzongroup/sidebarmenus/views/"
+//                String fileName = baseFormName.substring(lastSlash + 1, lastDot); // e.g., "PurchaseOrderConfirmation" or "PurchaseOrderConfirmationCar"
+//                String baseFileName = fileName.replaceAll("(MC|MP|Car|MonarchHospitality|LP)$", ""); // strip known suffixes
+//
+//                String updatedFormName;
+//                if ("06".equals(psIndustryID)) {
+//                    // No suffix
+//                    updatedFormName = path + baseFileName + ".fxml";
+//                } else {
+//                    updatedFormName = path + baseFileName + lsIndustry + ".fxml";
+//                }
+//
+//                sformname = updatedFormName;
+//                if (oApp != null) {
+//                    boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
+//                    if (isNewTab) {
+//                        if (!sformname.isEmpty() && sformname.contains(".fxml")) {
+//                            setScene2(loadAnimateExchange(sformname));
+//                        } else {
+//                            ShowMessageFX.Warning("This form is currently unavailable.", "Computerized Accounting System", pxeModuleName);
+//                        }
+//                    } else {
+//                        ShowMessageFX.Warning("This form is already active.", "Computerized Accounting System", pxeModuleName);
+//                    }
+//                    setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
+//                    for (ToggleButton navButton : toggleBtnLeftUpperSideBar) {
+//                        navButton.setSelected(false);
+//                    }
+//                    pane.requestFocus();
+//                }
+//
+//                isFromFilter = loControl.isFromFilter();
+//            }
+//        } catch (IOException e) {
+//            ShowMessageFX.Warning(e.getMessage(), "Warning", null);
+//            System.exit(1);
+//
+//        }
+//    }
 }

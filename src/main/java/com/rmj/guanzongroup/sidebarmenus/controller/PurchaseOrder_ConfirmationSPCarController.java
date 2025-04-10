@@ -130,6 +130,16 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
         poApp = foValue;
     }
 
+    @Override
+    public void setIndustryID(String fsValue) {
+        psIndustryID = fsValue;
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        psCompanyID = fsValue;
+    }
+
     /**
      * Initializes the controller class.
      */
@@ -143,19 +153,13 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
             if (!"success".equals(loJSON.get("result"))) {
                 ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
             }
-            poJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
-            if ("error".equals((String) loJSON.get("result"))) {
-                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+            Platform.runLater((() -> {
+                poPurchasingController.PurchaseOrder().Master().setIndustryID(psIndustryID);
+                poPurchasingController.PurchaseOrder().Master().setCompanyID(psCompanyID);
+                loadRecordSearch();
+            }));
 
-                return;
-            }
-            String lsIndustryName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
-                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
-            }
-            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-            tfSearchIndustry.setText(lsIndustryName);
             initButtonsClickActions();
             initTextFieldFocus();
             initTextAreaFocus();
@@ -170,8 +174,27 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
             pnEditMode = EditMode.UNKNOWN;
             initButtons(pnEditMode);
             initFields(pnEditMode);
-        } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExceptionInInitializerError ex) {
+            Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void loadRecordSearch() {
+        try {
+            String lsIndustryName = "";
+            if (poPurchasingController.PurchaseOrder().Master().Industry().getDescription() != null) {
+                lsIndustryName = poPurchasingController.PurchaseOrder().Master().Industry().getDescription();
+            }
+            psIndustryID = poPurchasingController.PurchaseOrder().Master().getIndustryID();
+            tfSearchIndustry.setText(lsIndustryName);
+            String lsCompanyName = "";
+            if (poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() != null) {
+                lsCompanyName = poPurchasingController.PurchaseOrder().Master().Company().getCompanyName();
+            }
+            psCompanyID = poPurchasingController.PurchaseOrder().Master().getCompanyID();
+            tfSearchCompany.setText(lsCompanyName);
+        } catch (GuanzonException | SQLException ex) {
+            Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -135,6 +135,15 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         poApp = foValue;
     }
 
+    @Override
+    public void setIndustryID(String fsValue) {
+
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
     /**
      * Initializes the controller class.
      */

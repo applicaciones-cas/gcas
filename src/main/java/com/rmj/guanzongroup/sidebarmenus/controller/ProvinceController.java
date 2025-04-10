@@ -375,4 +375,12 @@ public class ProvinceController implements Initializable, ScreenInterface {
 //        boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
 //        AnchorInputs.setDisable(!isEditable);
 //    }
+    @Override
+    public void setIndustryID(String fsValue) {
+
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
 }

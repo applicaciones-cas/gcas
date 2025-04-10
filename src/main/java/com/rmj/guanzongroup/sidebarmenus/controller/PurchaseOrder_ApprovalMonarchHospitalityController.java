@@ -130,6 +130,15 @@ public class PurchaseOrder_ApprovalMonarchHospitalityController implements Initi
         poApp = foValue;
     }
 
+    @Override
+    public void setIndustryID(String fsValue) {
+
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
     /**
      * Initializes the controller class.
      */

@@ -374,4 +374,13 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
 //            oParameters.AffiliatedCompany().getModel().setDateAffiliat(SQLUtil.toDate(dpField01.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
 //        });
 //    }
+    @Override
+    public void setIndustryID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

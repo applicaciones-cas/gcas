@@ -539,4 +539,14 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
 //        return LocalDate.parse(val, dateFormatter);
 //    }
 
+    @Override
+    public void setIndustryID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

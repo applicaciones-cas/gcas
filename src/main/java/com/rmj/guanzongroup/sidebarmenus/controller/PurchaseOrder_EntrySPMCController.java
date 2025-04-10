@@ -136,6 +136,15 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
     }
 
     @Override
+    public void setIndustryID(String fsValue) {
+
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);

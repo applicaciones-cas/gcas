@@ -75,6 +75,15 @@ public class WarehouseController implements Initializable, ScreenInterface {
     }
 
     @Override
+    public void setIndustryID(String fsValue) {
+
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
         pnEditMode = EditMode.UNKNOWN;
 //        initButton(pnEditMode);
