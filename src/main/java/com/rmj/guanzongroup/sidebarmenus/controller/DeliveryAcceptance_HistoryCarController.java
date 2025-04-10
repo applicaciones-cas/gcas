@@ -123,7 +123,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
     ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
-    private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
+
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
 
     private double mouseAnchorX;
@@ -143,14 +143,13 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
     private Stage dialogStage = null;
     private ChangeListener<String> detailSearchListener;
-    private ChangeListener<String> mainSearchListener;
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apAttachments, apAttachmentButtons;
     @FXML
     private HBox hbButtons, hboxid;
     @FXML
-    private Button btnPrint, btnHistory, btnRetrieve, btnClose; //btnUpdate, btnSearch, btnSave, btnCancel, btnSerials, btnApprove, btnVoid, btnReturn
+    private Button btnPrint, btnHistory, btnClose; //btnUpdate, btnSearch, btnSave, btnCancel, btnSerials, btnApprove, btnVoid, btnReturn
     @FXML
     private Label lblStatus, lblSource; // lblSearchIndustry, lblSearchCompany;
     @FXML
@@ -164,14 +163,13 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate;
     @FXML
-    private TableView tblViewOrderDetails, tblViewPuchaseOrder;
+    private TableView tblViewOrderDetails;
     @FXML
     private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBrandDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail,
-            tblReceiveQuantityDetail, tblTotalDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo;
+            tblReceiveQuantityDetail, tblTotalDetail;
+
     @FXML
-    private Pagination pgPagination;
-    @FXML
-    private TextField  tfSearchSupplier, tfSearchReferenceNo;
+    private TextField tfSearchSupplier;
     @FXML
     private TextField tfAttachmentNo;
     @FXML
@@ -210,7 +208,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
         initTextFields();
         initDatePickers();
-        initMainGrid();
+
         initDetailsGrid();
         initAttachmentsGrid();
         initTableOnClick();
@@ -222,11 +220,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
             loadRecordSearch();
         });
 
-
         initAttachmentPreviewPane();
         initStackPaneListener();
-
-        pgPagination.setPageCount(1);
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
@@ -236,7 +231,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     @Override
     public void setIndustryID(String fsValue) {
         psIndustryId = fsValue;
@@ -259,19 +254,21 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(),"");
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        
+
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                         break;
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {
+                            loadRecordMaster();
+                        });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
@@ -298,32 +295,22 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                         break;
                     case "btnHistory":
                         break;
-                    case "btnRetrieve":
-                        //Retrieve data from purchase order to table main
-                        if (mainSearchListener != null) {
-                            tfOrderNo.textProperty().removeListener(mainSearchListener);
-                            mainSearchListener = null; // Clear reference to avoid memory leaks
-                        }
-                        retrievePOR();
-                        disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
-                        
-                        break;
                     case "btnArrowRight":
                         slideImage(1);
                         break;
                     case "btnArrowLeft":
                         slideImage(-1);
                         break;
-                        
+
                     default:
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
                 initButton(pnEditMode);
-                
+
                 if (lsButton.equals("btnPrint") || lsButton.equals("btnArrowRight")
                         || lsButton.equals("btnArrowLeft") || lsButton.equals("btnRetrieve")) {
-                    
+
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
@@ -343,12 +330,12 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         poJSON.put("result", "success");
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
+            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId,"");
 
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             } else {
-                loadTableMain();
+
             }
         } else {
             poJSON.put("message", lsMessage + " cannot be empty.");
@@ -624,11 +611,10 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                         psSupplierId = "";
                     }
                     break;
-                case "tfSearchReferenceNo":
-                    break;
+
             }
-            if ( lsTxtFieldID.equals("tfSearchSupplier")
-                    || lsTxtFieldID.equals("tfSearchReferenceNo")) {
+            if (lsTxtFieldID.equals("tfSearchSupplier")
+                    ) {
                 loadRecordSearch();
             }
         }
@@ -656,10 +642,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                             retrievePOR();
                             loadRecordSearch();
                             return;
-                        case "tfSearchReferenceNo":
-                            poPurchaseReceivingController.Master().setTransactionNo(lsValue);
-                            retrievePOR();
-                            return;
+
 
                     }
                     loadRecordMaster();
@@ -685,166 +668,21 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         }
     }
 
-    private void loadTab() {
-        int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
-        pgPagination.setPageCount(totalPage);
-        pgPagination.setCurrentPageIndex(0);
-        changeTableView(0, ROWS_PER_PAGE);
-        pgPagination.currentPageIndexProperty().addListener(
-                (observable, oldValue, newValue) -> changeTableView(newValue.intValue(), ROWS_PER_PAGE));
-    }
-
-    private void changeTableView(int index, int limit) {
-        tblViewPuchaseOrder.getSelectionModel().clearSelection();
-        int fromIndex = index * limit;
-        int toIndex = Math.min(fromIndex + limit, main_data.size());
-        int minIndex = Math.min(toIndex, main_data.size());
-        SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(
-                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
-        sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-        try {
-            tblViewPuchaseOrder.setItems(FXCollections.observableArrayList(filteredData.subList(fromIndex, toIndex)));
-        } catch (Exception e) {
-
-        }
-
-        tblViewPuchaseOrder.scrollTo(0);
-    }
-
-    public void loadTableMain() {
-        // Setting data to table detail
-        ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setMaxHeight(50);
-        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
-        StackPane loadingPane = new StackPane(progressIndicator);
-        loadingPane.setAlignment(Pos.CENTER);
-        tblViewPuchaseOrder.setPlaceholder(loadingPane);
-        progressIndicator.setVisible(true);
-
-        Label placeholderLabel = new Label("NO RECORD TO LOAD");
-        placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
-
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(100);
-//                Thread.sleep(1000);
-
-                // contains try catch, for loop of loading data to observable list until loadTab()
-                Platform.runLater(() -> {
-                    main_data.clear();
-
-                    String lsMainDate = "";
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
-
-                    try {
-                        if (!poPurchaseReceivingController.Master().getTransactionDate().equals("")) {
-                            Object loDate = poPurchaseReceivingController.Master().getTransactionDate();
-                            if (loDate == null) {
-                                lsMainDate = LocalDate.now().format(formatter); // Convert to String
-
-                            } else if (loDate instanceof Timestamp) {
-                                Timestamp timestamp = (Timestamp) loDate;
-                                LocalDate localDate = timestamp.toLocalDateTime().toLocalDate();
-
-                                lsMainDate = localDate.format(formatter);
-                            } else if (loDate instanceof Date) {
-                                Date sqlDate = (Date) loDate;
-                                LocalDate localDate = sqlDate.toLocalDate();
-
-                                lsMainDate = localDate.format(formatter);
-                            } else {
-                            }
-                        }
-                    } catch (Exception e) {
-
-                    }
-                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
-                        //pending
-                        //retreiving using column index
-                        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingCount() - 1; lnCtr++) {
-                            try {
-                                main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
-                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).Supplier().getCompanyName()),
-                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionDate()),
-                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
-                                ));
-                            } catch (SQLException ex) {
-                                Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                            } catch (GuanzonException ex) {
-                                Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                            }
-
-                        }
-                    }
-
-                    if (pnMain < 0 || pnMain
-                            >= main_data.size()) {
-                        if (!main_data.isEmpty()) {
-                            /* FOCUS ON FIRST ROW */
-                            tblViewPuchaseOrder.getSelectionModel().select(0);
-                            tblViewPuchaseOrder.getFocusModel().focus(0);
-                            pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
-
-                        }
-                    } else {
-                        /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                        tblViewPuchaseOrder.getSelectionModel().select(pnMain);
-                        tblViewPuchaseOrder.getFocusModel().focus(pnMain);
-                    }
-                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
-                        loadTab();
-                    }
-                });
-
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
-                if (main_data == null || main_data.isEmpty()) {
-                    tblViewPuchaseOrder.setPlaceholder(placeholderLabel);
-                } else {
-                    tblViewPuchaseOrder.toFront();
-                }
-            }
-
-            @Override
-            protected void failed() {
-                if (main_data == null || main_data.isEmpty()) {
-                    tblViewPuchaseOrder.setPlaceholder(placeholderLabel);
-                }
-                progressIndicator.setVisible(false);
-            }
-
-        };
-        new Thread(task).start(); // Run task in background
-    }
-
     public void loadRecordSearch() {
         try {
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-            
+
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
                 tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
-            }
-            try {
-                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
-                    tfSearchReferenceNo.setText("");
-                } else {
-
-                }
-            } catch (Exception e) {
-                tfSearchReferenceNo.setText("");
             }
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
+
     public void loadRecordAttachment(boolean lbloadImage) {
         try {
             if (pnAttachment >= 0) {
@@ -980,8 +818,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            
-            
+
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -1013,13 +850,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
             }
 
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
-                    pnMain = pnRowMain;
-                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                    highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
-                }
                 poPurchaseReceivingController.loadAttachments();
                 loadTableDetail();
                 tfAttachmentNo.clear();
@@ -1258,14 +1088,13 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     }
 
     public void initTextFields() {
-        
+
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
-        tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
+        
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
 
-        
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
+        
         // Combobox
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
@@ -1296,34 +1125,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
             }
         });
 
-        tblViewPuchaseOrder.setOnMouseClicked(event -> {
-            pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
-            if (pnMain >= 0) {
-                if (event.getClickCount() == 2) {
-                    tfOrderNo.setText("");
-                    loadTableDetailFromMain();
-                    pnEditMode = poPurchaseReceivingController.getEditMode();
-                    initButton(pnEditMode);
-                }
-            }
-        });
-
-        tblViewPuchaseOrder.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Main>() {
-            @Override
-            protected void updateItem(ModelDeliveryAcceptance_Main item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsMain.containsKey(getIndex())) {
-                    List<String> colors = highlightedRowsMain.get(getIndex());
-                    if (!colors.isEmpty()) {
-                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply the latest color
-                    }
-                } else {
-                    setStyle(""); // Default style
-                }
-            }
-        });
         tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Detail>() {
             @Override
             protected void updateItem(ModelDeliveryAcceptance_Detail item, boolean empty) {
@@ -1343,7 +1144,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
-        adjustLastColumnForScrollbar(tblViewPuchaseOrder);
+
         adjustLastColumnForScrollbar(tblAttachments);
     }
 
@@ -1428,19 +1229,28 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     }
 
     private void initButton(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.READY);
+        boolean lbShow1 = (fnValue == EditMode.UPDATE);
+        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
+        boolean lbShow3 = (fnValue == EditMode.READY);
+        boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
         // Manage visibility and managed state of other buttons
+
         //Ready
-        btnPrint.setVisible(lbShow);
-        btnPrint.setManaged(lbShow);
-        btnHistory.setVisible(lbShow);
-        btnHistory.setManaged(lbShow);
+        btnPrint.setVisible(lbShow3);
+        btnPrint.setManaged(lbShow3);
 
-        apMaster.setDisable(!lbShow);
-        apDetail.setDisable(!lbShow);
-        apAttachments.setDisable(!lbShow);
+        btnHistory.setVisible(lbShow3);
+        btnHistory.setManaged(lbShow3);
+
+        //Unkown || Ready
+        btnClose.setVisible(lbShow4);
+        btnClose.setManaged(lbShow4);
+
+        apMaster.setDisable(!lbShow1);
+        apDetail.setDisable(!lbShow1);
+        apAttachments.setDisable(!lbShow1);
+
     }
-
     private void initStackPaneListener() {
         stackPane1.widthProperty().addListener((observable, oldValue, newWidth) -> {
             double computedWidth = newWidth.doubleValue();
@@ -1566,31 +1376,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         tblViewOrderDetails.autosize();
     }
 
-    public void initMainGrid() {
-        tblRowNo.setStyle("-fx-alignment: CENTER;");
-        tblSupplier.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblDate.setStyle("-fx-alignment: CENTER;");
-        tblReferenceNo.setStyle("-fx-alignment: CENTER;");
-
-        tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblSupplier.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblDate.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index04"));
-
-        tblViewPuchaseOrder.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewPuchaseOrder.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-
-        filteredData = new FilteredList<>(main_data, b -> true);
-        SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-        tblViewPuchaseOrder.setItems(sortedData);
-
-    }
-
     private boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
         Bounds clipBounds = stackPane.getClip().getBoundsInParent();
         Bounds imageBounds = imageView.getBoundsInParent();
@@ -1685,16 +1470,14 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        
         tfSearchSupplier.clear();
-        tfSearchReferenceNo.clear();
+        
         tfAttachmentNo.clear();
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
-        
-        
+
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();
@@ -1755,46 +1538,12 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
-                if (mainSearchListener != null) {
-                    txtField.textProperty().removeListener(mainSearchListener);
-                    mainSearchListener = null; // Clear reference to avoid memory leaks
-                }
                 String lowerCaseFilter = newValue.toLowerCase();
                 return orders.getIndex02().toLowerCase().contains(lowerCaseFilter);
             });
             // If no results and autoSearchMain is enabled, remove listener and trigger autoSearchMain
-            if (filteredDataDetail.isEmpty()) {
-                txtField.textProperty().removeListener(detailSearchListener);
-                filteredData = new FilteredList<>(main_data, b -> true);
-                autoSearchMain(txtField); // Trigger autoSearchMain if no results
-                SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-                sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-                tblViewPuchaseOrder.setItems(sortedData);
-
-                String currentText = txtField.getText();
-                txtField.setText(currentText + " "); // Add a space
-                txtField.setText(currentText);       // Set back to original
-            }
         };
         txtField.textProperty().addListener(detailSearchListener);
-    }
-
-    private void autoSearchMain(TextField txtField) {
-        mainSearchListener = (observable, oldValue, newValue) -> {
-            filteredData.setPredicate(orders -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    if (mainSearchListener != null) {
-                        txtField.textProperty().removeListener(mainSearchListener);
-                        mainSearchListener = null; // Clear reference to avoid memory leaks
-                        initDetailsGrid();
-                    }
-                    return true;
-                }
-                String lowerCaseFilter = newValue.toLowerCase();
-                return orders.getIndex04().toLowerCase().contains(lowerCaseFilter);
-            });
-        };
-        txtField.textProperty().addListener(mainSearchListener);
     }
 
 }
