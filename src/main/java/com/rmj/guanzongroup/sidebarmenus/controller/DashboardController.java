@@ -200,15 +200,8 @@ public class DashboardController implements Initializable {
                         }
                     });
                 }
-                for (Tab tab : tabpane.getTabs()) {
-                    Node tabHeaderNode = tab.getGraphic();
-                    if (tabHeaderNode != null) {
-                        tabHeaderNode.setOnMouseClicked(event -> {
-                            System.out.println("Clicked on tab: " + tab.getText());
-                        });
-                    }
-                }
             });
+
             monitorMenuItems();
         } catch (Exception e) {
             e.printStackTrace();
@@ -302,10 +295,6 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml":
                     psIndustryID = "06";
                     return "Purchase Order History";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
-                    return "Purchase Order Receiving";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml":
-                    return "Purchasing Receiving Confirmation";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryLP.fxml":
                     psIndustryID = "05";
@@ -322,67 +311,87 @@ public class DashboardController implements Initializable {
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchFood.fxml":
                     psIndustryID = "04";
+                    psCategoryID = "0021";
                     return "Purchase Order MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchFood.fxml":
                     psIndustryID = "04";
+                    psCategoryID = "0021";
                     return "Purchase Order Confirmation MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchFood.fxml":
                     psIndustryID = "04";
+                    psCategoryID = "0021";
                     return "Purchase Order Approval MF";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchFood.fxml":
                     psIndustryID = "04";
+                    psCategoryID = "0021";
                     return "Purchase Order History MF";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMonarchHospitality.fxml":
                     psIndustryID = "04";
+                    psCategoryID = "0023";
                     return "Purchase Order MH";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMonarchHospitality.fxml":
                     psIndustryID = "04";
+                    psCategoryID = "0023";
                     return "Purchase Order Confirmation MH";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMonarchHospitality.fxml":
                     psIndustryID = "04";
+                    psCategoryID = "0023";
                     return "Purchase Order Approval MH";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMonarchHospitality.fxml":
                     psIndustryID = "04";
+                    psCategoryID = "0023";
                     return "Purchase Order History MH";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPCar.fxml":
                     psIndustryID = "03";
+                    psCategoryID = "0016";
                     return "Purchase Order SPCar";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPCar.fxml":
                     psIndustryID = "03";
+                    psCategoryID = "0016";
                     return "Purchase Order Confirmation SPCar";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPCar.fxml":
                     psIndustryID = "03";
+                    psCategoryID = "0016";
                     return "Purchase Order Approval SPCar";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPCar.fxml":
                     psIndustryID = "03";
+                    psCategoryID = "0016";
                     return "Purchase Order History SPCar";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntrySPMC.fxml":
                     psIndustryID = "02";
+                    psCategoryID = "0011";
                     return "Purchase Order SPMC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationSPMC.fxml":
                     psIndustryID = "02";
+                    psCategoryID = "0011";
                     return "Purchase Order Confirmation SPMC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalSPMC.fxml":
                     psIndustryID = "02";
+                    psCategoryID = "0011";
                     return "Purchase Order Approval SPMC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistorySPMC.fxml":
                     psIndustryID = "02";
+                    psCategoryID = "0011";
                     return "Purchase Order History SPMC";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMC.fxml":
                     psIndustryID = "02";
+                    psCategoryID = "0010";
                     return "Purchase Order MC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationMC.fxml":
                     psIndustryID = "02";
+                    psCategoryID = "0010";
                     return "Purchase Order Confirmation MC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalMC.fxml":
                     psIndustryID = "02";
+                    psCategoryID = "0010";
                     return "Purchase Order Approval MC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryMC.fxml":
                     psIndustryID = "02";
+                    psCategoryID = "0010";
                     return "Purchase Order History MC";
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryMP.fxml":
@@ -400,17 +409,131 @@ public class DashboardController implements Initializable {
 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_EntryCar.fxml":
                     psIndustryID = "03";
+                    psCategoryID = "0015";
                     return "Purchase Order Car";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ConfirmationCar.fxml":
                     psIndustryID = "03";
+                    psCategoryID = "0015";
                     return "Purchase Order Confirmation Car";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_ApprovalCar.fxml":
                     psIndustryID = "03";
+                    psCategoryID = "0015";
                     return "Purchase Order Approval Car";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_HistoryCar.fxml":
                     psIndustryID = "03";
+                    psCategoryID = "0015";
                     return "Purchase Order History Car";
 
+                /*PURCHASE ORDER RECEIVING*/
+                //General
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
+                    psIndustryID = "06";
+                    return "Purchase Order Receiving Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml":
+                    psIndustryID = "06";
+                    return "Purchase Order Receiving Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml":
+                    psIndustryID = "06";
+                    return "Purchase Order Receiving Approval";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_History.fxml":
+                    psIndustryID = "06";
+                    return "Purchase Order Receiving History";
+
+                //Car
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryCar.fxml":
+                    psIndustryID = "03";
+                    return "Purchase Order Receiving Entry Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationCar.fxml":
+                    psIndustryID = "03";
+                    return "Purchase Order Receiving Confirmation Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalCar.fxml":
+                    psIndustryID = "03";
+                    return "Purchase Order Receiving Approval Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryCar.fxml":
+                    psIndustryID = "03";
+                    return "Purchase Order Receiving History Car";
+
+                //Motorcyle
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMC.fxml":
+                    psIndustryID = "02";
+                    return "Purchase Order Receiving Entry MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMC.fxml":
+                    psIndustryID = "02";
+                    return "Purchase Order Receiving Confirmation MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMC.fxml":
+                    psIndustryID = "02";
+                    return "Purchase Order Receiving Approval MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMC.fxml":
+                    psIndustryID = "02";
+                    return "Purchase Order Receiving History MC";
+
+                //Mobile Phone
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMP.fxml":
+                    psIndustryID = "01";
+                    return "Purchase Order Receiving Entry MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMP.fxml":
+                    psIndustryID = "01";
+                    return "Purchase Order Receiving Confirmation MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMP.fxml":
+                    psIndustryID = "01";
+                    return "Purchase Order Receiving Approval MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMP.fxml":
+                    psIndustryID = "01";
+                    return "Purchase Order Receiving History MP";
+
+                //Los Pedritos
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryLP.fxml":
+                    psIndustryID = "05";
+                    return "Purchase Order Receiving Entry LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationLP.fxml":
+                    psIndustryID = "05";
+                    return "Purchase Order Receiving Confirmation LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalLP.fxml":
+                    psIndustryID = "05";
+                    return "Purchase Order Receiving Approval LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryLP.fxml":
+                    psIndustryID = "05";
+                    return "Purchase Order Receiving History LP";
+
+                //Spare Parts Car
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntrySPCar.fxml":
+                    return "Purchase Order Receiving Entry SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationSPCar.fxml":
+                    return "Purchase Order Receiving Confirmation SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPCar.fxml":
+                    return "Purchase Order Receiving Approval SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistorySPCar.fxml":
+                    return "Purchase Order Receiving History SPCar";
+
+                //Spare Parts Motorcycle
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntrySPMC.fxml":
+                    return "Purchase Order Receiving Entry SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationSPMC.fxml":
+                    return "Purchase Order Receiving Confirmation SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPMC.fxml":
+                    return "Purchase Order Receiving Approval SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistorySPMC.fxml":
+                    return "Purchase Order Receiving History SPMC";
+
+                //Monarch Food
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMonarchFood.fxml":
+                    return "Purchase Order Receiving Entry MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchFood.fxml":
+                    return "Purchase Order Receiving Confirmation MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchFood.fxml":
+                    return "Purchase Order Receiving Approval MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchFood.fxml":
+                    return "Purchase Order Receiving History MF";
+
+                //Monarch Hospitality
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMonarchHospitality.fxml":
+                    return "Purchase Order Receiving Entry MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchHospitality.fxml":
+                    return "Purchase Order Receiving Confirmation MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchHospitality.fxml":
+                    return "Purchase Order Receiving Approval MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml":
+                    return "Purchase Order Receiving History MH";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
                     return "Payment Request";
 
@@ -958,7 +1081,6 @@ public class DashboardController implements Initializable {
      */
     public void setTabPane() {
         tabpane.setOnMouseClicked(event -> {
-
             setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
             for (int i = 0; i < toggleBtnLeftUpperSideBar.length; i++) {
                 toggleBtnLeftUpperSideBar[i].setSelected(false);
@@ -967,6 +1089,7 @@ public class DashboardController implements Initializable {
             for (int i = 0; i < toggleBtnRightSideBar.length; i++) {
                 toggleBtnRightSideBar[i].setSelected(false);
             }
+            sformname = getFormName(tabpane.getSelectionModel().getSelectedItem().getText());
         });
 
         tabpane.setOnDragDetected(event -> {
@@ -2813,7 +2936,6 @@ public class DashboardController implements Initializable {
             SetTabTitle(sformname);
             String lsOldForm = getFormIndustry(psIndustryID, psCategoryID);
             String lsOldCompany = psCompanyID;
-
             //load the main interface
             Parent parent = fxmlLoader.load();
 
@@ -2885,10 +3007,10 @@ public class DashboardController implements Initializable {
         switch (industryId) {
             case "04":
                 if ("0021".equals(categoryId)) {
-                    concatName = "MF";  // Food Service
+                    concatName = "MonarchFood1";  // Food Service
                 }
                 if ("0023".equals(categoryId)) {
-                    concatName = "MH";  // Hospitality
+                    concatName = "MonarchHospitality";  // Hospitality
                 }
                 break;
             case "02":
@@ -2982,104 +3104,4 @@ public class DashboardController implements Initializable {
             return null;
         }
     }
-
-//    private void loadSelectIndustryAndCompany() throws IOException {
-//        try {
-//            Stage stage = new Stage();
-//            FXMLLoader fxmlLoader = new FXMLLoader();
-//            fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/SelectIndustryCompany.fxml"));
-//            SelectIndustryCompany loControl = new SelectIndustryCompany();
-//            loControl.setGRider(oApp);
-//            loControl.setOldIndsutryID(psIndustryID);
-//            loControl.setOldCompanyID(psCompanyID);
-//            fxmlLoader.setController(loControl);
-//
-//            //load the main interface
-//            Parent parent = fxmlLoader.load();
-//
-//            parent.setOnMousePressed((MouseEvent event) -> {
-//                xOffset = event.getSceneX();
-//                yOffset = event.getSceneY();
-//            });
-//
-//            parent.setOnMouseDragged((MouseEvent event) -> {
-//                stage.setX(event.getScreenX() - xOffset);
-//                stage.setY(event.getScreenY() - yOffset);
-//            });
-//
-//            //set the main interface as the scene/*
-//            Scene scene = new Scene(parent);
-//            stage.setScene(scene);
-//            stage.initStyle(StageStyle.TRANSPARENT);
-//            stage.initModality(Modality.APPLICATION_MODAL);
-//            scene.setFill(Color.TRANSPARENT);
-//            stage.setTitle("");
-//            stage.showAndWait();
-//            if (loControl.isFromFilter()) {
-//                psIndustryID = loControl.getSelectedIndustryID();
-//                psCompanyID = loControl.getSelectedCompanyID();
-//                String lsIndustry = "";
-//                switch (psIndustryID) {
-//                    case "01":
-//                        lsIndustry = "MP";
-//                        break;
-//                    case "02":
-//                        lsIndustry = "MC";
-//                        break;
-//                    case "03":
-//                        lsIndustry = "Car";
-//                        break;
-//                    case "04":
-//                        lsIndustry = "MonarchHospitality"; //TODO
-//                        break;
-//                    case "05":
-//                        lsIndustry = "LP";
-//                        break;
-//                    case "06":
-//                        lsIndustry = "";
-//                        break;
-//                }
-//                String baseFormName = sformname;
-//                int lastSlash = baseFormName.lastIndexOf('/');
-//                int lastDot = baseFormName.lastIndexOf(".fxml");
-//
-//                String path = baseFormName.substring(0, lastSlash + 1); // e.g., "/com/rmj/guanzongroup/sidebarmenus/views/"
-//                String fileName = baseFormName.substring(lastSlash + 1, lastDot); // e.g., "PurchaseOrderConfirmation" or "PurchaseOrderConfirmationCar"
-//                String baseFileName = fileName.replaceAll("(MC|MP|Car|MonarchHospitality|LP)$", ""); // strip known suffixes
-//
-//                String updatedFormName;
-//                if ("06".equals(psIndustryID)) {
-//                    // No suffix
-//                    updatedFormName = path + baseFileName + ".fxml";
-//                } else {
-//                    updatedFormName = path + baseFileName + lsIndustry + ".fxml";
-//                }
-//
-//                sformname = updatedFormName;
-//                if (oApp != null) {
-//                    boolean isNewTab = (checktabs(SetTabTitle(sformname)) == 1);
-//                    if (isNewTab) {
-//                        if (!sformname.isEmpty() && sformname.contains(".fxml")) {
-//                            setScene2(loadAnimateExchange(sformname));
-//                        } else {
-//                            ShowMessageFX.Warning("This form is currently unavailable.", "Computerized Accounting System", pxeModuleName);
-//                        }
-//                    } else {
-//                        ShowMessageFX.Warning("This form is already active.", "Computerized Accounting System", pxeModuleName);
-//                    }
-//                    setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
-//                    for (ToggleButton navButton : toggleBtnLeftUpperSideBar) {
-//                        navButton.setSelected(false);
-//                    }
-//                    pane.requestFocus();
-//                }
-//
-//                isFromFilter = loControl.isFromFilter();
-//            }
-//        } catch (IOException e) {
-//            ShowMessageFX.Warning(e.getMessage(), "Warning", null);
-//            System.exit(1);
-//
-//        }
-//    }
 }

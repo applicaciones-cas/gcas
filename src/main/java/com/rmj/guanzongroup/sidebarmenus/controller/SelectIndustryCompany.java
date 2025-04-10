@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -139,15 +138,9 @@ public class SelectIndustryCompany implements Initializable, ScreenInterface {
                     return; // Stop further processing
                 }
                 // No changes?
-                if (psIndustryID.equals(psOldIndustryID)
-                        && psCompanyID.equals(psOldCompanyID)
-                        && psCategoryID.equals(psOldCategoryID)) {
-                    ShowMessageFX.Warning("No changes.", psFormName, null);
-                } else {
-                    if (ShowMessageFX.YesNo("Are you sure you want to change industry or company?", psFormName, null)) {
-                        pbIsFromFilter = true;
-                        CommonUtils.closeStage(btnOkay);
-                    }
+                if (ShowMessageFX.YesNo("Are you sure you want to change industry or company?", psFormName, null)) {
+                    pbIsFromFilter = true;
+                    CommonUtils.closeStage(btnOkay);
                 }
                 break;
 

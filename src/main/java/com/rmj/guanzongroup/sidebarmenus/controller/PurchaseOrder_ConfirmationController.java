@@ -158,7 +158,6 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                 poPurchasingController.PurchaseOrder().Master().setCompanyID(psCompanyID);
                 loadRecordSearch();
             }));
-
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             initButtonsClickActions();
             initTextFieldFocus();

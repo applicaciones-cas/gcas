@@ -25,6 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.MiscUtil;
@@ -103,8 +104,13 @@ public class Log_InController implements Initializable, ScreenInterface {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnSignIn":
+                if (psIndustryID.equals("") && psCompanyID.equals("")) {
+                    ShowMessageFX.Warning("Please select industry and category", "CAS", null);
+                    break;
+                }
                 DashboardController dashboardController = LoginControllerHolder.getMainController();
                 dashboardController.triggervbox2();
+
                 dashboardController.setUserIndustry(psIndustryID);
                 dashboardController.setUserCompany(psCompanyID);
 
