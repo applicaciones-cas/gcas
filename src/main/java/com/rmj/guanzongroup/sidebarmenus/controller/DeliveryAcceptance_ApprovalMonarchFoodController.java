@@ -4,6 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ApprovalCarController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -171,7 +172,7 @@ public class DeliveryAcceptance_ApprovalMonarchFoodController implements Initial
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus, lblSearchIndustry, lblSearchCompany;
+    private Label lblStatus,lblSource;// lblSearchIndustry, lblSearchCompany;
 
     @FXML
     private TextArea taRemarks;
@@ -206,6 +207,12 @@ public class DeliveryAcceptance_ApprovalMonarchFoodController implements Initial
         initTableOnClick();
         clearTextFields();
         poPurchaseReceivingController.initFields();
+        
+        Platform.runLater(() -> {
+            poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
+            poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+            loadRecordSearch();
+        });
 
         initAttachmentPreviewPane();
 
@@ -1046,12 +1053,8 @@ public class DeliveryAcceptance_ApprovalMonarchFoodController implements Initial
 
     public void loadRecordSearch() {
         try {
-            lblSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            if (psCompanyId.equals("")) {
-                lblSearchCompany.setText("");
-            } else {
-                lblSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
-            }
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
+            
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
@@ -2008,7 +2011,7 @@ public class DeliveryAcceptance_ApprovalMonarchFoodController implements Initial
         dpReferenceDate.setValue(null);
         dpExpiryDate.setValue(null);
 
-        lblSearchCompany.setText("");
+        
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();

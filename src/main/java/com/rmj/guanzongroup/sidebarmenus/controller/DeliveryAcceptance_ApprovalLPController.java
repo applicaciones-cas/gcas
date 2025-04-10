@@ -2006,7 +2006,7 @@ public class DeliveryAcceptance_ApprovalLPController implements Initializable, S
         dpReferenceDate.setValue(null);
         dpExpiryDate.setValue(null);
 
-        lblSource.setText("");
+        
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
 

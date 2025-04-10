@@ -158,7 +158,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     @FXML
     private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose, btnSerials, btnConfirm, btnVoid, btnReturn;
     @FXML
-    private Label lblStatus, lblSearchIndustry, lblSearchCompany;
+    private Label lblStatus,lblSource;// lblSearchIndustry, lblSearchCompany;
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
@@ -214,6 +214,12 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         initTableOnClick();
         clearTextFields();
         poPurchaseReceivingController.initFields();
+        
+        Platform.runLater(() -> {
+            poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
+            poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+            loadRecordSearch();
+        });
 
         initAttachmentPreviewPane();
 
@@ -1130,12 +1136,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
 
     public void loadRecordSearch() {
         try {
-            lblSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            if (psCompanyId.equals("")) {
-                lblSearchCompany.setText("");
-            } else {
-                lblSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
-            }
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
+            
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
@@ -2111,7 +2113,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        lblSearchCompany.setText("");
+        
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();

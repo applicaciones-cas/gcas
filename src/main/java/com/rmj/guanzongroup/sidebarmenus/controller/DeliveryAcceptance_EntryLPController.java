@@ -124,7 +124,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose;
 
     @FXML
-    private Label lblStatus, lblSearchIndustry, lblSearchCompany;
+    private Label lblStatus, lblSource; // lblSearchIndustry, lblSearchCompany;
 
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
@@ -175,12 +175,17 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             initTableOnClick();
             clearTextFields();
             poPurchaseReceivingController.initFields();
+            
+            Platform.runLater(() -> {
+                poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
+                poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+                loadRecordSearch();
+            });
 
             loadRecordMaster();
             loadTableDetail();
 
             pgPagination.setPageCount(1);
-            loadRecordSearch();
 
             pnEditMode = poPurchaseReceivingController.getEditMode();
             initButton(pnEditMode);
@@ -1038,12 +1043,8 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
 
     public void loadRecordSearch() {
         try {
-            lblSearchIndustry.setText(poPurchaseReceivingController.Master().Industry().getDescription());
-            if (psCompanyId.equals("")) {
-                lblSearchCompany.setText("");
-            } else {
-                lblSearchCompany.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
-            }
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
+            
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }

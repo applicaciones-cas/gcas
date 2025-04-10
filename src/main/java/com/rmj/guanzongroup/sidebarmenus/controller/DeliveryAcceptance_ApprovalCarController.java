@@ -2106,7 +2106,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        lblSource.setText("");
+        
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();

@@ -1980,7 +1980,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         dpReferenceDate.setValue(null);
         dpExpiryDate.setValue(null);
 
-        lblSource.setText("");
+        
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
 
