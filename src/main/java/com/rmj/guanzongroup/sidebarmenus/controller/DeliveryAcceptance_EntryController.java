@@ -76,7 +76,6 @@ import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -98,6 +97,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     private String psIndustryId = "";
     private String psCompanyId = "";
+    private String psCategoryId = "";
     private String psSupplierId = "";
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
@@ -125,7 +125,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose;
 
     @FXML
-    private Label lblStatus, lblSource; // lblSearchIndustry, lblSearchCompany;
+    private Label lblStatus, lblSource; 
 
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
@@ -180,6 +180,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
                 poPurchaseReceivingController.setIndustryId(psIndustryId);
                 poPurchaseReceivingController.setCompanyId(psCompanyId);
+            poPurchaseReceivingController.setCategoryId(psCategoryId);
                 poPurchaseReceivingController.initFields();
                 loadRecordSearch();
             });
@@ -209,6 +210,11 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     @Override
     public void setCompanyID(String fsValue) {
         psCompanyId = fsValue;
+    }
+    
+    @Override
+    public void setCategoryID(String fsValue) {
+        psCategoryId = fsValue;
     }
 
     @FXML
@@ -380,14 +386,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 }
 
                 initButton(pnEditMode);
-
-                if (lsButton.equals("btnUpdate")) {
-                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
-                        tfReceiveQuantity.requestFocus();
-                    } else {
-                        tfBarcode.requestFocus();
-                    }
-                }
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {

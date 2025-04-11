@@ -97,6 +97,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
     private String psIndustryId = "";
     private String psCompanyId = "";
+    private String psCategoryId = "";
     private String psSupplierId = "";
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
@@ -180,6 +181,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
                 poPurchaseReceivingController.setIndustryId(psIndustryId);
                 poPurchaseReceivingController.setCompanyId(psCompanyId);
+                poPurchaseReceivingController.setCategoryId(psCategoryId);
                 poPurchaseReceivingController.initFields();
                 loadRecordSearch();
             });
@@ -209,6 +211,11 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     @Override
     public void setCompanyID(String fsValue) {
         psCompanyId = fsValue;
+    }
+    
+    @Override
+    public void setCategoryID(String fsValue) {
+        psCategoryId = fsValue;
     }
 
     @FXML

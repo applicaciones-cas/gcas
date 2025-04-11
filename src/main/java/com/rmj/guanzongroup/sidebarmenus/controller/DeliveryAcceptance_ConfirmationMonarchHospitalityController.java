@@ -111,6 +111,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
 
     private String psIndustryId = "";
     private String psCompanyId = "";
+    private String psCategoryId = "";
     private String psSupplierId = "";
 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
@@ -210,6 +211,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
             poPurchaseReceivingController.setIndustryId(psIndustryId);
             poPurchaseReceivingController.setCompanyId(psCompanyId);
+            poPurchaseReceivingController.setCategoryId(psCategoryId);
             poPurchaseReceivingController.initFields();
             loadRecordSearch();
         });
@@ -236,6 +238,11 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     @Override
     public void setCompanyID(String fsValue) {
         psCompanyId = fsValue;
+    }
+    
+    @Override
+    public void setCategoryID(String fsValue) {
+        psCategoryId = fsValue;
     }
 
     @FXML

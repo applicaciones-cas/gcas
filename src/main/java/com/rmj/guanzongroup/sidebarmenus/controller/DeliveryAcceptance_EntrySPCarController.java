@@ -97,6 +97,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
 
     private String psIndustryId = "";
     private String psCompanyId = "";
+    private String psCategoryId = "";
     private String psSupplierId = "";
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
@@ -179,6 +180,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                 poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
                 poPurchaseReceivingController.setIndustryId(psIndustryId);
                 poPurchaseReceivingController.setCompanyId(psCompanyId);
+                poPurchaseReceivingController.setCategoryId(psCategoryId);
                 poPurchaseReceivingController.initFields();
                 loadRecordSearch();
             });
@@ -205,6 +207,11 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
     @Override
     public void setIndustryID(String fsValue) {
         psIndustryId = fsValue;
+    }
+    
+    @Override
+    public void setCategoryID(String fsValue) {
+        psCategoryId = fsValue;
     }
 
     @Override
@@ -798,9 +805,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntrySPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -1157,9 +1162,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntrySPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntrySPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
@@ -1551,11 +1554,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                             tblViewOrderDetails.getFocusModel().focus(pnDetail);
                             loadRecordDetail();
                         }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntrySPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntrySPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                    } catch (CloneNotSupportedException ex) {
+                    } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntrySPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
                 });
