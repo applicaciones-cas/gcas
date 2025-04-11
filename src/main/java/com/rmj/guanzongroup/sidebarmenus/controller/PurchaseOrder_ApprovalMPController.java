@@ -76,7 +76,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order Approval MC";
+    private String psFormName = "Purchase Order Approval MP";
     private LogWrapper logWrapper;
     private int pnEditMode;
     unloadForm poUnload = new unloadForm();
@@ -825,8 +825,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
             protected Void call() throws Exception {
                 try {
                     poPurchaseOrder_data.clear();
-                    JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder(psIndustryID,
-                            psCompanyID,
+                    JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder(
                             psSupplierID,
                             psReferID);
                     if ("success".equals(loJSON.get("result"))) {

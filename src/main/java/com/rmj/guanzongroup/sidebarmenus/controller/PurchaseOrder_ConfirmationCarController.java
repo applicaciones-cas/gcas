@@ -837,8 +837,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
             protected Void call() throws Exception {
                 try {
                     poPurchaseOrder_data.clear();
-                    JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder(psIndustryID,
-                            psCompanyID,
+                    JSONObject loJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder(
                             psSupplierID,
                             psReferID);
                     if ("success".equals(loJSON.get("result"))) {

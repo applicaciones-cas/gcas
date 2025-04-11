@@ -90,7 +90,6 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
     private int pnTblStockRequestRow = -1;
     private int pnTblPODetailRow = -1;
     private int pnSTOCK_REQUEST_PAGE = 50;
-    private String prevCompany = "";
     private String prevSupplier = "";
     private String psIndustryID = "";
     private String psCompanyID = "";
@@ -353,9 +352,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("",
-                            poPurchasingController.PurchaseOrder().Master().getIndustryID(),
-                            poPurchasingController.PurchaseOrder().Master().getCompanyID(),
+                    loJSON = poPurchasingController.PurchaseOrder().SearchTransaction("",
                             poPurchasingController.PurchaseOrder().Master().getSupplierID(),
                             "");
                     if (!"error".equals((String) loJSON.get("result"))) {
@@ -379,9 +376,9 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                     poDetail_data.clear();
                     loJSON = poPurchasingController.PurchaseOrder().NewTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
-                        poPurchasingController.PurchaseOrder().Master().setCompanyID(prevCompany);
                         poPurchasingController.PurchaseOrder().Master().setSupplierID(prevSupplier);
-                        poPurchasingController.PurchaseOrder().Master().setIndustryID(poApp.getIndustry());
+                        poPurchasingController.PurchaseOrder().Master().setIndustryID(poPurchasingController.PurchaseOrder().Master().getCompanyID());
+                        poPurchasingController.PurchaseOrder().Master().setIndustryID(poPurchasingController.PurchaseOrder().Master().getIndustryID());
                         poPurchasingController.PurchaseOrder().Master().setDestinationID(poPurchasingController.PurchaseOrder().Master().Branch().getBranchCode());
                         poPurchasingController.PurchaseOrder().Master().setInventoryTypeCode(poPurchasingController.PurchaseOrder().getInventoryTypeCode());
                         loadMaster();
@@ -432,6 +429,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                                     tfSupplier.setText("");
                                     break;
                                 }
+                                prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                                 tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 if (tfSupplier.getText().isEmpty()) {
                                     tfSupplier.requestFocus();
@@ -516,7 +514,6 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
                     }
-                    prevCompany = poPurchasingController.PurchaseOrder().Master().getCompanyID();
                     prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
 
                     // Validate Detail Count Before Backend Processing
@@ -605,25 +602,9 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                             poDetail_data.clear();
                             tblVwOrderDetails.getItems().clear();
                             pnEditMode = EditMode.UNKNOWN;
-                            prevCompany = poPurchasingController.PurchaseOrder().Master().getCompanyID();
                             prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
-                            loJSON = poPurchasingController.PurchaseOrder().SearchIndustry(poApp.getIndustry(), true);
-                            if ("error".equals((String) loJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                return;
-                            }
-                            if (!tfSupplier.getText().isEmpty()) {
-                                loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(poPurchasingController.PurchaseOrder().Master().getSupplierID(), true);
-                                if ("error".equals((String) loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                    return;
-                                }
-                            }
-                            String lsSupplierName = "";
-                            if (poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null) {
-                                lsSupplierName = poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName();
-                            }
-                            tfSupplier.setText(lsSupplierName);
+                            poPurchasingController.PurchaseOrder().Master().setSupplierID(prevSupplier);
+                            tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                             pnTblStockRequestRow = -1;
                             tblVwStockRequest.getItems().clear();
                             tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
@@ -837,7 +818,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                                     tfSupplier.setText("");
                                     break;
                                 }
-
+                                prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                                 tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 if (!tfSupplier.getText().isEmpty()) {
                                     loadTableStockRequest();
@@ -1394,26 +1375,26 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
     }
 
     private void initTextFieldsProperty() {
-        tfSupplier.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            if (isNewUpdate) {
-                                if (!isExchangingSupplier()) {
-                                    return;
-                                }
-                            }
-                            poPurchasingController.PurchaseOrder().Master().setSupplierID("");
-                            poPurchasingController.PurchaseOrder().Master().setAddressID("");
-                            poPurchasingController.PurchaseOrder().Master().setContactID("");
-                            tfSupplier.setText("");
-                            tblVwStockRequest.getItems().clear();
-                            poApprovedStockRequest_data.clear();
-                            tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+        tfSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    if (isNewUpdate) {
+                        if (!isExchangingSupplier()) {
+                            return;
                         }
                     }
+                    poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                    poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                    poPurchasingController.PurchaseOrder().Master().setContactID("");
+                    prevSupplier = "";
+                    tfSupplier.setText("");
+                    tblVwStockRequest.getItems().clear();
+                    poApprovedStockRequest_data.clear();
+                    tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
                 }
-                );
+            }
+        }
+        );
     }
 
     private boolean isExchangingSupplier() {

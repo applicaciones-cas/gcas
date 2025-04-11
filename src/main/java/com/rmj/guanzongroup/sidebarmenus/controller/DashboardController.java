@@ -1606,29 +1606,37 @@ public class DashboardController implements Initializable {
 
     @FXML
     private void switchLogout(ActionEvent event) {
-        if (LoginControllerHolder.getLogInStatus()) {
-            if (ShowMessageFX.YesNo(null, "GUANZON GROUP OF COMPANIES", "Are you sure you want to logout?")) {
-                if (ShowMessageFX.YesNo(null, "GUANZON GROUP OF COMPANIES", "You have open tabs. Are you sure you want to logout?")) {
-                    logOutCloseAllTabs(tabpane, oApp);
-
-                    setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
-                    setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
-                    ToggleGroupControlLowerLeftSideBar();
-                    setScene(loadAnimateAnchor(psDefaultScreenFXML));
-                    btnLogout.setSelected(false);
-                    sformname = "";
-                    LoginControllerHolder.setLogInStatus(false);
-                } else {
-                    btnLogout.setSelected(false);
-                }
-            } else {
-                btnLogout.setSelected(false);
-            }
-        } else {
+        if (!LoginControllerHolder.getLogInStatus()) {
             LoginControllerHolder.setLogInStatus(false);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.close();
+            return;
         }
+
+        if (!ShowMessageFX.YesNo(null, "GUANZON GROUP OF COMPANIES", "Are you sure you want to logout?")) {
+            btnLogout.setSelected(false);
+            return;
+        }
+
+        if (!tabpane.getTabs().isEmpty()) {
+            if (!ShowMessageFX.YesNo(null, "GUANZON GROUP OF COMPANIES", "You have open tabs. Are you sure you want to logout?")) {
+                btnLogout.setSelected(false);
+                return;
+            }
+            logOutCloseAllTabs(tabpane, oApp);
+        }
+
+        performLogoutCleanup();
+    }
+
+    private void performLogoutCleanup() {
+        setAnchorPaneVisibleManage(false, anchorRightSideBarMenu);
+        setAnchorPaneVisibleManage(false, anchorLeftSideBarMenu);
+        ToggleGroupControlLowerLeftSideBar();
+        setScene(loadAnimateAnchor(psDefaultScreenFXML));
+        btnLogout.setSelected(false);
+        sformname = "";
+        LoginControllerHolder.setLogInStatus(false);
     }
 
     /**

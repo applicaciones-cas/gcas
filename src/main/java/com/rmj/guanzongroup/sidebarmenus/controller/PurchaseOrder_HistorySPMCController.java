@@ -261,9 +261,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    loJSON = poPurchasingController.PurchaseOrder().searchTransaction("",
-                            psIndustryID,
-                            psCompanyID,
+                    loJSON = poPurchasingController.PurchaseOrder().SearchTransaction("",
                             psSupplierID,
                             psReferID);
                     if ("success".equals((String) loJSON.get("result"))) {
