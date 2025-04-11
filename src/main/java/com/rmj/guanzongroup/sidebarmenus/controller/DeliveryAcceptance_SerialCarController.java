@@ -156,39 +156,44 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
         poJSON = new JSONObject();
         int lnRow = 1;
         String lsMessage = "";
+        boolean inform = false;
         for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount() - 1; lnCtr++) {
             if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo) {
                 if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01().equals("")) {
                     poJSON.put("result", "error");
                     lsMessage = "Engine No at row " + lnRow + " cannot be empty.";
-
+                    inform = true;
+                    break;
                 }
                 if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02().equals("")) {
                     poJSON.put("result", "error");
                     lsMessage = "Frame No at row " + lnRow + " cannot be empty.";
+                    inform = true;
+                    break;
                 }
                 if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getLocationId() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getLocationId().equals("")) {
                     poJSON.put("result", "error");
                     lsMessage = "Location No at row " + lnRow + " cannot be empty.";
+                    inform = true;
+                    break;
                 }
-
-                if (lsButton.equals("btnOkay")) {
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        poJSON.put("message", lsMessage);
-                        return poJSON;
-                    }
-                } else {
-                    if (ShowMessageFX.OkayCancel(null, pxeModuleName,
-                            "There are still remaining rows that have not been filled. Are you sure you want to close without completing them?") == false) {
-                        poJSON.put("result", "error");
-                        return poJSON;
-                    } else {
-                        poJSON.put("result", "success");
-                        return poJSON;
-                    }
-                }
-
                 lnRow++;
+            }
+        }
+        if (lsButton.equals("btnOkay")) {
+            if ("error".equals((String) poJSON.get("result"))) {
+                poJSON.put("message", lsMessage);
+                return poJSON;
+            }
+        } else {
+            lsMessage = inform ? "There are still remaining rows that have not been filled. Are you sure you want to close without completing them?" : "Are you sure you want to close the serial?";
+            if (ShowMessageFX.OkayCancel(null, pxeModuleName,
+                    lsMessage) == false) {
+                poJSON.put("result", "error");
+                return poJSON;
+            } else {
+                poJSON.put("result", "success");
+                return poJSON;
             }
         }
         return poJSON;
@@ -215,10 +220,12 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                 if (isChecked) {
                     // Store original values before modifying
                     for (int lnCtr = 0; lnCtr < poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount(); lnCtr++) {
-                        if (!originalValues.containsKey(lnCtr)) { // Store only once
-                            originalValues.put(lnCtr, poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getLocationId());
+                        if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo) {
+                            if (!originalValues.containsKey(lnCtr)) { // Store only once
+                                originalValues.put(lnCtr, poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getLocationId());
+                            }
+                            poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).setLocationId(lsLocation);
                         }
-                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).setLocationId(lsLocation);
                     }
                 } else {
                     // Revert to original values when checkbox is unchecked
@@ -244,8 +251,10 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
         if (pnDetail < 0) {
             return;
         }
+        ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(pnDetail);
+        int pnDetail2 = Integer.valueOf(selectedItem.getIndex04());
 
-        if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getEntryNo() != pnEntryNo) {
+        if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getEntryNo() != pnEntryNo) {
             return;
         }
 
@@ -253,20 +262,20 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
                 case "tfEngineNo":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial01(lsValue);
+                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
                     break;
                 case "tfFrameNo":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial02(lsValue);
+                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
                     break;
                 case "tfCSNo":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setConductionStickerNo(lsValue);
+                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setConductionStickerNo(lsValue);
                     break;
                 case "tfPlateNo":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setPlateNo(lsValue);
+                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setPlateNo(lsValue);
                     break;
                 case "tfLocation":
                     if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setLocationId("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setLocationId("");
                     }
                     break;
             }
@@ -325,11 +334,14 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
     public void loadRecordDetail() {
         try {
             if (details_data.size() > 0) {
-                tfEngineNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial01());
-                tfFrameNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial02());
-                tfCSNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getConductionStickerNo());
-                tfPlateNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getPlateNo());
-                tfLocation.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).Location().getDescription());
+                ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(pnDetail);
+                int pnDetail2 = Integer.valueOf(selectedItem.getIndex04());
+
+                tfEngineNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial01());
+                tfFrameNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial02());
+                tfCSNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getConductionStickerNo());
+                tfPlateNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getPlateNo());
+                tfLocation.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).Location().getDescription());
             }
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_SerialCarController.class.getName()).log(Level.SEVERE, null, ex);
@@ -392,25 +404,13 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                                 /* FOCUS ON FIRST ROW */
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
-                                ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                                pnDetail = Integer.valueOf(selectedItem.getIndex07());
-                                System.out.println("set pndetail" + pnDetail);
+                                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                             }
                         } else {
                             // Check if the item matches the value of pnDetail
-                            TableView<ModelDeliveryAcceptance_Serial> tableView = tblViewDetail;
-                            SelectionModel<ModelDeliveryAcceptance_Serial> selectionModel = tableView.getSelectionModel();
-                            for (ModelDeliveryAcceptance_Serial item : tblViewDetail.getItems()) {
-                                // Check if the item matches the value of pnDetail
-                                if (item.getIndex07() != null && Integer.valueOf(item.getIndex07()) == pnDetail) {
-                                    selectionModel.select(item);
-                                    tblViewDetail.getFocusModel().focus(pnDetail);
-//                                    tableView.scrollTo(item);
-                                    break;
-                                }
-                            }
+                            tblViewDetail.getSelectionModel().select(pnDetail);
+                            tblViewDetail.getFocusModel().focus(pnDetail);
                         }
-
                         loadRecordDetail();
 
                     } catch (SQLException ex) {
@@ -492,14 +492,14 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
         });
     }
 
-    private int moveToNextRow(TableView table, int focusedCell) {
-        int nextRow = (focusedCell + 1) % table.getItems().size();
+    private int moveToNextRow(TableView table, TablePosition focusedCell) {
+        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
         table.getSelectionModel().select(nextRow);
         return nextRow;
     }
 
-    private int moveToPreviousRow(TableView table, int focusedCell) {
-        int previousRow = (focusedCell - 1 + table.getItems().size()) % table.getItems().size();
+    private int moveToPreviousRow(TableView table, TablePosition focusedCell) {
+        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
         table.getSelectionModel().select(previousRow);
         return previousRow;
     }
@@ -508,16 +508,14 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
         if (details_data.size() > 0) {
             TableView<?> currentTable = (TableView<?>) event.getSource();
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-            ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-            pnDetail = Integer.valueOf(selectedItem.getIndex07());
             if (focusedCell != null) {
                 switch (event.getCode()) {
                     case TAB:
                     case DOWN:
-                        pnDetail = moveToNextRow(currentTable, pnDetail);
+                        pnDetail = moveToNextRow(currentTable, focusedCell);
                         break;
                     case UP:
-                        pnDetail = moveToPreviousRow(currentTable, pnDetail);
+                        pnDetail = moveToPreviousRow(currentTable, focusedCell);
                         break;
 
                     default:
@@ -533,8 +531,7 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
     public void initTableOnClick() {
         tblViewDetail.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                pnDetail = Integer.valueOf(selectedItem.getIndex07());
+                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
                 tfEngineNo.requestFocus();
             }

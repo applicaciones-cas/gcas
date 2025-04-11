@@ -77,7 +77,7 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
     @FXML
     private Button btnOkay, btnClose;
     @FXML
-    private TextField tfIMEI1, tfIMEI2; 
+    private TextField tfIMEI1, tfIMEI2;
     @FXML
     private CheckBox cbApplyToAll;
     @FXML
@@ -154,35 +154,41 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
         poJSON = new JSONObject();
         int lnRow = 1;
         String lsMessage = "";
+        boolean inform = false;
         for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingSerialCount() - 1; lnCtr++) {
             if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getEntryNo() == pnEntryNo) {
                 if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial01().equals("")) {
                     poJSON.put("result", "error");
                     lsMessage = "IMEI 1 at row " + lnRow + " cannot be empty.";
+                    inform = true;
+                    break;
 
                 }
                 if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02() == null || poPurchaseReceivingController.PurchaseOrderReceivingSerialList(lnCtr).getSerial02().equals("")) {
                     poJSON.put("result", "error");
                     lsMessage = "IMEI 2 at row " + lnRow + " cannot be empty.";
-                }
-
-                if (lsButton.equals("btnOkay")) {
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        poJSON.put("message", lsMessage);
-                        return poJSON;
-                    }
-                } else {
-                    if (ShowMessageFX.OkayCancel(null, pxeModuleName,
-                            "There are still remaining rows that have not been filled. Are you sure you want to close without completing them?") == false) {
-                        poJSON.put("result", "error");
-                        return poJSON;
-                    } else {
-                        poJSON.put("result", "success");
-                        return poJSON;
-                    }
+                    inform = true;
+                    break;
                 }
 
                 lnRow++;
+            }
+        }
+
+        if (lsButton.equals("btnOkay")) {
+            if ("error".equals((String) poJSON.get("result"))) {
+                poJSON.put("message", lsMessage);
+                return poJSON;
+            }
+        } else {
+            lsMessage = inform ? "There are still remaining rows that have not been filled. Are you sure you want to close without completing them?" : "Are you sure you want to close the serial?";
+            if (ShowMessageFX.OkayCancel(null, pxeModuleName,
+                    lsMessage) == false) {
+                poJSON.put("result", "error");
+                return poJSON;
+            } else {
+                poJSON.put("result", "success");
+                return poJSON;
             }
         }
         return poJSON;
@@ -205,7 +211,10 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
             return;
         }
 
-        if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getEntryNo() != pnEntryNo) {
+        ModelDeliveryAcceptance_SerialMP selectedItem = tblViewDetail.getItems().get(pnDetail);
+        int pnDetail2 = Integer.valueOf(selectedItem.getIndex04());
+
+        if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getEntryNo() != pnEntryNo) {
             return;
         }
 
@@ -213,16 +222,16 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
                 case "tfIMEI1":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial01(lsValue);
+                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
                     break;
                 case "tfIMEI2":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).setSerial02(lsValue);
+                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
                     break;
 
             }
+//            loadTableDetail();
             Platform.runLater(() -> {
                 PauseTransition delay = new PauseTransition(Duration.seconds(0.10));
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                 delay.setOnFinished(event -> {
                     loadTableDetail();
                 });
@@ -234,8 +243,11 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
 
     public void loadRecordDetail() {
         if (details_data.size() > 0) {
-            tfIMEI1.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial01());
-            tfIMEI2.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail).getSerial02());
+            ModelDeliveryAcceptance_SerialMP selectedItem = tblViewDetail.getItems().get(pnDetail);
+            int pnDetail2 = Integer.valueOf(selectedItem.getIndex04());
+
+            tfIMEI1.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial01());
+            tfIMEI2.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial02());
         }
 
     }
@@ -280,27 +292,17 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                                 lnRow++;
                             }
                         }
-
                         if (pnDetail < 0) {
                             if (!details_data.isEmpty()) {
                                 /* FOCUS ON FIRST ROW */
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
-                                ModelDeliveryAcceptance_SerialMP selectedItem = tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                                pnDetail = Integer.valueOf(selectedItem.getIndex04());
+                                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                             }
                         } else {
                             // Check if the item matches the value of pnDetail
-                            TableView<ModelDeliveryAcceptance_SerialMP> tableView = tblViewDetail;
-                            SelectionModel<ModelDeliveryAcceptance_SerialMP> selectionModel = tableView.getSelectionModel();
-                            for (ModelDeliveryAcceptance_SerialMP item : tblViewDetail.getItems()) {
-                                // Check if the item matches the value of pnDetail
-                                if (item.getIndex04() != null && Integer.valueOf(item.getIndex04()) == pnDetail) {
-                                    selectionModel.select(item);
-                                    tblViewDetail.getFocusModel().focus(pnDetail);
-                                    break;
-                                }
-                            }
+                            tblViewDetail.getSelectionModel().select(pnDetail);
+                            tblViewDetail.getFocusModel().focus(pnDetail);
                         }
                         loadRecordDetail();
 
@@ -382,14 +384,14 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
         });
     }
 
-    private int moveToNextRow(TableView table, int focusedCell) {
-        int nextRow = (focusedCell + 1) % table.getItems().size();
+    private int moveToNextRow(TableView table, TablePosition focusedCell) {
+        int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
         table.getSelectionModel().select(nextRow);
         return nextRow;
     }
 
-    private int moveToPreviousRow(TableView table, int focusedCell) {
-        int previousRow = (focusedCell - 1 + table.getItems().size()) % table.getItems().size();
+    private int moveToPreviousRow(TableView table, TablePosition focusedCell) {
+        int previousRow = (focusedCell.getRow() - 1 + table.getItems().size()) % table.getItems().size();
         table.getSelectionModel().select(previousRow);
         return previousRow;
     }
@@ -398,16 +400,14 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
         if (details_data.size() > 0) {
             TableView<?> currentTable = (TableView<?>) event.getSource();
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-            ModelDeliveryAcceptance_SerialMP selectedItem = (ModelDeliveryAcceptance_SerialMP) tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-            pnDetail = Integer.valueOf(selectedItem.getIndex04());
             if (focusedCell != null) {
                 switch (event.getCode()) {
                     case TAB:
                     case DOWN:
-                        pnDetail = moveToNextRow(currentTable, pnDetail);
+                        pnDetail = moveToNextRow(currentTable, focusedCell);
                         break;
                     case UP:
-                        pnDetail = moveToPreviousRow(currentTable, pnDetail);
+                        pnDetail = moveToPreviousRow(currentTable, focusedCell);
                         break;
 
                     default:
@@ -423,8 +423,7 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
     public void initTableOnClick() {
         tblViewDetail.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                ModelDeliveryAcceptance_SerialMP selectedItem = (ModelDeliveryAcceptance_SerialMP) tblViewDetail.getItems().get(tblViewDetail.getSelectionModel().getSelectedIndex());
-                pnDetail = Integer.valueOf(selectedItem.getIndex04());
+                pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                 tfIMEI1.requestFocus();
                 loadRecordDetail();
             }
