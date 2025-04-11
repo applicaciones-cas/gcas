@@ -155,7 +155,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     @FXML
     private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose, btnSerials, btnApprove, btnVoid, btnReturn;
     @FXML
-    private Label lblStatus, lblSource; 
+    private Label lblStatus, lblSource;
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
@@ -174,7 +174,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     @FXML
     private Pagination pgPagination;
     @FXML
-    private TextField  tfSearchSupplier, tfSearchReferenceNo;
+    private TextField tfSearchSupplier, tfSearchReferenceNo;
     @FXML
     private TextField tfAttachmentNo;
     @FXML
@@ -210,7 +210,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
-        
+
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
@@ -233,7 +233,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     @Override
     public void setIndustryID(String fsValue) {
         psIndustryId = fsValue;
@@ -292,7 +292,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
+                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode", "tfSearchSupplier", "tfSearchReferenceNo", 
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
@@ -309,12 +309,17 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                                             false, false, false, false
                                     );
                                     tf.fireEvent(keyEvent);
+                                } else {
+                                    ShowMessageFX.Information(null, pxeModuleName, lsMessage);
                                 }
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, lsMessage);
                             }
                         } else {
                             ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+                        }
+                        if (!"success".equals((String) poJSON.get("result"))) {
+
                         }
                         break;
                     case "btnCancel":
@@ -794,7 +799,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                     poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setTransactionNo(lsValue);
                     break;
             }
-            if ( lsTxtFieldID.equals("tfSearchSupplier")
+            if (lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             } else {
@@ -922,7 +927,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
-                
+
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
@@ -1243,15 +1248,15 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     public void loadRecordMaster() {
         boolean lbDisable = poPurchaseReceivingController.getEditMode() == EditMode.UPDATE;
         if (lbDisable) {
-            
+
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
-            while ( tfSupplier.getStyleClass().contains("DisabledTextField")) {
-                
+            while (tfSupplier.getStyleClass().contains("DisabledTextField")) {
+
                 tfSupplier.getStyleClass().remove("DisabledTextField");
             }
         }
-        
+
         tfSupplier.setDisable(lbDisable);
 
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
@@ -1303,8 +1308,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            
-            
+
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -1596,7 +1600,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
     }
 
     public void initTextFields() {
-        
+
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
@@ -1613,7 +1617,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         tfCost.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
-        
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
@@ -2096,7 +2099,6 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
@@ -2104,8 +2106,7 @@ public class DeliveryAcceptance_ApprovalCarController implements Initializable, 
         cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
-        
-        
+
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();

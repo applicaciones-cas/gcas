@@ -310,7 +310,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
+                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode", 
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
@@ -327,6 +327,8 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                             false, false, false, false
                                     );
                                     tf.fireEvent(keyEvent);
+                                } else {
+                                    ShowMessageFX.Information(null, pxeModuleName, lsMessage);
                                 }
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, lsMessage);

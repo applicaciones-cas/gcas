@@ -284,7 +284,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
+                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode", 
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {

@@ -304,7 +304,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
+                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode", "tfSearchSupplier", "tfSearchReferenceNo",
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
@@ -321,6 +321,8 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                                             false, false, false, false
                                     );
                                     tf.fireEvent(keyEvent);
+                                } else {
+                                    ShowMessageFX.Information(null, pxeModuleName, lsMessage);
                                 }
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, lsMessage);
