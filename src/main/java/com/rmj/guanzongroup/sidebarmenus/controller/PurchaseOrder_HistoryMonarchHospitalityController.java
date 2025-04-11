@@ -9,6 +9,7 @@ import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -18,13 +19,16 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -39,6 +43,7 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -46,6 +51,7 @@ import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.purchasing.model.Model_PO_Detail;
 import org.guanzon.cas.purchasing.services.PurchaseOrderControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 import org.json.simple.JSONObject;
@@ -204,8 +210,8 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
 
             dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
-            tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
+            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
             if (poPurchasingController.PurchaseOrder().Master().getWithAdvPaym() == true) {
                 chkbAdvancePayment.setSelected(true);
             } else {
@@ -387,51 +393,109 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
     }
 
     private void loadTablePODetail() {
-        poDetail_data.clear();
-        try {
-            double grandTotalAmount = 0.0;
-            for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getDetailCount() - 1; lnCntr++) {
-                double lnTotalAmount = poPurchasingController.PurchaseOrder()
-                        .Detail(lnCntr)
-                        .Inventory().getCost().doubleValue() * poPurchasingController.PurchaseOrder()
-                                .Detail(lnCntr)
-                                .getQuantity().doubleValue();
-                grandTotalAmount += lnTotalAmount;
-                int lnRequestQuantity = 0;
-                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(lnCntr).InvStockRequestDetail().getIssued());
-                poDetail_data.add(new ModelPurchaseOrderDetail(
-                        String.valueOf(lnCntr + 1),
-                        poPurchasingController.PurchaseOrder().Detail(lnCntr).getSouceNo(),
-                        poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getBarCode(),
-                        poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getDescription(),
-                        CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(lnCntr).getUnitPrice()),
-                        "",
-                        String.valueOf(lnRequestQuantity),
-                        String.valueOf(poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity()),
-                        CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
-                        ""
-                ));
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMaxSize(50, 50);
+        progressIndicator.setStyle("-fx-accent: #FF8201;");
 
+        StackPane loadingPane = new StackPane(progressIndicator);
+        loadingPane.setAlignment(Pos.CENTER);
+        loadingPane.setStyle("-fx-background-color: transparent;");
+
+        tblVwOrderDetails.setPlaceholder(loadingPane);
+        progressIndicator.setVisible(true);
+
+        Task<List<ModelPurchaseOrderDetail>> task = new Task<List<ModelPurchaseOrderDetail>>() {
+            @Override
+            protected List<ModelPurchaseOrderDetail> call() throws Exception {
+                try {
+                    int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+                    double grandTotalAmount = 0.0;
+                    List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
+
+                    for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
+                        Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
+                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
+                        grandTotalAmount += lnTotalAmount;
+
+                        int lnRequestQuantity = 0;
+                        lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getPurchase() + orderDetail.InvStockRequestDetail().getIssued());
+                        detailsList.add(new ModelPurchaseOrderDetail(
+                                String.valueOf(lnCtr + 1),
+                                orderDetail.getSouceNo(),
+                                orderDetail.Inventory().getBarCode(),
+                                orderDetail.Inventory().getDescription(),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice()),
+                                "",
+                                String.valueOf(lnRequestQuantity),
+                                String.valueOf(orderDetail.getQuantity()),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
+                                ""
+                        ));
+                    }
+
+                    final double totalAmountFinal = grandTotalAmount;
+                    Platform.runLater(() -> {
+                        poDetail_data.setAll(detailsList); // Properly update list
+                        tblVwOrderDetails.setItems(poDetail_data);
+                        if (totalAmountFinal <= 0.0) {
+                            tfDiscountRate.setText("0.00");
+                            tfAdvancePRate.setText("0.00");
+                            tfDiscountAmount.setText("0.00");
+                            tfDiscountAmount.setText("0.00");
+                            poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(0.0);
+                            poPurchasingController.PurchaseOrder().Master().setDiscount(0.0);
+                            poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.0);
+                            poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(0.0);
+                        }
+                        computeNetTotal(totalAmountFinal);
+                        computeTotalAmount(totalAmountFinal);
+                        poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
+                        tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
+
+                    });
+
+                    return detailsList;
+
+                } catch (GuanzonException | SQLException ex) {
+                    Logger.getLogger(PurchaseOrder_HistoryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+                    return null;
+                }
             }
-            tblVwOrderDetails.setItems(poDetail_data);
-            computeTotalAmount(grandTotalAmount);
-            poPurchasingController.PurchaseOrder().Master().setTranTotal(grandTotalAmount);
-            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(grandTotalAmount));
 
-        } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryMonarchHospitalityController.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
+            @Override
+            protected void succeeded() {
+                progressIndicator.setVisible(false);
+            }
+
+            @Override
+            protected void failed() {
+                progressIndicator.setVisible(false);
+            }
+        };
+
+        new Thread(task).start();
     }
 
     private void computeTotalAmount(double fnGrandTotal) {
         double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
-        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(amount));
-        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
-        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(advpercentage));
-        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
         poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(amount);
+        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
 
+        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
+        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
+        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
+
+    }
+
+    private void computeNetTotal(double fnGrandTotal) {
+        double discAmount = (Double.parseDouble(tfDiscountRate.getText().replace(",", "")) / 100) * fnGrandTotal;
+        poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(discAmount);
+        tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
+
+        double discPercentage = (Double.parseDouble(tfDiscountAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
+        poPurchasingController.PurchaseOrder().Master().setDiscount(discPercentage);
+        tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
+        poPurchasingController.PurchaseOrder().Master().setNetTotal(fnGrandTotal - discAmount);
     }
 
     private void initTablePODetail() {

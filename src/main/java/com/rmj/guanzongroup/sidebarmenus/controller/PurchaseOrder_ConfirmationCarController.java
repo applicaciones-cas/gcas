@@ -109,7 +109,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
     private TextField tfBrand, tfModel, tfVariant, tfInventoryType, tfColor, tfClass, tfAMC, tfROQ,
             tfRO, tfBO, tfQOH, tfCost, tfRequestQuantity, tfOrderQuantity;
     @FXML
-    private TextField tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo;
+    private TextField tfSearchSupplier, tfSearchReferenceNo;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -182,7 +182,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
         try {
             lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -243,7 +243,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
             dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
 
-            tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
+            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
             if (poPurchasingController.PurchaseOrder().Master().getWithAdvPaym() == true) {
                 chkbAdvancePayment.setSelected(true);
@@ -602,7 +602,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
         List<TextField> loTxtField = Arrays.asList(tfAdvancePAmount,
                 tfReferenceNo, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate,
-                tfOrderQuantity, tfSearchIndustry, tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo);
+                tfOrderQuantity, tfSearchSupplier, tfSearchReferenceNo);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
@@ -1016,16 +1016,28 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                     Platform.runLater(() -> {
                         poDetail_data.setAll(detailsList); // Properly update list
                         tblVwOrderDetails.setItems(poDetail_data);
+                        if (totalAmountFinal <= 0.0) {
+                            tfDiscountRate.setText("0.00");
+                            tfAdvancePRate.setText("0.00");
+                            tfDiscountAmount.setText("0.00");
+                            tfDiscountAmount.setText("0.00");
+                            poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(0.0);
+                            poPurchasingController.PurchaseOrder().Master().setDiscount(0.0);
+                            poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.0);
+                            poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(0.0);
+                        }
+                        computeNetTotal(totalAmountFinal);
                         computeTotalAmount(totalAmountFinal);
                         poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
                         tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
                         reselectLastRow();
+                        initFields(pnEditMode);
                     });
 
                     return detailsList;
 
                 } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                     return null;
                 }
             }
@@ -1042,6 +1054,28 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
         };
 
         new Thread(task).start();
+    }
+
+    private void computeTotalAmount(double fnGrandTotal) {
+        double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
+        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(amount);
+        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
+
+        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
+        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
+        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
+
+    }
+
+    private void computeNetTotal(double fnGrandTotal) {
+        double discAmount = (Double.parseDouble(tfDiscountRate.getText().replace(",", "")) / 100) * fnGrandTotal;
+        poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(discAmount);
+        tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
+
+        double discPercentage = (Double.parseDouble(tfDiscountAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
+        poPurchasingController.PurchaseOrder().Master().setDiscount(discPercentage);
+        tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
+        poPurchasingController.PurchaseOrder().Master().setNetTotal(fnGrandTotal - discAmount);
     }
 
     private void reselectLastRow() {
@@ -1065,16 +1099,6 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                 }
             }
         }
-    }
-
-    private void computeTotalAmount(double fnGrandTotal) {
-        double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
-        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(amount));
-        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
-        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(advpercentage));
-        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
-        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(amount);
-
     }
 
     private void initTablePODetail() {
@@ -1185,16 +1209,6 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
     }
 
     private void initTextFieldsProperty() {
-        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    poPurchasingController.PurchaseOrder().Master().setCompanyID("");
-                    tfSearchCompany.setText("");
-                    psCompanyID = "";
-                    loadTablePurchaseOrder();
-                }
-            }
-        });
         tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {

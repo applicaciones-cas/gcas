@@ -157,6 +157,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                 poPurchasingController.PurchaseOrder().Master().setCompanyID(psCompanyID);
                 loadRecordSearch();
             }));
+
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             initButtonsClickActions();
             initTextFieldFocus();
@@ -210,6 +211,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                     lsStatus = "VOID";
                     break;
             }
+
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
@@ -236,7 +238,8 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
 
             dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
-            tfDiscountRate.setText(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
+
+            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
             if (poPurchasingController.PurchaseOrder().Master().getWithAdvPaym() == true) {
                 chkbAdvancePayment.setSelected(true);
@@ -246,7 +249,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -505,7 +508,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -709,7 +712,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationMPController.class
+            Logger.getLogger(PurchaseOrder_ConfirmationMCController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -864,7 +867,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                     });
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationCarController.class
+                    Logger.getLogger(PurchaseOrder_ConfirmationMCController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
@@ -988,7 +991,6 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
-
                         int lnRequestQuantity = 0;
                         lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getPurchase() + orderDetail.InvStockRequestDetail().getIssued());
                         detailsList.add(new ModelPurchaseOrderDetail(
@@ -1009,16 +1011,28 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                     Platform.runLater(() -> {
                         poDetail_data.setAll(detailsList); // Properly update list
                         tblVwOrderDetails.setItems(poDetail_data);
+                        if (totalAmountFinal <= 0.0) {
+                            tfDiscountRate.setText("0.00");
+                            tfAdvancePRate.setText("0.00");
+                            tfDiscountAmount.setText("0.00");
+                            tfDiscountAmount.setText("0.00");
+                            poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(0.0);
+                            poPurchasingController.PurchaseOrder().Master().setDiscount(0.0);
+                            poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.0);
+                            poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(0.0);
+                        }
+                        computeNetTotal(totalAmountFinal);
                         computeTotalAmount(totalAmountFinal);
                         poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
                         tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
                         reselectLastRow();
+                        initFields(pnEditMode);
                     });
 
                     return detailsList;
 
                 } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
                     return null;
                 }
             }
@@ -1035,6 +1049,28 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
         };
 
         new Thread(task).start();
+    }
+
+    private void computeTotalAmount(double fnGrandTotal) {
+        double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
+        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(amount);
+        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
+
+        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
+        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
+        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
+
+    }
+
+    private void computeNetTotal(double fnGrandTotal) {
+        double discAmount = (Double.parseDouble(tfDiscountRate.getText().replace(",", "")) / 100) * fnGrandTotal;
+        poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(discAmount);
+        tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
+
+        double discPercentage = (Double.parseDouble(tfDiscountAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
+        poPurchasingController.PurchaseOrder().Master().setDiscount(discPercentage);
+        tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
+        poPurchasingController.PurchaseOrder().Master().setNetTotal(fnGrandTotal - discAmount);
     }
 
     private void reselectLastRow() {
@@ -1058,16 +1094,6 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                 }
             }
         }
-    }
-
-    private void computeTotalAmount(double fnGrandTotal) {
-        double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
-        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(amount));
-        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
-        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(advpercentage));
-        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
-        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(amount);
-
     }
 
     private void initTablePODetail() {
@@ -1121,7 +1147,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
 
                     }
                 } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_ConfirmationMPController.class
+                    Logger.getLogger(PurchaseOrder_ConfirmationMCController.class
                             .getName()).log(Level.SEVERE, null, ex);
                     ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
                 }

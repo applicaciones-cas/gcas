@@ -296,7 +296,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
             dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
 
             if (poPurchasingController.PurchaseOrder().Master().getWithAdvPaym() == true) {
                 chkbAdvancePayment.setSelected(true);
@@ -362,6 +362,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                         loadDetail();
                         loadTablePODetail();
+
                         selectTheExistedDetailFromStockRequest();
                         if (!tfCost.getText().isEmpty() && !tfSupplier.getText().isEmpty()) {
                             loadTableStockRequest();
@@ -715,7 +716,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(lnDiscountAmountA);
                     tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountPercentageA));
                     tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountAmountA));
-                    poPurchasingController.PurchaseOrder().Master().setNetTotal(lnDiscountAmountA - lnGrandTotal);
+                    poPurchasingController.PurchaseOrder().Master().setNetTotal(lnGrandTotal - lnDiscountAmountA);
                     break;
                 case "tfDiscountAmount":
                     if (lsValue.isEmpty()) {
@@ -727,12 +728,11 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     }
                     double lnDiscountAmountB = Double.parseDouble(lsValue.replace(",", ""));
                     double lnDiscountPercentageB = (lnDiscountAmountB / lnGrandTotal) * 100;
-
-                    poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(lnDiscountAmountB);
-                    poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(lnDiscountPercentageB);
+                    poPurchasingController.PurchaseOrder().Master().setDiscount(lnDiscountPercentageB);
+                    poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(lnDiscountAmountB);
                     tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountPercentageB));
                     tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountAmountB));
-                    poPurchasingController.PurchaseOrder().Master().setNetTotal(lnDiscountAmountB - lnGrandTotal);
+                    poPurchasingController.PurchaseOrder().Master().setNetTotal(lnGrandTotal - lnDiscountAmountB);
                     break;
                 case "tfAdvancePRate":
                     if (lsValue.isEmpty()) {
@@ -1335,10 +1335,10 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                             poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.0);
                             poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(0.0);
                         }
+                        computeNetTotal(totalAmountFinal);
+                        computeTotalAmount(totalAmountFinal);
                         poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
                         tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
-                        computeTotalAmount(totalAmountFinal);
-                        computeNetTotal(totalAmountFinal);
                         reselectLastRow();
                         initFields(pnEditMode);
                     });
@@ -1367,12 +1367,12 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
     private void computeTotalAmount(double fnGrandTotal) {
         double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
-        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(amount));
-        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
-
-        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(advpercentage));
-        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
         poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(amount);
+        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
+
+        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
+        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
+        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
 
     }
 
@@ -1384,9 +1384,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
         double discPercentage = (Double.parseDouble(tfDiscountAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
         poPurchasingController.PurchaseOrder().Master().setDiscount(discPercentage);
         tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
-
-        poPurchasingController.PurchaseOrder().Master().setNetTotal(discAmount - fnGrandTotal);
-
+        poPurchasingController.PurchaseOrder().Master().setNetTotal(fnGrandTotal - discAmount);
     }
 
     private void initTablePODetail() {
