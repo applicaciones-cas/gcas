@@ -1658,9 +1658,12 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                     .map(ModelPurchaseOrderDetail::getIndex02)
                     .collect(Collectors.toSet());
 
-            for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
-                master.setIndex07(existingDetailIds.contains(master.getIndex06()) ? PurchaseOrderStatus.CONFIRMED : PurchaseOrderStatus.OPEN);
+            if (pnEditMode != EditMode.ADDNEW) {
+                for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                    master.setIndex07(existingDetailIds.contains(master.getIndex06()) ? PurchaseOrderStatus.CONFIRMED : PurchaseOrderStatus.OPEN);
+                }
             }
+
             tblVwStockRequest.refresh();
         }
     }

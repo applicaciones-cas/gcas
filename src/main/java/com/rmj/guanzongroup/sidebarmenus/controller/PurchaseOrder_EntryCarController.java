@@ -1265,7 +1265,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     });
 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryCarController.class
+                    Logger.getLogger(PurchaseOrder_EntryController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
                 return null;
@@ -1402,7 +1402,6 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
-
                         int lnRequestQuantity = 0;
                         lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getPurchase() + orderDetail.InvStockRequestDetail().getIssued());
 
@@ -1419,7 +1418,6 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                 ""
                         ));
                     }
-
                     final double totalAmountFinal = grandTotalAmount;
                     Platform.runLater(() -> {
                         poDetail_data.setAll(detailsList); // Properly update list
@@ -1433,7 +1431,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     return detailsList;
 
                 } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                     return null;
                 }
             }
@@ -1584,7 +1582,6 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                                 }
                             } else {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-
                             }
                         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
                             Logger.getLogger(PurchaseOrder_EntryController.class
@@ -1622,9 +1619,12 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     .map(ModelPurchaseOrderDetail::getIndex02)
                     .collect(Collectors.toSet());
 
-            for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
-                master.setIndex07(existingDetailIds.contains(master.getIndex06()) ? PurchaseOrderStatus.CONFIRMED : PurchaseOrderStatus.OPEN);
+            if (pnEditMode != EditMode.ADDNEW) {
+                for (ModelPurchaseOrder master : poApprovedStockRequest_data) {
+                    master.setIndex07(existingDetailIds.contains(master.getIndex06()) ? PurchaseOrderStatus.CONFIRMED : PurchaseOrderStatus.OPEN);
+                }
             }
+
             tblVwStockRequest.refresh();
         }
     }
