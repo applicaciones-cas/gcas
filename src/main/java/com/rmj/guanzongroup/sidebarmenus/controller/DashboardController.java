@@ -2435,9 +2435,21 @@ public class DashboardController implements Initializable {
                     //check if the current tab is not entry
                     if (LoginControllerHolder.getLogInStatus()) {
                         Tab currentTab = tabpane.getSelectionModel().getSelectedItem();
-//                        if (currentTab != null && !"Entry".equals(currentTab.getText())) {
                         if (currentTab != null) {
                             try {
+
+//                                if (!"06".equals(oApp.getIndustry())) {
+//                                    return;
+//                                }
+                                if (!"06".equals(psUserIndustryId)) {
+                                    return;
+                                }
+                                if (!sformname.contains("PurchaseOrder")) {
+                                    if (!sformname.contains("DeliveryAcceptance_History")) {
+                                        return;
+                                    }
+                                }
+
                                 loadSelectIndustryAndCompany();
                             } catch (IOException e) {
                                 ShowMessageFX.Warning("Unable to load selection window.", "Error", e.getMessage());
@@ -2449,8 +2461,33 @@ public class DashboardController implements Initializable {
 
         }
         );
-
     }
+    //    }
+    //
+    //    private void setKeyEvent(Scene scene) {
+    //        scene.setOnKeyPressed(event -> {
+    //            if (event.getCode() == KeyCode.F12) {
+    //                if (LoginControllerHolder.getLogInStatus()) {
+    //                    //check here if the user level is supervisor
+    //                    //check if the current tab is not entry
+    //                    if (LoginControllerHolder.getLogInStatus()) {
+    //                        Tab currentTab = tabpane.getSelectionModel().getSelectedItem();
+    ////                        if (currentTab != null && !"Entry".equals(currentTab.getText())) {
+    //                        if (currentTab != null) {
+    //                            try {
+    //                                loadSelectIndustryAndCompany();
+    //                            } catch (IOException e) {
+    //                                ShowMessageFX.Warning("Unable to load selection window.", "Error", e.getMessage());
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //
+    //        }
+    //        );
+    //
+    //    }
 
     private void loadSelectIndustryAndCompany() throws IOException {
         try {
