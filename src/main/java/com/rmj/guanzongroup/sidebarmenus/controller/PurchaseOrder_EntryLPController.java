@@ -377,8 +377,8 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     loJSON = poPurchasingController.PurchaseOrder().NewTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
                         poPurchasingController.PurchaseOrder().Master().setSupplierID(prevSupplier);
-                        poPurchasingController.PurchaseOrder().Master().setIndustryID(poPurchasingController.PurchaseOrder().Master().getCompanyID());
-                        poPurchasingController.PurchaseOrder().Master().setIndustryID(poPurchasingController.PurchaseOrder().Master().getIndustryID());
+                        poPurchasingController.PurchaseOrder().Master().setIndustryID(psIndustryID);
+                        poPurchasingController.PurchaseOrder().Master().setCompanyID(psCompanyID);
                         poPurchasingController.PurchaseOrder().Master().setDestinationID(poPurchasingController.PurchaseOrder().Master().Branch().getBranchCode());
                         poPurchasingController.PurchaseOrder().Master().setInventoryTypeCode(poPurchasingController.PurchaseOrder().getInventoryTypeCode());
                         loadMaster();
@@ -602,6 +602,8 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                             poDetail_data.clear();
                             tblVwOrderDetails.getItems().clear();
                             pnEditMode = EditMode.UNKNOWN;
+                            poPurchasingController.PurchaseOrder().Master().setIndustryID(psIndustryID);
+                            poPurchasingController.PurchaseOrder().Master().setCompanyID(psCompanyID);
                             prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                             poPurchasingController.PurchaseOrder().Master().setSupplierID(prevSupplier);
                             tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
