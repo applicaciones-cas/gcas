@@ -2586,7 +2586,7 @@ public class DashboardController implements Initializable {
                 if ("0010".equals(categoryId)) {
                     concatName = "MC";   // Motorcycle
                 }
-                if ("001 02 03 04 05 06".equals(categoryId)) {
+                if ("0011".equals(categoryId)) {
                     concatName = "SPMC"; // Spare Parts
                 }
             case "03":
@@ -2668,7 +2668,6 @@ public class DashboardController implements Initializable {
             return tabpane;
 
         } catch (IOException e) {
-            e.printStackTrace();
             ShowMessageFX.Warning(e.getMessage(), "FXML Load Error", null);
             return null;
         }
