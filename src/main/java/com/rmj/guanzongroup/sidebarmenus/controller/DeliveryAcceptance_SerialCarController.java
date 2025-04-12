@@ -261,7 +261,7 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
             return;
         }
         ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(pnDetail);
-        int pnDetail2 = Integer.valueOf(selectedItem.getIndex04());
+        int pnDetail2 = Integer.valueOf(selectedItem.getIndex07());
 
         if (poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getEntryNo() != pnEntryNo) {
             return;
@@ -344,7 +344,7 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
         try {
             if (details_data.size() > 0) {
                 ModelDeliveryAcceptance_Serial selectedItem = tblViewDetail.getItems().get(pnDetail);
-                int pnDetail2 = Integer.valueOf(selectedItem.getIndex04());
+                int pnDetail2 = Integer.valueOf(selectedItem.getIndex07());
 
                 tfEngineNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial01());
                 tfFrameNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial02());
@@ -418,7 +418,6 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                             tblViewDetail.getSelectionModel().select(pnDetail);
                             tblViewDetail.getFocusModel().focus(pnDetail);
                         }
-//                        loadRecordDetail();
 
                     } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);

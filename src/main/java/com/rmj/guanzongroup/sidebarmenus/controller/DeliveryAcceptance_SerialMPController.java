@@ -312,7 +312,6 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                             tblViewDetail.getSelectionModel().select(pnDetail);
                             tblViewDetail.getFocusModel().focus(pnDetail);
                         }
-//                        loadRecordDetail();
 
                     } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
