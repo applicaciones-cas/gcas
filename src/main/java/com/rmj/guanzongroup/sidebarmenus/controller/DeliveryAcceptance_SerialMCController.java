@@ -33,7 +33,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollBar;
-import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -111,7 +110,17 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
         initDetailsGrid();
         initTableOnClick();
         loadTableDetail();
-        Platform.runLater(() -> tfEngineNo.requestFocus());
+        loadRecordDetail();
+        Platform.runLater(() -> {
+            PauseTransition delay = new PauseTransition(Duration.seconds(0.05));
+            delay.setOnFinished(event -> {
+                loadRecordDetail();
+                if(tfEngineNo.getText() == null || "".equals(tfEngineNo.getText())){
+                    tfEngineNo.requestFocus();
+                }
+            });
+            delay.play();
+        });
     }
 
 //    @Override
@@ -240,6 +249,7 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                     originalValues.clear(); // Clear stored values after reverting
                 }
                 loadTableDetail();
+                loadRecordDetail();
             }
         }
     }
@@ -280,7 +290,7 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                     break;
             }
             Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.10));
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                 delay.setOnFinished(event -> {
                     loadTableDetail();
                 });
@@ -307,9 +317,10 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                                 tfLocation.setText("");
                                 break;
                             }
+                            loadTableDetail();
+                            loadRecordDetail();
                             break;
                     }
-                    loadRecordDetail();
                     break;
                 default:
                     break;
@@ -324,9 +335,7 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -341,9 +350,7 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                 tfFrameNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial02());
                 tfLocation.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).Location().getDescription());
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_SerialMCController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_SerialMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -398,17 +405,17 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                                 tblViewDetail.getSelectionModel().select(0);
                                 tblViewDetail.getFocusModel().focus(0);
                                 pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
+//                                loadRecordDetail();
                             }
                         } else {
                             // Check if the item matches the value of pnDetail
                             tblViewDetail.getSelectionModel().select(pnDetail);
                             tblViewDetail.getFocusModel().focus(pnDetail);
+//                            loadRecordDetail();
                         }
-                        loadRecordDetail();
+                        
 
-                    } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
@@ -507,16 +514,22 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                     case TAB:
                     case DOWN:
                         pnDetail = moveToNextRow(currentTable, focusedCell);
+                        loadRecordDetail();
+                        if(tfEngineNo.getText() == null || "".equals(tfEngineNo.getText())){
+                            tfEngineNo.requestFocus();
+                        }
                         break;
                     case UP:
                         pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                        loadRecordDetail();
+                        if(tfEngineNo.getText() == null || "".equals(tfEngineNo.getText())){
+                            tfEngineNo.requestFocus();
+                        }
                         break;
 
                     default:
                         break;
                 }
-                loadRecordDetail();
-                tfEngineNo.requestFocus();
                 event.consume();
             }
         }
@@ -527,8 +540,10 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
         tblViewDetail.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
-                tfEngineNo.requestFocus();
                 loadRecordDetail();
+                if(tfEngineNo.getText() == null || "".equals(tfEngineNo.getText())){
+                    tfEngineNo.requestFocus();
+                }
             }
         });
         tblViewDetail.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);

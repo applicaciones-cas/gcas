@@ -31,7 +31,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollBar;
-import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -107,7 +106,17 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
         initDetailsGrid();
         initTableOnClick();
         loadTableDetail();
-        Platform.runLater(() -> tfIMEI1.requestFocus());
+        
+        Platform.runLater(() -> {
+            PauseTransition delay = new PauseTransition(Duration.seconds(0.05));
+            delay.setOnFinished(event -> {
+                loadRecordDetail();
+                if(tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())){
+                    tfIMEI1.requestFocus();
+                }
+            });
+            delay.play();
+        });
     }
 
 //    @Override
@@ -229,9 +238,8 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                     break;
 
             }
-//            loadTableDetail();
             Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.10));
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                 delay.setOnFinished(event -> {
                     loadTableDetail();
                 });
@@ -304,11 +312,9 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                             tblViewDetail.getSelectionModel().select(pnDetail);
                             tblViewDetail.getFocusModel().focus(pnDetail);
                         }
-                        loadRecordDetail();
+//                        loadRecordDetail();
 
-                    } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
@@ -405,16 +411,24 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                     case TAB:
                     case DOWN:
                         pnDetail = moveToNextRow(currentTable, focusedCell);
+                        loadRecordDetail();
+                        tfIMEI1.requestFocus();
+                        if(tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())){
+                            tfIMEI1.requestFocus();
+                        }
                         break;
                     case UP:
                         pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                        loadRecordDetail();
+                        tfIMEI1.requestFocus();
+                        if(tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())){
+                            tfIMEI1.requestFocus();
+                        }
                         break;
 
                     default:
                         break;
                 }
-                loadRecordDetail();
-                tfIMEI1.requestFocus();
                 event.consume();
             }
         }
@@ -424,8 +438,10 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
         tblViewDetail.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
-                tfIMEI1.requestFocus();
                 loadRecordDetail();
+                if(tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())){
+                    tfIMEI1.requestFocus();
+                }
             }
         });
         tblViewDetail.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);

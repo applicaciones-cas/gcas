@@ -34,7 +34,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollBar;
-import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -109,7 +108,16 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
         initDetailsGrid();
         initTableOnClick();
         loadTableDetail();
-        Platform.runLater(() -> tfEngineNo.requestFocus());
+        Platform.runLater(() -> {
+            PauseTransition delay = new PauseTransition(Duration.seconds(0.05));
+            delay.setOnFinished(event -> {
+                loadRecordDetail();
+                if(tfEngineNo.getText() == null || "".equals(tfEngineNo.getText())){
+                    tfEngineNo.requestFocus();
+                }
+            });
+            delay.play();
+        });
     }
 
 //    @Override
@@ -235,6 +243,7 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                     originalValues.clear(); // Clear stored values after reverting
                 }
                 loadTableDetail();
+                loadRecordDetail();
             }
         }
     }
@@ -307,9 +316,11 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                                 tfLocation.setText("");
                                 break;
                             }
+                            
+                            loadTableDetail();
+                            loadRecordDetail();
                             break;
                     }
-                    loadRecordDetail();
                     break;
                 default:
                     break;
@@ -324,9 +335,7 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -343,9 +352,7 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                 tfPlateNo.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getPlateNo());
                 tfLocation.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).Location().getDescription());
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_SerialCarController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_SerialCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -411,11 +418,9 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                             tblViewDetail.getSelectionModel().select(pnDetail);
                             tblViewDetail.getFocusModel().focus(pnDetail);
                         }
-                        loadRecordDetail();
+//                        loadRecordDetail();
 
-                    } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
@@ -513,16 +518,22 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                     case TAB:
                     case DOWN:
                         pnDetail = moveToNextRow(currentTable, focusedCell);
+                        loadRecordDetail();
+                        if(tfEngineNo.getText() == null || "".equals(tfEngineNo.getText())){
+                            tfEngineNo.requestFocus();
+                        }
                         break;
                     case UP:
                         pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                        loadRecordDetail();
+                        if(tfEngineNo.getText() == null || "".equals(tfEngineNo.getText())){
+                            tfEngineNo.requestFocus();
+                        }
                         break;
 
                     default:
                         break;
                 }
-                loadRecordDetail();
-                tfEngineNo.requestFocus();
                 event.consume();
             }
         }
@@ -533,7 +544,9 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
-                tfEngineNo.requestFocus();
+                if(tfEngineNo.getText() == null || "".equals(tfEngineNo.getText())){
+                    tfEngineNo.requestFocus();
+                }
             }
         });
         tblViewDetail.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
