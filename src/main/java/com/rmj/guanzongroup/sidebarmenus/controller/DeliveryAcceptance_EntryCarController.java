@@ -643,6 +643,21 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             switch (lsTxtFieldID) {
                 case "tfSupplier":
                     if (lsValue.isEmpty()) {
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            if(poPurchaseReceivingController.Master().getSupplierId() != null && !"".equals(poPurchaseReceivingController.Master().getSupplierId())){
+                                if (poPurchaseReceivingController.getDetailCount() > 1) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                        poPurchaseReceivingController.removePORDetails();
+                                        loadTableDetail();
+                                    } else {
+                                        loadRecordMaster();
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                        
                         poJSON = poPurchaseReceivingController.Master().setSupplierId("");
                     }
                     break;
@@ -1255,7 +1270,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
     public void loadTableDetail() {
         // Setting data to table detail
-        loadRecordMaster();
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
         // Setting data to table detail
@@ -1374,6 +1388,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             tblViewOrderDetails.getFocusModel().focus(pnDetail);
                             loadRecordDetail();
                         }
+                        loadRecordMaster();
                     } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
