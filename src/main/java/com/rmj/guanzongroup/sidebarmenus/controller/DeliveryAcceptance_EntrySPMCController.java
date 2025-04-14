@@ -78,6 +78,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javafx.scene.Parent;
 
 /**
  * FXML Controller class
@@ -578,28 +579,26 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    if (Double.parseDouble(lsValue) < 0.00 || Double.parseDouble(lsValue) > 100.00) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Discount rate cannot be negative or exceed 100.00");
-                        break;
-                    }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue)));
+                    poJSON = poPurchaseReceivingController.computeDiscount(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
+                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
+                    
                     break;
                 case "tfDiscountAmount":
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00
-                            || Double.parseDouble(lsValue.replace(",", "")) > poPurchaseReceivingController.Master().getTransactionTotal().doubleValue()) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Discount amount cannot be negative or exceed the transaction total.");
+                    
+                    poJSON = poPurchaseReceivingController.computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
                     poJSON = poPurchaseReceivingController.Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
@@ -608,11 +607,6 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                         break;
                     }
 
-                    poJSON = poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
-                    }
                     break;
 
             }
@@ -872,6 +866,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                         poJSON.put("result", "error");
                         poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        loadRecordMaster();
                         return;
                     }
                 } else {
@@ -1076,7 +1071,8 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
-
+            
+            updateCaretPositions(apDetail);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
@@ -1161,10 +1157,35 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
             }
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
+        
+            updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
+    }
+    
+    public void updateCaretPositions(AnchorPane anchorPane) {
+        List<TextField> textFields = getAllTextFields(anchorPane);
+        for (TextField textField : textFields) {
+            String text = textField.getText();
+            if (text != null && !"".equals(text)) {
+                Pos alignment = textField.getAlignment();
+                if (alignment == Pos.CENTER_RIGHT || alignment == Pos.BASELINE_RIGHT
+                        || alignment == Pos.TOP_RIGHT || alignment == Pos.BOTTOM_RIGHT) {
+                    textField.positionCaret(0); // Caret at start
+                } else {
+                    textField.positionCaret(text.length()); // Caret at end
+                }
+            }
+        }
+    }
+
+    private List<TextField> getAllTextFields(Parent parent) {
+        return parent.lookupAll(".text-field").stream()
+                .filter(node -> node instanceof TextField)
+                .map(node -> (TextField) node)
+                .collect(Collectors.toList());
     }
 
     private int moveToNextRow(TableView table, TablePosition focusedCell) {
