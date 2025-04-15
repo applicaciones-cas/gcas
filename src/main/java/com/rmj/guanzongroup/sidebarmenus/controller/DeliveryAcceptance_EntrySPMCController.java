@@ -279,6 +279,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                             poPurchaseReceivingController.SearchSupplier(psSupplierId, true);
                         }
                         pnEditMode = poPurchaseReceivingController.getEditMode();
+                        showRetainedHighlight(false);
                         break;
                     case "btnUpdate":
                         poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
@@ -337,6 +338,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
                             poPurchaseReceivingController.Master().setSupplierId(psSupplierId);
                             pnEditMode = EditMode.UNKNOWN;
+                            showRetainedHighlight(false);
                             break;
                         } else {
                             return;
@@ -355,6 +357,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             }
                         }
+                        showRetainedHighlight(false);
                         break;
                     case "btnSave":
                         //Validator
@@ -372,6 +375,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 //Call new transaction
+                                showRetainedHighlight(true);
                                 btnNew.fire();
                             }
                         } else {
@@ -396,7 +400,6 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
             Logger.getLogger(DeliveryAcceptance_EntrySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-
     public void showRetainedHighlight(boolean isRetained) {
         if (isRetained) {
             for (Pair<String, String> pair : plOrderNoPartial) {

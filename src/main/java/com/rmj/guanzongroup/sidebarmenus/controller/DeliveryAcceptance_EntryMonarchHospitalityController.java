@@ -279,6 +279,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             poPurchaseReceivingController.SearchSupplier(psSupplierId, true);
                         }
                         pnEditMode = poPurchaseReceivingController.getEditMode();
+                        showRetainedHighlight(false);
                         break;
                     case "btnUpdate":
                         poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
@@ -337,6 +338,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
                             poPurchaseReceivingController.Master().setSupplierId(psSupplierId);
                             pnEditMode = EditMode.UNKNOWN;
+                            showRetainedHighlight(false);
                             break;
                         } else {
                             return;
@@ -355,6 +357,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             }
                         }
+                        showRetainedHighlight(false);
                         break;
                     case "btnSave":
                         //Validator
@@ -372,6 +375,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 //Call new transaction
+                                showRetainedHighlight(true);
                                 btnNew.fire();
                             }
                         } else {
@@ -1575,7 +1579,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
                             plOrderNoPartial.add(new Pair<>(poPurchaseReceivingController.Detail(lnCtr).getOrderNo(), String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue())));

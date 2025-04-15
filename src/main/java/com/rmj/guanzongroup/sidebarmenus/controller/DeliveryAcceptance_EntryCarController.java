@@ -299,6 +299,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             poPurchaseReceivingController.SearchSupplier(psSupplierId, true);
                         }
                         pnEditMode = poPurchaseReceivingController.getEditMode();
+                        showRetainedHighlight(false);
                         break;
                     case "btnUpdate":
                         poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
@@ -363,6 +364,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
                             poPurchaseReceivingController.Master().setSupplierId(psSupplierId);
                             pnEditMode = EditMode.UNKNOWN;
+                            showRetainedHighlight(false);
                             break;
                         } else {
                             return;
@@ -382,6 +384,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             }
                         }
                         plOrderNo.clear();
+                        showRetainedHighlight(false);
                         break;
                     case "btnSave":
                         //Validator
@@ -399,6 +402,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 //Call new transaction
+                                showRetainedHighlight(true);
                                 btnNew.fire();
                             }
                         } else {
@@ -421,6 +425,26 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+    }
+        public void showRetainedHighlight(boolean isRetained) {
+        if (isRetained) {
+            for (Pair<String, String> pair : plOrderNoPartial) {
+                if (!"0".equals(pair.getValue())) {
+                    System.out.println(pair.getKey()); // orderNo
+                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
+                }
+            }
+        }
+        disableAllHighlightByKey(tblViewPuchaseOrder, highlightedRowsMain);
+
+        plOrderNoPartial.clear();
+        for (Pair<String, String> pair : plOrderNoFinal) {
+            if (!"0".equals(pair.getValue())) {
+                System.out.println(pair.getKey()); // orderNo
+                highlightByKey(tblViewPuchaseOrder, pair.getKey(), "#A7C7E7", highlightedRowsMain);
+
+            }
         }
     }
 
