@@ -79,6 +79,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javafx.scene.Parent;
+import javafx.util.Pair;
 
 /**
  * FXML Controller class
@@ -105,13 +106,14 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
+    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
+    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
 
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
-
 
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
@@ -126,7 +128,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose;
 
     @FXML
-    private Label lblStatus, lblSource; 
+    private Label lblStatus, lblSource;
 
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
@@ -175,13 +177,13 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             initDetailsGrid();
             initTableOnClick();
             clearTextFields();
-            
+
             Platform.runLater(() -> {
                 poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
                 poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
                 poPurchaseReceivingController.setIndustryId(psIndustryId);
                 poPurchaseReceivingController.setCompanyId(psCompanyId);
-            poPurchaseReceivingController.setCategoryId(psCategoryId);
+                poPurchaseReceivingController.setCategoryId(psCategoryId);
                 poPurchaseReceivingController.initFields();
                 loadRecordSearch();
             });
@@ -202,7 +204,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     @Override
     public void setIndustryID(String fsValue) {
         psIndustryId = fsValue;
@@ -212,7 +214,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     public void setCompanyID(String fsValue) {
         psCompanyId = fsValue;
     }
-    
+
     @Override
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
@@ -238,6 +240,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         pnEditMode = poPurchaseReceivingController.getEditMode();
 //                        psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+
                         break;
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
@@ -276,6 +279,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             poPurchaseReceivingController.SearchSupplier(psSupplierId, true);
                         }
                         pnEditMode = poPurchaseReceivingController.getEditMode();
+
+                        showRetainedHighlight(false);
                         break;
                     case "btnUpdate":
                         poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
@@ -291,7 +296,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode", 
+                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
@@ -334,6 +339,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
                             poPurchaseReceivingController.Master().setSupplierId(psSupplierId);
                             pnEditMode = EditMode.UNKNOWN;
+
+                            showRetainedHighlight(false);
                             break;
                         } else {
                             return;
@@ -352,6 +359,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             }
                         }
+                        plOrderNoFinal.clear();
+                        showRetainedHighlight(false);
                         break;
                     case "btnSave":
                         //Validator
@@ -363,13 +372,17 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 poPurchaseReceivingController.AddDetail();
                                 return;
                             } else {
+
+                                //reshow the highlight
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 //get last retrieved Company and Supplier
 //                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
 
                                 //Call new transaction
+                                showRetainedHighlight(true);
                                 btnNew.fire();
+
                             }
                         } else {
                             return;
@@ -380,17 +393,37 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         break;
                 }
 
-                if (lsButton.equals("btnPrint") || lsButton.equals("btnRetrieve")) { //|| lsButton.equals("btnCancel")
+                if (lsButton.equals("btnPrint")) { //|| lsButton.equals("btnCancel")
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                 }
-
                 initButton(pnEditMode);
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+    }
+
+    public void showRetainedHighlight(boolean isRetained) {
+        if (isRetained) {
+            for (Pair<String, String> pair : plOrderNoPartial) {
+                if (!"0".equals(pair.getValue())) {
+                    System.out.println(pair.getKey()); // orderNo
+                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
+                }
+            }
+        }
+        disableAllHighlightByKey(tblViewPuchaseOrder, highlightedRowsMain);
+
+        plOrderNoPartial.clear();
+        for (Pair<String, String> pair : plOrderNoFinal) {
+            if (!"0".equals(pair.getValue())) {
+                System.out.println(pair.getKey()); // orderNo
+                highlightByKey(tblViewPuchaseOrder, pair.getKey(), "#A7C7E7", highlightedRowsMain);
+
+            }
         }
     }
 
@@ -535,7 +568,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 case "tfSupplier":
                     if (lsValue.isEmpty()) {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            if(poPurchaseReceivingController.Master().getSupplierId() != null && !"".equals(poPurchaseReceivingController.Master().getSupplierId())){
+                            if (poPurchaseReceivingController.Master().getSupplierId() != null && !"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
                                 if (poPurchaseReceivingController.getDetailCount() > 1) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
@@ -548,7 +581,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 }
                             }
                         }
-                        
+
                         poJSON = poPurchaseReceivingController.Master().setSupplierId("");
                     }
                     break;
@@ -590,13 +623,13 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    
+
                     break;
                 case "tfDiscountAmount":
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -843,7 +876,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
-                
+
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
@@ -1058,7 +1091,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     public void loadRecordSearch() {
         try {
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-            
+
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -1098,7 +1131,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
-        
+
             updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1185,14 +1218,14 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-        
+
             updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
-    
+
     public void updateCaretPositions(AnchorPane anchorPane) {
         List<TextField> textFields = getAllTextFields(anchorPane);
         for (TextField textField : textFields) {
@@ -1203,7 +1236,11 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                         || alignment == Pos.TOP_RIGHT || alignment == Pos.BOTTOM_RIGHT) {
                     textField.positionCaret(0); // Caret at start
                 } else {
-                    textField.positionCaret(text.length()); // Caret at end
+                    if (textField.isFocused()) {
+                        textField.positionCaret(text.length()); // Caret at end if focused
+                    } else {
+                        textField.positionCaret(0); // Caret at start if not focused
+                    }
                 }
             }
         }
@@ -1308,10 +1345,18 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 super.updateItem(item, empty);
                 if (item == null || empty) {
                     setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsDetail.containsKey(getIndex())) {
-                    setStyle("-fx-background-color: " + highlightedRowsDetail.get(getIndex()) + ";");
                 } else {
-                    setStyle(""); // Default style
+                    try {
+                        int rowNo = Integer.parseInt(item.getIndex01()); // Assuming getIndex01() returns RowNo
+                        List<String> colors = highlightedRowsDetail.get(rowNo);
+                        if (colors != null && !colors.isEmpty()) {
+                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
+                        } else {
+                            setStyle(""); // Default style
+                        }
+                    } catch (NumberFormatException e) {
+                        setStyle(""); // Safe fallback if index is invalid
+                    }
                 }
             }
         });
@@ -1519,7 +1564,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 Platform.runLater(() -> {
                     int lnCtr;
                     details_data.clear();
-
+                    plOrderNoPartial.clear();
                     try {
 
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
@@ -1542,7 +1587,6 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             }
                         }
 
-                        List<String> lOrderNo = new ArrayList<>();
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             try {
@@ -1554,10 +1598,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
                             }
 
-                            lOrderNo.add(poPurchaseReceivingController.Detail(lnCtr).getOrderNo());
+                            plOrderNoPartial.add(new Pair<>(poPurchaseReceivingController.Detail(lnCtr).getOrderNo(), String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue())));
 
                             details_data.add(
                                     new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
@@ -1570,17 +1614,12 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
                         }
-                        List<String> cleanedList = lOrderNo.stream()
-                                .filter(Objects::nonNull) // remove nulls
-                                .map(String::trim) // trim whitespaces
-                                .filter(s -> !s.isEmpty()) // remove empty strings
-                                .distinct() // remove duplicates
-                                .collect(Collectors.toList());         // collect into list
 
-                        disableAllHighlightByKey(tblViewPuchaseOrder, highlightedRowsMain);
-                        // Use cleaned list
-                        for (String item : cleanedList) {
-                            highlightByKey(tblViewPuchaseOrder, item, "#A7C7E7", highlightedRowsMain);
+                        for (Pair<String, String> pair : plOrderNoPartial) {
+                            if (!"".equals(pair.getKey()) && pair.getKey() != null) {
+                                System.out.println(pair.getKey()); // orderNo
+                                highlightByKey(tblViewPuchaseOrder, pair.getKey(), "#A7C7E7", highlightedRowsMain);
+                            }
                         }
 
                         if (pnDetail < 0 || pnDetail

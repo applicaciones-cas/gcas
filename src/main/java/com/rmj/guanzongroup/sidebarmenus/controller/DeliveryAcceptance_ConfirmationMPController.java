@@ -157,7 +157,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     @FXML
     private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose, btnSerials, btnConfirm, btnVoid, btnReturn;
     @FXML
-    private Label lblStatus,lblSource;
+    private Label lblStatus, lblSource;
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
@@ -176,7 +176,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     @FXML
     private Pagination pgPagination;
     @FXML
-    private TextField  tfSearchSupplier, tfSearchReferenceNo;
+    private TextField tfSearchSupplier, tfSearchReferenceNo;
     @FXML
     private TextField tfAttachmentNo;
     @FXML
@@ -212,7 +212,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
-        
+
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
@@ -236,7 +236,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     @Override
     public void setIndustryID(String fsValue) {
         psIndustryId = fsValue;
@@ -246,7 +246,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     public void setCompanyID(String fsValue) {
         psCompanyId = fsValue;
     }
-    
+
     @Override
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
@@ -264,7 +264,9 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {
+                            loadRecordMaster();
+                        });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
@@ -300,7 +302,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode", "tfSearchSupplier", "tfSearchReferenceNo",
+                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBrand", "tfModel", "tfSearchSupplier", "tfSearchReferenceNo",
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
@@ -371,7 +373,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain, "#C1E1C1", highlightedRowsMain);
+                                highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -387,7 +389,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain, "#FAA0A0", highlightedRowsMain);
+                                highlight(tblViewPuchaseOrder, pnMain + 1, "#FAA0A0", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -403,7 +405,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain, "#FAC898", highlightedRowsMain);
+                                highlight(tblViewPuchaseOrder, pnMain + 1, "#FAC898", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -628,13 +630,13 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    
+
                     break;
                 case "tfDiscountAmount":
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -786,7 +788,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setTransactionNo(lsValue);
                     break;
             }
-            if ( lsTxtFieldID.equals("tfSearchSupplier")
+            if (lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             } else {
@@ -918,7 +920,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
-                
+
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
@@ -1061,7 +1063,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     } catch (Exception e) {
 
                     }
-
+                    int numm = 0;
                     if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
                         //pending
                         //retreiving using column index
@@ -1072,6 +1074,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                         String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionDate()),
                                         String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                                 ));
+                                numm = (lnCtr);
                             } catch (SQLException ex) {
                                 Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             } catch (GuanzonException ex) {
@@ -1079,7 +1082,6 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             }
 
                         }
-
                         if (pnMain < 0 || pnMain
                                 >= main_data.size()) {
                             if (!main_data.isEmpty()) {
@@ -1098,6 +1100,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             loadTab();
                         }
                     }
+
                 });
 
                 return null;
@@ -1128,7 +1131,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     public void loadRecordSearch() {
         try {
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-            
+
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
@@ -1233,7 +1236,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
-        
+
             updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1244,15 +1247,15 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     public void loadRecordMaster() {
         boolean lbDisable = poPurchaseReceivingController.getEditMode() == EditMode.UPDATE;
         if (lbDisable) {
-            
+
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
-            while ( tfSupplier.getStyleClass().contains("DisabledTextField")) {
-                
+            while (tfSupplier.getStyleClass().contains("DisabledTextField")) {
+
                 tfSupplier.getStyleClass().remove("DisabledTextField");
             }
         }
-        
+
         tfSupplier.setDisable(lbDisable);
 
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
@@ -1304,8 +1307,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            
-            
+
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -1320,7 +1322,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-        
+
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1329,7 +1331,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         }
 
     }
-    
+
     public void updateCaretPositions(AnchorPane anchorPane) {
         List<TextField> textFields = getAllTextFields(anchorPane);
         for (TextField textField : textFields) {
@@ -1340,7 +1342,11 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         || alignment == Pos.TOP_RIGHT || alignment == Pos.BOTTOM_RIGHT) {
                     textField.positionCaret(0); // Caret at start
                 } else {
-                    textField.positionCaret(text.length()); // Caret at end
+                    if (textField.isFocused()) {
+                        textField.positionCaret(text.length()); // Caret at end if focused
+                    } else {
+                        textField.positionCaret(0); // Caret at start if not focused
+                    }
                 }
             }
         }
@@ -1352,7 +1358,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 .map(node -> (TextField) node)
                 .collect(Collectors.toList());
     }
-    
+
     public void loadTableDetailFromMain() {
         try {
             poJSON = new JSONObject();
@@ -1369,7 +1375,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                     pnMain = pnRowMain;
                     disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                    highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
+                    highlight(tblViewPuchaseOrder, pnMain + 1, "#A7C7E7", highlightedRowsMain);
                 }
                 poPurchaseReceivingController.loadAttachments();
                 loadTableDetail();
@@ -1459,13 +1465,18 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
+
                             }
 
+                            String lsBrand = "";
+                            if (poPurchaseReceivingController.Detail(lnCtr).Brand().getDescription() != null) {
+                                lsBrand = poPurchaseReceivingController.Detail(lnCtr).Brand().getDescription();
+                            }
                             details_data.add(
                                     new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
+                                            lsBrand,
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
@@ -1624,7 +1635,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     }
 
     public void initTextFields() {
-        
+
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
@@ -1641,7 +1652,6 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         tfCost.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
-        
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
@@ -1702,14 +1712,15 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
             protected void updateItem(ModelDeliveryAcceptance_Main item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsMain.containsKey(getIndex())) {
-                    List<String> colors = highlightedRowsMain.get(getIndex());
-                    if (!colors.isEmpty()) {
-                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply the latest color
-                    }
+                    setStyle("");
                 } else {
-                    setStyle(""); // Default style
+                    int rowNo = Integer.valueOf(item.getIndex01()); // Get RowNo from the model
+                    List<String> colors = highlightedRowsMain.get(rowNo);
+                    if (colors != null && !colors.isEmpty()) {
+                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
+                    } else {
+                        setStyle("");
+                    }
                 }
             }
         });
@@ -1719,13 +1730,18 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 super.updateItem(item, empty);
                 if (item == null || empty) {
                     setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsDetail.containsKey(getIndex())) {
-                    List<String> colors = highlightedRowsDetail.get(getIndex());
-                    if (!colors.isEmpty()) {
-                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply the latest color
-                    }
                 } else {
-                    setStyle(""); // Default style
+                    try {
+                        int rowNo = Integer.parseInt(item.getIndex01()); // Assuming getIndex01() returns RowNo
+                        List<String> colors = highlightedRowsDetail.get(rowNo);
+                        if (colors != null && !colors.isEmpty()) {
+                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
+                        } else {
+                            setStyle(""); // Default style
+                        }
+                    } catch (NumberFormatException e) {
+                        setStyle(""); // Safe fallback if index is invalid
+                    }
                 }
             }
         });
@@ -2060,33 +2076,29 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
             ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
-            Path filePath = Paths.get(image.getIndex02());
-            String convertedPath = filePath.toUri().toString();
-
-            Image newImage = new Image(convertedPath);
-            // Create a transition animation
+            String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + image.getIndex02();
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
-
-            slideOut.setOnFinished(event -> {
-                imageView.setImage(newImage);
-                imageView.setTranslateX(direction * 400);
-                adjustImageSize(newImage);
-
-                TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), imageView);
-                slideIn.setToX(0);
-                slideIn.play();
-            });
-
-            slideOut.play();
 
             tblAttachments.getFocusModel().focus(newIndex);
             tblAttachments.getSelectionModel().select(newIndex);
             pnAttachment = newIndex;
+            loadRecordAttachment(false);
 
-            if (isImageViewOutOfBounds(imageView, stackPane1)) {
-                resetImageBounds();
-            }
+            // Create a transition animation
+            slideOut.setOnFinished(event -> {
+                imageView.setTranslateX(direction * 400);
+                TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), imageView);
+                slideIn.setToX(0);
+                slideIn.play();
+
+                loadRecordAttachment(true);
+            });
+
+            slideOut.play();
+        }
+        if (isImageViewOutOfBounds(imageView, stackPane1)) {
+            resetImageBounds();
         }
     }
 
@@ -2131,7 +2143,6 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
@@ -2139,8 +2150,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         cmbAttachmentType.getSelectionModel().select(0);
 
         tfTransactionNo.clear();
-        
-        
+
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();

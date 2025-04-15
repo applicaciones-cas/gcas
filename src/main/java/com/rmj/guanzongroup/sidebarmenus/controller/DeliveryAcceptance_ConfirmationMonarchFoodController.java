@@ -357,7 +357,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain, "#C1E1C1", highlightedRowsMain);
+                                highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -373,7 +373,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain, "#FAA0A0", highlightedRowsMain);
+                                highlight(tblViewPuchaseOrder, pnMain + 1, "#FAA0A0", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -389,7 +389,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain, "#FAC898", highlightedRowsMain);
+                                highlight(tblViewPuchaseOrder, pnMain + 1, "#FAC898", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -1259,7 +1259,11 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                         || alignment == Pos.TOP_RIGHT || alignment == Pos.BOTTOM_RIGHT) {
                     textField.positionCaret(0); // Caret at start
                 } else {
-                    textField.positionCaret(text.length()); // Caret at end
+                    if (textField.isFocused()) {
+                        textField.positionCaret(text.length()); // Caret at end if focused
+                    } else {
+                        textField.positionCaret(0); // Caret at start if not focused
+                    }
                 }
             }
         }
@@ -1288,7 +1292,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                     int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                     pnMain = pnRowMain;
                     disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                    highlight(tblViewPuchaseOrder, pnRowMain, "#A7C7E7", highlightedRowsMain);
+                    highlight(tblViewPuchaseOrder, pnRowMain + 1, "#A7C7E7", highlightedRowsMain);
                 }
                 poPurchaseReceivingController.loadAttachments();
                 loadTableDetail();
@@ -1364,7 +1368,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                highlight(tblViewOrderDetails, lnCtr, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
                             }
 
                             details_data.add(
@@ -1614,14 +1618,15 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
             protected void updateItem(ModelDeliveryAcceptance_Main item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsMain.containsKey(getIndex())) {
-                    List<String> colors = highlightedRowsMain.get(getIndex());
-                    if (!colors.isEmpty()) {
-                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply the latest color
-                    }
+                    setStyle("");
                 } else {
-                    setStyle(""); // Default style
+                    int rowNo = Integer.valueOf(item.getIndex01()); // Get RowNo from the model
+                    List<String> colors = highlightedRowsMain.get(rowNo);
+                    if (colors != null && !colors.isEmpty()) {
+                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
+                    } else {
+                        setStyle("");
+                    }
                 }
             }
         });
@@ -1631,13 +1636,18 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                 super.updateItem(item, empty);
                 if (item == null || empty) {
                     setStyle(""); // Reset for empty rows
-                } else if (highlightedRowsDetail.containsKey(getIndex())) {
-                    List<String> colors = highlightedRowsDetail.get(getIndex());
-                    if (!colors.isEmpty()) {
-                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply the latest color
-                    }
                 } else {
-                    setStyle(""); // Default style
+                    try {
+                        int rowNo = Integer.parseInt(item.getIndex01()); // Assuming getIndex01() returns RowNo
+                        List<String> colors = highlightedRowsDetail.get(rowNo);
+                        if (colors != null && !colors.isEmpty()) {
+                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
+                        } else {
+                            setStyle(""); // Default style
+                        }
+                    } catch (NumberFormatException e) {
+                        setStyle(""); // Safe fallback if index is invalid
+                    }
                 }
             }
         });
@@ -1926,33 +1936,29 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
             ModelDeliveryAcceptance_Attachment image = attachment_data.get(newIndex);
-            Path filePath = Paths.get(image.getIndex02());
-            String convertedPath = filePath.toUri().toString();
-
-            Image newImage = new Image(convertedPath);
-            // Create a transition animation
+            String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + image.getIndex02();
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
-
-            slideOut.setOnFinished(event -> {
-                imageView.setImage(newImage);
-                imageView.setTranslateX(direction * 400);
-                adjustImageSize(newImage);
-
-                TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), imageView);
-                slideIn.setToX(0);
-                slideIn.play();
-            });
-
-            slideOut.play();
 
             tblAttachments.getFocusModel().focus(newIndex);
             tblAttachments.getSelectionModel().select(newIndex);
             pnAttachment = newIndex;
+            loadRecordAttachment(false);
 
-            if (isImageViewOutOfBounds(imageView, stackPane1)) {
-                resetImageBounds();
-            }
+            // Create a transition animation
+            slideOut.setOnFinished(event -> {
+                imageView.setTranslateX(direction * 400);
+                TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), imageView);
+                slideIn.setToX(0);
+                slideIn.play();
+
+                loadRecordAttachment(true);
+            });
+
+            slideOut.play();
+        }
+        if (isImageViewOutOfBounds(imageView, stackPane1)) {
+            resetImageBounds();
         }
     }
 
