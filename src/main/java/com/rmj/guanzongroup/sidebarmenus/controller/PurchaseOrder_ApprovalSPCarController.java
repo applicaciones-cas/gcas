@@ -885,7 +885,7 @@ public class PurchaseOrder_ApprovalSPCarController implements Initializable, Scr
                     // Assuming empIndex05 corresponds to an employee status
                     String status = item.getIndex05(); // Replace with actual getter
                     switch (status) {
-                        case PurchaseOrderStatus.CONFIRMED:
+                        case PurchaseOrderStatus.APPROVED:
                             setStyle("-fx-background-color: #C1E1C1;");
                             break;
                         case PurchaseOrderStatus.VOID:
