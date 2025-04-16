@@ -44,6 +44,8 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -719,13 +721,13 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     }
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
-                        return;
+                        break;
                     }
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
+                        break;
                     }
 
                     break;
@@ -738,15 +740,16 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
+                        break;
                     }
 
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
+                        break;
                     }
+                    showSerialDialog();
                     break;
             }
             Platform.runLater(() -> {
@@ -801,7 +804,47 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
             String lsID = (((TextField) event.getSource()).getId());
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
+            TableView<?> currentTable = tblViewOrderDetails;
+            TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+
             switch (event.getCode()) {
+                case ENTER:
+                    CommonUtils.SetNextFocus(txtField);
+                    break;
+                case UP:
+                    switch (lsID) {
+                        case "tfBrand":
+                        case "tfReceiveQuantity":
+                            pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                            loadRecordDetail();
+                            tfOrderNo.setText("");
+                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                tfReceiveQuantity.requestFocus();
+                            } else {
+                                tfBrand.requestFocus();
+                            }
+                            event.consume();
+                            break;
+                    }
+                    break;
+                case DOWN:
+                    switch (lsID) {
+                        case "tfBrand":
+                        case "tfReceiveQuantity":
+                            pnDetail = moveToNextRow(currentTable, focusedCell);
+                            loadRecordDetail();
+                            tfOrderNo.setText("");
+                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                tfReceiveQuantity.requestFocus();
+                            } else {
+                                tfBrand.requestFocus();
+                            }
+                            event.consume();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
                 case F3:
                     switch (lsID) {
                         case "tfSearchSupplier":
@@ -879,15 +922,6 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     break;
             }
 
-            switch (event.getCode()) {
-                case ENTER:
-                    CommonUtils.SetNextFocus(txtField);
-                case DOWN:
-                    CommonUtils.SetNextFocus(txtField);
-                    break;
-                case UP:
-                    CommonUtils.SetPreviousFocus(txtField);
-            }
         } catch (GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
@@ -1617,6 +1651,50 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
         dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
     }
 
+    private <T> void initComboBoxCellDesign(ComboBox<T> comboBox) {
+        comboBox.setCellFactory(param -> new ListCell<T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                setStyle("");  // Reset to default style for non-selected items
+
+                if (empty) {
+                    setText(null);
+                    setStyle("");  // Reset style if the item is empty
+                } else {
+                    setText(item.toString());  // Display the item text using its toString method
+
+                    // Check if this item is the selected value
+                    if (item.toString().equals(comboBox.getValue().toString())) {
+                        // Apply the custom background color for the selected item in the list
+                        setStyle("-fx-background-color: #FF8201; -fx-text-fill: white;");
+                    } else {
+                        setStyle("");  // Reset to default style for non-selected items
+                    }
+                }
+            }
+        });
+
+        comboBox.setOnShowing(event -> {
+            T selectedItem = comboBox.getValue();
+            if (selectedItem != null) {
+                // Loop through each item and apply style based on selection
+                for (int i = 0; i < comboBox.getItems().size(); i++) {
+                    T item = comboBox.getItems().get(i);
+
+                    if (item.equals(selectedItem)) {
+                        // Apply the custom background color for selected item in the list
+                        comboBox.getItems().set(i, item);
+                    } else {
+                        // Reset the style for non-selected items
+                        comboBox.getItems().set(i, item);
+                    }
+                }
+            }
+        });
+
+    }
+
     public void initTextFields() {
         
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
@@ -1644,6 +1722,9 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
         tfOrderNo.setOnKeyPressed(this::txtField_KeyPressed);
         tfBrand.setOnKeyPressed(this::txtField_KeyPressed);
         tfModel.setOnKeyPressed(this::txtField_KeyPressed);
+        tfCost.setOnKeyPressed(this::txtField_KeyPressed);
+        tfReceiveQuantity.setOnKeyPressed(this::txtField_KeyPressed);
+        initComboBoxCellDesign(cmbAttachmentType);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
         // Combobox
         cmbAttachmentType.setItems(documentType);

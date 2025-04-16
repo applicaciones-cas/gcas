@@ -93,6 +93,8 @@ import java.util.stream.Collectors;
 import javafx.animation.PauseTransition;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
 
 /**
@@ -138,7 +140,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
 
-
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
 
@@ -146,9 +147,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private AnchorPane apBrowse, apButton, apMainAnchor, apMaster, apDetail, apAttachments, apAttachmentButtons;
 
     @FXML
-    private TextField  tfSearchSupplier, tfSearchReferenceNo,
+    private TextField tfSearchSupplier, tfSearchReferenceNo,
             tfTransactionNo, tfSupplier, tfTerm, tfTrucking, tfReferenceNo,
-             tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
+            tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
             tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost,
             tfOrderQuantity, tfReceiveQuantity, tfOrderNo, tfSupersede, tfAttachmentNo;
 
@@ -173,7 +174,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus,lblSource;
+    private Label lblStatus, lblSource;
 
     @FXML
     private TextArea taRemarks;
@@ -207,7 +208,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
-        
+
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
@@ -231,7 +232,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     @Override
     public void setIndustryID(String fsValue) {
         psIndustryId = fsValue;
@@ -241,7 +242,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     public void setCompanyID(String fsValue) {
         psCompanyId = fsValue;
     }
-    
+
     @Override
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
@@ -259,7 +260,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {
+                            loadRecordMaster();
+                        });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
@@ -542,13 +545,13 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    
+
                     break;
                 case "tfDiscountAmount":
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -693,7 +696,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 case "":
                     break;
             }
-            if ( lsTxtFieldID.equals("tfSearchSupplier")
+            if (lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             }
@@ -706,7 +709,47 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             String lsID = (((TextField) event.getSource()).getId());
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
+            TableView<?> currentTable = tblViewOrderDetails;
+            TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+
             switch (event.getCode()) {
+                case ENTER:
+                    CommonUtils.SetNextFocus(txtField);
+                    break;
+                case UP:
+                    switch (lsID) {
+                        case "tfBarcode":
+                        case "tfReceiveQuantity":
+                            pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                            loadRecordDetail();
+                            tfOrderNo.setText("");
+                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                tfReceiveQuantity.requestFocus();
+                            } else {
+                                tfBarcode.requestFocus();
+                            }
+                            event.consume();
+                            break;
+                    }
+                    break;
+                case DOWN:
+                    switch (lsID) {
+                        case "tfBarcode":
+                        case "tfReceiveQuantity":
+                            pnDetail = moveToNextRow(currentTable, focusedCell);
+                            loadRecordDetail();
+                            tfOrderNo.setText("");
+                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                tfReceiveQuantity.requestFocus();
+                            } else {
+                                tfBarcode.requestFocus();
+                            }
+                            event.consume();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
                 case BACK_SPACE:
                     switch (lsID) {
                         case "tfOrderNo":
@@ -830,7 +873,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
-                
+
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
@@ -1055,7 +1098,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     public void loadRecordSearch() {
         try {
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-            
+
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
@@ -1156,7 +1199,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
-            
+
             updateCaretPositions(apDetail);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1169,15 +1212,15 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     public void loadRecordMaster() {
         boolean lbDisable = poPurchaseReceivingController.getEditMode() == EditMode.UPDATE;
         if (lbDisable) {
-            
+
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
-            while ( tfSupplier.getStyleClass().contains("DisabledTextField")) {
-                
+            while (tfSupplier.getStyleClass().contains("DisabledTextField")) {
+
                 tfSupplier.getStyleClass().remove("DisabledTextField");
             }
         }
-        
+
         tfSupplier.setDisable(lbDisable);
 
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
@@ -1229,8 +1272,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            
-            
+
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -1245,7 +1287,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-            
+
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1254,7 +1296,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         }
 
     }
-    
+
     public void updateCaretPositions(AnchorPane anchorPane) {
         List<TextField> textFields = getAllTextFields(anchorPane);
         for (TextField textField : textFields) {
@@ -1374,7 +1416,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
                             details_data.add(
@@ -1541,8 +1583,52 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         dpExpiryDate.focusedProperty().addListener(datepicker_Focus);
     }
 
+    private <T> void initComboBoxCellDesign(ComboBox<T> comboBox) {
+        comboBox.setCellFactory(param -> new ListCell<T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                setStyle("");  // Reset to default style for non-selected items
+
+                if (empty) {
+                    setText(null);
+                    setStyle("");  // Reset style if the item is empty
+                } else {
+                    setText(item.toString());  // Display the item text using its toString method
+
+                    // Check if this item is the selected value
+                    if (item.toString().equals(comboBox.getValue().toString())) {
+                        // Apply the custom background color for the selected item in the list
+                        setStyle("-fx-background-color: #FF8201; -fx-text-fill: white;");
+                    } else {
+                        setStyle("");  // Reset to default style for non-selected items
+                    }
+                }
+            }
+        });
+
+        comboBox.setOnShowing(event -> {
+            T selectedItem = comboBox.getValue();
+            if (selectedItem != null) {
+                // Loop through each item and apply style based on selection
+                for (int i = 0; i < comboBox.getItems().size(); i++) {
+                    T item = comboBox.getItems().get(i);
+
+                    if (item.equals(selectedItem)) {
+                        // Apply the custom background color for selected item in the list
+                        comboBox.getItems().set(i, item);
+                    } else {
+                        // Reset the style for non-selected items
+                        comboBox.getItems().set(i, item);
+                    }
+                }
+            }
+        });
+
+    }
+
     public void initTextFields() {
-        
+
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
@@ -1560,7 +1646,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         tfCost.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
-        
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
         tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
@@ -1570,6 +1655,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         tfBarcode.setOnKeyPressed(this::txtField_KeyPressed);
         tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
         tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
+        tfCost.setOnKeyPressed(this::txtField_KeyPressed);
+        tfReceiveQuantity.setOnKeyPressed(this::txtField_KeyPressed);
+        initComboBoxCellDesign(cmbAttachmentType);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
         // Combobox
         cmbAttachmentType.setItems(documentType);
@@ -2105,14 +2193,12 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         dpReferenceDate.setValue(null);
         dpExpiryDate.setValue(null);
 
-        
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
 
         tfTransactionNo.clear();
-        
-        
+
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();
