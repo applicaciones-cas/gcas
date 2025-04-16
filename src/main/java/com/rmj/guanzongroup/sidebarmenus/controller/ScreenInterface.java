@@ -10,4 +10,6 @@ public interface ScreenInterface {
 
     void setCompanyID(String fsValue);
 
+    void setCategoryID(String fsValue);
+
 }

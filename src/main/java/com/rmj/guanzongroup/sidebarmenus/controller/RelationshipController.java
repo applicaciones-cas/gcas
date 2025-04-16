@@ -340,10 +340,13 @@ public class RelationshipController implements Initializable, ScreenInterface {
 //    }
     @Override
     public void setIndustryID(String fsValue) {
-
     }
 
     @Override
     public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 }

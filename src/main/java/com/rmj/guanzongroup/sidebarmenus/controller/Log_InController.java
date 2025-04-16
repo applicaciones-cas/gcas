@@ -4,6 +4,8 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelLog_In_Company;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelLog_In_Industry;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
@@ -13,24 +15,31 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.Logical;
+import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
@@ -45,18 +54,18 @@ public class Log_InController implements Initializable, ScreenInterface {
     private String psCompanyID = "";
 
     private LogWrapper poLogWrapper;
-    ObservableList<Industry> industryOptions = FXCollections.observableArrayList();
-    ObservableList<Company> companyOptions = FXCollections.observableArrayList();
+    ObservableList<ModelLog_In_Industry> industryOptions = FXCollections.observableArrayList();
+    ObservableList<ModelLog_In_Company> companyOptions = FXCollections.observableArrayList();
     @FXML
-    private TextField txtField01;
+    private TextField tfUsername;
     @FXML
     private Button btnSignIn;
     @FXML
     Label lblCopyright;
     @FXML
-    private TextField txtField03;
+    private TextField tfPassword;
     @FXML
-    private PasswordField txtField02;
+    private PasswordField pfPassword;
     @FXML
     private Button btnEyeIcon;
     @FXML
@@ -74,9 +83,12 @@ public class Log_InController implements Initializable, ScreenInterface {
 
     @Override
     public void setCompanyID(String fsValue) {
-        psIndustryID = fsValue;
+        psCompanyID = fsValue;
     }
 
+    @Override
+    public void setCategoryID(String fsValue) {
+    }
     /**
      * Initializes the controller class.
      */
@@ -87,12 +99,111 @@ public class Log_InController implements Initializable, ScreenInterface {
         DashboardController mainController = LoginControllerHolder.getMainController();
         mainController.triggervbox();
 
-        txtField03.textProperty().bindBidirectional(txtField02.textProperty());
+        tfPassword.textProperty().bindBidirectional(pfPassword.textProperty());
         String year = String.valueOf(Year.now().getValue());
         lblCopyright.setText("© " + year + " Guanzon Group of Companies. All Rights Reserved.");
         loadComboBoxItems();
         initComboBox();
+        autoloadRecord();
+        initTextFields();
 
+    }
+
+    EventHandler<KeyEvent> tabKeyHandler = event -> {
+        if (event.getCode() != KeyCode.TAB) {
+            return;
+        }
+
+        Node source = (Node) event.getSource();
+        String fieldId = source.getId();
+        event.consume(); // prevent default focus traversal
+
+        switch (fieldId) {
+            case "tfUsername":
+                if (pfPassword.isVisible()) {
+                    pfPassword.requestFocus();
+                } else {
+                    tfPassword.requestFocus();
+                }
+                break;
+
+            case "pfPassword":
+            case "tfPassword":
+                cmbIndustry.requestFocus();
+                break;
+
+            case "cmbIndustry":
+                cmbCompany.requestFocus();
+                break;
+
+            case "cmbCompany":
+                tfUsername.requestFocus(); // loop back to username if needed
+                break;
+        }
+    };
+
+    public void initTextFields() {
+        tfUsername.setOnKeyPressed(tabKeyHandler);
+        pfPassword.setOnKeyPressed(tabKeyHandler);
+        tfPassword.setOnKeyPressed(tabKeyHandler);
+        cmbIndustry.setOnKeyPressed(tabKeyHandler);
+        cmbCompany.setOnKeyPressed(tabKeyHandler);
+    }
+
+    public String[] getCompanyName() {
+        String[] result = new String[2];
+
+        try {
+            String lsSQL = "SELECT b.sCompnyID, c.sCompnyNm FROM branch b JOIN company c ON b.sCompnyID = c.sCompnyID ";
+            lsSQL = MiscUtil.addCondition(lsSQL, "sBranchCd = " + SQLUtil.toSQL(oApp.getBranchCode()));
+
+            ResultSet loRS = oApp.executeQuery(lsSQL);
+
+            if (loRS.next()) {
+                result[0] = loRS.getString("sCompnyID");
+                result[1] = loRS.getString("sCompnyNm");
+            }
+
+            MiscUtil.close(loRS);
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // You can also use a logger here
+        }
+
+        return result;
+    }
+
+    public String getIndustryName() {
+        String lsIndustryNm = "";
+        try {
+            String lsSQL = "SELECT sDescript FROM industry ";
+            lsSQL = MiscUtil.addCondition(lsSQL, "sIndstCdx = " + SQLUtil.toSQL(oApp.getIndustry()));
+
+            ResultSet loRS = oApp.executeQuery(lsSQL);
+
+            if (loRS.next()) {
+                lsIndustryNm = loRS.getString("sDescript");
+            }
+
+            MiscUtil.close(loRS);
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // You can also use a logger here
+        }
+
+        return lsIndustryNm;
+    }
+
+    public void autoloadRecord() {
+        // auto load based on config
+        // return company ID
+        cmbIndustry.getSelectionModel().select(getIndustryName());
+        cmbCompany.getSelectionModel().select(getCompanyName()[1]); // should select based on companyID
+
+        psCompanyID = getCompanyName()[0];
+        psIndustryID = oApp.getIndustry();
+
+        //set effect of industry disabled
+//        cmbIndustry.setDisable(true);
+//        cmbCompany.setDisable(true);
     }
 
     public void setMainController(DashboardController controller) {
@@ -104,32 +215,34 @@ public class Log_InController implements Initializable, ScreenInterface {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnSignIn":
-                if (psIndustryID.equals("") && psCompanyID.equals("")) {
-                    ShowMessageFX.Warning("Please select industry and category", "CAS", null);
-                    break;
+                JSONObject poJSON = ValidateLogin();
+                if (!"success".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                } else {
+                    DashboardController dashboardController = LoginControllerHolder.getMainController();
+                    dashboardController.triggervbox2();
+                    dashboardController.setUserIndustry(psIndustryID);
+                    dashboardController.setUserCompany(psCompanyID);
+                    dashboardController.changeUserInfo(psIndustryID);
+                    LoginControllerHolder.setLogInStatus(true);
                 }
-                DashboardController dashboardController = LoginControllerHolder.getMainController();
-                dashboardController.triggervbox2();
 
-                dashboardController.setUserIndustry(psIndustryID);
-                dashboardController.setUserCompany(psCompanyID);
-
-                LoginControllerHolder.setLogInStatus(true);
                 break;
 
             case "btnEyeIcon":
                 FontAwesomeIconView eyeIcon = new FontAwesomeIconView(FontAwesomeIcon.EYE);
-                if (txtField02.isVisible()) {
-                    txtField03.setText(txtField02.getText());
-                    txtField02.setVisible(false);
-                    txtField03.setVisible(true);
+                if (pfPassword.isVisible()) {
+                    tfPassword.setText(pfPassword.getText());
+                    pfPassword.setVisible(false);
+                    tfPassword.setVisible(true);
                     eyeIcon.setIcon(FontAwesomeIcon.EYE_SLASH);
                     eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
                     btnEyeIcon.setGraphic(eyeIcon);
                 } else {
-                    txtField02.setText(txtField03.getText());
-                    txtField03.setVisible(false);
-                    txtField02.setVisible(true);
+                    pfPassword.setText(tfPassword.getText());
+                    tfPassword.setVisible(false);
+                    pfPassword.setVisible(true);
                     eyeIcon.setIcon(FontAwesomeIcon.EYE);
                     eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
                     btnEyeIcon.setGraphic(eyeIcon);
@@ -141,7 +254,7 @@ public class Log_InController implements Initializable, ScreenInterface {
 
     }
 
-    private <T> void initComboBoxCellDesign(ComboBox<T> comboBox, Class<T> modelClass) {
+    private <T> void initComboBoxCellDesign(ComboBox<T> comboBox) {
         comboBox.setCellFactory(param -> new ListCell<T>() {
             @Override
             protected void updateItem(T item, boolean empty) {
@@ -155,13 +268,29 @@ public class Log_InController implements Initializable, ScreenInterface {
                     setText(item.toString());  // Display the item text using its toString method
 
                     // Check if this item is the selected value
-                    if (item.equals(comboBox.getValue())) {
+                    if (item.toString().equals(comboBox.getValue().toString())) {
                         // Apply the custom background color for the selected item in the list
                         setStyle("-fx-background-color: #FF8201; -fx-text-fill: white;");
                     } else {
                         setStyle("");  // Reset to default style for non-selected items
                     }
                 }
+            }
+        });
+
+        comboBox.setOnMouseClicked(event -> {
+            boolean isUsernameFilled = tfUsername.getText().trim().isEmpty();
+            if (pfPassword.isVisible()) {
+                tfPassword.setText(pfPassword.getText());
+            } else {
+                pfPassword.setText(tfPassword.getText());
+            }
+            boolean isPasswordFilled = tfPassword.getText().trim().isEmpty();
+
+            if (isUsernameFilled || isPasswordFilled) {
+                comboBox.hide();
+            } else {
+//                comboBox.show(); // Opens the dropdown
             }
         });
 
@@ -183,40 +312,44 @@ public class Log_InController implements Initializable, ScreenInterface {
             }
         });
 
-        comboBox.setEditable(true);
-        comboBox.getEditor().setEditable(false); // disables manual input
-        comboBox.getEditor().setCursor(Cursor.DEFAULT);
-
-        TextField editor = comboBox.getEditor();
-        editor.setOnMouseClicked(event -> {
-            comboBox.show();                          // always show dropdown
-        });
     }
+    EventHandler<ActionEvent> comboBoxHandler = event -> {
+        ComboBox<?> source = (ComboBox<?>) event.getSource();
+        String id = source.getId();
+
+        switch (id) {
+            case "cmbIndustry":
+            try {
+                ModelLog_In_Industry selectedIndustry = (ModelLog_In_Industry) cmbIndustry.getSelectionModel().getSelectedItem();
+                if (selectedIndustry != null) {
+                    psIndustryID = selectedIndustry.getIndustryID();
+                    System.out.println("Industry ID: " + psIndustryID);
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // Avoid silent catch
+            }
+            break;
+
+            case "cmbCompany":
+            try {
+                ModelLog_In_Company selectedCompany = (ModelLog_In_Company) cmbCompany.getSelectionModel().getSelectedItem();
+                if (selectedCompany != null) {
+                    psCompanyID = selectedCompany.getCompanyId();
+                    System.out.println("Company ID: " + psCompanyID);
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // Avoid silent catch
+            }
+            break;
+        }
+    };
 
     private void initComboBox() {
-        initComboBoxCellDesign(cmbIndustry, Industry.class);
-        initComboBoxCellDesign(cmbCompany, Company.class);
+        initComboBoxCellDesign(cmbIndustry);
+        initComboBoxCellDesign(cmbCompany);
 
-        cmbIndustry.setOnAction(event -> {
-            try {
-                Industry selectedIndustry = (Industry) cmbIndustry.getSelectionModel().getSelectedItem();
-                if (selectedIndustry != null) {
-                    psIndustryID = (selectedIndustry.getIndustryID());
-                    System.out.println("test company id: " + selectedIndustry.getIndustryID());
-                }
-            } catch (Exception e) {
-            }
-        });
-        cmbCompany.setOnAction(event -> {
-            try {
-                Company selectedCompany = (Company) cmbCompany.getSelectionModel().getSelectedItem();
-                if (selectedCompany != null) {
-                    psCompanyID = (selectedCompany.getCompanyId());
-                    System.out.println("test company id: " + selectedCompany.getCompanyId());
-                }
-            } catch (Exception e) {
-            }
-        });
+        cmbIndustry.setOnAction(comboBoxHandler);
+        cmbCompany.setOnAction(comboBoxHandler);
 
     }
 
@@ -229,12 +362,39 @@ public class Log_InController implements Initializable, ScreenInterface {
             cmbCompany.setItems(companyOptions);
 
         } catch (SQLException ex) {
-//            Logger.getLogger(SelectIndustryCompany.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private List<Company> getAllCompanies() throws SQLException {
-        List<Company> companies = new ArrayList<>();
+    public JSONObject ValidateLogin() {
+        JSONObject poJSON = new JSONObject();
+        boolean isUsernameFilled = tfUsername.getText().trim().isEmpty();
+        if (pfPassword.isVisible()) {
+            tfPassword.setText(pfPassword.getText());
+        } else {
+            pfPassword.setText(tfPassword.getText());
+        }
+        boolean isPasswordFilled = tfPassword.getText().trim().isEmpty();
+        if (!isUsernameFilled && !isPasswordFilled) {
+            poJSON.put("result", "success");
+            poJSON.put("message", "success");
+
+            if (psIndustryID.equals("") || psCompanyID.equals("")) {
+                poJSON.put("result", "error");
+                poJSON.put("message", "Please fill all the fields");
+            } else {
+                poJSON.put("result", "success");
+                poJSON.put("message", "success");
+            }
+        } else {
+            poJSON.put("result", "error");
+            poJSON.put("message", "Please fill all the fields");
+        }
+
+        return poJSON;
+    }
+
+    private List<ModelLog_In_Company> getAllCompanies() throws SQLException {
+        List<ModelLog_In_Company> companies = new ArrayList<>();
         String lsSQL = "SELECT * FROM company";
         lsSQL = MiscUtil.addCondition(lsSQL, "cRecdStat = " + SQLUtil.toSQL(Logical.YES));
         ResultSet rs = oApp.executeQuery(lsSQL);
@@ -242,15 +402,15 @@ public class Log_InController implements Initializable, ScreenInterface {
         while (rs.next()) {
             String id = rs.getString("sCompnyID");
             String name = rs.getString("sCompnyNm");
-            companies.add(new Company(id, name));
+            companies.add(new ModelLog_In_Company(id, name));
         }
 
         MiscUtil.close(rs);
         return companies;
     }
 
-    private List<Industry> getAllIndustries() throws SQLException {
-        List<Industry> industries = new ArrayList<>();
+    private List<ModelLog_In_Industry> getAllIndustries() throws SQLException {
+        List<ModelLog_In_Industry> industries = new ArrayList<>();
         String lsSQL = "SELECT * FROM industry";
         lsSQL = MiscUtil.addCondition(lsSQL, "cRecdStat = " + SQLUtil.toSQL(Logical.YES));
         ResultSet loRS = oApp.executeQuery(lsSQL);
@@ -258,60 +418,12 @@ public class Log_InController implements Initializable, ScreenInterface {
         while (loRS.next()) {
             String id = loRS.getString("sIndstCdx");
             String description = loRS.getString("sDescript");
-            industries.add(new Industry(id, description));
+            industries.add(new ModelLog_In_Industry(id, description));
         }
 
         MiscUtil.close(loRS);
         return industries;
 
-    }
-
-    class Industry {
-
-        private String industryID;
-        private String industryName;
-
-        public Industry(String industryID, String industryName) {
-            this.industryID = industryID;
-            this.industryName = industryName;
-        }
-
-        public String getIndustryID() {
-            return industryID;
-        }
-
-        public String getIndustryName() {
-            return industryName;
-        }
-
-        @Override
-        public String toString() {
-            return industryName;
-        }
-    }
-
-    class Company {
-
-        private String companyID;
-        private String companyName;
-
-        public Company(String companyID, String companyName) {
-            this.companyID = companyID;
-            this.companyName = companyName;
-        }
-
-        public String getCompanyId() {
-            return companyID;
-        }
-
-        public String getCompanyName() {
-            return companyName;
-        }
-
-        @Override
-        public String toString() {
-            return companyName;
-        }
     }
 
 }

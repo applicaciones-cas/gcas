@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,6 +68,9 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.MiscUtil;
+import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.appdriver.constant.Logical;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -1189,6 +1194,7 @@ public class DashboardController implements Initializable {
         fxObj.setGRider(oApp);
         fxObj.setIndustryID(psIndustryID);
         fxObj.setCompanyID(psCompanyID);
+        fxObj.setCategoryID(psCategoryID);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
@@ -2621,6 +2627,7 @@ public class DashboardController implements Initializable {
         fxObj.setGRider(oApp);
         fxObj.setCompanyID(psCompanyID);
         fxObj.setIndustryID(psIndustryID);
+        fxObj.setCategoryID(psCategoryID);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
@@ -2672,4 +2679,33 @@ public class DashboardController implements Initializable {
             return null;
         }
     }
+
+    private String getAllIndustries(String industryid) throws SQLException {
+        String industryname = "";
+        String lsSQL = "SELECT * FROM industry";
+        lsSQL = MiscUtil.addCondition(lsSQL, "cRecdStat = " + SQLUtil.toSQL(Logical.YES));
+        ResultSet loRS = oApp.executeQuery(lsSQL);
+
+        while (loRS.next()) {
+            String id = loRS.getString("sIndstCdx");
+            String description = loRS.getString("sDescript");
+
+            if (industryid.equals(id)) {
+                industryname = description;
+            }
+        }
+
+        MiscUtil.close(loRS);
+        return industryname;
+
+    }
+
+    public void changeUserInfo(String industryid) {
+        try {
+            AppUser.setText(oApp.getLogName() + " || " + getAllIndustries(industryid));
+        } catch (SQLException ex) {
+            Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 }

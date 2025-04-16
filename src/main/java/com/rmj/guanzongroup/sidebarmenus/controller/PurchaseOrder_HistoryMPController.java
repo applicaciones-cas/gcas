@@ -75,6 +75,7 @@ public class PurchaseOrder_HistoryMPController implements Initializable, ScreenI
     private String psIndustryID = "";
     private String psCompanyID = "";
     private String psSupplierID = "";
+    private String psCategoryID = "";
     private String psReferID = "";
     @FXML
     private AnchorPane AnchorMaster, AnchorDetails, AnchorMain, apBrowse, apButton;
@@ -117,6 +118,11 @@ public class PurchaseOrder_HistoryMPController implements Initializable, ScreenI
     @Override
     public void setCompanyID(String fsValue) {
         psCompanyID = fsValue;
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
+        psCategoryID = fsValue;
     }
 
     /**
@@ -219,7 +225,7 @@ public class PurchaseOrder_HistoryMPController implements Initializable, ScreenI
             }
             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
-
+            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal()));
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -503,26 +509,9 @@ public class PurchaseOrder_HistoryMPController implements Initializable, ScreenI
                                 ""
                         ));
                     }
-
-                    final double totalAmountFinal = grandTotalAmount;
                     Platform.runLater(() -> {
                         poDetail_data.setAll(detailsList); // Properly update list
                         tblVwOrderDetails.setItems(poDetail_data);
-                        if (totalAmountFinal <= 0.0) {
-                            tfDiscountRate.setText("0.00");
-                            tfAdvancePRate.setText("0.00");
-                            tfDiscountAmount.setText("0.00");
-                            tfDiscountAmount.setText("0.00");
-                            poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(0.0);
-                            poPurchasingController.PurchaseOrder().Master().setDiscount(0.0);
-                            poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.0);
-                            poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(0.0);
-                        }
-                        computeNetTotal(totalAmountFinal);
-                        computeTotalAmount(totalAmountFinal);
-                        poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
-                        tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
-
                     });
 
                     return detailsList;
@@ -545,28 +534,6 @@ public class PurchaseOrder_HistoryMPController implements Initializable, ScreenI
         };
 
         new Thread(task).start();
-    }
-
-    private void computeTotalAmount(double fnGrandTotal) {
-        double amount = (Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) / 100) * fnGrandTotal;
-        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(amount);
-        tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
-
-        double advpercentage = (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
-        poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(advpercentage);
-        tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
-
-    }
-
-    private void computeNetTotal(double fnGrandTotal) {
-        double discAmount = (Double.parseDouble(tfDiscountRate.getText().replace(",", "")) / 100) * fnGrandTotal;
-        poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(discAmount);
-        tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
-
-        double discPercentage = (Double.parseDouble(tfDiscountAmount.getText().replace(",", "")) / fnGrandTotal) * 100;
-        poPurchasingController.PurchaseOrder().Master().setDiscount(discPercentage);
-        tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
-        poPurchasingController.PurchaseOrder().Master().setNetTotal(fnGrandTotal - discAmount);
     }
 
     private void initTablePODetail() {
