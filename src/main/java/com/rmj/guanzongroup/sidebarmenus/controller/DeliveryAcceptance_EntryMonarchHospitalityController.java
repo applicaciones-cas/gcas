@@ -1823,9 +1823,13 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     }
 
     public <T> void highlightByKey(TableView<T> table, String key, String color, Map<String, List<String>> highlightMap) {
-        highlightMap.computeIfAbsent(key, k -> new ArrayList<>()).add(color);
-        table.refresh(); // Refresh to apply changes
-        System.out.println("Highlighted by Key: " + key + " = " + highlightMap.get(key));
+        List<String> colors = highlightMap.computeIfAbsent(key, k -> new ArrayList<>());
+        // Add the color only if it doesn't already exist for that key
+        if (!colors.contains(color)) {
+            colors.add(color);
+            System.out.println("Highlighted by Key: " + key + " = " + highlightMap.get(key));
+            table.refresh(); // Refresh to apply changes
+        }
     }
 
     public <T> void disableHighlightByKey(TableView<T> table, String key, Map<String, List<String>> highlightMap) {
