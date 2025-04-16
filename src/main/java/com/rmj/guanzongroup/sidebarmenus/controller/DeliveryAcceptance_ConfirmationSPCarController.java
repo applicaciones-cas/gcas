@@ -343,6 +343,31 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                                
+                                // Confirmation Prompt
+                                JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
+                                if ("success".equals(loJSON.get("result"))) {
+                                    if(poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)){
+                                        if(ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")){
+                                            loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
+                                            if ("success".equals((String) loJSON.get("result"))) {
+                                                ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
+                                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
+                                                highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
+                                            } else {
+                                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // Print Transaction Prompt
+                                loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
+                                if ("success".equals(loJSON.get("result"))) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
+                                        btnPrint.fire();
+                                    }
+                                }
                             }
                         } else {
                             return;
@@ -651,6 +676,17 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
+                    
+                    if(poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null 
+                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())){
+                        if(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)){
+                            ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
+                            tfReceiveQuantity.setText("0");
+                            tfReceiveQuantity.requestFocus();
+                            return;
+                        }
+                    }
+
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -711,6 +747,8 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
             String lsID = (((TextField) event.getSource()).getId());
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
+            int lnRow = pnDetail;
+            
             TableView<?> currentTable = tblViewOrderDetails;
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
 
@@ -794,8 +832,16 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                             break;
                         case "tfBarcode":
                             poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail);
+                            lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if(pnDetail != lnRow){
+                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
                                 tfBarcode.setText("");
                                 break;
                             }
@@ -811,9 +857,16 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
 
                         case "tfDescription":
                             poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail);
-
+                            lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if(pnDetail != lnRow){
+                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
                                 tfDescription.setText("");
                                 break;
                             }
@@ -1781,10 +1834,6 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         btnCancel.setVisible(lbShow1);
         btnCancel.setManaged(lbShow1);
 
-        //Ready || Update
-        btnReturn.setVisible(lbShow2);
-        btnReturn.setManaged(lbShow2);
-
         //Ready
         btnPrint.setVisible(lbShow3);
         btnPrint.setManaged(lbShow3);
@@ -1807,13 +1856,19 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
         apAttachments.setDisable(!lbShow1);
+        
+        btnReturn.setVisible(lbShow3);
+        btnReturn.setManaged(lbShow3);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
             case PurchaseOrderReceivingStatus.CONFIRMED:
                 btnConfirm.setVisible(false);
                 btnConfirm.setManaged(false);
+                btnReturn.setVisible(true);
+                btnReturn.setManaged(true);
                 break;
-            case PurchaseOrderReceivingStatus.APPROVED:
+            case PurchaseOrderReceivingStatus.POSTED:
+            case PurchaseOrderReceivingStatus.PAID:
             case PurchaseOrderReceivingStatus.VOID:
             case PurchaseOrderReceivingStatus.RETURNED:
                 btnConfirm.setVisible(false);

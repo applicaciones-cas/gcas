@@ -231,10 +231,34 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
                 case "tfIMEI1":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
+                    poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "serial02", lsValue);
+                    if("error".equals((String) poJSON.get("result"))){
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfIMEI1.setText("");
+                        tfIMEI1.requestFocus();
+                        return;
+                    }
+                    
+                    if((boolean) poJSON.get("set")){
+                        loadRecordDetail();
+                    } else {
+                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
+                    }
                     break;
                 case "tfIMEI2":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
+                    poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "serial02", lsValue);
+                    if("error".equals((String) poJSON.get("result"))){
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfIMEI2.setText("");
+                        tfIMEI2.requestFocus();
+                        return;
+                    }
+                    
+                    if((boolean) poJSON.get("set")){
+                        loadRecordDetail();
+                    } else {
+                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
+                    }
                     break;
 
             }
