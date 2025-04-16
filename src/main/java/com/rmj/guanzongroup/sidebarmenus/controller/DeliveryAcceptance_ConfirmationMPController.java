@@ -491,6 +491,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     poPurchaseReceivingController.resetMaster();
                     poPurchaseReceivingController.resetOthers();
                     poPurchaseReceivingController.Detail().clear();
+                    imageView.setImage(null);
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
                 }
@@ -500,6 +501,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
+                    loadTableAttachment();
                 }
 
                 initButton(pnEditMode);

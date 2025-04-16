@@ -476,6 +476,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                     poPurchaseReceivingController.resetMaster();
                     poPurchaseReceivingController.resetOthers();
                     poPurchaseReceivingController.Detail().clear();
+                    imageView.setImage(null);
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
                 }
@@ -485,6 +486,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
+                    loadTableAttachment();
                 }
 
                 initButton(pnEditMode);

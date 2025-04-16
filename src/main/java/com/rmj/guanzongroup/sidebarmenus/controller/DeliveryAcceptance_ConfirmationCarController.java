@@ -491,6 +491,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     poPurchaseReceivingController.resetMaster();
                     poPurchaseReceivingController.resetOthers();
                     poPurchaseReceivingController.Detail().clear();
+                    imageView.setImage(null);
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
                 }
@@ -500,6 +501,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
+                    loadTableAttachment();
                 }
 
                 initButton(pnEditMode);
