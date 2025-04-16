@@ -424,4 +424,9 @@ public class Log_InController implements Initializable, ScreenInterface {
 
     }
 
+    @Override
+    public void setCategoryID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }
