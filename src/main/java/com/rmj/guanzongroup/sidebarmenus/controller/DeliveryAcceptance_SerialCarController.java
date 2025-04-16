@@ -271,15 +271,47 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
                 case "tfEngineNo":
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
+                    poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "serial01", lsValue);
+                    if("error".equals((String) poJSON.get("result"))){
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfEngineNo.setText("");
+                        tfEngineNo.requestFocus();
+                        return;
+                    }
+                    if((boolean) poJSON.get("set")){
+                        loadRecordDetail();
+                    } else {
+                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
+                    }
                     break;
                 case "tfFrameNo":
+                    poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "serial02", lsValue);
+                    if("error".equals((String) poJSON.get("result"))){
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfFrameNo.setText("");
+                        tfFrameNo.requestFocus();
+                        return;
+                    }
                     poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
                     break;
                 case "tfCSNo":
+                    poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "csno", lsValue);
+                    if("error".equals((String) poJSON.get("result"))){
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfCSNo.setText("");
+                        tfCSNo.requestFocus();
+                        return;
+                    }
                     poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setConductionStickerNo(lsValue);
                     break;
                 case "tfPlateNo":
+                    poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "plateno", lsValue);
+                    if("error".equals((String) poJSON.get("result"))){
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfPlateNo.setText("");
+                        tfPlateNo.requestFocus();
+                        return;
+                    }
                     poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setPlateNo(lsValue);
                     break;
                 case "tfLocation":
