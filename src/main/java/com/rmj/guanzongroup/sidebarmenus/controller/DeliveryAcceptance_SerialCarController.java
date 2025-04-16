@@ -292,7 +292,11 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                         tfFrameNo.requestFocus();
                         return;
                     }
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
+                    if((boolean) poJSON.get("set")){
+                        loadRecordDetail();
+                    } else {
+                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
+                    }
                     break;
                 case "tfCSNo":
                     poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "csno", lsValue);
@@ -302,7 +306,11 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                         tfCSNo.requestFocus();
                         return;
                     }
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setConductionStickerNo(lsValue);
+                    if((boolean) poJSON.get("set")){
+                        loadRecordDetail();
+                    } else {
+                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setConductionStickerNo(lsValue);
+                    }
                     break;
                 case "tfPlateNo":
                     poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "plateno", lsValue);
@@ -312,7 +320,11 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                         tfPlateNo.requestFocus();
                         return;
                     }
-                    poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setPlateNo(lsValue);
+                    if((boolean) poJSON.get("set")){
+                        loadRecordDetail();
+                    } else {
+                        poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setPlateNo(lsValue);
+                    }
                     break;
                 case "tfLocation":
                     if (lsValue.isEmpty()) {
