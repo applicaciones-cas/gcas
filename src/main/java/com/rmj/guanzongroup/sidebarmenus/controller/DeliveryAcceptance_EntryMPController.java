@@ -782,7 +782,47 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
             int lnRow = pnDetail;
+            TableView<?> currentTable = tblViewOrderDetails;
+            TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+
             switch (event.getCode()) {
+                case ENTER:
+                    CommonUtils.SetNextFocus(txtField);
+                    break;
+                case UP:
+                    switch (lsID) {
+                        case "tfBrand":
+                        case "tfReceiveQuantity":
+                            pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                            loadRecordDetail();
+                            tfOrderNo.setText("");
+                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                tfReceiveQuantity.requestFocus();
+                            } else {
+                                tfBrand.requestFocus();
+                            }
+                            event.consume();
+                            break;
+                    }
+                    break;
+                case DOWN:
+                    switch (lsID) {
+                        case "tfBrand":
+                        case "tfReceiveQuantity":
+                            pnDetail = moveToNextRow(currentTable, focusedCell);
+                            loadRecordDetail();
+                            tfOrderNo.setText("");
+                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                tfReceiveQuantity.requestFocus();
+                            } else {
+                                tfBrand.requestFocus();
+                            }
+                            event.consume();
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
                 case BACK_SPACE:
                     switch (lsID) {
                         case "tfOrderNo":
@@ -945,6 +985,8 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
         tfOrderNo.setOnKeyPressed(this::txtField_KeyPressed);
         tfBrand.setOnKeyPressed(this::txtField_KeyPressed);
         tfModel.setOnKeyPressed(this::txtField_KeyPressed);
+        tfCost.setOnKeyPressed(this::txtField_KeyPressed);
+        tfReceiveQuantity.setOnKeyPressed(this::txtField_KeyPressed);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
 
         tfReceiveQuantity.addEventFilter(KeyEvent.KEY_PRESSED, event -> {

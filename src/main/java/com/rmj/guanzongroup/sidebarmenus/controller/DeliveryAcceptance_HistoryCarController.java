@@ -143,7 +143,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     @FXML
     private Button btnPrint, btnHistory, btnClose; //btnUpdate, btnSearch, btnSave, btnCancel, btnSerials, btnApprove, btnVoid, btnReturn
     @FXML
-    private Label lblStatus, lblSource; 
+    private Label lblStatus, lblSource;
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
@@ -236,7 +236,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     public void setCompanyID(String fsValue) {
         psCompanyId = fsValue;
     }
-    
+
     @Override
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
@@ -931,11 +931,11 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
                             String lsBrand = "";
-                            if(poPurchaseReceivingController.Detail(lnCtr).Brand().getDescription() != null){
+                            if (poPurchaseReceivingController.Detail(lnCtr).Brand().getDescription() != null) {
                                 lsBrand = poPurchaseReceivingController.Detail(lnCtr).Brand().getDescription();
                             }
                             details_data.add(

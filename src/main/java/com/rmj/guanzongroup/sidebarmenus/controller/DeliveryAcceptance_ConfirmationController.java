@@ -1512,23 +1512,23 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         }
                         if (pnAttachment < 0 || pnAttachment
                                 >= attachment_data.size()) {
-                            if (!attachment_data.isEmpty()) {
-                                /* FOCUS ON FIRST ROW */
-                                tblAttachments.getSelectionModel().select(0);
-                                tblAttachments.getFocusModel().focus(0);
-                                pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
-                                loadRecordAttachment(true);
-                            }
+                            /* FOCUS ON FIRST ROW */
+                            tblAttachments.getSelectionModel().select(0);
+                            tblAttachments.getFocusModel().focus(0);
+                            pnAttachment = 0;
+
+                            loadRecordAttachment(true);
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
                             tblAttachments.getSelectionModel().select(pnAttachment);
                             tblAttachments.getFocusModel().focus(pnAttachment);
+                            pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
                             loadRecordAttachment(true);
                         }
                     } catch (Exception e) {
 
                     }
-
+ 
                 });
 
                 return null;
