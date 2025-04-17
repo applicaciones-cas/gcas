@@ -629,13 +629,25 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).setModifiedDate(poApp.getServerDate());
                     }
 
+                    
+
                     // Save Transaction
-                    if (!"success".equals((loJSON = poPurchasingController.PurchaseOrder().SaveTransaction()).get("result"))) {
+                    loJSON = poPurchasingController.PurchaseOrder().isDetailHasZeroQty();
+                    if (!"success".equals((String)loJSON.get("result"))) {
+                        if(!ShowMessageFX.YesNo((String) loJSON.get("message"), psFormName, null)){
+                            pnTblPODetailRow = (int) loJSON.get("tableRow");
+                            loadTablePODetail();
+                            loadDetail();
+                            initDetailFocus();
+                        return;
+                        }
+                    }
+                    loJSON = poPurchasingController.PurchaseOrder().SaveTransaction();
+                    if (!"success".equals((String)loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         loadTablePODetail();
                         return;
                     }
-
                     ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
 

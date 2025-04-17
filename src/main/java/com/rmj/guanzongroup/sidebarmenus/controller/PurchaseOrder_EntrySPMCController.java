@@ -573,16 +573,26 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).setOldPrice(poPurchasingController.PurchaseOrder().Detail(lnCntr).Inventory().getCost());
                         poPurchasingController.PurchaseOrder().Detail(lnCntr).setModifiedDate(poApp.getServerDate());
                     }
+
                     // Save Transaction
-                    if (!"success".equals((loJSON = poPurchasingController.PurchaseOrder().SaveTransaction()).get("result"))) {
+                    loJSON = poPurchasingController.PurchaseOrder().isDetailHasZeroQty();
+                    if (!"success".equals((String)loJSON.get("result"))) {
+                        if(!ShowMessageFX.YesNo((String) loJSON.get("message"), psFormName, null)){
+                            pnTblPODetailRow = (int) loJSON.get("tableRow");
+                            loadTablePODetail();
+                            loadDetail();
+                            initDetailFocus();
+                        return;
+                        }
+                    }
+                    loJSON = poPurchasingController.PurchaseOrder().SaveTransaction();
+                    if (!"success".equals((String)loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                         loadTablePODetail();
                         return;
                     }
-
                     ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                     loJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-
                     // Confirmation Prompt
                     if ("success".equals(loJSON.get("result")) && poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {

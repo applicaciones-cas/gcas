@@ -355,12 +355,32 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         }
                     }
 
-                    if (!"success".equals((loJSON = poPurchasingController.PurchaseOrder().SaveTransaction()).get("result"))) {
+//                    if (!"success".equals((loJSON = poPurchasingController.PurchaseOrder().SaveTransaction()).get("result"))) {
+//                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+//                        return;
+//                    }
+//                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+//                    
+                    // Save Transaction
+                    loJSON = poPurchasingController.PurchaseOrder().isDetailHasZeroQty();
+                    if (!"success".equals((String)loJSON.get("result"))) {
+                        if(!ShowMessageFX.YesNo((String) loJSON.get("message"), psFormName, null)){
+                            pnTblPODetailRow = (int) loJSON.get("tableRow");
+                            loadTablePODetail();
+                            loadDetail();
+                            initDetailFocus();
+                        return;
+                        }
+                    }
+                    loJSON = poPurchasingController.PurchaseOrder().SaveTransaction();
+                    if (!"success".equals((String)loJSON.get("result"))) {
                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                        loadTablePODetail();
                         return;
                     }
                     ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-
+                    
+                    
                     if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
                         if ("success".equals((loJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved")).get("result"))) {
