@@ -220,6 +220,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
+                        poPurchaseReceivingController.setTransactionStatus(PurchaseOrderReceivingStatus.RETURNED+ "" +PurchaseOrderReceivingStatus.OPEN);
                         poJSON = poPurchaseReceivingController.searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -549,6 +550,17 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
+                    
+                    if(poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null 
+                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())){
+                        if(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)){
+                            ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
+                            tfReceiveQuantity.setText("0");
+                            tfReceiveQuantity.requestFocus();
+                            return;
+                        }
+                    }
+                    
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -1211,11 +1223,14 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
-                case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVED");
+//                case PurchaseOrderReceivingStatus.APPROVED:
+//                    lblStatus.setText("APPROVED");
+//                    break;
+                case PurchaseOrderReceivingStatus.POSTED:
+                    lblStatus.setText("POSTED");
                     break;
-                case PurchaseOrderReceivingStatus.CANCELLED:
-                    lblStatus.setText("CANCELLED");
+                case PurchaseOrderReceivingStatus.PAID:
+                    lblStatus.setText("PAID");
                     break;
                 case PurchaseOrderReceivingStatus.CONFIRMED:
                     lblStatus.setText("CONFIRMED");
@@ -1228,6 +1243,9 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOID");
+                    break;
+                case PurchaseOrderReceivingStatus.CANCELLED:
+                    lblStatus.setText("CANCELLED");
                     break;
                 default:
                     lblStatus.setText("UNKNOWN");
@@ -1567,7 +1585,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 poJSON = new JSONObject();
                 poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderList(pnMain).getTransactionNo());
-                if ("error".equals((String) poJSON.get("message"))) {
+                if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 } else {
@@ -1763,10 +1781,17 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
         apDetail.setDisable(!lbShow);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
-            case PurchaseOrderReceivingStatus.APPROVED:
-            case PurchaseOrderReceivingStatus.VOID:
+            case PurchaseOrderReceivingStatus.POSTED:
+            case PurchaseOrderReceivingStatus.PAID:
                 btnUpdate.setVisible(false);
                 btnUpdate.setManaged(false);
+                break;
+            case PurchaseOrderReceivingStatus.VOID:
+            case PurchaseOrderReceivingStatus.CANCELLED:
+                btnUpdate.setVisible(false);
+                btnUpdate.setManaged(false);
+                btnPrint.setVisible(false);
+                btnPrint.setManaged(false);
                 break;
         }
     }

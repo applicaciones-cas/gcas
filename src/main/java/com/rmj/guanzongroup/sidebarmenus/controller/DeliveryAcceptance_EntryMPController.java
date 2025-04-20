@@ -308,6 +308,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
+                        poPurchaseReceivingController.setTransactionStatus(PurchaseOrderReceivingStatus.RETURNED+ "" +PurchaseOrderReceivingStatus.OPEN);
                         poJSON = poPurchaseReceivingController.searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -650,6 +651,16 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
+                    
+                    if(poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null 
+                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())){
+                        if(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)){
+                            ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
+                            tfReceiveQuantity.setText("0");
+                            tfReceiveQuantity.requestFocus();
+                            return;
+                        }
+                    }
 
                     poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -663,6 +674,12 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
+                    }
+                    
+                    if((Integer.valueOf(lsValue) > 0 
+                            && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null 
+                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))){
+                        showSerialDialog();
                     }
                     break;
             }
@@ -1301,11 +1318,14 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
         try {
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
-                case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVED");
+//                case PurchaseOrderReceivingStatus.APPROVED:
+//                    lblStatus.setText("APPROVED");
+//                    break;
+                case PurchaseOrderReceivingStatus.POSTED:
+                    lblStatus.setText("POSTED");
                     break;
-                case PurchaseOrderReceivingStatus.CANCELLED:
-                    lblStatus.setText("CANCELLED");
+                case PurchaseOrderReceivingStatus.PAID:
+                    lblStatus.setText("PAID");
                     break;
                 case PurchaseOrderReceivingStatus.CONFIRMED:
                     lblStatus.setText("CONFIRMED");
@@ -1318,6 +1338,9 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOID");
+                    break;
+                case PurchaseOrderReceivingStatus.CANCELLED:
+                    lblStatus.setText("CANCELLED");
                     break;
                 default:
                     lblStatus.setText("UNKNOWN");
@@ -1633,7 +1656,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 poJSON = new JSONObject();
                 poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderList(pnMain).getTransactionNo());
-                if ("error".equals((String) poJSON.get("message"))) {
+                if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 } else {
@@ -1810,26 +1833,22 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
     private void initButton(int fnValue) {
         // Manage visibility and managed state of other buttons
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-//        btnRetrieve.setVisible(!lbShow);// Requires no change to state
-//        btnRetrieve.setManaged(!lbShow);
-        btnBrowse.setVisible(!lbShow);
-        btnBrowse.setManaged(!lbShow);
-
+        boolean lbShow2 = fnValue == EditMode.READY;
+        boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
+        
+        // Manage visibility and managed state of other buttons
         btnNew.setVisible(!lbShow);
         btnNew.setManaged(!lbShow);
-        btnSerials.setVisible(lbShow);
-        btnSerials.setManaged(lbShow);
         btnSearch.setVisible(lbShow);
         btnSearch.setManaged(lbShow);
         btnSave.setVisible(lbShow);
         btnSave.setManaged(lbShow);
         btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
-
-        boolean lbShow2 = fnValue == EditMode.READY;
-        btnClose.setVisible(lbShow2);
-        btnClose.setManaged(lbShow2);
-
+        
+        btnSerials.setVisible(lbShow);
+        btnSerials.setManaged(lbShow);
+        
         btnUpdate.setVisible(lbShow2);
         btnUpdate.setManaged(lbShow2);
         btnPrint.setVisible(lbShow2);
@@ -1837,8 +1856,8 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
         btnHistory.setVisible(lbShow2);
         btnHistory.setManaged(lbShow2);
 
-        //Only Show close button during ready / unknown editmode
-        boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
+        btnBrowse.setVisible(lbShow3);
+        btnBrowse.setManaged(lbShow3);
         btnClose.setVisible(lbShow3);
         btnClose.setManaged(lbShow3);
 
@@ -1853,6 +1872,21 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
         tfDiscountAmount.setDisable(!lbShow);
 
         apDetail.setDisable(!lbShow);
+        
+        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
+            case PurchaseOrderReceivingStatus.POSTED:
+            case PurchaseOrderReceivingStatus.PAID:
+                btnUpdate.setVisible(false);
+                btnUpdate.setManaged(false);
+                break;
+            case PurchaseOrderReceivingStatus.VOID:
+            case PurchaseOrderReceivingStatus.CANCELLED:
+                btnUpdate.setVisible(false);
+                btnUpdate.setManaged(false);
+                btnPrint.setVisible(false);
+                btnPrint.setManaged(false);
+                break;
+        }
 
     }
 
