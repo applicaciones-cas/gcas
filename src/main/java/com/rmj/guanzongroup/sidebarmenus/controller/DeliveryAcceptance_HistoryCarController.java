@@ -693,7 +693,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     public void loadRecordAttachment(boolean lbloadImage) {
         try {
             if (pnAttachment >= 0) {
-                tfAttachmentNo.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getSourceNo());
+                tfAttachmentNo.setText(String.valueOf(pnAttachment+1));
                 String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 if (lsAttachmentType.equals("")) {
                     poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
@@ -786,11 +786,14 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         try {
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
-                case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVED");
+//                case PurchaseOrderReceivingStatus.APPROVED:
+//                    lblStatus.setText("APPROVED");
+//                    break;
+                case PurchaseOrderReceivingStatus.POSTED:
+                    lblStatus.setText("POSTED");
                     break;
-                case PurchaseOrderReceivingStatus.CANCELLED:
-                    lblStatus.setText("CANCELLED");
+                case PurchaseOrderReceivingStatus.PAID:
+                    lblStatus.setText("PAID");
                     break;
                 case PurchaseOrderReceivingStatus.CONFIRMED:
                     lblStatus.setText("CONFIRMED");
@@ -803,6 +806,9 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOID");
+                    break;
+                case PurchaseOrderReceivingStatus.CANCELLED:
+                    lblStatus.setText("CANCELLED");
                     break;
                 default:
                     lblStatus.setText("UNKNOWN");
@@ -1266,6 +1272,14 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
         apAttachments.setDisable(!lbShow1);
+        
+        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
+            case PurchaseOrderReceivingStatus.VOID:
+            case PurchaseOrderReceivingStatus.CANCELLED:
+                btnPrint.setVisible(false);
+                btnPrint.setManaged(false);
+                break;
+        }
 
     }
 
