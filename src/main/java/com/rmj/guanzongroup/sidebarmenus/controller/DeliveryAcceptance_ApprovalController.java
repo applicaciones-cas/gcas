@@ -1164,9 +1164,9 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         try {
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
-                case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVED");
-                    break;
+//                case PurchaseOrderReceivingStatus.APPROVED:
+//                    lblStatus.setText("APPROVED");
+//                    break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");
                     break;
@@ -1709,7 +1709,7 @@ public class DeliveryAcceptance_ApprovalController implements Initializable, Scr
         apAttachments.setDisable(!lbShow1);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
-            case PurchaseOrderReceivingStatus.APPROVED:
+//            case PurchaseOrderReceivingStatus.APPROVED:
             case PurchaseOrderReceivingStatus.VOID:
             case PurchaseOrderReceivingStatus.RETURNED:
                 btnApprove.setVisible(false);

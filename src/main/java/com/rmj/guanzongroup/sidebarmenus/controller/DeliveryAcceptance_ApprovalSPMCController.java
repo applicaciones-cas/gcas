@@ -1159,9 +1159,9 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
         try {
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
-                case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVED");
-                    break;
+//                case PurchaseOrderReceivingStatus.APPROVED:
+//                    lblStatus.setText("APPROVED");
+//                    break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");
                     break;
@@ -1703,7 +1703,7 @@ public class DeliveryAcceptance_ApprovalSPMCController implements Initializable,
         apAttachments.setDisable(!lbShow1);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
-            case PurchaseOrderReceivingStatus.APPROVED:
+//            case PurchaseOrderReceivingStatus.APPROVED:
             case PurchaseOrderReceivingStatus.VOID:
             case PurchaseOrderReceivingStatus.RETURNED:
                 btnApprove.setVisible(false);
