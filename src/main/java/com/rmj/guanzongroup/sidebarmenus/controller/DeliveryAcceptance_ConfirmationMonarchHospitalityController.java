@@ -1159,7 +1159,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     public void loadRecordAttachment(boolean lbloadImage) {
         try {
             if (pnAttachment >= 0) {
-                tfAttachmentNo.setText(poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getSourceNo());
+                tfAttachmentNo.setText(String.valueOf(pnAttachment+1));
                 String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 if (lsAttachmentType.equals("")) {
                     poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
@@ -1265,11 +1265,14 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         try {
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
-                case PurchaseOrderReceivingStatus.APPROVED:
-                    lblStatus.setText("APPROVED");
+//                case PurchaseOrderReceivingStatus.APPROVED:
+//                    lblStatus.setText("APPROVED");
+//                    break;
+                case PurchaseOrderReceivingStatus.POSTED:
+                    lblStatus.setText("POSTED");
                     break;
-                case PurchaseOrderReceivingStatus.CANCELLED:
-                    lblStatus.setText("CANCELLED");
+                case PurchaseOrderReceivingStatus.PAID:
+                    lblStatus.setText("PAID");
                     break;
                 case PurchaseOrderReceivingStatus.CONFIRMED:
                     lblStatus.setText("CONFIRMED");
@@ -1282,6 +1285,9 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOID");
+                    break;
+                case PurchaseOrderReceivingStatus.CANCELLED:
+                    lblStatus.setText("CANCELLED");
                     break;
                 default:
                     lblStatus.setText("UNKNOWN");
@@ -1865,19 +1871,20 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         apDetail.setDisable(!lbShow1);
         apAttachments.setDisable(!lbShow1);
         
-        btnReturn.setVisible(lbShow3);
-        btnReturn.setManaged(lbShow3);
-
+        btnReturn.setVisible(false);
+        btnReturn.setManaged(false);
+        
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
             case PurchaseOrderReceivingStatus.CONFIRMED:
                 btnConfirm.setVisible(false);
                 btnConfirm.setManaged(false);
-                btnReturn.setVisible(true);
-                btnReturn.setManaged(true);
+                btnReturn.setVisible(lbShow3);
+                btnReturn.setManaged(lbShow3);
                 break;
             case PurchaseOrderReceivingStatus.POSTED:
             case PurchaseOrderReceivingStatus.PAID:
             case PurchaseOrderReceivingStatus.VOID:
+            case PurchaseOrderReceivingStatus.CANCELLED:
             case PurchaseOrderReceivingStatus.RETURNED:
                 btnConfirm.setVisible(false);
                 btnConfirm.setManaged(false);
