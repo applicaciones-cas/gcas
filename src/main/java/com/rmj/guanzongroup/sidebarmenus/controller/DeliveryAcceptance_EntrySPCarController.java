@@ -700,15 +700,24 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReceiveQuantity":
-                            pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                            loadRecordDetail();
-                            tfOrderNo.setText("");
-                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            apDetail.requestFocus();
+                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
                                 tfReceiveQuantity.requestFocus();
                             } else {
-                                tfBarcode.requestFocus();
+                                pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                                loadRecordDetail();
+                                tfOrderNo.setText("");
+                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                    tfReceiveQuantity.requestFocus();
+                                } else {
+                                    tfBarcode.requestFocus();
+                                }
+                                event.consume();
                             }
-                            event.consume();
                             break;
                     }
                     break;
@@ -716,15 +725,24 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReceiveQuantity":
-                            pnDetail = moveToNextRow(currentTable, focusedCell);
-                            loadRecordDetail();
-                            tfOrderNo.setText("");
-                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            apDetail.requestFocus();
+                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
                                 tfReceiveQuantity.requestFocus();
                             } else {
-                                tfBarcode.requestFocus();
+                                pnDetail = moveToNextRow(currentTable, focusedCell);
+                                loadRecordDetail();
+                                tfOrderNo.setText("");
+                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                    tfReceiveQuantity.requestFocus();
+                                } else {
+                                    tfBarcode.requestFocus();
+                                }
+                                event.consume();
                             }
-                            event.consume();
                             break;
                         default:
                             break;

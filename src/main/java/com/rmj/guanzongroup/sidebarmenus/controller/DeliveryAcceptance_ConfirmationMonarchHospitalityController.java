@@ -753,7 +753,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     break;
                 case UP:
                     switch (lsID) {
-                        case "tfBrand":
+                        case "tfBarcode":
                         case "tfReceiveQuantity":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
@@ -778,7 +778,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     break;
                 case DOWN:
                     switch (lsID) {
-                        case "tfBrand":
+                        case "tfBarcode":
                         case "tfReceiveQuantity":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();

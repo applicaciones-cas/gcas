@@ -752,7 +752,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                     break;
                 case UP:
                     switch (lsID) {
-                        case "tfBrand":
+                        case "tfBarcode":
                         case "tfReceiveQuantity":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
@@ -777,7 +777,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                     break;
                 case DOWN:
                     switch (lsID) {
-                        case "tfBrand":
+                        case "tfBarcode":
                         case "tfReceiveQuantity":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();

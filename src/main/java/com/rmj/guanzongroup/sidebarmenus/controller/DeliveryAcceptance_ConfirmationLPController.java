@@ -754,7 +754,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                     break;
                 case UP:
                     switch (lsID) {
-                        case "tfBrand":
+                        case "tfBarcode":
                         case "tfReceiveQuantity":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
@@ -779,7 +779,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                     break;
                 case DOWN:
                     switch (lsID) {
-                        case "tfBrand":
+                        case "tfBarcode":
                         case "tfReceiveQuantity":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
