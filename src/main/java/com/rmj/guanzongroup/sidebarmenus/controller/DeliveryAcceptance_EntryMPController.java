@@ -1334,12 +1334,12 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
 
         tfSupplier.setDisable(lbDisable);
 
-        boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
-        if (lbIsReprint) {
-            btnPrint.setText("Reprint");
-        } else {
-            btnPrint.setText("Print");
-        }
+//        boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
+//        if (lbIsReprint) {
+//            btnPrint.setText("Reprint");
+//        } else {
+//            btnPrint.setText("Print");
+//        }
 
         try {
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();

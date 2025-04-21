@@ -776,7 +776,11 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
 
     public void loadRecordMaster() {
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
-        if (lbIsReprint) {
+        if (lbIsReprint && (
+                PurchaseOrderReceivingStatus.CONFIRMED.equals(poPurchaseReceivingController.Master().getTransactionStatus())
+                || PurchaseOrderReceivingStatus.PAID.equals(poPurchaseReceivingController.Master().getTransactionStatus())
+                || PurchaseOrderReceivingStatus.POSTED.equals(poPurchaseReceivingController.Master().getTransactionStatus())
+                )) {
             btnPrint.setText("Reprint");
         } else {
             btnPrint.setText("Print");
