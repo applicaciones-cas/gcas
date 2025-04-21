@@ -1030,15 +1030,6 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                     break;
             }
 
-            switch (event.getCode()) {
-                case ENTER:
-                    CommonUtils.SetNextFocus(txtField);
-                case DOWN:
-                    CommonUtils.SetNextFocus(txtField);
-                    break;
-                case UP:
-                    CommonUtils.SetPreviousFocus(txtField);
-            }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }

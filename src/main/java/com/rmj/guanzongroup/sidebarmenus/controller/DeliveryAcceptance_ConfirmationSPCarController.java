@@ -1691,6 +1691,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         tfBarcode.setOnKeyPressed(this::txtField_KeyPressed);
         tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
         tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
+        tfModel.setOnKeyPressed(this::txtField_KeyPressed);
         tfCost.setOnKeyPressed(this::txtField_KeyPressed);
         tfReceiveQuantity.setOnKeyPressed(this::txtField_KeyPressed);
         initComboBoxCellDesign(cmbAttachmentType);

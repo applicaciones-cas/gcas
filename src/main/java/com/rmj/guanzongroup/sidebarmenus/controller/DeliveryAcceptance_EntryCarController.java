@@ -1028,16 +1028,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                 default:
                     break;
             }
-
-            switch (event.getCode()) {
-                case ENTER:
-                    CommonUtils.SetNextFocus(txtField);
-                case DOWN:
-                    CommonUtils.SetNextFocus(txtField);
-                    break;
-                case UP:
-                    CommonUtils.SetPreviousFocus(txtField);
-            }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }

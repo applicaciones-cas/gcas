@@ -990,16 +990,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                 default:
                     break;
             }
-
-            switch (event.getCode()) {
-                case ENTER:
-                    CommonUtils.SetNextFocus(txtField);
-                case DOWN:
-                    CommonUtils.SetNextFocus(txtField);
-                    break;
-                case UP:
-                    CommonUtils.SetPreviousFocus(txtField);
-            }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -1032,12 +1022,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
         tfReceiveQuantity.setOnKeyPressed(this::txtField_KeyPressed);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
 
-        tfReceiveQuantity.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
-                // your logic here
-                event.consume();
-            }
-        });
     }
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {

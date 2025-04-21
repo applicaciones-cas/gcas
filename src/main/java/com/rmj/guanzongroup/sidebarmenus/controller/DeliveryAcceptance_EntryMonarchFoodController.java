@@ -922,16 +922,6 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 default:
                     break;
             }
-
-            switch (event.getCode()) {
-                case ENTER:
-                    CommonUtils.SetNextFocus(txtField);
-                case DOWN:
-                    CommonUtils.SetNextFocus(txtField);
-                    break;
-                case UP:
-                    CommonUtils.SetPreviousFocus(txtField);
-            }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -960,6 +950,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         tfBarcode.setOnKeyPressed(this::txtField_KeyPressed);
         tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
         tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
+        tfModel.setOnKeyPressed(this::txtField_KeyPressed);
         tfCost.setOnKeyPressed(this::txtField_KeyPressed);
         tfReceiveQuantity.setOnKeyPressed(this::txtField_KeyPressed);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
