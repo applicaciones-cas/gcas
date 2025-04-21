@@ -267,12 +267,11 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 switch (lsButton) {
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
-                            loadRecordMaster();
+                            loadTableDetailFromMain();
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
-                        loadRecordMaster();
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();

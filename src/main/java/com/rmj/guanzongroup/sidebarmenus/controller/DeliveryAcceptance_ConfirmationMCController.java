@@ -265,11 +265,12 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord(() -> {loadRecordMaster();});
+                        poJSON = poPurchaseReceivingController.printRecord(() -> {
+                            loadTableDetailFromMain();
+                        });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
-                        loadRecordMaster();
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
