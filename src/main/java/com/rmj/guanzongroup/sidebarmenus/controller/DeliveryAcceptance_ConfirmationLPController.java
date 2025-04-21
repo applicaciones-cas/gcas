@@ -117,6 +117,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
+    private boolean pbEntered = false;
 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
@@ -1170,7 +1171,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
 
     public void loadRecordAttachment(boolean lbloadImage) {
         try {
-            if (pnAttachment >= 0) {
+            if (attachment_data.size() > 0) {
                 tfAttachmentNo.setText(String.valueOf(pnAttachment+1));
                 String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 if (lsAttachmentType.equals("")) {

@@ -122,6 +122,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
+    private boolean pbEntered = false;
 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
@@ -358,12 +359,12 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                
+
                                 // Confirmation Prompt
                                 JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if(poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)){
-                                        if(ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")){
+                                    if (poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
                                             loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
@@ -375,7 +376,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                                         }
                                     }
                                 }
-                                
+
                                 // Print Transaction Prompt
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
@@ -773,10 +774,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    
-                    if(poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null 
-                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())){
-                        if(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)){
+
+                    if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
+                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
+                        if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
                             tfReceiveQuantity.setText("0");
                             tfReceiveQuantity.requestFocus();
@@ -790,6 +791,8 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
+                    int lnNewVal = Integer.valueOf(lsValue);
+                    int lnOldVal = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
 
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -798,10 +801,13 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         break;
                     }
                     
-                    if((Integer.valueOf(lsValue) > 0 
-                            && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null 
-                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))){
-                        showSerialDialog();
+                    if (lnNewVal != lnOldVal || pbEntered) {
+                        if ((Integer.valueOf(lsValue) > 0
+                                && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                            showSerialDialog();
+                            pbEntered = false;
+                        }
                     }
                     break;
             }
@@ -861,20 +867,30 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             switch (event.getCode()) {
                 case ENTER:
                     CommonUtils.SetNextFocus(txtField);
+                    pbEntered = true;
                     break;
                 case UP:
                     switch (lsID) {
                         case "tfBrand":
                         case "tfReceiveQuantity":
-                            pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                            loadRecordDetail();
-                            tfOrderNo.setText("");
-                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            apDetail.requestFocus();
+                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
                                 tfReceiveQuantity.requestFocus();
                             } else {
-                                tfBrand.requestFocus();
+                                pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                                loadRecordDetail();
+                                tfOrderNo.setText("");
+                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                    tfReceiveQuantity.requestFocus();
+                                } else {
+                                    tfBrand.requestFocus();
+                                }
+                                event.consume();
                             }
-                            event.consume();
                             break;
                     }
                     break;
@@ -882,15 +898,24 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     switch (lsID) {
                         case "tfBrand":
                         case "tfReceiveQuantity":
-                            pnDetail = moveToNextRow(currentTable, focusedCell);
-                            loadRecordDetail();
-                            tfOrderNo.setText("");
-                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            apDetail.requestFocus();
+                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
                                 tfReceiveQuantity.requestFocus();
                             } else {
-                                tfBrand.requestFocus();
+                                pnDetail = moveToNextRow(currentTable, focusedCell);
+                                loadRecordDetail();
+                                tfOrderNo.setText("");
+                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                    tfReceiveQuantity.requestFocus();
+                                } else {
+                                    tfBrand.requestFocus();
+                                }
+                                event.consume();
                             }
-                            event.consume();
                             break;
                         default:
                             break;
@@ -968,7 +993,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if(pnDetail != lnRow){
+                                if (pnDetail != lnRow) {
                                     poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
@@ -1242,8 +1267,8 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
 
     public void loadRecordAttachment(boolean lbloadImage) {
         try {
-            if (pnAttachment >= 0) {
-                tfAttachmentNo.setText(String.valueOf(pnAttachment+1));
+            if (attachment_data.size() > 0) {
+                tfAttachmentNo.setText(String.valueOf(pnAttachment + 1));
                 String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 if (lsAttachmentType.equals("")) {
                     poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
@@ -2020,7 +2045,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
         apAttachments.setDisable(!lbShow1);
-        
+
         btnReturn.setVisible(false);
         btnReturn.setManaged(false);
 

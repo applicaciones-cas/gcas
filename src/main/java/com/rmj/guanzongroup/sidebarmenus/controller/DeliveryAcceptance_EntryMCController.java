@@ -108,6 +108,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
+    private boolean pbEntered = false;
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
@@ -193,7 +194,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             poPurchaseReceivingController.setCompanyId(psCompanyId);
             poPurchaseReceivingController.setCategoryId(psCategoryId);
             loadRecordSearch();
-            
+
             btnNew.fire();
         });
     }
@@ -307,7 +308,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poPurchaseReceivingController.setTransactionStatus(PurchaseOrderReceivingStatus.RETURNED+ "" +PurchaseOrderReceivingStatus.OPEN);
+                        poPurchaseReceivingController.setTransactionStatus(PurchaseOrderReceivingStatus.RETURNED + "" + PurchaseOrderReceivingStatus.OPEN);
                         poJSON = poPurchaseReceivingController.searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -352,7 +353,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        
+
                         poPurchaseReceivingController.initFields();
 
                         if (!psCompanyId.isEmpty()) {
@@ -462,12 +463,12 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                                 //get last retrieved Company and Supplier
 //                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                                
+
                                 // Confirmation Prompt
                                 JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if(poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)){
-                                        if(ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")){
+                                    if (poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
                                             loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
@@ -475,7 +476,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                                         }
                                     }
                                 }
-                                
+
                                 // Print Transaction Prompt
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
@@ -483,7 +484,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                                         btnPrint.fire();
                                     }
                                 }
-                                
+
                                 //Call new transaction
                                 showRetainedHighlight(true);
                                 btnNew.fire();
@@ -649,17 +650,17 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    
-                    if(poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null 
-                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())){
-                        if(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)){
+
+                    if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
+                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
+                        if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
                             tfReceiveQuantity.setText("0");
                             tfReceiveQuantity.requestFocus();
                             return;
                         }
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -667,17 +668,23 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         return;
                     }
 
+                    int lnNewVal = Integer.valueOf(lsValue);
+                    int lnOldVal = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
+                        break;
                     }
                     
-                    if((Integer.valueOf(lsValue) > 0 
-                            && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null 
-                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))){
-                        showSerialDialog();
+                    if (lnNewVal != lnOldVal || pbEntered) {
+                        if ((Integer.valueOf(lsValue) > 0
+                                && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                            showSerialDialog();
+                            pbEntered = false;
+                        }
                     }
                     break;
             }
@@ -803,20 +810,30 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             switch (event.getCode()) {
                 case ENTER:
                     CommonUtils.SetNextFocus(txtField);
+                    pbEntered = true;
                     break;
                 case UP:
                     switch (lsID) {
                         case "tfBrand":
                         case "tfReceiveQuantity":
-                            pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                            loadRecordDetail();
-                            tfOrderNo.setText("");
-                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            apDetail.requestFocus();
+                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
                                 tfReceiveQuantity.requestFocus();
                             } else {
-                                tfBrand.requestFocus();
+                                pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                                loadRecordDetail();
+                                tfOrderNo.setText("");
+                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                    tfReceiveQuantity.requestFocus();
+                                } else {
+                                    tfBrand.requestFocus();
+                                }
+                                event.consume();
                             }
-                            event.consume();
                             break;
                     }
                     break;
@@ -824,15 +841,24 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                     switch (lsID) {
                         case "tfBrand":
                         case "tfReceiveQuantity":
-                            pnDetail = moveToNextRow(currentTable, focusedCell);
-                            loadRecordDetail();
-                            tfOrderNo.setText("");
-                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            apDetail.requestFocus();
+                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
                                 tfReceiveQuantity.requestFocus();
                             } else {
-                                tfBrand.requestFocus();
+                                pnDetail = moveToNextRow(currentTable, focusedCell);
+                                loadRecordDetail();
+                                tfOrderNo.setText("");
+                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                    tfReceiveQuantity.requestFocus();
+                                } else {
+                                    tfBrand.requestFocus();
+                                }
+                                event.consume();
                             }
-                            event.consume();
                             break;
                         default:
                             break;
@@ -979,7 +1005,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if(pnDetail != lnRow){
+                                if (pnDetail != lnRow) {
                                     poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
@@ -1870,7 +1896,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
-        
+
         // Manage visibility and managed state of other buttons
         btnNew.setVisible(!lbShow);
         btnNew.setManaged(!lbShow);
@@ -1880,10 +1906,10 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         btnSave.setManaged(lbShow);
         btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
-        
+
         btnSerials.setVisible(lbShow);
         btnSerials.setManaged(lbShow);
-        
+
         btnUpdate.setVisible(lbShow2);
         btnUpdate.setManaged(lbShow2);
         btnPrint.setVisible(lbShow2);
@@ -1907,7 +1933,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         tfDiscountAmount.setDisable(!lbShow);
 
         apDetail.setDisable(!lbShow);
-        
+
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
             case PurchaseOrderReceivingStatus.POSTED:
             case PurchaseOrderReceivingStatus.PAID:

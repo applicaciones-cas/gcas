@@ -75,7 +75,7 @@
                             <children>
                                 <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                              <AnchorPane style="-fx-border-color: orange;">
+                                              <AnchorPane fx:id="apDetail" style="-fx-border-color: orange;">
                                                   <children>
                                                       <GridPane layoutX="11.0" layoutY="6.0" stylesheets="@../css/StyleSheet.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                           <columnConstraints>

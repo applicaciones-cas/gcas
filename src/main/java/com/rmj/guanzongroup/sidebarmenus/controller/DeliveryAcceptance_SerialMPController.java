@@ -10,9 +10,11 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
@@ -26,6 +28,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -70,7 +73,7 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
     private ObservableList<ModelDeliveryAcceptance_SerialMP> details_data = FXCollections.observableArrayList();
 
     @FXML
-    private AnchorPane apBrowse, apButton;
+    private AnchorPane apBrowse, apButton, apDetail;
     @FXML
     private HBox hbButtons;
     @FXML
@@ -106,12 +109,12 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
         initDetailsGrid();
         initTableOnClick();
         loadTableDetail();
-        
+
         Platform.runLater(() -> {
             PauseTransition delay = new PauseTransition(Duration.seconds(0.05));
             delay.setOnFinished(event -> {
                 loadRecordDetail();
-                if(tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())){
+                if (tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())) {
                     tfIMEI1.requestFocus();
                 }
             });
@@ -231,15 +234,15 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
                 case "tfIMEI1":
-                    poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "serial02", lsValue);
-                    if("error".equals((String) poJSON.get("result"))){
+                    poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "serial01", lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         tfIMEI1.setText("");
                         tfIMEI1.requestFocus();
                         return;
                     }
-                    
-                    if((boolean) poJSON.get("set")){
+
+                    if ((boolean) poJSON.get("set")) {
                         loadRecordDetail();
                     } else {
                         poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial01(lsValue);
@@ -247,14 +250,14 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                     break;
                 case "tfIMEI2":
                     poJSON = poPurchaseReceivingController.checkExistingSerialNo(pnDetail2, "serial02", lsValue);
-                    if("error".equals((String) poJSON.get("result"))){
+                    if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         tfIMEI2.setText("");
                         tfIMEI2.requestFocus();
                         return;
                     }
-                    
-                    if((boolean) poJSON.get("set")){
+
+                    if ((boolean) poJSON.get("set")) {
                         loadRecordDetail();
                     } else {
                         poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).setSerial02(lsValue);
@@ -280,6 +283,7 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
 
             tfIMEI1.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial01());
             tfIMEI2.setText(poPurchaseReceivingController.PurchaseOrderReceivingSerialList(pnDetail2).getSerial02());
+            updateCaretPositions(apDetail);
         }
 
     }
@@ -436,7 +440,7 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                         pnDetail = moveToNextRow(currentTable, focusedCell);
                         loadRecordDetail();
                         tfIMEI1.requestFocus();
-                        if(tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())){
+                        if (tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())) {
                             tfIMEI1.requestFocus();
                         }
                         break;
@@ -444,7 +448,7 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                         pnDetail = moveToPreviousRow(currentTable, focusedCell);
                         loadRecordDetail();
                         tfIMEI1.requestFocus();
-                        if(tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())){
+                        if (tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())) {
                             tfIMEI1.requestFocus();
                         }
                         break;
@@ -457,12 +461,41 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
         }
     }
 
+    private void txtField_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        String lsID = (((TextField) event.getSource()).getId());
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        poJSON = new JSONObject();
+
+        TableView<?> currentTable = tblViewDetail;
+        TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                apDetail.requestFocus();
+                pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                loadRecordDetail();
+                event.consume();
+                break;
+            case DOWN:
+                apDetail.requestFocus();
+                pnDetail = moveToNextRow(currentTable, focusedCell);
+                loadRecordDetail();
+                event.consume();
+                break;
+            default:
+                break;
+        }
+    }
+
     public void initTableOnClick() {
         tblViewDetail.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                 pnDetail = tblViewDetail.getSelectionModel().getSelectedIndex();
                 loadRecordDetail();
-                if(tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())){
+                if (tfIMEI1.getText() == null || "".equals(tfIMEI1.getText())) {
                     tfIMEI1.requestFocus();
                 }
             }
@@ -471,9 +504,39 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
         adjustLastColumnForScrollbar(tblViewDetail);
     }
 
+    public void updateCaretPositions(AnchorPane anchorPane) {
+        List<TextField> textFields = getAllTextFields(anchorPane);
+        for (TextField textField : textFields) {
+            String text = textField.getText();
+            if (text != null && !"".equals(text)) {
+                Pos alignment = textField.getAlignment();
+                if (alignment == Pos.CENTER_RIGHT || alignment == Pos.BASELINE_RIGHT
+                        || alignment == Pos.TOP_RIGHT || alignment == Pos.BOTTOM_RIGHT) {
+                    textField.positionCaret(0); // Caret at start
+                } else {
+                    if (textField.isFocused()) {
+                        textField.positionCaret(text.length()); // Caret at end if focused
+                    } else {
+                        textField.positionCaret(0); // Caret at start if not focused
+                    }
+                }
+            }
+        }
+    }
+
+    private List<TextField> getAllTextFields(Parent parent) {
+        return parent.lookupAll(".text-field").stream()
+                .filter(node -> node instanceof TextField)
+                .map(node -> (TextField) node)
+                .collect(Collectors.toList());
+    }
+
     public void initTextFields() {
         tfIMEI1.focusedProperty().addListener(txtDetail_Focus);
         tfIMEI2.focusedProperty().addListener(txtDetail_Focus);
+
+        tfIMEI1.setOnKeyPressed(this::txtField_KeyPressed);
+        tfIMEI2.setOnKeyPressed(this::txtField_KeyPressed);
 
     }
 

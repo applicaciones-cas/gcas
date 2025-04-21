@@ -692,7 +692,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
     public void loadRecordAttachment(boolean lbloadImage) {
         try {
-            if (pnAttachment >= 0) {
+            if (attachment_data.size() > 0) {
                 tfAttachmentNo.setText(String.valueOf(pnAttachment+1));
                 String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 if (lsAttachmentType.equals("")) {

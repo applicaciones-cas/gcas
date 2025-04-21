@@ -109,6 +109,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
+    private boolean pbEntered = false;
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
@@ -190,7 +191,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
         pgPagination.setPageCount(1);
         pnEditMode = poPurchaseReceivingController.getEditMode();
         initButton(pnEditMode);
-        
+
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
@@ -198,7 +199,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             poPurchaseReceivingController.setCompanyId(psCompanyId);
             poPurchaseReceivingController.setCategoryId(psCategoryId);
             loadRecordSearch();
-            
+
             btnNew.fire();
         });
 
@@ -235,7 +236,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poPurchaseReceivingController.setTransactionStatus(PurchaseOrderReceivingStatus.RETURNED+ "" +PurchaseOrderReceivingStatus.OPEN);
+                        poPurchaseReceivingController.setTransactionStatus(PurchaseOrderReceivingStatus.RETURNED + "" + PurchaseOrderReceivingStatus.OPEN);
                         poJSON = poPurchaseReceivingController.searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -281,9 +282,9 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        
+
                         poPurchaseReceivingController.initFields();
-                        
+
                         if (!psCompanyId.isEmpty()) {
                             poPurchaseReceivingController.SearchCompany(psCompanyId, true);
                         }
@@ -392,12 +393,12 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                 //get last retrieved Company and Supplier
 //                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                                
+
                                 // Confirmation Prompt
                                 JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if(poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)){
-                                        if(ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")){
+                                    if (poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
                                             loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
@@ -405,7 +406,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                         }
                                     }
                                 }
-                                
+
                                 // Print Transaction Prompt
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
@@ -442,7 +443,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void showRetainedHighlight(boolean isRetained) {
         if (isRetained) {
             for (Pair<String, String> pair : plOrderNoPartial) {
@@ -646,17 +647,17 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    
-                    if(poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null 
-                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())){
-                        if(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)){
+
+                    if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
+                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
+                        if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
                             tfReceiveQuantity.setText("0");
                             tfReceiveQuantity.requestFocus();
                             return;
                         }
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -664,17 +665,23 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         return;
                     }
 
+                    int lnNewVal = Integer.valueOf(lsValue);
+                    int lnOldVal = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
+                        break;
                     }
                     
-                    if((Integer.valueOf(lsValue) > 0 
-                            && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null 
-                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))){
-                        showSerialDialog();
+                    if (lnNewVal != lnOldVal || pbEntered) {
+                        if ((Integer.valueOf(lsValue) > 0
+                                && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                            showSerialDialog();
+                            pbEntered = false;
+                        }
                     }
                     break;
             }
@@ -800,20 +807,30 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             switch (event.getCode()) {
                 case ENTER:
                     CommonUtils.SetNextFocus(txtField);
+                    pbEntered = true;
                     break;
                 case UP:
                     switch (lsID) {
                         case "tfBrand":
                         case "tfReceiveQuantity":
-                            pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                            loadRecordDetail();
-                            tfOrderNo.setText("");
-                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            apDetail.requestFocus();
+                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
                                 tfReceiveQuantity.requestFocus();
                             } else {
-                                tfBrand.requestFocus();
+                                pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                                loadRecordDetail();
+                                tfOrderNo.setText("");
+                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                    tfReceiveQuantity.requestFocus();
+                                } else {
+                                    tfBrand.requestFocus();
+                                }
+                                event.consume();
                             }
-                            event.consume();
                             break;
                     }
                     break;
@@ -821,15 +838,24 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                     switch (lsID) {
                         case "tfBrand":
                         case "tfReceiveQuantity":
-                            pnDetail = moveToNextRow(currentTable, focusedCell);
-                            loadRecordDetail();
-                            tfOrderNo.setText("");
-                            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            apDetail.requestFocus();
+                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
                                 tfReceiveQuantity.requestFocus();
                             } else {
-                                tfBrand.requestFocus();
+                                pnDetail = moveToNextRow(currentTable, focusedCell);
+                                loadRecordDetail();
+                                tfOrderNo.setText("");
+                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                    tfReceiveQuantity.requestFocus();
+                                } else {
+                                    tfBrand.requestFocus();
+                                }
+                                event.consume();
                             }
-                            event.consume();
                             break;
                         default:
                             break;
@@ -978,7 +1004,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if(pnDetail != lnRow){
+                                if (pnDetail != lnRow) {
                                     poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
@@ -1474,7 +1500,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()) {
-                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
                             if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {
@@ -1483,14 +1509,14 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
                             plOrderNoPartial.add(new Pair<>(poPurchaseReceivingController.Detail(lnCtr).getOrderNo(), String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue())));
 
                             String lsBrand = "";
                             if (poPurchaseReceivingController.Detail(lnCtr).Brand().getDescription() != null) {
                                 lsBrand = poPurchaseReceivingController.Detail(lnCtr).Brand().getDescription();
-                            } 
+                            }
                             details_data.add(
                                     new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
@@ -1981,6 +2007,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             table.refresh(); // Refresh to apply changes
         }
     }
+
     public <T> void disableHighlightByKey(TableView<T> table, String key, Map<String, List<String>> highlightMap) {
         highlightMap.remove(key);
         table.refresh();
