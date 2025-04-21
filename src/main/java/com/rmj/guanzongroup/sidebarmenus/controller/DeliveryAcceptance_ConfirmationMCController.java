@@ -858,6 +858,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
             switch (event.getCode()) {
                 case ENTER:
                     CommonUtils.SetNextFocus(txtField);
+                    pbEntered = true;
                     break;
                 case UP:
                     switch (lsID) {

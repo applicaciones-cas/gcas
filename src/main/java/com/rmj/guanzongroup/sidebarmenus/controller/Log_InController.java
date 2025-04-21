@@ -15,6 +15,8 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -34,11 +36,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.cas.parameter.services.ParamControllers;
 import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.Logical;
+import org.guanzon.cas.parameter.Company;
 import org.json.simple.JSONObject;
 
 /**
@@ -49,10 +54,12 @@ import org.json.simple.JSONObject;
 public class Log_InController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Log In";
+    
+    private ParamControllers poParameter;
     private GRiderCAS oApp;
     private String psIndustryID = "";
     private String psCompanyID = "";
-
+    private boolean isMainOffice = true;
     private LogWrapper poLogWrapper;
     ObservableList<ModelLog_In_Industry> industryOptions = FXCollections.observableArrayList();
     ObservableList<ModelLog_In_Company> companyOptions = FXCollections.observableArrayList();
@@ -70,8 +77,6 @@ public class Log_InController implements Initializable, ScreenInterface {
     private Button btnEyeIcon;
     @FXML
     private ComboBox cmbIndustry, cmbCompany;
-    
-    
 
     @Override
     public void setGRider(GRiderCAS foValue) {
@@ -87,6 +92,10 @@ public class Log_InController implements Initializable, ScreenInterface {
     public void setCompanyID(String fsValue) {
         psCompanyID = fsValue;
     }
+
+    @Override
+    public void setCategoryID(String fsValue) {
+    }
     /**
      * Initializes the controller class.
      */
@@ -96,17 +105,18 @@ public class Log_InController implements Initializable, ScreenInterface {
     public void initialize(URL url, ResourceBundle rb) {
         DashboardController mainController = LoginControllerHolder.getMainController();
         mainController.triggervbox();
-
+        poParameter = new ParamControllers(oApp, poLogWrapper);
         tfPassword.textProperty().bindBidirectional(pfPassword.textProperty());
         String year = String.valueOf(Year.now().getValue());
         lblCopyright.setText("© " + year + " Guanzon Group of Companies. All Rights Reserved.");
-        loadComboBoxItems();
+        
         initComboBox();
         autoloadRecord();
+        loadComboBoxItems();
         initTextFields();
 
     }
-    
+
     EventHandler<KeyEvent> tabKeyHandler = event -> {
         if (event.getCode() != KeyCode.TAB) {
             return;
@@ -148,25 +158,63 @@ public class Log_InController implements Initializable, ScreenInterface {
         cmbCompany.setOnKeyPressed(tabKeyHandler);
     }
 
+    public String[] companyName(){
+        String[] result = new String[2];
+        try {
+            
+            JSONObject loJSON = new JSONObject();
+            loJSON = poParameter.Branch().searchRecord(oApp.getBranchCode(), true);
+            if ("success".equals((String) loJSON.get("result"))) {
+                String lsSQL = "SELECT b.sCompnyID, c.sCompnyNm FROM branch b JOIN company c ON b.sCompnyID = c.sCompnyID ";
+                if(!poParameter.Branch().getModel().isMainOffice())   {
+                    lsSQL = lsSQL +  MiscUtil.addCondition(lsSQL, "sBranchCd = " + SQLUtil.toSQL(oApp.getBranchCode()));
+                } 
+                ResultSet loRS = oApp.executeQuery(lsSQL);
+                if (loRS.next()) {
+                        result[0] = loRS.getString("sCompnyID");
+                        result[1] = loRS.getString("sCompnyNm");
+                }
+
+                MiscUtil.close(loRS);
+            }
+//            return result;
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
+        }      
+        return result;
+    }
+    
     public String[] getCompanyName() {
         String[] result = new String[2];
-
         try {
-            String lsSQL = "SELECT b.sCompnyID, c.sCompnyNm FROM branch b JOIN company c ON b.sCompnyID = c.sCompnyID ";
-            lsSQL = MiscUtil.addCondition(lsSQL, "sBranchCd = " + SQLUtil.toSQL(oApp.getBranchCode()));
+            
+            JSONObject loJSON = new JSONObject();
+            loJSON = poParameter.Branch().searchRecord(oApp.getBranchCode(), true);
+            if ("success".equals((String) loJSON.get("result"))) {
+               isMainOffice = poParameter.Branch().getModel().isMainOffice();
+                if(!isMainOffice)   {
+                      loJSON = poParameter.Company().searchRecord(poParameter.Branch().getModel().getCompanyId(), true);
+                      if ("success".equals((String) loJSON.get("result"))) {
+                          psCompanyID =  poParameter.Company().getModel().getCompanyId();
+                          result[0] = poParameter.Company().getModel().getCompanyId();
+                          result[1] = poParameter.Company().getModel().getCompanyName();
+                          
+                      }
+                } else {
+                String lsSQL = "SELECT b.sCompnyID, c.sCompnyNm FROM branch b JOIN company c ON b.sCompnyID = c.sCompnyID ";
+                ResultSet loRS = oApp.executeQuery(lsSQL);
+                if (loRS.next()) {
+                        result[0] = loRS.getString("sCompnyID");
+                        result[1] = loRS.getString("sCompnyNm");
+                }
 
-            ResultSet loRS = oApp.executeQuery(lsSQL);
-
-            if (loRS.next()) {
-                result[0] = loRS.getString("sCompnyID");
-                result[1] = loRS.getString("sCompnyNm");
+                MiscUtil.close(loRS);
+                }
             }
-
-            MiscUtil.close(loRS);
-        } catch (SQLException ex) {
-            ex.printStackTrace(); // You can also use a logger here
-        }
-
+//            return result;
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
+        }      
         return result;
     }
 
@@ -277,19 +325,23 @@ public class Log_InController implements Initializable, ScreenInterface {
         });
 
         comboBox.setOnMouseClicked(event -> {
-            boolean isUsernameFilled = tfUsername.getText().trim().isEmpty();
-            if (pfPassword.isVisible()) {
-                tfPassword.setText(pfPassword.getText());
-            } else {
-                pfPassword.setText(tfPassword.getText());
-            }
-            boolean isPasswordFilled = tfPassword.getText().trim().isEmpty();
-
-            if (isUsernameFilled || isPasswordFilled) {
+            if(!isMainOffice){
                 comboBox.hide();
-            } else {
-//                comboBox.show(); // Opens the dropdown
             }
+            
+//            boolean isUsernameFilled = tfUsername.getText().trim().isEmpty();
+//            if (pfPassword.isVisible()) {
+//                tfPassword.setText(pfPassword.getText());
+//            } else {
+//                pfPassword.setText(tfPassword.getText());
+//            }
+//            boolean isPasswordFilled = tfPassword.getText().trim().isEmpty();
+//
+//            if (isUsernameFilled || isPasswordFilled) {
+//                comboBox.hide();
+//            } else {
+////                comboBox.show(); // Opens the dropdown
+//            }
         });
 
         comboBox.setOnShowing(event -> {
@@ -422,11 +474,6 @@ public class Log_InController implements Initializable, ScreenInterface {
         MiscUtil.close(loRS);
         return industries;
 
-    }
-
-    @Override
-    public void setCategoryID(String fsValue) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
 }
