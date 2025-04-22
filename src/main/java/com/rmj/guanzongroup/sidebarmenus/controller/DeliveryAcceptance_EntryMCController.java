@@ -394,7 +394,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
-                                        System.out.println("Search skipped: Same field clicked twice.");
+                                        
                                         break;
                                     }
                                     previousSearchedTextField = lastFocusedTextField;
@@ -530,7 +530,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         if (isRetained) {
             for (Pair<String, String> pair : plOrderNoPartial) {
                 if (!"0".equals(pair.getValue())) {
-                    System.out.println(pair.getKey()); // orderNo
+                    
                     plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
                 }
             }
@@ -540,7 +540,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         plOrderNoPartial.clear();
         for (Pair<String, String> pair : plOrderNoFinal) {
             if (!"0".equals(pair.getValue())) {
-                System.out.println(pair.getKey()); // orderNo
+                
                 highlightByKey(tblViewPuchaseOrder, pair.getKey(), "#A7C7E7", highlightedRowsMain);
 
             }
@@ -1135,7 +1135,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         }
                         break;
                     default:
-                        System.out.println("Unknown DatePicker.");
+                        
                         break;
                 }
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1875,7 +1875,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
 
                         for (Pair<String, String> pair : plOrderNoPartial) {
                             if (!"".equals(pair.getKey()) && pair.getKey() != null) {
-                                System.out.println(pair.getKey()); // orderNo
+                                
                                 highlightByKey(tblViewPuchaseOrder, pair.getKey(), "#A7C7E7", highlightedRowsMain);
                             }
                         }
@@ -2049,7 +2049,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         // Add the color only if it doesn't already exist for that key
         if (!colors.contains(color)) {
             colors.add(color);
-            System.out.println("Highlighted by Key: " + key + " = " + highlightMap.get(key));
+            
             table.refresh(); // Refresh to apply changes
         }
     }
@@ -2057,20 +2057,20 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
     public <T> void disableHighlightByKey(TableView<T> table, String key, Map<String, List<String>> highlightMap) {
         highlightMap.remove(key);
         table.refresh();
-        System.out.println("Disabled highlight for key: " + key);
+        
     }
 
     public <T> void disableAllHighlightByKey(TableView<T> table, Map<String, List<String>> highlightMap) {
         highlightMap.clear();
         table.refresh();
-        System.out.println("Cleared all highlights by key.");
+        
     }
 
     public <T> void disableAllHighlightByColorForKey(TableView<T> table, String color, Map<String, List<String>> highlightMap) {
         highlightMap.forEach((key, colors) -> colors.removeIf(c -> c.equals(color)));
         highlightMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         table.refresh();
-        System.out.println("Removed color " + color + " from all keys.");
+        
     }
 
     private void autoSearch(TextField txtField) {

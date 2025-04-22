@@ -309,7 +309,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
-                                        System.out.println("Search skipped: Same field clicked twice.");
+                                        
                                         break;
                                     }
                                     previousSearchedTextField = lastFocusedTextField;
@@ -1088,7 +1088,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         }
                         break;
                     default:
-                        System.out.println("Unknown DatePicker.");
+                        
                         break;
                 }
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));

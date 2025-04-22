@@ -293,7 +293,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
-                                        System.out.println("Search skipped: Same field clicked twice.");
+                                        
                                         break;
                                     }
                                     previousSearchedTextField = lastFocusedTextField;
@@ -1001,7 +1001,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                         }
                         break;
                     default:
-                        System.out.println("Unknown DatePicker.");
+                        
                         break;
                 }
                 datePicker.getEditor().setText(formattedDate);

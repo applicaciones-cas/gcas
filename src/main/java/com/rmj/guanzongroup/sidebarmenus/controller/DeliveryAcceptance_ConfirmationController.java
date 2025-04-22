@@ -293,7 +293,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
-                                        System.out.println("Search skipped: Same field clicked twice.");
+                                        
                                         break;
                                     }
                                     previousSearchedTextField = lastFocusedTextField;
@@ -1006,7 +1006,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         }
                         break;
                     default:
-                        System.out.println("Unknown DatePicker.");
+                        
                         break;
                 }
                 if ("error".equals((String) poJSON.get("result"))) {

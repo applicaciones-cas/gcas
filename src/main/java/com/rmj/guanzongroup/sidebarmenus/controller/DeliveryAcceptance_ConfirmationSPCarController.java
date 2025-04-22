@@ -293,7 +293,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
-                                        System.out.println("Search skipped: Same field clicked twice.");
+                                        
                                         break;
                                     }
                                     previousSearchedTextField = lastFocusedTextField;
@@ -983,7 +983,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                         }
                         break;
                     default:
-                        System.out.println("Unknown DatePicker.");
+                        
                         break;
                 }
                 datePicker.getEditor().setText(formattedDate);
