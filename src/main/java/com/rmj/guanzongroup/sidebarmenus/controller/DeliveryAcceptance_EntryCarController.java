@@ -1202,7 +1202,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 //            btnPrint.setText("Print");
 //        }
         try {
-            boolean lbPrintStat = true;
+            boolean lbPrintStat = pnEditMode == EditMode.READY;
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:

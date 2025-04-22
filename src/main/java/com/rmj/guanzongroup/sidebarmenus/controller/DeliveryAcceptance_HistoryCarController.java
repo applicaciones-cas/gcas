@@ -788,7 +788,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         }
 
         try {
-            boolean lbPrintStat = true;
+            boolean lbPrintStat = pnEditMode == EditMode.READY;
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:

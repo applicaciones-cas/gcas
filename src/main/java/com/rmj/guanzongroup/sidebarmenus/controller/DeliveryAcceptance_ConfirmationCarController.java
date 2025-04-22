@@ -1393,7 +1393,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         }
 
         try {
-            boolean lbPrintStat = true;
+            boolean lbPrintStat = pnEditMode == EditMode.READY;
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
