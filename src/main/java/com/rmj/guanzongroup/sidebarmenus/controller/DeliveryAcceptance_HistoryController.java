@@ -521,6 +521,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         }
 
         try {
+            boolean lbPrintStat = true;
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
@@ -543,6 +544,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOID");
+                    lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");
@@ -553,6 +555,9 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
             }
 
             poPurchaseReceivingController.computeFields();
+            btnPrint.setVisible(lbPrintStat);
+            btnPrint.setManaged(lbPrintStat);
+            
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {
@@ -578,7 +583,10 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+                    tfDiscountRate.setText(String.format("%.2f", poPurchaseReceivingController.Master().getDiscountRate().doubleValue()));
+
+                } else {
+                    tfDiscountRate.setText(String.format("%.2f", 0.00));
                 }
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));

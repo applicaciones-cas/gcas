@@ -141,7 +141,6 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
 
-
     private ChangeListener<String> detailSearchListener;
     private ChangeListener<String> mainSearchListener;
 
@@ -149,9 +148,9 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     private AnchorPane apBrowse, apButton, apMainAnchor, apMaster, apDetail, apAttachments, apAttachmentButtons;
 
     @FXML
-    private TextField  tfSearchSupplier, tfSearchReferenceNo,
+    private TextField tfSearchSupplier, tfSearchReferenceNo,
             tfTransactionNo, tfSupplier, tfTerm, tfTrucking, tfReferenceNo,
-             tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
+            tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand, tfModel,
             tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost,
             tfOrderQuantity, tfReceiveQuantity, tfOrderNo, tfSupersede, tfAttachmentNo;
 
@@ -210,7 +209,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         initAttachmentsGrid();
         initTableOnClick();
         clearTextFields();
-        
+
         Platform.runLater(() -> {
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
@@ -234,7 +233,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     @Override
     public void setIndustryID(String fsValue) {
         psIndustryId = fsValue;
@@ -244,7 +243,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     public void setCompanyID(String fsValue) {
         psCompanyId = fsValue;
     }
-    
+
     @Override
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
@@ -345,12 +344,12 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                
+
                                 // Confirmation Prompt
                                 JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if(poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)){
-                                        if(ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")){
+                                    if (poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
                                             loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
@@ -362,7 +361,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                                         }
                                     }
                                 }
-                                
+
                                 // Print Transaction Prompt
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
@@ -574,13 +573,13 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    
+
                     break;
                 case "tfDiscountAmount":
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -677,7 +676,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    
+
                     if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
                         if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
@@ -730,7 +729,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                 case "":
                     break;
             }
-            if ( lsTxtFieldID.equals("tfSearchSupplier")
+            if (lsTxtFieldID.equals("tfSearchSupplier")
                     || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             }
@@ -744,7 +743,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
             int lnRow = pnDetail;
-            
+
             TableView<?> currentTable = tblViewOrderDetails;
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
 
@@ -861,7 +860,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if(pnDetail != lnRow){
+                                if (pnDetail != lnRow) {
                                     poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
@@ -885,7 +884,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if(pnDetail != lnRow){
+                                if (pnDetail != lnRow) {
                                     poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
@@ -934,7 +933,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                 String inputText = datePicker.getEditor().getText();
                 LocalDate currentDate = LocalDate.now();
                 LocalDate selectedDate = null;
-                
+
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
@@ -1153,7 +1152,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     public void loadRecordSearch() {
         try {
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-            
+
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
@@ -1177,7 +1176,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     public void loadRecordAttachment(boolean lbloadImage) {
         try {
             if (attachment_data.size() > 0) {
-                tfAttachmentNo.setText(String.valueOf(pnAttachment+1));
+                tfAttachmentNo.setText(String.valueOf(pnAttachment + 1));
                 String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 if (lsAttachmentType.equals("")) {
                     poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
@@ -1249,7 +1248,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
-            
+
             updateCaretPositions(apDetail);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1262,15 +1261,15 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     public void loadRecordMaster() {
         boolean lbDisable = poPurchaseReceivingController.getEditMode() == EditMode.UPDATE;
         if (lbDisable) {
-            
+
             tfSupplier.getStyleClass().add("DisabledTextField");
         } else {
-            while ( tfSupplier.getStyleClass().contains("DisabledTextField")) {
-                
+            while (tfSupplier.getStyleClass().contains("DisabledTextField")) {
+
                 tfSupplier.getStyleClass().remove("DisabledTextField");
             }
         }
-        
+
         tfSupplier.setDisable(lbDisable);
 
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
@@ -1281,6 +1280,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         }
 
         try {
+            boolean lbPrintStat = true;
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
@@ -1303,6 +1303,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOID");
+                    lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");
@@ -1311,6 +1312,9 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     lblStatus.setText("UNKNOWN");
                     break;
             }
+            btnPrint.setVisible(lbPrintStat);
+            btnPrint.setManaged(lbPrintStat);
+            
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {
@@ -1328,8 +1332,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
-            
-            
+
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
@@ -1339,12 +1342,15 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+                    tfDiscountRate.setText(String.format("%.2f", poPurchaseReceivingController.Master().getDiscountRate().doubleValue()));
+
+                } else {
+                    tfDiscountRate.setText(String.format("%.2f", 0.00));
                 }
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-        
+
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1353,7 +1359,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         }
 
     }
-    
+
     public void updateCaretPositions(AnchorPane anchorPane) {
         List<TextField> textFields = getAllTextFields(anchorPane);
         for (TextField textField : textFields) {
@@ -1428,7 +1434,6 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
 
     public void loadTableDetail() {
         // Setting data to table detail
-        loadRecordMaster();
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
         // Setting data to table detail
@@ -1485,7 +1490,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
                             details_data.add(
@@ -1515,6 +1520,8 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                             tblViewOrderDetails.getFocusModel().focus(pnDetail);
                             loadRecordDetail();
                         }
+                        loadRecordMaster();
+
                     } catch (SQLException ex) {
                         Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (GuanzonException ex) {
@@ -1714,7 +1721,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     }
 
     public void initTextFields() {
-        
+
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
@@ -1732,7 +1739,6 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         tfCost.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
-        
         TextField[] textFields = {
             tfSearchSupplier, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfTerm,
             tfTrucking, tfReferenceNo, tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand,
@@ -1744,7 +1750,8 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
         initComboBoxCellDesign(cmbAttachmentType);
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost);
         // Combobox
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
@@ -1918,10 +1925,10 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
         apAttachments.setDisable(!lbShow1);
-        
+
         btnReturn.setVisible(false);
         btnReturn.setManaged(false);
-        
+
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
             case PurchaseOrderReceivingStatus.CONFIRMED:
                 btnConfirm.setVisible(false);
@@ -2229,14 +2236,12 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
-        
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
 
         tfTransactionNo.clear();
-        
-        
+
         tfSupplier.clear();
         tfTrucking.clear();
         taRemarks.clear();

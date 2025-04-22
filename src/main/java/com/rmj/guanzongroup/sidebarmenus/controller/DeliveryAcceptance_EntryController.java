@@ -951,13 +951,12 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost);
     }
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
-        boolean lb = false;
         try {
 
             if (!newValue) { // Lost focus
@@ -1279,6 +1278,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 //        }
         try {
 
+            boolean lbPrintStat = true;
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
@@ -1301,6 +1301,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOID");
+                    lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");
@@ -1309,6 +1310,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     lblStatus.setText("UNKNOWN");
                     break;
             }
+            btnPrint.setVisible(lbPrintStat);
+            btnPrint.setManaged(lbPrintStat);
+            
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {
@@ -1336,9 +1340,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+                    tfDiscountRate.setText(String.format("%.2f", poPurchaseReceivingController.Master().getDiscountRate().doubleValue()));
+
                 } else {
-                    tfDiscountRate.setText(("0.00"));
+                    tfDiscountRate.setText(String.format("%.2f", 0.00));
                 }
             });
 

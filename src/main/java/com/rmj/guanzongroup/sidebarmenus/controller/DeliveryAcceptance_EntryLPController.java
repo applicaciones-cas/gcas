@@ -956,7 +956,8 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost);
     }
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
@@ -1279,6 +1280,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
         
         try {
 
+            boolean lbPrintStat = true;
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
@@ -1301,6 +1303,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOID");
+                    lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");
@@ -1309,6 +1312,9 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                     lblStatus.setText("UNKNOWN");
                     break;
             }
+            btnPrint.setVisible(lbPrintStat);
+            btnPrint.setManaged(lbPrintStat);
+            
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {
@@ -1336,7 +1342,10 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+                    tfDiscountRate.setText(String.format("%.2f", poPurchaseReceivingController.Master().getDiscountRate().doubleValue()));
+
+                } else {
+                    tfDiscountRate.setText(String.format("%.2f", 0.00));
                 }
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));

@@ -1310,6 +1310,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         }
 
         try {
+            boolean lbPrintStat = true;
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
             switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
@@ -1332,6 +1333,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOID");
+                    lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
                     lblStatus.setText("CANCELLED");
@@ -1340,6 +1342,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     lblStatus.setText("UNKNOWN");
                     break;
             }
+            btnPrint.setVisible(lbPrintStat);
+            btnPrint.setManaged(lbPrintStat);
+            
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {
@@ -1367,7 +1372,10 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText((String.valueOf(poPurchaseReceivingController.Master().getDiscountRate().doubleValue())));
+                    tfDiscountRate.setText(String.format("%.2f", poPurchaseReceivingController.Master().getDiscountRate().doubleValue()));
+
+                } else {
+                    tfDiscountRate.setText(String.format("%.2f", 0.00));
                 }
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
@@ -1456,7 +1464,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
     public void loadTableDetail() {
         // Setting data to table detail
-        loadRecordMaster();
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
         // Setting data to table detail
@@ -1543,6 +1550,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             tblViewOrderDetails.getFocusModel().focus(pnDetail);
                             loadRecordDetail();
                         }
+                        loadRecordMaster();
                     } catch (SQLException ex) {
                         Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (GuanzonException ex) {
@@ -1778,7 +1786,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         }
 
         initComboBoxCellDesign(cmbAttachmentType);
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost);
         // Combobox
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
