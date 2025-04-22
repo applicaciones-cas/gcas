@@ -184,7 +184,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             poPurchaseReceivingController.setCompanyId(psCompanyId);
             poPurchaseReceivingController.setCategoryId(psCategoryId);
             loadRecordSearch();
-            
+
             btnNew.fire();
         });
 
@@ -221,7 +221,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poPurchaseReceivingController.setTransactionStatus(PurchaseOrderReceivingStatus.RETURNED+ "" +PurchaseOrderReceivingStatus.OPEN);
+                        poPurchaseReceivingController.setTransactionStatus(PurchaseOrderReceivingStatus.RETURNED + "" + PurchaseOrderReceivingStatus.OPEN);
                         poJSON = poPurchaseReceivingController.searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -261,7 +261,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        
+
                         poPurchaseReceivingController.initFields();
 
                         if (!psCompanyId.isEmpty()) {
@@ -291,7 +291,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
-                                        
+
                                         break;
                                     }
                                     previousSearchedTextField = lastFocusedTextField;
@@ -365,12 +365,12 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                 //get last retrieved Company and Supplier
 //                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
-                                
+
                                 // Confirmation Prompt
                                 JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if(poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)){
-                                        if(ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")){
+                                    if (poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
                                             loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
@@ -378,7 +378,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                         }
                                     }
                                 }
-                                
+
                                 // Print Transaction Prompt
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
@@ -386,7 +386,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                                         btnPrint.fire();
                                     }
                                 }
-                                
+
                                 //Call new transaction
                                 showRetainedHighlight(true);
                                 btnNew.fire();
@@ -428,7 +428,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
         if (isRetained) {
             for (Pair<String, String> pair : plOrderNoPartial) {
                 if (!"0".equals(pair.getValue())) {
-                    
+
                     plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
                 }
             }
@@ -438,7 +438,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
         plOrderNoPartial.clear();
         for (Pair<String, String> pair : plOrderNoFinal) {
             if (!"0".equals(pair.getValue())) {
-                
+
                 highlightByKey(tblViewPuchaseOrder, pair.getKey(), "#A7C7E7", highlightedRowsMain);
 
             }
@@ -551,7 +551,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-                    
+
                     if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
                         if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
@@ -561,7 +561,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                             break;
                         }
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -869,7 +869,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if(pnDetail != lnRow){
+                                if (pnDetail != lnRow) {
                                     pnDetail = lnRow;
                                     loadRecordDetail();
                                     tfReceiveQuantity.requestFocus();
@@ -893,7 +893,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if(pnDetail != lnRow){
+                                if (pnDetail != lnRow) {
                                     pnDetail = lnRow;
                                     loadRecordDetail();
                                     tfReceiveQuantity.requestFocus();
@@ -962,6 +962,8 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
+        poJSON.put("result", "success");
+        poJSON.put("message", "success");
         try {
             if (!newValue) { // Lost focus
                 DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
@@ -994,7 +996,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                         poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         loadRecordMaster();
-                        datePicker.requestFocus();
+                        // datePicker.requestFocus();
                         return;
                     }
                 } else {
@@ -1038,11 +1040,14 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                         }
                         break;
                     default:
-                        
+
                         break;
                 }
                 datePicker.getEditor().setText(formattedDate);
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    // datePicker.requestFocus();
+                }
                 Platform.runLater(() -> {
                     if (lsID.equals("dpExpiryDate")) {
                         loadRecordDetail();
@@ -1050,9 +1055,6 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                         loadRecordMaster();
                     }
                 });
-                if ("error".equals((String) poJSON.get("result"))) {
-                    datePicker.requestFocus();
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1277,7 +1279,6 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
 //        } else {
 //            btnPrint.setText("Print");
 //        }
-        
         try {
 
             boolean lbPrintStat = true;
@@ -1314,7 +1315,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             }
             btnPrint.setVisible(lbPrintStat);
             btnPrint.setManaged(lbPrintStat);
-            
+
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {
@@ -1762,7 +1763,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
 
                         for (Pair<String, String> pair : plOrderNoPartial) {
                             if (!"".equals(pair.getKey()) && pair.getKey() != null) {
-                                
+
                                 highlightByKey(tblViewPuchaseOrder, pair.getKey(), "#A7C7E7", highlightedRowsMain);
                             }
                         }
@@ -1977,7 +1978,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
         // Add the color only if it doesn't already exist for that key
         if (!colors.contains(color)) {
             colors.add(color);
-            
+
             table.refresh(); // Refresh to apply changes
         }
     }
@@ -1985,20 +1986,20 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
     public <T> void disableHighlightByKey(TableView<T> table, String key, Map<String, List<String>> highlightMap) {
         highlightMap.remove(key);
         table.refresh();
-        
+
     }
 
     public <T> void disableAllHighlightByKey(TableView<T> table, Map<String, List<String>> highlightMap) {
         highlightMap.clear();
         table.refresh();
-        
+
     }
 
     public <T> void disableAllHighlightByColorForKey(TableView<T> table, String color, Map<String, List<String>> highlightMap) {
         highlightMap.forEach((key, colors) -> colors.removeIf(c -> c.equals(color)));
         highlightMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         table.refresh();
-        
+
     }
 
     private void autoSearch(TextField txtField) {

@@ -319,7 +319,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
-                                        
+
                                         break;
                                     }
                                     previousSearchedTextField = lastFocusedTextField;
@@ -449,7 +449,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
         if (isRetained) {
             for (Pair<String, String> pair : plOrderNoPartial) {
                 if (!"0".equals(pair.getValue())) {
-                    
+
                     plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
                 }
             }
@@ -459,7 +459,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
         plOrderNoPartial.clear();
         for (Pair<String, String> pair : plOrderNoFinal) {
             if (!"0".equals(pair.getValue())) {
-                
+
                 highlightByKey(tblViewPuchaseOrder, pair.getKey(), "#A7C7E7", highlightedRowsMain);
 
             }
@@ -1040,6 +1040,8 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
+        poJSON.put("result", "success");
+        poJSON.put("message", "success");
         try {
             if (!newValue) { // Lost focus
                 DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
@@ -1072,7 +1074,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         loadRecordMaster();
-                        datePicker.requestFocus();
+                        // datePicker.requestFocus();
                         return;
                     }
                 } else {
@@ -1105,16 +1107,17 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                         }
                         break;
                     default:
-                        
+
                         break;
                 }
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                datePicker.getEditor().setText(formattedDate);
+                if ("error".equals((String) poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    // datePicker.requestFocus();
+                }
                 Platform.runLater(() -> {
                     loadRecordMaster();
                 });
-                if ("error".equals((String) poJSON.get("result"))) {
-                    datePicker.requestFocus();
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1233,7 +1236,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             }
             btnPrint.setVisible(lbPrintStat);
             btnPrint.setManaged(lbPrintStat);
-            
+
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {
@@ -1548,7 +1551,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
                         for (Pair<String, String> pair : plOrderNoPartial) {
                             if (!"".equals(pair.getKey()) && pair.getKey() != null) {
-                                
+
                                 highlightByKey(tblViewPuchaseOrder, pair.getKey(), "#A7C7E7", highlightedRowsMain);
                             }
                         }
@@ -2044,7 +2047,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
         // Add the color only if it doesn't already exist for that key
         if (!colors.contains(color)) {
             colors.add(color);
-            
+
             table.refresh(); // Refresh to apply changes
         }
     }
@@ -2052,20 +2055,20 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
     public <T> void disableHighlightByKey(TableView<T> table, String key, Map<String, List<String>> highlightMap) {
         highlightMap.remove(key);
         table.refresh();
-        
+
     }
 
     public <T> void disableAllHighlightByKey(TableView<T> table, Map<String, List<String>> highlightMap) {
         highlightMap.clear();
         table.refresh();
-        
+
     }
 
     public <T> void disableAllHighlightByColorForKey(TableView<T> table, String color, Map<String, List<String>> highlightMap) {
         highlightMap.forEach((key, colors) -> colors.removeIf(c -> c.equals(color)));
         highlightMap.entrySet().removeIf(entry -> entry.getValue().isEmpty());
         table.refresh();
-        
+
     }
 
     private void autoSearch(TextField txtField) {

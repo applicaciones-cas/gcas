@@ -309,7 +309,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
-                                        
+
                                         break;
                                     }
                                     previousSearchedTextField = lastFocusedTextField;
@@ -1023,6 +1023,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
+        poJSON.put("result", "success");
+        poJSON.put("message", "success");
         try {
             if (!newValue) { // Lost focus
                 DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
@@ -1054,7 +1056,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         loadRecordMaster();
-                        datePicker.requestFocus();
+                        // datePicker.requestFocus();
                         return;
                     }
                 } else {
@@ -1088,7 +1090,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         }
                         break;
                     default:
-                        
+
                         break;
                 }
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1096,7 +1098,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     loadRecordMaster();
                 });
                 if ("error".equals((String) poJSON.get("result"))) {
-                    datePicker.requestFocus();
+                    // datePicker.requestFocus();
                 }
             }
         } catch (Exception e) {
@@ -1414,7 +1416,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
             }
             btnPrint.setVisible(lbPrintStat);
             btnPrint.setManaged(lbPrintStat);
-            
+
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {

@@ -311,7 +311,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                                         "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
-                                        
+
                                         break;
                                     }
                                     previousSearchedTextField = lastFocusedTextField;
@@ -1033,6 +1033,8 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
 
     ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
         poJSON = new JSONObject();
+        poJSON.put("result", "success");
+        poJSON.put("message", "success");
         try {
             if (!newValue) { // Lost focus
                 DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
@@ -1065,7 +1067,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         loadRecordMaster();
-                        datePicker.requestFocus();
+                        // datePicker.requestFocus();
                         return;
                     }
                 } else {
@@ -1098,16 +1100,17 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         }
                         break;
                     default:
-                        
+
                         break;
                 }
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                datePicker.getEditor().setText(formattedDate);
+                if ("error".equals((String) poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    // datePicker.requestFocus();
+                }
                 Platform.runLater(() -> {
                     loadRecordMaster();
                 });
-                if ("error".equals((String) poJSON.get("result"))) {
-                    datePicker.requestFocus();
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
