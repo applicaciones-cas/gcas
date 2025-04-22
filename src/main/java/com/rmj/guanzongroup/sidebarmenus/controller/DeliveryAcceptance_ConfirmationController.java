@@ -90,6 +90,7 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
 import java.util.stream.Collectors;
+import javafx.scene.Node;
 import javafx.animation.PauseTransition;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
@@ -684,9 +685,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
                         if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
-                            tfReceiveQuantity.setText("0");
+                            poPurchaseReceivingController.Detail(pnDetail).setQuantity(0);
                             tfReceiveQuantity.requestFocus();
-                            return;
+                            break;
                         }
                     }
 
@@ -961,6 +962,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         loadRecordMaster();
+                        datePicker.requestFocus();
                         return;
                     }
                 } else {
@@ -977,8 +979,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         if (selectedDate.isAfter(currentDate)) {
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            break;
                         } else {
                             poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
                         }
@@ -990,7 +990,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         if (selectedDate.isAfter(currentDate)) {
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         } else {
                             poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
@@ -1002,7 +1001,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         if (selectedDate.isBefore(currentDate)) {
                             poJSON.put("result", "error");
                             poJSON.put("message", "The selected date cannot be earlier than the current date.");
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         } else {
                             poPurchaseReceivingController.Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
@@ -1011,11 +1009,28 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         System.out.println("Unknown DatePicker.");
                         break;
                 }
+                if ("error".equals((String) poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    Platform.runLater(() -> {
+                        if (lsID.equals("dpExpiryDate")) {
+                            loadRecordDetail();
+                        } else {
+                            loadRecordMaster();
+                        }
+                    });
+                    datePicker.requestFocus();
+                }
                 datePicker.getEditor().setText(formattedDate);
-                if (lsID.equals("dpExpiryDate")) {
-                    loadRecordDetail();
-                } else {
-                    loadRecordMaster();
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                Platform.runLater(() -> {
+                    if (lsID.equals("dpExpiryDate")) {
+                        loadRecordDetail();
+                    } else {
+                        loadRecordMaster();
+                    }
+                });
+                if ("error".equals((String) poJSON.get("result"))) {
+                    datePicker.requestFocus();
                 }
             }
         } catch (Exception e) {
@@ -1325,8 +1340,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     lblStatus.setText("UNKNOWN");
                     break;
             }
-
-            poPurchaseReceivingController.computeFields();
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {
@@ -1334,6 +1347,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
                 }
             }
+            poPurchaseReceivingController.computeFields();
+
             // Transaction Date
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
@@ -1388,10 +1403,22 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     }
 
     private List<TextField> getAllTextFields(Parent parent) {
-        return parent.lookupAll(".text-field").stream()
-                .filter(node -> node instanceof TextField)
-                .map(node -> (TextField) node)
-                .collect(Collectors.toList());
+        List<TextField> textFields = new ArrayList<>();
+
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            if (node instanceof TextField) {
+                textFields.add((TextField) node);
+            } else if (node instanceof DatePicker) {
+                // Try to find the internal TextField of DatePicker
+                Node datePickerEditor = ((DatePicker) node).lookup(".text-field");
+                if (datePickerEditor instanceof TextField) {
+                    textFields.add((TextField) datePickerEditor);
+                }
+            } else if (node instanceof Parent) {
+                textFields.addAll(getAllTextFields((Parent) node));
+            }
+        }
+        return textFields;
     }
 
     public void loadTableDetailFromMain() {
@@ -1399,7 +1426,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             poJSON = new JSONObject();
 
             poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-            if ("error".equals((String) poJSON.get("message"))) {
+            if ("error".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                 return;
             }
@@ -1643,6 +1670,25 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         });
     }
 
+    private void addKeyEventFilter(DatePicker datePicker) {
+        datePicker.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                Node source = (Node) event.getSource();
+                source.fireEvent(new KeyEvent(
+                        KeyEvent.KEY_PRESSED,
+                        "",
+                        "",
+                        KeyCode.TAB,
+                        false,
+                        false,
+                        false,
+                        false
+                ));
+                event.consume();
+            }
+        });
+    }
+
     public void initDatePickers() {
         setDatePickerFormat(dpTransactionDate);
         setDatePickerFormat(dpReferenceDate);
@@ -1651,6 +1697,10 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
         dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
         dpExpiryDate.focusedProperty().addListener(datepicker_Focus);
+
+        addKeyEventFilter(dpTransactionDate);
+        addKeyEventFilter(dpReferenceDate);
+        addKeyEventFilter(dpExpiryDate);
     }
 
     private <T> void initComboBoxCellDesign(ComboBox<T> comboBox) {
@@ -1716,18 +1766,17 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         tfCost.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
-        tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
+        TextField[] textFields = {
+            tfSearchSupplier, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfTerm,
+            tfTrucking, tfReferenceNo, tfDiscountAmount, tfTotal, tfDiscountRate, tfBrand,
+            tfModel, tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost,
+            tfOrderQuantity, tfReceiveQuantity, tfOrderNo, tfSupersede, tfAttachmentNo
+        };
 
-        tfTrucking.setOnKeyPressed(this::txtField_KeyPressed);
-        tfTerm.setOnKeyPressed(this::txtField_KeyPressed);
-        tfOrderNo.setOnKeyPressed(this::txtField_KeyPressed);
-        tfBarcode.setOnKeyPressed(this::txtField_KeyPressed);
-        tfDescription.setOnKeyPressed(this::txtField_KeyPressed);
-        tfSupersede.setOnKeyPressed(this::txtField_KeyPressed);
-        tfModel.setOnKeyPressed(this::txtField_KeyPressed);
-        tfCost.setOnKeyPressed(this::txtField_KeyPressed);
-        tfReceiveQuantity.setOnKeyPressed(this::txtField_KeyPressed);
+        for (TextField textField : textFields) {
+            textField.setOnKeyPressed(this::txtField_KeyPressed);
+        }
+
         initComboBoxCellDesign(cmbAttachmentType);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
         // Combobox

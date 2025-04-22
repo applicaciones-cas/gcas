@@ -593,7 +593,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
             poJSON = new JSONObject();
 
             poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-            if ("error".equals((String) poJSON.get("message"))) {
+            if ("error".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                 return;
             }
