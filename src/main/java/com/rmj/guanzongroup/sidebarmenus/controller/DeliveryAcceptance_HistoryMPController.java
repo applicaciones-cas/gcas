@@ -146,7 +146,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
-            tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity, tfModelVariant;
+            tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity, tfModelVariant, tfBarcode, tfDescription;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -154,7 +154,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     @FXML
     private TableView tblViewOrderDetails, tblViewPuchaseOrder;
     @FXML
-    private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBrandDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail,
+    private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail,
             tblReceiveQuantityDetail, tblTotalDetail;
 
     @FXML
@@ -738,13 +738,19 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
             boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
             tfBrand.setDisable(!lbFields);
             tfModel.setDisable(!lbFields);
+            tfBarcode.setDisable(!lbFields);
+            tfDescription.setDisable(!lbFields);
             if (lbFields) {
                 while (tfBrand.getStyleClass().contains("DisabledTextField") || tfModel.getStyleClass().contains("DisabledTextField")) {
                     tfBrand.getStyleClass().remove("DisabledTextField");
                     tfModel.getStyleClass().remove("DisabledTextField");
+                    tfBarcode.getStyleClass().remove("DisabledTextField");
+                    tfDescription.getStyleClass().remove("DisabledTextField");
                 }
 
             } else {
+                tfBarcode.getStyleClass().add("DisabledTextField");
+                tfDescription.getStyleClass().add("DisabledTextField");
                 tfBrand.getStyleClass().add("DisabledTextField");
                 tfModel.getStyleClass().add("DisabledTextField");
             }
@@ -752,9 +758,10 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
             }
-
-            tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription()); //TODO
-            tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Variant().getDescription()); //TODO
+            tfBarcode.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBarCode());
+            tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
+            tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription()); 
+            tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Variant().getDescription()); 
 
             tfModel.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Model().getDescription());
             tfColor.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Color().getDescription());
@@ -956,7 +963,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
                             details_data.add(
                                     new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
-                                            lsBrand,
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
@@ -1382,7 +1389,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
 
         tblRowNoDetail.setStyle("-fx-alignment: CENTER;");
         tblOrderNoDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblBrandDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblBarcodeDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         tblDescriptionDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
         tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER;");
@@ -1391,7 +1398,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
 
         tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
         tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
         tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
         tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
@@ -1525,6 +1532,8 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         tfDiscountAmount.clear();
         tfTotal.clear();
         tfOrderNo.clear();
+        tfBarcode.clear();
+        tfDescription.clear();
         tfModelVariant.clear();
         tfBrand.clear();
         tfModel.clear();
