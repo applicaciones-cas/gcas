@@ -163,7 +163,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     @FXML
     private Label lblStatus, lblSource;
     @FXML
-    private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
+    private TextField tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate, tfDescription, tfBarcode,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
             tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity, tfModelVariant; //tfBarcode, tfSupersede, tfDescription,;
     @FXML
@@ -175,7 +175,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     @FXML
     private TableView tblViewOrderDetails, tblViewPuchaseOrder;
     @FXML
-    private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBrandDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail,
+    private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail,
             tblReceiveQuantityDetail, tblTotalDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo;
     @FXML
     private Pagination pgPagination;
@@ -372,7 +372,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                                 highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
                                             } else {
-                                                ShowMessageFX.Information( (String) loJSON.get("message"), pxeModuleName, null);
+                                                ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             }
                                         }
                                     }
@@ -511,7 +511,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                         tfReceiveQuantity.requestFocus();
                     } else {
-                        tfBrand.requestFocus();
+                        tfBarcode.requestFocus();
                     }
                 }
 
@@ -737,6 +737,17 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
+                case "tfDescription":
+                    if (lsValue.equals("")) {
+                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
+                    }
+
+                    break;
+                case "tfBarcode":
+                    //if value is blank then reset
+                    if (lsValue.equals("")) {
+                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
+                    }
                 case "tfBrand":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
@@ -866,7 +877,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     break;
                 case UP:
                     switch (lsID) {
-                        case "tfBrand":
+                        case "tfBarcode":
                         case "tfReceiveQuantity":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
@@ -882,7 +893,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                 if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                                     tfReceiveQuantity.requestFocus();
                                 } else {
-                                    tfBrand.requestFocus();
+                                    tfBarcode.requestFocus();
                                 }
                                 event.consume();
                             }
@@ -891,7 +902,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     break;
                 case DOWN:
                     switch (lsID) {
-                        case "tfBrand":
+                        case "tfBarcode":
                         case "tfReceiveQuantity":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
@@ -907,7 +918,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                 if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                                     tfReceiveQuantity.requestFocus();
                                 } else {
-                                    tfBrand.requestFocus();
+                                    tfBarcode.requestFocus();
                                 }
                                 event.consume();
                             }
@@ -1003,6 +1014,54 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             Platform.runLater(() -> {
                                 PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                 delay.setOnFinished(e -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        case "tfBarcode":
+                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfBarcode.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        case "tfDescription":
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfDescription.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
                                     tfReceiveQuantity.requestFocus();
                                 });
                                 delay.play();
@@ -1403,6 +1462,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     break;
                 case PurchaseOrderReceivingStatus.RETURNED:
                     lblStatus.setText("RETURNED");
+                    lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOIDED");
@@ -1618,7 +1678,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             details_data.add(
                                     new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
-                                            lsBrand,
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
@@ -1857,13 +1917,15 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
 
+        tfBarcode.focusedProperty().addListener(txtDetail_Focus);
+        tfDescription.focusedProperty().addListener(txtDetail_Focus);
         tfBrand.focusedProperty().addListener(txtDetail_Focus);
         tfModel.focusedProperty().addListener(txtDetail_Focus);
         tfCost.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
         TextField[] textFields = {
-            tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate,
+            tfTransactionNo, tfSupplier, tfTrucking, tfReferenceNo, tfTerm, tfDiscountRate, tfDescription, tfBarcode,
             tfDiscountAmount, tfTotal, tfOrderNo, tfBrand, tfModel, tfColor, tfInventoryType,
             tfMeasure, tfCost, tfOrderQuantity, tfReceiveQuantity, tfModelVariant,
             tfSearchSupplier, tfSearchReferenceNo
@@ -1903,7 +1965,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                         tfReceiveQuantity.requestFocus();
                     } else {
-                        tfBrand.requestFocus();
+                        tfBarcode.requestFocus();
                     }
                 }
             }
@@ -2045,7 +2107,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                     tfReceiveQuantity.requestFocus();
                 } else {
-                    tfBrand.requestFocus();
+                    tfBarcode.requestFocus();
                 }
                 event.consume();
             }
@@ -2213,7 +2275,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
 
         tblRowNoDetail.setStyle("-fx-alignment: CENTER;");
         tblOrderNoDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
-        tblBrandDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
+        tblBarcodeDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         tblDescriptionDetail.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 5 0 5;");
         tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 5;");
         tblOrderQuantityDetail.setStyle("-fx-alignment: CENTER;");
@@ -2222,7 +2284,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
 
         tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
         tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
         tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
         tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
@@ -2389,6 +2451,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         tfCost.clear();
         tfOrderQuantity.clear();
         tfReceiveQuantity.clear();
+        tfDescription.clear();
+        tfBarcode.clear();
 
         tfAttachmentNo.clear();
         cmbAttachmentType.setItems(documentType);
