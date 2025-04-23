@@ -1470,7 +1470,6 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     break;
                 case PurchaseOrderReceivingStatus.RETURNED:
                     lblStatus.setText("RETURNED");
-                    lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
                     lblStatus.setText("VOIDED");
