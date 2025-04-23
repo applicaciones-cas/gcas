@@ -306,7 +306,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
                                 if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBrand", "tfModel", "tfSearchSupplier", "tfSearchReferenceNo",
-                                        "tfDescription", "tfSupersede").contains(tf.getId())) {
+                                        "tfDescription", "tfSupersede", "tfBarcode", "tfDescription").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
 
@@ -511,7 +511,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                         tfReceiveQuantity.requestFocus();
                     } else {
-                        tfBarcode.requestFocus();
+                        tfBrand.requestFocus();
                     }
                 }
 
@@ -877,7 +877,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     break;
                 case UP:
                     switch (lsID) {
-                        case "tfBarcode":
+                        case "tfBrand":
                         case "tfReceiveQuantity":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
@@ -893,7 +893,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                 if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                                     tfReceiveQuantity.requestFocus();
                                 } else {
-                                    tfBarcode.requestFocus();
+                                    tfBrand.requestFocus();
                                 }
                                 event.consume();
                             }
@@ -902,7 +902,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     break;
                 case DOWN:
                     switch (lsID) {
-                        case "tfBarcode":
+                        case "tfBrand":
                         case "tfReceiveQuantity":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
@@ -918,7 +918,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                 if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                                     tfReceiveQuantity.requestFocus();
                                 } else {
-                                    tfBarcode.requestFocus();
+                                    tfBrand.requestFocus();
                                 }
                                 event.consume();
                             }
@@ -1384,23 +1384,31 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 lbFields = false;
             }
 
+            tfBarcode.setDisable(!lbFields);
+            tfDescription.setDisable(!lbFields);
             tfBrand.setDisable(!lbFields);
             tfModel.setDisable(!lbFields);
             if (lbFields) {
-                while (tfBrand.getStyleClass().contains("DisabledTextField") || tfModel.getStyleClass().contains("DisabledTextField")) {
+                while (tfBrand.getStyleClass().contains("DisabledTextField") || tfModel.getStyleClass().contains("DisabledTextField")
+                        || tfBarcode.getStyleClass().contains("DisabledTextField") || tfDescription.getStyleClass().contains("DisabledTextField")) {
                     tfBrand.getStyleClass().remove("DisabledTextField");
                     tfModel.getStyleClass().remove("DisabledTextField");
+                    tfBarcode.getStyleClass().remove("DisabledTextField");
+                    tfDescription.getStyleClass().remove("DisabledTextField");
                 }
-
             } else {
                 tfBrand.getStyleClass().add("DisabledTextField");
                 tfModel.getStyleClass().add("DisabledTextField");
+                tfBarcode.getStyleClass().add("DisabledTextField");
+                tfDescription.getStyleClass().add("DisabledTextField");
             }
+
 
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
             }
-
+            tfBarcode.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBarCode());
+            tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
             tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription()); //TODO
             tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Variant().getDescription()); //TODO
 
@@ -1965,7 +1973,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                         tfReceiveQuantity.requestFocus();
                     } else {
-                        tfBarcode.requestFocus();
+                        tfBrand.requestFocus();
                     }
                 }
             }
@@ -2107,7 +2115,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                     tfReceiveQuantity.requestFocus();
                 } else {
-                    tfBarcode.requestFocus();
+                    tfBrand.requestFocus();
                 }
                 event.consume();
             }
