@@ -373,7 +373,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                                 highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
                                             } else {
-                                                ShowMessageFX.Information("Unable to confirm. Incorrect credentials. " + (String) loJSON.get("message"), pxeModuleName, null);
+                                                ShowMessageFX.Information( (String) loJSON.get("message"), pxeModuleName, null);
                                             }
                                         }
                                     }
