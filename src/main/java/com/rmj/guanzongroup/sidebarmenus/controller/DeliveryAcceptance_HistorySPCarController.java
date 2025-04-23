@@ -152,7 +152,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus, lblSource; 
+    private Label lblStatus, lblSource;
 
     @FXML
     private TextArea taRemarks;
@@ -214,7 +214,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
     public void setCompanyID(String fsValue) {
         psCompanyId = fsValue;
     }
-    
+
     @Override
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
@@ -245,12 +245,11 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
                         break;
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
-                            loadRecordMaster();
+                            loadTableDetailFromMain();
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
-                        loadRecordMaster();
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -424,7 +423,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
     public void loadRecordAttachment(boolean lbloadImage) {
         try {
             if (attachment_data.size() > 0) {
-                tfAttachmentNo.setText(String.valueOf(pnAttachment+1));
+                tfAttachmentNo.setText(String.valueOf(pnAttachment + 1));
                 String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 if (lsAttachmentType.equals("")) {
                     poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
@@ -507,11 +506,9 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
 
     public void loadRecordMaster() {
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
-        if (lbIsReprint && (
-                PurchaseOrderReceivingStatus.CONFIRMED.equals(poPurchaseReceivingController.Master().getTransactionStatus())
+        if (lbIsReprint && (PurchaseOrderReceivingStatus.CONFIRMED.equals(poPurchaseReceivingController.Master().getTransactionStatus())
                 || PurchaseOrderReceivingStatus.PAID.equals(poPurchaseReceivingController.Master().getTransactionStatus())
-                || PurchaseOrderReceivingStatus.POSTED.equals(poPurchaseReceivingController.Master().getTransactionStatus())
-                )) {
+                || PurchaseOrderReceivingStatus.POSTED.equals(poPurchaseReceivingController.Master().getTransactionStatus()))) {
             btnPrint.setText("Reprint");
         } else {
             btnPrint.setText("Print");
@@ -540,7 +537,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
                     lblStatus.setText("RETURNED");
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
-                    lblStatus.setText("VOID");
+                    lblStatus.setText("VOIDED");
                     lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
@@ -554,7 +551,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
             poPurchaseReceivingController.computeFields();
             btnPrint.setVisible(lbPrintStat);
             btnPrint.setManaged(lbPrintStat);
-            
+
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {
@@ -576,7 +573,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
             tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
             tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
             taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
-            
+
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
@@ -600,7 +597,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         try {
             poJSON = new JSONObject();
 
-            poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+            poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
             if ("error".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                 return;
@@ -679,7 +676,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
                             details_data.add(
@@ -908,7 +905,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
         apAttachments.setDisable(!lbShow1);
-        
+
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
             case PurchaseOrderReceivingStatus.VOID:
             case PurchaseOrderReceivingStatus.CANCELLED:
@@ -1033,6 +1030,9 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
     }
 
     public void slideImage(int direction) {
+        if (attachment_data.size() <= 0) {
+            return;
+        }
         currentIndex = pnAttachment;
         int newIndex = currentIndex + direction;
 

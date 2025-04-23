@@ -267,12 +267,11 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                         break;
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
-                            loadRecordMaster();
+                           loadTableDetailFromMain();
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
-                        loadRecordMaster();
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -810,7 +809,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                     lblStatus.setText("RETURNED");
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
-                    lblStatus.setText("VOID");
+                    lblStatus.setText("VOIDED");
                     lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
@@ -870,7 +869,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         try {
             poJSON = new JSONObject();
 
-            poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+            poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
             if ("error".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                 return;
@@ -1441,6 +1440,9 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
     }
 
     public void slideImage(int direction) {
+        if (attachment_data.size() <= 0) {
+            return;
+        }
         currentIndex = pnAttachment;
         int newIndex = currentIndex + direction;
 

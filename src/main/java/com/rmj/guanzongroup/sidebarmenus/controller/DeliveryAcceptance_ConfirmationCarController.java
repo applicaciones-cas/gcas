@@ -371,10 +371,9 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                                             loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
-                                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                                                 highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
                                             } else {
-                                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                                ShowMessageFX.Information("Unable to confirm. Incorrect credentials. " + (String) loJSON.get("message"), pxeModuleName, null);
                                             }
                                         }
                                     }
@@ -387,6 +386,8 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                                         btnPrint.fire();
                                     }
                                 }
+                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
+
                             }
                         } else {
                             return;
@@ -470,12 +471,12 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         }
                         break;
                     case "btnRemoveAttachment":
-                        attachment_data.remove(pnAttachment);
-                        if (pnAttachment != 0) {
-                            pnAttachment -= 1;
-                        }
-                        loadTableAttachment();
-                        initAttachmentsGrid();
+//                        attachment_data.remove(pnAttachment);
+//                        if (pnAttachment != 0) {
+//                            pnAttachment -= 1;
+//                        }
+//                        loadTableAttachment();
+//                        initAttachmentsGrid();
                         break;
                     case "btnArrowRight":
                         slideImage(1);
@@ -1415,7 +1416,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     lblStatus.setText("RETURNED");
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
-                    lblStatus.setText("VOID");
+                    lblStatus.setText("VOIDED");
                     lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
@@ -2300,6 +2301,9 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
     }
 
     public void slideImage(int direction) {
+        if (attachment_data.size() <= 0) {
+            return;
+        }
         currentIndex = pnAttachment;
         int newIndex = currentIndex + direction;
 
@@ -2460,6 +2464,11 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     String currentText = txtField.getText();
                     txtField.setText(currentText + " "); // Add a space
                     txtField.setText(currentText);       // Set back to original
+                }
+            } else {
+                if (filteredDataDetail.size() == details_data.size()) {
+                    tblViewOrderDetails.getSelectionModel().select(pnDetail);
+                    tblViewOrderDetails.getFocusModel().focus(pnDetail);
                 }
             }
         };

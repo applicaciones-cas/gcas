@@ -479,6 +479,8 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                                             loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
+                                            } else {
+                                                ShowMessageFX.Information("Unable to confirm. Incorrect credentials. "+(String) loJSON.get("message"), pxeModuleName, null);
                                             }
                                         }
                                     }
@@ -489,7 +491,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
                                         btnPrint.fire();
-                                    }
+                                    } 
                                 }
 
                                 //Call new transaction
@@ -1394,7 +1396,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                     lblStatus.setText("RETURNED");
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
-                    lblStatus.setText("VOID");
+                    lblStatus.setText("VOIDED");
                     lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
@@ -1807,10 +1809,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue();
 
-                            if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()) {
-                                highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
-                            }
 
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
@@ -2060,6 +2058,11 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                     String currentText = txtField.getText();
                     txtField.setText(currentText + " "); // Add a space
                     txtField.setText(currentText);       // Set back to original
+                }
+            } else {
+                if (filteredDataDetail.size() == details_data.size()) {
+                    tblViewOrderDetails.getSelectionModel().select(pnDetail);
+                    tblViewOrderDetails.getFocusModel().focus(pnDetail);
                 }
             }
         };

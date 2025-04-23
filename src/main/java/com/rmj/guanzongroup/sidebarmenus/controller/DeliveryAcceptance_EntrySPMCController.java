@@ -375,6 +375,8 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                                             loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
+                                            } else {
+                                                ShowMessageFX.Information("Unable to confirm. Incorrect credentials. "+(String) loJSON.get("message"), pxeModuleName, null);
                                             }
                                         }
                                     }
@@ -1274,7 +1276,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                     lblStatus.setText("RETURNED");
                     break;
                 case PurchaseOrderReceivingStatus.VOID:
-                    lblStatus.setText("VOID");
+                    lblStatus.setText("VOIDED");
                     lbPrintStat = false;
                     break;
                 case PurchaseOrderReceivingStatus.CANCELLED:
@@ -1946,6 +1948,11 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                     String currentText = txtField.getText();
                     txtField.setText(currentText + " "); // Add a space
                     txtField.setText(currentText);       // Set back to original
+                }
+            } else {
+                if (filteredDataDetail.size() == details_data.size()) {
+                    tblViewOrderDetails.getSelectionModel().select(pnDetail);
+                    tblViewOrderDetails.getFocusModel().focus(pnDetail);
                 }
             }
         };
