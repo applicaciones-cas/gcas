@@ -328,8 +328,9 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
                             if (lsIsSaved) {
                                 btnNew.fire();
+                            } else {
+                                loadRecordMaster();
                             }
-                            loadRecordMaster();
                             lsIsSaved = false;
                         });
                         if ("error".equals((String) poJSON.get("result"))) {

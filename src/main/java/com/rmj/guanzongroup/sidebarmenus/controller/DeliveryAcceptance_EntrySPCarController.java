@@ -237,8 +237,9 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
                             if (lsIsSaved) {
                                 btnNew.fire();
+                            } else {
+                                loadRecordMaster();
                             }
-                            loadRecordMaster();
                             lsIsSaved = false;
                         });
                         if ("error".equals((String) poJSON.get("result"))) {

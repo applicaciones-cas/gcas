@@ -238,8 +238,9 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
                             if (lsIsSaved) {
                                 btnNew.fire();
+                            } else {
+                                loadRecordMaster();
                             }
-                            loadRecordMaster();
                             lsIsSaved = false;
                         });
                         if ("error".equals((String) poJSON.get("result"))) {

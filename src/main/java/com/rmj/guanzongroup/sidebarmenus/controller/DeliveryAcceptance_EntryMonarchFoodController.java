@@ -236,8 +236,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
                             if (lsIsSaved) {
                                 btnNew.fire();
+                            } else {
+                                loadRecordMaster();
                             }
-                            loadRecordMaster();
                             lsIsSaved = false;
                         });
                         if ("error".equals((String) poJSON.get("result"))) {

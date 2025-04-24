@@ -237,8 +237,9 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
                             if (lsIsSaved) {
                                 btnNew.fire();
+                            } else {
+                                loadRecordMaster();
                             }
-                            loadRecordMaster();
                             lsIsSaved = false;
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
