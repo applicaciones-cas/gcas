@@ -101,6 +101,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
+    boolean lsIsSaved = false;
     private final String pxeModuleName = "Purchase Order Receiving Entry MC";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
@@ -327,12 +328,15 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
 
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
+                            if (lsIsSaved) {
+                                btnNew.fire();
+                            }
                             loadRecordMaster();
+                            lsIsSaved = false;
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         }
-                        loadRecordMaster();
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -478,23 +482,25 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             } else {
-                                                ShowMessageFX.Information("Unable to confirm. Incorrect credentials. "+(String) loJSON.get("message"), pxeModuleName, null);
+                                                ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             }
                                         }
                                     }
                                 }
 
+                                showRetainedHighlight(true);
                                 // Print Transaction Prompt
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
+                                        lsIsSaved = true;
                                         btnPrint.fire();
+                                    } else {
+                                        btnNew.fire();
                                     }
+                                } else {
+                                    btnNew.fire();
                                 }
-
-                                //Call new transaction
-                                showRetainedHighlight(true);
-                                btnNew.fire();
                             }
                         } else {
                             return;
@@ -1375,6 +1381,7 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
         try {
             boolean lbPrintStat = pnEditMode == EditMode.READY;
             String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
+            lblStatus.setText("");
             switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
 //                    lblStatus.setText("APPROVED");
