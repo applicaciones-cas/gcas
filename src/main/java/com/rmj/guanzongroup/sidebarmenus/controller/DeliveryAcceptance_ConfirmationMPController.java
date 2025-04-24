@@ -2168,8 +2168,15 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
             case PurchaseOrderReceivingStatus.CONFIRMED:
                 btnConfirm.setVisible(false);
                 btnConfirm.setManaged(false);
-                btnReturn.setVisible(lbShow3);
-                btnReturn.setManaged(lbShow3);
+                if(poPurchaseReceivingController.Master().isProcessed()){
+                    btnUpdate.setVisible(false);
+                    btnUpdate.setManaged(false);
+                    btnVoid.setVisible(false);
+                    btnVoid.setManaged(false);
+                } else {
+                    btnReturn.setVisible(lbShow3);
+                    btnReturn.setManaged(lbShow3);
+                }
                 break;
             case PurchaseOrderReceivingStatus.POSTED:
             case PurchaseOrderReceivingStatus.PAID:
