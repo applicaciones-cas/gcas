@@ -327,7 +327,9 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
                             if (lsIsSaved) {
-                                btnNew.fire();
+                                Platform.runLater(() -> {
+                                    btnNew.fire();
+                                });
                             } else {
                                 loadRecordMaster();
                             }
@@ -394,7 +396,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
                                 if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBrand", "tfModel",
-                                         "tfBarcode","tfDescription", "tfSupersede").contains(tf.getId())) {
+                                        "tfBarcode", "tfDescription", "tfSupersede").contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
 
@@ -475,6 +477,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
 
                                 // Confirmation Prompt
                                 JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
+                                loadRecordMaster();
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
@@ -1073,7 +1076,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
         tfDiscountRate.focusedProperty().addListener(txtMaster_Focus);
         tfDiscountAmount.focusedProperty().addListener(txtMaster_Focus);
         tfBarcode.focusedProperty().addListener(txtDetail_Focus);
-        
+
         tfDescription.focusedProperty().addListener(txtDetail_Focus);
         tfBrand.focusedProperty().addListener(txtDetail_Focus);
         tfModel.focusedProperty().addListener(txtDetail_Focus);
@@ -1792,18 +1795,17 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
         try {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 poJSON = new JSONObject();
-                poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderList(pnMain).getTransactionNo());
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    return;
-                } else {
-                    ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
-                    if (selected != null) {
-                        int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
-                        pnMain = pnRowMain;
+                ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
+                    pnMain = pnRowMain;
+
+                    poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderList(pnMain).getTransactionNo());
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
                     }
                 }
-
                 loadTableDetail();
             } else {
                 ShowMessageFX.Warning(null, pxeModuleName, "Data can only be viewed when in ADD or UPDATE mode.");
@@ -1879,7 +1881,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                         double lnTotal = 0.00;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue();
-
 
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()

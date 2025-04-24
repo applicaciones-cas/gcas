@@ -236,7 +236,9 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
                             if (lsIsSaved) {
-                                btnNew.fire();
+                                Platform.runLater(() -> {
+                                    btnNew.fire();
+                                });
                             } else {
                                 loadRecordMaster();
                             }
@@ -373,6 +375,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
                                 // Confirmation Prompt
                                 JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
+                                loadRecordMaster();
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
@@ -1654,19 +1657,18 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
         try {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 poJSON = new JSONObject();
-                poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderList(pnMain).getTransactionNo());
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    return;
-                } else {
-                    ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
-                    if (selected != null) {
-                        int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
-                        pnMain = pnRowMain;
 
+                ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
+                    pnMain = pnRowMain;
+
+                    poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderList(pnMain).getTransactionNo());
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
                     }
                 }
-
                 loadTableDetail();
             } else {
                 ShowMessageFX.Warning(null, pxeModuleName, "Data can only be viewed when in ADD or UPDATE mode.");

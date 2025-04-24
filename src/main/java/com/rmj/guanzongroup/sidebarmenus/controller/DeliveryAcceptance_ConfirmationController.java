@@ -355,7 +355,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                                 highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
                                             } else {
-                                                ShowMessageFX.Information( (String) loJSON.get("message"), pxeModuleName, null);
+                                                ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             }
                                         }
                                     }
@@ -363,6 +363,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
                                 // Print Transaction Prompt
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
+                                loadRecordMaster();
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
                                         btnPrint.fire();
@@ -1436,12 +1437,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         try {
             poJSON = new JSONObject();
 
-            poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-            if ("error".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                return;
-            }
-
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
                 ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
                 if (selected != null) {
@@ -1449,6 +1444,12 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     pnMain = pnRowMain;
                     disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                     highlight(tblViewPuchaseOrder, pnRowMain + 1, "#A7C7E7", highlightedRowsMain);
+
+                    poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
                 }
                 poPurchaseReceivingController.loadAttachments();
                 loadTableDetail();
@@ -1972,7 +1973,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             case PurchaseOrderReceivingStatus.CONFIRMED:
                 btnConfirm.setVisible(false);
                 btnConfirm.setManaged(false);
-                if(poPurchaseReceivingController.Master().isProcessed()){
+                if (poPurchaseReceivingController.Master().isProcessed()) {
                     btnUpdate.setVisible(false);
                     btnUpdate.setManaged(false);
                     btnVoid.setVisible(false);
