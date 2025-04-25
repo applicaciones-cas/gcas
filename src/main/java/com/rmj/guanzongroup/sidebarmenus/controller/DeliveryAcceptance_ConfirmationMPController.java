@@ -1591,13 +1591,17 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     }
                 }
                 poPurchaseReceivingController.loadAttachments();
-                loadTableDetail();
+                Platform.runLater(() -> {
+                    loadTableDetail();
+                });
                 tfAttachmentNo.clear();
                 cmbAttachmentType.setItems(documentType);
 
                 imageView.setImage(null);
                 stackPaneClip();
-                loadTableAttachment();
+                Platform.runLater(() -> {
+                    loadTableAttachment();
+                });
             }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {

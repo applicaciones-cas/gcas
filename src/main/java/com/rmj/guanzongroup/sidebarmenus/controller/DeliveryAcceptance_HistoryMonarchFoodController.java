@@ -608,13 +608,17 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
 
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
                 poPurchaseReceivingController.loadAttachments();
-                loadTableDetail();
+                Platform.runLater(() -> {
+                    loadTableDetail();
+                });
                 tfAttachmentNo.clear();
                 cmbAttachmentType.setItems(documentType);
 
                 imageView.setImage(null);
                 stackPaneClip();
-                loadTableAttachment();
+                Platform.runLater(() -> {
+                    loadTableAttachment();
+                });
             }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
