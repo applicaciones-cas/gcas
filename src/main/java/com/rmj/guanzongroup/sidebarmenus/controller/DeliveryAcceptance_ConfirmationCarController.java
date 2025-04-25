@@ -272,6 +272,8 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
                             loadTableDetailFromMain();
+                            pnEditMode = poPurchaseReceivingController.getEditMode();
+                            initButton(pnEditMode);
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -289,6 +291,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         showSerialDialog();
                         return;
                     case "btnUpdate":
+                        poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                         poJSON = poPurchaseReceivingController.UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
