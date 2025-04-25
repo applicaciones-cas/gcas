@@ -151,7 +151,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
     private HBox hbButtons;
 
     @FXML
-    private Label lblStatus, lblSource; 
+    private Label lblStatus, lblSource;
 
     @FXML
     private TextArea taRemarks;
@@ -214,7 +214,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
     public void setCompanyID(String fsValue) {
         psCompanyId = fsValue;
     }
-    
+
     @Override
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
@@ -423,7 +423,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
     public void loadRecordAttachment(boolean lbloadImage) {
         try {
             if (attachment_data.size() > 0) {
-                tfAttachmentNo.setText(String.valueOf(pnAttachment+1));
+                tfAttachmentNo.setText(String.valueOf(pnAttachment + 1));
                 String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 if (lsAttachmentType.equals("")) {
                     poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
@@ -509,11 +509,9 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 
     public void loadRecordMaster() {
         boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
-        if (lbIsReprint && (
-                PurchaseOrderReceivingStatus.CONFIRMED.equals(poPurchaseReceivingController.Master().getTransactionStatus())
+        if (lbIsReprint && (PurchaseOrderReceivingStatus.CONFIRMED.equals(poPurchaseReceivingController.Master().getTransactionStatus())
                 || PurchaseOrderReceivingStatus.PAID.equals(poPurchaseReceivingController.Master().getTransactionStatus())
-                || PurchaseOrderReceivingStatus.POSTED.equals(poPurchaseReceivingController.Master().getTransactionStatus())
-                )) {
+                || PurchaseOrderReceivingStatus.POSTED.equals(poPurchaseReceivingController.Master().getTransactionStatus()))) {
             btnPrint.setText("Reprint");
         } else {
             btnPrint.setText("Print");
@@ -556,7 +554,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
             poPurchaseReceivingController.computeFields();
             btnPrint.setVisible(lbPrintStat);
             btnPrint.setManaged(lbPrintStat);
-            
+
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
             } else {
@@ -687,7 +685,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
                                     && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
                                     && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-                                highlight(tblViewOrderDetails, lnCtr +1, "#FAA0A0", highlightedRowsDetail);
+                                highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
                             details_data.add(
@@ -787,8 +785,12 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                                 /* FOCUS ON FIRST ROW */
                                 tblAttachments.getSelectionModel().select(0);
                                 tblAttachments.getFocusModel().focus(0);
-                                pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
+                                pnAttachment = 0;
                                 loadRecordAttachment(true);
+                            } else {
+                                tfAttachmentNo.setText("");
+                                cmbAttachmentType.getSelectionModel().select(0);
+                                loadRecordAttachment(false);
                             }
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
@@ -864,9 +866,13 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
             if (attachment_data.size() > 0) {
-                int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
-                poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
-                cmbAttachmentType.getSelectionModel().select(selectedIndex);
+                try {
+                    int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+                    cmbAttachmentType.getSelectionModel().select(selectedIndex);
+                } catch (Exception e) {
+                }
+
             }
         });
 
@@ -986,7 +992,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         apMaster.setDisable(!lbShow1);
         apDetail.setDisable(!lbShow1);
         apAttachments.setDisable(!lbShow1);
-        
+
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
             case PurchaseOrderReceivingStatus.VOID:
             case PurchaseOrderReceivingStatus.CANCELLED:

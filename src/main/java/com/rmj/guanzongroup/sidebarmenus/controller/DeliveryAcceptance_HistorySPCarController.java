@@ -747,11 +747,82 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
     }
 
     private void loadTableAttachment() {
-//        attachment_data.clear(); should have data from class before calling this clear
-//        for (int i = 0; i < attachment_data.size(); i++) {
-//            attachment_data.add(new ModelDeliveryAcceptance_Attachment(String.valueOf(i), attachment_data.get(i).getIndex2()));
-//        }
-        loadRecordAttachment(true);
+
+        // Setting data to table detail
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMaxHeight(50);
+        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
+        StackPane loadingPane = new StackPane(progressIndicator);
+        loadingPane.setAlignment(Pos.CENTER);
+        tblAttachments.setPlaceholder(loadingPane);
+        progressIndicator.setVisible(true);
+
+        Label placeholderLabel = new Label("NO RECORD TO LOAD");
+        placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+//                Thread.sleep(1000);
+                Platform.runLater(() -> {
+                    try {
+                        attachment_data.clear();
+                        int lnCtr;
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getTransactionAttachmentCount(); lnCtr++) {
+                            attachment_data.add(
+                                    new ModelDeliveryAcceptance_Attachment(String.valueOf(lnCtr + 1),
+                                            String.valueOf(poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getFileName())
+                                    ));
+                        }
+                        if (pnAttachment < 0 || pnAttachment
+                                >= attachment_data.size()) {
+                            if (!attachment_data.isEmpty()) {
+                                /* FOCUS ON FIRST ROW */
+                                tblAttachments.getSelectionModel().select(0);
+                                tblAttachments.getFocusModel().focus(0);
+                                pnAttachment = 0;
+                                loadRecordAttachment(true);
+                            } else {
+                                tfAttachmentNo.setText("");
+                                cmbAttachmentType.getSelectionModel().select(0);
+                                loadRecordAttachment(false);
+                            }
+                        } else {
+                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                            tblAttachments.getSelectionModel().select(pnAttachment);
+                            tblAttachments.getFocusModel().focus(pnAttachment);
+                            loadRecordAttachment(true);
+                        }
+                    } catch (Exception e) {
+
+                    }
+
+                });
+
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                if (attachment_data == null || attachment_data.isEmpty()) {
+                    tblAttachments.setPlaceholder(placeholderLabel);
+                } else {
+                    tblAttachments.toFront();
+                }
+                progressIndicator.setVisible(false);
+
+            }
+
+            @Override
+            protected void failed() {
+                if (attachment_data == null || attachment_data.isEmpty()) {
+                    tblAttachments.setPlaceholder(placeholderLabel);
+                }
+                progressIndicator.setVisible(false);
+            }
+
+        };
+        new Thread(task).start(); // Run task in background
 
     }
 
@@ -787,9 +858,12 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
             if (attachment_data.size() > 0) {
-                int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
-                poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
-                cmbAttachmentType.getSelectionModel().select(selectedIndex);
+                try {
+                    int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+                    cmbAttachmentType.getSelectionModel().select(selectedIndex);
+                } catch (Exception e) {
+                }
             }
         });
 
