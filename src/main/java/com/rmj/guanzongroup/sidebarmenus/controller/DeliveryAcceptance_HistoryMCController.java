@@ -874,13 +874,17 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
 
             if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
                 poPurchaseReceivingController.loadAttachments();
-                loadTableDetail();
+                Platform.runLater(() -> {
+                    loadTableDetail();
+                });
                 tfAttachmentNo.clear();
                 cmbAttachmentType.setItems(documentType);
 
                 imageView.setImage(null);
                 stackPaneClip();
-                loadTableAttachment();
+                Platform.runLater(() -> {
+                    loadTableAttachment();
+                });
             }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -1048,8 +1052,12 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
                                 /* FOCUS ON FIRST ROW */
                                 tblAttachments.getSelectionModel().select(0);
                                 tblAttachments.getFocusModel().focus(0);
-                                pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
+                                pnAttachment = 0;
                                 loadRecordAttachment(true);
+                            } else {
+                                tfAttachmentNo.setText("");
+                                cmbAttachmentType.getSelectionModel().select(0);
+                                loadRecordAttachment(false);
                             }
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
@@ -1124,9 +1132,12 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.setOnAction(event -> {
             if (attachment_data.size() > 0) {
-                int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
-                poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
-                cmbAttachmentType.getSelectionModel().select(selectedIndex);
+                try {
+                    int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
+                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+                    cmbAttachmentType.getSelectionModel().select(selectedIndex);
+                } catch (Exception e) {
+                }
             }
         });
     }
