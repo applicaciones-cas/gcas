@@ -379,12 +379,18 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
 
                                 // Print Transaction Prompt
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
+                                poPurchaseReceivingController.loadAttachments();
+                                loadRecordMaster();
+                                isPrinted = false;
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
+                                        isPrinted = true;
                                         btnPrint.fire();
                                     }
                                 }
-                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
+                                if (!isPrinted) {
+                                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
+                                }
                             }
                         } else {
                             return;
