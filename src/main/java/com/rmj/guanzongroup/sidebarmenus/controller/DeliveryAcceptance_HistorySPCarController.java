@@ -242,6 +242,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                        poPurchaseReceivingController.loadAttachments();
                         break;
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
@@ -283,6 +284,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
+                    loadTableAttachment();
                 }
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(DeliveryAcceptance_HistorySPCarController.class.getName()).log(Level.SEVERE, null, ex);
@@ -911,6 +913,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         });
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
 
         adjustLastColumnForScrollbar(tblAttachments);
@@ -1211,22 +1214,45 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
         if (details_data.size() > 0) {
             TableView<?> currentTable = (TableView<?>) event.getSource();
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-            if (focusedCell != null) {
-                switch (event.getCode()) {
-                    case TAB:
-                    case DOWN:
-                        pnDetail = moveToNextRow(currentTable, focusedCell);
-                        break;
-                    case UP:
-                        pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                        break;
+            switch (currentTable.getId()) {
+                case "tblViewPuchaseOrder":
+                    if (focusedCell != null) {
+                        switch (event.getCode()) {
+                            case TAB:
+                            case DOWN:
+                                pnDetail = moveToNextRow(currentTable, focusedCell);
+                                break;
+                            case UP:
+                                pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                                break;
 
-                    default:
-                        break;
-                }
-                loadRecordDetail();
-                event.consume();
+                            default:
+                                break;
+                        }
+                        loadRecordDetail();
+                        event.consume();
+                    }
+                    break;
+                case "tblAttachments":
+                    if (focusedCell != null) {
+                        switch (event.getCode()) {
+                            case TAB:
+                            case DOWN:
+                                pnAttachment = moveToNextRow(currentTable, focusedCell);
+                                break;
+                            case UP:
+                                pnAttachment = moveToPreviousRow(currentTable, focusedCell);
+                                break;
+
+                            default:
+                                break;
+                        }
+                        loadRecordAttachment(true);
+                        event.consume();
+                    }
+                    break;
             }
+
         }
     }
 
