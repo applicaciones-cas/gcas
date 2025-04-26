@@ -520,42 +520,45 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
         }
 
         try {
-            boolean lbPrintStat = pnEditMode == EditMode.READY;
-            String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
-            switch (lsActive) {
+            Platform.runLater(() -> {
+                boolean lbPrintStat = pnEditMode == EditMode.READY;
+                String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
+                String lsStat = "UNKNOWN";
+                switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
 //                    lblStatus.setText("APPROVED");
 //                    break;
-                case PurchaseOrderReceivingStatus.POSTED:
-                    lblStatus.setText("POSTED");
-                    break;
-                case PurchaseOrderReceivingStatus.PAID:
-                    lblStatus.setText("PAID");
-                    break;
-                case PurchaseOrderReceivingStatus.CONFIRMED:
-                    lblStatus.setText("CONFIRMED");
-                    break;
-                case PurchaseOrderReceivingStatus.OPEN:
-                    lblStatus.setText("OPEN");
-                    break;
-                case PurchaseOrderReceivingStatus.RETURNED:
-                    lblStatus.setText("RETURNED");
-                    break;
-                case PurchaseOrderReceivingStatus.VOID:
-                    lblStatus.setText("VOIDED");
-                    lbPrintStat = false;
-                    break;
-                case PurchaseOrderReceivingStatus.CANCELLED:
-                    lblStatus.setText("CANCELLED");
-                    break;
-                default:
-                    lblStatus.setText("UNKNOWN");
-                    break;
-            }
+                    case PurchaseOrderReceivingStatus.POSTED:
+                        lsStat = "POSTED";
+                        break;
+                    case PurchaseOrderReceivingStatus.PAID:
+                        lsStat = "PAID";
+                        break;
+                    case PurchaseOrderReceivingStatus.CONFIRMED:
+                        lsStat = "CONFIRMED";
+                        break;
+                    case PurchaseOrderReceivingStatus.OPEN:
+                        lsStat = "OPEN";
+                        break;
+                    case PurchaseOrderReceivingStatus.RETURNED:
+                        lsStat = "RETURNED";
+                        break;
+                    case PurchaseOrderReceivingStatus.VOID:
+                        lsStat = "VOIDED";
+                        lbPrintStat = false;
+                        break;
+                    case PurchaseOrderReceivingStatus.CANCELLED:
+                        lsStat = "CANCELLED";
+                        break;
+                    default:
+                        lsStat = "UNKNOWN";
+                        break;
 
-            poPurchaseReceivingController.computeFields();
-            btnPrint.setVisible(lbPrintStat);
-            btnPrint.setManaged(lbPrintStat);
+                }
+                lblStatus.setText(lsStat);
+                btnPrint.setVisible(lbPrintStat);
+                btnPrint.setManaged(lbPrintStat);
+            });
 
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
@@ -564,6 +567,8 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                     poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
                 }
             }
+            poPurchaseReceivingController.computeFields();
+
             // Transaction Date
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));

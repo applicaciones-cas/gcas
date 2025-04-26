@@ -1295,41 +1295,45 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
 //        }
         try {
 
-            boolean lbPrintStat = pnEditMode == EditMode.READY;
-            String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
-            lblStatus.setText("");
-            switch (lsActive) {
+            Platform.runLater(() -> {
+                boolean lbPrintStat = pnEditMode == EditMode.READY;
+                String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
+                String lsStat = "UNKNOWN";
+                switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
 //                    lblStatus.setText("APPROVED");
 //                    break;
-                case PurchaseOrderReceivingStatus.POSTED:
-                    lblStatus.setText("POSTED");
-                    break;
-                case PurchaseOrderReceivingStatus.PAID:
-                    lblStatus.setText("PAID");
-                    break;
-                case PurchaseOrderReceivingStatus.CONFIRMED:
-                    lblStatus.setText("CONFIRMED");
-                    break;
-                case PurchaseOrderReceivingStatus.OPEN:
-                    lblStatus.setText("OPEN");
-                    break;
-                case PurchaseOrderReceivingStatus.RETURNED:
-                    lblStatus.setText("RETURNED");
-                    break;
-                case PurchaseOrderReceivingStatus.VOID:
-                    lblStatus.setText("VOIDED");
-                    lbPrintStat = false;
-                    break;
-                case PurchaseOrderReceivingStatus.CANCELLED:
-                    lblStatus.setText("CANCELLED");
-                    break;
-                default:
-                    lblStatus.setText("UNKNOWN");
-                    break;
-            }
-            btnPrint.setVisible(lbPrintStat);
-            btnPrint.setManaged(lbPrintStat);
+                    case PurchaseOrderReceivingStatus.POSTED:
+                        lsStat = "POSTED";
+                        break;
+                    case PurchaseOrderReceivingStatus.PAID:
+                        lsStat = "PAID";
+                        break;
+                    case PurchaseOrderReceivingStatus.CONFIRMED:
+                        lsStat = "CONFIRMED";
+                        break;
+                    case PurchaseOrderReceivingStatus.OPEN:
+                        lsStat = "OPEN";
+                        break;
+                    case PurchaseOrderReceivingStatus.RETURNED:
+                        lsStat = "RETURNED";
+                        break;
+                    case PurchaseOrderReceivingStatus.VOID:
+                        lsStat = "VOIDED";
+                        lbPrintStat = false;
+                        break;
+                    case PurchaseOrderReceivingStatus.CANCELLED:
+                        lsStat = "CANCELLED";
+                        break;
+                    default:
+                        lsStat = "UNKNOWN";
+                        break;
+
+                }
+                lblStatus.setText(lsStat);
+                btnPrint.setVisible(lbPrintStat);
+                btnPrint.setManaged(lbPrintStat);
+            });
 
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
                 poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
