@@ -273,9 +273,11 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                                 initButton(pnEditMode);
                             }
                             isPrinted = false;
-                            loadRecordMaster();
-                            loadTableDetail();
-                            loadTableAttachment();
+                            Platform.runLater(() -> {
+                                loadRecordMaster();
+                                loadTableDetail();
+                                loadTableAttachment();
+                            });
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));

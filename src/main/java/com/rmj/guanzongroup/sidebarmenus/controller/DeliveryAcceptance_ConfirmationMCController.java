@@ -279,9 +279,11 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                                 initButton(pnEditMode);
                             }
                             isPrinted = false;
-                            loadRecordMaster();
-                            loadTableDetail();
-                            loadTableAttachment();
+                            Platform.runLater(() -> {
+                                loadRecordMaster();
+                                loadTableDetail();
+                                loadTableAttachment();
+                            });
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
