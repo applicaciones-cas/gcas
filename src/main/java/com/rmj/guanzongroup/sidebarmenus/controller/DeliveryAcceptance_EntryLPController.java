@@ -391,6 +391,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
 
                                 showRetainedHighlight(true);
                                 // Print Transaction Prompt
+                                lsIsSaved = false; 
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 loadRecordMaster();
                                 if ("success".equals(loJSON.get("result"))) {

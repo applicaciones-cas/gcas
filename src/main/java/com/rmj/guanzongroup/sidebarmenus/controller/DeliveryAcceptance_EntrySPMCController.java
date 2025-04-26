@@ -392,7 +392,9 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
 
                                 showRetainedHighlight(true);
                                 // Print Transaction Prompt
+                                lsIsSaved = false;
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
+                                poPurchaseReceivingController.loadAttachments();
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
                                         lsIsSaved = true;

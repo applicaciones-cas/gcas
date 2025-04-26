@@ -375,7 +375,6 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
                                 // Confirmation Prompt
                                 JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
-                                loadRecordMaster();
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
@@ -391,7 +390,10 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
                                 showRetainedHighlight(true);
                                 // Print Transaction Prompt
+                                lsIsSaved = false;
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
+                                poPurchaseReceivingController.loadAttachments();
+                                loadRecordMaster();
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
                                         lsIsSaved = true;

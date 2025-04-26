@@ -118,7 +118,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
-
+    boolean isPrinted = false;
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
@@ -262,9 +262,19 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                 switch (lsButton) {
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
-                            loadTableDetailFromMain();
-                            pnEditMode = poPurchaseReceivingController.getEditMode();
-                            initButton(pnEditMode);
+                            if (isPrinted) {
+                                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
+                                poPurchaseReceivingController.resetMaster();
+                                poPurchaseReceivingController.resetOthers();
+                                poPurchaseReceivingController.Detail().clear();
+                                imageView.setImage(null);
+                                pnEditMode = EditMode.UNKNOWN;
+                                clearTextFields();
+                            }
+                            isPrinted = false;
+                            loadRecordMaster();
+                            loadTableDetail();
+                            loadTableAttachment();
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1432,33 +1442,31 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
         try {
             poJSON = new JSONObject();
 
-            if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
-                    pnMain = pnRowMain;
-                    disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                    highlight(tblViewPuchaseOrder, pnRowMain + 1, "#A7C7E7", highlightedRowsMain);
+            ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewPuchaseOrder.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
+                pnMain = pnRowMain;
+                disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
+                highlight(tblViewPuchaseOrder, pnRowMain + 1, "#A7C7E7", highlightedRowsMain);
 
-                    poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
+                poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+                if ("error".equals((String) poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    return;
                 }
-                poPurchaseReceivingController.loadAttachments();
-                Platform.runLater(() -> {
-                    loadTableDetail();
-                });
-                tfAttachmentNo.clear();
-                cmbAttachmentType.setItems(documentType);
-
-                imageView.setImage(null);
-                stackPaneClip();
-                Platform.runLater(() -> {
-                    loadTableAttachment();
-                });
             }
+            poPurchaseReceivingController.loadAttachments();
+            Platform.runLater(() -> {
+                loadTableDetail();
+            });
+            tfAttachmentNo.clear();
+            cmbAttachmentType.setItems(documentType);
+
+            imageView.setImage(null);
+            stackPaneClip();
+            Platform.runLater(() -> {
+                loadTableAttachment();
+            });
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1888,6 +1896,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
         });
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
         adjustLastColumnForScrollbar(tblViewPuchaseOrder);
         adjustLastColumnForScrollbar(tblAttachments);
@@ -2304,28 +2313,45 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
         if (details_data.size() > 0) {
             TableView<?> currentTable = (TableView<?>) event.getSource();
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
-            if (focusedCell != null) {
-                switch (event.getCode()) {
-                    case TAB:
-                    case DOWN:
-                        pnDetail = moveToNextRow(currentTable, focusedCell);
-                        break;
-                    case UP:
-                        pnDetail = moveToPreviousRow(currentTable, focusedCell);
-                        break;
+            switch (currentTable.getId()) {
+                case "tblViewPuchaseOrder":
+                    if (focusedCell != null) {
+                        switch (event.getCode()) {
+                            case TAB:
+                            case DOWN:
+                                pnDetail = moveToNextRow(currentTable, focusedCell);
+                                break;
+                            case UP:
+                                pnDetail = moveToPreviousRow(currentTable, focusedCell);
+                                break;
 
-                    default:
-                        break;
-                }
-                loadRecordDetail();
-                tfOrderNo.setText("");
-                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
-                    tfReceiveQuantity.requestFocus();
-                } else {
-                    tfBarcode.requestFocus();
-                }
-                event.consume();
+                            default:
+                                break;
+                        }
+                        loadRecordDetail();
+                        event.consume();
+                    }
+                    break;
+                case "tblAttachments":
+                    if (focusedCell != null) {
+                        switch (event.getCode()) {
+                            case TAB:
+                            case DOWN:
+                                pnAttachment = moveToNextRow(currentTable, focusedCell);
+                                break;
+                            case UP:
+                                pnAttachment = moveToPreviousRow(currentTable, focusedCell);
+                                break;
+
+                            default:
+                                break;
+                        }
+                        loadRecordAttachment(true);
+                        event.consume();
+                    }
+                    break;
             }
+
         }
     }
 
