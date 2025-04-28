@@ -1,0 +1,1295 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
+ */
+package com.rmj.guanzongroup.sidebarmenus.controller;
+
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Detail;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
+import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtils;
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.net.URL;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyCode.UP;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.util.StringConverter;
+import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
+import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.GuanzonException;
+import org.guanzon.appdriver.base.MiscUtil;
+import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.purchasing.services.PurchaseOrderReturnControllers;
+import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
+import org.json.simple.JSONObject;
+import javafx.scene.control.ScrollBar;
+import javafx.geometry.Orientation;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import javafx.animation.PauseTransition;
+import javafx.util.Duration;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.util.Pair;
+import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
+import org.json.simple.parser.ParseException;
+
+/**
+ * FXML Controller class
+ *
+ * @author User
+ */
+public class PurchaseOrderReturn_EntryController implements Initializable, ScreenInterface {
+
+    private GRiderCAS oApp;
+    private JSONObject poJSON;
+    private static final int ROWS_PER_PAGE = 50;
+    int pnDetail = 0;
+    boolean lsIsSaved = false;
+    private final String pxeModuleName = "Purchase Order Return Entry";
+    static PurchaseOrderReturn poPurchaseReturnController;
+    public int pnEditMode;
+
+    private String psIndustryId = "";
+    private String psCompanyId = "";
+    private String psCategoryId = "";
+    private String psSupplierId = "";
+
+    private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
+    private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
+    private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
+
+    private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
+    private Object lastFocusedTextField = null;
+    private Object previousSearchedTextField = null;
+
+    @FXML
+    private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
+
+    @FXML
+    private HBox hbButtons, hboxid;
+
+    @FXML
+    private Label lblSource, lblStatus;
+
+    @FXML
+    private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnClose;
+
+    @FXML
+    private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfTotal, tfBarcode, tfDescription,
+            tfReturnQuantity, tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost, tfReceiveQuantity;
+
+    @FXML
+    private DatePicker dpTransactionDate;
+
+    @FXML
+    private TextArea taRemarks;
+
+    @FXML
+    private TableView tblViewDetails;
+
+    @FXML
+    private TableColumn tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail,
+            tblReturnQuantityDetail, tblTotalDetail;
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        poPurchaseReturnController = new PurchaseOrderReturnControllers(oApp, null).PurchaseOrderReturn();
+        poJSON = new JSONObject();
+        poJSON = poPurchaseReturnController.InitTransaction(); // Initialize transaction
+        if (!"success".equals((String) poJSON.get("result"))) {
+            System.err.println((String) poJSON.get("message"));
+            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+        }
+        initTextFields();
+        initDatePickers();
+        initDetailsGrid();
+        initTableOnClick();
+        clearTextFields();
+        loadRecordMaster();
+        loadTableDetail();
+        pnEditMode = poPurchaseReturnController.getEditMode();
+        initButton(pnEditMode);
+
+        Platform.runLater(() -> {
+            poPurchaseReturnController.Master().setIndustryId(psIndustryId);
+            poPurchaseReturnController.Master().setCompanyId(psCompanyId);
+            poPurchaseReturnController.setIndustryId(psIndustryId);
+            poPurchaseReturnController.setCompanyId(psCompanyId);
+            poPurchaseReturnController.setCategoryId(psCategoryId);
+            loadRecordSearch();
+
+            btnNew.fire();
+        });
+    }
+
+    @Override
+    public void setGRider(GRiderCAS foValue) {
+        oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+        psIndustryId = fsValue;
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        psCompanyId = fsValue;
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
+        psCategoryId = fsValue;
+    }
+
+    @FXML
+    private void cmdButton_Click(ActionEvent event) {
+        poJSON = new JSONObject();
+
+        try {
+            Object source = event.getSource();
+            if (source instanceof Button) {
+                Button clickedButton = (Button) source;
+                String lsButton = clickedButton.getId();
+                switch (lsButton) {
+                    case "btnBrowse":
+                        poPurchaseReturnController.setTransactionStatus(PurchaseOrderReturnStatus.RETURNED + "" + PurchaseOrderReturnStatus.OPEN);
+                        poJSON = poPurchaseReturnController.searchTransaction();
+                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            tfTransactionNo.requestFocus();
+                            return;
+                        }
+                        pnEditMode = poPurchaseReturnController.getEditMode();
+//                        psCompanyId = poPurchaseReturnController.Master().getCompanyId();
+                        psSupplierId = poPurchaseReturnController.Master().getSupplierId();
+
+                        break;
+//                    case "btnPrint":
+//                        poJSON = poPurchaseReturnController.printRecord(() -> {
+//                            if (lsIsSaved) {
+//                                Platform.runLater(() -> {
+//                                    btnNew.fire();
+//                                });
+//                            } else {
+//                                loadRecordMaster();
+//                            }
+//                            lsIsSaved = false;
+//                        });
+//                        if ("error".equals((String) poJSON.get("result"))) {
+//                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                        }
+//                        break;
+                    case "btnClose":
+                        unloadForm appUnload = new unloadForm();
+                        if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
+                        } else {
+                            return;
+                        }
+                        break;
+                    case "btnNew":
+                        //Clear data
+                        poPurchaseReturnController.resetMaster();
+                        poPurchaseReturnController.Detail().clear();
+                        clearTextFields();
+
+                        poJSON = poPurchaseReturnController.NewTransaction();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        }
+
+                        poPurchaseReturnController.initFields();
+
+                        if (!psCompanyId.isEmpty()) {
+//                            poPurchaseReturnController.SearchCompany(psCompanyId, true);
+                        }
+                        if (!psSupplierId.isEmpty()) {
+                            poPurchaseReturnController.SearchSupplier(psSupplierId, true);
+                        }
+                        pnEditMode = poPurchaseReturnController.getEditMode();
+
+                        break;
+                    case "btnUpdate":
+                        poJSON = poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.Master().getTransactionNo());
+                        poJSON = poPurchaseReturnController.UpdateTransaction();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        }
+                        pnEditMode = poPurchaseReturnController.getEditMode();
+                        break;
+                    case "btnSearch":
+                        String lsMessage = "Focus a searchable textfield to search";
+                        if ((lastFocusedTextField != null)) {
+                            if (lastFocusedTextField instanceof TextField) {
+                                TextField tf = (TextField) lastFocusedTextField;
+                                if (Arrays.asList("tfSupplier", "tfTrucking", "tfTerm", "tfBarcode",
+                                        "tfDescription", "tfSupersede").contains(tf.getId())) {
+
+                                    if (lastFocusedTextField == previousSearchedTextField) {
+
+                                        break;
+                                    }
+                                    previousSearchedTextField = lastFocusedTextField;
+                                    // Create a simulated KeyEvent for F3 key press
+                                    KeyEvent keyEvent = new KeyEvent(
+                                            KeyEvent.KEY_PRESSED,
+                                            "",
+                                            "",
+                                            KeyCode.F3,
+                                            false, false, false, false
+                                    );
+                                    tf.fireEvent(keyEvent);
+                                } else {
+                                    ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+                                }
+                            } else {
+                                ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+                            }
+                        } else {
+                            ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+                        }
+                        break;
+                    case "btnCancel":
+                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                            //get last retrieved Company and Supplier
+//                            psCompanyId = poPurchaseReturnController.Master().getCompanyId();
+                            psSupplierId = poPurchaseReturnController.Master().getSupplierId();
+
+                            //Clear data
+                            poPurchaseReturnController.resetMaster();
+                            poPurchaseReturnController.Detail().clear();
+                            clearTextFields();
+
+                            poPurchaseReturnController.Master().setIndustryId(psIndustryId);
+                            poPurchaseReturnController.Master().setCompanyId(psCompanyId);
+                            poPurchaseReturnController.Master().setSupplierId(psSupplierId);
+                            pnEditMode = EditMode.UNKNOWN;
+
+                            break;
+                        } else {
+                            return;
+                        }
+                    case "btnHistory":
+                        break;
+                    case "btnRetrieve":
+                        //Retrieve data from purchase order to table main
+                        poJSON = retrievePO();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            if (!(boolean) poJSON.get("continue")) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            }
+                        }
+                        break;
+                    case "btnSave":
+                        //Validator
+                        poJSON = new JSONObject();
+                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
+                            poJSON = poPurchaseReturnController.SaveTransaction();
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                poPurchaseReturnController.AddDetail();
+                                return;
+                            } else {
+
+                                //reshow the highlight
+                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                                //get last retrieved Company and Supplier
+//                                psCompanyId = poPurchaseReturnController.Master().getCompanyId();
+                                psSupplierId = poPurchaseReturnController.Master().getSupplierId();
+
+                                // Confirmation Prompt
+                                JSONObject loJSON = poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.Master().getTransactionNo());
+                                if ("success".equals(loJSON.get("result"))) {
+                                    if (poPurchaseReturnController.Master().getTransactionStatus().equals(PurchaseOrderReturnStatus.OPEN)) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
+                                            loJSON = poPurchaseReturnController.ConfirmTransaction("Confirmed");
+                                            if ("success".equals((String) loJSON.get("result"))) {
+                                                ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
+                                            } else {
+                                                ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Print Transaction Prompt
+                                lsIsSaved = false;
+                                loJSON = poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.Master().getTransactionNo());
+                                loadRecordMaster();
+                                if ("success".equals(loJSON.get("result"))) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
+                                        lsIsSaved = true;
+                                        btnPrint.fire();
+                                    } else {
+                                        btnNew.fire();
+                                    }
+                                } else {
+                                    btnNew.fire();
+                                }
+
+                            }
+                        } else {
+                            return;
+                        }
+                        break;
+                    default:
+                        ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                        break;
+                }
+
+                if (lsButton.equals("btnPrint")) { //|| lsButton.equals("btnCancel")
+                } else {
+                    loadRecordMaster();
+                    loadTableDetail();
+                }
+                initButton(pnEditMode);
+
+            }
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+            Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public JSONObject retrievePO() {
+        poJSON = new JSONObject();
+        String lsMessage = "";
+        poJSON.put("result", "success");
+
+        if (poPurchaseReturnController.Master().getIndustryId().equals("")) {
+            poJSON.put("result", "error");
+            lsMessage = "Industry";
+        }
+        if (poPurchaseReturnController.Master().getCompanyId().equals("")) {
+            poJSON.put("result", "error");
+            lsMessage += lsMessage.isEmpty() ? "Company" : " & Company";
+        }
+//        if (poPurchaseReturnController.Master().getSupplierId().equals("")) {
+//            poJSON.put("result", "error");
+//            lsMessage += lsMessage.isEmpty() ? "Supplier" : " & Supplier";
+//        }
+
+        if ("success".equals((String) poJSON.get("result"))) {
+//            poJSON = poPurchaseReturnController.getApprovedPurchaseOrder();
+        } else {
+            poJSON.put("result", "error");
+            poJSON.put("continue", false);
+            poJSON.put("message", lsMessage + " cannot be empty.");
+        }
+
+        return poJSON;
+    }
+
+    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsID = (txtField.getId());
+        String lsValue = txtField.getText();
+
+        lastFocusedTextField = txtField;
+        previousSearchedTextField = null;
+
+        if (lsValue == null) {
+            return;
+        }
+        poJSON = new JSONObject();
+        if (!nv) {
+            /*Lost Focus*/
+            lsValue = lsValue.trim();
+            switch (lsID) {
+
+                case "taRemarks"://Remarks
+                    poJSON = poPurchaseReturnController.Master().setRemarks(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    break;
+            }
+            loadRecordMaster();
+        } else {
+            txtField.selectAll();
+        }
+    };
+
+    // Method to handle focus change and track the last focused TextField
+    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
+        poJSON = new JSONObject();
+        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTxtFieldID = (txtPersonalInfo.getId());
+        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
+        lastFocusedTextField = txtPersonalInfo;
+        previousSearchedTextField = null;
+
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTxtFieldID) {
+                case "tfDescription":
+                case "tfBarcode":
+                    //if value is blank then reset
+                    if (lsValue.equals("")) {
+                        poJSON = poPurchaseReturnController.Detail(pnDetail).setStockId("");
+                    }
+
+                    break;
+                case "tfSupersede":
+                    //if value is blank then reset
+                    if (lsValue.equals("")) {
+//                        poJSON = poPurchaseReturnController.Detail(pnDetail).setReplaceId("");
+                    }
+
+                    break;
+                case "tfCost":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    poJSON = poPurchaseReturnController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    }
+
+                    break;
+                case "tfReceiveQuantity":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0";
+                    }
+                    if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
+                            && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
+                        if (poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue() < Integer.valueOf(lsValue)) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
+                            poPurchaseReturnController.Detail(pnDetail).setQuantity(0);
+                            tfReceiveQuantity.requestFocus();
+                            break;
+                        }
+                    }
+
+                    poJSON = poPurchaseReturnController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    }
+                    break;
+            }
+            Platform.runLater(() -> {
+                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                delay.setOnFinished(event -> {
+                    loadTableDetail();
+                });
+                delay.play();
+            });
+        }
+    };
+
+    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
+
+        poJSON = new JSONObject();
+        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTxtFieldID = (txtPersonalInfo.getId());
+        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
+        lastFocusedTextField = txtPersonalInfo;
+        previousSearchedTextField = null;
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTxtFieldID) {
+                case "tfSupplier":
+                    if (lsValue.isEmpty()) {
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            if (poPurchaseReturnController.Master().getSupplierId() != null && !"".equals(poPurchaseReturnController.Master().getSupplierId())) {
+                                if (poPurchaseReturnController.getDetailCount() > 1) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+//                                        poPurchaseReturnController.removePORDetails();
+                                        loadTableDetail();
+                                    } else {
+                                        loadRecordMaster();
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+
+                        poJSON = poPurchaseReturnController.Master().setSupplierId("");
+                    }
+                    break;
+ 
+                case "tfAreaRemarks":
+                    break;
+         
+                case "tfReferenceNo":
+                    if (!lsValue.isEmpty()) {
+                        poJSON = poPurchaseReturnController.Master().setReferenceNo(lsValue);
+                    } else {
+                        poJSON = poPurchaseReturnController.Master().setReferenceNo("");
+                    }
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfReferenceNo.setText("");
+                        break;
+                    }
+                    break;
+
+            }
+
+            loadRecordMaster();
+
+        }
+    };
+
+    private void txtField_KeyPressed(KeyEvent event) {
+        try {
+            TextField txtField = (TextField) event.getSource();
+            String lsID = (((TextField) event.getSource()).getId());
+            String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+            poJSON = new JSONObject();
+            int lnRow = pnDetail;
+            TableView currentTable = tblViewDetails;
+            TablePosition focusedCell = currentTable.getFocusModel().getFocusedCell();
+
+            switch (event.getCode()) {
+                case ENTER:
+                    CommonUtils.SetNextFocus(txtField);
+                    break;
+                case UP:
+                    switch (lsID) {
+                        case "tfBarcode":
+                        case "tfReceiveQuantity":
+                            int lnReceiveQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            apDetail.requestFocus();
+                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
+                                tfReceiveQuantity.requestFocus();
+                            } else {
+                                pnDetail = JFXUtils.moveToPreviousRow(currentTable);
+                                loadRecordDetail();
+                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                                    tfReceiveQuantity.requestFocus();
+                                } else {
+                                    tfBarcode.requestFocus();
+                                }
+                                event.consume();
+                            }
+                            break;
+                    }
+                    break;
+                case DOWN:
+                    switch (lsID) {
+                        case "tfBarcode":
+                        case "tfReceiveQuantity":
+                            int lnReceiveQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            apDetail.requestFocus();
+                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
+                                tfReceiveQuantity.requestFocus();
+                            } else {
+                                pnDetail = JFXUtils.moveToNextRow(currentTable);
+                                loadRecordDetail();
+                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                                    tfReceiveQuantity.requestFocus();
+                                } else {
+                                    tfBarcode.requestFocus();
+                                }
+                                event.consume();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case F3:
+                    switch (lsID) {
+                        case "tfSupplier":
+                            if (poPurchaseReturnController.Master().getCompanyId() == null
+                                    || "".equals(poPurchaseReturnController.Master().getCompanyId())) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Company Name is not set.");
+                                return;
+                            }
+
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poPurchaseReturnController.getDetailCount() > 1) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+//                                        poPurchaseReturnController.removePORDetails();
+                                        loadTableDetail();
+                                    } else {
+                                        return;
+                                    }
+                                }
+                            }
+
+                            poJSON = poPurchaseReturnController.SearchSupplier(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSupplier.setText("");
+                                psSupplierId = "";
+                                break;
+                            }
+                            psSupplierId = poPurchaseReturnController.Master().getSupplierId();
+
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(e -> {
+                                    if (!"".equals(poPurchaseReturnController.Master().getCompanyId())) {
+                                        poJSON = retrievePO();
+                                        if ("error".equals((String) poJSON.get("result"))) {
+                                            if (!(boolean) poJSON.get("continue")) {
+                                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                            }
+                                        }
+                                    }
+                                });
+                                delay.play();
+                            });
+                            loadRecordMaster();
+                            break;
+
+                        case "tfOrderNo":
+                            break;
+                        case "tfBarcode":
+                            poJSON = poPurchaseReturnController.SearchBarcode(lsValue, pnDetail);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfBarcode.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        case "tfDescription":
+                            poJSON = poPurchaseReturnController.SearchDescription(lsValue, pnDetail);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfDescription.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch (GuanzonException | SQLException ex) {
+            Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+    }
+
+    public void initTextFields() {
+
+        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
+        taRemarks.focusedProperty().addListener(txtArea_Focus);
+        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
+
+        tfBarcode.focusedProperty().addListener(txtDetail_Focus);
+        tfDescription.focusedProperty().addListener(txtDetail_Focus);
+        tfCost.focusedProperty().addListener(txtDetail_Focus);
+        tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
+
+        TextField[] textFields = {
+            tfTransactionNo, tfSupplier, tfReferenceNo,
+            tfTotal, tfBarcode, tfDescription,
+            tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
+            tfReceiveQuantity
+        };
+
+        for (TextField textField : textFields) {
+            textField.setOnKeyPressed(this::txtField_KeyPressed);
+        }
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputDecimalOnly(tfCost);
+    }
+
+    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
+        poJSON = new JSONObject();
+        poJSON.put("result", "success");
+        poJSON.put("message", "success");
+        try {
+
+            if (!newValue) { // Lost focus
+                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
+                String lsID = datePicker.getId();
+                String inputText = datePicker.getEditor().getText();
+                LocalDate currentDate = LocalDate.now();
+                LocalDate selectedDate = null;
+
+                lastFocusedTextField = datePicker;
+                previousSearchedTextField = null;
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                if (inputText != null && !inputText.trim().isEmpty()) {
+                    try {
+                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                        datePicker.setValue(parsedDate);
+                        datePicker.getEditor().setText(formatter.format(parsedDate));
+                        inputText = datePicker.getEditor().getText();
+                    } catch (DateTimeParseException ignored) {
+                    }
+                }
+                // Check if the user typed something in the text field
+                if (inputText != null && !inputText.trim().isEmpty()) {
+                    try {
+                        selectedDate = LocalDate.parse(inputText, formatter);
+                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
+                    } catch (Exception ex) {
+                        poJSON.put("result", "error");
+                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        loadRecordMaster();
+                        // datePicker.requestFocus();
+                        return;
+                    }
+                } else {
+                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
+                }
+
+                String formattedDate = selectedDate.toString();
+
+                switch (lsID) {
+                    case "dpTransactionDate":
+                        if (selectedDate == null) {
+                            break;
+                        }
+                        if (selectedDate.isAfter(currentDate)) {
+                            poJSON.put("result", "error");
+                            poJSON.put("message", "Future dates are not allowed.");
+
+                        } else {
+                            poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+                        }
+                        break;
+                    default:
+
+                        break;
+                }
+                datePicker.getEditor().setText(formattedDate);
+                if ("error".equals((String) poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    // datePicker.requestFocus();
+                }
+                Platform.runLater(() -> {
+                    if (lsID.equals("dpExpiryDate")) {
+                        loadRecordDetail();
+                    } else {
+                        loadRecordMaster();
+                    }
+                });
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    };
+
+    public void initDatePickers() {
+        JFXUtils.setDatePickerFormat(dpTransactionDate);
+
+        JFXUtils.setDatePickerNextFocusByEnter(dpTransactionDate);
+
+        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
+
+    }
+
+    public void initDetailsGrid() {
+        JFXUtils.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail);
+        JFXUtils.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
+        JFXUtils.setColumnRight(tblCostDetail, tblTotalDetail);
+        JFXUtils.setColumnsIndex(tblRowNoDetail,tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblTotalDetail);
+
+        tblViewDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblViewDetails.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+        filteredDataDetail = new FilteredList<>(details_data, b -> true);
+
+        SortedList<ModelPurchaseOrderReturn_Detail> sortedData = new SortedList<>(filteredDataDetail);
+        sortedData.comparatorProperty().bind(tblViewDetails.comparatorProperty());
+        tblViewDetails.setItems(sortedData);
+    }
+
+    public void clearTextFields() {
+        previousSearchedTextField = null;
+        lastFocusedTextField = null;
+        dpTransactionDate.setValue(null);
+
+        tfTransactionNo.clear();
+        tfSupplier.clear();
+        taRemarks.clear();
+        tfReferenceNo.clear();
+        tfTotal.clear();
+        tfBarcode.clear();
+        tfDescription.clear();
+        tfBrand.clear();
+        tfModel.clear();
+        tfColor.clear();
+        tfInventoryType.clear();
+        tfMeasure.clear();
+        tfCost.clear();
+        tfReceiveQuantity.clear();
+        
+        loadRecordMaster();
+        loadTableDetail();
+    }
+
+    public void loadRecordSearch() {
+        try {
+            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
+
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+    }
+
+    public void loadRecordDetail() {
+        try {
+            if (pnDetail < 0 || pnDetail > poPurchaseReturnController.getDetailCount() - 1) {
+                return;
+            }
+            boolean lbFields = (poPurchaseReturnController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReturnController.Detail(pnDetail).getOrderNo() == null);
+            tfBarcode.setDisable(!lbFields);
+            tfDescription.setDisable(!lbFields);
+            if (lbFields) {
+                while (tfBarcode.getStyleClass().contains("DisabledTextField") || tfDescription.getStyleClass().contains("DisabledTextField")) {
+                    tfBarcode.getStyleClass().remove("DisabledTextField");
+                    tfDescription.getStyleClass().remove("DisabledTextField");
+                }
+            } else {
+                tfBarcode.getStyleClass().add("DisabledTextField");
+                tfDescription.getStyleClass().add("DisabledTextField");
+            }
+
+            // Expiry Date
+            String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poPurchaseReturnController.Detail(pnDetail).getExpiryDate());
+
+            tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
+            tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());
+            tfBrand.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Brand().getDescription());
+            tfModel.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Model().getDescription());
+            tfColor.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Color().getDescription());
+            tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
+            tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
+
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
+            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
+
+             JFXUtils.updateCaretPositions(apDetail);
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+
+    }
+
+    public void loadRecordMaster() {
+        boolean lbDisable = pnEditMode == EditMode.UPDATE;
+        if (lbDisable) {
+
+            tfSupplier.getStyleClass().add("DisabledTextField");
+        } else {
+            while (tfSupplier.getStyleClass().contains("DisabledTextField")) {
+
+                tfSupplier.getStyleClass().remove("DisabledTextField");
+            }
+        }
+
+        tfSupplier.setDisable(lbDisable);
+
+        try {
+
+            Platform.runLater(() -> {
+                boolean lbPrintStat = pnEditMode == EditMode.READY;
+                String lsActive = poPurchaseReturnController.Master().getTransactionStatus();
+                String lsStat = "UNKNOWN";
+                switch (lsActive) {
+//                case PurchaseOrderReturnStatus.APPROVED:
+//                    lblStatus.setText("APPROVED");
+//                    break;
+                    case PurchaseOrderReturnStatus.POSTED:
+                        lsStat = "POSTED";
+                        break;
+                    case PurchaseOrderReturnStatus.PAID:
+                        lsStat = "PAID";
+                        break;
+                    case PurchaseOrderReturnStatus.CONFIRMED:
+                        lsStat = "CONFIRMED";
+                        break;
+                    case PurchaseOrderReturnStatus.OPEN:
+                        lsStat = "OPEN";
+                        break;
+                    case PurchaseOrderReturnStatus.RETURNED:
+                        lsStat = "RETURNED";
+                        break;
+                    case PurchaseOrderReturnStatus.VOID:
+                        lsStat = "VOIDED";
+                        lbPrintStat = false;
+                        break;
+                    case PurchaseOrderReturnStatus.CANCELLED:
+                        lsStat = "CANCELLED";
+                        break;
+                    default:
+                        lsStat = "UNKNOWN";
+                        break;
+
+                }
+                lblStatus.setText(lsStat);
+                btnPrint.setVisible(lbPrintStat);
+                btnPrint.setManaged(lbPrintStat);
+            });
+
+            poPurchaseReturnController.computeFields();
+
+            // Transaction Date
+            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReturnController.Master().getTransactionDate());
+            dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
+
+            tfSupplier.setText(poPurchaseReturnController.Master().Supplier().getCompanyName());
+            tfReferenceNo.setText(poPurchaseReturnController.Master().getReferenceNo());
+            taRemarks.setText(poPurchaseReturnController.Master().getRemarks());
+
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReturnController.Master().getTransactionTotal().doubleValue())));
+
+            JFXUtils.updateCaretPositions(apMaster);
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+
+    }
+    
+    private void tableKeyEvents(KeyEvent event) {
+        if (details_data.size() > 0) {
+            TableView currentTable = (TableView) event.getSource();
+            TablePosition focusedCell = currentTable.getFocusModel().getFocusedCell();
+            if (focusedCell != null) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case DOWN:
+                        pnDetail = JFXUtils.moveToNextRow(currentTable);
+                        break;
+                    case UP:
+                        pnDetail = JFXUtils.moveToPreviousRow(currentTable);
+                        break;
+
+                    default:
+                        break;
+                }
+                loadRecordDetail();
+                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                    tfReceiveQuantity.requestFocus();
+                } else {
+                    tfBrand.requestFocus();
+                }
+                event.consume();
+            }
+        }
+    }
+
+    public void initTableOnClick() {
+        tblViewDetails.setOnMouseClicked(event -> {
+            if (details_data.size() > 0) {
+                if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
+                    pnDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
+                    loadRecordDetail();
+                    if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                        tfReceiveQuantity.requestFocus();
+                    } else {
+                        tfBarcode.requestFocus();
+                    }
+                }
+            }
+        });
+
+        tblViewDetails.setRowFactory(tv -> new TableRow<ModelPurchaseOrderReturn_Detail>() {
+            @Override
+            protected void updateItem(ModelPurchaseOrderReturn_Detail item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null || empty) {
+                    setStyle(""); // Reset for empty rows
+                } else {
+                    try {
+                        int rowNo = Integer.parseInt(item.getIndex01()); // Assuming getIndex01() returns RowNo
+                        List<String> colors = highlightedRowsDetail.get(rowNo);
+                        if (colors != null && !colors.isEmpty()) {
+                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
+                        } else {
+                            setStyle(""); // Default style
+                        }
+                    } catch (NumberFormatException e) {
+                        setStyle(""); // Safe fallback if index is invalid
+                    }
+                }
+            }
+        });
+        tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        JFXUtils.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size the column to work
+    }
+
+
+    public void loadTableDetail() {
+        // Setting data to table detail
+        JFXUtils.disableAllHighlight(tblViewDetails, highlightedRowsDetail);
+
+        // Setting data to table detail
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMaxHeight(50);
+        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
+        StackPane loadingPane = new StackPane(progressIndicator);
+        loadingPane.setAlignment(Pos.CENTER);
+        tblViewDetails.setPlaceholder(loadingPane);
+        progressIndicator.setVisible(true);
+
+        Label placeholderLabel = new Label("NO RECORD TO LOAD");
+        placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+//                Thread.sleep(1000);
+                // contains try catch, for loop of loading data to observable list until loadTab()
+                Platform.runLater(() -> {
+                    int lnCtr;
+                    details_data.clear();
+                    try {
+
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            lnCtr = poPurchaseReturnController.getDetailCount() - 1;
+                            while (lnCtr >= 0) {
+                                if (poPurchaseReturnController.Detail(lnCtr).getStockId() == null || poPurchaseReturnController.Detail(lnCtr).getStockId().equals("")) {
+                                    poPurchaseReturnController.Detail().remove(lnCtr);
+                                }
+                                lnCtr--;
+                            }
+
+                            if ((poPurchaseReturnController.getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReturnController.Detail(poPurchaseReturnController.getDetailCount() - 1).getStockId() != null && !poPurchaseReturnController.Detail(poPurchaseReturnController.getDetailCount() - 1).getStockId().equals("")) {
+                                    poPurchaseReturnController.AddDetail();
+                                }
+                            }
+
+                            if ((poPurchaseReturnController.getDetailCount() - 1) < 0) {
+                                poPurchaseReturnController.AddDetail();
+                            }
+                        }
+
+                        double lnTotal = 0.0;
+                        for (lnCtr = 0; lnCtr < poPurchaseReturnController.getDetailCount(); lnCtr++) {
+                            try {
+
+                                lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue();
+                            } catch (Exception e) {
+                            }
+
+                            if ((!poPurchaseReturnController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReturnController.Detail(lnCtr).getOrderNo() != null)
+                                    && poPurchaseReturnController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue()
+                                    && poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue() != 0) {
+                                JFXUtils.highlightByKey(tblViewDetails, String.valueOf(lnCtr + 1), "#FAA0A0", highlightedRowsDetail);
+                            }
+
+                            details_data.add(
+                                    new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getOrderNo()),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getOrderQty().intValue()),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
+                                    ));
+                        }
+
+                        if (pnDetail < 0 || pnDetail
+                                >= details_data.size()) {
+                            if (!details_data.isEmpty()) {
+                                /* FOCUS ON FIRST ROW */
+                                tblViewDetails.getSelectionModel().select(0);
+                                tblViewDetails.getFocusModel().focus(0);
+                                pnDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
+                                loadRecordDetail();
+                            }
+                        } else {
+                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                            tblViewDetails.getSelectionModel().select(pnDetail);
+                            tblViewDetails.getFocusModel().focus(pnDetail);
+                            loadRecordDetail();
+                        }
+                        loadRecordMaster();
+                    } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+                        Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                    }
+
+                });
+
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                if (details_data == null || details_data.isEmpty()) {
+                    tblViewDetails.setPlaceholder(placeholderLabel);
+                } else {
+                    tblViewDetails.toFront();
+                }
+                progressIndicator.setVisible(false);
+
+            }
+
+            @Override
+            protected void failed() {
+                if (details_data == null || details_data.isEmpty()) {
+                    tblViewDetails.setPlaceholder(placeholderLabel);
+                }
+                progressIndicator.setVisible(false);
+            }
+
+        };
+        new Thread(task).start(); // Run task in background
+    }
+
+    private void initButton(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        boolean lbShow2 = fnValue == EditMode.READY;
+        boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
+
+        // Manage visibility and managed state of other buttons
+        btnNew.setVisible(!lbShow);
+        btnNew.setManaged(!lbShow);
+        btnSearch.setVisible(lbShow);
+        btnSearch.setManaged(lbShow);
+        btnSave.setVisible(lbShow);
+        btnSave.setManaged(lbShow);
+        btnCancel.setVisible(lbShow);
+        btnCancel.setManaged(lbShow);
+
+        btnUpdate.setVisible(lbShow2);
+        btnUpdate.setManaged(lbShow2);
+        btnPrint.setVisible(lbShow2);
+        btnPrint.setManaged(lbShow2);
+        btnHistory.setVisible(lbShow2);
+        btnHistory.setManaged(lbShow2);
+
+        btnBrowse.setVisible(lbShow3);
+        btnBrowse.setManaged(lbShow3);
+        btnClose.setVisible(lbShow3);
+        btnClose.setManaged(lbShow3);
+
+//        apMaster.setDisable(!lbShow);
+        dpTransactionDate.setDisable(!lbShow);
+
+        taRemarks.setDisable(!lbShow);
+        tfReferenceNo.setDisable(!lbShow);
+
+        apDetail.setDisable(!lbShow);
+
+        switch (poPurchaseReturnController.Master().getTransactionStatus()) {
+            case PurchaseOrderReturnStatus.POSTED:
+            case PurchaseOrderReturnStatus.PAID:
+                btnUpdate.setVisible(false);
+                btnUpdate.setManaged(false);
+                break;
+            case PurchaseOrderReturnStatus.VOID:
+            case PurchaseOrderReturnStatus.CANCELLED:
+                btnUpdate.setVisible(false);
+                btnUpdate.setManaged(false);
+                btnPrint.setVisible(false);
+                btnPrint.setManaged(false);
+                break;
+        }
+    }
+
+}
