@@ -4,15 +4,16 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Detail;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Detail;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtils;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -43,6 +44,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
@@ -60,29 +62,32 @@ import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReturnControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import java.util.Arrays;
 import java.util.List;
-import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import org.json.simple.parser.ParseException;
 
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Team 2 - Arsiela & Aldrich
  */
-public class PurchaseOrderReturn_EntryController implements Initializable, ScreenInterface {
+public class PurchaseOrderReturn_EntryCarController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return Entry";
+    private final String pxeModuleName = "Purchase Order Return Entry Car";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 
@@ -92,7 +97,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     private String psSupplierId = "";
 
     private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
-    private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
+    private FilteredList<ModelPurchaseOrderReturn_Main> filteredData;
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
 
     private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
@@ -112,7 +117,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnClose;
 
     @FXML
-    private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfTotal, tfBarcode, tfDescription,
+    private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfTotal, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo,
             tfReturnQuantity, tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost, tfReceiveQuantity;
 
     @FXML
@@ -125,7 +130,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     private TableView tblViewDetails;
 
     @FXML
-    private TableColumn tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail,
+    private TableColumn tblRowNoDetail, tblFrameNoDetail, tblEngineNoDetail, tblCSPlateNoDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail,
             tblReturnQuantityDetail, tblTotalDetail;
 
     /**
@@ -258,9 +263,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfReferenceNo", "tfPOReceivingNo", "tfBarcode",
-                                        "tfDescription").contains(tf.getId())) {
-
+                                if (Arrays.asList("tfSupplier", "tfReferenceNo", "tfPOReceivingNo", "tfEngineNo", "tfFrameNo", "tfPlateNo", "tfCSNo").contains(tf.getId())) {
                                     if (lastFocusedTextField == previousSearchedTextField) {
                                         break;
                                     }
@@ -386,7 +389,6 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
             /*Lost Focus*/
             lsValue = lsValue.trim();
             switch (lsID) {
-
                 case "taRemarks"://Remarks
                     poJSON = poPurchaseReturnController.Master().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -416,13 +418,14 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                case "tfDescription":
-                case "tfBarcode":
+                case "tfFrameNo":
+                case "tfEngineNo":
+                case "tfPlateNo":
+                case "tfCSNo":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReturnController.Detail(pnDetail).setStockId("");
                     }
-
                     break;
                 case "tfReturnQuantity":
                     if (lsValue.isEmpty()) {
@@ -570,8 +573,10 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                     break;
                 case UP:
                     switch (lsID) {
-                        case "tfBarcode":
-                        case "tfReturnQuantity":
+                        case "tfEngineNo":
+                        case "tfFrameNo":
+                        case "tfPlateNo":
+                        case "tfCSNo":
                             int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
                             int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
@@ -585,7 +590,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                 if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
                                     tfReturnQuantity.requestFocus();
                                 } else {
-                                    tfBarcode.requestFocus();
+                                    tfEngineNo.requestFocus();
                                 }
                                 event.consume();
                             }
@@ -594,8 +599,10 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                     break;
                 case DOWN:
                     switch (lsID) {
-                        case "tfBarcode":
-                        case "tfReturnQuantity":
+                        case "tfEngineNo":
+                        case "tfFrameNo":
+                        case "tfPlateNo":
+                        case "tfCSNo":
                             int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
                             int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
@@ -609,7 +616,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                 if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
                                     tfReturnQuantity.requestFocus();
                                 } else {
-                                    tfBarcode.requestFocus();
+                                    tfEngineNo.requestFocus();
                                 }
                                 event.consume();
                             }
@@ -683,8 +690,8 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                             }
                             loadRecordMaster();
                             break;
-                        case "tfBarcode":
-                            poJSON = poPurchaseReturnController.SearchBarcode(lsValue, pnDetail);
+                        case "tfEngineNo":
+                            poJSON = poPurchaseReturnController.SearchEngineNo(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -694,7 +701,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                     tfReturnQuantity.requestFocus();
                                     return;
                                 }
-                                tfBarcode.setText("");
+                                tfEngineNo.setText("");
                                 break;
                             }
                             loadTableDetail();
@@ -707,8 +714,9 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                 delay.play();
                             });
                             break;
-                        case "tfDescription":
-                            poJSON = poPurchaseReturnController.SearchDescription(lsValue, pnDetail);
+                        
+                        case "tfFrameNo":
+                            poJSON = poPurchaseReturnController.SearchFrameNo(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -718,10 +726,11 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                     tfReturnQuantity.requestFocus();
                                     return;
                                 }
-                                tfDescription.setText("");
+                                tfFrameNo.setText("");
                                 break;
                             }
                             loadTableDetail();
+
                             Platform.runLater(() -> {
                                 PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                 delay.setOnFinished(event1 -> {
@@ -730,6 +739,55 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                 delay.play();
                             });
                             break;
+                        case "tfPlateNo":
+                            poJSON = poPurchaseReturnController.SearchPlateNo(lsValue, pnDetail);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReturnQuantity.requestFocus();
+                                    return;
+                                }
+                                tfPlateNo.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReturnQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        case "tfCSNo":
+                            poJSON = poPurchaseReturnController.SearchCSNo(lsValue, pnDetail);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReturnQuantity.requestFocus();
+                                    return;
+                                }
+                                tfCSNo.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReturnQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        
                     }
                     break;
                 default:
@@ -749,15 +807,17 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
         tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
         tfPOReceivingNo.focusedProperty().addListener(txtMaster_Focus);
 
-        tfBarcode.focusedProperty().addListener(txtDetail_Focus);
-        tfDescription.focusedProperty().addListener(txtDetail_Focus);
+        tfFrameNo.focusedProperty().addListener(txtDetail_Focus);
+        tfEngineNo.focusedProperty().addListener(txtDetail_Focus);
+        tfPlateNo.focusedProperty().addListener(txtDetail_Focus);
+        tfCSNo.focusedProperty().addListener(txtDetail_Focus);
         tfReturnQuantity.focusedProperty().addListener(txtDetail_Focus);
 
         TextField[] textFields = {
             tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
-            tfTotal, tfBarcode, tfDescription,
+            tfTotal, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo, 
             tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
-            tfReceiveQuantity
+            tfReceiveQuantity, tfReturnQuantity
         };
 
         for (TextField textField : textFields) {
@@ -856,10 +916,10 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     }
 
     public void initDetailsGrid() {
-        JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail);
-        JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
+        JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
+        JFXUtil.setColumnLeft(tblEngineNoDetail, tblFrameNoDetail,tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblTotalDetail);
+        JFXUtil.setColumnsIndex(tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblCSPlateNoDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail,tblReturnQuantityDetail, tblTotalDetail);
 
         JFXUtil.disableColumnReordering(tblViewDetails);
 
@@ -886,7 +946,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
         try {
             lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -896,20 +956,29 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                 return;
             }
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
-            tfBarcode.setDisable(!lbDisable);
-            tfDescription.setDisable(!lbDisable);
+            tfEngineNo.setDisable(!lbDisable);
+            tfFrameNo.setDisable(!lbDisable);
+            tfPlateNo.setDisable(!lbDisable);
+            tfCSNo.setDisable(!lbDisable);
             if (lbDisable) {
-                while (tfBarcode.getStyleClass().contains("DisabledTextField") || tfDescription.getStyleClass().contains("DisabledTextField")) {
-                    tfBarcode.getStyleClass().remove("DisabledTextField");
-                    tfDescription.getStyleClass().remove("DisabledTextField");
+                while (tfEngineNo.getStyleClass().contains("DisabledTextField") || tfFrameNo.getStyleClass().contains("DisabledTextField")
+                    || tfPlateNo.getStyleClass().contains("DisabledTextField") || tfCSNo.getStyleClass().contains("DisabledTextField")) {
+                    tfEngineNo.getStyleClass().remove("DisabledTextField");
+                    tfFrameNo.getStyleClass().remove("DisabledTextField");
+                    tfPlateNo.getStyleClass().remove("DisabledTextField");
+                    tfCSNo.getStyleClass().remove("DisabledTextField");
                 }
             } else {
-                tfBarcode.getStyleClass().add("DisabledTextField");
-                tfDescription.getStyleClass().add("DisabledTextField");
+                tfEngineNo.getStyleClass().add("DisabledTextField");
+                tfFrameNo.getStyleClass().add("DisabledTextField");
+                tfPlateNo.getStyleClass().add("DisabledTextField");
+                tfCSNo.getStyleClass().add("DisabledTextField");
             }
 
-            tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
-            tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());
+            tfEngineNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial01());
+            tfFrameNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial02());
+            tfPlateNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerialRegistration().getPlateNoP());
+            tfCSNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerialRegistration().getConductionStickerNo());
             tfBrand.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Brand().getDescription());
             tfModel.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Model().getDescription());
             tfColor.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Color().getDescription());
@@ -1027,7 +1096,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                 if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
                     tfReturnQuantity.requestFocus();
                 } else {
-                    tfBarcode.requestFocus();
+                    tfEngineNo.requestFocus();
                 }
                 event.consume();
             }
@@ -1043,7 +1112,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                     if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
                         tfReturnQuantity.requestFocus();
                     } else {
-                        tfBarcode.requestFocus();
+                        tfEngineNo.requestFocus();
                     }
                 }
             }
@@ -1126,15 +1195,24 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                 lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue();
                             } catch (Exception e) {
                             }
-
+                            
+                            String lsCSPlateNo = "";
+                            if (poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP() != null 
+                                    && !"".equals(poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP())) {
+                                lsCSPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP(); 
+                            } else {
+                                lsCSPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getConductionStickerNo(); 
+                            }
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial01()),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial02()),
+                                            String.valueOf(lsCSPlateNo),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue()),
+                                            String.valueOf(poPurchaseReturnController.getReceiveQty(poPurchaseReturnController.Detail(lnCtr).getStockId())),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) 
                                     ));
                         }
 
