@@ -574,9 +574,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                 case UP:
                     switch (lsID) {
                         case "tfEngineNo":
-                        case "tfFrameNo":
-                        case "tfPlateNo":
-                        case "tfCSNo":
+                        case "tfReturnQuantity":
                             int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
                             int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
@@ -600,9 +598,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                 case DOWN:
                     switch (lsID) {
                         case "tfEngineNo":
-                        case "tfFrameNo":
-                        case "tfPlateNo":
-                        case "tfCSNo":
+                        case "tfReturnQuantity":
                             int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
                             int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());

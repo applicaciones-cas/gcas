@@ -871,11 +871,10 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     }
 
     public void clearTextFields() {
-//        previousSearchedTextField = null;
+        previousSearchedTextField = null;
         lastFocusedTextField = null;
-//        dpTransactionDate.setValue(null);
+        dpTransactionDate.setValue(null);
 
-        JFXUtil.setObjectsToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate);
         JFXUtil.clearTextFields(apMaster, apDetail);
 
         loadRecordMaster();
