@@ -356,7 +356,7 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <TextField fx:id="tfReceiveQuantity" disable="true" layoutX="85.0" layoutY="109.0" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="tfReceiveQuantity" alignment="CENTER_RIGHT" disable="true" layoutX="85.0" layoutY="109.0" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="4" />
                                                                   <Label layoutX="43.0" layoutY="75.0" text="CS No" GridPane.columnIndex="4">
                                                                      <font>
                                                                         <Font size="12.0" />
@@ -392,11 +392,11 @@
                                                                 <TableColumn fx:id="tblEngineNoDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Engine No" />
                                                             <TableColumn fx:id="tblFrameNoDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Frame No" />
                                                             <TableColumn fx:id="tblCSPlateNoDetail" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="CS / Plate No" />
-                                                                <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
+                                                                <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="215.0" minWidth="-1.0" prefWidth="215.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
                                                                 <TableColumn fx:id="tblCostDetail" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
                                                             <TableColumn fx:id="tblReceiveQuantityDetail" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Receive" />
                                                                 <TableColumn fx:id="tblReturnQuantityDetail" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Return" />
-                                                                <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="119.0" minWidth="-1.0" prefWidth="119.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
+                                                                <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="119.0" minWidth="-Infinity" prefWidth="119.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
                                                             </columns>
                                              <columnResizePolicy>
                                              </columnResizePolicy>

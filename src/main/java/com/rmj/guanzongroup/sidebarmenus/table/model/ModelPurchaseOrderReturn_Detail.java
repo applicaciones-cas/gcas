@@ -66,7 +66,7 @@ public class ModelPurchaseOrderReturn_Detail {
         this.index06 = new SimpleStringProperty(index06);
         this.index07 = new SimpleStringProperty(index07);
     }
-    
+
     public ModelPurchaseOrderReturn_Detail(String index01,
             String index02,
             String index03,
@@ -142,6 +142,22 @@ public class ModelPurchaseOrderReturn_Detail {
 
     public void setIndex07(String index07) {
         this.index07.set(index07);
+    }
+
+    public String getIndex08() {
+        return index07.get();
+    }
+
+    public void setIndex08(String index08) {
+        this.index08.set(index08);
+    }
+
+    public String getIndex09() {
+        return index09.get();
+    }
+
+    public void setIndex09(String index09) {
+        this.index09.set(index09);
     }
 
 }

@@ -10,8 +10,6 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_De
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
-import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtils;
-import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -114,11 +112,13 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnClose;
+    private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel,
+            btnPrint, btnHistory, btnClose;
 
     @FXML
-    private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfTotal, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo,
-            tfReturnQuantity, tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost, tfReceiveQuantity;
+    private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, 
+            tfTotal, tfEngineNo, tfFrameNo, tfCSNo, tfPlateNo, tfReturnQuantity, tfColor, 
+            tfInventoryType, tfMeasure, tfCost, tfBrand, tfModel, tfModelVariant, tfReceiveQuantity;
 
     @FXML
     private DatePicker dpTransactionDate;
@@ -130,8 +130,8 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
     private TableView tblViewDetails;
 
     @FXML
-    private TableColumn tblRowNoDetail, tblFrameNoDetail, tblEngineNoDetail, tblCSPlateNoDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail,
-            tblReturnQuantityDetail, tblTotalDetail;
+    private TableColumn tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblCSPlateNoDetail, 
+            tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail;
 
     /**
      * Initializes the controller class.
@@ -496,7 +496,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                         if (!lsValue.isEmpty()) {
                         } else {
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo()!= null && !"".equals(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo())) {
+                                if (poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo() != null && !"".equals(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo())) {
                                     if (poPurchaseReturnController.getDetailCount() > 1) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the reference no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
@@ -509,7 +509,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                                     }
                                 }
                             }
-                            
+
                             poJSON = poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().setReferenceNo("");
                         }
                         if ("error".equals(poJSON.get("result"))) {
@@ -523,7 +523,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                         if (!lsValue.isEmpty()) {
                         } else {
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.Master().getSourceNo()!= null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
+                                if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
                                     if (poPurchaseReturnController.getDetailCount() > 1) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the reference no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
@@ -536,7 +536,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                                     }
                                 }
                             }
-                            
+
                             poJSON = poPurchaseReturnController.Master().setSourceNo("");
                         }
                         if ("error".equals(poJSON.get("result"))) {
@@ -662,7 +662,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                                     }
                                 }
                             }
-                            
+
                             poJSON = poPurchaseReturnController.SearchPOReceiving(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -682,7 +682,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                                     }
                                 }
                             }
-                            
+
                             poJSON = poPurchaseReturnController.SearchPOReceiving(lsValue, true);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -714,7 +714,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                                 delay.play();
                             });
                             break;
-                        
+
                         case "tfFrameNo":
                             poJSON = poPurchaseReturnController.SearchFrameNo(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
@@ -787,7 +787,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                                 delay.play();
                             });
                             break;
-                        
+
                     }
                     break;
                 default:
@@ -815,7 +815,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
 
         TextField[] textFields = {
             tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
-            tfTotal, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo, 
+            tfTotal, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo,
             tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
             tfReceiveQuantity, tfReturnQuantity
         };
@@ -917,9 +917,10 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
 
     public void initDetailsGrid() {
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
-        JFXUtil.setColumnLeft(tblEngineNoDetail, tblFrameNoDetail,tblDescriptionDetail);
+        JFXUtil.setColumnLeft(tblEngineNoDetail, tblFrameNoDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblCSPlateNoDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail,tblReturnQuantityDetail, tblTotalDetail);
+        JFXUtil.setColumnsIndex(tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblCSPlateNoDetail,
+                tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
 
         JFXUtil.disableColumnReordering(tblViewDetails);
 
@@ -931,11 +932,10 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
     }
 
     public void clearTextFields() {
-//        previousSearchedTextField = null;
+        previousSearchedTextField = null;
         lastFocusedTextField = null;
-//        dpTransactionDate.setValue(null);
+        dpTransactionDate.setValue(null);
 
-        JFXUtil.setObjectsToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate);
         JFXUtil.clearTextFields(apMaster, apDetail);
 
         loadRecordMaster();
@@ -962,7 +962,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
             tfCSNo.setDisable(!lbDisable);
             if (lbDisable) {
                 while (tfEngineNo.getStyleClass().contains("DisabledTextField") || tfFrameNo.getStyleClass().contains("DisabledTextField")
-                    || tfPlateNo.getStyleClass().contains("DisabledTextField") || tfCSNo.getStyleClass().contains("DisabledTextField")) {
+                        || tfPlateNo.getStyleClass().contains("DisabledTextField") || tfCSNo.getStyleClass().contains("DisabledTextField")) {
                     tfEngineNo.getStyleClass().remove("DisabledTextField");
                     tfFrameNo.getStyleClass().remove("DisabledTextField");
                     tfPlateNo.getStyleClass().remove("DisabledTextField");
@@ -981,6 +981,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
             tfCSNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerialRegistration().getConductionStickerNo());
             tfBrand.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Brand().getDescription());
             tfModel.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Model().getDescription());
+            tfModelVariant.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Variant().getDescription());
             tfColor.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Color().getDescription());
             tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
@@ -1195,13 +1196,13 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                                 lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue();
                             } catch (Exception e) {
                             }
-                            
+
                             String lsCSPlateNo = "";
-                            if (poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP() != null 
+                            if (poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP() != null
                                     && !"".equals(poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP())) {
-                                lsCSPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP(); 
+                                lsCSPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP();
                             } else {
-                                lsCSPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getConductionStickerNo(); 
+                                lsCSPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getConductionStickerNo();
                             }
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
@@ -1212,7 +1213,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
                                             String.valueOf(poPurchaseReturnController.getReceiveQty(poPurchaseReturnController.Detail(lnCtr).getStockId())),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) 
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal))
                                     ));
                         }
 

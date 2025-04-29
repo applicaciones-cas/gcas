@@ -432,12 +432,6 @@ public class JFXUtil {
         }
     }
 
-    public static void setObjectsToNull(Object... objects) {
-        for (int i = 0; i < objects.length; i++) {
-            objects[i] = null;
-        }
-    }
-
     public static void disableColumnReordering(TableView<?> tableView) {
         tableView.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
@@ -448,12 +442,12 @@ public class JFXUtil {
             }
         });
     }
-    
+
     public static void setButtonsVisibility(boolean visible, Button... buttons) {
-    for (Button btn : buttons) {
-        btn.setVisible(visible);
-        btn.setManaged(visible);
+        for (Button btn : buttons) {
+            btn.setVisible(visible);
+            btn.setManaged(visible);
+        }
     }
-}
 
 }
