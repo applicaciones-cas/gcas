@@ -5,6 +5,7 @@
 package com.rmj.guanzongroup.sidebarmenus.utility;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -28,12 +30,14 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -53,7 +57,7 @@ import org.apache.poi.ss.formula.functions.T;
  *
  * @author Aldrich
  */
-public class JFXUtils {
+public class JFXUtil {
 
     public static <T> void adjustColumnForScrollbar(TableView<?> tableView, int columnIndex) {
         tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
@@ -411,16 +415,45 @@ public class JFXUtils {
         }
     }
 
-    public static void clearTextFields(TextField... textFields) {
-        for (TextField tf : textFields) {
-            tf.clear();
+    public static void clearTextFields(AnchorPane... anchorPanes) {
+        for (AnchorPane pane : anchorPanes) {
+            clearTextInputsRecursive(pane);
         }
     }
 
-    public static void clearObjects(Object... objects) {
-        for (int i = 0; i < objects.length; i++) {
-            objects[i] = null; 
+// Helper method to recursively find and clear TextFields/TextAreas
+    private static void clearTextInputsRecursive(Parent parent) {
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            if (node instanceof TextInputControl) {
+                ((TextInputControl) node).clear();
+            } else if (node instanceof Parent) {
+                clearTextInputsRecursive((Parent) node); // Recursively check child nodes
+            }
         }
     }
+
+    public static void setObjectsToNull(Object... objects) {
+        for (int i = 0; i < objects.length; i++) {
+            objects[i] = null;
+        }
+    }
+
+    public static void disableColumnReordering(TableView<?> tableView) {
+        tableView.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
+            if (header != null) {
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
+            }
+        });
+    }
+    
+    public static void setButtonsVisibility(boolean visible, Button... buttons) {
+    for (Button btn : buttons) {
+        btn.setVisible(visible);
+        btn.setManaged(visible);
+    }
+}
 
 }
