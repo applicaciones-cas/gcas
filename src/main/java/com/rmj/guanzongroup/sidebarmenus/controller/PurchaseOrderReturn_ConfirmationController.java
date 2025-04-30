@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
+
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -96,15 +97,12 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
     private ObservableList<ModelPurchaseOrderReturn_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
 
-    ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
     private FilteredList<ModelPurchaseOrderReturn_Main> filteredData;
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
 
     private int pnAttachment;
 
-
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
-    private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
 
@@ -284,7 +282,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                     case "btnHistory":
                         break;
                     case "btnRetrieve":
-                        //Retrieve data from purchase order to table main
                         retrievePOR();
                         JFXUtil.disableAllHighlight(tblViewPuchaseOrderReturn, highlightedRowsMain);
                         break;
@@ -335,6 +332,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                         }
 
                         break;
+
                     case "btnConfirm":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to confirm transaction?") == true) {
@@ -536,26 +534,10 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 
             switch (lsTxtFieldID) {
                 case "tfDescription":
-                    if (lsValue.equals("")) {
-                        poJSON = poPurchaseReturnController.Detail(pnDetail).setStockId("");
-                    }
-
-                    break;
                 case "tfBarcode":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReturnController.Detail(pnDetail).setStockId("");
-                    }
-
-                    break;
-                case "tfCost":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
-                    }
-                    poJSON = poPurchaseReturnController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
                     break;
                 case "tfReturnQuantity":
@@ -609,10 +591,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                     }
                     break;
                 case "tfSearchReferenceNo":
-                    break;
-                case "tfAttachmentNo":
-                    break;
-                case "":
                     break;
             }
             if (lsTxtFieldID.equals("tfSearchSupplier")
@@ -774,7 +752,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                 default:
                     break;
             }
-
         } catch (GuanzonException ex) {
             Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
@@ -954,7 +931,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                         tblViewPuchaseOrderReturn.getFocusModel().focus(pnMain);
                     }
                     if (poPurchaseReturnController.getPurchaseOrderReturnCount() < 1) {
-                        JFXUtil.loadTab(pgPagination, 1, ROWS_PER_PAGE, tblViewPuchaseOrderReturn, filteredData);
+                        JFXUtil.loadTab(pgPagination, main_data.size(), ROWS_PER_PAGE, tblViewPuchaseOrderReturn, filteredData);
                     }
                 });
 
@@ -1037,7 +1014,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(poPurchaseReturnController.Detail(pnDetail).getStockId())));
             tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
-
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
@@ -1161,7 +1137,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 
     public void loadTableDetail() {
         // Setting data to table detail
-        JFXUtil.disableAllHighlight(tblViewDetails, highlightedRowsDetail);
 
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -1219,13 +1194,12 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 //                                    && poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue() != 0) {
 //                                JFXUtil.highlightByKey(tblViewDetails, String.valueOf(lnCtr + 1), "#FAA0A0", highlightedRowsDetail);
 //                            }
-
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue()),
+                                            String.valueOf(poPurchaseReturnController.getReceiveQty(poPurchaseReturnController.Detail(pnDetail).getStockId())),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
@@ -1296,14 +1270,14 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 
         taRemarks.focusedProperty().addListener(txtArea_Focus);
         tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
+        tfPOReceivingNo.focusedProperty().addListener(txtMaster_Focus);
 
         tfBarcode.focusedProperty().addListener(txtDetail_Focus);
         tfDescription.focusedProperty().addListener(txtDetail_Focus);
-        tfCost.focusedProperty().addListener(txtDetail_Focus);
         tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
 
         TextField[] textFields = {
-            tfSearchSupplier, tfSearchReferenceNo, tfTransactionNo, tfSupplier,
+            tfSearchSupplier, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfPOReceivingNo,
             tfReferenceNo, tfTotal, tfBrand,
             tfModel, tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost,
             tfReceiveQuantity
@@ -1361,27 +1335,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                 }
             }
         });
-        tblViewDetails.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Detail>() {
-            @Override
-            protected void updateItem(ModelDeliveryAcceptance_Detail item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else {
-                    try {
-                        int rowNo = Integer.parseInt(item.getIndex01()); // Assuming getIndex01() returns RowNo
-                        List<String> colors = highlightedRowsDetail.get(rowNo);
-                        if (colors != null && !colors.isEmpty()) {
-                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
-                        } else {
-                            setStyle(""); // Default style
-                        }
-                    } catch (NumberFormatException e) {
-                        setStyle(""); // Safe fallback if index is invalid
-                    }
-                }
-            }
-        });
 
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size last column to work
@@ -1391,7 +1344,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
     private void initButton(int fnValue) {
 
         boolean lbShow1 = (fnValue == EditMode.UPDATE);
-        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
+//        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
         boolean lbShow3 = (fnValue == EditMode.READY);
         boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
         // Manage visibility and managed state of other buttons
@@ -1428,10 +1381,11 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
     }
 
     public void initDetailsGrid() {
-        JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail);
+        JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
         JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblTotalDetail);
+        JFXUtil.setColumnsIndex(tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail,
+                tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
 
         JFXUtil.disableColumnReordering(tblViewDetails);
 
@@ -1472,7 +1426,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                             case UP:
                                 pnDetail = JFXUtil.moveToPreviousRow(currentTable);
                                 break;
-
                             default:
                                 break;
                         }
@@ -1480,34 +1433,15 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                         event.consume();
                     }
                     break;
-                case "tblAttachments":
-                    if (focusedCell != null) {
-                        switch (event.getCode()) {
-                            case TAB:
-                            case DOWN:
-                                pnAttachment = JFXUtil.moveToNextRow(currentTable);
-                                break;
-                            case UP:
-                                pnAttachment = JFXUtil.moveToPreviousRow(currentTable);
-                                break;
-
-                            default:
-                                break;
-                        }
-                        event.consume();
-                    }
-                    break;
             }
-
         }
     }
 
     public void clearTextFields() {
-//        previousSearchedTextField = null;
-//        lastFocusedTextField = null;
-//        dpTransactionDate.setValue(null);
+        previousSearchedTextField = null;
+        lastFocusedTextField = null;
+        dpTransactionDate.setValue(null);
 
-        JFXUtil.setObjectsToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate);
         JFXUtil.clearTextFields(apMaster, apDetail, apBrowse);
 
     }

@@ -92,7 +92,6 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     private String psSupplierId = "";
 
     private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
-    private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
 
     private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
