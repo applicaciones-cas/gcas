@@ -450,4 +450,31 @@ public class JFXUtil {
         }
     }
 
+    public static void AddStyleClass(String lsCssClassName, TextField... textFields) {
+        for (TextField tf : textFields) {
+            tf.getStyleClass().add(lsCssClassName);
+        }
+    }
+
+    public static void RemoveStyleClass(String lsCssClassName, TextField... textFields) {
+        for (TextField tf : textFields) {
+            tf.getStyleClass().remove(lsCssClassName);
+        }
+    }
+
+    public static boolean isTextFieldContainsStyleClass(String lsCssClassName, TextField... textFields) {
+        for (TextField tf : textFields) {
+            if (tf.getStyleClass().contains("DisabledTextField")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void setDisabled(boolean disable, Node... nodes) {
+        for (Node node : nodes) {
+            node.setDisable(disable);
+        }
+    }
+
 }

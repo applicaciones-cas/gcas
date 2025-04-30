@@ -1355,8 +1355,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
         JFXUtil.setButtonsVisibility(lbShow3, btnPrint, btnUpdate, btnHistory, btnConfirm, btnVoid);
 
         //Unkown || Ready
-        apMaster.setDisable(!lbShow1);
-        apDetail.setDisable(!lbShow1);
+        JFXUtil.setDisabled(!lbShow1, apMaster, apDetail);
 
         JFXUtil.setButtonsVisibility(lbShow4, btnClose);
         JFXUtil.setButtonsVisibility(false, btnReturn);

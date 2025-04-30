@@ -92,8 +92,8 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
     private Button btnPrint, btnHistory, btnClose, btnBrowse;
 
     @FXML
-    private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, 
-            tfTotal, tfEngineNo, tfFrameNo, tfCSNo, tfPlateNo, tfReturnQuantity, tfColor, 
+    private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
+            tfTotal, tfEngineNo, tfFrameNo, tfCSNo, tfPlateNo, tfReturnQuantity, tfColor,
             tfInventoryType, tfMeasure, tfCost, tfBrand, tfModel, tfModelVariant, tfReceiveQuantity;
     @FXML
     private TextField tfSearchSupplier, tfSearchReferenceNo;
@@ -108,7 +108,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
     private TableView tblViewDetails;
 
     @FXML
-    private TableColumn tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblCSPlateNoDetail, 
+    private TableColumn tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblCSPlateNoDetail,
             tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail;
 
     /**
@@ -175,7 +175,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = poPurchaseReturnController.searchTransaction(psIndustryId, psCompanyId, psCategoryId,tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                        poJSON = poPurchaseReturnController.searchTransaction(psIndustryId, psCompanyId, psCategoryId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
@@ -215,12 +215,12 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
                         break;
                 }
 
-                if (lsButton.equals("btnPrint")) { 
+                if (lsButton.equals("btnPrint")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                 }
-                
+
                 initButton(pnEditMode);
 
             }
@@ -228,7 +228,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
             Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-    
+
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -253,7 +253,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
             }
         }
     };
-    
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -276,7 +276,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poJSON = poPurchaseReturnController.searchTransaction(psIndustryId, psCompanyId, psCategoryId,tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                            poJSON = poPurchaseReturnController.searchTransaction(psIndustryId, psCompanyId, psCategoryId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
@@ -371,11 +371,11 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
             } else {
                 tfSearchSupplier.setText(poPurchaseReturnController.Master().Supplier().getCompanyName());
             }
-            
+
             try {
                 if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
                     tfSearchReferenceNo.setText("");
-                } 
+                }
             } catch (Exception e) {
                 tfSearchReferenceNo.setText("");
             }
@@ -640,9 +640,8 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
 
     private void initButton(int fnValue) {
         boolean lbShow = fnValue == EditMode.READY;
-        
-        apMaster.setDisable(true);
-        apDetail.setDisable(true);
+
+        JFXUtil.setDisabled(true, apMaster, apDetail);
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(lbShow, btnPrint, btnHistory);
 
