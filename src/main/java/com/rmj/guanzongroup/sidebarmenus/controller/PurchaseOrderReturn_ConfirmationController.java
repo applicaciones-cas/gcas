@@ -546,7 +546,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                     }
                     if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
                             && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
-                        if (poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue() < Integer.valueOf(lsValue)) {
+                        if (poPurchaseReturnController.getReceiveQty(pnDetail) < Integer.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Return quantity cannot be greater than the order quantity.");
                             poPurchaseReturnController.Detail(pnDetail).setQuantity(0);
                             tfReceiveQuantity.requestFocus();
@@ -1012,7 +1012,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(poPurchaseReturnController.Detail(pnDetail).getStockId())));
+            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
             tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
 
             JFXUtil.updateCaretPositions(apDetail);
@@ -1199,7 +1199,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReturnController.getReceiveQty(poPurchaseReturnController.Detail(pnDetail).getStockId())),
+                                            String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
