@@ -215,7 +215,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
                         break;
                 }
 
-                if (lsButton.equals("btnPrint")) { //|| lsButton.equals("btnCancel")
+                if (lsButton.equals("btnPrint")) { 
                 } else {
                     loadRecordMaster();
                     loadTableDetail();

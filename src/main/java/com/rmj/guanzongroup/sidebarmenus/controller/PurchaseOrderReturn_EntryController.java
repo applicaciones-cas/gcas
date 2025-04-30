@@ -424,7 +424,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                     }
                     if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
                             && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
-                        if (poPurchaseReturnController.getReceiveQty(pnDetail) < Integer.valueOf(lsValue)) {
+                        if (poPurchaseReturnController.getReceiveQty(pnDetail).intValue() < Integer.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Return quantity cannot be greater than the receive quantity.");
                             poPurchaseReturnController.Detail(pnDetail).setQuantity(0);
                             tfReturnQuantity.requestFocus();
