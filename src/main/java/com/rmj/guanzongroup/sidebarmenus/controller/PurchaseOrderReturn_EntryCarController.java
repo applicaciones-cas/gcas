@@ -782,17 +782,9 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
     }
 
     public void initTextFields() {
-
-        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
-        taRemarks.focusedProperty().addListener(txtArea_Focus);
-        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
-        tfPOReceivingNo.focusedProperty().addListener(txtMaster_Focus);
-
-        tfFrameNo.focusedProperty().addListener(txtDetail_Focus);
-        tfEngineNo.focusedProperty().addListener(txtDetail_Focus);
-        tfPlateNo.focusedProperty().addListener(txtDetail_Focus);
-        tfCSNo.focusedProperty().addListener(txtDetail_Focus);
-        tfReturnQuantity.focusedProperty().addListener(txtDetail_Focus);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfSupplier, tfReferenceNo, tfPOReceivingNo);
+        JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
+        JFXUtil.setFocusListener(txtDetail_Focus, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo, tfReturnQuantity);
 
         TextField[] textFields = {
             tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
@@ -937,7 +929,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                 return;
             }
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
-            
+
             JFXUtil.setDisabled(!lbDisable, tfEngineNo, tfFrameNo, tfPlateNo, tfCSNo);
             if (lbDisable) {
 

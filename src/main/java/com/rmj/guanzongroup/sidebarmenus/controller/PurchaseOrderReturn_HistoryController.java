@@ -652,17 +652,10 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
     }
 
     public void initTextFields() {
-        tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
-        tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
-
-        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
-        taRemarks.focusedProperty().addListener(txtArea_Focus);
-        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
-        tfPOReceivingNo.focusedProperty().addListener(txtMaster_Focus);
-
-        tfBarcode.focusedProperty().addListener(txtDetail_Focus);
-        tfDescription.focusedProperty().addListener(txtDetail_Focus);
-        tfReturnQuantity.focusedProperty().addListener(txtDetail_Focus);
+        JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfSupplier, tfReferenceNo, tfPOReceivingNo);
+        JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
+        JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription, tfReturnQuantity);
 
         TextField[] textFields = {
             tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfSearchReferenceNo, tfSearchSupplier,

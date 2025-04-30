@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
@@ -32,6 +33,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Pagination;
@@ -474,6 +476,14 @@ public class JFXUtil {
     public static void setDisabled(boolean disable, Node... nodes) {
         for (Node node : nodes) {
             node.setDisable(disable);
+        }
+    }
+
+    public static void setFocusListener(ChangeListener<? super Boolean> listener, Node... nodes) {
+        for (Node node : nodes) {
+            if (node instanceof Control) {
+                ((Control) node).focusedProperty().addListener(listener);
+            }
         }
     }
 

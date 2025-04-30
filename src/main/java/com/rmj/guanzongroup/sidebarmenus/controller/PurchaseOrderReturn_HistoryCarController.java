@@ -315,8 +315,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
     }
 
     public void initTextFields() {
-        tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
-        tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
+        JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
 
         TextField[] textFields = {
             tfSearchSupplier, tfSearchReferenceNo

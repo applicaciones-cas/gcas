@@ -1262,17 +1262,10 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
     }
 
     public void initTextFields() {
-
-        tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
-        tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
-
-        taRemarks.focusedProperty().addListener(txtArea_Focus);
-        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
-        tfPOReceivingNo.focusedProperty().addListener(txtMaster_Focus);
-
-        tfBarcode.focusedProperty().addListener(txtDetail_Focus);
-        tfDescription.focusedProperty().addListener(txtDetail_Focus);
-        tfReceiveQuantity.focusedProperty().addListener(txtDetail_Focus);
+        JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
+        JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfPOReceivingNo);
+        JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription, tfReceiveQuantity);
 
         TextField[] textFields = {
             tfSearchSupplier, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfPOReceivingNo,
