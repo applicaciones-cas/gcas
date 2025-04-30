@@ -1027,12 +1027,10 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
     public void loadRecordMaster() {
         boolean lbDisable = poPurchaseReturnController.getEditMode() == EditMode.UPDATE;
         if (lbDisable) {
-
-            tfSupplier.getStyleClass().add("DisabledTextField");
+            JFXUtil.AddStyleClass("DisabledTextField", tfSupplier);
         } else {
-            while (tfSupplier.getStyleClass().contains("DisabledTextField")) {
-
-                tfSupplier.getStyleClass().remove("DisabledTextField");
+            while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSupplier)) {
+                JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier);
             }
         }
 
