@@ -420,7 +420,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 
     public void retrievePOR() {
         poJSON = new JSONObject();
-//        poJSON = poPurchaseReturnController.loadPurchaseOrderReturn("confirmation", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
+        poJSON = poPurchaseReturnController.loadPurchaseOrderReturn("confirmation", psSupplierId, tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
