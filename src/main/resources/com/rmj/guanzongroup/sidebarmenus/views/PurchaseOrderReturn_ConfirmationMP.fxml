@@ -409,7 +409,7 @@
                                                         <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <TableView fx:id="tblViewOrderDetails" prefHeight="200.0" prefWidth="200.0">
+                                                        <TableView fx:id="tblViewDetails" prefHeight="200.0" prefWidth="200.0">
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                             <TableColumn fx:id="tblImeiNoDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="IMEI No" />

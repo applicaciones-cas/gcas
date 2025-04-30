@@ -213,15 +213,15 @@
                                                                               </Label>
                                                                           <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                                               <DatePicker fx:id="dpTransactionDate" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                          <TextField fx:id="tfSupplier" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                      <TextField fx:id="tfReferenceNo" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfPOReceivingNo" layoutX="85.0" layoutY="11.0" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                                                                          <TextField fx:id="tfSupplier" maxHeight="25.0" promptText="" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                      <TextField fx:id="tfReferenceNo" maxHeight="25.0" promptText="" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="tfPOReceivingNo" layoutX="85.0" layoutY="11.0" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" promptText="" GridPane.columnIndex="7" GridPane.rowIndex="3" />
                                                       <TextArea fx:id="taRemarks" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="4" GridPane.rowSpan="2">
                                                          <GridPane.margin>
                                                             <Insets top="1.0" />
                                                          </GridPane.margin>
                                                       </TextArea>
-                                                                              <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="5" />
+                                                                              <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" promptText="0.00" styleClass="" GridPane.columnIndex="11" GridPane.rowIndex="5" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
@@ -281,23 +281,23 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                  <TextField fx:id="tfEngineNo" layoutX="85.0" layoutY="12.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" />
-                                                                  <TextField fx:id="tfFrameNo" layoutX="85.0" layoutY="12.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <TextField fx:id="tfCSNo" layoutX="387.0" layoutY="12.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="6" />
-                                                                  <TextField fx:id="tfPlateNo" layoutX="387.0" layoutY="12.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                                  <TextField fx:id="tfEngineNo" layoutX="85.0" layoutY="12.0" maxHeight="25.0" promptText="" GridPane.columnIndex="2" />
+                                                                  <TextField fx:id="tfFrameNo" layoutX="85.0" layoutY="12.0" maxHeight="25.0" promptText="" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <TextField fx:id="tfCSNo" layoutX="387.0" layoutY="12.0" maxHeight="25.0" promptText="" GridPane.columnIndex="6" />
+                                                                  <TextField fx:id="tfPlateNo" layoutX="387.0" layoutY="12.0" maxHeight="25.0" promptText="" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                                       <TextField fx:id="tfReturnQuantity" alignment="CENTER_RIGHT" GridPane.columnIndex="11" GridPane.rowIndex="5" />
-                                                                          <TextField fx:id="tfColor" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                      <TextField fx:id="tfInventoryType" disable="true" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                                          <TextField fx:id="tfMeasure" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                                      <TextField fx:id="tfCost" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="3" />
-                                                                  <TextField fx:id="tfBrand" disable="true" editable="false" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <TextField fx:id="tfModel" disable="true" editable="false" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                          <TextField fx:id="tfColor" disable="true" maxHeight="25.0" styleClass="" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="tfInventoryType" disable="true" styleClass="" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                          <TextField fx:id="tfMeasure" disable="true" maxHeight="25.0" styleClass="" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                      <TextField fx:id="tfCost" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" styleClass="" GridPane.columnIndex="11" GridPane.rowIndex="3" />
+                                                                  <TextField fx:id="tfBrand" disable="true" editable="false" maxHeight="25.0" styleClass="" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <TextField fx:id="tfModel" disable="true" editable="false" styleClass="" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                   <Label text="Model Vrnt." GridPane.rowIndex="4">
                                                                      <font>
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <TextField fx:id="tfModelVariant" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="tfModelVariant" disable="true" maxHeight="25.0" styleClass="" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                   <Label layoutX="342.0" layoutY="46.0" text="Engine No">
                                                                      <font>
                                                                         <Font size="12.0" />
@@ -313,7 +313,7 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <TextField fx:id="tfReceiveQuantity" disable="true" layoutX="85.0" layoutY="109.0" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="tfReceiveQuantity" alignment="CENTER_RIGHT" disable="true" layoutX="85.0" layoutY="109.0" maxHeight="25.0" styleClass="" GridPane.columnIndex="11" GridPane.rowIndex="4" />
                                                                   <Label layoutX="43.0" layoutY="75.0" text="CS No" GridPane.columnIndex="4">
                                                                      <font>
                                                                         <Font size="12.0" />
@@ -343,7 +343,7 @@
                                                         <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <TableView fx:id="tblViewOrderDetails" prefHeight="200.0" prefWidth="200.0">
+                                                        <TableView fx:id="tblViewDetails" prefHeight="200.0" prefWidth="200.0">
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                                 <TableColumn fx:id="tblEngineNoDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Engine No" />
