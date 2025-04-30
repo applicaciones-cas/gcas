@@ -95,10 +95,8 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
     private String psSupplierId = "";
 
     private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
-    private FilteredList<ModelPurchaseOrderReturn_Main> filteredData;
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
 
-    private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
 
@@ -315,7 +313,6 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                                 poPurchaseReturnController.AddDetail();
                                 return;
                             } else {
-                                //reshow the highlight
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
 
                                 // Confirmation Prompt
@@ -433,7 +430,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                     }
                     if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
                             && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
-                        if (poPurchaseReturnController.getReceiveQty(pnDetail) < Integer.valueOf(lsValue)) {
+                        if (poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue() < Integer.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Return quantity cannot be greater than the receive quantity.");
                             poPurchaseReturnController.Detail(pnDetail).setQuantity(0);
                             tfReturnQuantity.requestFocus();
@@ -983,7 +980,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
+            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(poPurchaseReturnController.Detail(pnDetail).getStockId())));
             tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
 
             JFXUtil.updateCaretPositions(apDetail);
@@ -1115,34 +1112,13 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
             }
         });
 
-        tblViewDetails.setRowFactory(tv -> new TableRow<ModelPurchaseOrderReturn_Detail>() {
-            @Override
-            protected void updateItem(ModelPurchaseOrderReturn_Detail item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else {
-                    try {
-                        int rowNo = Integer.parseInt(item.getIndex01()); // Assuming getIndex01() returns RowNo
-                        List<String> colors = highlightedRowsDetail.get(rowNo);
-                        if (colors != null && !colors.isEmpty()) {
-                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
-                        } else {
-                            setStyle(""); // Default style
-                        }
-                    } catch (NumberFormatException e) {
-                        setStyle(""); // Safe fallback if index is invalid
-                    }
-                }
-            }
-        });
+
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size the column to work
     }
 
     public void loadTableDetail() {
         // Setting data to table detail
-        JFXUtil.disableAllHighlight(tblViewDetails, highlightedRowsDetail);
 
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -1207,7 +1183,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                                             String.valueOf(lsCSPlateNo),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),
+                                            String.valueOf(poPurchaseReturnController.getReceiveQty(poPurchaseReturnController.Detail(pnDetail).getStockId())),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal))
                                     ));
