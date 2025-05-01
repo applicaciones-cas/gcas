@@ -89,7 +89,6 @@ public class PurchaseOrderReturn_EntrySPMCController implements Initializable, S
     private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
 
-    private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
 
@@ -1008,36 +1007,11 @@ public class PurchaseOrderReturn_EntrySPMCController implements Initializable, S
                 }
             }
         });
-
-        tblViewDetails.setRowFactory(tv -> new TableRow<ModelPurchaseOrderReturn_Detail>() {
-            @Override
-            protected void updateItem(ModelPurchaseOrderReturn_Detail item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else {
-                    try {
-                        int rowNo = Integer.parseInt(item.getIndex01()); // Assuming getIndex01() returns RowNo
-                        List<String> colors = highlightedRowsDetail.get(rowNo);
-                        if (colors != null && !colors.isEmpty()) {
-                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
-                        } else {
-                            setStyle(""); // Default style
-                        }
-                    } catch (NumberFormatException e) {
-                        setStyle(""); // Safe fallback if index is invalid
-                    }
-                }
-            }
-        });
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size in min-width of the column to work
     }
 
     public void loadTableDetail() {
-        // Setting data to table detail
-        JFXUtil.disableAllHighlight(tblViewDetails, highlightedRowsDetail);
-
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);

@@ -1268,14 +1268,16 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
             protected void updateItem(ModelPurchaseOrderReturn_Main item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null || empty) {
-                    setStyle("");
+                    setStyle(""); // Reset for empty rows
                 } else {
-                    int rowNo = Integer.valueOf(item.getIndex01()); // Get RowNo from the model
-                    List<String> colors = highlightedRowsMain.get(rowNo);
-                    if (colors != null && !colors.isEmpty()) {
-                        setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
+                    String key = item.getIndex01(); // defines the ReferenceNo
+                    if (highlightedRowsMain.containsKey(key)) {
+                        List<String> colors = highlightedRowsMain.get(key);
+                        if (!colors.isEmpty()) {
+                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply latest color
+                        }
                     } else {
-                        setStyle("");
+                        setStyle(""); // Default style
                     }
                 }
             }
