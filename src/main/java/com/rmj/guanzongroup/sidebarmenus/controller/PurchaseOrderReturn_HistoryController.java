@@ -181,8 +181,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poPurchaseReturnController.setTransactionStatus(PurchaseOrderReturnStatus.RETURNED + "" + PurchaseOrderReturnStatus.OPEN);
-                        poJSON = poPurchaseReturnController.searchTransaction();
+                        poJSON = poPurchaseReturnController.searchTransaction(psIndustryId, psCompanyId, psCategoryId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
@@ -235,39 +234,12 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
         }
     }
 
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
-        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsID = (txtField.getId());
-        String lsValue = txtField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-        poJSON = new JSONObject();
-        if (!nv) {
-            /*Lost Focus*/
-            lsValue = lsValue.trim();
-            switch (lsID) {
-
-                case "taRemarks"://Remarks
-                    poJSON = poPurchaseReturnController.Master().setRemarks(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-            }
-            loadRecordMaster();
-        } else {
-            txtField.selectAll();
-        }
-    };
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
+
         if (lsValue == null) {
             return;
         }
@@ -279,370 +251,66 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
                         psSupplierId = "";
                     }
                     break;
-                case "tfSearchReferenceNo":
-                    break;
+
             }
-            if (lsTxtFieldID.equals("tfSearchSupplier")
-                    || lsTxtFieldID.equals("tfSearchReferenceNo")) {
+            if (lsTxtFieldID.equals("tfSearchSupplier") || lsTxtFieldID.equals("tfSearchReferenceNo")) {
                 loadRecordSearch();
             }
         }
     };
-    // Method to handle focus change and track the last focused TextField
-    final ChangeListener<? super Boolean> txtDetail_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfDescription":
-                case "tfBarcode":
-                    //if value is blank then reset
-                    if (lsValue.equals("")) {
-                        poJSON = poPurchaseReturnController.Detail(pnDetail).setStockId("");
-                    }
-
-                    break;
-                case "tfReturnQuantity":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0";
-                    }
-                    if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
-                            && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
-                        if (poPurchaseReturnController.getReceiveQty(pnDetail).intValue() < Integer.valueOf(lsValue)) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Return quantity cannot be greater than the receive quantity.");
-                            poPurchaseReturnController.Detail(pnDetail).setQuantity(0);
-                            tfReturnQuantity.requestFocus();
-                            break;
-                        }
-                    }
-
-                    poJSON = poPurchaseReturnController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    }
-                    break;
-            }
-            Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                delay.setOnFinished(event -> {
-                    loadTableDetail();
-                });
-                delay.play();
-            });
-        }
-    };
-
-    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
-        try {
-            poJSON = new JSONObject();
-            TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-            String lsTxtFieldID = (txtPersonalInfo.getId());
-            String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
-            if (lsValue == null) {
-                return;
-            }
-            if (!nv) {
-                /*Lost Focus*/
-                switch (lsTxtFieldID) {
-                    case "tfSupplier":
-                        if (lsValue.isEmpty()) {
-                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.Master().getSupplierId() != null && !"".equals(poPurchaseReturnController.Master().getSupplierId())) {
-                                    if (poPurchaseReturnController.getDetailCount() > 1) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the supplier name? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
-                                            poPurchaseReturnController.removeDetails();
-                                            loadTableDetail();
-                                        } else {
-                                            loadRecordMaster();
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-
-                            poJSON = poPurchaseReturnController.Master().setSupplierId("");
-                        }
-                        break;
-                    case "tfReferenceNo":
-                        if (!lsValue.isEmpty()) {
-                        } else {
-                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo() != null && !"".equals(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo())) {
-                                    if (poPurchaseReturnController.getDetailCount() > 1) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the reference no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
-                                            poPurchaseReturnController.removeDetails();
-                                            loadTableDetail();
-                                        } else {
-                                            loadRecordMaster();
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-
-                            poJSON = poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().setReferenceNo("");
-                        }
-                        if ("error".equals(poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            tfReferenceNo.setText("");
-                            break;
-                        }
-                        break;
-
-                    case "tfPOReceivingNo":
-                        if (!lsValue.isEmpty()) {
-                        } else {
-                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
-                                    if (poPurchaseReturnController.getDetailCount() > 1) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the reference no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
-                                            poPurchaseReturnController.removeDetails();
-                                            loadTableDetail();
-                                        } else {
-                                            loadRecordMaster();
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-
-                            poJSON = poPurchaseReturnController.Master().setSourceNo("");
-                        }
-                        if ("error".equals(poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            tfPOReceivingNo.setText("");
-                            break;
-                        }
-                        break;
-
-                }
-
-                loadRecordMaster();
-
-            }
-        } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
-
-    };
-
-    public void retrievePOR() {
-        poJSON = new JSONObject();
-        poJSON = poPurchaseReturnController.loadPurchaseOrderReturn("confirmation", psSupplierId, tfSearchReferenceNo.getText());
-        if (!"success".equals((String) poJSON.get("result"))) {
-            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-        } else {
-        }
-    }
-
+    
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
             String lsID = (((TextField) event.getSource()).getId());
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
-            int lnRow = pnDetail;
-            TableView currentTable = tblViewDetails;
-            TablePosition focusedCell = currentTable.getFocusModel().getFocusedCell();
-
             switch (event.getCode()) {
-                case ENTER:
-                    CommonUtils.SetNextFocus(txtField);
-                    break;
-                case UP:
-                    switch (lsID) {
-                        case "tfBarcode":
-                        case "tfReturnQuantity":
-                            int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            if (lnQty != lnNewvalue && (lnQty > 0
-                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
-                                tfReturnQuantity.requestFocus();
-                            } else {
-                                pnDetail = JFXUtil.moveToPreviousRow(currentTable);
-                                loadRecordDetail();
-                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
-                                    tfReturnQuantity.requestFocus();
-                                } else {
-                                    tfBarcode.requestFocus();
-                                }
-                                event.consume();
-                            }
-                            break;
-                    }
-                    break;
-                case DOWN:
-                    switch (lsID) {
-                        case "tfBarcode":
-                        case "tfReturnQuantity":
-                            int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            if (lnQty != lnNewvalue && (lnQty > 0
-                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
-                                tfReturnQuantity.requestFocus();
-                            } else {
-                                pnDetail = JFXUtil.moveToNextRow(currentTable);
-                                loadRecordDetail();
-                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
-                                    tfReturnQuantity.requestFocus();
-                                } else {
-                                    tfBarcode.requestFocus();
-                                }
-                                event.consume();
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
                 case F3:
                     switch (lsID) {
                         case "tfSearchSupplier":
                             poJSON = poPurchaseReturnController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             } else {
                                 psSupplierId = poPurchaseReturnController.Master().getSupplierId();
                             }
-                            retrievePOR();
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReturnController.Master().setTransactionNo(lsValue);
-                            retrievePOR();
-                            return;
-
-                        case "tfSupplier":
-                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.getDetailCount() > 1) {
-                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
-                                        poPurchaseReturnController.removeDetails();
-                                        loadTableDetail();
-                                    } else {
-                                        return;
-                                    }
-                                }
-                            }
-
-                            poJSON = poPurchaseReturnController.SearchSupplier(lsValue, false);
+                            poJSON = poPurchaseReturnController.searchTransaction(psIndustryId, psCompanyId, psCategoryId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSupplier.setText("");
+                                tfSearchReferenceNo.setText("");
                                 psSupplierId = "";
                                 break;
+                            } else {
+                                psSupplierId = poPurchaseReturnController.Master().getSupplierId();
+                                pnEditMode = poPurchaseReturnController.getEditMode();
+                                loadRecordMaster();
+                                loadTableDetail();
+                                initButton(pnEditMode);
                             }
-                            psSupplierId = poPurchaseReturnController.Master().getSupplierId();
-                            loadRecordMaster();
-                            break;
-                        case "tfReferenceNo":
-                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.getDetailCount() > 1) {
-                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the reference no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
-                                        poPurchaseReturnController.removeDetails();
-                                        loadTableDetail();
-                                    } else {
-                                        return;
-                                    }
-                                }
-                            }
+                            loadRecordSearch();
+                            return;
 
-                            poJSON = poPurchaseReturnController.SearchPOReceiving(lsValue, false);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfReferenceNo.setText("");
-                            }
-                            loadRecordMaster();
-                            break;
-                        case "tfPOReceivingNo":
-                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.getDetailCount() > 1) {
-                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the po receiving no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
-                                        poPurchaseReturnController.removeDetails();
-                                        loadTableDetail();
-                                    } else {
-                                        return;
-                                    }
-                                }
-                            }
-
-                            poJSON = poPurchaseReturnController.SearchPOReceiving(lsValue, true);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfPOReceivingNo.setText("");
-                            }
-                            loadRecordMaster();
-                            break;
-                        case "tfBarcode":
-                            poJSON = poPurchaseReturnController.SearchBarcode(lsValue, pnDetail);
-                            lnRow = (int) poJSON.get("row");
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if (pnDetail != lnRow) {
-                                    pnDetail = lnRow;
-                                    loadRecordDetail();
-                                    tfReturnQuantity.requestFocus();
-                                    return;
-                                }
-                                tfBarcode.setText("");
-                                break;
-                            }
-                            loadTableDetail();
-
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(event1 -> {
-                                    tfReturnQuantity.requestFocus();
-                                });
-                                delay.play();
-                            });
-                            break;
-                        case "tfDescription":
-                            poJSON = poPurchaseReturnController.SearchDescription(lsValue, pnDetail);
-                            lnRow = (int) poJSON.get("row");
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                if (pnDetail != lnRow) {
-                                    pnDetail = lnRow;
-                                    loadRecordDetail();
-                                    tfReturnQuantity.requestFocus();
-                                    return;
-                                }
-                                tfDescription.setText("");
-                                break;
-                            }
-                            loadTableDetail();
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(event1 -> {
-                                    tfReturnQuantity.requestFocus();
-                                });
-                                delay.play();
-                            });
-                            break;
                     }
                     break;
                 default:
                     break;
+            }
+
+            switch (event.getCode()) {
+                case ENTER:
+                    CommonUtils.SetNextFocus(txtField);
+                case DOWN:
+                    CommonUtils.SetNextFocus(txtField);
+                    break;
+                case UP:
+                    CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -653,106 +321,20 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
 
     public void initTextFields() {
         JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfSupplier, tfReferenceNo, tfPOReceivingNo);
-        JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription, tfReturnQuantity);
-
         TextField[] textFields = {
-            tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfSearchReferenceNo, tfSearchSupplier,
-            tfTotal, tfBarcode, tfDescription,
-            tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
-            tfReceiveQuantity
+            tfSearchSupplier, tfSearchReferenceNo
         };
 
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }
-
-    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
-        poJSON = new JSONObject();
-        poJSON.put("result", "success");
-        poJSON.put("message", "success");
-        try {
-
-            if (!newValue) { // Lost focus
-                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
-                String lsID = datePicker.getId();
-                String inputText = datePicker.getEditor().getText();
-                LocalDate currentDate = LocalDate.now();
-                LocalDate selectedDate = null;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
-                        datePicker.setValue(parsedDate);
-                        datePicker.getEditor().setText(formatter.format(parsedDate));
-                        inputText = datePicker.getEditor().getText();
-                    } catch (DateTimeParseException ignored) {
-                    }
-                }
-                // Check if the user typed something in the text field
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        selectedDate = LocalDate.parse(inputText, formatter);
-                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
-                    } catch (Exception ex) {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        loadRecordMaster();
-                        // datePicker.requestFocus();
-                        return;
-                    }
-                } else {
-                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
-                }
-
-                String formattedDate = selectedDate.toString();
-
-                switch (lsID) {
-                    case "dpTransactionDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
-
-                        } else {
-                            poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
-                        }
-                        break;
-                    default:
-
-                        break;
-                }
-                datePicker.getEditor().setText(formattedDate);
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    // datePicker.requestFocus();
-                }
-                Platform.runLater(() -> {
-                    if (lsID.equals("dpExpiryDate")) {
-                        loadRecordDetail();
-                    } else {
-                        loadRecordMaster();
-                    }
-                });
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    };
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate);
         JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate);
-        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
 
     }
 
@@ -790,11 +372,10 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
             } else {
                 tfSearchSupplier.setText(poPurchaseReturnController.Master().Supplier().getCompanyName());
             }
+
             try {
                 if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
                     tfSearchReferenceNo.setText("");
-                } else {
-
                 }
             } catch (Exception e) {
                 tfSearchReferenceNo.setText("");
@@ -810,16 +391,6 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
             if (pnDetail < 0 || pnDetail > poPurchaseReturnController.getDetailCount() - 1) {
                 return;
             }
-            boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
-            JFXUtil.setDisabled(lbDisable, tfBarcode, tfDescription);
-            if (lbDisable) {
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfBarcode, tfDescription)) {
-                    JFXUtil.AddStyleClass("DisabledTextField", tfBarcode, tfDescription);
-                }
-            } else {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfBarcode, tfDescription);
-            }
-
             tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());
             tfBrand.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Brand().getDescription());
@@ -840,17 +411,6 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = pnEditMode == EditMode.UPDATE;
-        if (lbDisable) {
-            JFXUtil.AddStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
-
-        } else {
-            while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo)) {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
-            }
-        }
-        JFXUtil.setDisabled(lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
-
         try {
 
             Platform.runLater(() -> {
@@ -1070,20 +630,11 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
     }
 
     private void initButton(int fnValue) {
+        boolean lbShow = fnValue == EditMode.READY;
 
-        boolean lbShow1 = (fnValue == EditMode.UPDATE);
-        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
-        boolean lbShow3 = (fnValue == EditMode.READY);
-        boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
+        JFXUtil.setDisabled(true, apMaster, apDetail);
         // Manage visibility and managed state of other buttons
-
-        //Ready
-        JFXUtil.setButtonsVisibility(lbShow3, btnPrint, btnHistory);
-
-        //Unkown || Ready
-        JFXUtil.setButtonsVisibility(lbShow4, btnClose);
-
-        JFXUtil.setDisabled(!lbShow1, apMaster, apDetail);
+        JFXUtil.setButtonsVisibility(lbShow, btnPrint, btnHistory);
 
         switch (poPurchaseReturnController.Master().getTransactionStatus()) {
             case PurchaseOrderReturnStatus.VOID:
@@ -1091,6 +642,5 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
                 JFXUtil.setButtonsVisibility(false, btnPrint);
                 break;
         }
-
     }
 }

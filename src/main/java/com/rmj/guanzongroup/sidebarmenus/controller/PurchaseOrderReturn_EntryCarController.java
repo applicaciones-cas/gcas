@@ -796,7 +796,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }
 
@@ -868,11 +868,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                     // datePicker.requestFocus();
                 }
                 Platform.runLater(() -> {
-                    if (lsID.equals("dpExpiryDate")) {
-                        loadRecordDetail();
-                    } else {
-                        loadRecordMaster();
-                    }
+                    loadRecordMaster();
                 });
 
             }
@@ -963,16 +959,17 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = pnEditMode == EditMode.UPDATE;
-        if (lbDisable) {
+        boolean lbDisable = poPurchaseReturnController.getEditMode() == EditMode.ADDNEW;
+        if (!lbDisable) {
             JFXUtil.AddStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
         } else {
-
             while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo)) {
                 JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
             }
         }
-        JFXUtil.setDisabled(lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
+        
+        JFXUtil.setDisabled(!lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
+        
         try {
 
             Platform.runLater(() -> {

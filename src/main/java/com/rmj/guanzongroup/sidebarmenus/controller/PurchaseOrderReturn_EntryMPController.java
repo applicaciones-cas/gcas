@@ -779,7 +779,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }
 
@@ -851,11 +851,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                     // datePicker.requestFocus();
                 }
                 Platform.runLater(() -> {
-                    if (lsID.equals("dpExpiryDate")) {
-                        loadRecordDetail();
-                    } else {
-                        loadRecordMaster();
-                    }
+                    loadRecordMaster();
                 });
 
             }
@@ -964,23 +960,16 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = pnEditMode == EditMode.UPDATE;
-        if (lbDisable) {
-            tfSupplier.getStyleClass().add("DisabledTextField");
-            tfReferenceNo.getStyleClass().add("DisabledTextField");
-            tfPOReceivingNo.getStyleClass().add("DisabledTextField");
+        boolean lbDisable = poPurchaseReturnController.getEditMode() == EditMode.ADDNEW;
+        if (!lbDisable) {
+            JFXUtil.AddStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
         } else {
-            while (tfSupplier.getStyleClass().contains("DisabledTextField")
-                    || tfReferenceNo.getStyleClass().contains("DisabledTextField")
-                    || tfPOReceivingNo.getStyleClass().contains("DisabledTextField")) {
-                tfSupplier.getStyleClass().remove("DisabledTextField");
-                tfReferenceNo.getStyleClass().remove("DisabledTextField");
-                tfPOReceivingNo.getStyleClass().remove("DisabledTextField");
+            while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo)) {
+                JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
             }
         }
-        tfSupplier.setDisable(lbDisable);
-        tfReferenceNo.setDisable(lbDisable);
-        tfPOReceivingNo.setDisable(lbDisable);
+        
+        JFXUtil.setDisabled(!lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
 
         try {
 
@@ -1204,12 +1193,15 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
+        boolean lbShow4 = (fnValue == EditMode.ADDNEW);
 
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(!lbShow, btnNew);
         JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);
         JFXUtil.setButtonsVisibility(lbShow2, btnUpdate, btnPrint, btnHistory);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
+        
+        JFXUtil.setDisabled(!lbShow4, tfSupplier, tfReferenceNo, tfPOReceivingNo);
 
 //        apMaster.setDisable(!lbShow);
         dpTransactionDate.setDisable(!lbShow);

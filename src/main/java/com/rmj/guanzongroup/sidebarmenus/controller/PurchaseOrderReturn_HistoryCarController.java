@@ -76,9 +76,6 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
     private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
 
-    private Object lastFocusedTextField = null;
-    private Object previousSearchedTextField = null;
-
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
 
@@ -324,8 +321,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputIntegersOnly(tfReturnQuantity);
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity,tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }
 
@@ -351,8 +347,6 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
     }
 
     public void clearTextFields() {
-        previousSearchedTextField = null;
-        lastFocusedTextField = null;
         dpTransactionDate.setValue(null);
 
         JFXUtil.clearTextFields(apMaster, apDetail);

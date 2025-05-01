@@ -76,9 +76,6 @@ public class PurchaseOrderReturn_HistoryMCController implements Initializable, S
     private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
 
-    private Object lastFocusedTextField = null;
-    private Object previousSearchedTextField = null;
-
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
 
@@ -315,9 +312,7 @@ public class PurchaseOrderReturn_HistoryMCController implements Initializable, S
     }
 
     public void initTextFields() {
-        tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
-        tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
-
+        JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
         TextField[] textFields = {
             tfSearchSupplier, tfSearchReferenceNo
         };
@@ -325,8 +320,7 @@ public class PurchaseOrderReturn_HistoryMCController implements Initializable, S
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputIntegersOnly(tfReturnQuantity);
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }
 
@@ -352,8 +346,6 @@ public class PurchaseOrderReturn_HistoryMCController implements Initializable, S
     }
 
     public void clearTextFields() {
-        previousSearchedTextField = null;
-        lastFocusedTextField = null;
         dpTransactionDate.setValue(null);
 
         JFXUtil.clearTextFields(apMaster, apDetail);

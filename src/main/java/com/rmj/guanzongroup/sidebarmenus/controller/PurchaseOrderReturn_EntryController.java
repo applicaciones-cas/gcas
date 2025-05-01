@@ -757,7 +757,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }
 
@@ -829,11 +829,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                     // datePicker.requestFocus();
                 }
                 Platform.runLater(() -> {
-                    if (lsID.equals("dpExpiryDate")) {
-                        loadRecordDetail();
-                    } else {
-                        loadRecordMaster();
-                    }
+                    loadRecordMaster();
                 });
 
             }
@@ -889,16 +885,13 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                 return;
             }
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
-            tfBarcode.setDisable(!lbDisable);
-            tfDescription.setDisable(!lbDisable);
+            JFXUtil.setDisabled(!lbDisable, tfBarcode, tfDescription);
             if (lbDisable) {
-                while (tfBarcode.getStyleClass().contains("DisabledTextField") || tfDescription.getStyleClass().contains("DisabledTextField")) {
-                    tfBarcode.getStyleClass().remove("DisabledTextField");
-                    tfDescription.getStyleClass().remove("DisabledTextField");
+                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfBarcode, tfDescription)) {
+                    JFXUtil.AddStyleClass("DisabledTextField", tfBarcode, tfDescription);
                 }
             } else {
-                tfBarcode.getStyleClass().add("DisabledTextField");
-                tfDescription.getStyleClass().add("DisabledTextField");
+                JFXUtil.RemoveStyleClass("DisabledTextField", tfBarcode, tfDescription);
             }
 
             tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
@@ -921,23 +914,16 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = pnEditMode == EditMode.UPDATE;
-        if (lbDisable) {
-            tfSupplier.getStyleClass().add("DisabledTextField");
-            tfReferenceNo.getStyleClass().add("DisabledTextField");
-            tfPOReceivingNo.getStyleClass().add("DisabledTextField");
+        boolean lbDisable = poPurchaseReturnController.getEditMode() == EditMode.ADDNEW;
+        if (!lbDisable) {
+            JFXUtil.AddStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
         } else {
-            while (tfSupplier.getStyleClass().contains("DisabledTextField")
-                    || tfReferenceNo.getStyleClass().contains("DisabledTextField")
-                    || tfPOReceivingNo.getStyleClass().contains("DisabledTextField")) {
-                tfSupplier.getStyleClass().remove("DisabledTextField");
-                tfReferenceNo.getStyleClass().remove("DisabledTextField");
-                tfPOReceivingNo.getStyleClass().remove("DisabledTextField");
+            while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo)) {
+                JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
             }
         }
-        tfSupplier.setDisable(lbDisable);
-        tfReferenceNo.setDisable(lbDisable);
-        tfPOReceivingNo.setDisable(lbDisable);
+        
+        JFXUtil.setDisabled(!lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
 
         try {
 
