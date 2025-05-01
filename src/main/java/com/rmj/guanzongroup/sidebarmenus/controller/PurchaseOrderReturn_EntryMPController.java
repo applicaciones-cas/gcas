@@ -756,19 +756,12 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
     }
 
     public void initTextFields() {
-
-        tfSupplier.focusedProperty().addListener(txtMaster_Focus);
-        taRemarks.focusedProperty().addListener(txtArea_Focus);
-        tfReferenceNo.focusedProperty().addListener(txtMaster_Focus);
-        tfPOReceivingNo.focusedProperty().addListener(txtMaster_Focus);
-
-        tfIMEINo.focusedProperty().addListener(txtDetail_Focus);
-        tfBarcode.focusedProperty().addListener(txtDetail_Focus);
-        tfDescription.focusedProperty().addListener(txtDetail_Focus);
-        tfReturnQuantity.focusedProperty().addListener(txtDetail_Focus);
-
+        JFXUtil.setFocusListener(txtMaster_Focus, tfSupplier, tfReferenceNo, tfPOReceivingNo);
+        JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
+        JFXUtil.setFocusListener(txtDetail_Focus, tfIMEINo, tfBarcode, tfDescription, tfReturnQuantity);
+        
         TextField[] textFields = {
-            tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,tfReturnQuantity,
+            tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfReturnQuantity,
             tfTotal, tfBarcode, tfIMEINo, tfDescription,
             tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
             tfReceiveQuantity, tfReturnQuantity
