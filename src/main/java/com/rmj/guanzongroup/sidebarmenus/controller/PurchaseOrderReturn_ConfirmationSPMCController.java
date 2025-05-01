@@ -76,14 +76,14 @@ import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
  *
  * @author User
  */
-public class PurchaseOrderReturn_ConfirmationController implements Initializable, ScreenInterface {
+public class PurchaseOrderReturn_ConfirmationSPMCController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchase Order Return Confirmation";
+    private final String pxeModuleName = "Purchase Order Return Confirmation SPMC";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
     boolean isPrinted = false;
@@ -410,7 +410,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -748,9 +748,9 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                     break;
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -875,9 +875,9 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                                         String.valueOf(poPurchaseReturnController.PurchaseOrderReturnList(lnCtr).getTransactionNo())
                                 ));
                             } catch (SQLException ex) {
-                                Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             } catch (GuanzonException ex) {
-                                Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
 
                         }
@@ -947,7 +947,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
             }
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -982,9 +982,9 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1061,9 +1061,9 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1090,7 +1090,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
             });
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1174,11 +1174,11 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                         }
                         loadRecordMaster();
                     } catch (SQLException ex) {
-                        Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
                 });
 
