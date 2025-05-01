@@ -785,7 +785,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
         JFXUtil.setFocusListener(txtDetail_Focus, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo, tfReturnQuantity);
 
         TextField[] textFields = {
-            tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
+            tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfReturnQuantity,
             tfTotal, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo,
             tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
             tfReceiveQuantity, tfReturnQuantity

@@ -768,7 +768,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         tfReturnQuantity.focusedProperty().addListener(txtDetail_Focus);
 
         TextField[] textFields = {
-            tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
+            tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,tfReturnQuantity,
             tfTotal, tfBarcode, tfIMEINo, tfDescription,
             tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
             tfReceiveQuantity, tfReturnQuantity

@@ -67,7 +67,6 @@ import org.guanzon.cas.purchasing.services.PurchaseOrderReturnControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
 
@@ -385,7 +384,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                         break;
                 }
 
-                if (JFXUtil.isObjectEqualTo(lsButton,"btnSave", "btnConfirm" ,"btnReturn", "btnVoid", "btnCancel")) {
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnConfirm", "btnReturn", "btnVoid", "btnCancel")) {
                     poPurchaseReturnController.resetMaster();
                     poPurchaseReturnController.Detail().clear();
                     pnEditMode = EditMode.UNKNOWN;
@@ -1224,7 +1223,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
         TextField[] textFields = {
             tfSearchSupplier, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfPOReceivingNo,
             tfReferenceNo, tfTotal, tfBrand,
-            tfModel, tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost,
+            tfModel, tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost, tfReturnQuantity,
             tfReceiveQuantity
         };
 

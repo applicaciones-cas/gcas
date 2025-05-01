@@ -748,7 +748,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
         tfReturnQuantity.focusedProperty().addListener(txtDetail_Focus);
 
         TextField[] textFields = {
-            tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
+            tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfReturnQuantity,
             tfTotal, tfBarcode, tfDescription,
             tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
             tfReceiveQuantity
@@ -828,10 +828,10 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     }
 
     public void initDetailsGrid() {
-        JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail);
+        JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
         JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblTotalDetail);
+        JFXUtil.setColumnsIndex(tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
 
         JFXUtil.disableColumnReordering(tblViewDetails);
 
