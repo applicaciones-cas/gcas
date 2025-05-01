@@ -96,7 +96,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
     int pnDetail = 0;
     int pnMain = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Receiving Entry SP Car";
+    private final String pxeModuleName = "Purchase Order Receiving Entry SPCar";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 

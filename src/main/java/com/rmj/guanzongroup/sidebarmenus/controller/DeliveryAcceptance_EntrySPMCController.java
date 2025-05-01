@@ -97,7 +97,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
     int pnDetail = 0;
     int pnMain = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Receiving Entry SP MC";
+    private final String pxeModuleName = "Purchase Order Receiving Entry SPMC";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
