@@ -321,7 +321,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity,tfReturnQuantity);
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }
 
@@ -441,8 +441,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
 
                 }
                 lblStatus.setText(lsStat);
-                btnPrint.setVisible(lbPrintStat);
-                btnPrint.setManaged(lbPrintStat);
+                JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
             });
 
             poPurchaseReturnController.computeFields();
@@ -510,7 +509,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
         });
 
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size the column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 3); // need to use computed-size the column to work
     }
 
     public void loadTableDetail() {

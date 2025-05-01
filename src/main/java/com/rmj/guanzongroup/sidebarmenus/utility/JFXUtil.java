@@ -11,6 +11,7 @@ import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import org.apache.poi.ss.formula.functions.T;
+import org.json.simple.JSONObject;
 
 /**
  * Date : 4/28/2025
@@ -149,17 +151,18 @@ public class JFXUtil {
         });
     }
 
-    public static <T> void initComboBoxCellDesignColor(ComboBox<T> comboBox) {
+    public static <T> void initComboBoxCellDesignColor(ComboBox<T> comboBox, String hexcolor) {
+//      #FF8201
         comboBox.setCellFactory(param -> new ListCell<T>() {
             {
                 // Add a hover listener
                 hoverProperty().addListener((obs, wasHovered, isNowHovered) -> {
                     if (isNowHovered && !isEmpty() && getItem() != null) {
-                        setStyle("-fx-background-color: #FF8201; -fx-text-fill: white;");
+                        setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
                     } else if (!isEmpty() && getItem() != null) {
                         // If not hovered, reset style based on selection
                         if (getItem().toString().equals(comboBox.getValue() != null ? comboBox.getValue().toString() : "")) {
-                            setStyle("-fx-background-color: #FF8201; -fx-text-fill: white;");
+                            setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
                         } else {
                             setStyle("");
                         }
@@ -177,7 +180,7 @@ public class JFXUtil {
                     setText(item.toString());
 
                     if (item.toString().equals(comboBox.getValue() != null ? comboBox.getValue().toString() : "")) {
-                        setStyle("-fx-background-color: #FF8201; -fx-text-fill: white;");
+                        setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
                     } else {
                         setStyle("");
                     }
@@ -485,6 +488,69 @@ public class JFXUtil {
                 ((Control) node).focusedProperty().addListener(listener);
             }
         }
+    }
+
+    public static JFXUtilDateResult processDate(String inputText, DatePicker datePicker) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        JSONObject poJSON = new JSONObject();
+        LocalDate selectedDate = null;
+
+        if (inputText != null && !inputText.trim().isEmpty()) {
+            try {
+                LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                datePicker.setValue(parsedDate);
+                datePicker.getEditor().setText(formatter.format(parsedDate));
+                inputText = datePicker.getEditor().getText();
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+
+        if (inputText != null && !inputText.trim().isEmpty()) {
+            try {
+                selectedDate = LocalDate.parse(inputText, formatter);
+                datePicker.setValue(selectedDate);
+            } catch (Exception ex) {
+                poJSON.put("result", "error");
+                poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
+                return new JFXUtilDateResult("", selectedDate, poJSON);
+            }
+        } else {
+            selectedDate = datePicker.getValue();
+        }
+        poJSON.put("result", "success");
+        poJSON.put("message", "success");
+        return new JFXUtilDateResult(inputText, selectedDate, poJSON);
+    }
+
+    public static class JFXUtilDateResult {
+
+        public String inputText;
+        public LocalDate selectedDate;
+        public JSONObject poJSON;
+
+        public JFXUtilDateResult(String inputText, LocalDate selectedDate, JSONObject poJSON) {
+            this.inputText = inputText;
+            this.selectedDate = selectedDate;
+            this.poJSON = poJSON;
+        }
+    }
+
+    public static boolean isObjectEqualTo(Object source, Object... others) {
+        if (source == null && others != null) {
+            for (Object other : others) {
+                if (other == null) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        for (Object other : others) {
+            if (source != null && source.equals(other)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

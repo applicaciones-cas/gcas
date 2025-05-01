@@ -816,32 +816,14 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
-                        datePicker.setValue(parsedDate);
-                        datePicker.getEditor().setText(formatter.format(parsedDate));
-                        inputText = datePicker.getEditor().getText();
-                    } catch (DateTimeParseException ignored) {
-                    }
+                JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
+                poJSON = ldtResult.poJSON;
+                if ("error".equals(poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    loadRecordMaster();
+                    return;
                 }
-                // Check if the user typed something in the text field
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        selectedDate = LocalDate.parse(inputText, formatter);
-                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
-                    } catch (Exception ex) {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        loadRecordMaster();
-                        // datePicker.requestFocus();
-                        return;
-                    }
-                } else {
-                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
-                }
+                selectedDate = ldtResult.selectedDate;
 
                 String formattedDate = selectedDate.toString();
 
@@ -880,7 +862,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate);
         JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate);
-        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
+        JFXUtil.setFocusListener(datepicker_Focus, dpTransactionDate);
 
     }
 
@@ -967,9 +949,9 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                 JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
             }
         }
-        
+
         JFXUtil.setDisabled(!lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
-        
+
         try {
 
             Platform.runLater(() -> {
@@ -1005,8 +987,8 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
 
                 }
                 lblStatus.setText(lsStat);
-                btnPrint.setVisible(lbPrintStat);
-                btnPrint.setManaged(lbPrintStat);
+                JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
+
             });
 
             poPurchaseReturnController.computeFields();
@@ -1074,7 +1056,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
         });
 
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size the column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 4); // need to use computed-size in min-width of the column to work
     }
 
     public void loadTableDetail() {

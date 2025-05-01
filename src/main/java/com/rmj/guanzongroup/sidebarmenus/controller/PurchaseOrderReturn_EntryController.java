@@ -487,7 +487,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                         if (!lsValue.isEmpty()) {
                         } else {
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo()!= null && !"".equals(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo())) {
+                                if (poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo() != null && !"".equals(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo())) {
                                     if (poPurchaseReturnController.getDetailCount() > 1) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the reference no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
@@ -500,7 +500,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                     }
                                 }
                             }
-                            
+
                             poJSON = poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().setReferenceNo("");
                         }
                         if ("error".equals(poJSON.get("result"))) {
@@ -514,7 +514,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                         if (!lsValue.isEmpty()) {
                         } else {
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.Master().getSourceNo()!= null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
+                                if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
                                     if (poPurchaseReturnController.getDetailCount() > 1) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the reference no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
@@ -527,7 +527,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                     }
                                 }
                             }
-                            
+
                             poJSON = poPurchaseReturnController.Master().setSourceNo("");
                         }
                         if ("error".equals(poJSON.get("result"))) {
@@ -649,7 +649,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                     }
                                 }
                             }
-                            
+
                             poJSON = poPurchaseReturnController.SearchPOReceiving(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -669,7 +669,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                                     }
                                 }
                             }
-                            
+
                             poJSON = poPurchaseReturnController.SearchPOReceiving(lsValue, true);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -777,32 +777,14 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
-                        datePicker.setValue(parsedDate);
-                        datePicker.getEditor().setText(formatter.format(parsedDate));
-                        inputText = datePicker.getEditor().getText();
-                    } catch (DateTimeParseException ignored) {
-                    }
+                JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
+                poJSON = ldtResult.poJSON;
+                if ("error".equals(poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    loadRecordMaster();
+                    return;
                 }
-                // Check if the user typed something in the text field
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        selectedDate = LocalDate.parse(inputText, formatter);
-                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
-                    } catch (Exception ex) {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        loadRecordMaster();
-                        // datePicker.requestFocus();
-                        return;
-                    }
-                } else {
-                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
-                }
+                selectedDate = ldtResult.selectedDate;
 
                 String formattedDate = selectedDate.toString();
 
@@ -841,7 +823,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate);
         JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate);
-        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
+        JFXUtil.setFocusListener(datepicker_Focus, dpTransactionDate);
 
     }
 
@@ -922,7 +904,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                 JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
             }
         }
-        
+
         JFXUtil.setDisabled(!lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
 
         try {
@@ -960,8 +942,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
 
                 }
                 lblStatus.setText(lsStat);
-                btnPrint.setVisible(lbPrintStat);
-                btnPrint.setManaged(lbPrintStat);
+                JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
             });
 
             poPurchaseReturnController.computeFields();
@@ -1050,7 +1031,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
             }
         });
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size the column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size in min-width of the column to work
     }
 
     public void loadTableDetail() {

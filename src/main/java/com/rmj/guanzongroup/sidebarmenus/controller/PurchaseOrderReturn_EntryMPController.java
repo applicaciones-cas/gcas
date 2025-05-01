@@ -102,8 +102,8 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
             btnPrint, btnHistory, btnClose;
 
     @FXML
-    private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, 
-            tfTotal, tfIMEINo, tfBarcode, tfDescription, tfReturnQuantity, tfColor, 
+    private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
+            tfTotal, tfIMEINo, tfBarcode, tfDescription, tfReturnQuantity, tfColor,
             tfInventoryType, tfMeasure, tfCost, tfBrand, tfModel, tfModelVariant, tfReceiveQuantity;
 
     @FXML
@@ -116,7 +116,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
     private TableView tblViewDetails;
 
     @FXML
-    private TableColumn tblRowNoDetail, tblImeiNoDetail, tblBarcodeDetail, 
+    private TableColumn tblRowNoDetail, tblImeiNoDetail, tblBarcodeDetail,
             tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail;
 
     /**
@@ -799,32 +799,14 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
-                        datePicker.setValue(parsedDate);
-                        datePicker.getEditor().setText(formatter.format(parsedDate));
-                        inputText = datePicker.getEditor().getText();
-                    } catch (DateTimeParseException ignored) {
-                    }
+                JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
+                poJSON = ldtResult.poJSON;
+                if ("error".equals(poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    loadRecordMaster();
+                    return;
                 }
-                // Check if the user typed something in the text field
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        selectedDate = LocalDate.parse(inputText, formatter);
-                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
-                    } catch (Exception ex) {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        loadRecordMaster();
-                        // datePicker.requestFocus();
-                        return;
-                    }
-                } else {
-                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
-                }
+                selectedDate = ldtResult.selectedDate;
 
                 String formattedDate = selectedDate.toString();
 
@@ -863,7 +845,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate);
         JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate);
-        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
+        JFXUtil.setFocusListener(datepicker_Focus, dpTransactionDate);
 
     }
 
@@ -871,7 +853,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
         JFXUtil.setColumnLeft(tblImeiNoDetail, tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblImeiNoDetail, tblBarcodeDetail, 
+        JFXUtil.setColumnsIndex(tblRowNoDetail, tblImeiNoDetail, tblBarcodeDetail,
                 tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
 
         JFXUtil.disableColumnReordering(tblViewDetails);
@@ -909,7 +891,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
             }
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             boolean lbDisableField = (poPurchaseReturnController.Detail(pnDetail).getSerialId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getSerialId()));
-            
+
             tfIMEINo.setDisable(!lbDisable);
             tfBarcode.setDisable(!lbDisable);
             tfDescription.setDisable(!lbDisable);
@@ -920,8 +902,8 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                     tfBarcode.getStyleClass().remove("DisabledTextField");
                     tfDescription.getStyleClass().remove("DisabledTextField");
                 }
-                
-                if(poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())){
+
+                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
                     tfIMEINo.setDisable(!lbDisableField);
                     if (lbDisableField) {
                         while (tfIMEINo.getStyleClass().contains("DisabledTextField")) {
@@ -931,7 +913,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                         tfIMEINo.getStyleClass().add("DisabledTextField");
                     }
                 }
-                
+
             } else {
                 tfIMEINo.getStyleClass().add("DisabledTextField");
                 tfBarcode.getStyleClass().add("DisabledTextField");
@@ -968,7 +950,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                 JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
             }
         }
-        
+
         JFXUtil.setDisabled(!lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
 
         try {
@@ -1006,8 +988,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
 
                 }
                 lblStatus.setText(lsStat);
-                btnPrint.setVisible(lbPrintStat);
-                btnPrint.setManaged(lbPrintStat);
+                JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
             });
 
             poPurchaseReturnController.computeFields();
@@ -1074,9 +1055,8 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
             }
         });
 
-
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size the column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 3); // need to use computed-size in min-width of the column to work
     }
 
     public void loadTableDetail() {
@@ -1131,7 +1111,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial01()),
-//                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial02()),
+                                            //                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial02()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
@@ -1200,7 +1180,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);
         JFXUtil.setButtonsVisibility(lbShow2, btnUpdate, btnPrint, btnHistory);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
-        
+
         JFXUtil.setDisabled(!lbShow4, tfSupplier, tfReferenceNo, tfPOReceivingNo);
 
 //        apMaster.setDisable(!lbShow);

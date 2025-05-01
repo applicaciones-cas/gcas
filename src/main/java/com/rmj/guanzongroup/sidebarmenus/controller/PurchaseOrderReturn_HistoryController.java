@@ -258,7 +258,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
             }
         }
     };
-    
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -446,8 +446,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
 
                 }
                 lblStatus.setText(lsStat);
-                btnPrint.setVisible(lbPrintStat);
-                btnPrint.setManaged(lbPrintStat);
+                JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
             });
 
             poPurchaseReturnController.computeFields();
@@ -515,7 +514,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
         });
 
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size the column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 3); // need to use computed-size the column to work
     }
 
     public void loadTableDetail() {
