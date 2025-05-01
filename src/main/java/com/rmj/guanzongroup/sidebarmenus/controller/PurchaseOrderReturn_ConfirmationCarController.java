@@ -279,7 +279,6 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
                         break;
                     case "btnRetrieve":
                         retrievePOR();
-                        JFXUtil.disableAllHighlight(tblViewPuchaseOrderReturn, highlightedRowsMain);
                         break;
                     case "btnSave":
                         //Validator
@@ -383,12 +382,12 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
                         break;
                 }
 
-                if (JFXUtil.isObjectEqualTo(lsButton,"btnSave", "btnConfirm" ,"btnReturn", "btnVoid", "btnCancel")) {
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnConfirm", "btnReturn", "btnVoid", "btnCancel")) {
                     poPurchaseReturnController.resetMaster();
                     poPurchaseReturnController.Detail().clear();
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
-                    
+
                     poPurchaseReturnController.Master().setIndustryId(psIndustryId);
                     poPurchaseReturnController.Master().setCompanyId(psCompanyId);
                     poPurchaseReturnController.Master().setCategoryCode(psCategoryId);
@@ -424,8 +423,9 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
         } else {
             loadTableMain();
         }
+        JFXUtil.disableAllHighlight(tblViewPuchaseOrderReturn, highlightedRowsMain);
     }
-    
+
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsID = (txtField.getId());
@@ -821,31 +821,6 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
-                    String lsMainDate = "";
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
-
-                    try {
-                        if (!poPurchaseReturnController.Master().getTransactionDate().equals("")) {
-                            Object loDate = poPurchaseReturnController.Master().getTransactionDate();
-                            if (loDate == null) {
-                                lsMainDate = LocalDate.now().format(formatter); // Convert to String
-
-                            } else if (loDate instanceof Timestamp) {
-                                Timestamp timestamp = (Timestamp) loDate;
-                                LocalDate localDate = timestamp.toLocalDateTime().toLocalDate();
-
-                                lsMainDate = localDate.format(formatter);
-                            } else if (loDate instanceof Date) {
-                                Date sqlDate = (Date) loDate;
-                                LocalDate localDate = sqlDate.toLocalDate();
-
-                                lsMainDate = localDate.format(formatter);
-                            } else {
-                            }
-                        }
-                    } catch (Exception e) {
-
-                    }
                     if (poPurchaseReturnController.getPurchaseOrderReturnCount() > 0) {
                         //pending
                         //retreiving using column index
@@ -879,9 +854,10 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
                         tblViewPuchaseOrderReturn.getSelectionModel().select(pnMain);
                         tblViewPuchaseOrderReturn.getFocusModel().focus(pnMain);
                     }
-                    if (poPurchaseReturnController.getPurchaseOrderReturnCount() < 1) {
-                        JFXUtil.loadTab(pgPagination, main_data.size(), ROWS_PER_PAGE, tblViewPuchaseOrderReturn, filteredData);
-                    }
+//                    if (poPurchaseReturnController.getPurchaseOrderReturnCount() < 1) {
+//                        JFXUtil.loadTab(pgPagination, main_data.size(), ROWS_PER_PAGE, tblViewPuchaseOrderReturn, filteredData);
+//                    }
+                    JFXUtil.loadTab(pgPagination, main_data.size(), ROWS_PER_PAGE, tblViewPuchaseOrderReturn, filteredData);
                 });
 
                 return null;
@@ -895,6 +871,7 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
                 } else {
                     tblViewPuchaseOrderReturn.toFront();
                 }
+                progressIndicator.setVisible(false);
             }
 
             @Override
@@ -1265,8 +1242,8 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
         });
 
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 1); // need to use computed-size in min-width of the column to work
-        JFXUtil.adjustColumnForScrollbar(tblViewPuchaseOrderReturn, 2);
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 4); // need to use computed-size in min-width of the column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewPuchaseOrderReturn, 1);
     }
 
     private void initButton(int fnValue) {
@@ -1333,9 +1310,9 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
         JFXUtil.disableColumnReordering(tblViewPuchaseOrderReturn);
 
         filteredData = new FilteredList<>(main_data, b -> true);
-        SortedList<ModelPurchaseOrderReturn_Main> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(tblViewPuchaseOrderReturn.comparatorProperty());
-        tblViewPuchaseOrderReturn.setItems(sortedData);
+//        SortedList<ModelPurchaseOrderReturn_Main> sortedData = new SortedList<>(filteredData);
+//        sortedData.comparatorProperty().bind(tblViewPuchaseOrderReturn.comparatorProperty());
+        tblViewPuchaseOrderReturn.setItems(filteredData);
 
     }
 
