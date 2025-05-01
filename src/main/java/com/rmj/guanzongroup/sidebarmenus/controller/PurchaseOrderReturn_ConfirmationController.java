@@ -389,6 +389,10 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                     poPurchaseReturnController.Detail().clear();
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
+                    
+                    poPurchaseReturnController.Master().setIndustryId(psIndustryId);
+                    poPurchaseReturnController.Master().setCompanyId(psCompanyId);
+                    poPurchaseReturnController.Master().setCategoryCode(psCategoryId);
                 }
 
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnPrint", "btnAddAttachment", "btnRemoveAttachment",

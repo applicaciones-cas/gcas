@@ -347,6 +347,14 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                     loadTableDetail();
                 }
                 initButton(pnEditMode);
+                
+                if (lsButton.equals("btnUpdate")) {
+                    if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
+                        tfReturnQuantity.requestFocus();
+                    } else {
+                        tfEngineNo.requestFocus();
+                    }
+                }
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -403,8 +411,6 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
             switch (lsTxtFieldID) {
                 case "tfFrameNo":
                 case "tfEngineNo":
-                case "tfPlateNo":
-                case "tfCSNo":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReturnController.Detail(pnDetail).setStockId("");
@@ -939,7 +945,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = poPurchaseReturnController.getEditMode() == EditMode.ADDNEW;
+        boolean lbDisable = pnEditMode == EditMode.ADDNEW;
         if (!lbDisable) {
             JFXUtil.AddStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
         } else {

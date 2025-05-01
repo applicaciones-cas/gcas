@@ -48,23 +48,23 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReturnControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
-import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
 
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Team 2 - Arsiela & Aldrich
  */
-public class PurchaseOrderReturn_HistoryController implements Initializable, ScreenInterface {
+public class PurchaseOrderReturn_HistoryMPController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return History";
+    private final String pxeModuleName = "Purchase Order Return History MP";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 
@@ -86,12 +86,14 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnBrowse, btnPrint, btnHistory, btnClose;
+    private Button btnPrint, btnHistory, btnClose, btnBrowse;
 
     @FXML
-    private TextField tfSearchSupplier, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfReferenceNo,
-            tfPOReceivingNo, tfTotal, tfBarcode, tfDescription, tfReturnQuantity, tfBrand, tfModel, tfColor,
-            tfInventoryType, tfMeasure, tfCost, tfReceiveQuantity;
+    private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
+            tfTotal, tfIMEINo, tfBarcode, tfDescription, tfReturnQuantity, tfColor,
+            tfInventoryType, tfMeasure, tfCost, tfBrand, tfModel, tfModelVariant, tfReceiveQuantity;
+    @FXML
+    private TextField tfSearchSupplier, tfSearchReferenceNo;
 
     @FXML
     private DatePicker dpTransactionDate;
@@ -103,8 +105,8 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
     private TableView tblViewDetails;
 
     @FXML
-    private TableColumn tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail,
-            tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail;
+    private TableColumn tblRowNoDetail, tblImeiNoDetail, tblBarcodeDetail,
+            tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail;
 
     /**
      * Initializes the controller class.
@@ -126,7 +128,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
         clearTextFields();
         loadRecordMaster();
         loadTableDetail();
-        pnEditMode = poPurchaseReturnController.getEditMode();
+        pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
 
         Platform.runLater(() -> {
@@ -136,7 +138,6 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
             poPurchaseReturnController.setCompanyId(psCompanyId);
             poPurchaseReturnController.setCategoryId(psCategoryId);
             loadRecordSearch();
-
         });
     }
 
@@ -211,16 +212,17 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
                         break;
                 }
 
-                if (lsButton.equals("btnPrint")) { //|| lsButton.equals("btnCancel")
+                if (lsButton.equals("btnPrint")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                 }
+
                 initButton(pnEditMode);
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -303,9 +305,9 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrderReturn_HistoryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -325,14 +327,14 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate);
         JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate);
-
     }
 
     public void initDetailsGrid() {
-        JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail);
-        JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
+        JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
+        JFXUtil.setColumnLeft(tblImeiNoDetail, tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblTotalDetail);
+        JFXUtil.setColumnsIndex(tblRowNoDetail, tblImeiNoDetail, tblBarcodeDetail,
+                tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
 
         JFXUtil.disableColumnReordering(tblViewDetails);
 
@@ -344,7 +346,6 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
     }
 
     public void clearTextFields() {
-
         dpTransactionDate.setValue(null);
 
         JFXUtil.clearTextFields(apMaster, apDetail);
@@ -372,7 +373,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
             }
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -381,10 +382,12 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
             if (pnDetail < 0 || pnDetail > poPurchaseReturnController.getDetailCount() - 1) {
                 return;
             }
+            tfIMEINo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial01());
             tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());
             tfBrand.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Brand().getDescription());
             tfModel.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Model().getDescription());
+            tfModelVariant.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Variant().getDescription());
             tfColor.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Color().getDescription());
             tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
@@ -395,7 +398,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -455,7 +458,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -509,8 +512,6 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
 
     public void loadTableDetail() {
         // Setting data to table detail
-
-        // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);
         progressIndicator.setStyle("-fx-progress-color: #FF8201;");
@@ -559,14 +560,21 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
                             } catch (Exception e) {
                             }
 
+                            String lsPlateNo = "";
+                            if (poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP() != null
+                                    && !"".equals(poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP())) {
+                                lsPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP();
+                            }
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial01()),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial02()),
+                                            String.valueOf(lsPlateNo),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
                                             String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal))
                                     ));
                         }
 
@@ -587,7 +595,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
                         }
                         loadRecordMaster();
                     } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                        Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
                 });
@@ -620,10 +628,9 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
 
     private void initButton(int fnValue) {
         boolean lbShow = fnValue == EditMode.READY;
-
-        JFXUtil.setDisabled(true, apMaster, apDetail);
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(lbShow, btnPrint, btnHistory);
+        JFXUtil.setDisabled(true, apMaster, apDetail);
 
         switch (poPurchaseReturnController.Master().getTransactionStatus()) {
             case PurchaseOrderReturnStatus.VOID:
@@ -632,4 +639,5 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
                 break;
         }
     }
+
 }

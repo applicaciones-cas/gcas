@@ -58,13 +58,13 @@ import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
  *
  * @author User
  */
-public class PurchaseOrderReturn_HistoryController implements Initializable, ScreenInterface {
+public class PurchaseOrderReturn_HistorySPMCController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return History";
+    private final String pxeModuleName = "Purchase Order Return History SPMC";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 
@@ -220,7 +220,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_HistorySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -303,9 +303,9 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_HistorySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrderReturn_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -395,7 +395,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_HistorySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -455,7 +455,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_HistorySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -587,7 +587,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
                         }
                         loadRecordMaster();
                     } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                        Logger.getLogger(PurchaseOrderReturn_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(PurchaseOrderReturn_HistorySPMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
                 });

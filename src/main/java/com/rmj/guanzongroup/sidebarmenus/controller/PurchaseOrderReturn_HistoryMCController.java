@@ -64,7 +64,7 @@ public class PurchaseOrderReturn_HistoryMCController implements Initializable, S
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return History Car";
+    private final String pxeModuleName = "Purchase Order Return History MC";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 
@@ -560,18 +560,16 @@ public class PurchaseOrderReturn_HistoryMCController implements Initializable, S
                             } catch (Exception e) {
                             }
 
-                            String lsCSPlateNo = "";
+                            String lsPlateNo = "";
                             if (poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP() != null
                                     && !"".equals(poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP())) {
-                                lsCSPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP();
-                            } else {
-                                lsCSPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getConductionStickerNo();
+                                lsPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP();
                             }
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial01()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial02()),
-                                            String.valueOf(lsCSPlateNo),
+                                            String.valueOf(lsPlateNo),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
                                             String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),

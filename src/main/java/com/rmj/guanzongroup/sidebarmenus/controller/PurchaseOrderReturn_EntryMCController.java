@@ -65,13 +65,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author Team 2 - Arsiela & Aldrich
  */
-public class PurchaseOrderReturn_EntryMPController implements Initializable, ScreenInterface {
+public class PurchaseOrderReturn_EntryMCController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return Entry MP";
+    private final String pxeModuleName = "Purchase Order Return Entry MC";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 
@@ -101,7 +101,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
 
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
-            tfTotal, tfIMEINo, tfBarcode, tfDescription, tfReturnQuantity, tfColor,
+            tfTotal, tfEngineNo, tfFrameNo, tfPlateNo, tfReturnQuantity, tfColor,
             tfInventoryType, tfMeasure, tfCost, tfBrand, tfModel, tfModelVariant, tfReceiveQuantity;
 
     @FXML
@@ -114,7 +114,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
     private TableView tblViewDetails;
 
     @FXML
-    private TableColumn tblRowNoDetail, tblImeiNoDetail, tblBarcodeDetail,
+    private TableColumn tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblPlateNoDetail,
             tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail;
 
     /**
@@ -247,7 +247,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfReferenceNo", "tfPOReceivingNo", "tfIMEINo", "tfBarcode", "tfPlateNo", "tfDescription").contains(tf.getId())) {
+                                if (Arrays.asList("tfSupplier", "tfReferenceNo", "tfPOReceivingNo", "tfEngineNo", "tfFrameNo", "tfPlateNo").contains(tf.getId())) {
                                     if (lastFocusedTextField == previousSearchedTextField) {
                                         break;
                                     }
@@ -352,7 +352,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                     if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
                         tfReturnQuantity.requestFocus();
                     } else {
-                        tfIMEINo.requestFocus();
+                        tfEngineNo.requestFocus();
                     }
                 }
 
@@ -409,8 +409,8 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                case "tfBarcode":
-                case "tfIMEINo":
+                case "tfEngineNo":
+                case "tfFrameNo":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
                         poJSON = poPurchaseReturnController.Detail(pnDetail).setStockId("");
@@ -562,7 +562,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                     break;
                 case UP:
                     switch (lsID) {
-                        case "tfIMEINo":
+                        case "tfEngineNo":
                         case "tfReturnQuantity":
                             int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
@@ -577,7 +577,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                                 if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
                                     tfReturnQuantity.requestFocus();
                                 } else {
-                                    tfIMEINo.requestFocus();
+                                    tfEngineNo.requestFocus();
                                 }
                                 event.consume();
                             }
@@ -586,7 +586,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                     break;
                 case DOWN:
                     switch (lsID) {
-                        case "tfIMEINo":
+                        case "tfEngineNo":
                         case "tfReturnQuantity":
                             int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
@@ -601,7 +601,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                                 if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
                                     tfReturnQuantity.requestFocus();
                                 } else {
-                                    tfIMEINo.requestFocus();
+                                    tfEngineNo.requestFocus();
                                 }
                                 event.consume();
                             }
@@ -675,8 +675,8 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                             }
                             loadRecordMaster();
                             break;
-                        case "tfIMEINo":
-                            poJSON = poPurchaseReturnController.SearchIMEINo(lsValue, pnDetail);
+                        case "tfEngineNo":
+                            poJSON = poPurchaseReturnController.SearchEngineNo(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -686,7 +686,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                                     tfReturnQuantity.requestFocus();
                                     return;
                                 }
-                                tfIMEINo.setText("");
+                                tfEngineNo.setText("");
                                 break;
                             }
                             loadTableDetail();
@@ -700,8 +700,8 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                             });
                             break;
 
-                        case "tfBarcode":
-                            poJSON = poPurchaseReturnController.SearchBarcode(lsValue, pnDetail);
+                        case "tfFrameNo":
+                            poJSON = poPurchaseReturnController.SearchFrameNo(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -711,7 +711,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                                     tfReturnQuantity.requestFocus();
                                     return;
                                 }
-                                tfBarcode.setText("");
+                                tfFrameNo.setText("");
                                 break;
                             }
                             loadTableDetail();
@@ -724,8 +724,8 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                                 delay.play();
                             });
                             break;
-                        case "tfDescription":
-                            poJSON = poPurchaseReturnController.SearchDescription(lsValue, pnDetail);
+                        case "tfPlateNo":
+                            poJSON = poPurchaseReturnController.SearchPlateNo(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -735,7 +735,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                                     tfReturnQuantity.requestFocus();
                                     return;
                                 }
-                                tfDescription.setText("");
+                                tfPlateNo.setText("");
                                 break;
                             }
                             loadTableDetail();
@@ -764,11 +764,11 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
     public void initTextFields() {
         JFXUtil.setFocusListener(txtMaster_Focus, tfSupplier, tfReferenceNo, tfPOReceivingNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtDetail_Focus, tfIMEINo, tfBarcode, tfDescription, tfReturnQuantity);
-        
+        JFXUtil.setFocusListener(txtDetail_Focus, tfFrameNo, tfEngineNo, tfPlateNo, tfReturnQuantity);
+
         TextField[] textFields = {
             tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfReturnQuantity,
-            tfTotal, tfBarcode, tfIMEINo, tfDescription,
+            tfTotal, tfFrameNo, tfEngineNo, tfPlateNo, 
             tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
             tfReceiveQuantity, tfReturnQuantity
         };
@@ -848,9 +848,9 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
 
     public void initDetailsGrid() {
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
-        JFXUtil.setColumnLeft(tblImeiNoDetail, tblBarcodeDetail, tblDescriptionDetail);
+        JFXUtil.setColumnLeft(tblEngineNoDetail, tblFrameNoDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblImeiNoDetail, tblBarcodeDetail,
+        JFXUtil.setColumnsIndex(tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblPlateNoDetail,
                 tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
 
         JFXUtil.disableColumnReordering(tblViewDetails);
@@ -877,7 +877,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         try {
             lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrderReturn_EntryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(PurchaseOrderReturn_EntryMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -887,39 +887,20 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                 return;
             }
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
-            boolean lbDisableField = (poPurchaseReturnController.Detail(pnDetail).getSerialId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getSerialId()));
 
-            tfIMEINo.setDisable(!lbDisable);
-            tfBarcode.setDisable(!lbDisable);
-            tfDescription.setDisable(!lbDisable);
+            JFXUtil.setDisabled(!lbDisable, tfEngineNo, tfFrameNo, tfPlateNo);
             if (lbDisable) {
-                while (tfIMEINo.getStyleClass().contains("DisabledTextField") || tfBarcode.getStyleClass().contains("DisabledTextField")
-                        || tfDescription.getStyleClass().contains("DisabledTextField")) {
-                    tfIMEINo.getStyleClass().remove("DisabledTextField");
-                    tfBarcode.getStyleClass().remove("DisabledTextField");
-                    tfDescription.getStyleClass().remove("DisabledTextField");
-                }
 
-                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
-                    tfIMEINo.setDisable(!lbDisableField);
-                    if (lbDisableField) {
-                        while (tfIMEINo.getStyleClass().contains("DisabledTextField")) {
-                            tfIMEINo.getStyleClass().remove("DisabledTextField");
-                        }
-                    } else {
-                        tfIMEINo.getStyleClass().add("DisabledTextField");
-                    }
+                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfEngineNo, tfFrameNo, tfPlateNo)) {
+                    JFXUtil.AddStyleClass("DisabledTextField", tfEngineNo, tfFrameNo, tfPlateNo);
                 }
-
             } else {
-                tfIMEINo.getStyleClass().add("DisabledTextField");
-                tfBarcode.getStyleClass().add("DisabledTextField");
-                tfDescription.getStyleClass().add("DisabledTextField");
+                JFXUtil.RemoveStyleClass("DisabledTextField", tfEngineNo, tfFrameNo, tfPlateNo);
             }
 
-            tfIMEINo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial01());
-            tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
-            tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());
+            tfEngineNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial01());
+            tfFrameNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial02());
+            tfPlateNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerialRegistration().getPlateNoP());
             tfBrand.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Brand().getDescription());
             tfModel.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Model().getDescription());
             tfModelVariant.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Variant().getDescription());
@@ -986,6 +967,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                 }
                 lblStatus.setText(lsStat);
                 JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
+
             });
 
             poPurchaseReturnController.computeFields();
@@ -1030,7 +1012,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                 if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
                     tfReturnQuantity.requestFocus();
                 } else {
-                    tfIMEINo.requestFocus();
+                    tfEngineNo.requestFocus();
                 }
                 event.consume();
             }
@@ -1046,17 +1028,19 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                     if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
                         tfReturnQuantity.requestFocus();
                     } else {
-                        tfIMEINo.requestFocus();
+                        tfEngineNo.requestFocus();
                     }
                 }
             }
         });
 
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 3); // need to use computed-size in min-width of the column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 4); // need to use computed-size in min-width of the column to work
     }
 
     public void loadTableDetail() {
+        // Setting data to table detail
+
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);
@@ -1105,11 +1089,17 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                                 lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue();
                             } catch (Exception e) {
                             }
+
+                            String lsPlateNo = "";
+                            if (poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP() != null
+                                    && !"".equals(poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP())) {
+                                lsPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP();
+                            } 
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial01()),
-                                            //                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial02()),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial02()),
+                                            String.valueOf(lsPlateNo),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
                                             String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),
@@ -1170,7 +1160,6 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
-        boolean lbShow4 = (fnValue == EditMode.ADDNEW);
 
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(!lbShow, btnNew);
@@ -1178,12 +1167,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         JFXUtil.setButtonsVisibility(lbShow2, btnUpdate, btnPrint, btnHistory);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
-        JFXUtil.setDisabled(!lbShow4, tfSupplier, tfReferenceNo, tfPOReceivingNo);
-
-//        apMaster.setDisable(!lbShow);
-        dpTransactionDate.setDisable(!lbShow);
-        taRemarks.setDisable(!lbShow);
-        apDetail.setDisable(!lbShow);
+        JFXUtil.setDisabled(!lbShow, dpTransactionDate, taRemarks, apDetail);
 
         switch (poPurchaseReturnController.Master().getTransactionStatus()) {
             case PurchaseOrderReturnStatus.POSTED:

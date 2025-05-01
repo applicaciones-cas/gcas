@@ -355,6 +355,14 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                     loadTableDetail();
                 }
                 initButton(pnEditMode);
+                
+                if (lsButton.equals("btnUpdate")) {
+                    if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
+                        tfReturnQuantity.requestFocus();
+                    } else {
+                        tfBarcode.requestFocus();
+                    }
+                }
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
@@ -890,7 +898,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = poPurchaseReturnController.getEditMode() == EditMode.ADDNEW;
+        boolean lbDisable = pnEditMode == EditMode.ADDNEW;
         if (!lbDisable) {
             JFXUtil.AddStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
         } else {
