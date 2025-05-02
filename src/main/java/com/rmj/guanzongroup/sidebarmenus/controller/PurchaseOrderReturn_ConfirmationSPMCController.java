@@ -239,8 +239,7 @@ public class PurchaseOrderReturn_ConfirmationSPMCController implements Initializ
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfReferenceNo", "tfPOReceivingNo", "tfBarcode", "tfSearchSupplier", "tfSearchReferenceNo",
-                                        "tfDescription").contains(tf.getId())) {
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail).contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
                                         break;

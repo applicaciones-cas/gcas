@@ -247,7 +247,7 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfReferenceNo", "tfPOReceivingNo", "tfEngineNo", "tfFrameNo", "tfPlateNo").contains(tf.getId())) {
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apMaster, apDetail).contains(tf.getId())) {
                                     if (lastFocusedTextField == previousSearchedTextField) {
                                         break;
                                     }
@@ -769,7 +769,7 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
         JFXUtil.setFocusListener(txtDetail_Focus, tfFrameNo, tfEngineNo, tfPlateNo, tfReturnQuantity);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
-        
+
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }

@@ -241,7 +241,7 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfReferenceNo", "tfPOReceivingNo", "tfEngineNo", "tfFrameNo", "tfPlateNo", "tfCSNo").contains(tf.getId())) {
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail).contains(tf.getId())) {
                                     if (lastFocusedTextField == previousSearchedTextField) {
                                         break;
                                     }
