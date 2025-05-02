@@ -1271,8 +1271,6 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
     public void initMainGrid() {
         JFXUtil.setColumnCenter(tblRowNo, tblDate, tblReferenceNo);
         JFXUtil.setColumnLeft(tblSupplier);
-        JFXUtil.setColumnsIndex(tblRowNo, tblSupplier, tblDate, tblReferenceNo);
-
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewPuchaseOrderReturn);
 
         filteredData = new FilteredList<>(main_data, b -> true);
