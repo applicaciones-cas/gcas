@@ -268,7 +268,6 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
-                                psSupplierId = "";
                                 break;
                             } else {
                                 psSupplierId = poPurchaseReturnController.Master().getSupplierId();
