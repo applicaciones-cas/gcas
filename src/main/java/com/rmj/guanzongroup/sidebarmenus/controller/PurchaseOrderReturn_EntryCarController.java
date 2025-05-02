@@ -479,6 +479,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                             }
 
                             poJSON = poPurchaseReturnController.Master().setSupplierId("");
+                            poJSON = poPurchaseReturnController.Master().setSourceNo("");
                         }
                         break;
                     case "tfReferenceNo":
@@ -500,6 +501,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                             }
 
                             poJSON = poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().setReferenceNo("");
+                            poJSON = poPurchaseReturnController.Master().setSourceNo("");
                         }
                         if ("error".equals(poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
