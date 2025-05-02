@@ -64,7 +64,7 @@ public class PurchaseOrderReturn_HistoryMonarchHospitalityController implements 
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return History Monarch Hospitality";
+    private final String pxeModuleName = "Purchase Order Return History MH";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 

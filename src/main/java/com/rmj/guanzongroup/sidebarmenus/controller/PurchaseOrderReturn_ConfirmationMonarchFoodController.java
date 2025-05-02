@@ -78,7 +78,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchase Order Return Confirmation Monarch Food";
+    private final String pxeModuleName = "Purchase Order Return Confirmation MF";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
     boolean isPrinted = false;

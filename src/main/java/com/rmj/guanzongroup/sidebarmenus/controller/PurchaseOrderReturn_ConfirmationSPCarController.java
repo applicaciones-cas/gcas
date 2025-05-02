@@ -77,7 +77,7 @@ public class PurchaseOrderReturn_ConfirmationSPCarController implements Initiali
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchase Order Return Confirmation SP Car";
+    private final String pxeModuleName = "Purchase Order Return Confirmation SPCar";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
     boolean isPrinted = false;

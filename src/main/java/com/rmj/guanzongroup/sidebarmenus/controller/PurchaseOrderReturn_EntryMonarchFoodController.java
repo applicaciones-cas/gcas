@@ -73,7 +73,7 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return Entry Monarch Food";
+    private final String pxeModuleName = "Purchase Order Return Entry MF";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 

@@ -73,7 +73,7 @@ public class PurchaseOrderReturn_EntryMonarchHospitalityController implements In
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return Entry Monarch Hospitality";
+    private final String pxeModuleName = "Purchase Order Return Entry MH";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 

@@ -70,7 +70,7 @@ public class PurchaseOrderReturn_EntrySPCarController implements Initializable, 
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return Entry SP Car";
+    private final String pxeModuleName = "Purchase Order Return Entry SPCar";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 

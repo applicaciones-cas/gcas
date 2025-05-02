@@ -64,7 +64,7 @@ public class PurchaseOrderReturn_HistoryMonarchFoodController implements Initial
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return History Monarch Food";
+    private final String pxeModuleName = "Purchase Order Return History MF";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 
