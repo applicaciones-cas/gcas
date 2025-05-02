@@ -255,7 +255,7 @@ public class PurchaseOrderReturn_HistorySPCarController implements Initializable
                             poJSON = poPurchaseReturnController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSupplier.setText("");
+                                tfSearchSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             } else {
