@@ -20,6 +20,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.scene.control.TableView;
@@ -151,46 +152,68 @@ public class JFXUtil {
     public static <T> void initComboBoxCellDesignColor(ComboBox<T> comboBox, String hexcolor) {
 //      #FF8201
         comboBox.setCellFactory(param -> new ListCell<T>() {
-            {
-                // Add a hover listener
-                hoverProperty().addListener((obs, wasHovered, isNowHovered) -> {
-                    if (isNowHovered && !isEmpty() && getItem() != null) {
-                        setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
-                    } else if (!isEmpty() && getItem() != null) {
-                        // If not hovered, reset style based on selection
-                        if (getItem().toString().equals(comboBox.getValue() != null ? comboBox.getValue().toString() : "")) {
-                            setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
-                        } else {
-                            setStyle("");
-                        }
-                    }
-                });
-            }
-
             @Override
             protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
+
                 if (empty || item == null) {
                     setText(null);
                     setStyle("");
                 } else {
                     setText(item.toString());
 
-                    if (item.toString().equals(comboBox.getValue() != null ? comboBox.getValue().toString() : "")) {
+                    boolean isSelected = item.equals(comboBox.getValue());
+
+                    // Apply initial style
+                    if (isSelected) {
                         setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
                     } else {
                         setStyle("");
                     }
+
+                    hoverProperty().addListener((obs, wasHovered, isNowHovered) -> {
+                        if (isNowHovered && !isEmpty() && getItem() != null) {
+                            if (getItem().toString().equals(comboBox.getValue() != null ? comboBox.getValue().toString() : "")) {
+                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
+
+                            } else {
+                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: black;");
+
+                            }
+                        } else if (!isEmpty() && getItem() != null) {
+                            // If not hovered, reset style based on selection
+                            if (getItem().toString().equals(comboBox.getValue() != null ? comboBox.getValue().toString() : "")) {
+                                setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
+                            } else {
+                                setStyle("");
+                            }
+                        }
+                    });
+
+                    setOnMouseExited(e -> {
+                        if (item.equals(comboBox.getValue())) {
+                            setStyle("-fx-background-color: " + hexcolor + "; -fx-text-fill: white;");
+                        } else {
+                            setStyle("");
+                        }
+                    });
                 }
             }
         });
-
         comboBox.setOnShowing(event -> {
             T selectedItem = comboBox.getValue();
             if (selectedItem != null) {
+                // Loop through each item and apply style based on selection
                 for (int i = 0; i < comboBox.getItems().size(); i++) {
                     T item = comboBox.getItems().get(i);
-                    comboBox.getItems().set(i, item); // this is okay even if a bit redundant
+
+                    if (item.equals(selectedItem)) {
+                        // Apply the custom background color for selected item in the list
+                        comboBox.getItems().set(i, item);
+                    } else {
+                        // Reset the style for non-selected items
+                        comboBox.getItems().set(i, item);
+                    }
                 }
             }
         });
@@ -551,6 +574,29 @@ public class JFXUtil {
             }
         }
         return false;
+    }
+
+    public static void setKeyPressedListener(EventHandler<KeyEvent> listener, AnchorPane... anchorPanes) {
+        for (AnchorPane pane : anchorPanes) {
+            for (Node node : pane.getChildrenUnmodifiable()) {
+                if (node instanceof TextField) {
+                    ((TextField) node).setOnKeyPressed(listener);
+                } else if (node instanceof Parent) {
+                    // Recursively check for nested TextFields
+                    applyListenerToNestedTextFields((Parent) node, listener);
+                }
+            }
+        }
+    }
+
+    private static void applyListenerToNestedTextFields(Parent parent, EventHandler<KeyEvent> listener) {
+        for (Node child : parent.getChildrenUnmodifiable()) {
+            if (child instanceof TextField) {
+                ((TextField) child).setOnKeyPressed(listener);
+            } else if (child instanceof Parent) {
+                applyListenerToNestedTextFields((Parent) child, listener);
+            }
+        }
     }
 
 }

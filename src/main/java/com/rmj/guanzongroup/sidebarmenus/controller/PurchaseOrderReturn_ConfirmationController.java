@@ -197,25 +197,24 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnPrint":
-//                        poJSON = poPurchaseReturnController.printRecord(() -> {
-//                            if (isPrinted) {
-//                                JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
-//                                poPurchaseReturnController.resetMaster();
-//                                poPurchaseReturnController.resetOthers();
-//                                poPurchaseReturnController.Detail().clear();
-//                                pnEditMode = EditMode.UNKNOWN;
-//                                clearTextFields();
-//                                initButton(pnEditMode);
-//                            }
-//                            isPrinted = false;
-//                            Platform.runLater(() -> {
-//                                loadRecordMaster();
-//                                loadTableDetail();
-//                            });
-//                        });
-//                        if ("error".equals((String) poJSON.get("result"))) {
-//                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                        }
+                        poJSON = poPurchaseReturnController.printRecord(() -> {
+                            if (isPrinted) {
+                                JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
+                                poPurchaseReturnController.resetMaster();
+                                poPurchaseReturnController.Detail().clear();
+                                pnEditMode = EditMode.UNKNOWN;
+                                clearTextFields();
+                                initButton(pnEditMode);
+                            }
+                            isPrinted = false;
+                            Platform.runLater(() -> {
+                                loadRecordMaster();
+                                loadTableDetail();
+                            });
+                        });
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -423,63 +422,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
         JFXUtil.disableAllHighlight(tblViewPuchaseOrderReturn, highlightedRowsMain);
     }
 
-//    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
-//        try {
-//            poJSON = new JSONObject();
-//            TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-//            String lsTxtFieldID = (txtPersonalInfo.getId());
-//            String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-//            lastFocusedTextField = txtPersonalInfo;
-//            previousSearchedTextField = null;
-//
-//            if (lsValue == null) {
-//                return;
-//            }
-//            if (!nv) {
-//                /*Lost Focus*/
-//                switch (lsTxtFieldID) {
-//                    case "tfSupplier":
-//                        if (lsValue.isEmpty()) {
-//                            poJSON = poPurchaseReturnController.Master().setSupplierId("");
-//                        }
-//                        break;
-//                    case "tfAreaRemarks":
-//                        break;
-//
-//                    case "tfReferenceNo":
-//                        if (!lsValue.isEmpty()) {
-//                        } else {
-//                            poJSON = poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().setReferenceNo("");
-//                        }
-//                        if ("error".equals(poJSON.get("result"))) {
-//                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                            tfReferenceNo.setText("");
-//                            break;
-//                        }
-//                        break;
-//
-//                    case "tfPOReceivingNo":
-//                        if (!lsValue.isEmpty()) {
-//                        } else {
-//                            poJSON = poPurchaseReturnController.Master().setSourceNo("");
-//                        }
-//                        if ("error".equals(poJSON.get("result"))) {
-//                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                            tfPOReceivingNo.setText("");
-//                            break;
-//                        }
-//                        break;
-//
-//                }
-//
-//                loadRecordMaster();
-//            }
-//        } catch (GuanzonException ex) {
-//            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-//        } catch (SQLException ex) {
-//            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-//        }
-//    };
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsID = (txtField.getId());
@@ -1196,18 +1138,9 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
         JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
 //        JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfPOReceivingNo);
-        JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription, tfReceiveQuantity);
+        JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription, tfReceiveQuantity, tfReturnQuantity);
 
-        TextField[] textFields = {
-            tfSearchSupplier, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfPOReceivingNo,
-            tfReferenceNo, tfTotal, tfBrand,
-            tfModel, tfDescription, tfBarcode, tfColor, tfMeasure, tfInventoryType, tfCost, tfReturnQuantity,
-            tfReceiveQuantity
-        };
-
-        for (TextField textField : textFields) {
-            textField.setOnKeyPressed(this::txtField_KeyPressed);
-        }
+        JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
 
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
@@ -1333,7 +1266,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
             TableView<?> currentTable = (TableView<?>) event.getSource();
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
             switch (currentTable.getId()) {
-                case "tblViewPuchaseOrderReturn":
+                case "tblViewDetails":
                     if (focusedCell != null) {
                         switch (event.getCode()) {
                             case TAB:

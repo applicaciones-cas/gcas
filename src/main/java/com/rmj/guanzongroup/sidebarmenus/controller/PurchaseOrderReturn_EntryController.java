@@ -197,19 +197,19 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
 
                         break;
                     case "btnPrint":
-//                        poJSON = poPurchaseReturnController.printRecord(() -> {
-//                            if (lsIsSaved) {
-//                                Platform.runLater(() -> {
-//                                    btnNew.fire();
-//                                });
-//                            } else {
-//                                loadRecordMaster();
-//                            }
-//                            lsIsSaved = false;
-//                        });
-//                        if ("error".equals((String) poJSON.get("result"))) {
-//                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                        }
+                        poJSON = poPurchaseReturnController.printRecord(() -> {
+                            if (lsIsSaved) {
+                                Platform.runLater(() -> {
+                                    btnNew.fire();
+                                });
+                            } else {
+                                loadRecordMaster();
+                            }
+                            lsIsSaved = false;
+                        });
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -746,16 +746,8 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription, tfReturnQuantity);
 
-        TextField[] textFields = {
-            tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfReturnQuantity,
-            tfTotal, tfBarcode, tfDescription,
-            tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
-            tfReceiveQuantity
-        };
+        JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
 
-        for (TextField textField : textFields) {
-            textField.setOnKeyPressed(this::txtField_KeyPressed);
-        }
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }

@@ -199,25 +199,24 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnPrint":
-//                        poJSON = poPurchaseReturnController.printRecord(() -> {
-//                            if (isPrinted) {
-//                                JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
-//                                poPurchaseReturnController.resetMaster();
-//                                poPurchaseReturnController.resetOthers();
-//                                poPurchaseReturnController.Detail().clear();
-//                                pnEditMode = EditMode.UNKNOWN;
-//                                clearTextFields();
-//                                initButton(pnEditMode);
-//                            }
-//                            isPrinted = false;
-//                            Platform.runLater(() -> {
-//                                loadRecordMaster();
-//                                loadTableDetail();
-//                            });
-//                        });
-//                        if ("error".equals((String) poJSON.get("result"))) {
-//                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                        }
+                        poJSON = poPurchaseReturnController.printRecord(() -> {
+                            if (isPrinted) {
+                                JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
+                                poPurchaseReturnController.resetMaster();
+                                poPurchaseReturnController.Detail().clear();
+                                pnEditMode = EditMode.UNKNOWN;
+                                clearTextFields();
+                                initButton(pnEditMode);
+                            }
+                            isPrinted = false;
+                            Platform.runLater(() -> {
+                                loadRecordMaster();
+                                loadTableDetail();
+                            });
+                        });
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        }
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -1146,18 +1145,9 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
     public void initTextFields() {
         JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtDetail_Focus, tfFrameNo, tfEngineNo, tfPlateNo, tfReturnQuantity);
+        JFXUtil.setFocusListener(txtDetail_Focus, tfFrameNo, tfEngineNo, tfPlateNo, tfReturnQuantity, tfReturnQuantity);
 
-        TextField[] textFields = {
-            tfSearchSupplier, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo,
-            tfTotal, tfFrameNo, tfEngineNo, tfPlateNo,
-            tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
-            tfReceiveQuantity, tfReturnQuantity
-        };
-
-        for (TextField textField : textFields) {
-            textField.setOnKeyPressed(this::txtField_KeyPressed);
-        }
+        JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
 
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
@@ -1283,7 +1273,7 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
             TableView<?> currentTable = (TableView<?>) event.getSource();
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
             switch (currentTable.getId()) {
-                case "tblViewPuchaseOrderReturn":
+                case "tblViewDetails":
                     if (focusedCell != null) {
                         switch (event.getCode()) {
                             case TAB:
