@@ -247,7 +247,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfReferenceNo", "tfPOReceivingNo", "tfEngineNo", "tfFrameNo", "tfPlateNo", "tfCSNo").contains(tf.getId())) {
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apMaster, apDetail).contains(tf.getId())) {
                                     if (lastFocusedTextField == previousSearchedTextField) {
                                         break;
                                     }
@@ -793,7 +793,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
         JFXUtil.setFocusListener(txtDetail_Focus, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo, tfReturnQuantity);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
-        
+
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }

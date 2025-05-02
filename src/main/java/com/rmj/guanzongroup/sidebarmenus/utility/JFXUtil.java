@@ -28,6 +28,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -46,6 +47,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -595,6 +597,36 @@ public class JFXUtil {
                 ((TextField) child).setOnKeyPressed(listener);
             } else if (child instanceof Parent) {
                 applyListenerToNestedTextFields((Parent) child, listener);
+            }
+        }
+    }
+
+    public static List<String> getTextFieldsIDWithPrompt(String lsprompt, AnchorPane... panes) {
+        List<String> results = new ArrayList<>();
+        for (AnchorPane pane : panes) {
+            for (Node node : pane.getChildren()) {
+                collectTextFieldIDs(node, lsprompt, results);
+            }
+        }
+        return results;
+    }
+
+    private static void collectTextFieldIDs(Node node, String lsprompt, List<String> results) {
+        if (node instanceof TextField) {
+            TextField tf = (TextField) node;
+            String prompt = tf.getPromptText();
+            if (prompt != null && prompt.contains(lsprompt) && tf.getId() != null) {
+                results.add(tf.getId());
+            }
+        } else if (node instanceof Pane) {
+            Pane pane = (Pane) node;
+            for (Node child : pane.getChildren()) {
+                collectTextFieldIDs(child, lsprompt, results);
+            }
+        } else if (node instanceof Group) {
+            Group group = (Group) node;
+            for (Node child : group.getChildren()) {
+                collectTextFieldIDs(child, lsprompt, results);
             }
         }
     }

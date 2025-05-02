@@ -245,8 +245,7 @@ public class PurchaseOrderReturn_EntrySPMCController implements Initializable, S
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfSupplier", "tfReferenceNo", "tfPOReceivingNo", "tfBarcode",
-                                        "tfDescription").contains(tf.getId())) {
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apMaster, apDetail).contains(tf.getId())) {
 
                                     if (lastFocusedTextField == previousSearchedTextField) {
                                         break;
@@ -745,7 +744,7 @@ public class PurchaseOrderReturn_EntrySPMCController implements Initializable, S
         JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription, tfReturnQuantity);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
-        
+
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
     }
@@ -1120,9 +1119,7 @@ public class PurchaseOrderReturn_EntrySPMCController implements Initializable, S
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
 //        apMaster.setDisable(!lbShow);
-        dpTransactionDate.setDisable(!lbShow);
-        taRemarks.setDisable(!lbShow);
-        apDetail.setDisable(!lbShow);
+        JFXUtil.setDisabled(!lbShow, dpTransactionDate, taRemarks, apDetail);
 
         switch (poPurchaseReturnController.Master().getTransactionStatus()) {
             case PurchaseOrderReturnStatus.POSTED:
