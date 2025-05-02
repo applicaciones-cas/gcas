@@ -56,7 +56,6 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
-import java.util.Arrays;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
 import org.json.simple.parser.ParseException;
 

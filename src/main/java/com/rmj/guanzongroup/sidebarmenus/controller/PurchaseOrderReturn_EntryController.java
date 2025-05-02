@@ -58,7 +58,6 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
-import java.util.Arrays;
 import java.util.List;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
 import org.json.simple.parser.ParseException;
@@ -86,7 +85,6 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
 
-    private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
 
