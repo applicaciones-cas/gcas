@@ -347,7 +347,7 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
                     loadTableDetail();
                 }
                 initButton(pnEditMode);
-                
+
                 if (lsButton.equals("btnUpdate")) {
                     if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
                         tfReturnQuantity.requestFocus();
@@ -768,7 +768,7 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
 
         TextField[] textFields = {
             tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfReturnQuantity,
-            tfTotal, tfFrameNo, tfEngineNo, tfPlateNo, 
+            tfTotal, tfFrameNo, tfEngineNo, tfPlateNo,
             tfBrand, tfModel, tfColor, tfInventoryType, tfMeasure, tfCost,
             tfReceiveQuantity, tfReturnQuantity
         };
@@ -850,10 +850,7 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
         JFXUtil.setColumnLeft(tblEngineNoDetail, tblFrameNoDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblPlateNoDetail,
-                tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
-
-        JFXUtil.disableColumnReordering(tblViewDetails);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewDetails);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 
@@ -1094,7 +1091,7 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
                             if (poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP() != null
                                     && !"".equals(poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP())) {
                                 lsPlateNo = poPurchaseReturnController.Detail(lnCtr).InventorySerialRegistration().getPlateNoP();
-                            } 
+                            }
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial01()),

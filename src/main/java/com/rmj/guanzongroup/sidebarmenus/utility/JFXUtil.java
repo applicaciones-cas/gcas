@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.rmj.guanzongroup.sidebarmenus.utility;
+
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
@@ -407,13 +408,27 @@ public class JFXUtil {
         }
     }
 
-    public static void setColumnsIndex(TableColumn... columns) {
+    public static void setColumnsIndexAndDisableReordering(TableView<?> tableView) {
         int counter = 1;
-        for (TableColumn<?, ?> column : columns) {
-            String indexName = String.format("index%02d", counter);
-            column.setCellValueFactory(new PropertyValueFactory<>(indexName));
-            counter++;
+        for (Object obj : tableView.getColumns()) {
+            if (obj instanceof TableColumn) {
+                @SuppressWarnings("unchecked")
+                TableColumn<?, ?> column = (TableColumn<?, ?>) obj;
+                String indexName = String.format("index%02d", counter);
+                column.setCellValueFactory(new PropertyValueFactory(indexName));
+                counter++;
+            }
         }
+
+        tableView.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
+            if (header != null) {
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
+            }
+        });
+
     }
 
     public static void clearTextFields(AnchorPane... anchorPanes) {
@@ -431,17 +446,6 @@ public class JFXUtil {
                 clearTextInputsRecursive((Parent) node); // Recursively check child nodes
             }
         }
-    }
-
-    public static void disableColumnReordering(TableView<?> tableView) {
-        tableView.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
-            if (header != null) {
-                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    header.setReordering(false);
-                });
-            }
-        });
     }
 
     public static void setButtonsVisibility(boolean visible, Button... buttons) {

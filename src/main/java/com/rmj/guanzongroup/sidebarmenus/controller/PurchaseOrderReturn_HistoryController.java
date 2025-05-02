@@ -332,9 +332,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail);
         JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblTotalDetail);
-
-        JFXUtil.disableColumnReordering(tblViewDetails);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewDetails);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 

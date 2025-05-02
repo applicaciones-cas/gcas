@@ -347,7 +347,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                     loadTableDetail();
                 }
                 initButton(pnEditMode);
-                
+
                 if (lsButton.equals("btnUpdate")) {
                     if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
                         tfReturnQuantity.requestFocus();
@@ -765,7 +765,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         JFXUtil.setFocusListener(txtMaster_Focus, tfSupplier, tfReferenceNo, tfPOReceivingNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtDetail_Focus, tfIMEINo, tfBarcode, tfDescription, tfReturnQuantity);
-        
+
         TextField[] textFields = {
             tfTransactionNo, tfSupplier, tfReferenceNo, tfPOReceivingNo, tfReturnQuantity,
             tfTotal, tfBarcode, tfIMEINo, tfDescription,
@@ -850,10 +850,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
         JFXUtil.setColumnLeft(tblImeiNoDetail, tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblImeiNoDetail, tblBarcodeDetail,
-                tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
-
-        JFXUtil.disableColumnReordering(tblViewDetails);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewDetails);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 

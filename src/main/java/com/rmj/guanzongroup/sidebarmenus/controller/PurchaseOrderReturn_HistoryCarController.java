@@ -334,10 +334,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
         JFXUtil.setColumnLeft(tblEngineNoDetail, tblFrameNoDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblCSPlateNoDetail,
-                tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
-
-        JFXUtil.disableColumnReordering(tblViewDetails);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewDetails);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 

@@ -9,11 +9,8 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Ma
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1259,12 +1256,9 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
 
     public void initDetailsGrid() {
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
-        JFXUtil.setColumnLeft(tblEngineNoDetail, tblFrameNoDetail, tblDescriptionDetail);
+        JFXUtil.setColumnLeft(tblEngineNoDetail, tblFrameNoDetail, tblDescriptionDetail, tblPlateNoDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblPlateNoDetail,
-                tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
-
-        JFXUtil.disableColumnReordering(tblViewDetails);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewDetails);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 
@@ -1279,11 +1273,9 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
         JFXUtil.setColumnLeft(tblSupplier);
         JFXUtil.setColumnsIndex(tblRowNo, tblSupplier, tblDate, tblReferenceNo);
 
-        JFXUtil.disableColumnReordering(tblViewPuchaseOrderReturn);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewPuchaseOrderReturn);
 
         filteredData = new FilteredList<>(main_data, b -> true);
-//        SortedList<ModelPurchaseOrderReturn_Main> sortedData = new SortedList<>(filteredData);
-//        sortedData.comparatorProperty().bind(tblViewPuchaseOrderReturn.comparatorProperty());
         tblViewPuchaseOrderReturn.setItems(filteredData);
 
     }

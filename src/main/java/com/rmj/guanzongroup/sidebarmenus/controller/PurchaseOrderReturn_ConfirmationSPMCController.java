@@ -9,11 +9,8 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Ma
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1312,10 +1309,7 @@ public class PurchaseOrderReturn_ConfirmationSPMCController implements Initializ
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
         JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail,
-                tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
-
-        JFXUtil.disableColumnReordering(tblViewDetails);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewDetails);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 
@@ -1328,13 +1322,9 @@ public class PurchaseOrderReturn_ConfirmationSPMCController implements Initializ
     public void initMainGrid() {
         JFXUtil.setColumnCenter(tblRowNo, tblDate, tblReferenceNo);
         JFXUtil.setColumnLeft(tblSupplier);
-        JFXUtil.setColumnsIndex(tblRowNo, tblSupplier, tblDate, tblReferenceNo);
-
-        JFXUtil.disableColumnReordering(tblViewPuchaseOrderReturn);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewPuchaseOrderReturn);
 
         filteredData = new FilteredList<>(main_data, b -> true);
-//        SortedList<ModelPurchaseOrderReturn_Main> sortedData = new SortedList<>(filteredData);
-//        sortedData.comparatorProperty().bind(tblViewPuchaseOrderReturn.comparatorProperty());
         tblViewPuchaseOrderReturn.setItems(filteredData);
 
     }

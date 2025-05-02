@@ -10,7 +10,6 @@ import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -34,7 +33,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -58,7 +56,6 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReturnControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
-import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import java.util.Arrays;
@@ -355,7 +352,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
                     loadTableDetail();
                 }
                 initButton(pnEditMode);
-                
+
                 if (lsButton.equals("btnUpdate")) {
                     if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
                         tfReturnQuantity.requestFocus();
@@ -833,9 +830,8 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
         JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
 
-        JFXUtil.disableColumnReordering(tblViewDetails);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewDetails);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 

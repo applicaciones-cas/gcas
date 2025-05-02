@@ -347,7 +347,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                     loadTableDetail();
                 }
                 initButton(pnEditMode);
-                
+
                 if (lsButton.equals("btnUpdate")) {
                     if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
                         tfReturnQuantity.requestFocus();
@@ -872,12 +872,9 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
 
     public void initDetailsGrid() {
         JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail);
-        JFXUtil.setColumnLeft(tblEngineNoDetail, tblFrameNoDetail, tblDescriptionDetail);
+        JFXUtil.setColumnLeft(tblEngineNoDetail, tblFrameNoDetail, tblDescriptionDetail, tblCSPlateNoDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
-        JFXUtil.setColumnsIndex(tblRowNoDetail, tblEngineNoDetail, tblFrameNoDetail, tblCSPlateNoDetail,
-                tblDescriptionDetail, tblCostDetail, tblReceiveQuantityDetail, tblReturnQuantityDetail, tblTotalDetail);
-
-        JFXUtil.disableColumnReordering(tblViewDetails);
+        JFXUtil.setColumnsIndexAndDisableReordering(tblViewDetails);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 
