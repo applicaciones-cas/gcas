@@ -904,6 +904,7 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
             tfPlateNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerialRegistration().getPlateNoP());
             tfBrand.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Brand().getDescription());
             tfModel.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Model().getDescription());
+            tfModelVariant.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Variant().getDescription());
             tfColor.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Color().getDescription());
             tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
