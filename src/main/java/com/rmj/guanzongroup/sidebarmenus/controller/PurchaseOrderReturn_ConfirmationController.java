@@ -1288,6 +1288,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
     }
 
     public void clearTextFields() {
+        psTransactionNo = "";
         previousSearchedTextField = null;
         lastFocusedTextField = null;
         dpTransactionDate.setValue(null);
