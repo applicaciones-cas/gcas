@@ -302,6 +302,9 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
     }
 
     public void initTextFields() {
+        Platform.runLater(() -> {
+            JFXUtil.setVerticalScroll(taRemarks);
+        });
         JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse);
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);

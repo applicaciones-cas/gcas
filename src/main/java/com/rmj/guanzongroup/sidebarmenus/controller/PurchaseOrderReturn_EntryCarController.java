@@ -788,6 +788,9 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
     }
 
     public void initTextFields() {
+        Platform.runLater(() -> {
+            JFXUtil.setVerticalScroll(taRemarks);
+        });
         JFXUtil.setFocusListener(txtMaster_Focus, tfSupplier, tfReferenceNo, tfPOReceivingNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtDetail_Focus, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo, tfReturnQuantity);

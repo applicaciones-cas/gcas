@@ -764,6 +764,9 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
     }
 
     public void initTextFields() {
+        Platform.runLater(() -> {
+            JFXUtil.setVerticalScroll(taRemarks);
+        });
         JFXUtil.setFocusListener(txtMaster_Focus, tfSupplier, tfReferenceNo, tfPOReceivingNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtDetail_Focus, tfFrameNo, tfEngineNo, tfPlateNo, tfReturnQuantity);

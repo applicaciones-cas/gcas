@@ -1133,6 +1133,9 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
     }
 
     public void initTextFields() {
+        Platform.runLater(() -> {
+            JFXUtil.setVerticalScroll(taRemarks);
+        });
         JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
 //        JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfPOReceivingNo);

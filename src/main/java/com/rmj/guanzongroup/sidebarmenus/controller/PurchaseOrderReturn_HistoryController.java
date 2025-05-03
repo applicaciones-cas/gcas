@@ -301,6 +301,9 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
     }
 
     public void initTextFields() {
+        Platform.runLater(() -> {
+            JFXUtil.setVerticalScroll(taRemarks);
+        });
         JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse);
         

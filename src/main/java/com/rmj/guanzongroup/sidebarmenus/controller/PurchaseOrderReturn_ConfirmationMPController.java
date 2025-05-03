@@ -1145,6 +1145,9 @@ public class PurchaseOrderReturn_ConfirmationMPController implements Initializab
     }
 
     public void initTextFields() {
+        Platform.runLater(() -> {
+            JFXUtil.setVerticalScroll(taRemarks);
+        });
         JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfIMEINo, tfDescription, tfReturnQuantity);

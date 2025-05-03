@@ -1170,6 +1170,9 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
     }
 
     public void initTextFields() {
+        Platform.runLater(() -> {
+            JFXUtil.setVerticalScroll(taRemarks);
+        });
         JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtDetail_Focus, tfFrameNo, tfEngineNo, tfPlateNo, tfCSNo, tfReturnQuantity);

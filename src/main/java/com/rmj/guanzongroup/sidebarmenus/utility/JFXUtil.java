@@ -38,7 +38,9 @@ import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Pagination;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TablePosition;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -629,6 +631,48 @@ public class JFXUtil {
                 collectTextFieldIDs(child, lsprompt, results);
             }
         }
+    }
+
+    public static void setVerticalScroll(TextArea textArea) {
+        textArea.applyCss();
+        textArea.layout();
+
+        textArea.setStyle(
+                "-fx-font-size: 10pt;"
+                + "-fx-border-radius: 2px;"
+                + "-fx-opacity: 1.0;"
+                + "-fx-background-color: grey, white;"
+                + "-fx-text-fill: black;"
+                + "-fx-border-color: grey;"
+        );
+        textArea.focusedProperty().addListener((obs, oldVal, isFocused) -> {
+            if (isFocused) {
+                textArea.setStyle(
+                        "-fx-background-color: orange, white;"
+                        + "-fx-text-fill: black;"
+                        + "-fx-border-color: orange;"
+                );
+            } else {
+                textArea.setStyle(
+                        "-fx-background-color: grey, white;"
+                        + "-fx-text-fill: black;"
+                        + "-fx-border-color: grey;"
+                );
+            }
+        });
+
+        ScrollPane scrollPane = (ScrollPane) textArea.lookup(".scroll-pane");
+        if (scrollPane != null) {
+            scrollPane.setStyle(
+                    "-fx-focus-color: -fx-focus-color;"
+                    + "-fx-vbar-policy: as-needed;"
+                    + "-fx-background-color: transparent;"
+                    + "-fx-opacity: 1.0;"
+            );
+        } else {
+        }
+        textArea.getStyleClass().add("custom-text-area");
+
     }
 
 }
