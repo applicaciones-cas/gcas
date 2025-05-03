@@ -389,6 +389,13 @@ public class PurchaseOrderReturn_HistoryLPController implements Initializable, S
         try {
 
             Platform.runLater(() -> {
+                boolean lbIsReprint = poPurchaseReturnController.Master().getPrint().equals("1") ? true : false;
+                if (lbIsReprint) {
+                    btnPrint.setText("Reprint");
+                } else {
+                    btnPrint.setText("Print");
+                }
+                
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
                 String lsActive = poPurchaseReturnController.Master().getTransactionStatus();
                 String lsStat = "UNKNOWN";
