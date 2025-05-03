@@ -85,6 +85,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
+    private String psTransactionNo = "";
 
     private ObservableList<ModelPurchaseOrderReturn_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
@@ -224,7 +225,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
                         }
                         break;
                     case "btnUpdate":
-                        poJSON = poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.Master().getTransactionNo());
+                        poJSON = poPurchaseReturnController.OpenTransaction(psTransactionNo);
                         poJSON = poPurchaseReturnController.UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -287,7 +288,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
 
                                 // Confirmation Prompt
-                                JSONObject loJSON = poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.Master().getTransactionNo());
+                                JSONObject loJSON = poPurchaseReturnController.OpenTransaction(psTransactionNo);
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (poPurchaseReturnController.Master().getTransactionStatus().equals(PurchaseOrderReturnStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
@@ -303,7 +304,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
                                 }
 
                                 // Print Transaction Prompt
-                                loJSON = poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.Master().getTransactionNo());
+                                loJSON = poPurchaseReturnController.OpenTransaction(psTransactionNo);
                                 loadRecordMaster();
                                 isPrinted = false;
                                 if ("success".equals(loJSON.get("result"))) {
@@ -995,8 +996,8 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
                 pnMain = pnRowMain;
                 JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
                 JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(pnRowMain + 1), "#A7C7E7", highlightedRowsMain);
-
-                poJSON = poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo());
+                psTransactionNo = poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo();
+                poJSON = poPurchaseReturnController.OpenTransaction(psTransactionNo);
                 if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
@@ -1286,6 +1287,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
     }
 
     public void clearTextFields() {
+        psTransactionNo = "";
         previousSearchedTextField = null;
         lastFocusedTextField = null;
         dpTransactionDate.setValue(null);
