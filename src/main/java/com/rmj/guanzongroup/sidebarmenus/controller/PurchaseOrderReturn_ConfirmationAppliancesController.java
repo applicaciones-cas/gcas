@@ -620,10 +620,8 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReturnController.Master().setTransactionNo(lsValue);
                             retrievePOR();
                             return;
-
                         case "tfIMEINo":
                             poJSON = poPurchaseReturnController.SearchIMEINo(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");

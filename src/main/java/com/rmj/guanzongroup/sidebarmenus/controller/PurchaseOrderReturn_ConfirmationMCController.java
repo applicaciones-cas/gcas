@@ -619,10 +619,8 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReturnController.Master().setTransactionNo(lsValue);
                             retrievePOR();
                             return;
-
                         case "tfEngineNo":
                             poJSON = poPurchaseReturnController.SearchEngineNo(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");

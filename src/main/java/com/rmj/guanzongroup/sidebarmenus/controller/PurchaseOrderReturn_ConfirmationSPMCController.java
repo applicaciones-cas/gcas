@@ -629,10 +629,8 @@ public class PurchaseOrderReturn_ConfirmationSPMCController implements Initializ
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReturnController.Master().setTransactionNo(lsValue);
                             retrievePOR();
                             return;
-
                         case "tfBarcode":
                             poJSON = poPurchaseReturnController.SearchBarcode(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
