@@ -126,7 +126,7 @@ public class PurchaseOrderReturn_HistoryLPController implements Initializable, S
         clearTextFields();
         loadRecordMaster();
         loadTableDetail();
-        pnEditMode = poPurchaseReturnController.getEditMode();
+        pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
 
         Platform.runLater(() -> {
