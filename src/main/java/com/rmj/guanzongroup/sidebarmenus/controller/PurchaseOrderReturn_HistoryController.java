@@ -126,9 +126,8 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
         clearTextFields();
         loadRecordMaster();
         loadTableDetail();
-        pnEditMode = poPurchaseReturnController.getEditMode();
+        pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
-
         Platform.runLater(() -> {
             poPurchaseReturnController.Master().setIndustryId(psIndustryId);
             poPurchaseReturnController.Master().setCompanyId(psCompanyId);

@@ -126,7 +126,7 @@ public class PurchaseOrderReturn_HistoryMonarchHospitalityController implements 
         clearTextFields();
         loadRecordMaster();
         loadTableDetail();
-        pnEditMode = poPurchaseReturnController.getEditMode();
+        pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
 
         Platform.runLater(() -> {
