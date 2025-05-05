@@ -13,7 +13,7 @@ import javafx.collections.ObservableList;
  *
  * @author User
  */
-public class ModelAttachment {
+public class ModelPRFAttachment {
 
     public StringProperty index01;
     public StringProperty index02;
@@ -37,7 +37,7 @@ public class ModelAttachment {
     public StringProperty index20;
     public static ObservableList<String> documentType = FXCollections.observableArrayList("Other", "Billing Statement", "Delivery Receipt", "Sales Invoice", "Official Receipt");
 
-    public ModelAttachment(String index01,
+    public ModelPRFAttachment(String index01,
             String index02,
             String index03,
             String index04,
@@ -80,7 +80,7 @@ public class ModelAttachment {
         this.index20 = new SimpleStringProperty(index20);
     }
 
-    public ModelAttachment(String index01,
+    public ModelPRFAttachment(String index01,
             String index02) {
 
         this.index01 = new SimpleStringProperty(index01);
