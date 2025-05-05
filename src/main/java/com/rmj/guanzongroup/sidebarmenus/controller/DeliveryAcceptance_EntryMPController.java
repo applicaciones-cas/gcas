@@ -1285,9 +1285,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
             });
 
             filteredData = new FilteredList<>(main_data, b -> true);
-            SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-            sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-            tblViewPuchaseOrder.setItems(sortedData);
+            tblViewPuchaseOrder.setItems(filteredData);
 
         }
     }
@@ -1752,7 +1750,13 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             }
 
                         }
-
+                        for (int i = 0; i < 50; i++) {
+                            main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(i + 1),
+                                    "samp",
+                                    "samp",
+                                    "samp"
+                            ));
+                        }
                         if (pnMain < 0 || pnMain
                                 >= main_data.size()) {
                             if (!main_data.isEmpty()) {
@@ -1767,10 +1771,9 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             tblViewPuchaseOrder.getSelectionModel().select(pnMain);
                             tblViewPuchaseOrder.getFocusModel().focus(pnMain);
                         }
-                        if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
-                            loadTab();
-                        }
+
                     }
+                    loadTab();
                 });
 
                 return null;

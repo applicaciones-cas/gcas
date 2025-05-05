@@ -419,7 +419,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
                                 showRetainedHighlight(true);
                                 // Print Transaction Prompt
-                                lsIsSaved = false; 
+                                lsIsSaved = false;
                                 loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
                                 poPurchaseReceivingController.loadAttachments();
                                 loadRecordMaster();
@@ -1356,7 +1356,6 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             @Override
             protected Void call() throws Exception {
                 Thread.sleep(100);
-                Thread.sleep(100);
 
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
@@ -1414,10 +1413,9 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                             tblViewPuchaseOrder.getFocusModel().focus(pnMain);
 
                         }
-                        if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
-                            loadTab();
-                        }
+
                     }
+                    loadTab();
                 });
 
                 return null;
@@ -1781,11 +1779,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
             });
 
             filteredData = new FilteredList<>(main_data, b -> true);
-            SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-            sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-            tblViewPuchaseOrder.setItems(sortedData);
-
-            tblViewPuchaseOrder.setItems(main_data);
+            tblViewPuchaseOrder.setItems(filteredData);
         }
     }
 

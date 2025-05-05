@@ -1162,10 +1162,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
         });
 
         filteredData = new FilteredList<>(main_data, b -> true);
-
-        SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-        tblViewPuchaseOrder.setItems(sortedData);
+        tblViewPuchaseOrder.setItems(filteredData);
 
     }
 
@@ -1628,10 +1625,8 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                             tblViewPuchaseOrder.getSelectionModel().select(pnMain);
                             tblViewPuchaseOrder.getFocusModel().focus(pnMain);
                         }
-                        if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
-                            loadTab();
-                        }
                     }
+                    loadTab();
                 });
                 return null;
             }

@@ -8,6 +8,7 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Att
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
@@ -1740,50 +1741,6 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
         addKeyEventFilter(dpExpiryDate);
     }
 
-    private <T> void initComboBoxCellDesign(ComboBox<T> comboBox) {
-        comboBox.setCellFactory(param -> new ListCell<T>() {
-            @Override
-            protected void updateItem(T item, boolean empty) {
-                super.updateItem(item, empty);
-                setStyle("");  // Reset to default style for non-selected items
-
-                if (empty) {
-                    setText(null);
-                    setStyle("");  // Reset style if the item is empty
-                } else {
-                    setText(item.toString());  // Display the item text using its toString method
-
-                    // Check if this item is the selected value
-                    if (item.toString().equals(comboBox.getValue().toString())) {
-                        // Apply the custom background color for the selected item in the list
-                        setStyle("-fx-background-color: #FF8201; -fx-text-fill: white;");
-                    } else {
-                        setStyle("");  // Reset to default style for non-selected items
-                    }
-                }
-            }
-        });
-
-        comboBox.setOnShowing(event -> {
-            T selectedItem = comboBox.getValue();
-            if (selectedItem != null) {
-                // Loop through each item and apply style based on selection
-                for (int i = 0; i < comboBox.getItems().size(); i++) {
-                    T item = comboBox.getItems().get(i);
-
-                    if (item.equals(selectedItem)) {
-                        // Apply the custom background color for selected item in the list
-                        comboBox.getItems().set(i, item);
-                    } else {
-                        // Reset the style for non-selected items
-                        comboBox.getItems().set(i, item);
-                    }
-                }
-            }
-        });
-
-    }
-
     public void initTextFields() {
 
         tfSearchSupplier.focusedProperty().addListener(txtField_Focus);
@@ -1813,7 +1770,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        initComboBoxCellDesign(cmbAttachmentType);
+        JFXUtil.initComboBoxCellDesignColor(cmbAttachmentType, "#FF8201");
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost);
         // Combobox
@@ -2286,9 +2243,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
         });
 
         filteredData = new FilteredList<>(main_data, b -> true);
-        SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-        tblViewPuchaseOrder.setItems(sortedData);
+        tblViewPuchaseOrder.setItems(filteredData);
 
     }
 
