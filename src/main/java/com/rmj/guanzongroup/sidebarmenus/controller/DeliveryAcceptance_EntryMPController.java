@@ -1750,13 +1750,6 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             }
 
                         }
-                        for (int i = 0; i < 50; i++) {
-                            main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(i + 1),
-                                    "samp",
-                                    "samp",
-                                    "samp"
-                            ));
-                        }
                         if (pnMain < 0 || pnMain
                                 >= main_data.size()) {
                             if (!main_data.isEmpty()) {
