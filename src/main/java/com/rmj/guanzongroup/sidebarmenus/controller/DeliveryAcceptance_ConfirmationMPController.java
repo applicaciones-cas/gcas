@@ -1197,13 +1197,13 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
 
                         break;
                 }
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                if ("error".equals((String) poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                }
                 Platform.runLater(() -> {
                     loadRecordMaster();
                 });
-                if ("error".equals((String) poJSON.get("result"))) {
-                    // datePicker.requestFocus();
-                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1920,7 +1920,6 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         addKeyEventFilter(dpTransactionDate);
         addKeyEventFilter(dpReferenceDate);
     }
-
 
     public void initTextFields() {
 

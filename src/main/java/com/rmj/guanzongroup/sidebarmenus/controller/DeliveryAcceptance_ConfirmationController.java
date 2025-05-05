@@ -1046,18 +1046,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 }
                 if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    Platform.runLater(() -> {
-                        if (lsID.equals("dpExpiryDate")) {
-                            loadRecordDetail();
-                        } else {
-                            loadRecordMaster();
-                        }
-                    });
-                    // datePicker.requestFocus();
-                }
-                datePicker.getEditor().setText(formattedDate);
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     // datePicker.requestFocus();
                 }
                 Platform.runLater(() -> {
@@ -1067,6 +1055,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         loadRecordMaster();
                     }
                 });
+                datePicker.getEditor().setText(formattedDate);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1756,7 +1746,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         addKeyEventFilter(dpReferenceDate);
         addKeyEventFilter(dpExpiryDate);
     }
-
 
     public void initTextFields() {
 
