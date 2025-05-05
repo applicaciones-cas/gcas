@@ -25,7 +25,7 @@ import org.guanzon.appdriver.base.GRiderCAS;
 
 /**
  *
- * @author Arsiela UnloadForm: To be called on close button on every opened tab.
+ * @author Guanzon UnloadForm: To be called on close button on every opened tab.
  *
  */
 public class unloadForm {
