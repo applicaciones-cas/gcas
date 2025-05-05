@@ -100,6 +100,7 @@ public class DashboardController implements Initializable {
     private Map<TreeItem<String>, String> menuLocationMap = new HashMap<>();
 //    private Map<TreeItem<String>, String> menuIndustryMap = new HashMap<>();
 //    private Map<TreeItem<String>, String> menuCategoryMap = new HashMap<>();
+    //test
     private boolean isListenerLeftAdded = false;
     private boolean isListenerRightAdded = false;
 
