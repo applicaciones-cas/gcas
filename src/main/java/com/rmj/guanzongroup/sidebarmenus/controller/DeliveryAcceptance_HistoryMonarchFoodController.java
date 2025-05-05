@@ -93,7 +93,7 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving History Monarch Food";
+    private final String pxeModuleName = "Purchasing Order Receiving History MF";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
