@@ -1639,7 +1639,6 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                                         status,
                                         poGLControllers.PaymentRequest().Recurring_Issuance(lnCntr).getAccountNo(),
                                         ""));
-                                tblVwRecurringExpense.setItems(main_data);
                             }
                         } else {
                             main_data.clear();

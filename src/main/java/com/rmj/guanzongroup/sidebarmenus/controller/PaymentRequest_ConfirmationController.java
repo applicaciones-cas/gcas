@@ -1434,7 +1434,6 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                                     "",
                                     "",
                                     ""));
-                            tblVwPaymentRequest.setItems(main_data);
                         }
                     } else {
                         main_data.clear();
