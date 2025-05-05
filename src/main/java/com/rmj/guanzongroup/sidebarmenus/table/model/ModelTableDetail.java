@@ -11,7 +11,7 @@ import javafx.beans.property.StringProperty;
  *
  * @author User
  */
-public class ModelPurchaseOrder {
+public class ModelTableDetail {
 
     public StringProperty index01;
     public StringProperty index02;
@@ -24,7 +24,7 @@ public class ModelPurchaseOrder {
     public StringProperty index09;
     public StringProperty index10;
 
-    public ModelPurchaseOrder(String index01,
+    public ModelTableDetail(String index01,
             String index02,
             String index03,
             String index04,
@@ -45,7 +45,6 @@ public class ModelPurchaseOrder {
         this.index08 = new SimpleStringProperty(index08);
         this.index09 = new SimpleStringProperty(index09);
         this.index10 = new SimpleStringProperty(index10);
-        
     }
 
     public String getIndex01() {
@@ -99,9 +98,6 @@ public class ModelPurchaseOrder {
     public String getIndex07() {
         return index07.get();
     }
-    public StringProperty index07Property() {
-        return index07;
-    }
 
     public void setIndex07(String index07) {
         this.index07.set(index07);
@@ -130,6 +126,4 @@ public class ModelPurchaseOrder {
     public void setIndex10(String index10) {
         this.index10.set(index10);
     }
-
-    
 }
