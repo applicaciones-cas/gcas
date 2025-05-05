@@ -303,69 +303,6 @@ public class Log_InController implements Initializable, ScreenInterface {
 
     }
 
-    private <T> void initComboBoxCellDesign(ComboBox<T> comboBox) {
-        comboBox.setCellFactory(param -> new ListCell<T>() {
-            @Override
-            protected void updateItem(T item, boolean empty) {
-                super.updateItem(item, empty);
-                setStyle("");  // Reset to default style for non-selected items
-
-                if (empty) {
-                    setText(null);
-                    setStyle("");  // Reset style if the item is empty
-                } else {
-                    setText(item.toString());  // Display the item text using its toString method
-
-                    // Check if this item is the selected value
-                    if (item.toString().equals(comboBox.getValue().toString())) {
-                        // Apply the custom background color for the selected item in the list
-                        setStyle("-fx-background-color: #FF8201; -fx-text-fill: white;");
-                    } else {
-                        setStyle("");  // Reset to default style for non-selected items
-                    }
-                }
-            }
-        });
-
-        comboBox.setOnMouseClicked(event -> {
-            if (!isMainOffice) {
-                comboBox.hide();
-            }
-
-//            boolean isUsernameFilled = tfUsername.getText().trim().isEmpty();
-//            if (pfPassword.isVisible()) {
-//                tfPassword.setText(pfPassword.getText());
-//            } else {
-//                pfPassword.setText(tfPassword.getText());
-//            }
-//            boolean isPasswordFilled = tfPassword.getText().trim().isEmpty();
-//
-//            if (isUsernameFilled || isPasswordFilled) {
-//                comboBox.hide();
-//            } else {
-////                comboBox.show(); // Opens the dropdown
-//            }
-        });
-
-        comboBox.setOnShowing(event -> {
-            T selectedItem = comboBox.getValue();
-            if (selectedItem != null) {
-                // Loop through each item and apply style based on selection
-                for (int i = 0; i < comboBox.getItems().size(); i++) {
-                    T item = comboBox.getItems().get(i);
-
-                    if (item.equals(selectedItem)) {
-                        // Apply the custom background color for selected item in the list
-                        comboBox.getItems().set(i, item);
-                    } else {
-                        // Reset the style for non-selected items
-                        comboBox.getItems().set(i, item);
-                    }
-                }
-            }
-        });
-
-    }
     EventHandler<ActionEvent> comboBoxHandler = event -> {
         ComboBox<?> source = (ComboBox<?>) event.getSource();
         String id = source.getId();
@@ -398,8 +335,8 @@ public class Log_InController implements Initializable, ScreenInterface {
     };
 
     private void initComboBox() {
-        initComboBoxCellDesign(cmbIndustry);
-        initComboBoxCellDesign(cmbCompany);
+        JFXUtil.initComboBoxCellDesignColor(cmbIndustry, "#FF8201");
+        JFXUtil.initComboBoxCellDesignColor(cmbCompany, "#FF8201");
 
         cmbIndustry.setOnAction(comboBoxHandler);
         cmbCompany.setOnAction(comboBoxHandler);
