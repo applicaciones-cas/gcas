@@ -327,6 +327,7 @@
     -fx-text-fill: black;
 }
 .text-area {
+    -fx-font-size: 10pt;
     -fx-resize: auto;
     -fx-opacity: 1.0;
     -fx-background-color:
@@ -763,4 +764,54 @@
 .button_process2:hover
 {
     -fx-background-color: #CC6900;
+}
+
+.DisabledTextField {
+    -fx-border-color: gray;
+    -fx-border-radius: 3;
+    -fx-background-color: #f7f7f7;
+}
+
+.check-box:disabled {
+    -fx-text-fill: gray;
+}
+
+.custom-text-area {
+    -fx-background-color: transparent;
+}
+
+.custom-text-area .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.custom-text-area .scroll-bar .increment-button,
+.custom-text-area .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+}
+
+.custom-text-area .scroll-bar .increment-button .arrow,
+.custom-text-area .scroll-bar .decrement-button .arrow {
+    -fx-background-color: transparent;
+    -fx-opacity: 0;
+}
+
+.custom-text-area .scroll-bar .track {
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 0px;
+}
+
+.custom-text-area .scroll-bar .thumb {
+    -fx-background-color: #ff8201;
+    -fx-background-radius: 5px;
+    -fx-background-insets: 2;
 }
