@@ -117,6 +117,7 @@ public class SelectIndustryCompany implements Initializable, ScreenInterface {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //switchtab
         CustomCommonUtil.setDropShadow(AnchorMain, StackPane);
         initButtonsClickActions();
         initComboBoxActions();
