@@ -4,7 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelAttachment;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPRFAttachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelTableDetail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelTableMain;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
@@ -131,8 +131,8 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
 
     private ObservableList<ModelTableMain> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelTableDetail> detail_data = FXCollections.observableArrayList();
-    private ObservableList<ModelAttachment> attachment_data = FXCollections.observableArrayList();
-    ObservableList<String> documentType = ModelAttachment.documentType;
+    private ObservableList<ModelPRFAttachment> attachment_data = FXCollections.observableArrayList();
+    ObservableList<String> documentType = ModelPRFAttachment.documentType;
 
     @FXML
     private TabPane ImTabPane;
@@ -172,9 +172,9 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
     @FXML
     private ComboBox<String> cmbAttachmentType;
     @FXML
-    private TableView<ModelAttachment> tblAttachments;
+    private TableView<ModelPRFAttachment> tblAttachments;
     @FXML
-    private TableColumn<ModelAttachment, String> tblRowNoAttachment, tblFileNameAttachment;
+    private TableColumn<ModelPRFAttachment, String> tblRowNoAttachment, tblFileNameAttachment;
     @FXML
     private Button btnAddAttachment, btnRemoveAttachment, btnArrowLeft, btnArrowRight;
     @FXML
@@ -816,7 +816,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                         int lnCtr;
                         for (lnCtr = 0; lnCtr < poGLControllers.PaymentRequest().getTransactionAttachmentCount(); lnCtr++) {
                             attachment_data.add(
-                                    new ModelAttachment(String.valueOf(lnCtr + 1),
+                                    new ModelPRFAttachment(String.valueOf(lnCtr + 1),
                                             String.valueOf(poGLControllers.PaymentRequest().TransactionAttachmentList(lnCtr).getModel().getFileName())
                                     ));
                         }
@@ -994,7 +994,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
         int newIndex = currentIndex + direction;
 
         if (newIndex != -1 && (newIndex <= attachment_data.size() - 1)) {
-            ModelAttachment image = attachment_data.get(newIndex);
+            ModelPRFAttachment image = attachment_data.get(newIndex);
             String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + image.getIndex02();
             TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), imageView);
             slideOut.setByX(direction * -400); // Move left or right
