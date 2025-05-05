@@ -607,6 +607,147 @@ public class DashboardController implements Initializable {
                     psIndustryID = "04";
                     psCategoryID = "0009";
                     return "Purchase Order Receiving History MH";
+                    
+                /*PURCHASE ORDER RETURN*/
+                //General
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Entry.fxml":
+//                    psIndustryID = "06";
+                    psCategoryID = "0007";
+                    return "Purchase Order Return Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Confirmation.fxml":
+//                    psIndustryID = "06";
+                    psCategoryID = "0007";
+                    return "Purchase Order Return Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_History.fxml":
+//                    psIndustryID = "06";
+                    psCategoryID = "0007";
+                    return "Purchase Order Return History";
+                    
+                //Appliances
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "Purchase Order Return Entry Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "Purchase Order Return Confirmation Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "Purchase Order Return History Appliances";
+
+                //Car
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+                    return "Purchase Order Return Entry Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+                    return "Purchase Order Return Confirmation Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+                    return "Purchase Order Return History Car";
+
+                //Motorcyle
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Purchase Order Return Entry MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Purchase Order Return Confirmation MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Purchase Order Return History MC";
+
+                //Mobile Phone
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+                    return "Purchase Order Return Entry MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+                    return "Purchase Order Return Confirmation MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+                    return "Purchase Order Return History MP";
+
+                //Los Pedritos
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryLP.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "Purchase Order Return Entry LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationLP.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "Purchase Order Return Confirmation LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryLP.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "Purchase Order Return History LP";
+
+                //Spare Parts Car
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntrySPCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "Purchase Order Return Entry SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationSPCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "Purchase Order Return Confirmation SPCar";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistorySPCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "Purchase Order Return History SPCar";
+
+                //Spare Parts Motorcycle
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntrySPMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "Purchase Order Return Entry SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationSPMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "Purchase Order Return Confirmation SPMC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistorySPMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "Purchase Order Return History SPMC";
+
+                //Monarch Food
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryMonarchFood.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0008";
+                    return "Purchase Order Return Entry MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationMonarchFood.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0008";
+                    return "Purchase Order Return Confirmation MF";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryMonarchFood.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0008";
+                    return "Purchase Order Return History MF";
+
+                //Monarch Hospitality
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryMonarchHospitality.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Purchase Order Return Entry MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_ConfirmationMonarchHospitality.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Purchase Order Return Confirmation MH";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryMonarchHospitality.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "Purchase Order Return History MH";
 
                 /*PAYMENT REQUEST */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Entry.fxml":
@@ -897,7 +1038,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Confirmation.fxml";
             case "Purchase Order Return History":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_History.fxml";
-
+            
             // Appliances
             case "Purchase Order Return Entry Appliances":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_EntryAppliances.fxml";
@@ -2153,7 +2294,7 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml\",\"controller_path\":\"DeliveryAcceptance_HistoryMonarchHospitality.controller\",\"menu_id\":\"081\",\"menu_parent\":\"076\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMC.fxml\",\"controller_path\":\"DeliveryAcceptance_HistoryMC.controller\",\"menu_id\":\"082\",\"menu_parent\":\"076\"},"
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMP.fxml\",\"controller_path\":\"DeliveryAcceptance_HistoryMP.controller\",\"menu_id\":\"083\",\"menu_parent\":\"076\"},"
-                + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptancer_HistorySPCar.fxml\",\"controller_path\":\"DeliveryAcceptance_HistorySPCar.controller\",\"menu_id\":\"084\",\"menu_parent\":\"076\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Spare Parts Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistorySPCar.fxml\",\"controller_path\":\"DeliveryAcceptance_HistorySPCar.controller\",\"menu_id\":\"084\",\"menu_parent\":\"076\"},"
                 + "{\"access_level\":\"02\",\"menu_name\":\"Spare Parts Motorycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistorySPMC.fxml\",\"controller_path\":\"DeliveryAcceptance_HistorySPMC.controller\",\"menu_id\":\"085\",\"menu_parent\":\"076\"},"
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchase Order Return\",\"fxml_path\":\"Purchase Order Return\",\"controller_path\":\"po.controller\",\"menu_id\":\"108\",\"menu_parent\":\"065\"},"
                 + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryAppliances.fxml\",\"controller_path\":\"PurchaseOrderReturn_HistoryAppliances.controller\",\"menu_id\":\"109\",\"menu_parent\":\"108\"},"
@@ -2945,6 +3086,9 @@ public class DashboardController implements Initializable {
                 break;
             case "05":
                 concatName = "LP";
+                break;
+            case "07":
+                concatName = "Appliances"; 
                 break;
             case "00":
                 concatName = "";
