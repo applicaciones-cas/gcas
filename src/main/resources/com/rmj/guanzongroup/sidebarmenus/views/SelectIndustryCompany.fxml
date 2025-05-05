@@ -93,7 +93,7 @@
                                                         <RowConstraints />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
                                                         <Label text="Industry" GridPane.rowIndex="3">
@@ -108,12 +108,12 @@
                                                         </Label>
                                                         <ComboBox fx:id="cmbIndustry" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                         <ComboBox fx:id="cmbCompany" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                          <Label text="Category" GridPane.rowIndex="4">
-                                             <font>
-                                                <Font size="12.0" />
-                                             </font>
-                                          </Label>
-                                          <ComboBox fx:id="cmbCategory" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                        <Label text="Category" GridPane.rowIndex="4">
+                                                            <font>
+                                                                <Font size="12.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <ComboBox fx:id="cmbCategory" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                     </children>
                                                 </GridPane>
                                             </children>

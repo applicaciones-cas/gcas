@@ -34,7 +34,7 @@ import org.guanzon.appdriver.constant.Logical;
 /**
  * FXML Controller class
  *
- * @author user
+ * @author Guanzon
  */
 public class SelectIndustryCompany implements Initializable, ScreenInterface {
 

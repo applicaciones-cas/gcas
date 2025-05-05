@@ -49,12 +49,12 @@ import org.json.simple.JSONObject;
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Guanzon
  */
 public class Log_InController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Log In";
-
+//param
     private ParamControllers poParameter;
     private GRiderCAS oApp;
     private String psIndustryID = "";

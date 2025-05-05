@@ -6,9 +6,10 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 
 /**
  *
- * @author User
+ * @author Guanzon
  */
 public class LoginControllerHolder {
+
     private static DashboardController mainController;
     private static Boolean lbstatus = false;
 
@@ -19,7 +20,8 @@ public class LoginControllerHolder {
     public static DashboardController getMainController() {
         return mainController;
     }
-    public   static void setLogInStatus(Boolean lbvalue) {
+
+    public static void setLogInStatus(Boolean lbvalue) {
         lbstatus = lbvalue;
     }
 
