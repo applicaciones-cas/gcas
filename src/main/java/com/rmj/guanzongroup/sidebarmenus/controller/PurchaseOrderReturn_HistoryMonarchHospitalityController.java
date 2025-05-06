@@ -319,7 +319,7 @@ public class PurchaseOrderReturn_HistoryMonarchHospitalityController implements 
     }
 
     public void initDetailsGrid() {
-        JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail);
+        JFXUtil.setColumnCenter(tblRowNoDetail, tblReceiveQuantityDetail,tblReturnQuantityDetail);
         JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewDetails);
