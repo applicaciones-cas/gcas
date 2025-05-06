@@ -173,7 +173,7 @@
                                                                                 <Label text="Estimated Inv." GridPane.columnIndex="10" GridPane.rowIndex="5" />
                                                                                 <Label text="Remarks" GridPane.rowIndex="6" />
                                                                                 <TextArea fx:id="taRemarks" prefHeight="27.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" GridPane.rowSpan="2147483647" />
-                                                                                <TextField fx:id="dpTransactionDate" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                                <TextField fx:id="tfTransactionDate" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                             </children>
                                                                         </GridPane>
                                                                     </children>

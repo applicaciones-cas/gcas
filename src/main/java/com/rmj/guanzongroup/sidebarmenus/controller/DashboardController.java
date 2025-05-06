@@ -286,8 +286,7 @@ public class DashboardController implements Initializable {
                     return "Inventory Maintenance";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml":
                     return "Inv Stock Request";  
-                    
-                    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml":
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
                     return "Accounts Accreditation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
@@ -832,8 +831,12 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml";
 
             /*END PURCHASE ORDER RECEIVING*/
-            case "Inv Stock Request":
+            case "Inv Stock Request SP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml";
+            case "Inv Stock Request MC":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml";
+            
+
         }
 
         return "";
@@ -969,8 +972,8 @@ public class DashboardController implements Initializable {
                     return new InventoryMaintenanceController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml":
                     return new InvStockRequest_MCController();
-                    
-                    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml":
+                    return new InvStockRequest_SPController();
                 /* PURCHASING/PURCHASING/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
                     return new SampleForm1Controller();
@@ -1723,7 +1726,7 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"029\", \"menu_parent\": \"028\"},"
                 + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"030\", \"menu_parent\": \"029\"},"
                 + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml\", \"controller_path\": \"InvStockRequest_MC.controller\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},"
                 + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"033\", \"menu_parent\": \"029\"},"
                 + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"034\", \"menu_parent\": \"033\"},"
                 + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"035\", \"menu_parent\": \"033\"},"
