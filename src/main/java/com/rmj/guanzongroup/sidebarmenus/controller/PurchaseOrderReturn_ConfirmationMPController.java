@@ -749,13 +749,7 @@ public class PurchaseOrderReturn_ConfirmationMPController implements Initializab
 
                         break;
                 }
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    Platform.runLater(() -> {
-                        loadRecordMaster();
-                    });
-                    // datePicker.requestFocus();
-                }
+
                 datePicker.getEditor().setText(formattedDate);
                 if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
