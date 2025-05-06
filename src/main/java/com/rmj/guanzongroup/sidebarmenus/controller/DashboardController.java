@@ -481,6 +481,20 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0007";
                     return "Purchase Order Receiving History";
 
+                // Appliances
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "Purchase Order Receiving Entry Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "Purchase Order Receiving Confirmation Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "Purchase Order Receiving History Appliances";
+
                 //Car
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryCar.fxml":
                     psIndustryID = "03";
@@ -1279,7 +1293,10 @@ public class DashboardController implements Initializable {
                     return new PurchaseOrder_HistoryAppliancesController();
 
                 /*PURCHASE ORDER RECEIVING*/
-                //ENTRY
+ /* PURCHASE ORDER RECEIVING */
+                // ENTRY
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryAppliances.fxml":
+                    return new DeliveryAcceptance_EntryAppliancesController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
                     return new DeliveryAcceptance_EntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryCar.fxml":
@@ -1298,7 +1315,9 @@ public class DashboardController implements Initializable {
                     return new DeliveryAcceptance_EntryMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryMonarchHospitality.fxml":
                     return new DeliveryAcceptance_EntryMonarchHospitalityController();
-                //CONFIRMATION
+                // CONFIRMATION
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationAppliances.fxml":
+                    return new DeliveryAcceptance_ConfirmationAppliancesController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml":
                     return new DeliveryAcceptance_ConfirmationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationCar.fxml":
@@ -1317,26 +1336,37 @@ public class DashboardController implements Initializable {
                     return new DeliveryAcceptance_ConfirmationMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchHospitality.fxml":
                     return new DeliveryAcceptance_ConfirmationMonarchHospitalityController();
-                //APPROVAL
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml":
-//                    return new DeliveryAcceptance_ApprovalController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalCar.fxml":
-//                    return new DeliveryAcceptance_ApprovalCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMC.fxml":
-//                    return new DeliveryAcceptance_ApprovalMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMP.fxml":
-//                    return new DeliveryAcceptance_ApprovalMPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalLP.fxml":
-//                    return new DeliveryAcceptance_ApprovalLPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPCar.fxml":
-//                    return new DeliveryAcceptance_ApprovalSPCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPMC.fxml":
-//                    return new DeliveryAcceptance_ApprovalSPMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchFood.fxml":
-//                    return new DeliveryAcceptance_ApprovalMonarchFoodController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchHospitality.fxml":
-//                    return new DeliveryAcceptance_ApprovalMonarchHospitalityController();
-                //HISTORY
+                // APPROVAL
+                // case
+                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml":
+                // return new DeliveryAcceptance_ApprovalController();
+                // case
+                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalCar.fxml":
+                // return new DeliveryAcceptance_ApprovalCarController();
+                // case
+                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMC.fxml":
+                // return new DeliveryAcceptance_ApprovalMCController();
+                // case
+                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMP.fxml":
+                // return new DeliveryAcceptance_ApprovalMPController();
+                // case
+                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalLP.fxml":
+                // return new DeliveryAcceptance_ApprovalLPController();
+                // case
+                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPCar.fxml":
+                // return new DeliveryAcceptance_ApprovalSPCarController();
+                // case
+                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPMC.fxml":
+                // return new DeliveryAcceptance_ApprovalSPMCController();
+                // case
+                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchFood.fxml":
+                // return new DeliveryAcceptance_ApprovalMonarchFoodController();
+                // case
+                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchHospitality.fxml":
+                // return new DeliveryAcceptance_ApprovalMonarchHospitalityController();
+                // HISTORY
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryAppliances.fxml":
+                    return new DeliveryAcceptance_HistoryAppliancesController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_History.fxml":
                     return new DeliveryAcceptance_HistoryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryCar.fxml":
@@ -1355,6 +1385,7 @@ public class DashboardController implements Initializable {
                     return new DeliveryAcceptance_HistoryMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml":
                     return new DeliveryAcceptance_HistoryMonarchHospitalityController();
+
 
                 /*PURCHASE ORDER RETURN*/
                 //ENTRY
