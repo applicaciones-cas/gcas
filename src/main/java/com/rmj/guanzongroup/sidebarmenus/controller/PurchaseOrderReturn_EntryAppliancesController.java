@@ -883,17 +883,11 @@ public class PurchaseOrderReturn_EntryAppliancesController implements Initializa
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             boolean lbDisableField = (poPurchaseReturnController.Detail(pnDetail).getSerialId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getSerialId()));
 
-            tfIMEINo.setDisable(!lbDisable);
-            tfBarcode.setDisable(!lbDisable);
-            tfDescription.setDisable(!lbDisable);
+            JFXUtil.setDisabled(!lbDisable, tfIMEINo, tfBarcode, tfDescription);
             if (lbDisable) {
-                while (tfIMEINo.getStyleClass().contains("DisabledTextField") || tfBarcode.getStyleClass().contains("DisabledTextField")
-                        || tfDescription.getStyleClass().contains("DisabledTextField")) {
-                    tfIMEINo.getStyleClass().remove("DisabledTextField");
-                    tfBarcode.getStyleClass().remove("DisabledTextField");
-                    tfDescription.getStyleClass().remove("DisabledTextField");
+                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription)) {
+                    JFXUtil.RemoveStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription);
                 }
-
                 if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
                     tfIMEINo.setDisable(!lbDisableField);
                     if (lbDisableField) {
@@ -904,11 +898,8 @@ public class PurchaseOrderReturn_EntryAppliancesController implements Initializa
                         tfIMEINo.getStyleClass().add("DisabledTextField");
                     }
                 }
-
             } else {
-                tfIMEINo.getStyleClass().add("DisabledTextField");
-                tfBarcode.getStyleClass().add("DisabledTextField");
-                tfDescription.getStyleClass().add("DisabledTextField");
+                JFXUtil.AddStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription);
             }
 
             tfIMEINo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial01());

@@ -64,7 +64,7 @@ public class PurchaseOrderReturn_HistorySPCarController implements Initializable
     private JSONObject poJSON;
     int pnDetail = 0;
     boolean lsIsSaved = false;
-    private final String pxeModuleName = "Purchase Order Return History SPMC";
+    private final String pxeModuleName = "Purchase Order Return History SPCar";
     static PurchaseOrderReturn poPurchaseReturnController;
     public int pnEditMode;
 

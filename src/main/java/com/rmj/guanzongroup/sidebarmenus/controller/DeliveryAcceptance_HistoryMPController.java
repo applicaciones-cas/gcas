@@ -101,7 +101,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchase Order Receiving History MC";
+    private final String pxeModuleName = "Purchase Order Receiving History MP";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 
