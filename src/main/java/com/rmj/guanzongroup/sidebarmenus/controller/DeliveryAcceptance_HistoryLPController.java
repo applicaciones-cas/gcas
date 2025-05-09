@@ -1226,7 +1226,7 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
             TableView<?> currentTable = (TableView<?>) event.getSource();
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
             switch (currentTable.getId()) {
-                case "tblViewPuchaseOrder":
+                case "tblViewOrderDetails":
                     if (focusedCell != null) {
                         switch (event.getCode()) {
                             case TAB:

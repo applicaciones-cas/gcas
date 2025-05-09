@@ -1223,7 +1223,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
             TableView<?> currentTable = (TableView<?>) event.getSource();
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
             switch (currentTable.getId()) {
-                case "tblViewPuchaseOrder":
+                case "tblViewOrderDetails":
                     if (focusedCell != null) {
                         switch (event.getCode()) {
                             case TAB:

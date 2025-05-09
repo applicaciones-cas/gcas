@@ -1303,7 +1303,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
 
                 if (lbloadImage) {
                     try {
-                        String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
+                        String filePath = (String) attachment_data.get(pnAttachment).getIndex02(); 
                         String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + (String) attachment_data.get(pnAttachment).getIndex02();
                         if (filePath != null && !filePath.isEmpty()) {
                             Path imgPath = Paths.get(filePath2);
@@ -2018,7 +2018,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
             TableView<?> currentTable = (TableView<?>) event.getSource();
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
             switch (currentTable.getId()) {
-                case "tblViewPuchaseOrder":
+                case "tblViewOrderDetails":
                     if (focusedCell != null) {
                         switch (event.getCode()) {
                             case TAB:
