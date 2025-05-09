@@ -2426,9 +2426,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
                     txtField.textProperty().removeListener(detailSearchListener);
                     filteredData = new FilteredList<>(main_data, b -> true);
                     autoSearchMain(txtField); // Trigger autoSearchMain if no results
-                    SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(filteredData);
-                    sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
-                    tblViewPuchaseOrder.setItems(sortedData);
+                    tblViewPuchaseOrder.setItems(filteredData);
 
                     String currentText = txtField.getText();
                     txtField.setText(currentText + " "); // Add a space
