@@ -123,6 +123,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
+    Map<String, String> imageinfo_temp = new HashMap<>();
 
     private double mouseAnchorX;
     private double mouseAnchorY;
@@ -470,7 +471,13 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                                     return;
                                 }
                             }
-
+                            if (imageinfo_temp.containsKey(selectedFile.getName().toString())) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "File name already exist.");
+                                loadRecordAttachment(true);
+                                return;
+                            } else {
+                                imageinfo_temp.put(selectedFile.getName().toString(), imgPath.toString());
+                            }
                             poJSON = poPurchaseReceivingController.addAttachment();
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1224,7 +1231,13 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                 if (lbloadImage) {
                     try {
                         String filePath = (String) attachment_data.get(pnAttachment).getIndex02();
-                        String filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + (String) attachment_data.get(pnAttachment).getIndex02();
+                        String filePath2 = "";
+                        if (imageinfo_temp.containsKey((String) attachment_data.get(pnAttachment).getIndex02())) {
+                            filePath2 = imageinfo_temp.get((String) attachment_data.get(pnAttachment).getIndex02());
+                        } else {
+                            // in server
+                            filePath2 = "D:\\GGC_Maven_Systems\\temp\\attachments\\" + (String) attachment_data.get(pnAttachment).getIndex02();
+                        }
                         if (filePath != null && !filePath.isEmpty()) {
                             Path imgPath = Paths.get(filePath2);
                             String convertedPath = imgPath.toUri().toString();
@@ -1252,7 +1265,6 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         } catch (Exception e) {
         }
     }
-
     public void loadRecordDetail() {
         try {
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
@@ -1733,7 +1745,6 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
         dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
     }
-
 
     public void initTextFields() {
 
@@ -2278,6 +2289,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     }
 
     public void clearTextFields() {
+        imageinfo_temp.clear();
         previousSearchedTextField = null;
         lastFocusedTextField = null;
         dpTransactionDate.setValue(null);
