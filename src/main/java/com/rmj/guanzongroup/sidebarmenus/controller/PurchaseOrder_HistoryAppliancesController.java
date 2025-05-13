@@ -4,6 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrder;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderDetail;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -44,6 +45,7 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -62,11 +64,11 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class PurchaseOrder_HistorySPMCController implements Initializable, ScreenInterface {
+public class PurchaseOrder_HistoryAppliancesController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order History SPMC";
+    private String psFormName = "Purchase Order History Appliances";
     private LogWrapper logWrapper;
     private int pnEditMode;
     unloadForm poUnload = new unloadForm();
@@ -79,35 +81,33 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
     private String psSupplierID = "";
     private String psCategoryID = "";
     private String psReferID = "";
-
     @FXML
-    private AnchorPane apBrowse, apButton;
+    private AnchorPane AnchorMaster, AnchorDetails, AnchorMain, apBrowse, apButton;
     @FXML
-    private AnchorPane AnchorMain;
+    private HBox hbButtons;
     @FXML
     private Button btnBrowse, btnPrint, btnTransHistory, btnClose;
-    @FXML
-    private Label lblTransactionStatus, lblSource;
     @FXML
     private TextField tfSearchSupplier, tfSearchReferenceNo;
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfDestination, tfReferenceNo,
             tfTerm, tfDiscountRate, tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount, tfNetAmount;
     @FXML
-    private TextField tfBarcode, tfDescription, tfBrand, tfModel, tfColor, tfCategory, tfInventoryType,
-            tfMeasure, tfClass, tfAMC, tfROQ, tfRO, tfBO, tfQOH, tfCost, tfRequestQuantity, tfOrderQuantity;
+    private Label lblTransactionStatus, lblSource;
     @FXML
     private CheckBox chkbAdvancePayment;
     @FXML
-    private TextArea taRemarks;
-    @FXML
     private DatePicker dpTransactionDate, dpExpectedDlvrDate;
+    @FXML
+    private TextField tfBrand, tfModel, tfBarcode, tfDescription, tfVariant, tfInventoryType, tfColor, tfClass, tfAMC, tfROQ,
+            tfRO, tfBO, tfQOH, tfCost, tfRequestQuantity, tfOrderQuantity;
+    @FXML
+    private TextArea taRemarks;
     @FXML
     private TableView<ModelPurchaseOrderDetail> tblVwOrderDetails;
     @FXML
-    private TableColumn<ModelPurchaseOrderDetail, String> tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail,
-            tblDescriptionDetail, tblCostDetail, tblROQDetail, tblRequestQuantityDetail, tblOrderQuantityDetail,
-            tblTotalAmountDetail;
+    private TableColumn<ModelPurchaseOrderDetail, String> tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail,
+            tblCostDetail, tblROQDetail, tblRequestQuantityDetail, tblOrderQuantityDetail, tblTotalAmountDetail;
 
     @Override
     public void setGRider(GRiderCAS foValue) {
@@ -146,9 +146,10 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
                     + PurchaseOrderStatus.RETURNED
                     + PurchaseOrderStatus.POSTED
                     + PurchaseOrderStatus.PROCESSED);
+
             poJSON = poPurchasingController.PurchaseOrder().InitTransaction();
             if (!"success".equals(poJSON.get("result"))) {
-                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
             }
 
             Platform.runLater((() -> {
@@ -157,9 +158,16 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
                 poPurchasingController.PurchaseOrder().Master().setCategoryCode(psCategoryID);
                 loadRecordSearch();
             }));
-            initAll();
+
+            initButtonsClickActions();
+            initTextFieldKeyPressed();
+            initTextFieldsProperty();
+            initTableDetail();
+            tblVwOrderDetails.setOnMouseClicked(this::tblVwDetail_Clicked);
+            pnEditMode = EditMode.UNKNOWN;
+            initButtons(pnEditMode);
         } catch (ExceptionInInitializerError ex) {
-            Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -167,19 +175,9 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
         try {
             lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }
-
-    private void initAll() {
-        initButtonsClickActions();
-        initTextFieldKeyPressed();
-        initTextFieldsProperty();
-        initTableDetail();
-        tblVwOrderDetails.setOnMouseClicked(this::tblVwDetail_Clicked);
-        pnEditMode = EditMode.UNKNOWN;
-        initButtons(pnEditMode);
     }
 
     private void loadRecordMaster() {
@@ -243,9 +241,8 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal()));
             tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
-
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -253,28 +250,97 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
     private void loadRecordDetail() {
         try {
             if (pnTblDetailRow >= 0) {
-                tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getBarCode());
-                tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getDescription());
-                tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Brand().getDescription());
-                tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Model().getDescription());
-                tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Color().getDescription());
-                tfCategory.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Category().getDescription());
-                tfInventoryType.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().InventoryType().getDescription());
-                tfMeasure.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Measure().getDescription());
-                tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getInventoryClassification());
-                tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getAverageCost()));
+                String lsBrand = "";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Brand().getDescription() != null) {
+                    lsBrand = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Brand().getDescription();
+                }
+                tfBrand.setText(lsBrand);
+
+                String lsModel = "";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Model().getDescription() != null) {
+                    lsModel = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Model().getDescription();
+                }
+                tfModel.setText(lsModel);
+                String lsBarcode = "";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getBarCode() != null) {
+                    lsBarcode = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getBarCode();
+                }
+                tfBarcode.setText(lsBarcode);
+
+                String lsDescription = "";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getDescription() != null) {
+                    lsDescription = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getDescription();
+                }
+                tfDescription.setText(lsDescription);
+
+                String lsVariant = "";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Variant().getDescription() != null) {
+                    lsVariant = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Variant().getDescription();
+                }
+                tfVariant.setText(lsVariant);
+
+                String lsInventoryType = "";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().InventoryType().getDescription() != null) {
+                    lsInventoryType = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().InventoryType().getDescription();
+                }
+                tfInventoryType.setText(lsInventoryType);
+
+                String lsColor = "";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Color().getDescription() != null) {
+                    lsColor = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Color().getDescription();
+                }
+                tfColor.setText(lsColor);
+
+                String lsClass = "";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getInventoryClassification() != null) {
+                    lsClass = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getInventoryClassification();
+                }
+                tfClass.setText(lsClass);
+
+                String lsAMC = "0";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getAverageCost() != 0) {
+                    lsAMC = CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getAverageCost());
+                }
+                tfAMC.setText(lsAMC);
+
                 tfROQ.setText("0");
-                tfRO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived()));
-                tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder()));
-                tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand()));
-                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice()));
+
+                String lsRO = "0";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived() != 0) {
+                    lsRO = String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived());
+                }
+                tfRO.setText(lsRO);
+
+                String lsBO = "0";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder() != 0) {
+                    lsBO = String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder());
+                }
+                tfBO.setText(lsBO);
+
+                String lsQOH = "0";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand() != 0) {
+                    lsQOH = String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand());
+                }
+                tfQOH.setText(lsQOH);
+
+                String lsCost = "0.00";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice() != null) {
+                    lsCost = CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice());
+                }
+                tfCost.setText(lsCost);
+
                 int lnRequestQuantity = 0;
                 lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getIssued());
                 tfRequestQuantity.setText(String.valueOf(lnRequestQuantity));
-                tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
+
+                String lsOrderQuantity = "0";
+                if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity() != null) {
+                    lsOrderQuantity = String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity());
+                }
+                tfOrderQuantity.setText(lsOrderQuantity);
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -286,7 +352,6 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
 
     private void handleButtonAction(ActionEvent event) {
         try {
-
             poJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
@@ -328,7 +393,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
             }
             initButtons(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -383,14 +448,26 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-            Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_HistoryAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void clearMasterFields() {
+        /* Master Fields*/
+        pnTblDetailRow = -1;
+        dpTransactionDate.setValue(null);
+        dpExpectedDlvrDate.setValue(null);
+        taRemarks.setText("");
+        CustomCommonUtil.setSelected(false, chkbAdvancePayment);
+        CustomCommonUtil.setText("", tfTransactionNo, tfSupplier,
+                tfDestination, tfReferenceNo, tfTerm, tfDiscountRate,
+                tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount);
     }
 
     private void clearDetailFields() {
         /* Detail Fields*/
-        CustomCommonUtil.setText("", tfBarcode, tfDescription, tfBrand, tfModel,
-                tfColor, tfCategory, tfInventoryType, tfMeasure, tfClass,
+        CustomCommonUtil.setText("", tfBrand, tfModel, tfBarcode, tfDescription, tfBrand, tfVariant,
+                tfColor, tfInventoryType, tfClass,
                 tfAMC, tfROQ, tfRO, tfBO, tfQOH,
                 tfCost, tfRequestQuantity, tfOrderQuantity);
     }
@@ -415,6 +492,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
                     break;
             }
         }
+
     }
 
     private void loadTableDetail() {
@@ -469,7 +547,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
                     return detailsList;
 
                 } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(PurchaseOrder_HistoryAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
                     return null;
                 }
             }
