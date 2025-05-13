@@ -135,6 +135,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
     double ldstackPaneWidth = 0;
     double ldstackPaneHeight = 0;
     boolean lbresetpredicate = false;
+    private boolean pbEntered = false;
 
     private final Map<Integer, List<String>> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
@@ -734,7 +735,10 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
-                    pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                    if (pbEntered) {
+                        pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                        pbEntered = false;
+                    }
                     break;
             }
             Platform.runLater(() -> {
@@ -792,6 +796,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
 
             switch (event.getCode()) {
                 case ENTER:
+                    pbEntered = true;
                     CommonUtils.SetNextFocus(txtField);
                     break;
                 case UP:

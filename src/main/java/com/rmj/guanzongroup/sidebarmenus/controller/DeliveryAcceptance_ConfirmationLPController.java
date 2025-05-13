@@ -732,7 +732,10 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
-                    pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                    if (pbEntered) {
+                        pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                        pbEntered = false;
+                    }
                     break;
             }
             Platform.runLater(() -> {
@@ -790,6 +793,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
 
             switch (event.getCode()) {
                 case ENTER:
+                    pbEntered = true;
                     CommonUtils.SetNextFocus(txtField);
                     break;
                 case UP:

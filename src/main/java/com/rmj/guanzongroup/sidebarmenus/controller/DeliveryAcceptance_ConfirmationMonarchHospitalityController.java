@@ -135,6 +135,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     double ldstackPaneWidth = 0;
     double ldstackPaneHeight = 0;
     boolean lbresetpredicate = false;
+    private boolean pbEntered = false;
 
     private final Map<Integer, List<String>> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
@@ -731,7 +732,10 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
-                    pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                    if (pbEntered) {
+                        pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                        pbEntered = false;
+                    }
                     break;
             }
             Platform.runLater(() -> {
@@ -789,6 +793,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
 
             switch (event.getCode()) {
                 case ENTER:
+                    pbEntered = true;
                     CommonUtils.SetNextFocus(txtField);
                     break;
                 case UP:
@@ -1266,6 +1271,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         } catch (Exception e) {
         }
     }
+
     public void loadRecordDetail() {
         try {
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {

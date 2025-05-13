@@ -104,6 +104,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
     private String psCategoryId = "";
     private String psSupplierId = "";
     boolean lbresetpredicate = false;
+    boolean pbEntered = false;
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
@@ -581,7 +582,10 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
-                    pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                    if (pbEntered) {
+                        pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                        pbEntered = false;
+                    }
                     break;
             }
             Platform.runLater(() -> {
@@ -705,6 +709,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
 
             switch (event.getCode()) {
                 case ENTER:
+                    pbEntered = true;
                     CommonUtils.SetNextFocus(txtField);
                     break;
                 case UP:
