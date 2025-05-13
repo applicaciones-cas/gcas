@@ -76,8 +76,6 @@ import javafx.animation.PauseTransition;
 import javafx.util.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.util.Pair;
@@ -104,6 +102,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
+    boolean lbresetpredicate = false;
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
@@ -1441,12 +1440,15 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
         tblViewOrderDetails.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                    pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
-                    loadRecordDetail();
-                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
-                        tfReceiveQuantity.requestFocus();
-                    } else {
-                        tfBarcode.requestFocus();
+                    ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewOrderDetails.getSelectionModel().getSelectedItem();
+                    if (selected != null) {
+                        pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
+                        loadRecordDetail();
+                        if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                            tfReceiveQuantity.requestFocus();
+                        } else {
+                            tfBarcode.requestFocus();
+                        }
                     }
                 }
             }
@@ -1639,6 +1641,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                 } else {
                     tblViewPuchaseOrder.toFront();
                 }
+                progressIndicator.setVisible(false);
             }
 
             @Override
@@ -1696,7 +1699,19 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
         Label placeholderLabel = new Label("NO RECORD TO LOAD");
         placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
+        if (lbresetpredicate) {
+            filteredDataDetail.setPredicate(null);
+            lbresetpredicate = false;
+            tfOrderNo.textProperty().removeListener(detailSearchListener);
 
+            mainSearchListener = null;
+            filteredData.setPredicate(null);
+            initMainGrid();
+            initDetailsGrid();
+            Platform.runLater(() -> {
+                tfOrderNo.setText("");
+            });
+        }
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -1952,6 +1967,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     private void autoSearch(TextField txtField) {
         detailSearchListener = (observable, oldValue, newValue) -> {
             filteredDataDetail.setPredicate(orders -> {
+                lbresetpredicate = true;
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }

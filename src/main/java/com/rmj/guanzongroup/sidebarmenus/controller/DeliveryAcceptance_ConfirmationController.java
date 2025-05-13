@@ -90,12 +90,9 @@ import javafx.geometry.Orientation;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.time.format.DateTimeParseException;
-import java.util.stream.Collectors;
 import javafx.scene.Node;
 import javafx.animation.PauseTransition;
 import javafx.scene.Parent;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
 
@@ -136,6 +133,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private int currentIndex = 0;
     double ldstackPaneWidth = 0;
     double ldstackPaneHeight = 0;
+    boolean lbresetpredicate = false;
 
     private final Map<Integer, List<String>> highlightedRowsMain = new HashMap<>();
     private final Map<Integer, List<String>> highlightedRowsDetail = new HashMap<>();
@@ -1185,6 +1183,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 } else {
                     tblViewPuchaseOrder.toFront();
                 }
+                progressIndicator.setVisible(false);
             }
 
             @Override
@@ -1509,7 +1508,19 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
         Label placeholderLabel = new Label("NO RECORD TO LOAD");
         placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
+        if (lbresetpredicate) {
+            filteredDataDetail.setPredicate(null);
+            lbresetpredicate = false;
+            tfOrderNo.textProperty().removeListener(detailSearchListener);
 
+            mainSearchListener = null;
+            filteredData.setPredicate(null);
+            initMainGrid();
+            initDetailsGrid();
+            Platform.runLater(() -> {
+                tfOrderNo.setText("");
+            });
+        }
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -1806,12 +1817,15 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         tblViewOrderDetails.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
-                    pnDetail = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
-                    loadRecordDetail();
-                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
-                        tfReceiveQuantity.requestFocus();
-                    } else {
-                        tfBarcode.requestFocus();
+                    ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewOrderDetails.getSelectionModel().getSelectedItem();
+                    if (selected != null) {
+                        pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
+                        loadRecordDetail();
+                        if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                            tfReceiveQuantity.requestFocus();
+                        } else {
+                            tfBarcode.requestFocus();
+                        }
                     }
                 }
             }
@@ -2414,6 +2428,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     private void autoSearch(TextField txtField) {
         detailSearchListener = (observable, oldValue, newValue) -> {
             filteredDataDetail.setPredicate(orders -> {
+                lbresetpredicate = true;
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
