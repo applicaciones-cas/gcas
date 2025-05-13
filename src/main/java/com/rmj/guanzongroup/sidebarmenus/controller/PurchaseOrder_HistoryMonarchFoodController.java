@@ -31,6 +31,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -69,13 +70,16 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
     private LogWrapper logWrapper;
     private int pnEditMode;
     unloadForm poUnload = new unloadForm();
-    private ObservableList<ModelPurchaseOrderDetail> poDetail_data = FXCollections.observableArrayList();
-    private int pnTblPODetailRow = -1;
+    private JSONObject poJSON;
+    private ObservableList<ModelPurchaseOrderDetail> detail_data = FXCollections.observableArrayList();
+    private int pnTblDetailRow = -1;
+
     private String psIndustryID = "";
     private String psCompanyID = "";
     private String psSupplierID = "";
     private String psCategoryID = "";
     private String psReferID = "";
+
     @FXML
     private AnchorPane apBrowse, apButton;
     @FXML
@@ -88,7 +92,7 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
     private TextField tfSearchSupplier, tfSearchReferenceNo;
     @FXML
     private TextField tfTransactionNo, tfSupplier, tfDestination, tfReferenceNo,
-            tfTerm, tfDiscountRate, tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount;
+            tfTerm, tfDiscountRate, tfDiscountAmount, tfAdvancePRate, tfAdvancePAmount, tfTotalAmount, tfNetAmount;
     @FXML
     private TextField tfBarcode, tfDescription, tfBrand, tfModel, tfColor, tfCategory, tfInventoryType,
             tfMeasure, tfClass, tfAMC, tfROQ, tfRO, tfBO, tfQOH, tfCost, tfRequestQuantity, tfOrderQuantity;
@@ -132,11 +136,19 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);
-            poPurchasingController.PurchaseOrder().setTransactionStatus("01234567");
-            JSONObject loJSON = new JSONObject();
-            loJSON = poPurchasingController.PurchaseOrder().InitTransaction();
-            if (!"success".equals(loJSON.get("result"))) {
-                ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
+            poPurchasingController.PurchaseOrder().setTransactionStatus(
+                    PurchaseOrderStatus.OPEN
+                    + PurchaseOrderStatus.CONFIRMED
+                    + PurchaseOrderStatus.RETURNED
+                    + PurchaseOrderStatus.APPROVED
+                    + PurchaseOrderStatus.CANCELLED
+                    + PurchaseOrderStatus.VOID
+                    + PurchaseOrderStatus.RETURNED
+                    + PurchaseOrderStatus.POSTED
+                    + PurchaseOrderStatus.PROCESSED);
+            poJSON = poPurchasingController.PurchaseOrder().InitTransaction();
+            if (!"success".equals(poJSON.get("result"))) {
+                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
             }
 
             Platform.runLater((() -> {
@@ -145,14 +157,7 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
                 poPurchasingController.PurchaseOrder().Master().setCategoryCode(psCategoryID);
                 loadRecordSearch();
             }));
-
-            initButtonsClickActions();
-            initTextFieldKeyPressed();
-            initTextFieldsProperty();
-            initTablePODetail();
-            tblVwOrderDetails.setOnMouseClicked(this::tblVwOrderDetails_Clicked);
-            pnEditMode = EditMode.UNKNOWN;
-            initButtons(pnEditMode);
+            initAll();
         } catch (ExceptionInInitializerError ex) {
             Logger.getLogger(PurchaseOrder_HistoryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -167,7 +172,17 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
 
     }
 
-    private void loadMaster() {
+    private void initAll() {
+        initButtonsClickActions();
+        initTextFieldKeyPressed();
+        initTextFieldsProperty();
+        initTableDetail();
+        tblVwOrderDetails.setOnMouseClicked(this::tblVwDetail_Clicked);
+        pnEditMode = EditMode.UNKNOWN;
+        initButtons(pnEditMode);
+    }
+
+    private void loadRecordMaster() {
         try {
             tfTransactionNo.setText(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
             String lsStatus = "";
@@ -227,34 +242,36 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
             tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal()));
+            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
+
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_HistoryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
 
-    private void loadDetail() {
+    private void loadRecordDetail() {
         try {
-            if (pnTblPODetailRow >= 0) {
-                tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getBarCode());
-                tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().getDescription());
-                tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Brand().getDescription());
-                tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Model().getDescription());
-                tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Color().getDescription());
-                tfCategory.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Category().getDescription());
-                tfInventoryType.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().InventoryType().getDescription());
-                tfMeasure.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Measure().getDescription());
-                tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getInventoryClassification());
-                tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getAverageCost()));
+            if (pnTblDetailRow >= 0) {
+                tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getBarCode());
+                tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getDescription());
+                tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Brand().getDescription());
+                tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Model().getDescription());
+                tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Color().getDescription());
+                tfCategory.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Category().getDescription());
+                tfInventoryType.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().InventoryType().getDescription());
+                tfMeasure.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Measure().getDescription());
+                tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getInventoryClassification());
+                tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getAverageCost()));
                 tfROQ.setText("0");
-                tfRO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getReceived()));
-                tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getBackOrder()));
-                tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getQuantityOnHand()));
-                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getUnitPrice()));
+                tfRO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived()));
+                tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder()));
+                tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand()));
+                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice()));
                 int lnRequestQuantity = 0;
-                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getIssued());
+                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getIssued());
                 tfRequestQuantity.setText(String.valueOf(lnRequestQuantity));
-                tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).getQuantity()));
+                tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_HistoryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
@@ -269,28 +286,29 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
 
     private void handleButtonAction(ActionEvent event) {
         try {
-            JSONObject loJSON = new JSONObject();
+
+            poJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnBrowse":
-                    loJSON = poPurchasingController.PurchaseOrder().SearchTransaction("",
+                    poJSON = poPurchasingController.PurchaseOrder().SearchTransaction("",
                             psSupplierID,
                             psReferID);
-                    if ("success".equals((String) loJSON.get("result"))) {
+                    if ("success".equals((String) poJSON.get("result"))) {
                         clearDetailFields();
-                        pnTblPODetailRow = -1;
-                        loadMaster();
-                        loadDetail();
-                        loadTablePODetail();
+                        pnTblDetailRow = -1;
+                        loadRecordMaster();
+                        loadRecordDetail();
+                        loadTableDetail();
                         pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
                     } else {
-                        ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
+                        ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
                     }
                     break;
                 case "btnPrint":
-                    loJSON = poPurchasingController.PurchaseOrder().printTransaction();
-                    if (!"success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) loJSON.get("message"), "Print Purchase Order", null);
+                    poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), "Print Purchase Order", null);
                     }
                     break;
                 case "btnTransHistory":
@@ -330,7 +348,7 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
         } else {
             lsValue = lsTxtField.getText();
         }
-        JSONObject loJSON = new JSONObject();
+        poJSON = new JSONObject();
         try {
             if (null != event.getCode()) {
                 switch (event.getCode()) {
@@ -339,9 +357,9 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
                     case F3:
                         switch (txtFieldID) {
                             case "tfSearchSupplier":
-                                loJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
-                                if ("error".equals(loJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchSupplier(lsValue, false);
+                                if ("error".equals(poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfSearchSupplier.setText("");
                                     break;
                                 }
@@ -399,7 +417,7 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
         }
     }
 
-    private void loadTablePODetail() {
+    private void loadTableDetail() {
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxSize(50, 50);
         progressIndicator.setStyle("-fx-accent: #FF8201;");
@@ -416,16 +434,20 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
             protected List<ModelPurchaseOrderDetail> call() throws Exception {
                 try {
                     int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
-                    double grandTotalAmount = 0.0;
                     List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
-                        grandTotalAmount += lnTotalAmount;
-
                         int lnRequestQuantity = 0;
-                        lnRequestQuantity = orderDetail.InvStockRequestDetail().getApproved() - (orderDetail.InvStockRequestDetail().getPurchase() + orderDetail.InvStockRequestDetail().getIssued());
+                        String status = "0";
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved()
+                                - (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued());
+                        if (!poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()) {
+                            if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().intValue() > lnRequestQuantity) {
+                                status = "1";
+                            }
+                        }
                         detailsList.add(new ModelPurchaseOrderDetail(
                                 String.valueOf(lnCtr + 1),
                                 orderDetail.getSouceNo(),
@@ -436,12 +458,12 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
                                 String.valueOf(lnRequestQuantity),
                                 String.valueOf(orderDetail.getQuantity()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
-                                ""
+                                status
                         ));
                     }
                     Platform.runLater(() -> {
-                        poDetail_data.setAll(detailsList); // Properly update list
-                        tblVwOrderDetails.setItems(poDetail_data);
+                        detail_data.setAll(detailsList); // Properly update list
+                        tblVwOrderDetails.setItems(detail_data);
                     });
 
                     return detailsList;
@@ -466,7 +488,7 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
         new Thread(task).start();
     }
 
-    private void initTablePODetail() {
+    private void initTableDetail() {
         tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
         tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
@@ -483,18 +505,43 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
                 header.setReordering(false);
             });
         });
+        initTableHighlithers();
+
     }
 
-    private void tblVwOrderDetails_Clicked(MouseEvent event) {
+    private void initTableHighlithers() {
+        tblVwOrderDetails.setRowFactory(tv -> new TableRow<ModelPurchaseOrderDetail>() {
+            @Override
+            protected void updateItem(ModelPurchaseOrderDetail item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item == null || empty) {
+                    setStyle("");
+                } else {
+                    String status = item.getIndex10(); // Replace with actual getter
+                    switch (status) {
+                        case "1":
+                            setStyle("-fx-background-color: #f44336;");
+                            break;
+                        default:
+                            setStyle("");
+                    }
+                    tblVwOrderDetails.refresh();
+                }
+            }
+        });
+    }
+
+    private void tblVwDetail_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.READY) {
-            pnTblPODetailRow = tblVwOrderDetails.getSelectionModel().getSelectedIndex();
+            pnTblDetailRow = tblVwOrderDetails.getSelectionModel().getSelectedIndex();
 
             ModelPurchaseOrderDetail selectedItem = tblVwOrderDetails.getSelectionModel().getSelectedItem();
             if (event.getClickCount() == 1) {
                 clearDetailFields();
                 if (selectedItem != null) {
-                    if (pnTblPODetailRow >= 0) {
-                        loadDetail();
+                    if (pnTblDetailRow >= 0) {
+                        loadRecordDetail();
                     }
                 }
             }
@@ -527,16 +574,16 @@ public class PurchaseOrder_HistoryMonarchFoodController implements Initializable
                 switch (event.getCode()) {
                     case TAB:
                     case DOWN:
-                        pnTblPODetailRow = moveToNextRow(currentTable, focusedCell);
+                        pnTblDetailRow = moveToNextRow(currentTable, focusedCell);
                         break;
                     case UP:
-                        pnTblPODetailRow = moveToPreviousRow(currentTable, focusedCell);
+                        pnTblDetailRow = moveToPreviousRow(currentTable, focusedCell);
                         break;
                     default:
                         return; // Ignore other keys
                 }
 
-                loadDetail();
+                loadRecordDetail();
                 event.consume();
             }
 

@@ -154,6 +154,7 @@
                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                 <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
@@ -176,15 +177,15 @@
                                                                 <Label text="Supplier" GridPane.rowIndex="5" />
                                                                 <Label text="Remarks" GridPane.rowIndex="7" />
                                                                 <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                                <TextField fx:id="tfAdvancePAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" prefWidth="139.0" GridPane.columnIndex="12" GridPane.rowIndex="7" />
+                                                                <TextField fx:id="tfAdvancePAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" prefWidth="139.0" GridPane.columnIndex="12" GridPane.rowIndex="8" />
                                                                 <TextField fx:id="tfSupplier" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="5" />
                                                                 <TextField fx:id="tfReferenceNo" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="8" GridPane.rowIndex="5" />
-                                                                <CheckBox fx:id="chkbAdvancePayment" disable="true" mnemonicParsing="false" text="w/ Adv Rate (%)" GridPane.columnIndex="10" GridPane.rowIndex="6" />
+                                                                <CheckBox fx:id="chkbAdvancePayment" disable="true" mnemonicParsing="false" text="w/ Adv Rate" GridPane.columnIndex="10" GridPane.rowIndex="7" />
                                                                 <TextField fx:id="tfTerm" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="8" GridPane.rowIndex="6" />
-                                                                <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="5" />
-                                                                <TextField fx:id="tfTotalAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" style="-fx-font-weight: bold;" GridPane.columnIndex="12" GridPane.rowIndex="8" />
-                                                                <Label text="Disc. Rate (%)" GridPane.columnIndex="10" GridPane.rowIndex="4" />
-                                                                <Label text="Total" GridPane.columnIndex="10" GridPane.rowIndex="8">
+                                                                <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="6" />
+                                                                <TextField fx:id="tfNetAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" style="-fx-font-weight: bold;" GridPane.columnIndex="12" GridPane.rowIndex="9" />
+                                                                <Label text="Disc. Rate" GridPane.columnIndex="10" GridPane.rowIndex="5" />
+                                                                <Label text="Net Amount" GridPane.columnIndex="10" GridPane.rowIndex="9">
                                                                     <font>
                                                                         <Font name="System Bold" size="15.0" />
                                                                     </font>
@@ -192,18 +193,20 @@
                                                                 <Label text="Term" GridPane.columnIndex="6" GridPane.rowIndex="6" />
                                                                 <Label text="Destination" GridPane.rowIndex="6" />
                                                                 <TextField fx:id="tfDestination" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="6" />
-                                                                <TextArea fx:id="taRemarks" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="27.0" prefWidth="562.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" GridPane.rowSpan="2">
+                                                                <TextArea fx:id="taRemarks" editable="false" maxWidth="1.7976931348623157E308" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="7" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" GridPane.rowSpan="3">
                                                                     <GridPane.margin>
                                                                         <Insets top="1.0" />
                                                                     </GridPane.margin>
                                                                 </TextArea>
-                                                                <Label text="Disc. Amt" GridPane.columnIndex="10" GridPane.rowIndex="5" />
+                                                                <Label text="Addl. Disc. Amt" GridPane.columnIndex="10" GridPane.rowIndex="6" />
                                                                 <Label text="Expected Delivery Date" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                 <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" maxWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                 <DatePicker fx:id="dpExpectedDlvrDate" disable="true" editable="false" maxWidth="150.0" GridPane.columnIndex="8" GridPane.rowIndex="4" />
-                                                                <Label text="Adv Amount" GridPane.columnIndex="10" GridPane.rowIndex="7" />
-                                                                <TextField fx:id="tfAdvancePRate" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="6" />
-                                                                <TextField fx:id="tfDiscountRate" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="4" />
+                                                                <Label text="Adv Amount" GridPane.columnIndex="10" GridPane.rowIndex="8" />
+                                                                <TextField fx:id="tfAdvancePRate" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="7" />
+                                                                <TextField fx:id="tfDiscountRate" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="5" />
+                                                <TextField fx:id="tfTotalAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="4" />
+                                                <Label text="Total Amount" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                             </children>
                                                         </GridPane>
                                                     </children>
@@ -230,7 +233,7 @@
                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="76.0" />
                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="73.0" />
+                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
                                                             </columnConstraints>
                                                             <rowConstraints>
@@ -256,8 +259,8 @@
                                                                     </font>
                                                                 </Label>
                                                                 <Label text="Brand" GridPane.rowIndex="3" />
-                                                                <TextField fx:id="tfDescription" maxHeight="25.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="1" />
-                                                                <TextField fx:id="tfBarcode" maxHeight="25.0" GridPane.columnIndex="2" />
+                                                                <TextField fx:id="tfDescription" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="1" />
+                                                                <TextField fx:id="tfBarcode" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" />
                                                                 <TextField fx:id="tfCategory" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                                                 <Label text="Model" GridPane.rowIndex="4" />
                                                                 <Label text="Color" GridPane.rowIndex="5" />
