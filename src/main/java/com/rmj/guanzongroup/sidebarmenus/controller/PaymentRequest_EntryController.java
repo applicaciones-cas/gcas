@@ -333,8 +333,8 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
         if (pnTblDetailRow >= 0) {
             try {
                 String lsParticular = "";
-                if (poGLControllers.PaymentRequest().Detail(pnTblDetailRow).Recurring().Particular().getDescription() != null) {
-                    lsParticular = poGLControllers.PaymentRequest().Detail(pnTblDetailRow).Recurring().Particular().getDescription();
+                if (poGLControllers.PaymentRequest().Detail(pnTblDetailRow).Particular().getDescription() != null) {
+                    lsParticular = poGLControllers.PaymentRequest().Detail(pnTblDetailRow).Particular().getDescription();
                 }
                 tfParticular.setText(lsParticular);
 
@@ -410,9 +410,15 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                     if ("success".equals((String) poJSON.get("result"))) {
                         poGLControllers.PaymentRequest().Master().setSeriesNo(poGLControllers.PaymentRequest().getSeriesNoByBranch());
                         poGLControllers.PaymentRequest().Master().setPayeeID(prevPayee);
+                        if (poApp.isMainOffice() || poApp.isWarehouse()) {
+                            poGLControllers.PaymentRequest().Master().setDepartmentID(poApp.getDepartment());
+                            tfDepartment.setText(poGLControllers.PaymentRequest().Master().Department().getDescription());
+
+                        }
+                        tfDepartment.setPromptText("");
                         CustomCommonUtil.switchToTab(tabDetails, ImTabPane);
                         loadRecordMaster();
-                        pnTblDetailRow = - 1;
+                        pnTblDetailRow = 0;
                         pnEditMode = poGLControllers.PaymentRequest().getEditMode();
                         loadTableDetail();
                         loadTableAttachment();
@@ -493,12 +499,10 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                                     loadTableDetail();
                                     loadRecordDetail();
                                     initDetailFocus();
-
                                 } else {
                                     ShowMessageFX.Warning("Please enter Payee field first.", psFormName, null);
                                     tfPayee.requestFocus();
                                 }
-
                                 break;
                             default:
                                 System.out.println("Unknown TextField");
@@ -1159,8 +1163,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                                     tfDepartment.setText("");
                                     break;
                                 }
-                                tfDepartment.setText(poGLControllers.PaymentRequest().Master().Branch().getBranchName());
-
+                                tfDepartment.setText(poGLControllers.PaymentRequest().Master().Department().getDescription());
                                 break;
                             case "tfParticular":
                                 if (!tfPayee.getText().isEmpty()) {
@@ -1549,6 +1552,9 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                 tfSeriesNo, tfTotalAmount, tfDiscountAmount, tfTotalVATableAmount, tfNetAmount,
                 chkbVatable, tfDiscRate,
                 tfDiscAmountDetail);
+        if (poApp.isMainOffice() || poApp.isWarehouse()) {
+            tfDepartment.setDisable(!lbShow); //mag open siya pag add new or update sa editmode
+        }
         if (tblVwRecurringExpense.getItems().isEmpty()) {
             pagination.setVisible(false);
             pagination.setManaged(false);
@@ -1851,7 +1857,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                         detailsList.add(new ModelTableDetail(
                                 String.valueOf(lnCtr + 1),
                                 poGLControllers.PaymentRequest().Detail(lnCtr).getParticularID(),
-                                poGLControllers.PaymentRequest().Detail(lnCtr).Recurring().Particular().getDescription(),
+                                poGLControllers.PaymentRequest().Detail(lnCtr).Particular().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getDiscount().doubleValue()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAddDiscount().doubleValue()),

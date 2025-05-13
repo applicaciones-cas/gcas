@@ -1066,7 +1066,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                                     tfDepartment.setText("");
                                     break;
                                 }
-                                tfDepartment.setText(poGLControllers.PaymentRequest().Master().Branch().getBranchName());
+                                tfDepartment.setText(poGLControllers.PaymentRequest().Master().Department().getDescription());
 
                                 break;
                             case "tfParticular":
@@ -1398,7 +1398,9 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                 tfSeriesNo, tfTotalAmount, tfDiscountAmount, tfTotalVATableAmount, tfNetAmount,
                 chkbVatable, tfDiscRate,
                 tfDiscAmountDetail);
-
+        if (poApp.isMainOffice() || poApp.isWarehouse()) {
+            tfDepartment.setDisable(!lbShow); //mag open siya pag add new or update sa editmode
+        }
         if (tblVwPaymentRequest.getItems().isEmpty()) {
             pagination.setVisible(false);
             pagination.setManaged(false);
