@@ -7,6 +7,7 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
@@ -288,7 +289,13 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
             dialogStage.setScene(new Scene(root));
 
             // Clear the reference when closed
-            dialogStage.setOnHidden(event -> dialogStage = null);
+            dialogStage.setOnHidden(event -> {
+                dialogStage = null;
+                pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                Platform.runLater(() -> {
+                    loadTableDetail();
+                });
+            });
             dialogStage.show();
 
         } catch (IOException e) {
@@ -1265,8 +1272,8 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                 });
             });
 
-        filteredData = new FilteredList<>(main_data, b -> true);
-        tblViewPuchaseOrder.setItems(filteredData);
+            filteredData = new FilteredList<>(main_data, b -> true);
+            tblViewPuchaseOrder.setItems(filteredData);
 
         }
     }

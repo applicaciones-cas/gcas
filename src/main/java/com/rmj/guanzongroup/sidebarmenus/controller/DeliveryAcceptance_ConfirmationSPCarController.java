@@ -734,6 +734,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
+                    pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
                     break;
             }
             Platform.runLater(() -> {
@@ -842,6 +843,18 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                             }
                             break;
                         default:
+                            break;
+                    }
+                    break;
+                case BACK_SPACE:
+                    switch (lsID) {
+                        case "tfOrderNo":
+                            if (mainSearchListener != null) {
+                                txtField.textProperty().removeListener(mainSearchListener);
+                                mainSearchListener = null; // Clear reference to avoid memory leaks
+                                initDetailsGrid();
+                                initMainGrid();
+                            }
                             break;
                     }
                     break;
@@ -1253,6 +1266,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         } catch (Exception e) {
         }
     }
+
     public void loadRecordDetail() {
         try {
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {

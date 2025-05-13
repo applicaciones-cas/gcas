@@ -635,7 +635,13 @@ public class DeliveryAcceptance_ConfirmationAppliancesController implements Init
             dialogStage.setScene(new Scene(root));
 
             // Clear the reference when closed
-            dialogStage.setOnHidden(event -> dialogStage = null);
+            dialogStage.setOnHidden(event -> {
+                dialogStage = null;
+                pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                Platform.runLater(() -> {
+                    loadTableDetail();
+                });
+            });
             dialogStage.show();
 
         } catch (IOException e) {
@@ -921,6 +927,7 @@ public class DeliveryAcceptance_ConfirmationAppliancesController implements Init
             switch (event.getCode()) {
                 case ENTER:
                     CommonUtils.SetNextFocus(txtField);
+
                     pbEntered = true;
                     break;
                 case UP:

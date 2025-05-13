@@ -732,6 +732,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
+                    pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
                     break;
             }
             Platform.runLater(() -> {

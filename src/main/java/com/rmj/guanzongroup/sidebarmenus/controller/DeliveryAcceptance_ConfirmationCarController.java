@@ -646,7 +646,13 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             dialogStage.setScene(new Scene(root));
 
             // Clear the reference when closed
-            dialogStage.setOnHidden(event -> dialogStage = null);
+            dialogStage.setOnHidden(event -> {
+                dialogStage = null;
+                pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                Platform.runLater(() -> {
+                    loadTableDetail();
+                });
+            });
             dialogStage.show();
 
         } catch (IOException e) {

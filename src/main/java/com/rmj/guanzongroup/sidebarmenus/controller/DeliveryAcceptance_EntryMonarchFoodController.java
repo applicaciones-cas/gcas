@@ -7,6 +7,7 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.Date;
@@ -577,6 +578,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
+                    pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
                     break;
             }
             Platform.runLater(() -> {

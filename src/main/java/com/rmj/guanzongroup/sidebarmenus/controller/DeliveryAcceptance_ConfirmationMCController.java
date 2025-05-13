@@ -624,7 +624,13 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
             dialogStage.setScene(new Scene(root));
 
             // Clear the reference when closed
-            dialogStage.setOnHidden(event -> dialogStage = null);
+            dialogStage.setOnHidden(event -> {
+                dialogStage = null;
+                pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                Platform.runLater(() -> {
+                    loadTableDetail();
+                });
+            });
             dialogStage.show();
 
         } catch (IOException e) {
@@ -954,6 +960,18 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             break;
                     }
                     break;
+                case BACK_SPACE:
+                    switch (lsID) {
+                        case "tfOrderNo":
+                            if (mainSearchListener != null) {
+                                txtField.textProperty().removeListener(mainSearchListener);
+                                mainSearchListener = null; // Clear reference to avoid memory leaks
+                                initDetailsGrid();
+                                initMainGrid();
+                            }
+                            break;
+                    }
+                    break;
                 case F3:
                     switch (lsID) {
                         case "tfSearchSupplier":
@@ -1095,11 +1113,18 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                         if (selectedDate == null) {
                             break;
                         }
+
                         if (selectedDate.isAfter(currentDate)) {
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
                             break;
                         } else {
+                            LocalDate oneYearFromNow = LocalDate.now().plusYears(1);
+                            if (selectedDate.isAfter(oneYearFromNow)) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Transaction date cannot be later than a year");
+                                break;
+                            }
                             poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
                         }
                         break;
@@ -1111,6 +1136,12 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
                         } else {
+                            LocalDate oneYearFromNow = LocalDate.now().plusYears(1);
+                            if (selectedDate.isAfter(oneYearFromNow)) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Transaction date cannot be later than a year");
+                                break;
+                            }
                             poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
                         break;

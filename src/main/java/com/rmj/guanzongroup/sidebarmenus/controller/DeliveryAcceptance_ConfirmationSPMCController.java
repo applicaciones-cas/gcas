@@ -730,6 +730,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
+                    pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
                     break;
             }
             Platform.runLater(() -> {

@@ -123,7 +123,6 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     private String psSupplierId = "";
     private boolean pbEntered = false;
 
-
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
@@ -487,7 +486,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                     return;
                                 }
                             }
-                            
+
                             if (imageinfo_temp.containsKey(selectedFile.getName().toString())) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "File name already exist.");
                                 loadRecordAttachment(true);
@@ -637,7 +636,13 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
             dialogStage.setScene(new Scene(root));
 
             // Clear the reference when closed
-            dialogStage.setOnHidden(event -> dialogStage = null);
+            dialogStage.setOnHidden(event -> {
+                dialogStage = null;
+                pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                Platform.runLater(() -> {
+                    loadTableDetail();
+                });
+            });
             dialogStage.show();
 
         } catch (IOException e) {
