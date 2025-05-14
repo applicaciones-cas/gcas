@@ -2504,6 +2504,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
+        psSupplierId = "";
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();

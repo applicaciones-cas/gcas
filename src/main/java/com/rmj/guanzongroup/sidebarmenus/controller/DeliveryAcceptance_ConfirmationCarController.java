@@ -2443,6 +2443,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
+        psSupplierId = "";
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();

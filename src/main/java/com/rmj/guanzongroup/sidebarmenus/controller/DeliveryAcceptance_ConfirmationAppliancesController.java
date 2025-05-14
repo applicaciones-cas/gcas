@@ -2502,6 +2502,7 @@ public class DeliveryAcceptance_ConfirmationAppliancesController implements Init
         dpTransactionDate.setValue(null);
         dpReferenceDate.setValue(null);
 
+        psSupplierId = "";
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();

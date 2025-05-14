@@ -754,47 +754,47 @@ public class DeliveryAcceptance_ApprovalMonarchFoodController implements Initial
                         case "tfOrderNo":
 
                             break;
-                        case "tfBarcode":
-                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfBarcode.setText("");
-                                break;
-                            }
-                            loadTableDetail();
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(event1 -> {
-                                    tfReceiveQuantity.requestFocus();
-                                });
-                                delay.play();
-                            });
-                            break;
-                        case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfDescription.setText("");
-                                break;
-                            }
-                            loadTableDetail();
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(event1 -> {
-                                    tfReceiveQuantity.requestFocus();
-                                });
-                                delay.play();
-                            });
-                            break;
-                        case "tfSupersede":
-                            poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail);
-                            if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfSupersede.setText("");
-                                break;
-                            }
-                            loadRecordDetail();
-                            break;
+//                        case "tfBarcode":
+//                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail);
+//                            if ("error".equals(poJSON.get("result"))) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                tfBarcode.setText("");
+//                                break;
+//                            }
+//                            loadTableDetail();
+//                            Platform.runLater(() -> {
+//                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+//                                delay.setOnFinished(event1 -> {
+//                                    tfReceiveQuantity.requestFocus();
+//                                });
+//                                delay.play();
+//                            });
+//                            break;
+//                        case "tfDescription":
+//                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail);
+//                            if ("error".equals(poJSON.get("result"))) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                tfDescription.setText("");
+//                                break;
+//                            }
+//                            loadTableDetail();
+//                            Platform.runLater(() -> {
+//                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+//                                delay.setOnFinished(event1 -> {
+//                                    tfReceiveQuantity.requestFocus();
+//                                });
+//                                delay.play();
+//                            });
+//                            break;
+//                        case "tfSupersede":
+//                            poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail);
+//                            if ("error".equals(poJSON.get("result"))) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                                tfSupersede.setText("");
+//                                break;
+//                            }
+//                            loadRecordDetail();
+//                            break;
                     }
                     break;
                 default:

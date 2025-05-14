@@ -962,6 +962,68 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             break;
                     }
                     break;
+                
+                case F4:
+                    switch (lsID) {
+                        case "tfBarcode":
+                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail, false);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfBarcode.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        case "tfDescription":
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail, false);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfDescription.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        case "tfSupersede":
+                            poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSupersede.setText("");
+                                break;
+                            }
+                            loadRecordDetail();
+                            break;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -2381,6 +2443,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         dpReferenceDate.setValue(null);
         dpExpiryDate.setValue(null);
 
+        psSupplierId = "";
         tfSearchSupplier.clear();
         tfSearchReferenceNo.clear();
         tfAttachmentNo.clear();
