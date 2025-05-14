@@ -355,10 +355,9 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                 }
                 tfCost.setText(lsCost);
 
-                int lnRequestQuantity = 0;
-                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getIssued());
-                tfRequestQuantity.setText(String.valueOf(lnRequestQuantity));
-
+                //                int lnRequestQuantity = 0;
+//                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getIssued());
+                tfRequestQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved()));
                 String lsOrderQuantity = "0";
                 if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity() != null) {
                     lsOrderQuantity = String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity());

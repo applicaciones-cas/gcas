@@ -347,9 +347,9 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                 }
                 tfCost.setText(lsCost);
 
-                int lnRequestQuantity = 0;
-                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getIssued());
-                tfRequestQuantity.setText(String.valueOf(lnRequestQuantity));
+//                int lnRequestQuantity = 0;
+//                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getIssued());
+                tfRequestQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved()));
 
                 String lsOrderQuantity = "0";
                 if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity() != null) {
