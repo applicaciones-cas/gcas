@@ -1527,6 +1527,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
     }
 
     private void loadTableMain() {
+        btnRetrieve.setDisable(true);
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50); // Set size to 200x200
         progressIndicator.setStyle("-fx-progress-color: #FF8201;");
@@ -1591,6 +1592,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
 
             @Override
             protected void succeeded() {
+                btnRetrieve.setDisable(false);
                 if (main_data == null || main_data.isEmpty()) {
                     tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
                 } else {
@@ -1611,6 +1613,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
 
             @Override
             protected void failed() {
+                btnRetrieve.setDisable(false);
                 pagination.setVisible(true);
                 pagination.setManaged(true);
                 progressIndicator.setVisible(false);
