@@ -1044,7 +1044,6 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                     case F3:
                         switch (txtFieldID) {
                             case "tfSearchTransaction":
-                                psTransactionNo = tfSearchTransaction.getText();
                                 break;
                             case "tfSearchPayee":
                                 poJSON = poGLControllers.PaymentRequest().SearchPayee(lsValue, false);
@@ -1408,54 +1407,59 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
     }
 
     private void loadTableMain() {
+        btnRetrieve.setDisable(true);
+
         ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setMaxHeight(50); // Set size to 200x200
+        progressIndicator.setMaxHeight(50);
         progressIndicator.setStyle("-fx-progress-color: #FF8201;");
         StackPane loadingPane = new StackPane(progressIndicator);
-        loadingPane.setAlignment(Pos.CENTER); // Center it
+        loadingPane.setAlignment(Pos.CENTER);
 
         tblVwPaymentRequest.setPlaceholder(loadingPane);
         progressIndicator.setVisible(true);
 
+        poJSON = new JSONObject();
+
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                main_data.clear();
-                JSONObject poJSON = poGLControllers.PaymentRequest().getPaymentRequest(psTransactionNo, psPayeeID);
-                if ("success".equals(poJSON.get("result"))) {
-                    if (poGLControllers.PaymentRequest().getPRFMasterCount() > 0) {
-                        for (int lnCntr = 0; lnCntr <= poGLControllers.PaymentRequest().getPRFMasterCount() - 1; lnCntr++) {
-                            main_data.add(new ModelTableMain(
-                                    String.valueOf(lnCntr + 1),
-                                    poGLControllers.PaymentRequest().poPRFMaster(lnCntr).getTransactionNo(),
-                                    poGLControllers.PaymentRequest().poPRFMaster(lnCntr).Branch().getBranchName(),
-                                    poGLControllers.PaymentRequest().poPRFMaster(lnCntr).Payee().getPayeeName(),
-                                    poGLControllers.PaymentRequest().poPRFMaster(lnCntr).getTransactionStatus(),
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    ""));
+                try {
+                    main_data.clear();
+                    poJSON = poGLControllers.PaymentRequest().getPaymentRequest(psTransactionNo, psPayeeID);
+                    if ("success".equals(poJSON.get("result"))) {
+                        if (poGLControllers.PaymentRequest().getPRFMasterCount() > 0) {
+                            for (int lnCntr = 0; lnCntr < poGLControllers.PaymentRequest().getPRFMasterCount(); lnCntr++) {
+                                main_data.add(new ModelTableMain(
+                                        String.valueOf(lnCntr + 1),
+                                        poGLControllers.PaymentRequest().poPRFMaster(lnCntr).getTransactionNo(),
+                                        poGLControllers.PaymentRequest().poPRFMaster(lnCntr).Branch().getBranchName(),
+                                        poGLControllers.PaymentRequest().poPRFMaster(lnCntr).Payee().getPayeeName(),
+                                        poGLControllers.PaymentRequest().poPRFMaster(lnCntr).getTransactionStatus(),
+                                        "", "", "", "", ""));
+                            }
+                        } else {
+                            main_data.clear();
                         }
-                    } else {
-                        main_data.clear();
                     }
+
+                    Platform.runLater(() -> {
+                        if (main_data.isEmpty()) {
+                            tblVwPaymentRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                        }
+                        tblVwPaymentRequest.setItems(FXCollections.observableArrayList(main_data));
+                    });
+
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                Platform.runLater(() -> {
-                    if (main_data.isEmpty()) {
-                        tblVwPaymentRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
-                        tblVwPaymentRequest.setItems(FXCollections.observableArrayList(main_data));
-                    } else {
-                        tblVwPaymentRequest.setItems(FXCollections.observableArrayList(main_data));
-                    }
-                });
                 return null;
             }
 
             @Override
-
             protected void succeeded() {
                 progressIndicator.setVisible(false);
+                btnRetrieve.setDisable(false); // ✅ Re-enable the button
+
                 if (main_data == null || main_data.isEmpty()) {
                     tblVwPaymentRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
                 } else {
@@ -1474,81 +1478,12 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
             @Override
             protected void failed() {
                 progressIndicator.setVisible(false);
+                btnRetrieve.setDisable(false); // ✅ Re-enable the button even if failed
             }
         };
-        new Thread(task).start(); // Run task in background
+
+        new Thread(task).start();
     }
-//private void loadTableMain() {
-//        ProgressIndicator progressIndicator = new ProgressIndicator();
-//        progressIndicator.setMaxHeight(50); // Set size to 200x200
-//        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
-//        StackPane loadingPane = new StackPane(progressIndicator);
-//        loadingPane.setAlignment(Pos.CENTER); // Center it
-//
-//        tblVwPaymentRequest.setPlaceholder(loadingPane);
-//        progressIndicator.setVisible(true);
-//
-//        Task<Void> task = new Task<Void>() {
-//            @Override
-//            protected Void call() throws Exception {
-//                main_data.clear();
-//                JSONObject poJSON = poGLControllers.PaymentRequest().getPaymentRequest(psTransactionNo, psPayeeID);
-//                if ("success".equals(poJSON.get("result"))) {
-//                    if (poGLControllers.PaymentRequest().getPRFMasterCount() > 0) {
-//                        for (int lnCntr = 0; lnCntr <= poGLControllers.PaymentRequest().getPRFMasterCount() - 1; lnCntr++) {
-//                            main_data.add(new ModelTableMain(
-//                                    String.valueOf(lnCntr + 1),
-//                                    poGLControllers.PaymentRequest().poPRFMaster(lnCntr).getTransactionNo(),
-//                                    poGLControllers.PaymentRequest().poPRFMaster(lnCntr).Branch().getBranchName(),
-//                                    poGLControllers.PaymentRequest().poPRFMaster(lnCntr).Payee().getPayeeName(),
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    "",
-//                                    ""));
-//                            tblVwPaymentRequest.setItems(main_data);
-//                        }
-//                    } else {
-//                        main_data.clear();
-//                    }
-//                }
-//                Platform.runLater(() -> {
-//                    if (main_data.isEmpty()) {
-//                        tblVwPaymentRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
-//                        tblVwPaymentRequest.setItems(FXCollections.observableArrayList(main_data));
-//                    } else {
-//                        tblVwPaymentRequest.setItems(FXCollections.observableArrayList(main_data));
-//                    }
-//                });
-//                return null;
-//            }
-//
-//            @Override
-//            protected void succeeded() {
-//                progressIndicator.setVisible(false);
-//                if (main_data == null || main_data.isEmpty()) {
-//                    tblVwPaymentRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
-//                } else {
-//                    if (pagination != null) {
-//                        int pageCount = (int) Math.ceil((double) main_data.size() / pnTblMain_Page);
-//                        pagination.setPageCount(pageCount);
-//                        pagination.currentPageIndexProperty().addListener((obs, oldIndex, newIndex) -> createPage(newIndex.intValue()));
-//                    }
-//                    createPage(0);
-//                    pagination.setVisible(true);
-//                    pagination.setManaged(true);
-//                    tblVwPaymentRequest.toFront();
-//                }
-//            }
-//
-//            @Override
-//            protected void failed() {
-//                progressIndicator.setVisible(false);
-//            }
-//        };
-//        new Thread(task).start(); // Run task in background
-//    }
 
     private Node createPage(int pageIndex) {
         int totalPages = (int) Math.ceil((double) main_data.size() / pnTblMain_Page);
@@ -1568,12 +1503,10 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
             pagination.setPageCount(totalPages);
             pagination.setCurrentPageIndex(pageIndex);
         }
-
         return tblVwPaymentRequest;
     }
 
     private void initTablePaymentRequest() {
-
         tblRowNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblTransactionNo.setCellValueFactory(new PropertyValueFactory<>("index02"));
         tblBranch.setCellValueFactory(new PropertyValueFactory<>("index03"));
@@ -1833,7 +1766,6 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                         tfSearchPayee.setText("");
                         psPayeeID = "";
                         loadTableMain();
-
                     } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(PaymentRequest_ConfirmationController.class
                                 .getName()).log(Level.SEVERE, null, ex);
