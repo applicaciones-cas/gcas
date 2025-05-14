@@ -386,27 +386,31 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                     pagination.toFront();
                     break;
                 case "btnConfirm":
-                    poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed");
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        break;
-                    }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?")) {
+                        poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
                         }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                            poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            }
+                        }
+                        clearMasterFields();
+                        clearDetailFields();
+                        detail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
+                        pnTblDetailRow = -1;
+                        //this code below use to highlight tblpurchase
+                        tblVwPurchaseOrder.refresh();
+                        main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
+                        pagination.toBack();
+                    } else {
+                        return;
                     }
-                    clearMasterFields();
-                    clearDetailFields();
-                    detail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
-                    pnTblDetailRow = -1;
-                    //this code below use to highlight tblpurchase
-                    tblVwPurchaseOrder.refresh();
-                    main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.CONFIRMED);
-                    pagination.toBack();
                     break;
                 case "btnSave":
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
@@ -425,6 +429,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                             poPurchasingController.PurchaseOrder().Detail(i).setModifiedDate(poApp.getServerDate());
                         }
                     }
+
                     poJSON = poPurchasingController.PurchaseOrder().isDetailHasZeroQty();
                     if (!"success".equals((String) poJSON.get("result"))) {
                         if ("true".equals((String) poJSON.get("warning"))) {
@@ -451,6 +456,7 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                         return;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+
                     if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                         if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
@@ -497,35 +503,43 @@ public class PurchaseOrder_ConfirmationCarController implements Initializable, S
                 case "btnTransHistory":
                     break;
                 case "btnReturn":
-                    poJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("Returned");
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        break;
-                    }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    clearMasterFields();
-                    clearDetailFields();
-                    detail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
+                        poJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("Returned");
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        clearMasterFields();
+                        clearDetailFields();
+                        detail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
 
-                    tblVwPurchaseOrder.refresh();
-                    main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.RETURNED);
+                        tblVwPurchaseOrder.refresh();
+                        main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.RETURNED);
+                    } else {
+                        return;
+                    }
                     break;
                 case "btnVoid":
-                    poJSON = poPurchasingController.PurchaseOrder().VoidTransaction("Voided");
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        break;
-                    }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    clearMasterFields();
-                    clearDetailFields();
-                    detail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
+                        poJSON = poPurchasingController.PurchaseOrder().VoidTransaction("Voided");
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        clearMasterFields();
+                        clearDetailFields();
+                        detail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
 
-                    //this code below use to highlight tblpurchase
-                    tblVwPurchaseOrder.refresh();
-                    main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.VOID);
+                        //this code below use to highlight tblpurchase
+                        tblVwPurchaseOrder.refresh();
+                        main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.VOID);
+                    } else {
+                        return;
+                    }
                     break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {

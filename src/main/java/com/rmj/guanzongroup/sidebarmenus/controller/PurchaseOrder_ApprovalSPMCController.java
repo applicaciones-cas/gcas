@@ -324,27 +324,32 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                     pagination.toFront();
                     break;
                 case "btnApprove":
-                    poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved");
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        break;
-                    }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to approve transaction?")) {
+                        poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
                         }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                            poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            }
+                        }
+                        clearMasterFields();
+                        clearDetailFields();
+                        detail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
+                        pnTblDetailRow = -1;
+                        //this code below use to highlight tblpurchase
+                        tblVwPurchaseOrder.refresh();
+                        main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.APPROVED);
+                        pagination.toBack();
+                    } else {
+                        return;
                     }
-                    clearMasterFields();
-                    clearDetailFields();
-                    detail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
-                    pnTblDetailRow = -1;
-                    //this code below use to highlight tblpurchase
-                    tblVwPurchaseOrder.refresh();
-                    main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.APPROVED);
-                    pagination.toBack();
                     break;
                 case "btnSave":
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
@@ -437,37 +442,43 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                 case "btnTransHistory":
                     break;
                 case "btnReturn":
-                    //add your method here
-                    //this code below use to highlight tblpurchase
-                    poJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("Returned");
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        break;
-                    }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    clearMasterFields();
-                    clearDetailFields();
-                    detail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
+                        poJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("Returned");
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        clearMasterFields();
+                        clearDetailFields();
+                        detail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
 
-                    tblVwPurchaseOrder.refresh();
-                    main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.RETURNED);
+                        tblVwPurchaseOrder.refresh();
+                        main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.RETURNED);
+                    } else {
+                        return;
+                    }
                     break;
                 case "btnVoid":
-                    poJSON = poPurchasingController.PurchaseOrder().VoidTransaction("Voided");
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        break;
-                    }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    clearMasterFields();
-                    clearDetailFields();
-                    detail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
+                        poJSON = poPurchasingController.PurchaseOrder().VoidTransaction("Voided");
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        clearMasterFields();
+                        clearDetailFields();
+                        detail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
 
-                    //this code below use to highlight tblpurchase
-                    tblVwPurchaseOrder.refresh();
-                    main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.VOID);
+                        //this code below use to highlight tblpurchase
+                        tblVwPurchaseOrder.refresh();
+                        main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.VOID);
+                    } else {
+                        return;
+                    }
                     break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {

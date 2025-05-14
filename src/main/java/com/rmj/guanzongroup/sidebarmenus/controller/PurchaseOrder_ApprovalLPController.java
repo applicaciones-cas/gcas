@@ -324,27 +324,31 @@ public class PurchaseOrder_ApprovalLPController implements Initializable, Screen
                     pagination.toFront();
                     break;
                 case "btnApprove":
-                    poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved");
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        break;
-                    }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to approve transaction?")) {
+                        poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
                         }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                            poJSON = poPurchasingController.PurchaseOrder().printTransaction();
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            }
+                        }
+                        clearMasterFields();
+                        clearDetailFields();
+                        detail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
+                        pnTblDetailRow = -1;
+                        //this code below use to highlight tblpurchase
+                        tblVwPurchaseOrder.refresh();
+                        main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.APPROVED);
+                        pagination.toBack();
+                    } else {
+                        return;
                     }
-                    clearMasterFields();
-                    clearDetailFields();
-                    detail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
-                    pnTblDetailRow = -1;
-                    //this code below use to highlight tblpurchase
-                    tblVwPurchaseOrder.refresh();
-                    main_data.get(pnTblMainRow).setIndex05(PurchaseOrderStatus.APPROVED);
-                    pagination.toBack();
                     break;
                 case "btnSave":
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
