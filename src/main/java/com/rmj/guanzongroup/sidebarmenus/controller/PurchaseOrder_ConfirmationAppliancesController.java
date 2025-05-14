@@ -94,6 +94,7 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
     private String psCategoryID = "";
     private String psSupplierID = "";
     private String psReferID = "";
+    private String psOldDate = "";
     @FXML
     private AnchorPane AnchorMaster, AnchorDetails, AnchorMain, apBrowse, apButton;
     @FXML
@@ -418,6 +419,11 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
                     break;
                 case "btnSave":
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
+                        return;
+                    }
+                    LocalDate selectedLocalDate = dpTransactionDate.getValue();
+                    if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
+                        ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
                         return;
                     }
                     pnTblDetailRow = -1;
@@ -805,8 +811,7 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
         }
         int lnRequestQuantity = 0;
         try {
-            lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved()
-                    - (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getIssued());
+            lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved();
             if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty()) {
                 if (Integer.parseInt(tfOrderQuantity.getText()) > lnRequestQuantity) {
                     ShowMessageFX.Warning("Invalid order quantity entered. The item is from a stock request, and the order quantity must not be greater than the requested quantity.", psFormName, null);
@@ -828,8 +833,9 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
 
     private void initDatePickerActions() {
         dpTransactionDate.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (pnEditMode == EditMode.UPDATE) {
                 LocalDate selectedLocalDate = dpTransactionDate.getValue();
+                LocalDate transactionDate = new java.sql.Date(poPurchasingController.PurchaseOrder().Master().getTransactionDate().getTime()).toLocalDate();
                 if (selectedLocalDate == null) {
                     return;
                 }
@@ -837,22 +843,22 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
                 Date ldLastTransactionDate = poPurchasingController.PurchaseOrder().Master().getTransactionDate();
                 String lsReferNo = tfReferenceNo.getText().trim();
                 boolean approved = true;
-
+                psOldDate = CustomCommonUtil.formatLocalDateToShortString(transactionDate);
                 if (selectedLocalDate.isAfter(dateNow)) {
                     ShowMessageFX.Warning("Invalid to future date.", psFormName, null);
                     approved = false;
                 }
-                if (selectedLocalDate.isBefore(dateNow) && lsReferNo.isEmpty()) {
+
+                if (selectedLocalDate.isBefore(transactionDate) && lsReferNo.isEmpty()) {
                     ShowMessageFX.Warning("Invalid to backdate. Please enter a reference number first.", psFormName, null);
                     approved = false;
                 }
-
-                if (selectedLocalDate.isBefore(dateNow) && !lsReferNo.isEmpty()) {
+                if (selectedLocalDate.isBefore(transactionDate) && !lsReferNo.isEmpty()) {
                     boolean proceed = ShowMessageFX.YesNo(
-                            "You selected a backdate with a reference number.\n\n"
-                            + "If YES, seek approval to proceed with the backdate.\n"
-                            + "If NO, the transaction date will be reset to today.",
-                            "Backdate Confirmation", null
+                            "You are changing the transaction date\n"
+                            + "If YES, seek approval to proceed with the changed date.\n"
+                            + "If NO, the transaction date will be remain.",
+                            psFormName, null
                     );
                     if (proceed) {
                         if (poApp.getUserLevel() <= UserRight.ENCODER) {
@@ -866,7 +872,6 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
                         approved = false;
                     }
                 }
-
                 if (approved) {
                     poPurchasingController.PurchaseOrder().Master().setTransactionDate(
                             SQLUtil.toDate(selectedLocalDate.toString(), SQLUtil.FORMAT_SHORT_DATE));
@@ -875,7 +880,7 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
                         dpTransactionDate.setValue(dateNow);
                         poPurchasingController.PurchaseOrder().Master().setTransactionDate(
                                 SQLUtil.toDate(dateNow.toString(), SQLUtil.FORMAT_SHORT_DATE));
-                    } else if (pnEditMode == EditMode.ADDNEW) {
+                    } else if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                                 SQLUtil.dateFormat(ldLastTransactionDate, SQLUtil.FORMAT_SHORT_DATE)));
                         poPurchasingController.PurchaseOrder().Master().setTransactionDate(
@@ -887,7 +892,8 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
         }
         );
 
-        dpExpectedDlvrDate.setOnAction(e -> {
+        dpExpectedDlvrDate.setOnAction(e
+                -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (dpExpectedDlvrDate.getValue() != null) {
                     LocalDate selectedLocalDate = dpExpectedDlvrDate.getValue();
@@ -958,6 +964,7 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
         dpTransactionDate.setValue(null);
         dpExpectedDlvrDate.setValue(null);
         taRemarks.setText("");
+        psOldDate = "";
         chkbAdvancePayment.setSelected(false);
         CustomCommonUtil.setText("", tfTransactionNo, tfSupplier,
                 tfDestination, tfReferenceNo, tfTerm);
@@ -1222,10 +1229,13 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
                         grandTotalAmount += lnTotalAmount;
                         int lnRequestQuantity = 0;
                         String status = "0";
-                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved()
-                                - (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued());
+                        int lnTotalQty = 0;
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved();
+                        lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getCancelled());
                         if (!poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()) {
-                            if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().intValue() > lnRequestQuantity) {
+                            if (lnRequestQuantity != lnTotalQty) {
                                 status = "1";
                             }
                         }

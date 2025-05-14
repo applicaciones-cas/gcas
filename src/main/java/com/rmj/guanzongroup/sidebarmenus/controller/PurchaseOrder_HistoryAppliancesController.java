@@ -519,10 +519,13 @@ public class PurchaseOrder_HistoryAppliancesController implements Initializable,
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         int lnRequestQuantity = 0;
                         String status = "0";
-                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved()
-                                - (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued());
+                        int lnTotalQty = 0;
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved();
+                        lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getCancelled());
                         if (!poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()) {
-                            if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().intValue() > lnRequestQuantity) {
+                            if (lnRequestQuantity != lnTotalQty) {
                                 status = "1";
                             }
                         }

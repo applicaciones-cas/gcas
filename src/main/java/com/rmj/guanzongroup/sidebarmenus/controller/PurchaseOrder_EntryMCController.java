@@ -49,6 +49,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.F4;
 import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
@@ -96,6 +97,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
     private String psIndustryID = "";
     private String psCompanyID = "";
     private String psCategoryID = "";
+    private String psOldDate = "";
     private TextField activeField;
     @FXML
     private AnchorPane AnchorMaster, AnchorDetails, AnchorMain, apBrowse, apButton;
@@ -553,7 +555,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, pnTblDetailRow);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, pnTblDetailRow, true);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfModel.setText("");
@@ -575,6 +577,11 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     break;
                 case "btnSave":
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
+                        return;
+                    }
+                    LocalDate selectedLocalDate = dpTransactionDate.getValue();
+                    if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
+                        ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
                         return;
                     }
                     prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
@@ -939,7 +946,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                                     break;
                                 }
                                 try {
-                                    poJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, pnTblDetailRow);
+                                    poJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, pnTblDetailRow, true);
                                     if ("error".equals(poJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                         tfModel.setText("");
@@ -974,6 +981,36 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                                 }
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
                                 loadTableDetailAndSelectedRow();
+                                break;
+                        }
+                        event.consume();
+                        break;
+                    case F4:
+                        switch (txtFieldID) {
+                            case "tfModel":
+                                if (pnTblDetailRow < 0) {
+                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                    clearDetailFields();
+                                    break;
+                                }
+                                try {
+                                    poJSON = poPurchasingController.PurchaseOrder().SearchModel(lsValue, false, pnTblDetailRow, false);
+                                    if ("error".equals(poJSON.get("result"))) {
+                                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                        tfModel.setText("");
+                                        if (poJSON.get("tableRow") != null) {
+                                            pnTblDetailRow = (int) poJSON.get("tableRow");
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                    loadTableDetail();
+                                    loadRecordDetail();
+                                    initDetailFocus();
+                                    selectTheExistedDetailFromMainTable();
+                                } catch (SQLException | GuanzonException | NullPointerException ex) {
+                                    System.err.println("error: " + ex);
+                                }
                                 break;
                         }
                         event.consume();
@@ -1016,46 +1053,57 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
     }
 
     private void setOrderQuantityToDetail(String fsValue) {
-        if (fsValue.isEmpty()) {
-            fsValue = "0";
-        }
-        if (Integer.parseInt(fsValue) < 0) {
-            ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
-            fsValue = "0";
-        }
-        if (tfOrderQuantity.isFocused()) {
-            if (tfBrand.getText().isEmpty()) {
-                ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
-                fsValue = "0";
-            }
-            if (!tfBrand.getText().isEmpty() && tfModel.getText().isEmpty()) {
-                ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
-                fsValue = "0";
-            }
-        }
-        if (pnTblDetailRow < 0) {
-            fsValue = "0";
-            ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-            clearDetailFields();
-            int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
-            pnTblDetailRow = detailCount > 0 ? detailCount - 1 : 0;
-        }
-        int lnRequestQuantity = 0;
         try {
-            lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved()
-                    - (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getIssued());
-            if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty()) {
-                if (Integer.parseInt(tfOrderQuantity.getText()) > lnRequestQuantity) {
-                    ShowMessageFX.Warning("Invalid order quantity entered. The item is from a stock request, and the order quantity must not be greater than the requested quantity.", psFormName, null);
+            if (fsValue.isEmpty()) {
+                fsValue = "0";
+            }
+            if (Integer.parseInt(fsValue) < 0) {
+                ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
+                fsValue = "0";
+            }
+            if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
+                if (tfOrderQuantity.isFocused()) {
+                    if (tfBrand.getText().isEmpty()) {
+                        ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
+                        fsValue = "0";
+                    }
+                    if (!tfBrand.getText().isEmpty() && tfModel.getText().isEmpty()) {
+                        ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
+                        fsValue = "0";
+                    }
+                }
+            } else {
+                if (!tfModel.getText().isEmpty()) {
+                    ShowMessageFX.Warning("Invalid action, Please enter model first. ", psFormName, null);
                     fsValue = "0";
                 }
             }
-        } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            if (pnTblDetailRow < 0) {
+                fsValue = "0";
+                ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                clearDetailFields();
+                int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+                pnTblDetailRow = detailCount > 0 ? detailCount - 1 : 0;
+            }
+            int lnRequestQuantity = 0;
+            try {
+                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved();
+                if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty()) {
+                    if (Integer.parseInt(tfOrderQuantity.getText()) > lnRequestQuantity) {
+                        ShowMessageFX.Warning("Invalid order quantity entered. The item is from a stock request, and the order quantity must not be greater than the requested quantity.", psFormName, null);
+                        fsValue = "0";
+                    }
+                }
+            } catch (GuanzonException | SQLException ex) {
+                Logger.getLogger(PurchaseOrder_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
-        tfOrderQuantity.setText(fsValue);
-        poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Integer.valueOf(fsValue));
+            tfOrderQuantity.setText(fsValue);
+            poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Integer.valueOf(fsValue));
+
+        } catch (GuanzonException | SQLException ex) {
+            Logger.getLogger(PurchaseOrder_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
@@ -1069,43 +1117,76 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
         dpTransactionDate.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 LocalDate selectedLocalDate = dpTransactionDate.getValue();
+                LocalDate transactionDate = new java.sql.Date(poPurchasingController.PurchaseOrder().Master().getTransactionDate().getTime()).toLocalDate();
                 if (selectedLocalDate == null) {
                     return;
                 }
+
                 LocalDate dateNow = LocalDate.now();
                 Date ldLastTransactionDate = poPurchasingController.PurchaseOrder().Master().getTransactionDate();
                 String lsReferNo = tfReferenceNo.getText().trim();
                 boolean approved = true;
-
-                if (selectedLocalDate.isAfter(dateNow)) {
-                    ShowMessageFX.Warning("Invalid to future date.", psFormName, null);
-                    approved = false;
-                }
-                if (selectedLocalDate.isBefore(dateNow) && lsReferNo.isEmpty()) {
-                    ShowMessageFX.Warning("Invalid to backdate. Please enter a reference number first.", psFormName, null);
-                    approved = false;
-                }
-
-                if (selectedLocalDate.isBefore(dateNow) && !lsReferNo.isEmpty()) {
-                    boolean proceed = ShowMessageFX.YesNo(
-                            "You selected a backdate with a reference number.\n\n"
-                            + "If YES, seek approval to proceed with the backdate.\n"
-                            + "If NO, the transaction date will be reset to today.",
-                            "Backdate Confirmation", null
-                    );
-                    if (proceed) {
-                        if (poApp.getUserLevel() <= UserRight.ENCODER) {
-                            poJSON = ShowDialogFX.getUserApproval(poApp);
-                            if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                approved = false;
-                            }
-                        }
-                    } else {
+                if (pnEditMode == EditMode.UPDATE) {
+                    psOldDate = CustomCommonUtil.formatLocalDateToShortString(transactionDate);
+                    if (selectedLocalDate.isAfter(dateNow)) {
+                        ShowMessageFX.Warning("Invalid to future date.", psFormName, null);
                         approved = false;
                     }
-                }
 
+                    if (selectedLocalDate.isBefore(transactionDate) && lsReferNo.isEmpty()) {
+                        ShowMessageFX.Warning("Invalid to backdate. Please enter a reference number first.", psFormName, null);
+                        approved = false;
+                    }
+                    if (selectedLocalDate.isBefore(transactionDate) && !lsReferNo.isEmpty()) {
+                        boolean proceed = ShowMessageFX.YesNo(
+                                "You are changing the transaction date\n"
+                                + "If YES, seek approval to proceed with the changed date.\n"
+                                + "If NO, the transaction date will be remain.",
+                                psFormName, null
+                        );
+                        if (proceed) {
+                            if (poApp.getUserLevel() <= UserRight.ENCODER) {
+                                poJSON = ShowDialogFX.getUserApproval(poApp);
+                                if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    approved = false;
+                                }
+                            }
+                        } else {
+                            approved = false;
+                        }
+                    }
+                }
+                if (pnEditMode == EditMode.ADDNEW) {
+                    if (selectedLocalDate.isAfter(dateNow)) {
+                        ShowMessageFX.Warning("Invalid to future date.", psFormName, null);
+                        approved = false;
+                    }
+                    if (selectedLocalDate.isBefore(dateNow) && lsReferNo.isEmpty()) {
+                        ShowMessageFX.Warning("Invalid to backdate. Please enter a reference number first.", psFormName, null);
+                        approved = false;
+                    }
+
+                    if (selectedLocalDate.isBefore(dateNow) && !lsReferNo.isEmpty()) {
+                        boolean proceed = ShowMessageFX.YesNo(
+                                "You selected a backdate with a reference number.\n\n"
+                                + "If YES, seek approval to proceed with the backdate.\n"
+                                + "If NO, the transaction date will be reset to today.",
+                                "Backdate Confirmation", null
+                        );
+                        if (proceed) {
+                            if (poApp.getUserLevel() <= UserRight.ENCODER) {
+                                poJSON = ShowDialogFX.getUserApproval(poApp);
+                                if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    approved = false;
+                                }
+                            }
+                        } else {
+                            approved = false;
+                        }
+                    }
+                }
                 if (approved) {
                     poPurchasingController.PurchaseOrder().Master().setTransactionDate(
                             SQLUtil.toDate(selectedLocalDate.toString(), SQLUtil.FORMAT_SHORT_DATE));
@@ -1114,7 +1195,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                         dpTransactionDate.setValue(dateNow);
                         poPurchasingController.PurchaseOrder().Master().setTransactionDate(
                                 SQLUtil.toDate(dateNow.toString(), SQLUtil.FORMAT_SHORT_DATE));
-                    } else if (pnEditMode == EditMode.ADDNEW) {
+                    } else if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                                 SQLUtil.dateFormat(ldLastTransactionDate, SQLUtil.FORMAT_SHORT_DATE)));
                         poPurchasingController.PurchaseOrder().Master().setTransactionDate(
@@ -1199,6 +1280,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
         dpTransactionDate.setValue(null);
         dpExpectedDlvrDate.setValue(null);
         taRemarks.setText("");
+        psOldDate = "";
         CustomCommonUtil.setSelected(false, chkbAdvancePayment);
         CustomCommonUtil.setText("", tfTransactionNo,
                 tfDestination, tfReferenceNo, tfTerm);
@@ -1250,43 +1332,50 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
     }
 
     private void initFields(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
-        /*Master Fields */
-        CustomCommonUtil.setDisable(!lbShow,
-                dpTransactionDate, tfDestination, taRemarks,
-                dpExpectedDlvrDate, tfReferenceNo, tfTerm,
-                chkbAdvancePayment);
-
-        CustomCommonUtil.setDisable(true, tfDiscountRate, tfDiscountAmount,
-                tfAdvancePRate, tfAdvancePAmount, tfOrderQuantity, tfBrand, tfModel);
-
-        if (pnTblDetailRow != -1) {
+        try {
+            boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
+            /*Master Fields */
             CustomCommonUtil.setDisable(!lbShow,
-                    tfBrand, tfModel, tfOrderQuantity);
-        }
-        if (!tfReferenceNo.getText().isEmpty()) {
-            dpTransactionDate.setDisable(!lbShow);
-        }
-        if (pnTblDetailRow >= 0 && pnTblDetailRow < poPurchasingController.PurchaseOrder().Detail().size()) {
-            boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty();
-            tfBrand.setDisable(isSourceNotEmpty);
-            tfModel.setDisable(isSourceNotEmpty);
-        }
+                    dpTransactionDate, tfDestination, taRemarks,
+                    dpExpectedDlvrDate, tfReferenceNo, tfTerm,
+                    chkbAdvancePayment);
 
-        if (chkbAdvancePayment.isSelected()) {
-            CustomCommonUtil.setDisable(!lbShow, tfAdvancePRate, tfAdvancePAmount);
-        }
-        if (tblVwStockRequest.getItems().isEmpty()) {
-            pagination.setVisible(false);
-            pagination.setManaged(false);
-        }
-        if (poPurchasingController.PurchaseOrder().Master().getTranTotal().doubleValue() > 0.0) {
-            CustomCommonUtil.setDisable(!lbShow, tfDiscountRate, tfDiscountAmount);
-        }
+            CustomCommonUtil.setDisable(true, tfDiscountRate, tfDiscountAmount,
+                    tfAdvancePRate, tfAdvancePAmount, tfOrderQuantity, tfBrand, tfModel);
 
-        tfSupplier.setDisable(fnEditMode == EditMode.UPDATE);
-        CustomCommonUtil.setVisible(false, piTableDetailLoading, piTableStockRequestLoading, apTableDetailLoading, apTableStockRequestLoading);
-        CustomCommonUtil.setManaged(false, piTableDetailLoading, piTableStockRequestLoading, apTableDetailLoading, apTableStockRequestLoading);
+            if (!tfReferenceNo.getText().isEmpty()) {
+                dpTransactionDate.setDisable(!lbShow);
+            }
+            if (pnTblDetailRow >= 0 && pnTblDetailRow < poPurchasingController.PurchaseOrder().Detail().size()) {
+                if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
+                    if (pnTblDetailRow != -1) {
+                        CustomCommonUtil.setDisable(!lbShow, tfBrand, tfModel);
+                    }
+                    boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty();
+                    tfBrand.setDisable(isSourceNotEmpty);
+                    tfModel.setDisable(isSourceNotEmpty);
+                }
+                if (pnTblDetailRow != -1) {
+                    CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+                }
+            }
+            if (chkbAdvancePayment.isSelected()) {
+                CustomCommonUtil.setDisable(!lbShow, tfAdvancePRate, tfAdvancePAmount);
+            }
+            if (tblVwStockRequest.getItems().isEmpty()) {
+                pagination.setVisible(false);
+                pagination.setManaged(false);
+            }
+            if (poPurchasingController.PurchaseOrder().Master().getTranTotal().doubleValue() > 0.0) {
+                CustomCommonUtil.setDisable(!lbShow, tfDiscountRate, tfDiscountAmount);
+            }
+
+            tfSupplier.setDisable(fnEditMode == EditMode.UPDATE);
+            CustomCommonUtil.setVisible(false, piTableDetailLoading, piTableStockRequestLoading, apTableDetailLoading, apTableStockRequestLoading);
+            CustomCommonUtil.setManaged(false, piTableDetailLoading, piTableStockRequestLoading, apTableDetailLoading, apTableStockRequestLoading);
+        } catch (GuanzonException | SQLException ex) {
+            Logger.getLogger(PurchaseOrder_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void loadTableMain() {
@@ -1505,10 +1594,13 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                         grandTotalAmount += lnTotalAmount;
                         int lnRequestQuantity = 0;
                         String status = "0";
-                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved()
-                                - (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued());
+                        int lnTotalQty = 0;
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved();
+                        lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getCancelled());
                         if (!poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()) {
-                            if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().intValue() > lnRequestQuantity) {
+                            if (lnRequestQuantity != lnTotalQty) {
                                 status = "1";
                             }
                         }
@@ -1799,18 +1891,29 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
     private void initDetailFocus() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (pnTblDetailRow >= 0) {
-                boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty();
-                tfBrand.setDisable(isSourceNotEmpty);
-                tfModel.setDisable(isSourceNotEmpty);
-                if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {
-                    tfOrderQuantity.requestFocus();
-                } else {
-                    if (!tfModel.getText().isEmpty() && (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW)) {
+                try {
+                    boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty();
+                    tfBrand.setDisable(isSourceNotEmpty);
+                    tfModel.setDisable(isSourceNotEmpty);
+                    if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
+                        tfBrand.setDisable(false);
+                        tfModel.setDisable(false);
                         tfOrderQuantity.requestFocus();
                     } else {
-                        tfBrand.requestFocus();
+                        if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {
+                            tfOrderQuantity.requestFocus();
+                        } else {
+                            if (!tfModel.getText().isEmpty() && (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW)) {
+                                tfOrderQuantity.requestFocus();
+                            } else {
+                                tfBrand.requestFocus();
+                            }
+                        }
                     }
+                } catch (GuanzonException | SQLException ex) {
+                    Logger.getLogger(PurchaseOrder_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
+
             }
 
         }

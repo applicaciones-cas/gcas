@@ -49,6 +49,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.F4;
 import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
@@ -96,6 +97,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
     private String psIndustryID = "";
     private String psCompanyID = "";
     private String psCategoryID = "";
+    private String psOldDate = "";
     private TextField activeField;
     @FXML
     private AnchorPane AnchorMaster, AnchorDetails, AnchorMain, apBrowse, apButton;
@@ -476,8 +478,8 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblDetailRow
-                                );
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblDetailRow,
+                                        true);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfBarcode.setText("");
@@ -498,8 +500,8 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblDetailRow
-                                );
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblDetailRow,
+                                        true);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfDescription.setText("");
@@ -521,6 +523,11 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                     break;
                 case "btnSave":
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
+                        return;
+                    }
+                    LocalDate selectedLocalDate = dpTransactionDate.getValue();
+                    if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
+                        ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
                         return;
                     }
                     prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
@@ -859,8 +866,8 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblDetailRow
-                                );
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblDetailRow,
+                                        true);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfBarcode.setText("");
@@ -882,8 +889,8 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblDetailRow
-                                );
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblDetailRow,
+                                        true);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfDescription.setText("");
@@ -918,6 +925,54 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
                                 loadTableDetailAndSelectedRow();
                                 break;
+                        }
+                        event.consume();
+                        break;
+                    case F4:
+                        switch (txtFieldID) {
+                            case "tfBarcode":
+                                if (pnTblDetailRow < 0) {
+                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                    clearDetailFields();
+                                    break;
+                                }
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblDetailRow, false);
+                                if ("error".equals(poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    tfBarcode.setText("");
+                                    if (poJSON.get("tableRow") != null) {
+                                        pnTblDetailRow = (int) poJSON.get("tableRow");
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                loadTableDetail();
+                                loadRecordDetail();
+                                initDetailFocus();
+                                selectTheExistedDetailFromMainTable();
+                                break;
+                            case "tfDescription":
+                                if (pnTblDetailRow < 0) {
+                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                    clearDetailFields();
+                                    break;
+                                }
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblDetailRow, false);
+                                if ("error".equals(poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    tfDescription.setText("");
+                                    if (poJSON.get("tableRow") != null) {
+                                        pnTblDetailRow = (int) poJSON.get("tableRow");
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                loadTableDetail();
+                                loadRecordDetail();
+                                initDetailFocus();
+                                selectTheExistedDetailFromMainTable();
+                                break;
+
                         }
                         event.consume();
                         break;
@@ -982,8 +1037,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
         }
         int lnRequestQuantity = 0;
         try {
-            lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved()
-                    - (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getIssued());
+            lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved();
             if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty()) {
                 if (Integer.parseInt(tfOrderQuantity.getText()) > lnRequestQuantity) {
                     ShowMessageFX.Warning("Invalid order quantity entered. The item is from a stock request, and the order quantity must not be greater than the requested quantity.", psFormName, null);
@@ -1007,43 +1061,76 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
         dpTransactionDate.setOnAction(e -> {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 LocalDate selectedLocalDate = dpTransactionDate.getValue();
+                LocalDate transactionDate = new java.sql.Date(poPurchasingController.PurchaseOrder().Master().getTransactionDate().getTime()).toLocalDate();
                 if (selectedLocalDate == null) {
                     return;
                 }
+
                 LocalDate dateNow = LocalDate.now();
                 Date ldLastTransactionDate = poPurchasingController.PurchaseOrder().Master().getTransactionDate();
                 String lsReferNo = tfReferenceNo.getText().trim();
                 boolean approved = true;
-
-                if (selectedLocalDate.isAfter(dateNow)) {
-                    ShowMessageFX.Warning("Invalid to future date.", psFormName, null);
-                    approved = false;
-                }
-                if (selectedLocalDate.isBefore(dateNow) && lsReferNo.isEmpty()) {
-                    ShowMessageFX.Warning("Invalid to backdate. Please enter a reference number first.", psFormName, null);
-                    approved = false;
-                }
-
-                if (selectedLocalDate.isBefore(dateNow) && !lsReferNo.isEmpty()) {
-                    boolean proceed = ShowMessageFX.YesNo(
-                            "You selected a backdate with a reference number.\n\n"
-                            + "If YES, seek approval to proceed with the backdate.\n"
-                            + "If NO, the transaction date will be reset to today.",
-                            "Backdate Confirmation", null
-                    );
-                    if (proceed) {
-                        if (poApp.getUserLevel() <= UserRight.ENCODER) {
-                            poJSON = ShowDialogFX.getUserApproval(poApp);
-                            if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                approved = false;
-                            }
-                        }
-                    } else {
+                if (pnEditMode == EditMode.UPDATE) {
+                    psOldDate = CustomCommonUtil.formatLocalDateToShortString(transactionDate);
+                    if (selectedLocalDate.isAfter(dateNow)) {
+                        ShowMessageFX.Warning("Invalid to future date.", psFormName, null);
                         approved = false;
                     }
-                }
 
+                    if (selectedLocalDate.isBefore(transactionDate) && lsReferNo.isEmpty()) {
+                        ShowMessageFX.Warning("Invalid to backdate. Please enter a reference number first.", psFormName, null);
+                        approved = false;
+                    }
+                    if (selectedLocalDate.isBefore(transactionDate) && !lsReferNo.isEmpty()) {
+                        boolean proceed = ShowMessageFX.YesNo(
+                                "You are changing the transaction date\n"
+                                + "If YES, seek approval to proceed with the changed date.\n"
+                                + "If NO, the transaction date will be remain.",
+                                psFormName, null
+                        );
+                        if (proceed) {
+                            if (poApp.getUserLevel() <= UserRight.ENCODER) {
+                                poJSON = ShowDialogFX.getUserApproval(poApp);
+                                if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    approved = false;
+                                }
+                            }
+                        } else {
+                            approved = false;
+                        }
+                    }
+                }
+                if (pnEditMode == EditMode.ADDNEW) {
+                    if (selectedLocalDate.isAfter(dateNow)) {
+                        ShowMessageFX.Warning("Invalid to future date.", psFormName, null);
+                        approved = false;
+                    }
+                    if (selectedLocalDate.isBefore(dateNow) && lsReferNo.isEmpty()) {
+                        ShowMessageFX.Warning("Invalid to backdate. Please enter a reference number first.", psFormName, null);
+                        approved = false;
+                    }
+
+                    if (selectedLocalDate.isBefore(dateNow) && !lsReferNo.isEmpty()) {
+                        boolean proceed = ShowMessageFX.YesNo(
+                                "You selected a backdate with a reference number.\n\n"
+                                + "If YES, seek approval to proceed with the backdate.\n"
+                                + "If NO, the transaction date will be reset to today.",
+                                "Backdate Confirmation", null
+                        );
+                        if (proceed) {
+                            if (poApp.getUserLevel() <= UserRight.ENCODER) {
+                                poJSON = ShowDialogFX.getUserApproval(poApp);
+                                if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    approved = false;
+                                }
+                            }
+                        } else {
+                            approved = false;
+                        }
+                    }
+                }
                 if (approved) {
                     poPurchasingController.PurchaseOrder().Master().setTransactionDate(
                             SQLUtil.toDate(selectedLocalDate.toString(), SQLUtil.FORMAT_SHORT_DATE));
@@ -1052,7 +1139,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                         dpTransactionDate.setValue(dateNow);
                         poPurchasingController.PurchaseOrder().Master().setTransactionDate(
                                 SQLUtil.toDate(dateNow.toString(), SQLUtil.FORMAT_SHORT_DATE));
-                    } else if (pnEditMode == EditMode.ADDNEW) {
+                    } else if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                                 SQLUtil.dateFormat(ldLastTransactionDate, SQLUtil.FORMAT_SHORT_DATE)));
                         poPurchasingController.PurchaseOrder().Master().setTransactionDate(
@@ -1136,6 +1223,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
         dpTransactionDate.setValue(null);
         dpExpectedDlvrDate.setValue(null);
         taRemarks.setText("");
+        psOldDate = "";
         CustomCommonUtil.setSelected(false, chkbAdvancePayment);
         CustomCommonUtil.setText("", tfTransactionNo,
                 tfDestination, tfReferenceNo, tfTerm);
@@ -1199,17 +1287,25 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
         CustomCommonUtil.setDisable(true, tfDiscountRate, tfDiscountAmount,
                 tfAdvancePRate, tfAdvancePAmount, tfOrderQuantity, tfBarcode, tfDescription);
 
-        if (pnTblDetailRow != -1) {
-            CustomCommonUtil.setDisable(!lbShow, tfBarcode, tfDescription, tfOrderQuantity);
-        }
-
         if (!tfReferenceNo.getText().isEmpty()) {
             dpTransactionDate.setDisable(!lbShow);
         }
         if (pnTblDetailRow >= 0 && pnTblDetailRow < poPurchasingController.PurchaseOrder().Detail().size()) {
-            boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty();
-            tfBarcode.setDisable(isSourceNotEmpty);
-            tfDescription.setDisable(isSourceNotEmpty);
+            try {
+                if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
+                    if (pnTblDetailRow != -1) {
+                        CustomCommonUtil.setDisable(!lbShow, tfBarcode, tfDescription);
+                    }
+                    boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty();
+                    tfBarcode.setDisable(isSourceNotEmpty);
+                    tfDescription.setDisable(isSourceNotEmpty);
+                }
+                if (pnTblDetailRow != -1) {
+                    CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+                }
+            } catch (GuanzonException | SQLException ex) {
+                Logger.getLogger(PurchaseOrder_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         if (chkbAdvancePayment.isSelected()) {
             CustomCommonUtil.setDisable(!lbShow, tfAdvancePRate, tfAdvancePAmount);
@@ -1443,10 +1539,13 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                         grandTotalAmount += lnTotalAmount;
                         int lnRequestQuantity = 0;
                         String status = "0";
-                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved()
-                                - (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued());
+                        int lnTotalQty = 0;
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved();
+                        lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getCancelled());
                         if (!poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()) {
-                            if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().intValue() > lnRequestQuantity) {
+                            if (lnRequestQuantity != lnTotalQty) {
                                 status = "1";
                             }
                         }
@@ -1734,17 +1833,26 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
     private void initDetailFocus() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (pnTblDetailRow >= 0) {
-                boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty();
-                tfBarcode.setDisable(isSourceNotEmpty);
-                tfDescription.setDisable(isSourceNotEmpty);
-                if (isSourceNotEmpty && !tfBarcode.getText().isEmpty()) {
-                    tfOrderQuantity.requestFocus();
-                } else {
-                    if (!tfBarcode.getText().isEmpty() && (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW)) {
+                try {
+                    boolean isSourceNotEmpty = !poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty();
+                    tfBarcode.setDisable(isSourceNotEmpty);
+                    tfDescription.setDisable(isSourceNotEmpty);
+                    if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
+                        tfBarcode.setDisable(false);
+                        tfDescription.setDisable(false);
+                        tfOrderQuantity.requestFocus();
+                    }
+                    if (isSourceNotEmpty && !tfBarcode.getText().isEmpty()) {
                         tfOrderQuantity.requestFocus();
                     } else {
-                        tfBarcode.requestFocus();
+                        if (!tfBarcode.getText().isEmpty() && (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW)) {
+                            tfOrderQuantity.requestFocus();
+                        } else {
+                            tfBarcode.requestFocus();
+                        }
                     }
+                } catch (GuanzonException | SQLException ex) {
+                    Logger.getLogger(PurchaseOrder_EntrySPMCController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
