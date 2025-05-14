@@ -523,7 +523,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                     }
                     for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
                         double lnAmount = poGLControllers.PaymentRequest().Detail(lnCntr).getAmount().doubleValue();
-                        String lsParticular = (String) poGLControllers.PaymentRequest().Detail(lnCntr).Recurring().Particular().getDescription();
+                        String lsParticular = (String) poGLControllers.PaymentRequest().Detail(lnCntr).Particular().getDescription();
                         if (detailCount == 1) {
                             if (lsParticular == null || lsParticular.trim().isEmpty() || lnAmount <= 0.0) {
                                 ShowMessageFX.Warning("Invalid item in payment request detail. Ensure all items have a valid Particular and Amount greater than 0.00", psFormName, null);

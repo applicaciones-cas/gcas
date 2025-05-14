@@ -306,8 +306,8 @@ public class PaymentRequest_HistoryController implements Initializable, ScreenIn
         if (pnTblDetailRow >= 0) {
             try {
                 String lsParticular = "";
-                if (poGLControllers.PaymentRequest().Detail(pnTblDetailRow).Recurring().Particular().getDescription() != null) {
-                    lsParticular = poGLControllers.PaymentRequest().Detail(pnTblDetailRow).Recurring().Particular().getDescription();
+                if (poGLControllers.PaymentRequest().Detail(pnTblDetailRow).Particular().getDescription() != null) {
+                    lsParticular = poGLControllers.PaymentRequest().Detail(pnTblDetailRow).Particular().getDescription();
                 }
                 tfParticular.setText(lsParticular);
 
@@ -942,7 +942,7 @@ public class PaymentRequest_HistoryController implements Initializable, ScreenIn
                         detailsList.add(new ModelTableDetail(
                                 String.valueOf(lnCtr + 1),
                                 poGLControllers.PaymentRequest().Detail(lnCtr).getParticularID(),
-                                poGLControllers.PaymentRequest().Detail(lnCtr).Recurring().Particular().getDescription(),
+                                poGLControllers.PaymentRequest().Detail(lnCtr).Particular().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getDiscount().doubleValue()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAddDiscount().doubleValue()),
