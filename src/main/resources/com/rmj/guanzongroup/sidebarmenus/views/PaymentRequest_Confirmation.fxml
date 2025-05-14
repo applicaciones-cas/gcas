@@ -61,7 +61,7 @@
                                                     </font>
                                                 </Label>
                                                 <TextField fx:id="tfSearchPayee" maxHeight="25.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" promptText="Press F3: Search" GridPane.columnIndex="6" />
-                                                <Label text="Transaction No">
+                                                <Label text="Reference No.">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
@@ -472,9 +472,9 @@
                                                         <TableView fx:id="tblVwPaymentRequest" minWidth="242.0" GridPane.rowIndex="1">
                                                             <columns>
                                                                 <TableColumn fx:id="tblRowNo" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="No." />
-                                                                <TableColumn fx:id="tblTransactionNo" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Transaction No" />
                                                                 <TableColumn fx:id="tblBranch" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Branch" />
                                                                 <TableColumn fx:id="tblPayee" maxWidth="236.0" minWidth="236.0" prefWidth="236.0" resizable="false" sortable="false" text="Payee" />
+                                                                <TableColumn fx:id="tblTransactionNo" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Refer No." />
                                                             </columns>
                                                             <GridPane.margin>
                                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
