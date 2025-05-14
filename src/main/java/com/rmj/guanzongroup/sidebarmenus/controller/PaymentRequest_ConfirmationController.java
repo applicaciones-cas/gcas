@@ -376,6 +376,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
     }
 
     private void handleButtonAction(ActionEvent event) {
+        poJSON = new JSONObject();
         try {
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
@@ -488,23 +489,28 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                     }
                     break;
                 case "btnConfirm":
-                    poJSON = poGLControllers.PaymentRequest().ConfirmTransaction("Confirmed");
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        break;
+                    poJSON = new JSONObject();
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?")) {
+                        poJSON = poGLControllers.PaymentRequest().ConfirmTransaction("Confirmed");
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        clearMasterFields();
+                        clearDetailFields();
+                        CustomCommonUtil.switchToTab(tabDetails, ImTabPane);
+                        detail_data.clear();
+                        attachment_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
+                        pnTblDetailRow = -1;
+                        //this code below use to highlight tblpurchase
+                        tblVwPaymentRequest.refresh();
+                        main_data.get(pnTblMainRow).setIndex05(PaymentRequestStatus.CONFIRMED);
+                        pagination.toBack();
+                    } else {
+                        return;
                     }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    clearMasterFields();
-                    clearDetailFields();
-                    CustomCommonUtil.switchToTab(tabDetails, ImTabPane);
-                    detail_data.clear();
-                    attachment_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
-                    pnTblDetailRow = -1;
-                    //this code below use to highlight tblpurchase
-                    tblVwPaymentRequest.refresh();
-                    main_data.get(pnTblMainRow).setIndex05(PaymentRequestStatus.CONFIRMED);
-                    pagination.toBack();
                     break;
                 case "btnRetrieve":
                     loadTableMain();
@@ -587,35 +593,42 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                     slideImage(1);
                     break;
                 case "btnReturn":
-                    poJSON = poGLControllers.PaymentRequest().ReturnTransaction("Returned");
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        break;
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
+                        poJSON = poGLControllers.PaymentRequest().ReturnTransaction("Returned");
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        clearMasterFields();
+                        clearDetailFields();
+                        detail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
+                        tblVwPaymentRequest.refresh();
+                        main_data.get(pnTblMainRow).setIndex05(PaymentRequestStatus.RETURNED);
+                    } else {
+                        return;
                     }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    clearMasterFields();
-                    clearDetailFields();
-                    detail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
-
-                    tblVwPaymentRequest.refresh();
-                    main_data.get(pnTblMainRow).setIndex05(PaymentRequestStatus.RETURNED);
                     break;
                 case "btnVoid":
-                    poJSON = poGLControllers.PaymentRequest().VoidTransaction("Voided");
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                        break;
-                    }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    clearMasterFields();
-                    clearDetailFields();
-                    detail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
+                        poJSON = poGLControllers.PaymentRequest().VoidTransaction("Voided");
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        clearMasterFields();
+                        clearDetailFields();
+                        detail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
 
-                    //this code below use to highlight tblpurchase
-                    tblVwPaymentRequest.refresh();
-                    main_data.get(pnTblMainRow).setIndex05(PaymentRequestStatus.VOID);
+                        //this code below use to highlight tblpurchase
+                        tblVwPaymentRequest.refresh();
+                        main_data.get(pnTblMainRow).setIndex05(PaymentRequestStatus.VOID);
+                    } else {
+                        return;
+                    }
                     break;
                 default:
                     ShowMessageFX.Warning("Please contact admin to assist about no button available", psFormName, null);
