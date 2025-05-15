@@ -301,6 +301,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         }
                         break;
                     case "btnSerials":
+                        if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Selected item is not serialize.");
+                            return;
+                        }
                         showSerialDialog();
                         return;
                     case "btnUpdate":
