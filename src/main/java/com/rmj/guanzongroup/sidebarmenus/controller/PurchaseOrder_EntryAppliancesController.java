@@ -1432,7 +1432,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
         CustomCommonUtil.setText("", tfTransactionNo,
                 tfDestination, tfReferenceNo, tfTerm);
         CustomCommonUtil.setText("0.00", tfTotalAmount, tfAdvancePAmount, tfAdvancePRate,
-                tfDiscountAmount, tfDiscountRate);
+                tfDiscountAmount, tfDiscountRate, tfNetAmount);
     }
 
     private void clearDetailFields() {

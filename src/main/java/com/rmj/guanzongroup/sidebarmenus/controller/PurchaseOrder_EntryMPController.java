@@ -1431,7 +1431,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
         CustomCommonUtil.setText("", tfTransactionNo,
                 tfDestination, tfReferenceNo, tfTerm);
         CustomCommonUtil.setText("0.00", tfTotalAmount, tfAdvancePAmount, tfAdvancePRate,
-                tfDiscountAmount, tfDiscountRate);
+                tfDiscountAmount, tfDiscountRate, tfNetAmount);
     }
 
     private void clearDetailFields() {

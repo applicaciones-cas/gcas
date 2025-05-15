@@ -1232,7 +1232,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
         CustomCommonUtil.setText("", tfTransactionNo,
                 tfDestination, tfReferenceNo, tfTerm);
         CustomCommonUtil.setText("0.00", tfTotalAmount, tfAdvancePAmount, tfAdvancePRate,
-                tfDiscountAmount, tfDiscountRate, tfNetAmount);
+                tfDiscountAmount, tfDiscountRate, tfNetAmount, tfNetAmount);
     }
 
     private void clearDetailFields() {
