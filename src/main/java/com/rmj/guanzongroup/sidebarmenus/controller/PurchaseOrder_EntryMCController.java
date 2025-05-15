@@ -1709,17 +1709,23 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {
                         if (newValue.isEmpty()) {
-                            if (!isExchangingSupplier()) {
-                                return;
+                            try {
+                                if (!isExchangingSupplier()) {
+                                    return;
+                                }
+                                poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                                poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                                poPurchasingController.PurchaseOrder().Master().setContactID("");
+                                tfSupplier.setText("");
+                                prevSupplier = "";
+                                tblVwStockRequest.getItems().clear();
+                                poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
+                                tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
+                                main_data.clear();
+                                tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                            } catch (GuanzonException | SQLException ex) {
+                                Logger.getLogger(PurchaseOrder_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            poPurchasingController.PurchaseOrder().Master().setSupplierID("");
-                            poPurchasingController.PurchaseOrder().Master().setAddressID("");
-                            poPurchasingController.PurchaseOrder().Master().setContactID("");
-                            tfSupplier.setText("");
-                            prevSupplier = "";
-                            tblVwStockRequest.getItems().clear();
-                            main_data.clear();
-                            tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
                         }
                     }
                 }

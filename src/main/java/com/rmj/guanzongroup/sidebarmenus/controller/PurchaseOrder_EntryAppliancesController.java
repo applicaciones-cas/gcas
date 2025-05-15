@@ -1867,6 +1867,8 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                             tfSupplier.setText("");
                             prevSupplier = "";
                             tblVwStockRequest.getItems().clear();
+                            poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
+                            tfTerm.setText(poPurchasingController.PurchaseOrder().Master().getTermCode());
                             main_data.clear();
                             tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
                         }
@@ -1900,6 +1902,8 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                     pnTblDetailRow = -1;
                     pnTblMainRow = -1;
                     tblVwStockRequest.getSelectionModel().clearSelection();
+                    poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
+                    tfTerm.setText(poPurchasingController.PurchaseOrder().Master().getTermCode());
                     clearDetailFields();
                     loadTableDetail();
                 } else {
@@ -1911,6 +1915,8 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                             return false;
                         }
                         tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
+                        poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
+                        tfTerm.setText(poPurchasingController.PurchaseOrder().Master().getTermCode());
                         selectTheExistedDetailFromMainTable();
                         return false;
 
