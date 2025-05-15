@@ -293,19 +293,19 @@ public class DashboardController implements Initializable {
 
                 /*Purchase Order*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Entry.fxml":
-                    psIndustryID = "00";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Confirmation.fxml":
-                    psIndustryID = "00";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order Confirmation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_Approval.fxml":
-                    psIndustryID = "00";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order Approval";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrder_History.fxml":
-                    psIndustryID = "00";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order History";
 
@@ -465,19 +465,19 @@ public class DashboardController implements Initializable {
                 /*PURCHASE ORDER RECEIVING*/
                 //General
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Entry.fxml":
-                    psIndustryID = "06";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order Receiving Entry";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Confirmation.fxml":
-                    psIndustryID = "06";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order Receiving Confirmation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml":
-                    psIndustryID = "06";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order Receiving Approval";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_History.fxml":
-                    psIndustryID = "06";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order Receiving History";
 
@@ -642,15 +642,15 @@ public class DashboardController implements Initializable {
                 /*PURCHASE ORDER RETURN*/
                 //General
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Entry.fxml":
-//                    psIndustryID = "06";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order Return Entry";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Confirmation.fxml":
-//                    psIndustryID = "06";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order Return Confirmation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_History.fxml":
-//                    psIndustryID = "06";
+                    psIndustryID = "";
                     psCategoryID = "0007";
                     return "Purchase Order Return History";
 
@@ -1678,7 +1678,7 @@ public class DashboardController implements Initializable {
         if (tabpane.getTabs().isEmpty()) {
             tabpane = new TabPane();
         }
-        psIndustryID = psUserIndustryId;
+//        psIndustryID = psUserIndustryId;
         psCompanyID = psUserCompanyId;
 
         setTabPane();
