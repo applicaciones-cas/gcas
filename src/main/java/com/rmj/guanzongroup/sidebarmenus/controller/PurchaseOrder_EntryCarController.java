@@ -586,9 +586,13 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     }
 
                     LocalDate selectedLocalDate = dpTransactionDate.getValue();
-                    if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
-                        ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
-                        return;
+                    if (pnEditMode == EditMode.UPDATE) {
+                        if (!psOldDate.isEmpty()) {
+                            if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
+                                ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
+                                return;
+                            }
+                        }
                     }
                     prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                     // Validate Detail Count Before Backend Processing

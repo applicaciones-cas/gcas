@@ -638,9 +638,13 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                         return;
                     }
                     LocalDate selectedLocalDate = dpTransactionDate.getValue();
-                    if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
-                        ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
-                        return;
+                    if (pnEditMode == EditMode.UPDATE) {
+                        if (!psOldDate.isEmpty()) {
+                            if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
+                                ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
+                                return;
+                            }
+                        }
                     }
                     prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
 
@@ -1773,18 +1777,22 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                         tblVwOrderDetails.setItems(detail_data);
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             if (totalAmountFinal <= 0.0) {
-                                tfDiscountRate.setText("0.00");
+                                tfAdvancePAmount.setText("0.00");
                                 tfAdvancePRate.setText("0.00");
                                 tfDiscountAmount.setText("0.00");
-                                tfDiscountAmount.setText("0.00");
+                                tfDiscountRate.setText("0.00");
                                 poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(0.0);
                                 poPurchasingController.PurchaseOrder().Master().setDiscount(0.0);
                                 poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.0);
                                 poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(0.0);
                             }
                             poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
+                            poJSON = poPurchasingController.PurchaseOrder().setDiscountRate(poPurchasingController.PurchaseOrder().Master().getDiscount().toString());
+                            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount()));
+                            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
                             poPurchasingController.PurchaseOrder().computeNetTotal();
-                            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
+                            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal()));
+                            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
                         }
                         reselectLastDetailRow();
                         initFields(pnEditMode);
@@ -1793,7 +1801,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                     return detailsList;
 
                 } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(PurchaseOrder_EntryMPController.class
+                    Logger.getLogger(PurchaseOrder_EntryCarController.class
                             .getName()).log(Level.SEVERE, null, ex);
                     return null;
                 }

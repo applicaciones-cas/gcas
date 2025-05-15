@@ -526,9 +526,13 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                         return;
                     }
                     LocalDate selectedLocalDate = dpTransactionDate.getValue();
-                    if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
-                        ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
-                        return;
+                    if (pnEditMode == EditMode.UPDATE) {
+                        if (!psOldDate.isEmpty()) {
+                            if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
+                                ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
+                                return;
+                            }
+                        }
                     }
                     prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
 
@@ -1586,6 +1590,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
                             poPurchasingController.PurchaseOrder().computeNetTotal();
                             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalAmountFinal));
+                            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
                         }
                         reselectLastDetailRow();
                         initFields(pnEditMode);

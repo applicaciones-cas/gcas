@@ -165,7 +165,8 @@ public class PurchaseOrder_HistoryController implements Initializable, ScreenInt
 
     private void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
+//            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
+            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }

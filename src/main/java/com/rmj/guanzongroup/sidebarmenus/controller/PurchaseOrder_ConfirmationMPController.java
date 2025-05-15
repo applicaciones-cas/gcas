@@ -401,6 +401,10 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                             break;
                         }
                         ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        if (!"success".equals((poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo())).get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            return;
+                        }
                         if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
                             poJSON = poPurchasingController.PurchaseOrder().printTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
@@ -425,9 +429,11 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                         return;
                     }
                     LocalDate selectedLocalDate = dpTransactionDate.getValue();
-                    if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
-                        ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
-                        return;
+                    if (!psOldDate.isEmpty()) {
+                        if (!CustomCommonUtil.formatLocalDateToShortString(selectedLocalDate).equals(psOldDate) && tfReferenceNo.getText().isEmpty()) {
+                            ShowMessageFX.Warning("A reference number is required for backdated transactions.", psFormName, null);
+                            return;
+                        }
                     }
                     pnTblDetailRow = -1;
                     if (pnEditMode == EditMode.UPDATE) {
