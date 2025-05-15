@@ -1123,12 +1123,6 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             poJSON.put("message", "Future dates are not allowed.");
                             break;
                         } else {
-                            LocalDate oneYearFromNow = LocalDate.now().plusYears(1);
-                            if (selectedDate.isAfter(oneYearFromNow)) {
-                                poJSON.put("result", "error");
-                                poJSON.put("message", "Transaction date cannot be later than a year");
-                                break;
-                            }
                             poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
                         }
                         break;
@@ -1140,12 +1134,6 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
                         } else {
-                            LocalDate oneYearFromNow = LocalDate.now().plusYears(1);
-                            if (selectedDate.isAfter(oneYearFromNow)) {
-                                poJSON.put("result", "error");
-                                poJSON.put("message", "Transaction date cannot be later than a year");
-                                break;
-                            }
                             poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
                         break;
