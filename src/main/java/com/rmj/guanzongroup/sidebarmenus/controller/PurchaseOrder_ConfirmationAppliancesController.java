@@ -1218,6 +1218,26 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
                 }
             }
         });
+        tblVwOrderDetails.setRowFactory(tv -> new TableRow<ModelPurchaseOrderDetail>() {
+            @Override
+            protected void updateItem(ModelPurchaseOrderDetail item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (item == null || empty) {
+                    setStyle("");
+                } else {
+                    String status = item.getIndex10(); // Replace with actual getter
+                    switch (status) {
+                        case "1":
+                            setStyle("-fx-background-color: #FAA0A0;");
+                            break;
+                        default:
+                            setStyle("");
+                    }
+                    tblVwOrderDetails.refresh();
+                }
+            }
+        });
     }
 
     private void loadTableDetail() {

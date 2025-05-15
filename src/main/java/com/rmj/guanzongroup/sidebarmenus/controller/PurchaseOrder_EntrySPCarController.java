@@ -1503,7 +1503,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                     String status = item.getIndex10(); // Replace with actual getter
                     switch (status) {
                         case "1":
-                            setStyle("-fx-background-color: #f44336;");
+                            setStyle("-fx-background-color: #FAA0A0;");
                             break;
                         default:
                             setStyle("");
