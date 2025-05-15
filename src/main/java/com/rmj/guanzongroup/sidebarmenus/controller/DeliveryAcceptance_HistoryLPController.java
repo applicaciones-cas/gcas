@@ -93,7 +93,7 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchasing Order Receiving History LP";
+    private final String pxeModuleName = "Purchase Order Receiving History LP";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
 

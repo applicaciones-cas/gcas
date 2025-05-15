@@ -100,6 +100,7 @@ import javafx.scene.Node;
 import javafx.animation.PauseTransition;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
+import javafx.util.Pair;
 
 /**
  * FXML Controller class
@@ -130,6 +131,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
     Map<String, String> imageinfo_temp = new HashMap<>();
+    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
+    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
     private double mouseAnchorX;
     private double mouseAnchorY;
     private double scaleFactor = 1.0;
@@ -369,6 +372,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         }
                         retrievePOR();
                         disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                        showRetainedHighlight(false);
                         break;
                     case "btnSave":
                         //Validator
@@ -429,7 +433,8 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
+                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
+                                showRetainedHighlight(true);
                             }
                         } else {
                             return;
@@ -1254,6 +1259,25 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         }
     }
 
+    public void showRetainedHighlight(boolean isRetained) {
+        if (isRetained) {
+            for (Pair<String, String> pair : plOrderNoPartial) {
+                if (!"0".equals(pair.getValue())) {
+
+                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
+                }
+            }
+        }
+        disableAllHighlightByColor(tblViewPuchaseOrder, "#C1E1C1", highlightedRowsMain);
+        plOrderNoPartial.clear();
+        for (Pair<String, String> pair : plOrderNoFinal) {
+            if (!"0".equals(pair.getValue())) {
+                highlight(tblViewPuchaseOrder, Integer.parseInt(pair.getKey()), "#C1E1C1", highlightedRowsMain);
+            }
+        }
+        plOrderNoFinal.clear();
+    }
+
     public void loadTableMain() {
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -1276,6 +1300,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
+                    plOrderNoFinal.clear();
                     String lsMainDate = "";
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
 
@@ -1303,9 +1328,11 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     }
                     int numm = 0;
                     if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
+
                         //pending
                         //retreiving using column index
                         for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingCount() - 1; lnCtr++) {
+
                             try {
                                 main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
                                         String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).Supplier().getCompanyName()),
@@ -1318,8 +1345,13 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             } catch (GuanzonException ex) {
                                 Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
-
+                            
+                            if (poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.CONFIRMED)) {
+                                plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
+                            }
                         }
+                        showRetainedHighlight(true);
+
                         if (pnMain < 0 || pnMain
                                 >= main_data.size()) {
                             if (!main_data.isEmpty()) {

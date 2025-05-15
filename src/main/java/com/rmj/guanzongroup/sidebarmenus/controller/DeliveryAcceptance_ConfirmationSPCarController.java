@@ -95,6 +95,7 @@ import javafx.animation.PauseTransition;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
+import javafx.util.Pair;
 
 /**
  * FXML Controller class
@@ -124,6 +125,8 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
     Map<String, String> imageinfo_temp = new HashMap<>();
+    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
+    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
     private double mouseAnchorX;
     private double mouseAnchorY;
@@ -351,6 +354,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                         }
                         retrievePOR();
                         disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
+                        showRetainedHighlight(false);
                         break;
                     case "btnSave":
                         //Validator
@@ -411,7 +415,8 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
+                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
+                                showRetainedHighlight(true);
                             }
                         } else {
                             return;
@@ -1150,6 +1155,23 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         }
     }
 
+    public void showRetainedHighlight(boolean isRetained) {
+        if (isRetained) {
+            for (Pair<String, String> pair : plOrderNoPartial) {
+                if (!"0".equals(pair.getValue())) {
+                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
+                }
+            }
+        }
+        disableAllHighlightByColor(tblViewPuchaseOrder, "#C1E1C1", highlightedRowsMain);
+        plOrderNoPartial.clear();
+        for (Pair<String, String> pair : plOrderNoFinal) {
+            if (!"0".equals(pair.getValue())) {
+                highlight(tblViewPuchaseOrder, Integer.parseInt(pair.getKey()), "#C1E1C1", highlightedRowsMain);
+            }
+        }
+    }
+
     public void loadTableMain() {
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -1172,6 +1194,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
+                    plOrderNoFinal.clear();
                     String lsMainDate = "";
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
 
@@ -1214,7 +1237,11 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                                 Logger.getLogger(DeliveryAcceptance_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
 
+                            if (poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.CONFIRMED)) {
+                                plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
+                            }
                         }
+                        showRetainedHighlight(true);
                     }
 
                     if (pnMain < 0 || pnMain
@@ -1240,6 +1267,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
             }
 
             @Override
+
             protected void succeeded() {
                 placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
                 if (main_data == null || main_data.isEmpty()) {
