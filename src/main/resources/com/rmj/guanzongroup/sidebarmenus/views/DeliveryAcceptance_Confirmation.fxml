@@ -452,7 +452,7 @@
                                                                 <TableColumn fx:id="tblCostDetail" editable="false" maxWidth="80.0" minWidth="80.0" prefWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
                                                                 <TableColumn fx:id="tblOrderQuantityDetail" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Order" />
                                                                 <TableColumn fx:id="tblReceiveQuantityDetail" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Received" />
-                                                                <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="119.0" minWidth="-1.0" prefWidth="119.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
+                                                                <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="127.0" minWidth="-1.0" prefWidth="127.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
                                                             </columns>
                                              <columnResizePolicy>
                                              </columnResizePolicy>

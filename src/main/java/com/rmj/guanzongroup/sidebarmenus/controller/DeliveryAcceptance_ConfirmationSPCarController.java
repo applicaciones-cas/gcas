@@ -859,6 +859,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                                 mainSearchListener = null; // Clear reference to avoid memory leaks
                                 initDetailsGrid();
                                 initMainGrid();
+                                goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                             }
                             break;
                     }
@@ -963,7 +964,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                             break;
                     }
                     break;
-                
+
                 case F4:
                     switch (lsID) {
                         case "tfBarcode":
@@ -1126,8 +1127,10 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         pgPagination.setPageCount(totalPage);
         pgPagination.setCurrentPageIndex(0);
         changeTableView(0, ROWS_PER_PAGE);
-        pgPagination.currentPageIndexProperty().addListener(
-                (observable, oldValue, newValue) -> changeTableView(newValue.intValue(), ROWS_PER_PAGE));
+        pgPagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
+            changeTableView(newValue.intValue(), ROWS_PER_PAGE);
+            tblViewPuchaseOrder.scrollTo(0);
+        });
     }
 
     private void changeTableView(int index, int limit) {
@@ -1135,16 +1138,16 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         int fromIndex = index * limit;
         int toIndex = Math.min(fromIndex + limit, main_data.size());
         int minIndex = Math.min(toIndex, main_data.size());
-        SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(
-                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
-        sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
+        try {
+            SortedList<ModelDeliveryAcceptance_Main> sortedData = new SortedList<>(
+                    FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+            sortedData.comparatorProperty().bind(tblViewPuchaseOrder.comparatorProperty());
+        } catch (Exception e) {
+        }
         try {
             tblViewPuchaseOrder.setItems(FXCollections.observableArrayList(filteredData.subList(fromIndex, toIndex)));
         } catch (Exception e) {
-
         }
-
-        tblViewPuchaseOrder.scrollTo(0);
     }
 
     public void loadTableMain() {
@@ -1518,6 +1521,41 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         return textFields;
     }
 
+    private void goToPageBasedOnSelectedRow(String pnRowMain) {
+        if (mainSearchListener != null) {
+            tfOrderNo.textProperty().removeListener(mainSearchListener);
+            mainSearchListener = null;
+        }
+        if (detailSearchListener != null) {
+            tfOrderNo.textProperty().removeListener(detailSearchListener);
+            detailSearchListener = null;
+        }
+        filteredDataDetail.setPredicate(null);
+        filteredData.setPredicate(null);
+        lbresetpredicate = false;
+        int realIndex = Integer.parseInt(pnRowMain);
+
+        if (realIndex == -1) {
+            return; // Not found
+        }
+        int targetPage = realIndex / ROWS_PER_PAGE;
+        int indexInPage = realIndex % ROWS_PER_PAGE;
+
+        initMainGrid();
+        initDetailsGrid();
+        int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
+        pgPagination.setPageCount(totalPage);
+        pgPagination.setCurrentPageIndex(targetPage);
+        changeTableView(targetPage, ROWS_PER_PAGE);
+
+        Platform.runLater(() -> {
+            if (lbresetpredicate) {
+                tblViewPuchaseOrder.scrollTo(indexInPage);
+                lbresetpredicate = false;
+            }
+        });
+    }
+
     public void loadTableDetailFromMain() {
         try {
             poJSON = new JSONObject();
@@ -1534,6 +1572,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
+                goToPageBasedOnSelectedRow(String.valueOf(pnMain));
             }
             poPurchaseReceivingController.loadAttachments();
             Platform.runLater(() -> {
@@ -1569,6 +1608,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
         Label placeholderLabel = new Label("NO RECORD TO LOAD");
         placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
         if (lbresetpredicate) {
+            goToPageBasedOnSelectedRow(String.valueOf(pnMain));
             filteredDataDetail.setPredicate(null);
             lbresetpredicate = false;
             tfOrderNo.textProperty().removeListener(detailSearchListener);
@@ -1580,6 +1620,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
             Platform.runLater(() -> {
                 tfOrderNo.setText("");
             });
+            goToPageBasedOnSelectedRow(String.valueOf(pnMain));
         }
         Task<Void> task = new Task<Void>() {
             @Override
@@ -2432,6 +2473,8 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
 
     private void autoSearch(TextField txtField) {
         detailSearchListener = (observable, oldValue, newValue) -> {
+            int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
+            pgPagination.setPageCount(totalPage);
             filteredDataDetail.setPredicate(orders -> {
                 lbresetpredicate = true;
                 if (newValue == null || newValue.isEmpty()) {
@@ -2469,6 +2512,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
     private void autoSearchMain(TextField txtField) {
         mainSearchListener = (observable, oldValue, newValue) -> {
             filteredData.setPredicate(orders -> {
+                lbresetpredicate = true;
                 if (newValue == null || newValue.isEmpty()) {
                     if (mainSearchListener != null) {
                         txtField.textProperty().removeListener(mainSearchListener);
@@ -2480,6 +2524,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                 String lowerCaseFilter = newValue.toLowerCase();
                 return orders.getIndex04().toLowerCase().contains(lowerCaseFilter);
             });
+            pgPagination.setPageCount(1);
         };
         txtField.textProperty().addListener(mainSearchListener);
     }
