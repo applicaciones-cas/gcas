@@ -282,9 +282,18 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             }
                             isPrinted = false;
                             Platform.runLater(() -> {
-                                loadRecordMaster();
-                                loadTableDetail();
-                                loadTableAttachment();
+                                try {
+                                    poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+                                    loadRecordMaster();
+                                    loadTableDetail();
+                                    loadTableAttachment();
+                                } catch (CloneNotSupportedException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (GuanzonException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             });
 
                         });

@@ -277,9 +277,18 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                             }
                             isPrinted = false;
                             Platform.runLater(() -> {
-                                loadRecordMaster();
-                                loadTableDetail();
-                                loadTableAttachment();
+                                try {
+                                    poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+                                    loadRecordMaster();
+                                    loadTableDetail();
+                                    loadTableAttachment();
+                                } catch (CloneNotSupportedException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (GuanzonException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             });
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
