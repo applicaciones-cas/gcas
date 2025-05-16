@@ -738,7 +738,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
                     if (pbEntered) {
-                        pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+                        moveNext();
                         pbEntered = false;
                     }
                     break;
@@ -785,6 +785,26 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         }
     };
 
+    public void moveNext() {
+        int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        apDetail.requestFocus();
+        int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+            tfReceiveQuantity.requestFocus();
+        } else {
+            pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
+            loadRecordDetail();
+            tfOrderNo.setText("");
+            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                tfReceiveQuantity.requestFocus();
+            } else {
+                tfBrand.requestFocus();
+            }
+        }
+    }
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -797,9 +817,11 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
 
             switch (event.getCode()) {
+                case TAB:
                 case ENTER:
                     pbEntered = true;
                     CommonUtils.SetNextFocus(txtField);
+                    event.consume();
                     break;
                 case UP:
                     switch (lsID) {
@@ -830,24 +852,8 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReceiveQuantity":
-                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
-                            apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
-                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
-                                tfReceiveQuantity.requestFocus();
-                            } else {
-                                pnDetail = moveToNextRow(currentTable, focusedCell);
-                                loadRecordDetail();
-                                tfOrderNo.setText("");
-                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
-                                    tfReceiveQuantity.requestFocus();
-                                } else {
-                                    tfBarcode.requestFocus();
-                                }
-                                event.consume();
-                            }
+                            moveNext();
+                            event.consume();
                             break;
                         default:
                             break;
