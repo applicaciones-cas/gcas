@@ -1629,6 +1629,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

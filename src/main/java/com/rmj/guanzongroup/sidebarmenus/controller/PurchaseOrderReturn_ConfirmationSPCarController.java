@@ -1066,6 +1066,7 @@ public class PurchaseOrderReturn_ConfirmationSPCarController implements Initiali
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
 
         // Setting data to table detail

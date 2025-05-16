@@ -1796,6 +1796,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

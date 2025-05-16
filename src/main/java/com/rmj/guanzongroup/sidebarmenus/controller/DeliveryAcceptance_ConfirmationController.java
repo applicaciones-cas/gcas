@@ -1280,7 +1280,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             tblViewPuchaseOrder.getSelectionModel().select(0);
                             tblViewPuchaseOrder.getFocusModel().focus(0);
                             pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
-
                         }
                     } else {
                         /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
@@ -1656,6 +1655,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

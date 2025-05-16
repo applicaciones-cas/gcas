@@ -1060,6 +1060,7 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
 
         // Setting data to table detail

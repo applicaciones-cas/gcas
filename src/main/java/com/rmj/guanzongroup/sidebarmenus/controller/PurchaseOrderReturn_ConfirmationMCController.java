@@ -1073,6 +1073,7 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
 
         // Setting data to table detail

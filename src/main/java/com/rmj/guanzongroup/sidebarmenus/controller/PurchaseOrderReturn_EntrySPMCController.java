@@ -1028,6 +1028,7 @@ public class PurchaseOrderReturn_EntrySPMCController implements Initializable, S
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);

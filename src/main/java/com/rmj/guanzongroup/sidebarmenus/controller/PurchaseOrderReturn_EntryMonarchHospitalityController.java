@@ -1033,6 +1033,7 @@ public class PurchaseOrderReturn_EntryMonarchHospitalityController implements In
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);

@@ -1644,6 +1644,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

@@ -1373,24 +1373,23 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             }
                         }
                         showRetainedHighlight(true);
+                    }
+                    if (pnMain < 0 || pnMain
+                            >= main_data.size()) {
+                        if (!main_data.isEmpty()) {
+                            /* FOCUS ON FIRST ROW */
+                            tblViewPuchaseOrder.getSelectionModel().select(0);
+                            tblViewPuchaseOrder.getFocusModel().focus(0);
+                            pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
 
-                        if (pnMain < 0 || pnMain
-                                >= main_data.size()) {
-                            if (!main_data.isEmpty()) {
-                                /* FOCUS ON FIRST ROW */
-                                tblViewPuchaseOrder.getSelectionModel().select(0);
-                                tblViewPuchaseOrder.getFocusModel().focus(0);
-                                pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
-
-                            }
-                        } else {
-                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                            tblViewPuchaseOrder.getSelectionModel().select(pnMain);
-                            tblViewPuchaseOrder.getFocusModel().focus(pnMain);
                         }
-                        if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
-                            loadTab();
-                        }
+                    } else {
+                        /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                        tblViewPuchaseOrder.getSelectionModel().select(pnMain);
+                        tblViewPuchaseOrder.getFocusModel().focus(pnMain);
+                    }
+                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
+                        loadTab();
                     }
 
                 });
@@ -1768,7 +1767,9 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
+
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
         // Setting data to table detail

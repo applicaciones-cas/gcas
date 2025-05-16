@@ -1797,6 +1797,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
