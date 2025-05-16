@@ -1071,6 +1071,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);

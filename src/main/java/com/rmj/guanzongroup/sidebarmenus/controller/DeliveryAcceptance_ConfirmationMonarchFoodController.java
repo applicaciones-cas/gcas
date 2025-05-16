@@ -1649,6 +1649,7 @@ public class DeliveryAcceptance_ConfirmationMonarchFoodController implements Ini
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

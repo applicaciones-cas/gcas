@@ -1767,7 +1767,9 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
+
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
         // Setting data to table detail

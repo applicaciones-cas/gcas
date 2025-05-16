@@ -1068,6 +1068,7 @@ public class PurchaseOrderReturn_EntryAppliancesController implements Initializa
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);

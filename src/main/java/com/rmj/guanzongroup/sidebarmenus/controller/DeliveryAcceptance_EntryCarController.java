@@ -1531,6 +1531,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

@@ -1759,6 +1759,7 @@ public class DeliveryAcceptance_ConfirmationAppliancesController implements Init
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

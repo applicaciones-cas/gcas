@@ -1636,6 +1636,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

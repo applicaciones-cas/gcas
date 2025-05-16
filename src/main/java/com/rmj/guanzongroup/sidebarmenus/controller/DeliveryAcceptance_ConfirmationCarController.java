@@ -1700,6 +1700,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

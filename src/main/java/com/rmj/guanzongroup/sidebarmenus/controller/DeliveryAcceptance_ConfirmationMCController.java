@@ -1683,6 +1683,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

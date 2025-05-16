@@ -1033,6 +1033,7 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxHeight(50);

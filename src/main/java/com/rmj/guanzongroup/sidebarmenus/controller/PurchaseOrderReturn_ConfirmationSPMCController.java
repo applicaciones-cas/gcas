@@ -1057,6 +1057,7 @@ public class PurchaseOrderReturn_ConfirmationSPMCController implements Initializ
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
 
         // Setting data to table detail

@@ -1056,6 +1056,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
 
         // Setting data to table detail

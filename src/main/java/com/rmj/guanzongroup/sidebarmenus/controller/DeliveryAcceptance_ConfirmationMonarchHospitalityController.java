@@ -1636,6 +1636,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

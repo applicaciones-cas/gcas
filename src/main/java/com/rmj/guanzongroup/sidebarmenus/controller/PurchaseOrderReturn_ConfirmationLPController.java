@@ -1058,6 +1058,7 @@ public class PurchaseOrderReturn_ConfirmationLPController implements Initializab
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
 
         // Setting data to table detail

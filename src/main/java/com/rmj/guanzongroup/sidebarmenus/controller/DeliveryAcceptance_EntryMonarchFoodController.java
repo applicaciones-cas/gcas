@@ -1815,6 +1815,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

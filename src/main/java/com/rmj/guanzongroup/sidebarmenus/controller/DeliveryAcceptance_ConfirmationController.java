@@ -1655,6 +1655,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 

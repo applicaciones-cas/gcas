@@ -1818,6 +1818,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     }
 
     public void loadTableDetail() {
+        pbEntered = false;
         // Setting data to table detail
         disableAllHighlight(tblViewOrderDetails, highlightedRowsDetail);
 
