@@ -1365,23 +1365,23 @@ public class DeliveryAcceptance_ConfirmationAppliancesController implements Init
                             }
                         }
                         showRetainedHighlight(true);
-                        if (pnMain < 0 || pnMain
-                                >= main_data.size()) {
-                            if (!main_data.isEmpty()) {
-                                /* FOCUS ON FIRST ROW */
-                                tblViewPuchaseOrder.getSelectionModel().select(0);
-                                tblViewPuchaseOrder.getFocusModel().focus(0);
-                                pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
 
-                            }
-                        } else {
-                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                            tblViewPuchaseOrder.getSelectionModel().select(pnMain);
-                            tblViewPuchaseOrder.getFocusModel().focus(pnMain);
+                    }
+                    if (pnMain < 0 || pnMain
+                            >= main_data.size()) {
+                        if (!main_data.isEmpty()) {
+                            /* FOCUS ON FIRST ROW */
+                            tblViewPuchaseOrder.getSelectionModel().select(0);
+                            tblViewPuchaseOrder.getFocusModel().focus(0);
+                            pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
                         }
-                        if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
-                            loadTab();
-                        }
+                    } else {
+                        /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                        tblViewPuchaseOrder.getSelectionModel().select(pnMain);
+                        tblViewPuchaseOrder.getFocusModel().focus(pnMain);
+                    }
+                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
+                        loadTab();
                     }
 
                 });
