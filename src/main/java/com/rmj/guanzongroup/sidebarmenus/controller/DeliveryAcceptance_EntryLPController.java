@@ -712,7 +712,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 tfReceiveQuantity.requestFocus();
             } else {
-                tfBrand.requestFocus();
+                tfBarcode.requestFocus();
             }
         }
     }

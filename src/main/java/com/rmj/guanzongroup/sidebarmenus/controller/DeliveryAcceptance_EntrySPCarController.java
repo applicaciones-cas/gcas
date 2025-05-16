@@ -718,7 +718,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 tfReceiveQuantity.requestFocus();
             } else {
-                tfBrand.requestFocus();
+                tfBarcode.requestFocus();
             }
         }
     }

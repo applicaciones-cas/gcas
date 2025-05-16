@@ -65,6 +65,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import javafx.animation.PauseTransition;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
+import javafx.util.Pair;
+import java.util.ArrayList;
 
 /**
  * FXML Controller class
@@ -87,12 +89,15 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
     private String psCategoryId = "";
     private String psSupplierId = "";
     private String psTransactionNo = "";
+    private boolean pbEntered = false;
 
     private ObservableList<ModelPurchaseOrderReturn_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelPurchaseOrderReturn_Detail> details_data = FXCollections.observableArrayList();
 
     private FilteredList<ModelPurchaseOrderReturn_Main> filteredData;
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
+    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
+    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
     private int pnAttachment;
 
@@ -350,7 +355,8 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
-                                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(pnMain + 1), "#FAA0A0", highlightedRowsMain);
+                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
+                                showRetainedHighlight(true);
                             }
                         } else {
                             return;
@@ -495,6 +501,10 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
+                    if (pbEntered) {
+                        moveNext();
+                        pbEntered = false;
+                    }
                     break;
             }
             Platform.runLater(() -> {
@@ -536,6 +546,25 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
         }
     };
 
+    public void moveNext() {
+        int lnReceiveQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        apDetail.requestFocus();
+        int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
+                && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
+            tfReturnQuantity.requestFocus();
+        } else {
+            pnDetail = JFXUtil.moveToNextRow(tblViewDetails);
+            loadRecordDetail();
+            if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                tfReturnQuantity.requestFocus();
+            } else {
+                tfBarcode.requestFocus();
+            }
+        }
+    }
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -548,8 +577,11 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
 
             switch (event.getCode()) {
+                case TAB:
                 case ENTER:
+                    pbEntered = true;
                     CommonUtils.SetNextFocus(txtField);
+                    event.consume();
                     break;
                 case UP:
                     switch (lsID) {
@@ -749,6 +781,23 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
         }
     };
 
+    public void showRetainedHighlight(boolean isRetained) {
+        if (isRetained) {
+            for (Pair<String, String> pair : plOrderNoPartial) {
+                if (!"0".equals(pair.getValue())) {
+                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
+                }
+            }
+        }
+        JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#C1E1C1", highlightedRowsMain);
+        plOrderNoPartial.clear();
+        for (Pair<String, String> pair : plOrderNoFinal) {
+            if (!"0".equals(pair.getValue())) {
+                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, pair.getKey(), "#C1E1C1", highlightedRowsMain);
+            }
+        }
+    }
+
     public void loadTableMain() {
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -771,7 +820,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
-
+                    plOrderNoFinal.clear();
                     if (poPurchaseReturnController.getPurchaseOrderReturnCount() > 0) {
                         //pending
                         //retreiving using column index
@@ -787,9 +836,12 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                             } catch (GuanzonException ex) {
                                 Logger.getLogger(PurchaseOrderReturn_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
-
+                            if (poPurchaseReturnController.PurchaseOrderReturnList(lnCtr).getTransactionStatus().equals(PurchaseOrderReturnStatus.CONFIRMED)) {
+                                plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
+                            }
                         }
                     }
+                    showRetainedHighlight(true);
 
                     if (pnMain < 0 || pnMain
                             >= main_data.size()) {

@@ -85,6 +85,7 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
 
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
+    private boolean pbEntered = false;
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
@@ -435,6 +436,10 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
+                    if (pbEntered) {
+                        moveNext();
+                        pbEntered = false;
+                    }
                     break;
             }
             Platform.runLater(() -> {
@@ -548,6 +553,25 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
 
     };
 
+    public void moveNext() {
+        int lnReceiveQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        apDetail.requestFocus();
+        int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
+                && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
+            tfReturnQuantity.requestFocus();
+        } else {
+            pnDetail = JFXUtil.moveToNextRow(tblViewDetails);
+            loadRecordDetail();
+            if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                tfReturnQuantity.requestFocus();
+            } else {
+                tfEngineNo.requestFocus();
+            }
+        }
+    }
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -559,8 +583,11 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
             TablePosition focusedCell = currentTable.getFocusModel().getFocusedCell();
 
             switch (event.getCode()) {
+                case TAB:
                 case ENTER:
+                    pbEntered = true;
                     CommonUtils.SetNextFocus(txtField);
+                    event.consume();
                     break;
                 case UP:
                     switch (lsID) {

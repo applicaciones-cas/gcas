@@ -803,7 +803,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 tfReceiveQuantity.requestFocus();
             } else {
-                tfBrand.requestFocus();
+                tfBarcode.requestFocus();
             }
         }
     }

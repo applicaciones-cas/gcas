@@ -709,7 +709,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 tfReceiveQuantity.requestFocus();
             } else {
-                tfBrand.requestFocus();
+                tfBarcode.requestFocus();
             }
         }
     }

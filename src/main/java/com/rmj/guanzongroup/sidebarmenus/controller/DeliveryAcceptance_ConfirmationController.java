@@ -804,7 +804,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 tfReceiveQuantity.requestFocus();
             } else {
-                tfBrand.requestFocus();
+                tfBarcode.requestFocus();
             }
         }
     }
