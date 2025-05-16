@@ -400,8 +400,8 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-
+//            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {

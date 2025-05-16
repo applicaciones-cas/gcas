@@ -874,7 +874,8 @@ public class PurchaseOrderReturn_EntryController implements Initializable, Scree
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
+//            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
+            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName());
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(PurchaseOrderReturn_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }

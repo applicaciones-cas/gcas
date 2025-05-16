@@ -214,8 +214,17 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                             }
                             isPrinted = false;
                             Platform.runLater(() -> {
-                                loadRecordMaster();
-                                loadTableDetail();
+                                try {
+                                    poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo());
+                                    loadRecordMaster();
+                                    loadTableDetail();
+                                } catch (CloneNotSupportedException ex) {
+                                    Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (GuanzonException ex) {
+                                    Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             });
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -892,7 +901,8 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
+//            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
+            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName());
 
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");

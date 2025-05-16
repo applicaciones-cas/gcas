@@ -463,10 +463,10 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         String lsMessage = "";
         poJSON.put("result", "success");
 
-        if (poPurchaseReceivingController.Master().getIndustryId().equals("")) {
-            poJSON.put("result", "error");
-            lsMessage = "Industry";
-        }
+//        if (poPurchaseReceivingController.Master().getIndustryId().equals("")) {
+//            poJSON.put("result", "error");
+//            lsMessage = "Industry";
+//        }
         if (poPurchaseReceivingController.Master().getCompanyId().equals("")) {
             poJSON.put("result", "error");
             lsMessage += lsMessage.isEmpty() ? "Company" : " & Company";

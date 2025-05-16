@@ -215,8 +215,17 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                             }
                             isPrinted = false;
                             Platform.runLater(() -> {
-                                loadRecordMaster();
-                                loadTableDetail();
+                                try {
+                                    poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo());
+                                    loadRecordMaster();
+                                    loadTableDetail();
+                                } catch (CloneNotSupportedException ex) {
+                                    Logger.getLogger(PurchaseOrderReturn_ConfirmationAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(PurchaseOrderReturn_ConfirmationAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (GuanzonException ex) {
+                                    Logger.getLogger(PurchaseOrderReturn_ConfirmationAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             });
                         });
                         if ("error".equals((String) poJSON.get("result"))) {

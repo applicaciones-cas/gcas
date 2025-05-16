@@ -1320,8 +1320,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-
+//            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {

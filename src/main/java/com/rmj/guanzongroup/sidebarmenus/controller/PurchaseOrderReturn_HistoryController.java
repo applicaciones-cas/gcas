@@ -342,8 +342,8 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
-
+//            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
+            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName());
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
