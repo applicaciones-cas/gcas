@@ -583,7 +583,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", poPurchaseReceivingController.Master().getDiscountRate().doubleValue()));
+                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue()*100.00)));
 
                 } else {
                     tfDiscountRate.setText(String.format("%.2f", 0.00));

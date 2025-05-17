@@ -280,10 +280,12 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                 clearTextFields();
                                 initButton(pnEditMode);
                             }
-                            isPrinted = false;
                             Platform.runLater(() -> {
                                 try {
-                                    poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+                                    if (!isPrinted) {
+                                        poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+                                        poPurchaseReceivingController.loadAttachments();
+                                    }
                                     loadRecordMaster();
                                     loadTableDetail();
                                     loadTableAttachment();
@@ -294,6 +296,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                 } catch (GuanzonException ex) {
                                     Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                                isPrinted = false;
                             });
 
                         });
@@ -311,7 +314,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         break;
                     case "btnSerials":
                         if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Selected item is not serialize.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Selected item is not serialized.");
                             return;
                         }
                         showSerialDialog();
@@ -732,7 +735,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
+                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", "")) / 100.00));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -1083,7 +1086,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
 
                             break;
                         case "tfModel":
-                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1107,7 +1110,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             });
                             break;
                         case "tfBarcode":
-                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1131,7 +1134,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             });
                             break;
                         case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1155,7 +1158,38 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                             });
                             break;
                     }
-
+                    break;
+                
+                
+                case F4:
+                    switch (lsID) {
+                        case "tfBrand":
+                            tfModel.requestFocus();
+                        case "tfModel":
+                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail, false);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfModel.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(e -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                    }
                     break;
                 default:
                     break;
@@ -1638,7 +1672,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", poPurchaseReceivingController.Master().getDiscountRate().doubleValue()));
+                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue()*100.00)));
 
                 } else {
                     tfDiscountRate.setText(String.format("%.2f", 0.00));
