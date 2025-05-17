@@ -1380,7 +1380,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             }
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 

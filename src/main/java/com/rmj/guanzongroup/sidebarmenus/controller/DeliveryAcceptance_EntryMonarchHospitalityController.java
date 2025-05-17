@@ -1281,7 +1281,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 

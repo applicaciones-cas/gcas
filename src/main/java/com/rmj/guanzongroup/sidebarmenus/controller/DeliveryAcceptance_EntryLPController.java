@@ -1300,7 +1300,7 @@ public class DeliveryAcceptance_EntryLPController implements Initializable, Scre
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 

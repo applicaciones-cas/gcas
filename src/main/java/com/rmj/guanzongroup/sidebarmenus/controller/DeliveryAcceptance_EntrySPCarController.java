@@ -1285,7 +1285,7 @@ public class DeliveryAcceptance_EntrySPCarController implements Initializable, S
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ApprovalCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_EntrySPCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
