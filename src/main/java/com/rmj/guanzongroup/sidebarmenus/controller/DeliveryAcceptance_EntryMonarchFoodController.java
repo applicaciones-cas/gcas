@@ -889,7 +889,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
                             break;
                         case "tfBarcode":
-                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -913,7 +913,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             break;
 
                         case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -936,7 +936,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             });
                             break;
                         case "tfSupersede":
-                            poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail, true);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupersede.setText("");

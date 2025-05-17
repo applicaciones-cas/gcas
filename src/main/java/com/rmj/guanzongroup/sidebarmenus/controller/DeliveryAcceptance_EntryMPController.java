@@ -1011,7 +1011,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             });
                             break;
                         case "tfModel":
-                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1035,7 +1035,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             });
                             break;
                         case "tfBarcode":
-                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1059,7 +1059,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             });
                             break;
                         case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1076,6 +1076,83 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             Platform.runLater(() -> {
                                 PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                 delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                    }
+                    break;
+                case F4:
+                    switch (lsID) {
+                        case "tfBarcode":
+                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail, false);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfBarcode.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        case "tfDescription":
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail, false);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfDescription.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(event1 -> {
+                                    tfReceiveQuantity.requestFocus();
+                                });
+                                delay.play();
+                            });
+                            break;
+                        case "tfBrand":
+                            tfModel.requestFocus();
+                        case "tfModel":
+                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail, false);
+                            lnRow = (int) poJSON.get("row");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnDetail != lnRow) {
+                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    pnDetail = lnRow;
+                                    loadRecordDetail();
+                                    tfReceiveQuantity.requestFocus();
+                                    return;
+                                }
+                                tfModel.setText("");
+                                break;
+                            }
+                            loadTableDetail();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(e -> {
                                     tfReceiveQuantity.requestFocus();
                                 });
                                 delay.play();

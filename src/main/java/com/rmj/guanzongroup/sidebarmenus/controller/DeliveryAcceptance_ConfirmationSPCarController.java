@@ -623,7 +623,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
+                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", "")) / 100.00));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -929,7 +929,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
 
                             break;
                         case "tfBarcode":
-                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -954,7 +954,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                             break;
 
                         case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -978,7 +978,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                             });
                             break;
                         case "tfSupersede":
-                            poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail);
+                            poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail, true);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupersede.setText("");
@@ -1511,7 +1511,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", poPurchaseReceivingController.Master().getDiscountRate().doubleValue()));
+                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue()*100.00)));
 
                 } else {
                     tfDiscountRate.setText(String.format("%.2f", 0.00));
