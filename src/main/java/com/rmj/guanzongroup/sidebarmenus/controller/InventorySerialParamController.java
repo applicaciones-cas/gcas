@@ -35,11 +35,10 @@ import javafx.scene.text.Text;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
-//import org.guanzon.cas.inv.InvSerial;
-//import org.guanzon.cas.inv.Serials;
+import org.guanzon.cas.inv.InvSerial;
+import org.guanzon.cas.inv.Serials;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
@@ -51,11 +50,11 @@ import org.json.simple.JSONObject;
 public class InventorySerialParamController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Inventory Serial Parameter";
-    private GRiderCAS oApp;
+    private GRider oApp;
     private String oTransnox = "";
     private int pnEditMode;
 
-//    private Serials oTrans;
+    private Serials oTrans;
     private ParamControllers oParameters;
 //    private InvSerial oTrans;
 //    private InvSerialLedger poTrans;
@@ -100,20 +99,8 @@ public class InventorySerialParamController implements Initializable, ScreenInte
     private Button btnBrowse, btnClose;
 
     @Override
-    public void setGRider(GRiderCAS foValue) {
+    public void setGRider(GRider foValue) {
         oApp = foValue;
-    }
-
-    @Override
-    public void setIndustryID(String fsValue) {
-    }
-
-    @Override
-    public void setCompanyID(String fsValue) {
-    }
-
-    @Override
-    public void setCategoryID(String fsValue) {
     }
     ObservableList<String> unitType = FXCollections.observableArrayList(
             "LDU",
@@ -146,7 +133,7 @@ public class InventorySerialParamController implements Initializable, ScreenInte
         System.out.println("category == " + category);
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
 
-//        oTrans = new Serials(oApp, "", logwrapr);
+        oTrans = new Serials(oApp, "", logwrapr);
         oParameters = new ParamControllers(oApp, logwrapr);
 
     }
@@ -172,78 +159,78 @@ public class InventorySerialParamController implements Initializable, ScreenInte
                     break;
 
                 case "btnBrowse":
-//                    initializeObject();
-//
-//                    String lsValue = (txtSeeks01.getText().toString().isEmpty() ? "" : txtSeeks01.getText().toString());
-//                    poJSON = oTrans.Serial().searchRecord(lsValue, true);
-//
-//                    if ("success".equals(poJSON.get("result"))) {
-//                        pnEditMode = oTrans.Serial().getEditMode();
-//                        loadSerial();
-//                        oTrans.OpenSerialLedger(oTrans.Serial().getModel().getSerialId());
-//                        loadSerialLedger();
-//                    } else {
-//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//
-//                    }
+                    initializeObject();
+                    
+                    String lsValue = (txtSeeks01.getText().toString().isEmpty() ? "" : txtSeeks01.getText().toString());
+                    poJSON = oTrans.Serial().searchRecord(lsValue, true);
+                    
+                    if ("success".equals(poJSON.get("result"))) {
+                        pnEditMode = oTrans.Serial().getEditMode();
+                        loadSerial();
+                        oTrans.OpenSerialLedger(oTrans.Serial().getModel().getSerialId());
+                        loadSerialLedger();
+                    } else {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+
+                    }
                     break;
-//
+//                    
             }
         }
 
     }
 
     private void loadSerial() {
-//        if (pnEditMode == EditMode.READY
-//                || pnEditMode == EditMode.ADDNEW
-//                || pnEditMode == EditMode.UPDATE) {
-//
-//            // Set text fields from oTrans
-//            txtField01.setText(oTrans.Serial().getModel().getSerialId());
-//            txtField02.setText(oTrans.Serial().getModel().getSerialOne());
-//            txtField03.setText(oTrans.Serial().getModel().getSerialTwo());
-//            txtField04.setText(oTrans.Serial().getModel().Inventory().getBarCode());
-//            txtField05.setText(oTrans.Serial().getModel().Inventory().getDescription());
-//
-////            System.out.println("categ == " + oTrans.getModel().Inventory().Brand().getDescription());
-//            txtField08.setText(oTrans.Serial().getModel().Inventory().Category().getDescription());
-//            txtField09.setText(oTrans.Serial().getModel().Inventory().Brand().getDescription());
-//            txtField10.setText(oTrans.Serial().getModel().Inventory().Model().getDescription());
-//            txtField11.setText(oTrans.Serial().getModel().Inventory().Color().getDescription());
-//
-////
-//            // Define an array of location descriptions
-//            String[] locationDescriptions = {
-//                "Warehouse", // Index 0
-//                "Branch", // Index 1
-//                "Supplier", // Index 2
-//                "Customer", // Index 3
-//                "On Transit", // Index 4
-//                "Service Center", // Index 5
-//                "Service Unit" // Index 6
-//            };
-//
-//            // Retrieve the location code and handle it
-//            String locationCode = (String) oTrans.Serial().getModel().getLocationId();
-//            int index;
-//            try {
-//                index = Integer.parseInt(locationCode);
-//            } catch (NumberFormatException e) {
-//                throw new AssertionError("Invalid location code format: " + locationCode);
-//            }
-//
-//            // Set the description or handle an invalid code
-//            if (index >= 0 && index < locationDescriptions.length) {
-//                txtField15.setText(locationDescriptions[index]);
-//            } else {
-//                throw new AssertionError("Unexpected location code: " + locationCode);
-//            }
-//
-//            int SoldStat = Integer.parseInt(oTrans.Serial().getModel().getSoldStatus().toString());
-//            chkField01.setSelected(SoldStat == 1);
-//
-////            cmbField01.getSelectionModel().select(Integer.parseInt(oTrans.getModel(pnRow).getUnitType().toString()));
-//        }
+        if (pnEditMode == EditMode.READY
+                || pnEditMode == EditMode.ADDNEW
+                || pnEditMode == EditMode.UPDATE) {
+
+            // Set text fields from oTrans
+            txtField01.setText(oTrans.Serial().getModel().getSerialId());
+            txtField02.setText(oTrans.Serial().getModel().getSerialOne());
+            txtField03.setText(oTrans.Serial().getModel().getSerialTwo());
+            txtField04.setText(oTrans.Serial().getModel().Inventory().getBarCode());
+            txtField05.setText(oTrans.Serial().getModel().Inventory().getDescription());
+
+//            System.out.println("categ == " + oTrans.getModel().Inventory().Brand().getDescription());
+            txtField08.setText(oTrans.Serial().getModel().Inventory().Category().getDescription());
+            txtField09.setText(oTrans.Serial().getModel().Inventory().Brand().getDescription());
+            txtField10.setText(oTrans.Serial().getModel().Inventory().Model().getDescription());
+            txtField11.setText(oTrans.Serial().getModel().Inventory().Color().getDescription());
+
+//            
+            // Define an array of location descriptions
+            String[] locationDescriptions = {
+                "Warehouse", // Index 0
+                "Branch", // Index 1
+                "Supplier", // Index 2
+                "Customer", // Index 3
+                "On Transit", // Index 4
+                "Service Center", // Index 5
+                "Service Unit" // Index 6
+            };
+
+            // Retrieve the location code and handle it
+            String locationCode = (String) oTrans.Serial().getModel().getLocationId();
+            int index;
+            try {
+                index = Integer.parseInt(locationCode);
+            } catch (NumberFormatException e) {
+                throw new AssertionError("Invalid location code format: " + locationCode);
+            }
+
+            // Set the description or handle an invalid code
+            if (index >= 0 && index < locationDescriptions.length) {
+                txtField15.setText(locationDescriptions[index]);
+            } else {
+                throw new AssertionError("Unexpected location code: " + locationCode);
+            }
+
+            int SoldStat = Integer.parseInt(oTrans.Serial().getModel().getSoldStatus().toString());
+            chkField01.setSelected(SoldStat == 1);
+
+//            cmbField01.getSelectionModel().select(Integer.parseInt(oTrans.getModel(pnRow).getUnitType().toString()));
+        }
     }
 
     private void clearAllFields() {
@@ -289,29 +276,29 @@ public class InventorySerialParamController implements Initializable, ScreenInte
     }
 
     private void loadSerialLedger() {
-//        int lnCtr2 = 0;
-//        data.clear();
-//
-//        if (oTrans.getSerialLedgerCount() >= 0) {
-//            for (int lnCtr = 0; lnCtr < oTrans.getSerialLedgerCount(); lnCtr++) {
-//                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
-//
-//                // Debugging individual components
-//                System.out.println("Transaction Date: " + oTrans.SerialLedger(lnCtr).getTransactionDate());
-//                System.out.println("Branch Name: " + oTrans.SerialLedger(lnCtr).Branch().getBranchName());
-//                System.out.println("Source Code: " + oTrans.SerialLedger(lnCtr).getSourceCode());
-//                System.out.println("Source No: " + oTrans.SerialLedger(lnCtr).getSourceNo());
-//
-//                data.add(new ModelInvSerialLedger(
-//                        String.valueOf(lnCtr + 1),
-//                        oTrans.SerialLedger(lnCtr).getTransactionDate().toString(),
-//                        oTrans.SerialLedger(lnCtr).Branch().getBranchName(),
-//                        oTrans.SerialLedger(lnCtr).getSourceCode(),
-//                        oTrans.SerialLedger(lnCtr).getSourceNo()
-//                ));
-////            lnCtr += 1;
-//            }
-//        }
+        int lnCtr2 = 0;
+        data.clear();
+
+        if (oTrans.getSerialLedgerCount() >= 0) {
+            for (int lnCtr = 0; lnCtr < oTrans.getSerialLedgerCount(); lnCtr++) {
+                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
+
+                // Debugging individual components
+                System.out.println("Transaction Date: " + oTrans.SerialLedger(lnCtr).getTransactionDate());
+                System.out.println("Branch Name: " + oTrans.SerialLedger(lnCtr).Branch().getBranchName());
+                System.out.println("Source Code: " + oTrans.SerialLedger(lnCtr).getSourceCode());
+                System.out.println("Source No: " + oTrans.SerialLedger(lnCtr).getSourceNo());
+
+                data.add(new ModelInvSerialLedger(
+                        String.valueOf(lnCtr + 1),
+                        oTrans.SerialLedger(lnCtr).getTransactionDate().toString(),
+                        oTrans.SerialLedger(lnCtr).Branch().getBranchName(),
+                        oTrans.SerialLedger(lnCtr).getSourceCode(),
+                        oTrans.SerialLedger(lnCtr).getSourceNo()
+                ));
+//            lnCtr += 1;
+            }
+        }
     }
 
     private void initTable() {

@@ -33,7 +33,6 @@ import javax.sql.rowset.CachedRowSet;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
-import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
@@ -41,7 +40,7 @@ import org.json.simple.JSONObject;
 
 public class LaborModelController implements Initializable, ScreenInterface {
 
-    private GRiderCAS oApp;
+    private GRider oApp;
     private final String pxeModuleName = "Labor Model";
     private int pnEditMode;
     private ParamControllers oParameters;
@@ -80,20 +79,8 @@ public class LaborModelController implements Initializable, ScreenInterface {
     private TableColumn index01, index02, index03;
 
     @Override
-    public void setGRider(GRiderCAS foValue) {
+    public void setGRider(GRider foValue) {
         oApp = foValue;
-    }
-
-    @Override
-    public void setIndustryID(String fsValue) {
-    }
-
-    @Override
-    public void setCompanyID(String fsValue) {
-    }
-
-    @Override
-    public void setCategoryID(String fsValue) {
     }
 
     @Override
@@ -111,7 +98,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
     private void initializeObject() {
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
         oParameters = new ParamControllers(oApp, logwrapr);
-//        oParameters.LaborModel().setRecordStatus("0123");
+        oParameters.LaborModel().setRecordStatus("0123");
     }
 
     private void ClickButton() {
@@ -123,81 +110,81 @@ public class LaborModelController implements Initializable, ScreenInterface {
     }
 
     private void handleButtonAction(ActionEvent event) {
-//        Object source = event.getSource();
-//
-//        if (source instanceof Button) {
-//            Button clickedButton = (Button) source;
-//            unloadForm appUnload = new unloadForm();
-//            switch (clickedButton.getId()) {
-//                case "btnClose":
-//                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-//                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-//                    }
-//                    break;
-//                case "btnNew":
-//                    clearAllFields();
-//                    txtField02.requestFocus();
-//                    JSONObject poJSON = oParameters.LaborModel().newRecord();
-//                    pnEditMode = EditMode.READY;
-//                    if ("success".equals((String) poJSON.get("result"))) {
-//                        pnEditMode = EditMode.ADDNEW;
-//                        initButton(pnEditMode);
-//                        initTabAnchor();
-//
-//                        loadRecord();
-//                    } else {
-//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        initTabAnchor();
-//                    }
-//                    break;
-//                case "btnBrowse":
-//
-//                    String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
-//                    poJSON = oParameters.Model().searchRecord(lsValue, false);
-//                    if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        break;
-//                    }
-//                    poJSON = oParameters.Brand().searchRecord(oParameters.Model().getModel().getBrandId(), true);
-//                    if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        break;
-//                    }
-//                    txtField01.setText((String) oParameters.Brand().getModel().getDescription());
-//                    oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
-//                    txtField02.setText((String) oParameters.Model().getModel().getDescription());
-//                    oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
-//                    pnEditMode = EditMode.UPDATE;
-//                    initButton(pnEditMode);
-//                    LoadList();
-//                    initTabAnchor();
-//                    break;
-//                case "btnCancel":
-//                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-//                        clearAllFields();
-//                        initializeObject();
-//                        pnEditMode = EditMode.UNKNOWN;
-//                        initButton(pnEditMode);
-//                        initTabAnchor();
-//                    }
-//                    break;
-//                case "btnSave":
-//                    System.out.println("model id == " + oParameters.Model().getModel().getModelId());
-//                    oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
-//                    oParameters.LaborModel().getModel().setModifyingId(oApp.getUserID());
-//                    oParameters.LaborModel().getModel().setModifiedDate(oApp.getServerDate());
-//                    JSONObject saveResult = oParameters.LaborModel().saveRecord();
-//                    if ("success".equals((String) saveResult.get("result"))) {
-//                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        pnEditMode = EditMode.UNKNOWN;
-//                        initButton(pnEditMode);
-//                        clearAllFields();
-//                    } else {
-//                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-//                    }
-//                    break;
-//            }
-//        }
+        Object source = event.getSource();
+
+        if (source instanceof Button) {
+            Button clickedButton = (Button) source;
+            unloadForm appUnload = new unloadForm();
+            switch (clickedButton.getId()) {
+                case "btnClose":
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                    }
+                    break;
+                case "btnNew":
+                    clearAllFields();
+                    txtField02.requestFocus();
+                    JSONObject poJSON = oParameters.LaborModel().newRecord();
+                    pnEditMode = EditMode.READY;
+                    if ("success".equals((String) poJSON.get("result"))) {
+                        pnEditMode = EditMode.ADDNEW;
+                        initButton(pnEditMode);
+                        initTabAnchor();
+
+                        loadRecord();
+                    } else {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        initTabAnchor();
+                    }
+                    break;
+                case "btnBrowse":
+
+                    String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
+                    poJSON = oParameters.Model().searchRecord(lsValue, false);
+                    if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        break;
+                    }
+                    poJSON = oParameters.Brand().searchRecord(oParameters.Model().getModel().getBrandId(), true);
+                    if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        break;
+                    }
+                    txtField01.setText((String) oParameters.Brand().getModel().getDescription());
+                    oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
+                    txtField02.setText((String) oParameters.Model().getModel().getDescription());
+                    oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
+                    pnEditMode = EditMode.UPDATE;
+                    initButton(pnEditMode);
+                    LoadList();
+                    initTabAnchor();
+                    break;
+                case "btnCancel":
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                        clearAllFields();
+                        initializeObject();
+                        pnEditMode = EditMode.UNKNOWN;
+                        initButton(pnEditMode);
+                        initTabAnchor();
+                    }
+                    break;
+                case "btnSave":
+                    System.out.println("model id == " + oParameters.Model().getModel().getModelId());
+                    oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
+                    oParameters.LaborModel().getModel().setModifyingId(oApp.getUserID());
+                    oParameters.LaborModel().getModel().setModifiedDate(oApp.getServerDate());
+                    JSONObject saveResult = oParameters.LaborModel().saveRecord();
+                    if ("success".equals((String) saveResult.get("result"))) {
+                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                        pnEditMode = EditMode.UNKNOWN;
+                        initButton(pnEditMode);
+                        clearAllFields();
+                    } else {
+                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                    }
+                    break;
+            }
+        }
     }
 
     private void clearAllFields() {
@@ -245,25 +232,25 @@ public class LaborModelController implements Initializable, ScreenInterface {
             case F3:
                 switch (lnIndex) {
                     case 01:
-//
-//                        poJson = oParameters.Model().searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            break;
-//                        }
-//                        poJson = oParameters.Brand().searchRecord(oParameters.Model().getModel().getBrandId(), true);
-//                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                            break;
-//                        }
-//                        txtField01.setText((String) oParameters.Brand().getModel().getDescription());
-//                        oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
-//                        txtField02.setText((String) oParameters.Model().getModel().getDescription());
-//                        oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
-//                        pnEditMode = EditMode.UPDATE;
-//                        initButton(pnEditMode);
-//                        LoadList();
-//                        initTabAnchor();
+
+                        poJson = oParameters.Model().searchRecord(lsValue, false);
+                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                        poJson = oParameters.Brand().searchRecord(oParameters.Model().getModel().getBrandId(), true);
+                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                        txtField01.setText((String) oParameters.Brand().getModel().getDescription());
+                        oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
+                        txtField02.setText((String) oParameters.Model().getModel().getDescription());
+                        oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
+                        pnEditMode = EditMode.UPDATE;
+                        initButton(pnEditMode);
+                        LoadList();
+                        initTabAnchor();
 //                        poJson = oParameters.Barangay().searchRecord(lsValue, false);
 //                    if ("error".equals((String) poJson.get("result"))) {
 //                        ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
@@ -298,46 +285,46 @@ public class LaborModelController implements Initializable, ScreenInterface {
         switch (event.getCode()) {
             case F3:
                 switch (lnIndex) {
-//                    case 01:
-//                        poJson = oParameters.Brand().searchRecord(lsValue, false);
-//                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        }
-//                        clearAllFields();
-//                        txtField01.setText((String) oParameters.Brand().getModel().getDescription());
-//                        brand = oParameters.Brand().getModel().getBrandId();
-//                        txtField02.requestFocus();
-//
-//                        break;
-//                    case 02:
-//                        if (brand.isEmpty() || brand == null) {
-//                            poJson = oParameters.Model().searchRecord(lsValue, false);
-//                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                                break;
-//                            }
-//                            poJson = oParameters.Brand().searchRecord(oParameters.Model().getModel().getBrandId(), true);
-//                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                                break;
-//                            }
-//                            txtField01.setText((String) oParameters.Brand().getModel().getDescription());
-//                            oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
-//                            txtField02.setText((String) oParameters.Model().getModel().getDescription());
-//                            oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
-//                        } else {
-//                            poJson = oParameters.Model().searchRecordbyBrand(brand, true);
-//                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-//                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-//                                break;
-//                            }
-//                            oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
-//                            txtField02.setText((String) oParameters.Model().getModel().getDescription());
-//                            oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
-//                        }
-//                        LoadList();
+                    case 01:
+                        poJson = oParameters.Brand().searchRecord(lsValue, false);
+                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        clearAllFields();
+                        txtField01.setText((String) oParameters.Brand().getModel().getDescription());
+                        brand = oParameters.Brand().getModel().getBrandId();
+                        txtField02.requestFocus();
 
-//            break;
+                        break;
+                    case 02:
+                        if (brand.isEmpty() || brand == null) {
+                            poJson = oParameters.Model().searchRecord(lsValue, false);
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            poJson = oParameters.Brand().searchRecord(oParameters.Model().getModel().getBrandId(), true);
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            txtField01.setText((String) oParameters.Brand().getModel().getDescription());
+                            oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
+                            txtField02.setText((String) oParameters.Model().getModel().getDescription());
+                            oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
+                        } else {
+                            poJson = oParameters.Model().searchRecordbyBrand(brand, true);
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                break;
+                            }
+                            oParameters.LaborModel().getModel().setModelId(oParameters.Model().getModel().getModelId());
+                            txtField02.setText((String) oParameters.Model().getModel().getDescription());
+                            oParameters.LaborModel().LaborList(oParameters.Model().getModel().getModelId());
+                        }
+                        LoadList();
+                        break;
+
                 }
             case ENTER:
         }
@@ -371,7 +358,7 @@ public class LaborModelController implements Initializable, ScreenInterface {
                     case 4:
                         double amount = Double.parseDouble(lsValue);
                         if (lnIndex == 4) {
-//                            oParameters.LaborModel().getModel().setAmount(amount);
+                            oParameters.LaborModel().getModel().setAmount(amount);
                         }
                         txtField.setText(CommonUtils.NumberFormat(amount, "0.00"));
                         break;
@@ -388,14 +375,14 @@ public class LaborModelController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
-//        txtField03.setText(oParameters.LaborModel().getModel().Model().getDescription());
-//        txtField04.setText(CommonUtils.NumberFormat(oParameters.LaborModel().getModel().getAmount(), "#,##0.00"));
+        txtField03.setText(oParameters.LaborModel().getModel().Model().getDescription());
+        txtField04.setText(CommonUtils.NumberFormat(oParameters.LaborModel().getModel().getAmount(), "#,##0.00"));
 
     }
 
     @FXML
     void cbField01_Clicked(MouseEvent event) {
-//        oParameters.LaborModel().getModel().setRecordStatus(cbField01.isSelected() ? "1" : "0");
+        oParameters.LaborModel().getModel().setRecordStatus(cbField01.isSelected() ? "1" : "0");
     }
 
     private void initTabAnchor() {
@@ -436,10 +423,11 @@ public class LaborModelController implements Initializable, ScreenInterface {
         data.clear();
 
         // ✅ Get cached data from the data handler
-//        cacheLaborList = oParameters.LaborModel().getCachedLaborList();
+        cacheLaborList = oParameters.LaborModel().getCachedLaborList();
+
         if (cacheLaborList == null) {
             System.out.println("No cached data found! Fetching from database...");
-//            oParameters.LaborModel().LaborList(""); // Reload data if cache is empty
+            oParameters.LaborModel().LaborList(""); // Reload data if cache is empty
             return;
         }
 

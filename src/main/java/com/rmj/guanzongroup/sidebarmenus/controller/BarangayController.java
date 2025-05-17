@@ -29,15 +29,10 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.guanzon.appdriver.base.GRiderCAS;
-import org.guanzon.appdriver.base.GuanzonException;
 
 public class BarangayController implements Initializable, ScreenInterface {
 
-    private GRiderCAS oApp;
+    private GRider oApp;
     private final String pxeModuleName = "Barangay";
     private int pnEditMode;
     private ParamControllers oParameters;
@@ -48,7 +43,7 @@ public class BarangayController implements Initializable, ScreenInterface {
     private ObservableList<ModelResultSet> data = FXCollections.observableArrayList();
     private String psPrimary = "";
     @FXML
-    private AnchorPane AnchorMain, AnchorInputs;
+    private AnchorPane AnchorMain,AnchorInputs;
     @FXML
     private HBox hbButtons;
 
@@ -71,23 +66,11 @@ public class BarangayController implements Initializable, ScreenInterface {
             txtSeeks01;
 
     @FXML
-    private CheckBox cbField01, cbField02, cbField03;
+    private CheckBox cbField01,cbField02,cbField03;
 
     @Override
-    public void setGRider(GRiderCAS foValue) {
+    public void setGRider(GRider foValue) {
         oApp = foValue;
-    }
-
-    @Override
-    public void setIndustryID(String fsValue) {
-    }
-
-    @Override
-    public void setCompanyID(String fsValue) {
-    }
-
-    @Override
-    public void setCategoryID(String fsValue) {
     }
 
     @Override
@@ -102,15 +85,9 @@ public class BarangayController implements Initializable, ScreenInterface {
     }
 
     private void initializeObject() {
-        try {
-            LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-            oParameters = new ParamControllers(oApp, logwrapr);
-            oParameters.Barangay().setRecordStatus("0123");
-        } catch (SQLException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
+        oParameters = new ParamControllers(oApp, logwrapr);
+        oParameters.Barangay().setRecordStatus("0123");
     }
 
     private void ClickButton() {
@@ -127,107 +104,99 @@ public class BarangayController implements Initializable, ScreenInterface {
         Object source = event.getSource();
 
         if (source instanceof Button) {
-            try {
-                Button clickedButton = (Button) source;
-                unloadForm appUnload = new unloadForm();
-                switch (clickedButton.getId()) {
-                    case "btnClose":
-                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-                        }
-                        break;
-                    case "btnNew":
-                        clearAllFields();
-                        txtField02.requestFocus();
-                        JSONObject poJSON = oParameters.Barangay().newRecord();
-                        pnEditMode = EditMode.READY;
-                        if ("success".equals((String) poJSON.get("result"))) {
-                            pnEditMode = EditMode.ADDNEW;
-                            initButton(pnEditMode);
-                            initTabAnchor();
-                            loadRecord();
-                        } else {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            initTabAnchor();
-                        }
-                        break;
-                    case "btnBrowse":
-                        String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
-                        poJSON = oParameters.Barangay().searchRecord(lsValue, false);
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSeeks01.clear();
-                            break;
-                        }
-                        pnEditMode = EditMode.READY;
+            Button clickedButton = (Button) source;
+            unloadForm appUnload = new unloadForm();
+            switch (clickedButton.getId()) {
+                case "btnClose":
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                    }
+                    break;
+                case "btnNew":
+                    clearAllFields();
+                    txtField02.requestFocus();
+                    JSONObject poJSON = oParameters.Barangay().newRecord();
+                    pnEditMode = EditMode.READY;
+                    if ("success".equals((String) poJSON.get("result"))) {
+                        pnEditMode = EditMode.ADDNEW;
+                        initButton(pnEditMode);
+        initTabAnchor();
                         loadRecord();
-                        initTabAnchor();
+                    } else {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+        initTabAnchor();
+                    }
+                    break;
+                case "btnBrowse":
+                    String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
+                    poJSON = oParameters.Barangay().searchRecord(lsValue, false);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        txtSeeks01.clear();
                         break;
-                    case "btnUpdate":
-                        poJSON = oParameters.Barangay().updateRecord();
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            break;
-                        }
-                        pnEditMode = oParameters.Barangay().getEditMode();
+                    }
+                    pnEditMode = EditMode.READY;
+                    loadRecord();
+        initTabAnchor();
+                    break;
+                case "btnUpdate":
+                    poJSON = oParameters.Barangay().updateRecord();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                        break;
+                    }
+                    pnEditMode = oParameters.Barangay().getEditMode();
+                    initButton(pnEditMode);
+                    initTabAnchor();
+                    break;
+                case "btnCancel":
+                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                        clearAllFields();
+                        initializeObject();
+                        pnEditMode = EditMode.UNKNOWN;
                         initButton(pnEditMode);
                         initTabAnchor();
-                        break;
-                    case "btnCancel":
-                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                            clearAllFields();
-                            initializeObject();
-                            pnEditMode = EditMode.UNKNOWN;
-                            initButton(pnEditMode);
-                            initTabAnchor();
-                        }
-                        break;
-                    case "btnSave":
-                        oParameters.Barangay().getModel().setModifyingId(oApp.getUserID());
-                        oParameters.Barangay().getModel().setModifiedDate(oApp.getServerDate());
-                        JSONObject saveResult = oParameters.Barangay().saveRecord();
-                        if ("success".equals((String) saveResult.get("result"))) {
-                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                            pnEditMode = EditMode.UNKNOWN;
-                            initButton(pnEditMode);
-                            clearAllFields();
-                        } else {
-                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        break;
-                    case "btnActivate":
-                        String Status = oParameters.Barangay().getModel().getRecordStatus();
-                        JSONObject poJsON;
+                    }
+                    break;
+                case "btnSave":
+                    oParameters.Barangay().getModel().setModifyingId(oApp.getUserID());
+                    oParameters.Barangay().getModel().setModifiedDate(oApp.getServerDate());
+                    JSONObject saveResult = oParameters.Barangay().saveRecord();
+                    if ("success".equals((String) saveResult.get("result"))) {
+                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                        pnEditMode = EditMode.UNKNOWN;
+                        initButton(pnEditMode);
+                        clearAllFields();
+                    } else {
+                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                    }
+                    break;
+                case "btnActivate":
+                    String Status = oParameters.Barangay().getModel().getRecordStatus();
+                    JSONObject poJsON;
+                    
+                    switch (Status) {
+                        case "0":
+                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                poJsON = oParameters.Barangay().activateRecord();
+                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                loadRecord();
+                            }
+                            break;
+                        case "1":
+                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                poJsON = oParameters.Barangay().deactivateRecord();
+                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                loadRecord();
+                            }
+                            break;
+                        default:
 
-                        switch (Status) {
-                            case "0":
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-                                    poJsON = oParameters.Barangay().activateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
-                                    loadRecord();
-                                }
-                                break;
-                            case "1":
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-                                    poJsON = oParameters.Barangay().deactivateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
-                                    loadRecord();
-                                }
-                                break;
-                            default:
+                            break;
 
-                                break;
+                    }
+                break;
 
-                        }
-                        break;
-
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (GuanzonException ex) {
-                Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -303,165 +272,124 @@ public class BarangayController implements Initializable, ScreenInterface {
             txtField.selectAll();
         }
     };
-
+    
     private void txtField_KeyPressed(KeyEvent event) {
-        try {
-            TextField txtField = (TextField) event.getSource();
-            int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-            String lsValue = (txtField.getText() == null ? "" : txtField.getText());
-            JSONObject poJson;
-            poJson = new JSONObject();
-            switch (event.getCode()) {
-                case F3:
-                    switch (lnIndex) {
-                        case 03:
-                            poJson = oParameters.TownCity().searchRecord(lsValue, false);
-                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                            }
-                            oParameters.Barangay().getModel().setTownId(oParameters.TownCity().getModel().getTownId());
-                            txtField03.setText((String) oParameters.TownCity().getModel().getDescription());
-                            break;
-                    }
-                case ENTER:
-            }
-            switch (event.getCode()) {
-                case ENTER:
-                    CommonUtils.SetNextFocus(txtField);
-                case DOWN:
-                    CommonUtils.SetNextFocus(txtField);
-                    break;
-                case UP:
-                    CommonUtils.SetPreviousFocus(txtField);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 03:
+                        poJson = oParameters.TownCity().searchRecord(lsValue, false);
+                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        oParameters.Barangay().getModel().setTownId(oParameters.TownCity().getModel().getTownId());
+                        txtField03.setText((String) oParameters.TownCity().getModel().getTownName());
+                        break;
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
         }
     }
-
     private void txtSeeks_KeyPressed(KeyEvent event) {
-        try {
-            TextField txtField = (TextField) event.getSource();
-            int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-            String lsValue = (txtField.getText() == null ? "" : txtField.getText());
-            JSONObject poJson;
-            poJson = new JSONObject();
-            switch (event.getCode()) {
-                case F3:
-                    switch (lnIndex) {
-                        case 01:
-                            poJson = oParameters.Barangay().searchRecord(lsValue, false);
-                            if ("error".equals((String) poJson.get("result"))) {
-                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                                txtSeeks01.clear();
-                                break;
-                            }
-                            txtSeeks01.setText((String) oParameters.Barangay().getModel().getBarangayName());
-                            pnEditMode = EditMode.READY;
-                            loadRecord();
-                            break;
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+        JSONObject poJson;
+        poJson = new JSONObject();
+        switch (event.getCode()) {
+            case F3:
+                switch (lnIndex) {
+                    case 01:
+                        poJson = oParameters.Barangay().searchRecord(lsValue, false);
+                    if ("error".equals((String) poJson.get("result"))) {
+                        ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                        txtSeeks01.clear();
+                        break;
                     }
-                case ENTER:
-            }
-            switch (event.getCode()) {
-                case ENTER:
-                    CommonUtils.SetNextFocus(txtField);
-                case DOWN:
-                    CommonUtils.SetNextFocus(txtField);
+                    txtSeeks01.setText((String) oParameters.Barangay().getModel().getBarangayName());
+                    pnEditMode = EditMode.READY;
+                    loadRecord();
                     break;
-                case UP:
-                    CommonUtils.SetPreviousFocus(txtField);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            case ENTER:
+        }
+        switch (event.getCode()) {
+            case ENTER:
+                CommonUtils.SetNextFocus(txtField);
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
         }
     }
-
+    
     private void loadRecord() {
-        try {
-            boolean lbActive = oParameters.Barangay().getModel().getRecordStatus() == "1";
+        boolean lbActive = oParameters.Barangay().getModel().getRecordStatus() == "1";
+        
+        psPrimary = oParameters.Barangay().getModel().getBarangayId();
+        
+        txtField01.setText(oParameters.Barangay().getModel().getBarangayId());
+        txtField02.setText(oParameters.Barangay().getModel().getBarangayName());
+        txtField03.setText(oParameters.Barangay().getModel().Town().getTownName());
 
-            psPrimary = oParameters.Barangay().getModel().getBarangayId();
+        cbField02.setSelected(oParameters.Barangay().getModel().hasRoute());
+        cbField03.setSelected(oParameters.Barangay().getModel().isBlacklisted());
 
-            txtField01.setText(oParameters.Barangay().getModel().getBarangayId());
-            txtField02.setText(oParameters.Barangay().getModel().getBarangayName());
-            txtField03.setText(oParameters.Barangay().getModel().Town().getDescription());
-
-            cbField02.setSelected(oParameters.Barangay().getModel().hasRoute());
-            cbField03.setSelected(oParameters.Barangay().getModel().isBlacklisted());
-
-            switch (oParameters.Barangay().getModel().getRecordStatus()) {
-                case "1":
-                    btnActivate.setText("Deactivate");
-                    faActivate.setGlyphName("CLOSE");
-                    cbField01.setSelected(true);
-                    break;
-                case "0":
-                    btnActivate.setText("Activate");
-                    faActivate.setGlyphName("CHECK");
-                    cbField01.setSelected(false);
-                    break;
-            }
-        } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        switch(oParameters.Barangay().getModel().getRecordStatus()){
+            case "1":
+                 btnActivate.setText("Deactivate");
+                faActivate.setGlyphName("CLOSE");
+                cbField01.setSelected( true);
+                break;
+            case "0":
+                btnActivate.setText("Activate");
+                faActivate.setGlyphName("CHECK");
+                cbField01.setSelected( false);
+                break;
+        }   
     }
-
+    
     @FXML
     void cbField01_Clicked(MouseEvent event) {
-        if (cbField01.isSelected()) {
-            try {
-                oParameters.Barangay().getModel().setRecordStatus("1");
-            } catch (SQLException ex) {
-                Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (GuanzonException ex) {
-                Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            try {
-                oParameters.Barangay().getModel().setRecordStatus("0");
-            } catch (SQLException ex) {
-                Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (GuanzonException ex) {
-                Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if (cbField01.isSelected()){
+            oParameters.Barangay().getModel().setRecordStatus("1");
+        }else{
+            oParameters.Barangay().getModel().setRecordStatus("0");
         }
     }
-
+    
     @FXML
     void cbField02_Clicked(MouseEvent event) {
-        try {
-            oParameters.Barangay().getModel().hasRoute(cbField02.isSelected());
-        } catch (SQLException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+       oParameters.Barangay().getModel().hasRoute(cbField02.isSelected());
     }
-
+    
     @FXML
     void cbField03_Clicked(MouseEvent event) {
-        try {
-            oParameters.Barangay().getModel().isBlacklisted(cbField03.isSelected());
-        } catch (SQLException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+       oParameters.Barangay().getModel().isBlacklisted(cbField03.isSelected());
     }
-
     private void initTabAnchor() {
-        if (AnchorInputs == null) {
-            System.err.println("Error: AnchorInput is not initialized.");
-            return;
-        }
+    if (AnchorInputs == null) {
+        System.err.println("Error: AnchorInput is not initialized.");
+        return;
+    }
+    
+    boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
+    AnchorInputs.setDisable(!isEditable);
+}
 
-        boolean isEditable = (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
-        AnchorInputs.setDisable(!isEditable);
     }
 
-}

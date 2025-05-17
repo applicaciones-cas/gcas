@@ -26,8 +26,8 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
-//import org.guanzon.cas.inv.Inv;
-//import org.guanzon.cas.inv.ObservableListUtil;
+import org.guanzon.cas.inv.Inv;
+import org.guanzon.cas.inv.ObservableListUtil;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
@@ -51,7 +51,7 @@ public class InventorySerialController implements Initializable {
     private String psCode;
     private String lsStockID, lsBrand;
 //    private Inv oTrans;
-//    private Inv oTrans;
+    private Inv oTrans;
     private ParamControllers oParameters;
     private InventoryMaintenanceController parentController;
 
@@ -105,6 +105,8 @@ public class InventorySerialController implements Initializable {
     @FXML
     private TableColumn index07;
 
+
+
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
@@ -115,11 +117,12 @@ public class InventorySerialController implements Initializable {
 
     private String fsCode;
 
-//    private Inv poTrans;
-//
-//    public void setFsCode(Inv fsCode) {
-//        this.poTrans = fsCode;
-//    }
+    private Inv poTrans;
+
+    public void setFsCode(Inv fsCode) {
+        this.poTrans = fsCode;
+    }
+
     public void setBranchNme(String foValue) {
         lsBrand = foValue;
     }
@@ -134,43 +137,44 @@ public class InventorySerialController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        
         initializeObject();
         initBrand();
         initDetails();
         pbLoaded = true;
         ClickButton();
-        initTable();
+        initTable();   
     }
 
     private void initializeObject() {
         String category = System.getProperty("store.inventory.industry");
         System.out.println("category == " + category);
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-//        oParameters = new ParamControllers(oApp, logwrapr);
-//        oTrans = new Inv(oApp, "", logwrapr);  // Ensure this isn't overwriting necessary data
+        oParameters = new ParamControllers(oApp, logwrapr);
+        oTrans = new Inv(oApp, "", logwrapr);  // Ensure this isn't overwriting necessary data
     }
 
     private void initBrand() {
-//        JSONObject poJson;
-//        poJson = new JSONObject();
-//        poJson = oParameters.Brand().searchRecord(lsBrand, true);
-//        if ("success".equals((String) poJson.get("result"))) {
-//            txtField03.setText(oParameters.Brand().getModel().getDescription());
-//        }
+        JSONObject poJson;
+        poJson = new JSONObject();
+        poJson = oParameters.Brand().searchRecord(lsBrand, true);
+        if ("success".equals((String) poJson.get("result"))) {
+            txtField03.setText(oParameters.Brand().getModel().getDescription());
+        }
     }
 
     private void initDetails() {
-//        lsStockID = poTrans.InvMaster().getModel().Inventory().getStockId();
-//        txtField01.setText(poTrans.InvMaster().getModel().Inventory().getBarCode());
-//        txtField02.setText(poTrans.InvMaster().getModel().Inventory().getDescription());
-//
-//        txtField04.setText(poTrans.InvMaster().getModel().Inventory().Model().getDescription());
-//        txtField05.setText(poTrans.InvMaster().getModel().Inventory().Color().getDescription());
-//        txtField06.setText(poTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
-//
-//        ObservableList<String> unitTypes = ObservableListUtil.UNIT_TYPES;
-//        cmbField01.setItems(unitTypes);
-//        cmbField01.getSelectionModel().select(7);
+        lsStockID = poTrans.InvMaster().getModel().Inventory().getStockId();
+        txtField01.setText(poTrans.InvMaster().getModel().Inventory().getBarCode());
+        txtField02.setText(poTrans.InvMaster().getModel().Inventory().getDescription());
+
+        txtField04.setText(poTrans.InvMaster().getModel().Inventory().Model().getDescription());
+        txtField05.setText(poTrans.InvMaster().getModel().Inventory().Color().getDescription());
+        txtField06.setText(poTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
+        
+        ObservableList<String> unitTypes = ObservableListUtil.UNIT_TYPES;
+        cmbField01.setItems(unitTypes);
+        cmbField01.getSelectionModel().select(7);
     }
 
     /*Handle button click*/
@@ -181,70 +185,70 @@ public class InventorySerialController implements Initializable {
     }
 
     private void handleButtonAction(ActionEvent event) {
-//        Object source = event.getSource();
-//        JSONObject poJSON;
-//        if (source instanceof Button) {
-//            Button clickedButton = (Button) source;
-//            unloadForm appUnload = new unloadForm();
-//            switch (clickedButton.getId()) {
-//                case "btnClose":  //Close
-//                    appUnload.useParentController("");
-//                    initializeObject();
-//                    CommonUtils.closeStage(btnClose);
-//                    break;
-//
-//                case "btnOkay":  //Close
-//                    appUnload.useParentController("");
-//                    initializeObject();
-//                    CommonUtils.closeStage(btnOkay);
-//                    break;
-//
-//                case "btnLoadSerial":
-////                    System.out.println("LOAD SERIAL == " + poTrans.InvMaster().s);
-//                    String UnitType = String.valueOf(cmbField01.getSelectionModel().getSelectedIndex());
-//                    poJSON = new JSONObject();
-//
-//                    poTrans.OpenInvSerialLedger(lsStockID, "7".equals(UnitType) ? "%" : UnitType);
-//                    loadSerialLedger();
-//                    break;
-//            }
-//        }
-    }
+        Object source = event.getSource();
+        JSONObject poJSON;
+        if (source instanceof Button) {
+            Button clickedButton = (Button) source;
+            unloadForm appUnload = new unloadForm();
+            switch (clickedButton.getId()) {
+                case "btnClose":  //Close                    
+                    appUnload.useParentController("");
+                    initializeObject();
+                    CommonUtils.closeStage(btnClose);
+                    break;
 
+                case "btnOkay":  //Close
+                    appUnload.useParentController("");
+                    initializeObject();
+                    CommonUtils.closeStage(btnOkay);
+                    break;
+
+                case "btnLoadSerial":
+//                    System.out.println("LOAD SERIAL == " + poTrans.InvMaster().s);
+                    String UnitType = String.valueOf(cmbField01.getSelectionModel().getSelectedIndex());
+                    poJSON = new JSONObject();
+                    
+                    poTrans.OpenInvSerialLedger(lsStockID, "7".equals(UnitType) ? "%" : UnitType);
+                    loadSerialLedger();
+                    break;
+            }
+        }
+    }
+    
     private void loadSerialLedger() {
-//        System.out.println("nagload and ledger");
-//        data.clear();
-//        System.out.println("Count == " + poTrans.getInvSerialCount());
-//        if (poTrans.getInvSerialCount() > 0) {
-//            for (int lnCtr = 0; lnCtr < poTrans.getInvSerialCount(); lnCtr++) {
-//                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
-//
-//                // Debugging individual components
-//                System.out.println("Serial 02: " + String.valueOf(lnCtr + 1));
-//                System.out.println("Serial ID: " + poTrans.InvSerial(lnCtr).getSerialId());
-//                System.out.println("Serial 01: " + poTrans.InvSerial(lnCtr).getSerialOne());
-//                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getSerialTwo());
-//                System.out.println("Serial 01: " + poTrans.InvSerial(lnCtr).getLocationId());
-//                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getSoldStatus());
-//                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getUnitType());
-//                System.out.println("-------------------------------------------------------------");
-//
-//                data.add(new ModelInvSerial(
-//                        String.valueOf(lnCtr + 1),
-//                        poTrans.InvSerial(lnCtr).getSerialId(),
-//                        poTrans.InvSerial(lnCtr).getSerialOne(),
-//                        poTrans.InvSerial(lnCtr).getSerialTwo(),
-//                        poTrans.InvSerial(lnCtr).getLocationId(),
-//                        poTrans.InvSerial(lnCtr).getSoldStatus(),
-//                        poTrans.InvSerial(lnCtr).getUnitType(),
-//                        ""
-//                ));
-//            }
-//        } else {
-//            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
-//        }
-    }
+        System.out.println("nagload and ledger");
+        data.clear();
+        System.out.println("Count == " + poTrans.getInvSerialCount());
+        if (poTrans.getInvSerialCount() > 0) {
+            for (int lnCtr = 0; lnCtr < poTrans.getInvSerialCount(); lnCtr++) {
+                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
 
+                // Debugging individual components
+                System.out.println("Serial 02: " + String.valueOf(lnCtr + 1));
+                System.out.println("Serial ID: " + poTrans.InvSerial(lnCtr).getSerialId());
+                System.out.println("Serial 01: " + poTrans.InvSerial(lnCtr).getSerialOne());
+                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getSerialTwo());
+                System.out.println("Serial 01: " + poTrans.InvSerial(lnCtr).getLocationId());
+                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getSoldStatus());
+                System.out.println("Serial 02: " + poTrans.InvSerial(lnCtr).getUnitType());
+                System.out.println("-------------------------------------------------------------");
+
+                data.add(new ModelInvSerial(
+                        String.valueOf(lnCtr + 1),
+                        poTrans.InvSerial(lnCtr).getSerialId(),                       
+                        poTrans.InvSerial(lnCtr).getSerialOne(),
+                        poTrans.InvSerial(lnCtr).getSerialTwo(),
+                        poTrans.InvSerial(lnCtr).getLocationId(),
+                        poTrans.InvSerial(lnCtr).getSoldStatus(),
+                        poTrans.InvSerial(lnCtr).getUnitType()
+                             ,""                       
+                ));
+            }
+        } else {
+            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
+        }
+    }
+    
 //    private void loadSerialLedger() {
 //        data.clear();
 //
@@ -260,18 +264,20 @@ public class InventorySerialController implements Initializable {
 //
 //                data.add(new ModelInvSerial(
 //                        String.valueOf(lnCtr + 1),
-//                        oTrans.InvSerial(lnCtr).getSerialId(),
+//                        oTrans.InvSerial(lnCtr).getSerialId(),                       
 //                        oTrans.InvSerial(lnCtr).getSerialOne(),
 //                        oTrans.InvSerial(lnCtr).getSerialTwo(),
 //                        oTrans.InvSerial(lnCtr).getLocationId(),
 //                        oTrans.InvSerial(lnCtr).getSoldStatus(),
 //                        oTrans.InvSerial(lnCtr).getUnitType()
-//                             ,""
+//                             ,""                       
 //                ));
 ////            lnCtr += 1;
 //            }
 //        }
 //    }
+
+
     private void initTable() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
