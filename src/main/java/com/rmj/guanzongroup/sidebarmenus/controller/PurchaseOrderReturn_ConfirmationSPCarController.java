@@ -349,7 +349,8 @@ public class PurchaseOrderReturn_ConfirmationSPCarController implements Initiali
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
-                                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
+                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
+                                showRetainedHighlight(true);
                             }
                         } else {
                             return;
@@ -365,8 +366,7 @@ public class PurchaseOrderReturn_ConfirmationSPCarController implements Initiali
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
-                                showRetainedHighlight(true);
+                                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(pnMain + 1), "#FAA0A0", highlightedRowsMain);
                             }
                         } else {
                             return;
