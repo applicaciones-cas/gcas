@@ -13,13 +13,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONObject;
 
-public class PaymentRequestController implements Initializable,ScreenInterface{
+public class PaymentRequestController implements Initializable, ScreenInterface {
+
     private final String pxeModuleName = "Payment Request";
-    private GRider oApp;
+    private GRiderCAS oApp;
     private JSONObject poJSON;
-    
+
     @FXML
     private AnchorPane apBrowse;
     @FXML
@@ -75,14 +77,26 @@ public class PaymentRequestController implements Initializable,ScreenInterface{
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
+    }
 
     @FXML
     private void cmdButton_Click(ActionEvent event) {
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 }
