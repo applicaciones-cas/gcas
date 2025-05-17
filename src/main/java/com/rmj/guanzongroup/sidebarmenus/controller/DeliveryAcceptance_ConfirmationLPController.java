@@ -77,7 +77,6 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
-import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
@@ -95,6 +94,7 @@ import javafx.animation.PauseTransition;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
+import org.guanzon.appdriver.base.MiscUtil;
 import javafx.util.Pair;
 
 /**
@@ -102,14 +102,14 @@ import javafx.util.Pair;
  *
  * @author User
  */
-public class DeliveryAcceptance_ConfirmationController implements Initializable, ScreenInterface {
+public class DeliveryAcceptance_ConfirmationLPController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "Purchase Order Receiving Confirmation";
+    private final String pxeModuleName = "Purchase Order Receiving Confirmation LP";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
     boolean isPrinted = false;
@@ -284,11 +284,11 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                                     loadTableDetail();
                                     loadTableAttachment();
                                 } catch (CloneNotSupportedException ex) {
-                                    Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
                                 } catch (SQLException ex) {
-                                    Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
                                 } catch (GuanzonException ex) {
-                                    Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             });
                         });
@@ -543,6 +543,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     loadTableDetail();
                     loadTableAttachment();
                 }
+
                 initButton(pnEditMode);
 
                 if (lsButton.equals("btnUpdate")) {
@@ -555,7 +556,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException | IOException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -698,14 +699,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         }
         if (!nv) {
             /*Lost Focus*/
-
             switch (lsTxtFieldID) {
                 case "tfDescription":
-                    if (lsValue.equals("")) {
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
-                    }
-
-                    break;
                 case "tfBarcode":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
@@ -729,6 +724,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
+
                     break;
                 case "tfReceiveQuantity":
                     if (lsValue.isEmpty()) {
@@ -744,6 +740,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             break;
                         }
                     }
+
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -763,7 +760,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 delay.play();
             });
         }
-
     };
 
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
@@ -891,6 +887,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSearchSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             } else {
@@ -964,13 +961,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                                 break;
                             }
                             loadTableDetail();
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(event1 -> {
-                                    tfReceiveQuantity.requestFocus();
-                                });
-                                delay.play();
-                            });
+                            tfReceiveQuantity.requestFocus();
                             break;
                         case "tfSupersede":
                             poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail);
@@ -1048,11 +1039,10 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 default:
                     break;
             }
-
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1081,6 +1071,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     } catch (DateTimeParseException ignored) {
                     }
                 }
+
                 // Check if the user typed something in the text field
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
@@ -1138,6 +1129,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
                         break;
                 }
+                datePicker.getEditor().setText(formattedDate);
                 if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     // datePicker.requestFocus();
@@ -1149,8 +1141,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         loadRecordMaster();
                     }
                 });
-                datePicker.getEditor().setText(formattedDate);
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1250,6 +1240,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                     } catch (Exception e) {
 
                     }
+
                     if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
                         //pending
                         //retreiving using column index
@@ -1261,9 +1252,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                                         String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                                 ));
                             } catch (SQLException ex) {
-                                Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (GuanzonException ex) {
-                                Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
                             }
 
                             if (poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.CONFIRMED)) {
@@ -1280,6 +1271,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                             tblViewPuchaseOrder.getSelectionModel().select(0);
                             tblViewPuchaseOrder.getFocusModel().focus(0);
                             pnMain = tblViewPuchaseOrder.getSelectionModel().getSelectedIndex();
+
                         }
                     } else {
                         /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
@@ -1319,8 +1311,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
     public void loadRecordSearch() {
         try {
-//            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
-            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
+
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
@@ -1337,7 +1329,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             }
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1393,7 +1385,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     }
 
     public void loadRecordDetail() {
-
         try {
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
                 return;
@@ -1410,7 +1401,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 tfBarcode.getStyleClass().add("DisabledTextField");
                 tfDescription.getStyleClass().add("DisabledTextField");
             }
-
             // Expiry Date
             String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Detail(pnDetail).getExpiryDate());
             dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
@@ -1430,9 +1420,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
             updateCaretPositions(apDetail);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1537,9 +1527,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -1648,9 +1638,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             Platform.runLater(() -> {
                 loadTableAttachment();
             });
-
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1759,11 +1748,11 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         }
                         loadRecordMaster();
                     } catch (SQLException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(DeliveryAcceptance_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
 
@@ -1951,7 +1940,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-
         JFXUtil.initComboBoxCellDesignColor(cmbAttachmentType, "#FF8201");
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost);
@@ -1967,6 +1955,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 }
             }
         });
+
     }
 
     public void initTableOnClick() {
@@ -1978,6 +1967,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 resetImageBounds();
             }
         });
+
         tblViewOrderDetails.setOnMouseClicked(event -> {
             if (details_data.size() > 0) {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
@@ -2339,7 +2329,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         if (attachment_data.size() <= 0) {
             return;
         }
-
         currentIndex = pnAttachment;
         int newIndex = currentIndex + direction;
 
