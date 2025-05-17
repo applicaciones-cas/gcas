@@ -229,9 +229,9 @@
                                                                 <Label text="Reference No." GridPane.columnIndex="6" GridPane.rowIndex="5" />
                                                                 <Label text="Supplier" GridPane.rowIndex="5" />
                                                                 <Label text="Remarks" GridPane.rowIndex="7" />
-                                                                <CheckBox fx:id="chkbAdvancePayment" mnemonicParsing="false" text="w/ Adv Rate" GridPane.columnIndex="10" GridPane.rowIndex="7" />
+                                                                <CheckBox fx:id="chkbAdvancePayment" mnemonicParsing="false" text="w/ Adv Rate (%)" GridPane.columnIndex="10" GridPane.rowIndex="7" />
                                                                 <TextField fx:id="tfNetAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" promptText="0.00" style="-fx-font-weight: bold;" GridPane.columnIndex="12" GridPane.rowIndex="9" />
-                                                                <Label text="Disc. Rate" GridPane.columnIndex="10" GridPane.rowIndex="5" />
+                                                                <Label text="Disc. Rate (%)" GridPane.columnIndex="10" GridPane.rowIndex="5" />
                                                                 <Label text="Net Amount" GridPane.columnIndex="10" GridPane.rowIndex="9">
                                                                     <font>
                                                                         <Font name="System Bold" size="15.0" />
