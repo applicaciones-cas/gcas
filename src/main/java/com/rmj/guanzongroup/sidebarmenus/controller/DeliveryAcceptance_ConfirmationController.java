@@ -40,7 +40,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
-import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONObject;
 
 /**
@@ -51,7 +51,7 @@ import org.json.simple.JSONObject;
 public class DeliveryAcceptance_ConfirmationController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Purchasing Receiving Confirmation";
-    private GRider oApp;
+    private GRiderCAS oApp;
     private JSONObject poJSON;
 
     private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
@@ -301,7 +301,6 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             tblAttachments.getSelectionModel().select(newIndex);
             pnAttachmentRow = newIndex;
 
-            
             if (isImageViewOutOfBounds(imageView, stackPane1)) {
                 resetImageBounds();
             }
@@ -404,7 +403,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 return;
         }
     }
-    
+
     private boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
         Bounds clipBounds = stackPane.getClip().getBoundsInParent();
         Bounds imageBounds = imageView.getBoundsInParent();
@@ -414,6 +413,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                 || imageBounds.getMaxY() < clipBounds.getMinY()
                 || imageBounds.getMinY() > clipBounds.getMaxY();
     }
+
     public void resetImageBounds() {
         imageView.setScaleX(1.0);
         imageView.setScaleY(1.0);
@@ -430,8 +430,21 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             resetImageBounds();
         }
     }
+
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 }

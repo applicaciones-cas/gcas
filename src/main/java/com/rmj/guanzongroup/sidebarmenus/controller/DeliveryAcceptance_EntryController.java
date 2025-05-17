@@ -20,15 +20,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONObject;
 
-public class DeliveryAcceptance_EntryController implements Initializable,ScreenInterface {
+public class DeliveryAcceptance_EntryController implements Initializable, ScreenInterface {
+
     private final String pxeModuleName = "Purchasing Receiving";
-    private GRider oApp;
+    private GRiderCAS oApp;
     private JSONObject poJSON;
 
     private ObservableList<ModelPurchaseOrder> data = FXCollections.observableArrayList();
-    
+
     @FXML
     private AnchorPane apBrowse;
     @FXML
@@ -141,7 +143,7 @@ public class DeliveryAcceptance_EntryController implements Initializable,ScreenI
     private TableColumn tblindex11_order_details;
     @FXML
     private TableColumn tblindex13_order_details;
-    
+
     @FXML
     void cmdButton_Click(ActionEvent event) {
 
@@ -169,6 +171,7 @@ public class DeliveryAcceptance_EntryController implements Initializable,ScreenI
 
         tblViewStock_Request.setItems(data);
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("working");
@@ -178,7 +181,19 @@ public class DeliveryAcceptance_EntryController implements Initializable,ScreenI
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 }
