@@ -318,7 +318,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         break;
                     case "btnSerials":
                         if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
-                            ShowMessageFX.Warning(null, pxeModuleName, "Selected item is not serialize.");
+                            ShowMessageFX.Warning(null, pxeModuleName, "Selected item is not serialized.");
                             return;
                         }
                         showSerialDialog();
