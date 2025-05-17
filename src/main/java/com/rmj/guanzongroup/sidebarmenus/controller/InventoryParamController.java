@@ -7,7 +7,10 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvSubUnit;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -36,6 +39,8 @@ import javafx.scene.text.Text;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inv.Inventory;
@@ -50,9 +55,9 @@ import org.json.simple.JSONObject;
 public class InventoryParamController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Inventory Parameter";
-//    LogWrapper logwrapr = new LogWrapper("cas", "cas-err.log");
+    LogWrapper logwrapr = new LogWrapper("cas", "cas-err.log");
 
-    private GRider oApp;
+    private GRiderCAS oApp;
     private int pnEditMode;
     private Inventory oTrans;
     private ParamControllers oParameters;
@@ -60,7 +65,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 
     private ObservableList<ModelInvSubUnit> data = FXCollections.observableArrayList();
     String category = System.getProperty("store.inventory.industry");
-    
+
     @FXML
     private AnchorPane AnchorInput, AnchorTable, AnchorMain;
 
@@ -119,8 +124,20 @@ public class InventoryParamController implements Initializable, ScreenInterface 
      * Initializes the controller class.
      */
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 
     @FXML
@@ -150,7 +167,7 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
         clearAllFields();
         initializeObject();
         InitTextFields();
@@ -163,18 +180,16 @@ public class InventoryParamController implements Initializable, ScreenInterface 
     }
 
     private void initializeObject() {
-        
+
         System.out.println("category == " + category);
         LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-        oTrans = new Inventory();
+//        oTrans = new Inventory();
         oTrans.setApplicationDriver(oApp);
         oTrans.setWithParentClass(false);
         oTrans.setLogWrapper(logwrapr);
         oTrans.initialize();
         oParameters = new ParamControllers(oApp, logwrapr);
-        
-        
-        
+
     }
 
 //    /*Handle button click*/
@@ -193,84 +208,88 @@ public class InventoryParamController implements Initializable, ScreenInterface 
         Object source = event.getSource();
 
         if (source instanceof Button) {
-            Button clickedButton = (Button) source;
-            unloadForm appUnload = new unloadForm();
-            switch (clickedButton.getId()) {
-                case "btnClose":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                        clearAllFields();
-                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-                    }
-                    break;
-                case "btnNew":
-                    clearAllFields();
-                    txtField02.requestFocus();
-                    JSONObject poJSON;
-                    poJSON = oTrans.newRecord();
-                    pnEditMode = EditMode.READY;
-                    if ("success".equals((String) poJSON.get("result"))) {
-                        pnEditMode = EditMode.ADDNEW;
-                        initButton(pnEditMode);
-                        loadInventory();;
-                        initTabAnchor();
-                        
-                    } else {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        System.out.println((String) poJSON.get("message"));
-                        initTabAnchor();
-                    }
-                    break;
-                case "btnBrowse":
-                    
-                    String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
-                    poJSON = oTrans.searchRecord(lsValue, false);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        txtSeeks01.clear();
+            try {
+                Button clickedButton = (Button) source;
+                unloadForm appUnload = new unloadForm();
+                switch (clickedButton.getId()) {
+                    case "btnClose":
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                            clearAllFields();
+                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                        }
                         break;
-                    }
-                    pnEditMode = EditMode.READY;
-                    data.clear();
-                    loadInventory();
-                    break;
-                case "btnUpdate":
-                    poJSON = oTrans.updateRecord();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        break;
-                    }
-                    pnEditMode = oTrans.getEditMode();
-                    System.out.println("EDITMODE sa update= " + pnEditMode);
-                    initButton(pnEditMode);
-                    initTabAnchor();
-                    break;
-                case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                    case "btnNew":
                         clearAllFields();
-                        initializeObject();
-                        pnEditMode = EditMode.UNKNOWN;
-                        initButton(pnEditMode);
-                        initTabAnchor();
-                    }
-                    System.out.println("EDITMODE sa cancel= " + pnEditMode);
-                    break;
-                case "btnSave":
-                    oTrans.getModel().setModifyingId(oApp.getUserID());
-                    oTrans.getModel().setModifiedDate(oApp.getServerDate());
-                    JSONObject saveResult = oTrans.saveRecord();
-                    if ("success".equals((String) saveResult.get("result"))) {
-                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                        pnEditMode = EditMode.UNKNOWN;
-                        initButton(pnEditMode);
-                        clearAllFields();
-                        System.out.println("Record saved successfully.");
-                    } else {
-                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                        System.out.println("Record not saved successfully.");
-                        System.out.println((String) saveResult.get("message"));
-                    }
+                        txtField02.requestFocus();
+                        JSONObject poJSON;
+                        poJSON = oTrans.newRecord();
+                        pnEditMode = EditMode.READY;
+                        if ("success".equals((String) poJSON.get("result"))) {
+                            pnEditMode = EditMode.ADDNEW;
+                            initButton(pnEditMode);
+                            loadInventory();;
+                            initTabAnchor();
 
-                    break;
+                        } else {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            System.out.println((String) poJSON.get("message"));
+                            initTabAnchor();
+                        }
+                        break;
+                    case "btnBrowse":
+
+                        String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
+                        poJSON = oTrans.searchRecord(lsValue, false);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        pnEditMode = EditMode.READY;
+                        data.clear();
+                        loadInventory();
+                        break;
+                    case "btnUpdate":
+                        poJSON = oTrans.updateRecord();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                        pnEditMode = oTrans.getEditMode();
+                        System.out.println("EDITMODE sa update= " + pnEditMode);
+                        initButton(pnEditMode);
+                        initTabAnchor();
+                        break;
+                    case "btnCancel":
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                            clearAllFields();
+                            initializeObject();
+                            pnEditMode = EditMode.UNKNOWN;
+                            initButton(pnEditMode);
+                            initTabAnchor();
+                        }
+                        System.out.println("EDITMODE sa cancel= " + pnEditMode);
+                        break;
+                    case "btnSave":
+                        oTrans.getModel().setModifyingId(oApp.getUserID());
+                        oTrans.getModel().setModifiedDate(oApp.getServerDate());
+                        JSONObject saveResult = oTrans.saveRecord();
+                        if ("success".equals((String) saveResult.get("result"))) {
+                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            pnEditMode = EditMode.UNKNOWN;
+                            initButton(pnEditMode);
+                            clearAllFields();
+                            System.out.println("Record saved successfully.");
+                        } else {
+                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            System.out.println("Record not saved successfully.");
+                            System.out.println((String) saveResult.get("message"));
+                        }
+
+                        break;
+                }
+            } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+                Logger.getLogger(InventoryParamController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -302,24 +321,30 @@ public class InventoryParamController implements Initializable, ScreenInterface 
         // Manage visibility and managed state of other buttons
         btnBrowse.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
-        
+
         btnClose.setVisible(true);
         btnClose.setManaged(true);
-        
+
         //allows you to check if branch is warehouse
         isWarehouse();
-        
-    }
-    private boolean isWarehouse() {
-        //Only warehouse branch can use the Button New to create Inventorry
-        JSONObject poJson = oParameters.Branch().searchRecordAttributes(oApp.getBranchCode(), true);
 
-        if ("success".equals(poJson.get("result"))) {
-            boolean isWarehouse = oParameters.Branch().getModel().isWarehouse();
-            btnNew.setVisible(isWarehouse);
-            btnNew.setManaged(isWarehouse);
-            return true;
-        }
+    }
+
+    private boolean isWarehouse() {
+//        try {
+//            //Only warehouse branch can use the Button New to create Inventorry
+//            JSONObject poJson = oParameters.Branch().(oApp.getBranchCode(), true);
+//
+//            if ("success".equals(poJson.get("result"))) {
+//                boolean isWarehouse = oParameters.Branch().getModel().isWarehouse();
+//                btnNew.setVisible(isWarehouse);
+//                btnNew.setManaged(isWarehouse);
+//                return true;
+//            }
+//            return false;
+//        } catch (SQLException | GuanzonException ex) {
+//            Logger.getLogger(InventoryParamController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         return false;
     }
 
@@ -458,157 +483,164 @@ public class InventoryParamController implements Initializable, ScreenInterface 
 
     /*Text Field with search*/
     private void txtField_KeyPressed(KeyEvent event) {
-        TextField txtField = (TextField) event.getSource();
-        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
-        JSONObject poJson;
-        poJson = new JSONObject();
-        switch (event.getCode()) {
-            case F3:
-                switch (lnIndex) {
-                    case 06:
-                        poJson = oParameters.Category().searchRecord(lsValue, false);
-                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        oTrans.getModel().setCategoryFirstLevelId(oParameters.Category().getModel().getCategoryId());
-                        txtField06.setText((String) oParameters.Category().getModel().getDescription());
-                        txtField07.requestFocus();
-                        break;
-                    case 07:
-                        poJson = oParameters.CategoryLevel2().searchRecord(lsValue, false);
-                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        oTrans.getModel().setCategoryIdSecondLevel(oParameters.CategoryLevel2().getModel().getCategoryId());
-                        txtField07.setText((String) oParameters.CategoryLevel2().getModel().getDescription());
-                        poJson = oParameters.InventoryType().searchRecord(oParameters.CategoryLevel2().getModel().getInventoryTypeCode(), true);
-                        if("success".equals((String)poJson.get("result"))){
-                            cmbField01.setValue(oParameters.InventoryType().getModel().getDescription());
-                            oTrans.getModel().setInventoryTypeId(oParameters.CategoryLevel2().getModel().getInventoryTypeCode());
-                        }
-                        break;
-                    case 8:
-                        poJson = oParameters.CategoryLevel3().searchRecord(lsValue, false);
-                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        oTrans.getModel().setCategoryIdThirdLevel(oParameters.CategoryLevel3().getModel().getCategoryId());
-                        txtField08.setText((String) oParameters.CategoryLevel3().getModel().getDescription());
-                        break;
-                    case 9:
-                        poJson = oParameters.CategoryLevel4().searchRecord(lsValue, false);
-                        System.out.println("poJson = " + poJson.toJSONString());
-                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        oTrans.getModel().setCategoryIdFourthLevel(oParameters.CategoryLevel4().getModel().getCategoryId());
-                        txtField09.setText((String) oParameters.CategoryLevel4().getModel().getDescription());
-                        break;
-                    case 10:
-                        poJson = oParameters.Brand().searchRecord(lsValue, false);
-                        System.out.println("poJson = " + poJson.toJSONString());
-                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        oTrans.getModel().setBrandId(oParameters.Brand().getModel().getBrandId());
-                        txtField10.setText((String) oParameters.Brand().getModel().getDescription());
-                        break;
-                    case 11:
-                        poJson = oParameters.Model().searchRecord(lsValue, false);
-                        System.out.println("poJson = " + poJson.toJSONString());
-                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        oTrans.getModel().setModelId(oParameters.Model().getModel().getModelId());
-                        txtField11.setText((String) oParameters.Model().getModel().getDescription());
-                        break;
-                    case 12:
-                        poJson = oParameters.Color().searchRecord(lsValue, false);
-                        System.out.println("poJson = " + poJson.toJSONString());
-                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        oTrans.getModel().setColorId(oParameters.Color().getModel().getColorId());
-                        txtField12.setText((String) oParameters.Color().getModel().getDescription());
-                        break;
-                    case 13:
-                        
-                        poJson = oParameters.Measurement().searchRecord(lsValue, false);
-                        System.out.println("poJson = " + poJson.toJSONString());
-                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        oTrans.getModel().setMeasurementId(oParameters.Measurement().getModel().getMeasureId());
-                        txtField13.setText((String) oParameters.Measurement().getModel().getMeasureName());
-                        break;
-                    case 22:
-                        poJson = new JSONObject();
-                        break;
-                }
-            case ENTER:
-        }
-        switch (event.getCode()) {
-            case ENTER:
-                CommonUtils.SetNextFocus(txtField);
-            case DOWN:
-                CommonUtils.SetNextFocus(txtField);
-                break;
-            case UP:
-                CommonUtils.SetPreviousFocus(txtField);
+        try {
+            TextField txtField = (TextField) event.getSource();
+            int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+            String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+            JSONObject poJson;
+            poJson = new JSONObject();
+            switch (event.getCode()) {
+                case F3:
+                    switch (lnIndex) {
+                        case 06:
+                            poJson = oParameters.Category().searchRecord(lsValue, false);
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            }
+                            oTrans.getModel().setCategoryFirstLevelId(oParameters.Category().getModel().getCategoryId());
+                            txtField06.setText((String) oParameters.Category().getModel().getDescription());
+                            txtField07.requestFocus();
+                            break;
+                        case 07:
+                            poJson = oParameters.CategoryLevel2().searchRecord(lsValue, false);
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            }
+                            oTrans.getModel().setCategoryIdSecondLevel(oParameters.CategoryLevel2().getModel().getCategoryId());
+                            txtField07.setText((String) oParameters.CategoryLevel2().getModel().getDescription());
+                            poJson = oParameters.InventoryType().searchRecord(oParameters.CategoryLevel2().getModel().getInventoryTypeCode(), true);
+                            if ("success".equals((String) poJson.get("result"))) {
+                                cmbField01.setValue(oParameters.InventoryType().getModel().getDescription());
+                                oTrans.getModel().setInventoryTypeId(oParameters.CategoryLevel2().getModel().getInventoryTypeCode());
+                            }
+                            break;
+                        case 8:
+                            poJson = oParameters.CategoryLevel3().searchRecord(lsValue, false);
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            }
+                            oTrans.getModel().setCategoryIdThirdLevel(oParameters.CategoryLevel3().getModel().getCategoryId());
+                            txtField08.setText((String) oParameters.CategoryLevel3().getModel().getDescription());
+                            break;
+                        case 9:
+                            poJson = oParameters.CategoryLevel4().searchRecord(lsValue, false);
+                            System.out.println("poJson = " + poJson.toJSONString());
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            }
+                            oTrans.getModel().setCategoryIdFourthLevel(oParameters.CategoryLevel4().getModel().getCategoryId());
+                            txtField09.setText((String) oParameters.CategoryLevel4().getModel().getDescription());
+                            break;
+                        case 10:
+                            poJson = oParameters.Brand().searchRecord(lsValue, false);
+                            System.out.println("poJson = " + poJson.toJSONString());
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            }
+                            oTrans.getModel().setBrandId(oParameters.Brand().getModel().getBrandId());
+                            txtField10.setText((String) oParameters.Brand().getModel().getDescription());
+                            break;
+                        case 11:
+                            poJson = oParameters.Model().searchRecord(lsValue, false);
+                            System.out.println("poJson = " + poJson.toJSONString());
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            }
+                            oTrans.getModel().setModelId(oParameters.Model().getModel().getModelId());
+                            txtField11.setText((String) oParameters.Model().getModel().getDescription());
+                            break;
+                        case 12:
+                            poJson = oParameters.Color().searchRecord(lsValue, false);
+                            System.out.println("poJson = " + poJson.toJSONString());
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            }
+                            oTrans.getModel().setColorId(oParameters.Color().getModel().getColorId());
+                            txtField12.setText((String) oParameters.Color().getModel().getDescription());
+                            break;
+                        case 13:
+
+                            poJson = oParameters.Measurement().searchRecord(lsValue, false);
+                            System.out.println("poJson = " + poJson.toJSONString());
+                            if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                            }
+                            oTrans.getModel().setMeasurementId(oParameters.Measurement().getModel().getMeasureId());
+                            txtField13.setText((String) oParameters.Measurement().getModel().getDescription());
+                            break;
+                        case 22:
+                            poJson = new JSONObject();
+                            break;
+                    }
+                case ENTER:
+            }
+            switch (event.getCode()) {
+                case ENTER:
+                    CommonUtils.SetNextFocus(txtField);
+                case DOWN:
+                    CommonUtils.SetNextFocus(txtField);
+                    break;
+                case UP:
+                    CommonUtils.SetPreviousFocus(txtField);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(InventoryParamController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(InventoryParamController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
 
     private void txtSeeks_KeyPressed(KeyEvent event) {
-        TextField txtSeeks = (TextField) event.getSource();
-        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-        String lsValue = (txtSeeks.getText() == null ? "" : txtSeeks.getText());
-        JSONObject poJSON;
-        switch (event.getCode()) {
-            case F3:
-                switch (lnIndex) {
-                    case 1:
-                        System.out.print("LSVALUE OF SEARCH 1 ==== " + lsValue);
-                        poJSON = oTrans.searchRecord(lsValue, true);
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSeeks01.clear();
+        try {
+            TextField txtSeeks = (TextField) event.getSource();
+            int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+            String lsValue = (txtSeeks.getText() == null ? "" : txtSeeks.getText());
+            JSONObject poJSON;
+            switch (event.getCode()) {
+                case F3:
+                    switch (lnIndex) {
+                        case 1:
+                            System.out.print("LSVALUE OF SEARCH 1 ==== " + lsValue);
+                            poJSON = oTrans.searchRecord(lsValue, true);
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtSeeks01.clear();
+                                break;
+                            }
+                            txtSeeks01.setText(oTrans.getModel().getBarCode());
+                            txtSeeks02.setText(oTrans.getModel().getDescription());
+                            pnEditMode = oTrans.getEditMode();
+                            loadInventory();
+
                             break;
-                        }
-                        txtSeeks01.setText(oTrans.getModel().getBarCode());
-                        txtSeeks02.setText(oTrans.getModel().getDescription());
-                        pnEditMode = oTrans.getEditMode();
-                        loadInventory();
-                        
-                        
-                        break;
-                    case 2:
-                        poJSON = oTrans.searchRecord(lsValue, false);
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSeeks01.clear();
+                        case 2:
+                            poJSON = oTrans.searchRecord(lsValue, false);
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtSeeks01.clear();
+                                break;
+                            }
+                            pnEditMode = oTrans.getEditMode();
+                            txtSeeks01.setText(oTrans.getModel().getBarCode());
+                            txtSeeks02.setText(oTrans.getModel().getDescription());
+                            System.out.print("\neditmode on browse == " + pnEditMode);
+                            loadInventory();
+                            System.out.println("EDITMODE sa cancel= " + pnEditMode);
                             break;
-                        }
-                        pnEditMode = oTrans.getEditMode();
-                        txtSeeks01.setText(oTrans.getModel().getBarCode());
-                        txtSeeks02.setText(oTrans.getModel().getDescription());
-                        System.out.print("\neditmode on browse == " + pnEditMode);
-                        loadInventory();
-                        System.out.println("EDITMODE sa cancel= " + pnEditMode);
-                        break;
-                }
-            case ENTER:
-        }
-        switch (event.getCode()) {
-            case ENTER:
-                CommonUtils.SetNextFocus(txtSeeks);
-            case DOWN:
-                CommonUtils.SetNextFocus(txtSeeks);
-                break;
-            case UP:
-                CommonUtils.SetPreviousFocus(txtSeeks);
+                    }
+                case ENTER:
+            }
+            switch (event.getCode()) {
+                case ENTER:
+                    CommonUtils.SetNextFocus(txtSeeks);
+                case DOWN:
+                    CommonUtils.SetNextFocus(txtSeeks);
+                    break;
+                case UP:
+                    CommonUtils.SetPreviousFocus(txtSeeks);
+            }
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(InventoryParamController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -637,38 +669,41 @@ public class InventoryParamController implements Initializable, ScreenInterface 
                 || pnEditMode == EditMode.ADDNEW
                 || pnEditMode == EditMode.UPDATE) {
 
-            txtField01.setText((String) oTrans.getModel().getStockId());
-            txtField02.setText((String) oTrans.getModel().getBarCode());
-            txtField03.setText((String) oTrans.getModel().getAlternateBarCode());
-            txtField04.setText((String) oTrans.getModel().getBriefDescription());
-            txtField05.setText((String) oTrans.getModel().getDescription());
-            txtField06.setText((String) oTrans.getModel().Category().getDescription());
-            txtField07.setText((String) oTrans.getModel().CategoryLevel2().getDescription());
-            txtField08.setText((String) oTrans.getModel().CategoryLevel3().getDescription());
-            txtField09.setText((String) oTrans.getModel().CategoryLevel4().getDescription());
+            try {
+                txtField01.setText((String) oTrans.getModel().getStockId());
+                txtField02.setText((String) oTrans.getModel().getBarCode());
+                txtField03.setText((String) oTrans.getModel().getAlternateBarCode());
+                txtField04.setText((String) oTrans.getModel().getBriefDescription());
+                txtField05.setText((String) oTrans.getModel().getDescription());
+                txtField06.setText((String) oTrans.getModel().Category().getDescription());
+                txtField07.setText((String) oTrans.getModel().CategoryLevel2().getDescription());
+                txtField08.setText((String) oTrans.getModel().CategoryLevel3().getDescription());
+                txtField09.setText((String) oTrans.getModel().CategoryLevel4().getDescription());
 
-            txtField10.setText((String) oTrans.getModel().Brand().getDescription());
-            txtField11.setText((String) oTrans.getModel().Model().getDescription());
-            txtField12.setText((String) oTrans.getModel().Color().getDescription());
-            txtField13.setText((String) oTrans.getModel().Measure().getMeasureName());
+                txtField10.setText((String) oTrans.getModel().Brand().getDescription());
+                txtField11.setText((String) oTrans.getModel().Model().getDescription());
+                txtField12.setText((String) oTrans.getModel().Color().getDescription());
+                txtField13.setText((String) oTrans.getModel().Measure().getDescription());
 
+                txtField14.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel1(), "#,##0.00"));
+                txtField15.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel2(), "#,##0.00"));
+                txtField16.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel3(), "#,##0.00"));
+                txtField17.setText(CommonUtils.NumberFormat(oTrans.getModel().getDealerDiscountRate(), "#,##0.00"));
 
-            txtField14.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel1(), "#,##0.00"));
-            txtField15.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel2(), "#,##0.00"));
-            txtField16.setText(CommonUtils.NumberFormat(oTrans.getModel().getDiscountRateLevel3(), "#,##0.00"));
-            txtField17.setText(CommonUtils.NumberFormat(oTrans.getModel().getDealerDiscountRate(), "#,##0.00"));
+                txtField26.setText(String.valueOf(oTrans.getModel().getMinimumInventoryLevel()));
+                txtField27.setText(String.valueOf(oTrans.getModel().getMaximumInventoryLevel()));
+                txtField18.setText(CommonUtils.NumberFormat(oTrans.getModel().getCost(), "#,##0.00"));
+                txtField19.setText(CommonUtils.NumberFormat(oTrans.getModel().getSellingPrice(), "#,##0.00"));
 
-            txtField26.setText(String.valueOf(oTrans.getModel().getMinimumInventoryLevel()));
-            txtField27.setText(String.valueOf(oTrans.getModel().getMaximumInventoryLevel()));
-            txtField18.setText(CommonUtils.NumberFormat(oTrans.getModel().getCost(), "#,##0.00"));
-            txtField19.setText(CommonUtils.NumberFormat(oTrans.getModel().getSellingPrice(), "#,##0.00"));
+                txtField20.setText((String) oTrans.getModel().getSupersededId());
+                txtField21.setText(String.valueOf(oTrans.getModel().getShelfLife()));
 
-            txtField20.setText((String) oTrans.getModel().getSupersededId());
-            txtField21.setText(String.valueOf(oTrans.getModel().getShelfLife()));
-            
-            chkField01.setSelected("1".equals(oTrans.getModel().isSerialized()));
-            chkField02.setSelected("1".equals(oTrans.getModel().isComboInventory()));
-            chkField03.setSelected("1".equals(oTrans.getModel().isWithPromo()));
+                chkField01.setSelected("1".equals(oTrans.getModel().isSerialized()));
+                chkField02.setSelected("1".equals(oTrans.getModel().isComboInventory()));
+                chkField03.setSelected("1".equals(oTrans.getModel().isWithPromo()));
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryParamController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

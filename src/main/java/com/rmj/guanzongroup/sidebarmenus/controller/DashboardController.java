@@ -1474,9 +1474,6 @@ public class DashboardController implements Initializable {
 //                    return new AccountsAccreditationHistoryController();
 //                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
 //                 return new PurchasingOrder_HistoryController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml":
-                    return new PaymentRequestController();
-
                 /* OTHERS/PARAMETERS/ADDRESS */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
 //                    return new BarangayController();

@@ -32,8 +32,9 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.agent.TableModel;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.LogWrapper;
-import org.guanzon.cas.inv.Inv;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
@@ -42,11 +43,10 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-
 public class InventoryLedgerController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Inventory Ledger";
-    private GRider oApp;
+    private GRiderCAS oApp;
     private int pnEditMode;
 
     private int pnIndex = -1;
@@ -56,8 +56,8 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     private boolean state = false;
 
     private String psCode;
-    private String lsStockID,lsBrand;
-    private Inv oTrans;
+    private String lsStockID, lsBrand;
+//    private Inv oTrans;
     private ParamControllers oParameters;
     private InventoryMaintenanceController parentController;
 
@@ -126,22 +126,31 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     @FXML
     private TableColumn index08;
 
-    public void setGRider(GRider foValue) {
-        oApp = foValue;
-    }
-
     public void setStockID(String foValue) {
         lsStockID = foValue;
     }
+
     public void setBranchNme(String foValue) {
         lsBrand = foValue;
     }
     private String fsCode;
 
-    private Inv poTrans;
+//    private Inv poTrans;
+    @Override
+    public void setGRider(GRiderCAS foValue) {
+        oApp = foValue;
+    }
 
-    public void setFsCode(Inv fsCode) {
-        this.poTrans = fsCode;
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 
     /**
@@ -156,41 +165,48 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
         handleActionButton();
         pbLoaded = true;
         initTable();
-        
-       
+
     }
-    private void handleActionButton(){
+
+    private void handleActionButton() {
         btnCancel.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
         btnLoadLedger.setOnAction(this::cmdButton_Click);
         btnRecalculate.setOnAction(this::cmdButton_Click);
         btnCancel.setOnAction(this::cmdButton_Click);
     }
-    private void initBrand(){
-        JSONObject poJson;
-        poJson = new JSONObject();
-        poJson = oParameters.Brand().searchRecord(lsBrand, true);
-        if ("success".equals((String) poJson.get("result"))) {
-            txtField03.setText(oParameters.Brand().getModel().getDescription());
-        }     
+
+    private void initBrand() {
+        try {
+            JSONObject poJson;
+            poJson = new JSONObject();
+            poJson = oParameters.Brand().searchRecord(lsBrand, true);
+            if ("success".equals((String) poJson.get("result"))) {
+                txtField03.setText(oParameters.Brand().getModel().getDescription());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(InventoryLedgerController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(InventoryLedgerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initDetails() {
-        txtField01.setText(poTrans.InvMaster().getModel().Inventory().getBarCode());
-        txtField02.setText(poTrans.InvMaster().getModel().Inventory().getDescription());
-        
-        txtField04.setText(poTrans.InvMaster().getModel().Inventory().Model().getDescription());
-        txtField05.setText(poTrans.InvMaster().getModel().Inventory().Color().getDescription());
-        txtField06.setText(poTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
+//        txtField01.setText(poTrans.InvMaster().getModel().Inventory().getBarCode());
+//        txtField02.setText(poTrans.InvMaster().getModel().Inventory().getDescription());
+//
+//        txtField04.setText(poTrans.InvMaster().getModel().Inventory().Model().getDescription());
+//        txtField05.setText(poTrans.InvMaster().getModel().Inventory().Color().getDescription());
+//        txtField06.setText(poTrans.InvMaster().getModel().Inventory().Measure().getMeasureName());
     }
 
-   private void initializeObject() {
-    String category = System.getProperty("store.inventory.industry");
-    System.out.println("category == " + category);
-    LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-    oParameters = new ParamControllers(oApp,  logwrapr); 
-    oTrans = new Inv(oApp, "", logwrapr);  // Ensure this isn't overwriting necessary data
-}
+    private void initializeObject() {
+        String category = System.getProperty("store.inventory.industry");
+        System.out.println("category == " + category);
+        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
+        oParameters = new ParamControllers(oApp, logwrapr);
+//        oTrans = new Inv(oApp, "", logwrapr);  // Ensure this isn't overwriting necessary data
+    }
 
     public void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button) event.getSource()).getId();
@@ -200,70 +216,68 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
         switch (lsButton) {
             case "btnClose":  //Close
                 if (parentController != null) {
-                    appUnload.useParentController(poTrans.InvMaster().getModel().Inventory().getStockId());
+//                    appUnload.useParentController(poTrans.InvMaster().getModel().Inventory().getStockId());
                 }
                 initializeObject();
                 CommonUtils.closeStage(btnClose);
                 break;
             case "btnRecalculate":  //Rcalculate
-                ShowMessageFX.Information("This feature is currently unavailable.", 
-                            "Computerized Acounting System", pxeModuleName); 
+                ShowMessageFX.Information("This feature is currently unavailable.",
+                        "Computerized Acounting System", pxeModuleName);
 //                if (data.isEmpty()){
 //                    ShowMessageFX.Information("Please ensure the ledger is loaded before performing recalculation."
-//                            + "Recalculation cannot be completed correctly without loading the ledger first.", 
-//                            "Computerized Acounting System", pxeModuleName);     
+//                            + "Recalculation cannot be completed correctly without loading the ledger first.",
+//                            "Computerized Acounting System", pxeModuleName);
 //                    break;
-//                }else{ 
+//                }else{
 //                    try {
 //
 //                        dpField01.setValue(null);
-                
+
 //                        dpField02.setValue(null);
 ////                        poJson = poTrans.recalculate(poTrans.InvMaster().getModel().Inventory().getStockId());
 //                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                        }  
-//                        ShowMessageFX.Information("Recalculation completed succesfully", 
-//                            "Computerized Acounting System", pxeModuleName); 
+//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        }
+//                        ShowMessageFX.Information("Recalculation completed succesfully",
+//                            "Computerized Acounting System", pxeModuleName);
 //                        poJson = new JSONObject();
 ////                        poJson = oTrans.InvMaster.OpenInvLedger(poTrans.getModel().getStockID());
-//                        
+//
 //                        System.out.println("poJson = " + poJson.toJSONString());
 //                        if("error".equalsIgnoreCase(poJson.get("result").toString())){
-//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);                              
-//                        }  
+//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        }
 //                        loadLedger();
 //
 //                    } catch (SQLException ex) {
 //                        Logger.getLogger(InventoryLedgerController.class.getName()).log(Level.SEVERE, null, ex);
 //                    }
 //                }
-
                 break;
 
             case "btnLoadLedger":  //Close
 //                CommonUtils.closeStage(btnClose);
                 if (isDateEntryOkay()) {
-                    poTrans.OpenInvLedger(lsStockID, fromDate, thruDate);
+//                    poTrans.OpenInvLedger(lsStockID, fromDate, thruDate);
                     loadLedger();
                     break;
                 }
                 break;
 
             case "btnCancel": //OK;
-                if(parentController != null){
-                    appUnload.useParentController(poTrans.InvMaster().getModel().Inventory().getStockId());
+                if (parentController != null) {
+//                    appUnload.useParentController(poTrans.InvMaster().getModel().Inventory().getStockId());
                 }
                 initializeObject();
                 CommonUtils.closeStage(btnCancel);
-            break;
-//            
+                break;
+//
 //            default:
 //                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
 //                return;
         }
     }
-    
 
     private boolean isDateEntryOkay() {
         fromDate = dpField01.getValue();
@@ -288,33 +302,33 @@ public class InventoryLedgerController implements Initializable, ScreenInterface
     }
 
     private void loadLedger() {
-        System.out.println("nagload and ledger");
-        data.clear();
-
-        if (poTrans.getInvLedgerCount() >= 0) {
-            for (int lnCtr = 0; lnCtr < poTrans.getInvLedgerCount(); lnCtr++) {
-                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
-
-                // Debugging individual components
-                System.out.println("Transaction Date: " + poTrans.InvLedger(lnCtr).getTransactionDate());
-                System.out.println("Branch Name: " + poTrans.InvLedger(lnCtr).Branch().getBranchName());
-                System.out.println("Source Code: " + poTrans.InvLedger(lnCtr).getSourceCode());
-                System.out.println("Source No: " + poTrans.InvLedger(lnCtr).getSourceNo());
-
-                data.add(new ModelInvSerialLedger(
-                        String.valueOf(lnCtr + 1),
-                        poTrans.InvLedger(lnCtr).getTransactionDate().toString(),
-                        poTrans.InvLedger(lnCtr).Branch().getBranchName(),
-                        poTrans.InvLedger(lnCtr).getSourceCode(),
-                        poTrans.InvLedger(lnCtr).getSourceNo(),
-                        String.valueOf(poTrans.InvLedger(lnCtr).getQuantityIn()),
-                        String.valueOf(poTrans.InvLedger(lnCtr).getQuantityOut()),
-                        String.valueOf(poTrans.InvLedger(lnCtr).getQuantityOnHand())
-                ));
-            }
-        } else {
-            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
-        }
+//        System.out.println("nagload and ledger");
+//        data.clear();
+//
+//        if (poTrans.getInvLedgerCount() >= 0) {
+//            for (int lnCtr = 0; lnCtr < poTrans.getInvLedgerCount(); lnCtr++) {
+//                System.out.println("Processing Serial Ledger at Index: " + lnCtr);
+//
+//                // Debugging individual components
+//                System.out.println("Transaction Date: " + poTrans.InvLedger(lnCtr).getTransactionDate());
+//                System.out.println("Branch Name: " + poTrans.InvLedger(lnCtr).Branch().getBranchName());
+//                System.out.println("Source Code: " + poTrans.InvLedger(lnCtr).getSourceCode());
+//                System.out.println("Source No: " + poTrans.InvLedger(lnCtr).getSourceNo());
+//
+//                data.add(new ModelInvSerialLedger(
+//                        String.valueOf(lnCtr + 1),
+//                        poTrans.InvLedger(lnCtr).getTransactionDate().toString(),
+//                        poTrans.InvLedger(lnCtr).Branch().getBranchName(),
+//                        poTrans.InvLedger(lnCtr).getSourceCode(),
+//                        poTrans.InvLedger(lnCtr).getSourceNo(),
+//                        String.valueOf(poTrans.InvLedger(lnCtr).getQuantityIn()),
+//                        String.valueOf(poTrans.InvLedger(lnCtr).getQuantityOut()),
+//                        String.valueOf(poTrans.InvLedger(lnCtr).getQuantityOnHand())
+//                ));
+//            }
+//        } else {
+//            ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
+//        }
     }
 
     private void initTable() {
