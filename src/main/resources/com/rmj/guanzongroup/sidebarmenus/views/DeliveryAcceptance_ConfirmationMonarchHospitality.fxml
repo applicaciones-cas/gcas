@@ -386,16 +386,15 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                      <Label text="Inv. Type" GridPane.columnIndex="4" GridPane.rowIndex="4">
+                                                      <Label text="Inv. Type" GridPane.columnIndex="4" GridPane.rowIndex="5">
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                          <Label text="Measure" GridPane.columnIndex="4" GridPane.rowIndex="5">
+                                                                          <Label text="Measure" GridPane.columnIndex="4" GridPane.rowIndex="6">
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font>
                                                                               </Label>
-                                                                              <Label text="Exp. Date" GridPane.columnIndex="4" GridPane.rowIndex="6" />
                                                       <Label text="Cost" GridPane.columnIndex="9" GridPane.rowIndex="2">
                                                                                  <font>
                                                                                     <Font size="12.0" />
@@ -415,13 +414,12 @@
                                                                           <TextField fx:id="tfBarcode" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                           <TextField fx:id="tfDescription" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="2" />
                                                                               <TextField fx:id="tfSupersede" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                                              <DatePicker fx:id="dpExpiryDate" GridPane.columnIndex="6" GridPane.rowIndex="6" />
                                                       <TextField fx:id="tfCost" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="11" GridPane.rowIndex="2" />
                                                       <TextField fx:id="tfReceiveQuantity" alignment="CENTER_RIGHT" GridPane.columnIndex="11" GridPane.rowIndex="6" />
                                                                           <TextField fx:id="tfBrand" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                           <TextField fx:id="tfColor" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                                                                          <TextField fx:id="tfMeasure" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                                      <TextField fx:id="tfInventoryType" disable="true" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                          <TextField fx:id="tfMeasure" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                                      <TextField fx:id="tfInventoryType" disable="true" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                       <TextField fx:id="tfOrderQuantity" alignment="CENTER_RIGHT" disable="true" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="5" />
                                                                           <TextField fx:id="tfModel" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                                       </children>
