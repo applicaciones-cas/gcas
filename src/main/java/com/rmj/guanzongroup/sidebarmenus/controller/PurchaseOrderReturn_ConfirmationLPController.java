@@ -212,10 +212,11 @@ public class PurchaseOrderReturn_ConfirmationLPController implements Initializab
                                 clearTextFields();
                                 initButton(pnEditMode);
                             }
-                            isPrinted = false;
                             Platform.runLater(() -> {
                                 try {
-                                    poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo());
+                                    if (!isPrinted) {
+                                        poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo());
+                                    }
                                     loadRecordMaster();
                                     loadTableDetail();
                                 } catch (CloneNotSupportedException ex) {
@@ -225,6 +226,7 @@ public class PurchaseOrderReturn_ConfirmationLPController implements Initializab
                                 } catch (GuanzonException ex) {
                                     Logger.getLogger(PurchaseOrderReturn_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                                isPrinted = false;
                             });
                         });
                         if ("error".equals((String) poJSON.get("result"))) {

@@ -213,10 +213,11 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                                 clearTextFields();
                                 initButton(pnEditMode);
                             }
-                            isPrinted = false;
                             Platform.runLater(() -> {
                                 try {
-                                    poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo());
+                                    if (!isPrinted) {
+                                        poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo());
+                                    }
                                     loadRecordMaster();
                                     loadTableDetail();
                                 } catch (CloneNotSupportedException ex) {
@@ -226,6 +227,7 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                                 } catch (GuanzonException ex) {
                                     Logger.getLogger(PurchaseOrderReturn_ConfirmationAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                                isPrinted = false;
                             });
                         });
                         if ("error".equals((String) poJSON.get("result"))) {

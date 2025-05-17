@@ -214,10 +214,11 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
                                 clearTextFields();
                                 initButton(pnEditMode);
                             }
-                            isPrinted = false;
                             Platform.runLater(() -> {
                                 try {
-                                    poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo());
+                                    if (!isPrinted) {
+                                        poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.PurchaseOrderReturnList(pnMain).getTransactionNo());
+                                    }
                                     loadRecordMaster();
                                     loadTableDetail();
                                 } catch (CloneNotSupportedException ex) {
@@ -227,6 +228,7 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
                                 } catch (GuanzonException ex) {
                                     Logger.getLogger(PurchaseOrderReturn_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                                isPrinted = false;
                             });
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -349,7 +351,8 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
-                                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
+                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
+                                showRetainedHighlight(true);
                             }
                         } else {
                             return;
@@ -365,8 +368,7 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
-                                showRetainedHighlight(true);
+                                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(pnMain + 1), "#FAA0A0", highlightedRowsMain);
                             }
                         } else {
                             return;
