@@ -278,18 +278,9 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
                             }
                             isPrinted = false;
                             Platform.runLater(() -> {
-                                try {
-                                    poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-                                    loadRecordMaster();
-                                    loadTableDetail();
-                                    loadTableAttachment();
-                                } catch (CloneNotSupportedException ex) {
-                                    Logger.getLogger(DeliveryAcceptance_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(DeliveryAcceptance_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (GuanzonException ex) {
-                                    Logger.getLogger(DeliveryAcceptance_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                                loadRecordMaster();
+                                loadTableDetail();
+                                loadTableAttachment();
                             });
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
