@@ -39,10 +39,11 @@ import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.client.account.Account_Accreditation;
+import org.guanzon.cas.clients.account.Account_Accreditation;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
@@ -54,7 +55,7 @@ import org.json.simple.JSONObject;
 public class AccountsAccreditationHistoryController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Accounts Accreditation History";
-    private GRider oApp;
+    private GRiderCAS oApp;
     private Account_Accreditation oTrans;
     private ParamControllers oParameters;
     private String oTransnox = "";
@@ -135,9 +136,20 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
 
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 
     /**
@@ -145,7 +157,7 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
         pnEditMode = EditMode.UNKNOWN;
         clearAllFields();
         initializeObject();
@@ -196,9 +208,9 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
         if (source instanceof Button) {
             Button clickedButton = (Button) source;
             unloadForm appUnload = new unloadForm();
-            
+
             JSONObject poJSON;
-            poJSON = oTrans.newRecord();
+            poJSON = oTrans.newTransaction();
             switch (clickedButton.getId()) {
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
@@ -207,9 +219,9 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
                     }
                     break;
                 case "btnUpload":
-                     ShowMessageFX.Information("This feature is currently in development!", "Computerized Acounting System", pxeModuleName);
+                    ShowMessageFX.Information("This feature is currently in development!", "Computerized Acounting System", pxeModuleName);
                     break;
-//               
+//
                 case "btnBrowse":
                     clearAllFields();
                     String lsValue = (txtSeek01.getText() == null) ? "" : txtSeek01.getText();
@@ -305,16 +317,16 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
         if (!nv) { // Lost focus
             try {
                 switch (lnIndex) {
-                    case 1: // 
+                    case 1: //
                         oTrans.getModel().setTransactionNo(lsValue);
                         break;
-                    case 2: // 
+                    case 2: //
                         oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
                         break;
-                    case 3: //     
+                    case 3: //
                         oTrans.getModel().setClientId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
                         break;
-                    case 4: // 
+                    case 4: //
                         oTrans.getModel().setRemarks(lsValue);
                         break;
                     case 5: // Description
@@ -396,8 +408,8 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
 //                        txtSeeks02.setText(oTrans.getModel().getDescription());
 //                        pnEditMode = oTrans.getEditMode();
 //                        loadInventory();
-//                        
-//                        
+//
+//
 //                        break;
 //                    case 2:
 //                        poJSON = oTrans.searchRecord(lsValue, false);
@@ -442,7 +454,7 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
         cmbField03.setOnAction(event -> {
             oTrans.getModel().setTransactionType(String.valueOf(cmbField03.getSelectionModel().getSelectedIndex()));
         });
-        
+
         cpField02.setOnAction(event -> {
             // Get the selected date
             oTrans.getModel().setDateTransact(SQLUtil.toDate(cpField02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
@@ -453,8 +465,8 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
         TextField[][] allFields = {
             {txtField01, txtField02, txtField03, txtField04,
                 txtField05,},};
-         cmbField02.getSelectionModel().select(0);
-         cmbField03.getSelectionModel().select(0);
+        cmbField02.getSelectionModel().select(0);
+        cmbField03.getSelectionModel().select(0);
         for (TextField[] fields : allFields) {
             for (TextField field : fields) {
                 field.clear();
@@ -463,7 +475,7 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
         data.clear();
         cpField02.setValue(LocalDate.now());
         lblStat.setText("UNKNOWN");
-        
+
     }
 
     private void RetreiveDetails() {
@@ -471,9 +483,9 @@ public class AccountsAccreditationHistoryController implements Initializable, Sc
         poJson = new JSONObject();
         if (pnEditMode == EditMode.READY
                 || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW) {
-            
+
             String lsValue = oTrans.getModel().getRecordStatus();
-System.out.println(lsValue + " lblstat");
+            System.out.println(lsValue + " lblstat");
             // Use a Map to store the status mappings
             Map<String, String> statusMap = new HashMap<>();
             statusMap.put("0", "OPEN");
@@ -482,7 +494,7 @@ System.out.println(lsValue + " lblstat");
 
             // Set the label text based on the status
             lblStat.setText(statusMap.getOrDefault(lsValue, "UNKNOWN"));
-            
+
             txtField01.setText(oTrans.getModel().getTransactionNo() == null ? "" : oTrans.getModel().getTransactionNo());
             txtField02.setText(oTrans.getModel().ClientMaster().getCompanyName() == null ? "" : oTrans.getModel().ClientMaster().getCompanyName());
             txtField03.setText(oTrans.getModel().ClientInstitutionContact().getContactPersonName() == null ? "" : oTrans.getModel().ClientInstitutionContact().getContactPersonName());
@@ -502,7 +514,7 @@ System.out.println(lsValue + " lblstat");
                     : Integer.parseInt(oTrans.getModel().getTransactionType())
             ));
             if (pnEditMode == 0) {
-                
+
                 oTrans.getModel().setDateTransact(SQLUtil.toDate(cpField02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
                 poJson = oParameters.Category().searchRecord(category, true);
                 if ("success".equals((String) poJson.get("result"))) {

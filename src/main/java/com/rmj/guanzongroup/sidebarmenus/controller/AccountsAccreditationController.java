@@ -37,15 +37,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.client.Client;
-import org.guanzon.cas.client.account.Account_Accreditation;
+import org.guanzon.cas.clients.account.Account_Accreditation;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
@@ -57,7 +56,7 @@ import org.json.simple.JSONObject;
 public class AccountsAccreditationController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Accounts Accreditation";
-    private GRider oApp;
+    private GRiderCAS oApp;
     private Account_Accreditation oTrans;
     private ParamControllers oParameters;
     private String oTransnox = "";
@@ -140,9 +139,20 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
 
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 
     /**
@@ -188,14 +198,14 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //    /*Handle button click*/
     private void ClickButton() {
         Button[] buttons = {btnUpload,
-                            btnCancel,
-                            btnNew,
-                            btnSave,
-                            btnUpdate,
-                            btnClose,
-                            btnBrowse,
-                            btnApproved,
-                            btnDisapproved};
+            btnCancel,
+            btnNew,
+            btnSave,
+            btnUpdate,
+            btnClose,
+            btnBrowse,
+            btnApproved,
+            btnDisapproved};
         for (Button button : buttons) {
             button.setOnAction(this::handleButtonAction);
         }
@@ -298,11 +308,11 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //                                : "Unable to " + (isApproved ? "approve" : "disapprove") + " the transaction.",
 //                                "Computerized Accounting System",
 //                                pxeModuleName);
-                        
+
                         if ("success".equals(result)) {
                             clearAllFields();
                         }
-                    }else{
+                    } else {
                         ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
                     }
                     break;
@@ -323,11 +333,11 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
-        
+
         btnApproved.setVisible(!lbShow);
         btnUpload.setVisible(!lbShow);
         btnDisapproved.setVisible(!lbShow);
-        
+
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
 
@@ -339,18 +349,18 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
             btnApproved.setVisible(lbShow);
             btnDisapproved.setVisible(lbShow);
             btnUpload.setVisible(lbShow);
-            
-            btnUpdate.setVisible(!lbShow); 
+
+            btnUpdate.setVisible(!lbShow);
             btnBrowse.setVisible(!lbShow);
             btnNew.setVisible(!lbShow);
             btnBrowse.setManaged(false);
             btnNew.setManaged(false);
             btnUpdate.setManaged(false);
-            
+
             btnUpload.setManaged(false);
             btnApproved.setManaged(false);
             btnDisapproved.setManaged(false);
-            
+
             btnClose.setManaged(false);
         } else {
         }
@@ -396,16 +406,16 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
         if (!nv) { // Lost focus
             try {
                 switch (lnIndex) {
-                    case 1: // 
+                    case 1: //
                         oTrans.getModel().setTransactionNo(lsValue);
                         break;
-                    case 2: // 
+                    case 2: //
                         oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
                         break;
-                    case 3: //     
+                    case 3: //
                         oTrans.getModel().setClientId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
                         break;
-                    case 4: // 
+                    case 4: //
                         oTrans.getModel().setRemarks(lsValue);
                         break;
                     case 5: // Description
@@ -450,21 +460,21 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
                                 ShowMessageFX.Information("The company is already accredited or has already gained entry.!", "Computerized Acounting System", pxeModuleName);
                                 break;
                             }
-                                txtField02.setText(oTrans.Client().Master().getModel().getCompanyName());
-                                oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
-                                
-                                poJson = oTrans.Client().ClientInstitutionContact().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
-                                if ("success".equals(poJson.get("result"))) {
-                                    txtField03.setText(oTrans.Client().ClientInstitutionContact().getModel().getContactPersonName());
-                                    oTrans.getModel().setContactId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
-                                } 
+                            txtField02.setText(oTrans.Client().Master().getModel().getCompanyName());
+                            oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
+
+                            poJson = oTrans.Client().ClientInstitutionContact().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
+                            if ("success".equals(poJson.get("result"))) {
+                                txtField03.setText(oTrans.Client().ClientInstitutionContact().getModel().getContactPersonName());
+                                oTrans.getModel().setContactId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
+                            }
                         }
                         poJson = oTrans.Client().ClientAddress().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
-                                if ("success".equals(poJson.get("result"))) {
-                                    oTrans.getModel().setAddressId(oTrans.Client().ClientAddress().getModel().getClientId());
-                                }
+                        if ("success".equals(poJson.get("result"))) {
+                            oTrans.getModel().setAddressId(oTrans.Client().ClientAddress().getModel().getClientId());
+                        }
                         break;
-                    
+
                 }
             case ENTER:
         }
@@ -498,8 +508,8 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //                        txtSeeks02.setText(oTrans.getModel().getDescription());
 //                        pnEditMode = oTrans.getEditMode();
 //                        loadInventory();
-//                        
-//                        
+//
+//
 //                        break;
 //                    case 2:
 //                        poJSON = oTrans.searchRecord(lsValue, false);
@@ -624,18 +634,19 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
                 oTrans.getModel().setCategoryCode(oParameters.Category().getModel().getCategoryId());
             }
         }
-        
+
     }
 
     public static LocalDate strToDate(String val) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(val, dateFormatter);
     }
-    private void insertApprove(){
+
+    private void insertApprove() {
         JSONObject poJson;
         poJson = new JSONObject();
         String AcctType = oTrans.getModel().getAccountType();
-        
+
         switch (AcctType) {
             case "1":
                 System.out.println("Account Type is 1");
@@ -644,23 +655,22 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
                 break;
             case "0":
                 System.out.println("Account Type is 0");
-                 oTrans.APClient().APClientMaster().getModel().setClientId(oTrans.getModel().ClientMaster().getClientId());
-                 poJson = oTrans.APClient().APClientMaster().saveRecord();
-     
-                    if ("success".equals((String) poJson.get("result"))) {
-                           ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                           pnEditMode = EditMode.UNKNOWN;
-                    }else{
-                        ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                    }
+                oTrans.APClient().APClientMaster().getModel().setClientId(oTrans.getModel().ClientMaster().getClientId());
+                poJson = oTrans.APClient().APClientMaster().saveRecord();
+
+                if ("success".equals((String) poJson.get("result"))) {
+                    ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                    pnEditMode = EditMode.UNKNOWN;
+                } else {
+                    ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                }
                 // Add logic for AcctType = 0
                 break;
             default:
                 System.out.println("Unknown Account Type: " + AcctType);
             // Handle unexpected values
         }
-        
-    
+
     }
 
 }

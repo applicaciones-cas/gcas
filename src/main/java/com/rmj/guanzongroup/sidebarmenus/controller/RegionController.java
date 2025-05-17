@@ -29,10 +29,15 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.GuanzonException;
 
 public class RegionController implements Initializable, ScreenInterface {
 
-    private GRider oApp;
+    private GRiderCAS oApp;
     private final String pxeModuleName = "Region";
     private int pnEditMode;
     private ParamControllers oParameters;
@@ -72,8 +77,20 @@ public class RegionController implements Initializable, ScreenInterface {
     private CheckBox cbField01;
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 
     @Override
@@ -88,9 +105,13 @@ public class RegionController implements Initializable, ScreenInterface {
     }
 
     private void initializeObject() {
-        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-        oParameters = new ParamControllers(oApp, logwrapr);
-        oParameters.Region().setRecordStatus("0123");
+        try {
+            LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
+            oParameters = new ParamControllers(oApp, logwrapr);
+            oParameters.Region().setRecordStatus("0123");
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(RegionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void ClickButton() {
@@ -107,98 +128,102 @@ public class RegionController implements Initializable, ScreenInterface {
         Object source = event.getSource();
 
         if (source instanceof Button) {
-            Button clickedButton = (Button) source;
-            unloadForm appUnload = new unloadForm();
-            switch (clickedButton.getId()) {
-                case "btnClose":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-                    }
-                    break;
-                case "btnNew":
-                    clearAllFields();
-                    txtField02.requestFocus();
-                    JSONObject poJSON = oParameters.Region().newRecord();
-                    pnEditMode = EditMode.READY;
-                    if ("success".equals((String) poJSON.get("result"))) {
-                        pnEditMode = EditMode.ADDNEW;
-                        initButton(pnEditMode);
-                        initTabAnchor();
+            try {
+                Button clickedButton = (Button) source;
+                unloadForm appUnload = new unloadForm();
+                switch (clickedButton.getId()) {
+                    case "btnClose":
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                        }
+                        break;
+                    case "btnNew":
+                        clearAllFields();
+                        txtField02.requestFocus();
+                        JSONObject poJSON = oParameters.Region().newRecord();
+                        pnEditMode = EditMode.READY;
+                        if ("success".equals((String) poJSON.get("result"))) {
+                            pnEditMode = EditMode.ADDNEW;
+                            initButton(pnEditMode);
+                            initTabAnchor();
+                            loadRecord();
+                        } else {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            initTabAnchor();
+                        }
+                        break;
+                    case "btnBrowse":
+                        String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
+                        poJSON = oParameters.Region().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        pnEditMode = EditMode.READY;
                         loadRecord();
-                    } else {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         initTabAnchor();
-                    }
-                    break;
-                case "btnBrowse":
-                    String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
-                    poJSON = oParameters.Region().searchRecord(lsValue, false);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        txtSeeks01.clear();
                         break;
-                    }
-                    pnEditMode = EditMode.READY;
-                    loadRecord();
-                    initTabAnchor();
-                    break;
-                case "btnUpdate":
-                    poJSON = oParameters.Region().updateRecord();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        break;
-                    }
-                    pnEditMode = oParameters.Color().getEditMode();
-                    initButton(pnEditMode);
-                    initTabAnchor();
-                    break;
-                case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                        clearAllFields();
-                        initializeObject();
-                        pnEditMode = EditMode.UNKNOWN;
+                    case "btnUpdate":
+                        poJSON = oParameters.Region().updateRecord();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                        pnEditMode = oParameters.Color().getEditMode();
                         initButton(pnEditMode);
                         initTabAnchor();
-                    }
-                    break;
-                case "btnSave":
-                    oParameters.Region().getModel().setModifyingId(oApp.getUserID());
-                    oParameters.Region().getModel().setModifiedDate(oApp.getServerDate());
-                    JSONObject saveResult = oParameters.Region().saveRecord();
-                    if ("success".equals((String) saveResult.get("result"))) {
-                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                        pnEditMode = EditMode.UNKNOWN;
-                        initButton(pnEditMode);
-                        clearAllFields();
-                    } else {
-                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                    }
-                    break;
-                case "btnActivate":
-                    String Status = oParameters.Section().getModel().getRecordStatus();
-                    JSONObject poJsON;
+                        break;
+                    case "btnCancel":
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                            clearAllFields();
+                            initializeObject();
+                            pnEditMode = EditMode.UNKNOWN;
+                            initButton(pnEditMode);
+                            initTabAnchor();
+                        }
+                        break;
+                    case "btnSave":
+                        oParameters.Region().getModel().setModifyingId(oApp.getUserID());
+                        oParameters.Region().getModel().setModifiedDate(oApp.getServerDate());
+                        JSONObject saveResult = oParameters.Region().saveRecord();
+                        if ("success".equals((String) saveResult.get("result"))) {
+                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            pnEditMode = EditMode.UNKNOWN;
+                            initButton(pnEditMode);
+                            clearAllFields();
+                        } else {
+                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        break;
+                    case "btnActivate":
+                        String Status = oParameters.Section().getModel().getRecordStatus();
+                        JSONObject poJsON;
 
-                    switch (Status) {
-                        case "0":
-                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-                                poJsON = oParameters.Region().activateRecord();
-                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
-                                loadRecord();
-                            }
-                            break;
-                        case "1":
-                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-                                poJsON = oParameters.Region().deactivateRecord();
-                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
-                                loadRecord();
-                            }
-                            break;
-                        default:
+                        switch (Status) {
+                            case "0":
+                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                    poJsON = oParameters.Region().activateRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    loadRecord();
+                                }
+                                break;
+                            case "1":
+                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                    poJsON = oParameters.Region().deactivateRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    loadRecord();
+                                }
+                                break;
+                            default:
 
-                            break;
+                                break;
 
-                    }
-                    break;
+                        }
+                        break;
+                }
+            } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+                Logger.getLogger(RegionController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -241,36 +266,42 @@ public class RegionController implements Initializable, ScreenInterface {
     }
 
     private void txtSeeks_KeyPressed(KeyEvent event) {
-        TextField txtField = (TextField) event.getSource();
-        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
-        JSONObject poJson;
-        poJson = new JSONObject();
-        switch (event.getCode()) {
-            case F3:
-                switch (lnIndex) {
-                    case 01:
-                        poJson = oParameters.Region().searchRecord(lsValue, false);
-                        if ("error".equals((String) poJson.get("result"))) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSeeks01.clear();
+        try {
+            TextField txtField = (TextField) event.getSource();
+            int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+            String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+            JSONObject poJson;
+            poJson = new JSONObject();
+            switch (event.getCode()) {
+                case F3:
+                    switch (lnIndex) {
+                        case 01:
+                            poJson = oParameters.Region().searchRecord(lsValue, false);
+                            if ("error".equals((String) poJson.get("result"))) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtSeeks01.clear();
+                                break;
+                            }
+                            txtSeeks01.setText((String) oParameters.Region().getModel().getDescription());
+                            pnEditMode = EditMode.READY;
+                            loadRecord();
                             break;
-                        }
-                        txtSeeks01.setText((String) oParameters.Region().getModel().getRegioneName());
-                        pnEditMode = EditMode.READY;
-                        loadRecord();
-                        break;
-                }
-            case ENTER:
-        }
-        switch (event.getCode()) {
-            case ENTER:
-                CommonUtils.SetNextFocus(txtField);
-            case DOWN:
-                CommonUtils.SetNextFocus(txtField);
-                break;
-            case UP:
-                CommonUtils.SetPreviousFocus(txtField);
+                    }
+                case ENTER:
+            }
+            switch (event.getCode()) {
+                case ENTER:
+                    CommonUtils.SetNextFocus(txtField);
+                case DOWN:
+                    CommonUtils.SetNextFocus(txtField);
+                    break;
+                case UP:
+                    CommonUtils.SetPreviousFocus(txtField);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(RegionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(RegionController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -294,7 +325,7 @@ public class RegionController implements Initializable, ScreenInterface {
                         oParameters.Region().getModel().setRegionId(lsValue);
                         break;
                     case 2:
-                        oParameters.Region().getModel().setRegionName(lsValue);
+                        oParameters.Region().getModel().setDescription(lsValue);
                         break;
                     case 3:
                     case 4:
@@ -328,35 +359,45 @@ public class RegionController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
-        boolean lbActive = oParameters.Region().getModel().getRecordStatus() == "1";
+        try {
+            boolean lbActive = oParameters.Region().getModel().getRecordStatus() == "1";
 
-        txtField01.setText(oParameters.Region().getModel().getRegionId());
-        txtField02.setText(oParameters.Region().getModel().getRegioneName());
-        txtField03.setText(CommonUtils.NumberFormat(oParameters.Region().getModel().getMinimumWage(), "#,##0.00"));
-        txtField04.setText(CommonUtils.NumberFormat(oParameters.Region().getModel().getCOLAmount(), "#,##0.00"));
-        txtField05.setText(CommonUtils.NumberFormat(oParameters.Region().getModel().getMinimumWage2(), "#,##0.00"));
-        txtField06.setText(CommonUtils.NumberFormat(oParameters.Region().getModel().getCOLAmount2(), "#,##0.00"));
+            txtField01.setText(oParameters.Region().getModel().getRegionId());
+            txtField02.setText(oParameters.Region().getModel().getDescription());
+            txtField03.setText(CommonUtils.NumberFormat(oParameters.Region().getModel().getMinimumWage(), "#,##0.00"));
+            txtField04.setText(CommonUtils.NumberFormat(oParameters.Region().getModel().getCOLAmount(), "#,##0.00"));
+            txtField05.setText(CommonUtils.NumberFormat(oParameters.Region().getModel().getMinimumWage2(), "#,##0.00"));
+            txtField06.setText(CommonUtils.NumberFormat(oParameters.Region().getModel().getCOLAmount2(), "#,##0.00"));
 
-        switch (oParameters.Region().getModel().getRecordStatus()) {
-            case "0":
-                btnActivate.setText("Deactivate");
-                faActivate.setGlyphName("CLOSE");
-                cbField01.setSelected(false);
-                break;
-            case "1":
-                btnActivate.setText("Activate");
-                faActivate.setGlyphName("CHECK");
-                cbField01.setSelected(true);
-                break;
+            switch (oParameters.Region().getModel().getRecordStatus()) {
+                case "0":
+                    btnActivate.setText("Deactivate");
+                    faActivate.setGlyphName("CLOSE");
+                    cbField01.setSelected(false);
+                    break;
+                case "1":
+                    btnActivate.setText("Activate");
+                    faActivate.setGlyphName("CHECK");
+                    cbField01.setSelected(true);
+                    break;
+            }
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(RegionController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @FXML
     void cbField01_Clicked(MouseEvent event) {
-        if (cbField01.isSelected()) {
-            oParameters.Region().getModel().setRecordStatus("1");
-        } else {
-            oParameters.Region().getModel().setRecordStatus("0");
+        try {
+            if (cbField01.isSelected()) {
+                oParameters.Region().getModel().setRecordStatus("1");
+            } else {
+                oParameters.Region().getModel().setRecordStatus("0");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(RegionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(RegionController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
