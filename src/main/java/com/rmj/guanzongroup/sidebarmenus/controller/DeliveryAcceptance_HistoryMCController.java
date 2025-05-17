@@ -359,7 +359,7 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
                 }
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCAR.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMC.fxml"));
             DeliveryAcceptance_SerialCarController controller = new DeliveryAcceptance_SerialCarController();
             loader.setController(controller);
 

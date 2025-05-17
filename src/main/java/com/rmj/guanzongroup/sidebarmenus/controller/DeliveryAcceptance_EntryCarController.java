@@ -518,7 +518,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                 }
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCAR.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"));
             DeliveryAcceptance_SerialCarController controller = new DeliveryAcceptance_SerialCarController();
             loader.setController(controller);
 
