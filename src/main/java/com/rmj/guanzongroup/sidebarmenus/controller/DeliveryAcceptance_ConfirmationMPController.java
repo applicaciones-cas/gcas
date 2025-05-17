@@ -280,11 +280,23 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                 clearTextFields();
                                 initButton(pnEditMode);
                             }
-                            isPrinted = false;
                             Platform.runLater(() -> {
-                                loadRecordMaster();
-                                loadTableDetail();
-                                loadTableAttachment();
+                                try {
+                                    if (!isPrinted) {
+                                        poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+                                        poPurchaseReceivingController.loadAttachments();
+                                    }
+                                    loadRecordMaster();
+                                    loadTableDetail();
+                                    loadTableAttachment();
+                                } catch (CloneNotSupportedException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (GuanzonException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                isPrinted = false;
                             });
 
                         });

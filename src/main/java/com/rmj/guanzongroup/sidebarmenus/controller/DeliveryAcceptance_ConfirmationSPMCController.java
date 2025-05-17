@@ -275,12 +275,25 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                                 clearTextFields();
                                 initButton(pnEditMode);
                             }
-                            isPrinted = false;
                             Platform.runLater(() -> {
-                                loadRecordMaster();
-                                loadTableDetail();
-                                loadTableAttachment();
+                                try {
+                                    if (!isPrinted) {
+                                        poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+                                        poPurchaseReceivingController.loadAttachments();
+                                    }
+                                    loadRecordMaster();
+                                    loadTableDetail();
+                                    loadTableAttachment();
+                                } catch (CloneNotSupportedException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
+                                } catch (GuanzonException ex) {
+                                    Logger.getLogger(DeliveryAcceptance_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                isPrinted = false;
                             });
+
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
