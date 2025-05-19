@@ -475,6 +475,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                         clearMasterFields();
                         clearDetailFields();
                         detail_data.clear();
+                        attachment_data.clear();
                         poJSON = poGLControllers.PaymentRequest().OpenTransaction(poGLControllers.PaymentRequest().Master().getTransactionNo());
                         if ("success".equals((String) poJSON.get("result"))) {
                             pagination.toBack();
@@ -497,6 +498,9 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                             break;
                         }
                         ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        poGLControllers.PaymentRequest().resetMaster();
+                        poGLControllers.PaymentRequest().resetOthers();
+                        poGLControllers.PaymentRequest().Detail().clear();
                         clearMasterFields();
                         clearDetailFields();
                         CustomCommonUtil.switchToTab(tabDetails, ImTabPane);
