@@ -625,7 +625,7 @@
     -fx-border-radius: 0px;
 }
 
-/* Default Tree Cell Styling */
+
 .tree-cell {
     -fx-background-color: #DFDFDF;  /* Light gray background */
     -fx-border-color: transparent transparent #333333 transparent;
