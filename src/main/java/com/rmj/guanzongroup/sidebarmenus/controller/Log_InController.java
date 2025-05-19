@@ -4,46 +4,99 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelLog_In_Company;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelLog_In_Industry;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
-import org.guanzon.appdriver.base.GRider;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.cas.parameter.services.ParamControllers;
+import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.GuanzonException;
+import org.guanzon.appdriver.base.LogWrapper;
+import org.guanzon.appdriver.base.MiscUtil;
+import org.guanzon.appdriver.base.SQLUtil;
+import org.guanzon.appdriver.constant.Logical;
+import org.guanzon.cas.parameter.Company;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
+import org.json.simple.JSONObject;
 
 /**
  * FXML Controller class
  *
- * @author User
+ * @author Guanzon
  */
 public class Log_InController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Log In";
-    private GRider oApp;
-
+//param
+    private ParamControllers poParameter;
+    private GRiderCAS oApp;
+    private String psIndustryID = "";
+    private String psCompanyID = "";
+    private boolean isMainOffice = true;
+    private boolean isWarehouse = true;
+    private LogWrapper poLogWrapper;
+    ObservableList<ModelLog_In_Industry> industryOptions = FXCollections.observableArrayList();
+    ObservableList<ModelLog_In_Company> companyOptions = FXCollections.observableArrayList();
     @FXML
-    private TextField txtField01;
+    private TextField tfUsername;
     @FXML
     private Button btnSignIn;
     @FXML
     Label lblCopyright;
     @FXML
-    private TextField txtField03;
+    private TextField tfPassword;
     @FXML
-    private PasswordField txtField02;
+    private PasswordField pfPassword;
     @FXML
     private Button btnEyeIcon;
+    @FXML
+    private ComboBox cmbIndustry, cmbCompany;
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+        psIndustryID = fsValue;
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        psCompanyID = fsValue;
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
     /**
      * Initializes the controller class.
@@ -54,36 +107,157 @@ public class Log_InController implements Initializable, ScreenInterface {
     public void initialize(URL url, ResourceBundle rb) {
         DashboardController mainController = LoginControllerHolder.getMainController();
         mainController.triggervbox();
-
-        txtField03.textProperty().bindBidirectional(txtField02.textProperty());
+        poParameter = new ParamControllers(oApp, poLogWrapper);
+        tfPassword.textProperty().bindBidirectional(pfPassword.textProperty());
         String year = String.valueOf(Year.now().getValue());
         lblCopyright.setText("© " + year + " Guanzon Group of Companies. All Rights Reserved.");
-        showText();
+
+        initComboBox();
+        autoloadRecord();
+        loadComboBoxItems();
+        initTextFields();
+
+    }
+
+    EventHandler<KeyEvent> tabKeyHandler = event -> {
+        if (event.getCode() != KeyCode.TAB) {
+            return;
+        }
+
+        Node source = (Node) event.getSource();
+        String fieldId = source.getId();
+        event.consume(); // prevent default focus traversal
+
+        switch (fieldId) {
+            case "tfUsername":
+                if (pfPassword.isVisible()) {
+                    pfPassword.requestFocus();
+                } else {
+                    tfPassword.requestFocus();
+                }
+                break;
+
+            case "pfPassword":
+            case "tfPassword":
+                cmbIndustry.requestFocus();
+                break;
+
+            case "cmbIndustry":
+                cmbCompany.requestFocus();
+                break;
+
+            case "cmbCompany":
+                tfUsername.requestFocus(); // loop back to username if needed
+                break;
+        }
+    };
+
+    public void initTextFields() {
+        tfUsername.setOnKeyPressed(tabKeyHandler);
+        pfPassword.setOnKeyPressed(tabKeyHandler);
+        tfPassword.setOnKeyPressed(tabKeyHandler);
+        cmbIndustry.setOnKeyPressed(tabKeyHandler);
+        cmbCompany.setOnKeyPressed(tabKeyHandler);
+    }
+
+    public String[] companyName() {
+        String[] result = new String[2];
+        try {
+
+            JSONObject loJSON = new JSONObject();
+            loJSON = poParameter.Branch().searchRecord(oApp.getBranchCode(), true);
+            if ("success".equals((String) loJSON.get("result"))) {
+                String lsSQL = "SELECT b.sCompnyID, c.sCompnyNm FROM branch b JOIN company c ON b.sCompnyID = c.sCompnyID ";
+                if (!oApp.isMainOffice()) {
+                    lsSQL = lsSQL + MiscUtil.addCondition(lsSQL, "sBranchCd = " + SQLUtil.toSQL(oApp.getBranchCode()));
+                }
+                ResultSet loRS = oApp.executeQuery(lsSQL);
+                if (loRS.next()) {
+                    result[0] = loRS.getString("sCompnyID");
+                    result[1] = loRS.getString("sCompnyNm");
+                }
+
+                MiscUtil.close(loRS);
+            }
+//            return result;
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    public String[] getCompanyName() {
+        String[] result = new String[2];
+        try {
+            JSONObject loJSON = new JSONObject();
+            loJSON = poParameter.Branch().searchRecord(oApp.getBranchCode(), true);
+            if ("success".equals((String) loJSON.get("result"))) {
+                isMainOffice = oApp.isMainOffice();
+                isWarehouse = oApp.isWarehouse();
+                if (!isMainOffice || !isWarehouse) {
+                    loJSON = poParameter.Company().searchRecord(poParameter.Branch().getModel().getCompanyId(), true);
+                    if (!"success".equals((String) loJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), pxeModuleName, "Company");
+                        return result;
+                    }
+                    psCompanyID = poParameter.Company().getModel().getCompanyId();
+                    result[0] = poParameter.Company().getModel().getCompanyId();
+                    result[1] = poParameter.Company().getModel().getCompanyName();
+                } else {
+                    String lsSQL = "SELECT b.sCompnyID,"
+                            + " c.sCompnyNm "
+                            + " FROM branch b "
+                            + " JOIN company c ON b.sCompnyID = c.sCompnyID ";
+                    ResultSet loRS = oApp.executeQuery(lsSQL);
+                    if (loRS.next()) {
+                        result[0] = loRS.getString("sCompnyID");
+                        result[1] = loRS.getString("sCompnyNm");
+                    }
+                    MiscUtil.close(loRS);
+                }
+            }
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return result;
+    }
+
+    public String getIndustryName() {
+        String lsIndustryNm = "";
+        try {
+            String lsSQL = "SELECT sDescript FROM industry ";
+            lsSQL = MiscUtil.addCondition(lsSQL, "sIndstCdx = " + SQLUtil.toSQL(oApp.getIndustry()));
+
+            ResultSet loRS = oApp.executeQuery(lsSQL);
+
+            if (loRS.next()) {
+                lsIndustryNm = loRS.getString("sDescript");
+            }
+
+            MiscUtil.close(loRS);
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // You can also use a logger here
+        }
+
+        return lsIndustryNm;
+    }
+
+    public void autoloadRecord() {
+        // auto load based on config
+        // return company ID
+        cmbIndustry.getSelectionModel().select(getIndustryName());
+        cmbCompany.getSelectionModel().select(getCompanyName()[1]); // should select based on companyID
+
+        psCompanyID = getCompanyName()[0];
+        psIndustryID = oApp.getIndustry();
+
+        //set effect of industry disabled
+//        cmbIndustry.setDisable(true);
+//        cmbCompany.setDisable(true);
     }
 
     public void setMainController(DashboardController controller) {
         this.dashboardController = controller;
-    }
-
-    private void showText() {
-        FontAwesomeIconView eyeIcon = new FontAwesomeIconView(FontAwesomeIcon.EYE);
-        btnEyeIcon.setOnMouseClicked(event -> {
-            if (txtField02.isVisible()) {
-                txtField03.setText(txtField02.getText());
-                txtField02.setVisible(false);
-                txtField03.setVisible(true);
-                eyeIcon.setIcon(FontAwesomeIcon.EYE_SLASH);
-                eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
-                btnEyeIcon.setGraphic(eyeIcon);
-            } else {
-                txtField02.setText(txtField03.getText());
-                txtField03.setVisible(false);
-                txtField02.setVisible(true);
-                eyeIcon.setIcon(FontAwesomeIcon.EYE);
-                eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
-                btnEyeIcon.setGraphic(eyeIcon);
-            }
-        });
     }
 
     @FXML
@@ -91,13 +265,156 @@ public class Log_InController implements Initializable, ScreenInterface {
         String lsButton = ((Button) event.getSource()).getId();
         switch (lsButton) {
             case "btnSignIn":
-                DashboardController dashboardController = LoginControllerHolder.getMainController();
-                dashboardController.triggervbox2();
-                LoginControllerHolder.setLogInStatus(true);
+                JSONObject poJSON = ValidateLogin();
+                if (!"success".equals((String) poJSON.get("result"))) {
+                    System.err.println((String) poJSON.get("message"));
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                } else {
+                    DashboardController dashboardController = LoginControllerHolder.getMainController();
+                    dashboardController.triggervbox2();
+                    dashboardController.setUserIndustry(psIndustryID);
+                    dashboardController.setUserCompany(psCompanyID);
+                    dashboardController.changeUserInfo(psIndustryID);
+                    LoginControllerHolder.setLogInStatus(true);
+                }
+
+                break;
+
+            case "btnEyeIcon":
+                FontAwesomeIconView eyeIcon = new FontAwesomeIconView(FontAwesomeIcon.EYE);
+                if (pfPassword.isVisible()) {
+                    tfPassword.setText(pfPassword.getText());
+                    pfPassword.setVisible(false);
+                    tfPassword.setVisible(true);
+                    eyeIcon.setIcon(FontAwesomeIcon.EYE);
+                    eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
+                    btnEyeIcon.setGraphic(eyeIcon);
+                } else {
+                    pfPassword.setText(tfPassword.getText());
+                    tfPassword.setVisible(false);
+                    pfPassword.setVisible(true);
+                    eyeIcon.setIcon(FontAwesomeIcon.EYE_SLASH);
+                    eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
+                    btnEyeIcon.setGraphic(eyeIcon);
+                }
                 break;
             default:
                 break;
         }
 
     }
+
+    EventHandler<ActionEvent> comboBoxHandler = event -> {
+        ComboBox<?> source = (ComboBox<?>) event.getSource();
+        String id = source.getId();
+
+        switch (id) {
+            case "cmbIndustry":
+            try {
+                ModelLog_In_Industry selectedIndustry = (ModelLog_In_Industry) cmbIndustry.getSelectionModel().getSelectedItem();
+                if (selectedIndustry != null) {
+                    psIndustryID = selectedIndustry.getIndustryID();
+                    System.out.println("Industry ID: " + psIndustryID);
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // Avoid silent catch
+            }
+            break;
+
+            case "cmbCompany":
+            try {
+                ModelLog_In_Company selectedCompany = (ModelLog_In_Company) cmbCompany.getSelectionModel().getSelectedItem();
+                if (selectedCompany != null) {
+                    psCompanyID = selectedCompany.getCompanyId();
+                    System.out.println("Company ID: " + psCompanyID);
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // Avoid silent catch
+            }
+            break;
+        }
+    };
+
+    private void initComboBox() {
+        JFXUtil.initComboBoxCellDesignColor(cmbIndustry, "#FF8201");
+        JFXUtil.initComboBoxCellDesignColor(cmbCompany, "#FF8201");
+
+        cmbIndustry.setOnAction(comboBoxHandler);
+        cmbCompany.setOnAction(comboBoxHandler);
+
+    }
+
+    private void loadComboBoxItems() {
+
+        try {
+            industryOptions = FXCollections.observableArrayList(getAllIndustries());
+            companyOptions = FXCollections.observableArrayList(getAllCompanies());
+            cmbIndustry.setItems(industryOptions);
+            cmbCompany.setItems(companyOptions);
+
+        } catch (SQLException ex) {
+        }
+    }
+
+    public JSONObject ValidateLogin() {
+        JSONObject poJSON = new JSONObject();
+        boolean isUsernameFilled = tfUsername.getText().trim().isEmpty();
+        if (pfPassword.isVisible()) {
+            tfPassword.setText(pfPassword.getText());
+        } else {
+            pfPassword.setText(tfPassword.getText());
+        }
+        boolean isPasswordFilled = tfPassword.getText().trim().isEmpty();
+        if (!isUsernameFilled && !isPasswordFilled) {
+            poJSON.put("result", "success");
+            poJSON.put("message", "success");
+
+            if (psIndustryID.equals("") || psCompanyID.equals("")) {
+                poJSON.put("result", "error");
+                poJSON.put("message", "Please fill all the fields");
+            } else {
+                poJSON.put("result", "success");
+                poJSON.put("message", "success");
+            }
+        } else {
+            poJSON.put("result", "error");
+            poJSON.put("message", "Please fill all the fields");
+        }
+
+        return poJSON;
+    }
+
+    private List<ModelLog_In_Company> getAllCompanies() throws SQLException {
+        List<ModelLog_In_Company> companies = new ArrayList<>();
+        String lsSQL = "SELECT * FROM company";
+        lsSQL = MiscUtil.addCondition(lsSQL, "cRecdStat = " + SQLUtil.toSQL(Logical.YES));
+        ResultSet rs = oApp.executeQuery(lsSQL);
+
+        while (rs.next()) {
+            String id = rs.getString("sCompnyID");
+            String name = rs.getString("sCompnyNm");
+            companies.add(new ModelLog_In_Company(id, name));
+        }
+
+        MiscUtil.close(rs);
+        return companies;
+    }
+
+    private List<ModelLog_In_Industry> getAllIndustries() throws SQLException {
+        List<ModelLog_In_Industry> industries = new ArrayList<>();
+        String lsSQL = "SELECT * FROM industry";
+        lsSQL = MiscUtil.addCondition(lsSQL, "cRecdStat = " + SQLUtil.toSQL(Logical.YES));
+        ResultSet loRS = oApp.executeQuery(lsSQL);
+
+        while (loRS.next()) {
+            String id = loRS.getString("sIndstCdx");
+            String description = loRS.getString("sDescript");
+            industries.add(new ModelLog_In_Industry(id, description));
+        }
+
+        MiscUtil.close(loRS);
+        return industries;
+
+    }
+
 }

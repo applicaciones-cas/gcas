@@ -3,7 +3,10 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,6 +32,7 @@ import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 
@@ -40,7 +44,7 @@ import org.json.simple.JSONObject;
 public class SalesmanController implements Initializable, ScreenInterface {
 
 //    private final String pxeModuleName = "Salesman";
-//    private GRider oApp;
+//    private GRiderCAS oApp;
 //    private Salesman oTrans;
 //    private JSONObject poJSON;
 //    private int pnEditMode;
@@ -53,7 +57,6 @@ public class SalesmanController implements Initializable, ScreenInterface {
 //    private int pnListRow;
 //
 //    private ObservableList<ModelParameter> ListData = FXCollections.observableArrayList();
-
     @FXML
     private AnchorPane ChildAnchorPane;
     @FXML
@@ -95,173 +98,175 @@ public class SalesmanController implements Initializable, ScreenInterface {
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
-        String lsButton = ((Button) event.getSource()).getId();
-
-//        switch (lsButton) {
+//        try {
+//            String lsButton = ((Button) event.getSource()).getId();
 //
-//            case "btnNew":
-//                poJSON = oTrans.newRecord();
-//                loadRecord();
-//                pnEditMode = oTrans.getModel().getEditMode();
-//                if ("error".equals((String) poJSON.get("result"))) {
-//                    System.err.println((String) poJSON.get("message"));
-//                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//            switch (lsButton) {
 //
-//                    pnEditMode = EditMode.UNKNOWN;
-//                    return;
-//                }
-//                break;
+//                case "btnNew":
+//                    poJSON = oTrans.newRecord();
+//                    loadRecord();
+//                    pnEditMode = oTrans.getModel().getEditMode();
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 //
-//            case "btnSave":
-//                poJSON = oTrans.getModel().setBranchCode("1");
-//                if ("error".equals((String) poJSON.get("result"))) {
-//                    System.err.println((String) poJSON.get("message"));
-//                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//
-//                    pnEditMode = EditMode.UNKNOWN;
-//                    return;
-//                }
-//                poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
-//                if ("error".equals((String) poJSON.get("result"))) {
-//                    System.err.println((String) poJSON.get("message"));
-//                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//
-//                    pnEditMode = EditMode.UNKNOWN;
-//                    return;
-//                }
-//                poJSON = oTrans.getModel().setModifiedDate(oApp.getServerDate());
-//                if ("error".equals((String) poJSON.get("result"))) {
-//                    System.err.println((String) poJSON.get("message"));
-//                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//
-//                    pnEditMode = EditMode.UNKNOWN;
-//                    return;
-//                }
-//                poJSON = oTrans.saveRecord();
-//
-//                pnEditMode = oTrans.getModel().getEditMode();
-//                if ("error".equals((String) poJSON.get("result"))) {
-//                    System.err.println((String) poJSON.get("message"));
-//                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//
-//                    pnEditMode = EditMode.UNKNOWN;
-//                    return;
-//
-//                } else {
-//                    oTrans = new Salesman(oApp, true);
-//                    pbLoaded = true;
-//                    oTrans.setRecordStatus("10");
-//                    pnEditMode = EditMode.UNKNOWN;
-//                    clearFields();
-//                    ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
-//                }
-//                break;
-//
-//            case "btnUpdate":
-//                poJSON = oTrans.updateRecord();
-//
-//                pnEditMode = oTrans.getModel().getEditMode();
-//                if ("error".equals((String) poJSON.get("result"))) {
-//                    System.err.println((String) poJSON.get("message"));
-//                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//
-//                    pnEditMode = EditMode.UNKNOWN;
-//                    return;
-//                }
-//                break;
-//
-//            case "btnCancel":
-//                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-//                    oTrans = new Salesman(oApp, true);
-//                    oTrans.setRecordStatus("10");
-//                    pbLoaded = true;
-//                    pnEditMode = EditMode.UNKNOWN;
-//                    clearFields();
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        return;
+//                    }
 //                    break;
-//                } else {
-//                    return;
-//                }
 //
-//            case "btnActivate":
-//                if (!psPrimary.isEmpty()) {
-//                    if (btnActivate.getText().equals("Activate")) {
-//                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-//                            poJSON = oTrans.activateRecord(psPrimary);
-//                            if ("error".equals((String) poJSON.get("result"))) {
-//                                System.err.println((String) poJSON.get("message"));
-//                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                case "btnSave":
+//                    poJSON = oTrans.getModel().setBranchCode("1");
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 //
-//                                return;
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        return;
+//                    }
+//                    poJSON = oTrans.getModel().setModifiedBy(oApp.getUserID());
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        return;
+//                    }
+//                    poJSON = oTrans.getModel().setModifiedDate(oApp.getServerDate());
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        return;
+//                    }
+//                    poJSON = oTrans.saveRecord();
+//
+//                    pnEditMode = oTrans.getModel().getEditMode();
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        return;
+//
+//                    } else {
+//                        oTrans = new Salesman(oApp, true);
+//                        pbLoaded = true;
+//                        oTrans.setRecordStatus("10");
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        clearFields();
+//                        ShowMessageFX.Information(null, pxeModuleName, "Record successful Saved!");
+//                    }
+//                    break;
+//
+//                case "btnUpdate":
+//                    poJSON = oTrans.updateRecord();
+//
+//                    pnEditMode = oTrans.getModel().getEditMode();
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        System.err.println((String) poJSON.get("message"));
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        return;
+//                    }
+//                    break;
+//
+//                case "btnCancel":
+//                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+//                        oTrans = new Salesman(oApp, true);
+//                        oTrans.setRecordStatus("10");
+//                        pbLoaded = true;
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        clearFields();
+//                        break;
+//                    } else {
+//                        return;
+//                    }
+//
+//                case "btnActivate":
+//                    if (!psPrimary.isEmpty()) {
+//                        if (btnActivate.getText().equals("Activate")) {
+//                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+//                                poJSON = oTrans.activateRecord(psPrimary);
+//                                if ("error".equals((String) poJSON.get("result"))) {
+//                                    System.err.println((String) poJSON.get("message"));
+//                                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//
+//                                    return;
+//                                } else {
+//                                    clearFields();
+//                                    pnEditMode = EditMode.UNKNOWN;
+//                                    initButton(pnEditMode);
+//                                    oTrans = new Salesman(oApp, false);
+//                                    oTrans.setRecordStatus("10");
+//                                    pbLoaded = true;
+//
+//                                }
 //                            } else {
-//                                clearFields();
-//                                pnEditMode = EditMode.UNKNOWN;
-//                                initButton(pnEditMode);
-//                                oTrans = new Salesman(oApp, false);
-//                                oTrans.setRecordStatus("10");
-//                                pbLoaded = true;
-//
+//                                return;
 //                            }
 //                        } else {
-//                            return;
+//                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+//                                poJSON = oTrans.deactivateRecord(psPrimary);
+//                                if ("error".equals((String) poJSON.get("result"))) {
+//                                    System.err.println((String) poJSON.get("message"));
+//                                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//
+//                                    return;
+//                                } else {
+//                                    clearFields();
+//                                    pnEditMode = EditMode.UNKNOWN;
+//                                    initButton(pnEditMode);
+//                                    oTrans = new Salesman(oApp, false);
+//                                    oTrans.setRecordStatus("10");
+//                                    pbLoaded = true;
+//
+//                                }
+//                            } else {
+//                                return;
+//                            }
 //                        }
 //                    } else {
-//                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-//                            poJSON = oTrans.deactivateRecord(psPrimary);
-//                            if ("error".equals((String) poJSON.get("result"))) {
-//                                System.err.println((String) poJSON.get("message"));
-//                                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//
-//                                return;
-//                            } else {
-//                                clearFields();
-//                                pnEditMode = EditMode.UNKNOWN;
-//                                initButton(pnEditMode);
-//                                oTrans = new Salesman(oApp, false);
-//                                oTrans.setRecordStatus("10");
-//                                pbLoaded = true;
-//
-//                            }
-//                        } else {
-//                            return;
-//                        }
+//                        ShowMessageFX.Warning(null, pxeModuleName, "Please select a record to confirm!");
 //                    }
-//                } else {
-//                    ShowMessageFX.Warning(null, pxeModuleName, "Please select a record to confirm!");
-//                }
-//                break;
+//                    break;
 //
-//            case "btnClose":
-//                unloadForm appUnload = new unloadForm();
-//                if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-//                    appUnload.unloadForm(ChildAnchorPane, oApp, pxeModuleName);
+//                case "btnClose":
+//                    unloadForm appUnload = new unloadForm();
+//                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+//                        appUnload.unloadForm(ChildAnchorPane, oApp, pxeModuleName);
 //
-//                } else {
+//                    } else {
+//                        return;
+//                    }
+//
+//                    break;
+//
+//                case "btnBrowse":
+//                    poJSON = oTrans.searchRecord(txtField99.getText(), false);
+//                    pnEditMode = EditMode.READY;
+//                    if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
+//
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        txtField99.requestFocus();
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        return;
+//                    } else {
+//                        loadRecord();
+//                    }
+//                    break;
+//
+//                default:
+//                    ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
 //                    return;
-//                }
-//
-//                break;
-//
-//            case "btnBrowse":
-//                poJSON = oTrans.searchRecord(txtField99.getText(), false);
-//                pnEditMode = EditMode.READY;
-//                if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-//
-//                    ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                    txtField99.requestFocus();
-//                    pnEditMode = EditMode.UNKNOWN;
-//                    return;
-//                } else {
-//                    loadRecord();
-//                }
-//                break;
-//
-//            default:
-//                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
-//                return;
+//            }
+//            initButton(pnEditMode);
+//        } catch (SQLException ex) {
+//            Logger.getLogger(SalesmanController.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-
-//        initButton(pnEditMode);
-
     }
 
     @Override
@@ -282,8 +287,20 @@ public class SalesmanController implements Initializable, ScreenInterface {
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
 //        oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 
     private void initButton(int fnValue) {

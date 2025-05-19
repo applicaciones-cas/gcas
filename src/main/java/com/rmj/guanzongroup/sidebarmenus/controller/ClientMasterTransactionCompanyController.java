@@ -14,7 +14,10 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.SharedModel;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -41,6 +44,8 @@ import javafx.scene.layout.AnchorPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.Logical;
 import org.guanzon.cas.client.Client_Master;
@@ -54,7 +59,7 @@ import org.json.simple.JSONObject;
 public class ClientMasterTransactionCompanyController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Client Transactions Company";
-    private GRider oApp;
+    private GRiderCAS oApp;
     private Client_Master oTrans;
 //    private JSONObject poJSON;
     private int pnEditMode;
@@ -65,27 +70,28 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     private boolean state = false;
     private boolean pbLoaded = false;
     private SharedModel sharedModel;
+
     public void initModel(SharedModel sharedModel) {
         this.sharedModel = sharedModel;
     }
     @FXML
-     AnchorPane AnchorMain;
+    AnchorPane AnchorMain;
     @FXML
     private Label lblStatus;
     @FXML
     private Button btnSave;
     @FXML
     private Button btnClose;
-    
+
     @FXML
     private TextField txtField01;
-    
+
     @FXML
     private TextField txtField02;
-    
+
     @FXML
     private TextField txtField03;
-    
+
     @FXML
     private TextField cmpnyInfo02;
 
@@ -192,19 +198,32 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
      * Initializes the controller class.
      */
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
 
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 
     public void setTransaction(String fsValue) {
         oTransnox = fsValue;
     }
+
     public void setCompanyName(String fsValue) {
         lsCompanyName = fsValue;
     }
-     private Object parentController;
-     private unloadForm loadform;
+    private Object parentController;
+    private unloadForm loadform;
+
     // Method to set the parent controller
     public void setParentController(Object parentController) {
         System.out.println("parentController = " + parentController);
@@ -216,51 +235,64 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
     public void setState(boolean fsValue) {
         state = fsValue;
     }
-    
-    
-    /***********************************/
+
+    /**
+     * ********************************
+     */
     /*Initializes the controller class.*/
-    /***********************************/
+    /**
+     * ********************************
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
-            pnEditMode = EditMode.ADDNEW;
-        }
+        try {
+            // TODO
+            if (oTransnox == null || oTransnox.isEmpty()) { // Check if oTransnox is null or empty
+                pnEditMode = EditMode.ADDNEW;
+            }
 //        ClickButton();
 
-        // Initialize the Client_Master transaction
+// Initialize the Client_Master transaction
 //        oTrans = new Client_Master(oApp, false, oApp.getBranchCode());
+// Call newRecord to initialize a new record
+            oTrans.newRecord();
 
-        // Call newRecord to initialize a new record
-        oTrans.newRecord();
-
-        // Access sClientID directly from the jsonResult and set it to txtField01
-        String sClientID = (String) oTrans.getMaster("sClientID");
-        if (txtField01 != null) { // Check if txtField01 is not null before setting its text
-            txtField01.setText(sClientID);
-        } else {
-            // Handle the case where txtField01 is null
-            System.out.println("txtField01 is null");
-        }
-        initcompny();
-        initTextFields();
-        InitContctPersonInfo();        
+// Access sClientID directly from the jsonResult and set it to txtField01
+            String sClientID = (String) oTrans.getMaster("sClientID");
+            if (txtField01 != null) { // Check if txtField01 is not null before setting its text
+                txtField01.setText(sClientID);
+            } else {
+                // Handle the case where txtField01 is null
+                System.out.println("txtField01 is null");
+            }
+            initcompny();
+            initTextFields();
+            InitContctPersonInfo();
 //        initAddressInfo();
-//        
+//
 //        loadContctPerson();
 //        initContctPersonGrid();
-        cmpnyInfo01.setText(lsCompanyName);
-        txtField02.setText(lsCompanyName);
+            cmpnyInfo01.setText(lsCompanyName);
+            txtField02.setText(lsCompanyName);
 //        oTrans.getModel().setFullName(lsCompanyName);
 //        cmpnyInfo01.requestFocus();
 //        oTrans.setType(ValidatorFactory.ClientTypes.COMPANY);
-        pbLoaded = true;
+            pbLoaded = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientMasterTransactionCompanyController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(ClientMasterTransactionCompanyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
-    /************************/
+
+    /**
+     * *********************
+     */
     /*initialize text fields*/
-    /************************/
+    /**
+     * *********************
+     */
     private void initcompny() {
         /*company FOCUSED PROPERTY*/
         cmpnyInfo01.focusedProperty().addListener(cmpny_Focus);
@@ -269,95 +301,112 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
         cmpnyInfo09.focusedProperty().addListener(cmpny_Focus);
     }
 
-    /********************************************/
+    /**
+     * *****************************************
+     */
     /*initialize value to data                  */
-    /*serves also as lost focus FOR company info*/
-    /********************************************/
-        final ChangeListener<? super Boolean> cmpny_Focus = (o, ov, nv) -> {
-            if (!pbLoaded) {
-                return;
-            }
+ /*serves also as lost focus FOR company info*/
+    /**
+     * *****************************************
+     */
+    final ChangeListener<? super Boolean> cmpny_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
 
-            TextField cmpnyInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-            int lnIndex = Integer.parseInt(cmpnyInfo.getId().substring(9, 11));
-            String lsValue = cmpnyInfo.getText();
-            JSONObject jsonObject = new JSONObject();
-            if (lsValue == null) {
-                return;
+        TextField cmpnyInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(cmpnyInfo.getId().substring(9, 11));
+        String lsValue = cmpnyInfo.getText();
+        JSONObject jsonObject = new JSONObject();
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 1:
+                    /*company name*/
+                    oTrans.setMaster(8, lsValue);
+                    break;
+                case 7:/*tin id*/
+                    oTrans.setMaster(16, lsValue);
+                    break;
+                case 8:/*lto id*/
+                    oTrans.setMaster(17, lsValue);
+                    break;
+                case 9:/*business id*/
+                    oTrans.setMaster(18, lsValue);
+                    break;
             }
-            if (!nv) {
-                /*Lost Focus*/
-                switch (lnIndex) {
-                    case 1:
-                        /*company name*/
-                        oTrans.setMaster(8, lsValue);
-                        break;
-                    case 7:/*tin id*/
-                        oTrans.setMaster(16, lsValue);
-                        break;
-                    case 8:/*lto id*/
-                        oTrans.setMaster(17, lsValue);
-                        break;
-                    case 9:/*business id*/
-                        oTrans.setMaster(18, lsValue);
-                        break;
-                }
-                txtField02.setText(cmpnyInfo01.getText());
-                oTrans.setMaster(12, "0000-00-00");
-    //            loadAddress();
-            } else {
-                cmpnyInfo.selectAll();
-            }
-        };
-    /************************/
+            txtField02.setText(cmpnyInfo01.getText());
+            oTrans.setMaster(12, "0000-00-00");
+            //            loadAddress();
+        } else {
+            cmpnyInfo.selectAll();
+        }
+    };
+
+    /**
+     * *********************
+     */
     /*initialize text fields*/
-    /************************/
+    /**
+     * *********************
+     */
     private void initTextFields() {
         /*textFields FOCUSED PROPERTY*/
         txtField01.focusedProperty().addListener(txtField_Focus);
     }
-    
-    /********************************************/
+
+    /**
+     * *****************************************
+     */
     /*initialize value to data                  */
-    /*serves also as lost focus FOR company info*/
-    /********************************************/
-        final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-            if (!pbLoaded) {
-                return;
-            }
+ /*serves also as lost focus FOR company info*/
+    /**
+     * *****************************************
+     */
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
 
-            TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-            int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-            String lsValue = txtField.getText();
+        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
 
-            if (lsValue == null) {
-                return;
+        if (lsValue == null) {
+            return;
+        }
+        JSONObject jsonObject = new JSONObject();
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+                case 1:
+                    //                    jsonObject = oTrans.setMaster(1, lsValue);
+                    if ("error".equalsIgnoreCase((String) jsonObject.get("result"))) {
+                    }
+                    break;
+                case 2:
+                    jsonObject = oTrans.setMaster(2, "0");
+                    if ("error".equals((String) jsonObject.get("result"))) {
+                        System.err.println((String) jsonObject.get("message"));
+                        System.exit(1);
+                    }
+                    break;
             }
-            JSONObject jsonObject = new JSONObject();
-            if (!nv) {
-                /*Lost Focus*/
-                switch (lnIndex) {
-                    case 1:
-    //                    jsonObject = oTrans.setMaster(1, lsValue);
-                        if ("error".equalsIgnoreCase((String) jsonObject.get("result"))) {
-                        }
-                        break;
-                    case 2:
-                        jsonObject = oTrans.setMaster(2, "0");
-                        if ("error".equals((String) jsonObject.get("result"))) {
-                            System.err.println((String) jsonObject.get("message"));
-                            System.exit(1);
-                        }
-                        break;
-                }
-            } else {
-                txtField.selectAll();
-            }
-        };
-        
-    /*******************************/
+        } else {
+            txtField.selectAll();
+        }
+    };
+
+    /**
+     * ****************************
+     */
     /*initialize contactinfo fields*/
-    /*******************************/
+    /**
+     * ****************************
+     */
     private void InitContctPersonInfo() {
 //        /*MOBILE INFO FOCUSED PROPERTY*/
 //        txtContact01.focusedProperty().addListener(contactinfo_Focus);
@@ -369,13 +418,17 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //        txtContact07.focusedProperty().addListener(contactinfo_Focus);
 //        txtContact08.focusedProperty().addListener(contactinfo_Focus);
 //        txtContact09.focusedProperty().addListener(contactinfo_Focus);
-//        txtContact10.focusedProperty().addListener(contactinfoTextArea_Focus); 
+//        txtContact10.focusedProperty().addListener(contactinfoTextArea_Focus);
 //    }
 
-    /*******************************************/
-    /*initialize value to data                 */
-    /*serves also as lost focus FOR contactinfo*/
-    /*******************************************/
+        /**
+         * ****************************************
+         */
+        /*initialize value to data                 */
+ /*serves also as lost focus FOR contactinfo*/
+        /**
+         * ****************************************
+         */
 //        final ChangeListener<? super Boolean> contactinfo_Focus = (o, ov, nv) -> {
 //            if (!pbLoaded) {
 //                return;
@@ -459,7 +512,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //            if (!nv) {
 //                /*Lost Focus*/
 //                switch (lnIndex) {
-//                    case 10:/*company name*/                        
+//                    case 10:/*company name*/
 //                        oTrans.setInsContact(pnContact, "sRemarksx", lsValue);
 //                        break;
 //                }
@@ -468,7 +521,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //                txtContact.selectAll();
 //            }
 //        };
-//    
+//
 //    /***************************/
 //    /*initialize address fields*/
 //    /***************************/
@@ -481,9 +534,9 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //        /*addressin key */
 //        cmpnyInfo05.setOnKeyPressed(this::companyinfo_KeyPressed);
 //        cmpnyInfo06.setOnKeyPressed(this::companyinfo_KeyPressed);
-//        
+//
 //    }
-//    
+//
 //    /*******************************************/
 //    /*initialize value to data                 */
 //    /*serves also as lost focus FOR addressinfo*/
@@ -584,7 +637,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //                    oTrans.getInsContact(lnCtr, "cRecdStat").toString()));
 //        }
 //    }
-//    
+//
 //    /***********************************/
 //    /*initialize loadcontactperson grid*/
 //    /***********************************/
@@ -596,7 +649,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //        indexContact05.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
 //        indexContact06.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
 //        indexContact07.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-//        
+//
 //        indexContact01.setCellValueFactory(new PropertyValueFactory<>("index01"));
 //        indexContact02.setCellValueFactory(new PropertyValueFactory<>("index02"));
 //        indexContact03.setCellValueFactory(new PropertyValueFactory<>("index03"));
@@ -616,7 +669,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //
 //        getContactSelectedItem();
 //    }
-//    
+//
 //    /************************/
 //    /*initialize clickbutton*/
 //    /************************/
@@ -626,7 +679,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //        btnAddInsContact.setOnAction(this::handleButtonAction);
 //        btnDelInsContact.setOnAction(this::handleButtonAction);
 //    }
-//    
+//
 //    /*************************************/
 //    /*initialize handlebuttonaction event*/
 //    /*************************************/
@@ -646,20 +699,20 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //                    break;
 //                case "btnSave":
 //                    oTrans.setAddress(pnAddress, "cPrimaryx", Logical.YES);
-//                    
+//
 //                    oTrans.getModel().setClientType("0");
 //                    JSONObject saveResult = oTrans.saveRecord();
 //                    if ("success".equals((String) saveResult.get("result"))) {
 //                        System.err.println((String) saveResult.get("message"));
 //                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
 //                        String dataToSend = cmpnyInfo01.getText();
-//                        
+//
 //                        System.out.println("Record saved successfully.");
 //                        if(parentController != null){
 //                            loadform.useParentController(GlobalVariables.sClientID);
 //                        }
 //                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-//                        
+//
 //                    } else {
 //                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
 //                        System.out.println("Record not saved successfully.");
@@ -683,12 +736,12 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //                    tblContact.getSelectionModel().select(pnContact + 1);
 //                    break;
 //                case "btnDelInsContact":
-//                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove ?") == true){  
+//                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to remove ?") == true){
 //                        oTrans.getInsContactList().remove(pnContact);
 //                        if(oTrans.getInsContactList().size() <= 0){
 //                            oTrans.addInsContact();
 //                        }
-//                        
+//
 //                        pnContact = oTrans.getInsContactList().size()-1;
 //                        loadContctPerson();
 //                        clearContactperson();
@@ -697,7 +750,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //            }
 //        }
 //    }
-//    
+//
 //    /******************************************/
 //    /*initialize clear contactperson textfield*/
 //    /******************************************/
@@ -712,7 +765,7 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //        txtContact08.clear();
 //        txtContact09.clear();
 //        txtContact10.clear();
-//        
+//
 //        cbContact01.setSelected(false);
 //        cbContact02.setSelected(false);
 ////        txtContact01.requestFocus();
@@ -746,10 +799,10 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //        }else{
 //            lblStatus.setText("INACTIVE");
 //        }
-//        
+//
 //        cbContact01.setSelected((!"0".equals(oTrans.getInsContact(pnContact, 14).toString())));
 //        cbContact02.setSelected((oTrans.getInsContact(pnContact, 13).toString() == "0"?false:true));
-//        
+//
 //    }
 //
 //    /**********************************/
@@ -770,11 +823,11 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //            }else{
 //                oTrans.setInsContact(lnCtr, "cRecdStat", "0");
 //            }
-//            
+//
 //        }
 //        loadContctPerson();
 //    }
-//    
+//
 //    /**********************************/
 //    /*initialize cRecdStat click event*/
 //    /**********************************/
@@ -797,5 +850,5 @@ public class ClientMasterTransactionCompanyController implements Initializable, 
 //    void loadReturn(String lsValue) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
 //    }
-}
+    }
 }
