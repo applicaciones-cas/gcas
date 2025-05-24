@@ -656,7 +656,7 @@
                                                             <columns>
                                                                 <TableColumn fx:id="tblJERowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                                 <TableColumn fx:id="tblJEAcctCodeDetail" editable="false" maxWidth="131.0" minWidth="100.0" prefWidth="131.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Account Code" />
-                                                                <TableColumn fx:id="tblJEAcctDescriptionDetail" editable="false" maxWidth="380.0" minWidth="280.0" prefWidth="380.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
+                                                                <TableColumn fx:id="tblJEAcctDescriptionDetail" editable="false" maxWidth="380.0" minWidth="-1.0" prefWidth="380.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
                                                                 <TableColumn fx:id="tblJECreditAmtDetail" editable="false" maxWidth="131.0" minWidth="80.0" prefWidth="131.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Credit Amount" />
                                                                 <TableColumn fx:id="tblJEDebitAmtDetail" editable="false" maxWidth="143.0" minWidth="44.0" prefWidth="131.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Debit Amount" />
                                                             </columns>
