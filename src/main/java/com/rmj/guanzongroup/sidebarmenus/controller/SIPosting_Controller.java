@@ -1807,7 +1807,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         JFXUtil.setButtonsVisibility(false, btnPost);
 
         //Unkown || Ready
-        JFXUtil.setButtonsVisibility(lbShow3, btnClose);
+        JFXUtil.setButtonsVisibility(lbShow4, btnClose);
         JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apAttachments);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
