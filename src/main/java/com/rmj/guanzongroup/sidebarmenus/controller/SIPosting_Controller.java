@@ -13,11 +13,8 @@ import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,8 +53,6 @@ import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -119,16 +114,10 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
     List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
-    private double mouseAnchorX;
-    private double mouseAnchorY;
-    private double scaleFactor = 1.0;
     private FileChooser fileChooser;
     private int pnAttachment;
 
     private int currentIndex = 0;
-    double ldstackPaneWidth = 0;
-    double ldstackPaneHeight = 0;
-    boolean lbresetpredicate = false;
     boolean lbSelectTabJE = false;
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
@@ -136,8 +125,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
 
-    private ChangeListener<String> detailSearchListener;
-    private ChangeListener<String> mainSearchListener;
 
     JFXUtil.MonthYearPicker.Picker month_year_picker;
 
@@ -380,10 +367,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         break;
                     case "btnRetrieve":
                         //Retrieve data from purchase order to table main
-                        if (mainSearchListener != null) {
-                            tfOrderNo.textProperty().removeListener(mainSearchListener);
-                            mainSearchListener = null; // Clear reference to avoid memory leaks
-                        }
+          
                         retrievePOR();
                         JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
                         showRetainedHighlight(false);
@@ -699,6 +683,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     break;
                 case "tfReportMonthYear":
                     String value = tfReportMonthYear.getText().trim();
+                    boolean lbproceed = false;
                     if (value.matches("\\d{1,2}/\\d{4}")) {
                         try {
                             int month = Integer.parseInt(value.split("/")[0]);
@@ -712,9 +697,17 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                 if (month_year_picker.onDateSelected != null) {
                                     month_year_picker.onDateSelected.accept(YearMonth.of(year, month));
                                 }
+                            } else {
+                                lbproceed = true;
                             }
                         } catch (NumberFormatException ignored) {
+                            lbproceed = true;
                         }
+                    } else {
+                        lbproceed = true;
+                    }
+                    if (lbproceed) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid input");
                     }
                     month_year_picker.popup.hide();
                     break;
@@ -1147,7 +1140,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                             String convertedPath = imgPath.toUri().toString();
                             Image loimage = new Image(convertedPath);
                             imageView.setImage(loimage);
-                            JFXUtil.adjustImageSize(loimage, imageView, ldstackPaneWidth, ldstackPaneHeight);
+                            JFXUtil.adjustImageSize(loimage, imageView, JFXUtil.ldstackPaneWidth, JFXUtil.ldstackPaneHeight);
                             JFXUtil.stackPaneClip(stackPane1);
                             JFXUtil.stackPaneClip(stackPane1); // dont remove duplicate
 
@@ -1171,11 +1164,13 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     public void loadRecordJEDetail() {
-        tfJEAcctCode.setText("");
-        tfJEAcctDescription.setText("");
-        //tfReportMonthYear.setText(""); //month_year_picker.setYearMonth(YearMonth.of(2023, 4));
-        tfCreditAmt.setText("");
-        tfDebitAmt.setText("");
+//        tfJEAcctCode.setText("");
+//        tfJEAcctDescription.setText("");
+        //tfReportMonthYear.setText(""); //
+
+        month_year_picker.setYearMonth(month_year_picker.getYearMonth());
+//        tfCreditAmt.setText("");
+//        tfDebitAmt.setText("");
     }
 
     public void loadRecordDetail() {
@@ -1334,17 +1329,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
-        if (mainSearchListener != null) {
-            tfOrderNo.textProperty().removeListener(mainSearchListener);
-            mainSearchListener = null;
-        }
-        if (detailSearchListener != null) {
-            tfOrderNo.textProperty().removeListener(detailSearchListener);
-            detailSearchListener = null;
-        }
-        filteredDataDetail.setPredicate(null);
-        filteredData.setPredicate(null);
-        lbresetpredicate = false;
+
         int realIndex = Integer.parseInt(pnRowMain);
 
         if (realIndex == -1) {
@@ -1360,12 +1345,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         pgPagination.setCurrentPageIndex(targetPage);
         JFXUtil.changeTableView(targetPage, ROWS_PER_PAGE, tblViewMainList, main_data.size(), filteredData);
 
-        Platform.runLater(() -> {
-            if (lbresetpredicate) {
-                tblViewMainList.scrollTo(indexInPage);
-                lbresetpredicate = false;
-            }
-        });
     }
 
     public void loadTableDetailFromMain() {
@@ -1406,7 +1385,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     public void loadTableJEDetail() {
-
+        loadRecordJEDetail();
     }
 
     public void loadTableDetail() {
@@ -1418,21 +1397,16 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         tblViewTransDetailList.setPlaceholder(loading.loadingPane);
         loading.progressIndicator.setVisible(true);
 
-        if (lbresetpredicate) {
-            goToPageBasedOnSelectedRow(String.valueOf(pnMain));
-            filteredDataDetail.setPredicate(null);
-            lbresetpredicate = false;
-            tfOrderNo.textProperty().removeListener(detailSearchListener);
-
-            mainSearchListener = null;
-            filteredData.setPredicate(null);
-            initMainGrid();
-            initDetailsGrid();
-            Platform.runLater(() -> {
-                tfOrderNo.setText("");
-            });
-            goToPageBasedOnSelectedRow(String.valueOf(pnMain));
-        }
+//        if (lbresetpredicate) {
+//            goToPageBasedOnSelectedRow(String.valueOf(pnMain));
+//
+//            initMainGrid();
+//            initDetailsGrid();
+//            Platform.runLater(() -> {
+//                tfOrderNo.setText("");
+//            });
+//            goToPageBasedOnSelectedRow(String.valueOf(pnMain));
+//        }
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -1642,7 +1616,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         tblAttachments.setOnMouseClicked(event -> {
             pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
             if (pnAttachment >= 0) {
-                scaleFactor = 1.0;
+                JFXUtil.scaleFactor = 1.0;
                 loadRecordAttachment(true);
                 JFXUtil.resetImageBounds(imageView, stackPane1);
             }
@@ -1757,41 +1731,10 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     private void initAttachmentPreviewPane() {
-        stackPane1.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-            stackPane1.setClip(new javafx.scene.shape.Rectangle(
-                    newBounds.getMinX(),
-                    newBounds.getMinY(),
-                    newBounds.getWidth(),
-                    newBounds.getHeight()
-            ));
-        });
-        imageView.setOnScroll((ScrollEvent event) -> {
-            double delta = event.getDeltaY();
-            scaleFactor = Math.max(0.5, Math.min(scaleFactor * (delta > 0 ? 1.1 : 0.9), 5.0));
-            imageView.setScaleX(scaleFactor);
-            imageView.setScaleY(scaleFactor);
-        });
-
-        imageView.setOnMousePressed((MouseEvent event) -> {
-            mouseAnchorX = event.getSceneX() - imageView.getTranslateX();
-            mouseAnchorY = event.getSceneY() - imageView.getTranslateY();
-        });
-
-        imageView.setOnMouseDragged((MouseEvent event) -> {
-            double translateX = event.getSceneX() - mouseAnchorX;
-            double translateY = event.getSceneY() - mouseAnchorY;
-            imageView.setTranslateX(translateX);
-            imageView.setTranslateY(translateY);
-        });
-
-        stackPane1.widthProperty().addListener((observable, oldValue, newWidth) -> {
-            double computedWidth = newWidth.doubleValue();
-            ldstackPaneWidth = computedWidth;
-
-        });
+        JFXUtil.initAttachmentPreviewPane(stackPane1, imageView);
         stackPane1.heightProperty().addListener((observable, oldValue, newHeight) -> {
             double computedHeight = newHeight.doubleValue();
-            ldstackPaneHeight = computedHeight;
+            JFXUtil.ldstackPaneHeight = computedHeight;
             loadTableAttachment();
             loadRecordAttachment(true);
             initAttachmentsGrid();
@@ -1862,7 +1805,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetailList);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
-        autoSearch(tfOrderNo);
 
         SortedList<ModelDeliveryAcceptance_Detail> sortedData = new SortedList<>(filteredDataDetail);
         sortedData.comparatorProperty().bind(tblViewTransDetailList.comparatorProperty());
@@ -1966,63 +1908,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
         cbVatInclusive.setSelected(false);
         cbVatable.setSelected(false);
-    }
-
-    private void autoSearch(TextField txtField) {
-        detailSearchListener = (observable, oldValue, newValue) -> {
-            int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
-            pgPagination.setPageCount(totalPage);
-            filteredDataDetail.setPredicate(orders -> {
-                lbresetpredicate = true;
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-                if (mainSearchListener != null) {
-                    txtField.textProperty().removeListener(mainSearchListener);
-                    mainSearchListener = null; // Clear reference to avoid memory leaks
-                }
-                String lowerCaseFilter = newValue.toLowerCase();
-                return orders.getIndex02().toLowerCase().contains(lowerCaseFilter);
-            });
-            // If no results and autoSearchMain is enabled, remove listener and trigger autoSearchMain
-            if (filteredDataDetail.isEmpty()) {
-                if (main_data.size() > 0) {
-                    txtField.textProperty().removeListener(detailSearchListener);
-                    filteredData = new FilteredList<>(main_data, b -> true);
-                    autoSearchMain(txtField); // Trigger autoSearchMain if no results
-                    tblViewMainList.setItems(filteredData);
-
-                    String currentText = txtField.getText();
-                    txtField.setText(currentText + " "); // Add a space
-                    txtField.setText(currentText);       // Set back to original
-                }
-            } else {
-                if (filteredDataDetail.size() == details_data.size()) {
-                    JFXUtil.selectAndFocusRow(tblViewTransDetailList, pnDetail);
-                }
-            }
-        };
-        txtField.textProperty().addListener(detailSearchListener);
-    }
-
-    private void autoSearchMain(TextField txtField) {
-        mainSearchListener = (observable, oldValue, newValue) -> {
-            filteredData.setPredicate(orders -> {
-                lbresetpredicate = true;
-                if (newValue == null || newValue.isEmpty()) {
-                    if (mainSearchListener != null) {
-                        txtField.textProperty().removeListener(mainSearchListener);
-                        mainSearchListener = null; // Clear reference to avoid memory leaks
-                        initDetailsGrid();
-                    }
-                    return true;
-                }
-                String lowerCaseFilter = newValue.toLowerCase();
-                return orders.getIndex04().toLowerCase().contains(lowerCaseFilter);
-            });
-            pgPagination.setPageCount(1);
-        };
-        txtField.textProperty().addListener(mainSearchListener);
     }
 
 }
