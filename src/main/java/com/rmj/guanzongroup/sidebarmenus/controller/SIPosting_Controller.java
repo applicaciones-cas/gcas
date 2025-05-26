@@ -283,7 +283,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         poJSON = new JSONObject();
         try {
             if(poPurchaseReceivingController.getTransactionAttachmentCount() <= 0){
-                ShowMessageFX.Warning(null, pxeModuleName, "Not transaction attachment to load.");
+                ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
                 return;
             }
             
