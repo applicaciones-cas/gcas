@@ -10,6 +10,7 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Det
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -73,10 +74,17 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import java.time.YearMonth;
 import javafx.animation.PauseTransition;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.guanzon.appdriver.constant.DocumentType;
 import javafx.util.Pair;
 
@@ -124,7 +132,10 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
-
+    
+    private double xOffset = 0;
+    private double yOffset = 0;
+    private Stage dialogStage = null;
 
     JFXUtil.MonthYearPicker.Picker month_year_picker;
 
@@ -204,8 +215,20 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             poPurchaseReceivingController.setCategoryId(psCategoryId);
             poPurchaseReceivingController.initFields();
             loadRecordSearch();
+            
+            AnchorPane root = (AnchorPane) apMainAnchor;
+            Scene scene = root.getScene();
+            if (scene != null) {
+                setKeyEvent(scene);
+            } else {
+                root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+                    if (newScene != null) {
+                        setKeyEvent(newScene);
+                    }
+                });
+            }
         });
-
+        
         initAttachmentPreviewPane();
 
         pgPagination.setPageCount(1);
@@ -242,6 +265,72 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 }
             }
         });
+    }
+    
+    private void setKeyEvent(Scene scene) {
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.F5) {
+                System.out.println("tested key press");
+                if(poPurchaseReceivingController.getEditMode() == EditMode.READY){
+                    showAttachmentlDialog();
+                }
+            }
+        }
+        );
+    }
+    
+    public void showAttachmentlDialog() {
+        poJSON = new JSONObject();
+        try {
+            if(poPurchaseReceivingController.getTransactionAttachmentCount() <= 0){
+                ShowMessageFX.Warning(null, pxeModuleName, "Not transaction attachment to load.");
+                return;
+            }
+            
+//             Check if the dialog is already open
+            if (dialogStage != null) {
+                if (dialogStage.isShowing()) {
+                    dialogStage.toFront();
+                    return;
+                }
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"));
+            AttachmentDialogController controller = new AttachmentDialogController();
+            loader.setController(controller);
+
+            if (controller != null) {
+                controller.setGRider(oApp);
+                controller.setObject(poPurchaseReceivingController);
+            }
+
+            Parent root = loader.load();
+
+            // Handle drag events for the undecorated window
+            root.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            root.setOnMouseDragged(event -> {
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            dialogStage = new Stage();
+            dialogStage.initStyle(StageStyle.UNDECORATED);
+//            dialogStage.initModality(Modality.APPLICATION_MODAL);
+            dialogStage.initModality(Modality.NONE);
+            dialogStage.setAlwaysOnTop(true);
+            dialogStage.setTitle("Transaction Attachment");
+            dialogStage.setScene(new Scene(root));
+
+            dialogStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -1378,6 +1467,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             Platform.runLater(() -> {
                 loadTableAttachment();
             });
+            
+            if (dialogStage != null) {
+                if (dialogStage.isShowing()) {
+                    dialogStage.close();
+                }
+            }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
