@@ -557,6 +557,18 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         poJSON = poPurchaseReceivingController.Master().setTermCode("");
                     }
                     break;
+                case "tfReferenceNo": 
+                    if (!lsValue.isEmpty()) {
+                        poJSON = poPurchaseReceivingController.Master().setReferenceNo(lsValue);
+                    } else {
+                        poJSON = poPurchaseReceivingController.Master().setReferenceNo("");
+                    }
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfReferenceNo.setText("");
+                        break;
+                    }
+                    break;
                 case "tfSINo":
                     if (!lsValue.isEmpty()) {
                         poJSON = poPurchaseReceivingController.Master().setSalesInvoice(lsValue);
@@ -565,7 +577,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     }
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        tfReferenceNo.setText("");
+                        tfSINo.setText("");
                         break;
                     }
                     break;
@@ -1239,7 +1251,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
             tfSupersede.setText(poPurchaseReceivingController.Detail(pnDetail).Supersede().getBarCode());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
-
+            tfOrderNo.setText(poPurchaseReceivingController.Detail(pnDetail).getOrderNo());
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
 //            tfDiscRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getDiscount().doubleValue()*100));
 //            Platform.runLater(() -> {
@@ -1346,8 +1358,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 }
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
-            tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-
+            tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
+            
             tfSINo.setText(poPurchaseReceivingController.Master().getSalesInvoice());
             tfFreightAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getFreight().doubleValue())));
 
@@ -1475,13 +1487,18 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     details_data.clear();
                     int lnCtr;
                     try {
+                        double lnTransactionTotal = 0.00;
                         double lnTotal = 0.00;
                         double lnDiscountAmt = 0.00;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             try {
                                 //TODO
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
-                                lnDiscountAmt = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
+                                lnDiscountAmt = 0.00;
+                                
+                                lnTransactionTotal = lnTransactionTotal 
+                                        + ((poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue())
+                                            - lnDiscountAmt); 
                             } catch (Exception e) {
                             }
 
@@ -1505,7 +1522,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                         ));
                             }
                         }
-
+                        
+                        tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTransactionTotal));
+            
                         if (pnDetail < 0 || pnDetail
                                 >= details_data.size()) {
                             if (!details_data.isEmpty()) {
@@ -1634,7 +1653,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     public void initTextFields() {
         JFXUtil.setFocusListener(txtField_Focus, tfSearchReceiveBranch, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks, taJERemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount,
+        JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo,tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount,
                 tfVatSales, tfZeroVatSales, tfVatAmount, tfVatExemptSales, tfTotalCreditAmt, tfTotalDebitAmt,
                 tfTotalCreditAmt, tfTotalDebitAmt);
         JFXUtil.setFocusListener(txtDetail_Focus, tfCost, tfDiscRateDetail, tfAddlDiscAmtDetail, tfTotalDetail,
@@ -1860,7 +1879,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
         JFXUtil.setColumnCenter(tblRowNoDetail, tblOrderQuantityDetail, tblReceiveQuantityDetail);
         JFXUtil.setColumnLeft(tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail);
-        JFXUtil.setColumnRight(tblCostDetail, tblTotalDetail);
+        JFXUtil.setColumnRight(tblCostDetail, tblDiscountAmtDetail, tblTotalDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetailList);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
