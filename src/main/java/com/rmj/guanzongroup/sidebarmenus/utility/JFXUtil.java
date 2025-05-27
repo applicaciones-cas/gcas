@@ -8,6 +8,7 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -358,13 +359,13 @@ public class JFXUtil {
         }
     }
 
-    public void showDialog(String lsFxml,
+    public static void showDialog(URL fxmlurl,
             Object controller,
-            String lsDialogTitle
+            String lsDialogTitle, boolean enableWindowDrag
     ) throws IOException {
 
         // no need to set dialogstage null or not as the background is auto locked upon opening
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(lsFxml));
+        FXMLLoader loader = new FXMLLoader(fxmlurl);
         loader.setController(controller);
 
         Parent root = loader.load();
@@ -374,12 +375,13 @@ public class JFXUtil {
             xyOffset.x = event.getSceneX();
             xyOffset.y = event.getSceneY();
         });
-
-        root.setOnMouseDragged(event -> {
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setX(event.getScreenX() - xyOffset.x);
-            stage.setY(event.getScreenY() - xyOffset.y);
-        });
+        if (enableWindowDrag) {
+            root.setOnMouseDragged(event -> {
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setX(event.getScreenX() - xyOffset.x);
+                stage.setY(event.getScreenY() - xyOffset.y);
+            });
+        }
 
         Stage dialog = new Stage();
         dialog.initStyle(StageStyle.UNDECORATED);
@@ -423,6 +425,48 @@ public class JFXUtil {
         imageView.setTranslateX(0);
         imageView.setTranslateY(0);
         stackPane1.setAlignment(imageView, javafx.geometry.Pos.CENTER);
+    }
+
+    public static class ImageViewer {
+        public double ldstackPaneWidth = 0;
+        public double ldstackPaneHeight = 0;
+        public double mouseAnchorX;
+        public double mouseAnchorY;
+        public double scaleFactor = 1.0;
+
+        public void initAttachmentPreviewPane(StackPane stackPane, ImageView imageView) {
+            stackPane.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
+                stackPane.setClip(new javafx.scene.shape.Rectangle(
+                        newBounds.getMinX(),
+                        newBounds.getMinY(),
+                        newBounds.getWidth(),
+                        newBounds.getHeight()
+                ));
+            });
+
+            imageView.setOnScroll((ScrollEvent event) -> {
+                double delta = event.getDeltaY();
+                scaleFactor = Math.max(0.5, Math.min(scaleFactor * (delta > 0 ? 1.1 : 0.9), 5.0));
+                imageView.setScaleX(scaleFactor);
+                imageView.setScaleY(scaleFactor);
+            });
+
+            imageView.setOnMousePressed((MouseEvent event) -> {
+                mouseAnchorX = event.getSceneX() - imageView.getTranslateX();
+                mouseAnchorY = event.getSceneY() - imageView.getTranslateY();
+            });
+
+            imageView.setOnMouseDragged((MouseEvent event) -> {
+                double translateX = event.getSceneX() - mouseAnchorX;
+                double translateY = event.getSceneY() - mouseAnchorY;
+                imageView.setTranslateX(translateX);
+                imageView.setTranslateY(translateY);
+            });
+
+            stackPane.widthProperty().addListener((observable, oldValue, newWidth) -> {
+                ldstackPaneWidth = newWidth.doubleValue();
+            });
+        }
     }
 
     public static void adjustImageSize(Image image, ImageView imageView, double ldstackPaneWidth, double ldstackPaneHeight) {
@@ -925,7 +969,6 @@ public class JFXUtil {
 
                 textField.setPromptText("MM/YYYY");
 //                textField.setEditable(false);
-//                textField.setPrefWidth(180);
 
                 VBox popupContent = new VBox(10);
                 popupContent.setPadding(new Insets(10));
@@ -969,7 +1012,7 @@ public class JFXUtil {
                         updateTextFieldAndNotify();
                         refreshMonthSelection();
                         popup.hide();
-                        textField.getParent().requestFocus();  // remove focus from TextField
+                        textField.getParent().requestFocus();
 
                     });
                     monthGrid.add(btn, i % 3, i / 3);
@@ -986,7 +1029,7 @@ public class JFXUtil {
                     if (!popup.isShowing()) {
                         Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
                         double x = bounds.getMinX();
-                        double y = bounds.getMaxY(); // This ensures it appears right below
+                        double y = bounds.getMaxY();
                         popup.show(textField, x - 13, y - 7);
                     } else {
                         popup.hide();
@@ -1044,7 +1087,7 @@ public class JFXUtil {
             public void clear() {
                 selectedYear = 0;
                 selectedMonth = 0;
-                textField.clear(); // removes text from field
+                textField.clear();
                 monthGrid.getChildren().forEach(node -> node.getStyleClass().remove("selected-month"));
             }
         }
@@ -1052,45 +1095,6 @@ public class JFXUtil {
         public static Picker setupMonthYearPicker(TextField textField, Consumer<YearMonth> onDateSelected) {
             return new Picker(textField, onDateSelected);
         }
-    }
-    public static double ldstackPaneWidth = 0;
-    public static double ldstackPaneHeight = 0;
-    public static double mouseAnchorX;
-    public static double mouseAnchorY;
-    public static double scaleFactor = 1.0;
-
-    public static void initAttachmentPreviewPane(StackPane stackPane, ImageView imageView) {
-        stackPane.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
-            stackPane.setClip(new javafx.scene.shape.Rectangle(
-                    newBounds.getMinX(),
-                    newBounds.getMinY(),
-                    newBounds.getWidth(),
-                    newBounds.getHeight()
-            ));
-        });
-
-        imageView.setOnScroll((ScrollEvent event) -> {
-            double delta = event.getDeltaY();
-            scaleFactor = Math.max(0.5, Math.min(scaleFactor * (delta > 0 ? 1.1 : 0.9), 5.0));
-            imageView.setScaleX(scaleFactor);
-            imageView.setScaleY(scaleFactor);
-        });
-
-        imageView.setOnMousePressed((MouseEvent event) -> {
-            mouseAnchorX = event.getSceneX() - imageView.getTranslateX();
-            mouseAnchorY = event.getSceneY() - imageView.getTranslateY();
-        });
-
-        imageView.setOnMouseDragged((MouseEvent event) -> {
-            double translateX = event.getSceneX() - mouseAnchorX;
-            double translateY = event.getSceneY() - mouseAnchorY;
-            imageView.setTranslateX(translateX);
-            imageView.setTranslateY(translateY);
-        });
-
-        stackPane.widthProperty().addListener((observable, oldValue, newWidth) -> {
-            ldstackPaneWidth = newWidth.doubleValue();
-        });
     }
 
 }
