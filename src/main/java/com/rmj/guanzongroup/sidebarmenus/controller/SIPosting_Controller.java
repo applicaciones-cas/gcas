@@ -59,7 +59,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-import java.util.Arrays;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -74,17 +73,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import java.time.YearMonth;
 import javafx.animation.PauseTransition;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.guanzon.appdriver.constant.DocumentType;
 import javafx.util.Pair;
 
@@ -132,10 +126,11 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
-    
+
     private double xOffset = 0;
     private double yOffset = 0;
     private Stage dialogStage = null;
+    private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
 
     JFXUtil.MonthYearPicker.Picker month_year_picker;
 
@@ -215,7 +210,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             poPurchaseReceivingController.setCategoryId(psCategoryId);
             poPurchaseReceivingController.initFields();
             loadRecordSearch();
-            
+
             AnchorPane root = (AnchorPane) apMainAnchor;
             Scene scene = root.getScene();
             if (scene != null) {
@@ -228,7 +223,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 });
             }
         });
-        
+
         initAttachmentPreviewPane();
 
         pgPagination.setPageCount(1);
@@ -266,71 +261,40 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             }
         });
     }
-    
+
     private void setKeyEvent(Scene scene) {
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.F5) {
                 System.out.println("tested key press");
-                if(poPurchaseReceivingController.getEditMode() == EditMode.READY){
+                if (poPurchaseReceivingController.getEditMode() == EditMode.READY) {
                     showAttachmentlDialog();
                 }
             }
         }
         );
     }
-    
+
     public void showAttachmentlDialog() {
         poJSON = new JSONObject();
-        try {
-            if(poPurchaseReceivingController.getTransactionAttachmentCount() <= 0){
-                ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
-                return;
-            }
-            
-//             Check if the dialog is already open
-            if (dialogStage != null) {
-                if (dialogStage.isShowing()) {
-                    dialogStage.toFront();
-                    return;
-                }
-            }
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"));
-            AttachmentDialogController controller = new AttachmentDialogController();
-            loader.setController(controller);
-
-            if (controller != null) {
-                controller.setGRider(oApp);
-                controller.setObject(poPurchaseReceivingController);
-            }
-
-            Parent root = loader.load();
-
-            // Handle drag events for the undecorated window
-            root.setOnMousePressed(event -> {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            });
-
-            root.setOnMouseDragged(event -> {
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setX(event.getScreenX() - xOffset);
-                stage.setY(event.getScreenY() - yOffset);
-            });
-
-            dialogStage = new Stage();
-            dialogStage.initStyle(StageStyle.UNDECORATED);
-//            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.initModality(Modality.NONE);
-            dialogStage.setAlwaysOnTop(true);
-            dialogStage.setTitle("Transaction Attachment");
-            dialogStage.setScene(new Scene(root));
-
-            dialogStage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
+            ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
+            return;
         }
+        Map<String, Pair<String, String>> data = new HashMap<>();
+        data.clear();
+        for (int lnCtr = 0; lnCtr < poPurchaseReceivingController.getTransactionAttachmentCount(); lnCtr++) {
+            data.put(String.valueOf(lnCtr + 1), new Pair<>(String.valueOf(poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getFileName()),
+                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType()));
+
+        }
+        AttachmentDialogController controller = new AttachmentDialogController();
+        controller.addData(data);
+        try {
+            JFXUtil.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false);
+        } catch (IOException ex) {
+            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     @FXML
@@ -421,8 +385,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         if ((lastFocusedTextField != null)) {
                             if (lastFocusedTextField instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField;
-                                if (Arrays.asList("tfTerm", "tfSearchSupplier", "tfSearchReceiveBranch", "tfSearchReferenceNo").contains(tf.getId())) {
-
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail).contains(tf.getId())) {
                                     if (lastFocusedTextField == previousSearchedTextField) {
                                         break;
                                     }
@@ -456,7 +419,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         break;
                     case "btnRetrieve":
                         //Retrieve data from purchase order to table main
-          
+
                         retrievePOR();
                         JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
                         showRetainedHighlight(false);
@@ -1229,7 +1192,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                             String convertedPath = imgPath.toUri().toString();
                             Image loimage = new Image(convertedPath);
                             imageView.setImage(loimage);
-                            JFXUtil.adjustImageSize(loimage, imageView, JFXUtil.ldstackPaneWidth, JFXUtil.ldstackPaneHeight);
+                            JFXUtil.adjustImageSize(loimage, imageView, imageviewerutil.ldstackPaneWidth, imageviewerutil.ldstackPaneHeight);
                             JFXUtil.stackPaneClip(stackPane1);
                             JFXUtil.stackPaneClip(stackPane1); // dont remove duplicate
 
@@ -1438,6 +1401,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     public void loadTableDetailFromMain() {
         try {
+
             poJSON = new JSONObject();
 
             ModelDeliveryAcceptance_Main selected = (ModelDeliveryAcceptance_Main) tblViewMainList.getSelectionModel().getSelectedItem();
@@ -1467,7 +1431,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             Platform.runLater(() -> {
                 loadTableAttachment();
             });
-            
+
             if (dialogStage != null) {
                 if (dialogStage.isShowing()) {
                     dialogStage.close();
@@ -1591,7 +1555,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     private void loadTableAttachment() {
-
+        imageviewerutil.scaleFactor = 1.0;
+        JFXUtil.resetImageBounds(imageView, stackPane1);
         // Setting data to table detail
         JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
         tblAttachments.setPlaceholder(loading.loadingPane);
@@ -1675,7 +1640,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         JFXUtil.setFocusListener(txtDetail_Focus, tfCost, tfDiscRateDetail, tfAddlDiscAmtDetail, tfTotalDetail,
                 tfJEAcctCode, tfJEAcctDescription, tfReportMonthYear, tfCreditAmt, tfDebitAmt);
 
-        JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apJEDetail);
+        JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apJEDetail, apBrowse);
 
         JFXUtil.setCommaFormatter(tfDiscountAmount, tfFreightAmt, tfVatSales,
                 tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfCost, tfAddlDiscAmtDetail, tfCreditAmt, tfDebitAmt);
@@ -1711,7 +1676,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         tblAttachments.setOnMouseClicked(event -> {
             pnAttachment = tblAttachments.getSelectionModel().getSelectedIndex();
             if (pnAttachment >= 0) {
-                JFXUtil.scaleFactor = 1.0;
+                imageviewerutil.scaleFactor = 1.0;
                 loadRecordAttachment(true);
                 JFXUtil.resetImageBounds(imageView, stackPane1);
             }
@@ -1826,13 +1791,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     private void initAttachmentPreviewPane() {
-        JFXUtil.initAttachmentPreviewPane(stackPane1, imageView);
+        imageviewerutil.initAttachmentPreviewPane(stackPane1, imageView);
         stackPane1.heightProperty().addListener((observable, oldValue, newHeight) -> {
             double computedHeight = newHeight.doubleValue();
-            JFXUtil.ldstackPaneHeight = computedHeight;
+            imageviewerutil.ldstackPaneHeight = computedHeight;
             loadTableAttachment();
             loadRecordAttachment(true);
-            initAttachmentsGrid();
         });
 
     }
