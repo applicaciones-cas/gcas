@@ -1410,8 +1410,9 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
             CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
             CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
-            CustomCommonUtil.setVisible(false, btnConfirm, btnReturn, btnVoid, btnUpdate);
-            CustomCommonUtil.setManaged(false, btnConfirm, btnReturn, btnVoid, btnUpdate);
+            CustomCommonUtil.setVisible(false, btnConfirm, btnReturn, btnVoid, btnUpdate, btnSearch);
+            CustomCommonUtil.setManaged(false, btnConfirm, btnReturn, btnVoid, btnUpdate, btnSearch);
+
             btnHistory.setVisible(fnEditMode == EditMode.READY);
             btnHistory.setManaged(fnEditMode == EditMode.READY);
             if (fnEditMode == EditMode.READY) {
