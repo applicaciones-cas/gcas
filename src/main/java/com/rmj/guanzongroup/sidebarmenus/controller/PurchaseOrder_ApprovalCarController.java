@@ -505,7 +505,9 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                     poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CAR_MC_MPUnit_Appliance);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                        break;
                     }
+                    
                     break;
                 case "btnRetrieve":
                     loadTableMain();
@@ -805,36 +807,40 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
         poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setUnitPrice(lnCostDetail);
     }
 
+    
     private void setOrderQuantityToDetail(String fsValue) {
         if (fsValue.isEmpty()) {
-            fsValue = "0";
+            fsValue = "0.0";
         }
-        if (Integer.parseInt(fsValue) < 0) {
+        if (Double.parseDouble(fsValue) < 0.0) {
             ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
-            fsValue = "0";
+            fsValue = "0.0";
         }
         if (pnTblDetailRow < 0) {
-            fsValue = "0";
+            fsValue = "0.00";
             ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
             clearDetailFields();
             int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
             pnTblDetailRow = detailCount > 0 ? detailCount - 1 : 0;
         }
-        int lnRequestQuantity = 0;
+        double lnRequestQuantity = 0;
         try {
             lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved();
             if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty()) {
                 if (Integer.parseInt(tfOrderQuantity.getText()) > lnRequestQuantity) {
                     ShowMessageFX.Warning("Invalid order quantity entered. The item is from a stock request, and the order quantity must not be greater than the requested quantity.", psFormName, null);
-                    fsValue = "0";
+                    fsValue = "0.0";
+
                 }
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ApprovalCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ApprovalAppliancesController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         tfOrderQuantity.setText(fsValue);
-        poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Integer.valueOf(fsValue));
+        poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Double.parseDouble(fsValue));
     }
+   
 
     private void initTextFieldPattern() {
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfAdvancePRate,

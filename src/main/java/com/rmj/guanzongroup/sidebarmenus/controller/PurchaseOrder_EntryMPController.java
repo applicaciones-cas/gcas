@@ -1226,38 +1226,38 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
     private void setOrderQuantityToDetail(String fsValue) {
         try {
             if (fsValue.isEmpty()) {
-                fsValue = "0";
+                fsValue = "0.0";
             }
-            if (Integer.parseInt(fsValue) < 0) {
+            if (Double.parseDouble(fsValue) < 0.0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
-                fsValue = "0";
+                fsValue = "0.0";
             }
             if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
                 if (tfOrderQuantity.isFocused()) {
                     if (tfBrand.getText().isEmpty()) {
                         ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
-                        fsValue = "0";
+                        fsValue = "0.0";
                     }
                     if (!tfBrand.getText().isEmpty() && tfModel.getText().isEmpty()) {
                         ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
-                        fsValue = "0";
+                        fsValue = "0.0";
                     }
                 }
             }
             if (pnTblDetailRow < 0) {
-                fsValue = "0";
+                fsValue = "0.0";
                 ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                 clearDetailFields();
                 int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
                 pnTblDetailRow = detailCount > 0 ? detailCount - 1 : 0;
             }
-            int lnRequestQuantity = 0;
+            double lnRequestQuantity = 0.0;
             try {
                 lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved();
                 if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty()) {
                     if (Integer.parseInt(tfOrderQuantity.getText()) > lnRequestQuantity) {
                         ShowMessageFX.Warning("Invalid order quantity entered. The item is from a stock request, and the order quantity must not be greater than the requested quantity.", psFormName, null);
-                        fsValue = "0";
+                        fsValue = "0.0";
                     }
                 }
             } catch (GuanzonException | SQLException ex) {
@@ -1265,7 +1265,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
             }
 
             tfOrderQuantity.setText(fsValue);
-            poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Integer.valueOf(fsValue));
+            poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Double.parseDouble(fsValue));
 
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);

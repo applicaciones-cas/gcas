@@ -432,6 +432,10 @@ public class PurchaseOrder_HistoryAppliancesController implements Initializable,
                                 psSupplierID = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
+                                
+                            case "tfSearchReferenceNo":
+                                psReferID = tfSearchReferenceNo.getText();
+                                break;
                         }
                         event.consume();
                         CommonUtils.SetNextFocus((TextField) event.getSource());

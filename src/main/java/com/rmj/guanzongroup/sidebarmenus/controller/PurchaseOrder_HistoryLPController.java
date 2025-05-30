@@ -67,7 +67,7 @@ public class PurchaseOrder_HistoryLPController implements Initializable, ScreenI
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order History";
+    private String psFormName = "Purchase Order History LP";
     private LogWrapper logWrapper;
     private int pnEditMode;
     unloadForm poUnload = new unloadForm();
