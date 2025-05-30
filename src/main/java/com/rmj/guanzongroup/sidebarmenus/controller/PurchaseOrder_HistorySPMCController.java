@@ -367,6 +367,21 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
                                 psSupplierID = poPurchasingController.PurchaseOrder().Master().getSupplierID();
                                 tfSearchSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                                 break;
+                            
+                            case "tfSearchReferenceNo":
+                                poJSON = poPurchasingController.PurchaseOrder().SearchTransaction(lsValue,
+                            psSupplierID,
+                            psReferID);
+                                if ("success".equals((String) poJSON.get("result"))) {
+                                    clearDetailFields();
+                                    pnTblDetailRow = -1;
+                                    loadRecordMaster();
+                                    loadRecordDetail();
+                                    loadTableDetail();
+                                    pnEditMode = poPurchasingController.PurchaseOrder().getEditMode();
+                                } else {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
+                                }
                         }
                         event.consume();
                         CommonUtils.SetNextFocus((TextField) event.getSource());
@@ -383,7 +398,7 @@ public class PurchaseOrder_HistorySPMCController implements Initializable, Scree
                         break;
                 }
             }
-        } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+        } catch (ExceptionInInitializerError | SQLException | GuanzonException | CloneNotSupportedException ex) {
             Logger.getLogger(PurchaseOrder_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
