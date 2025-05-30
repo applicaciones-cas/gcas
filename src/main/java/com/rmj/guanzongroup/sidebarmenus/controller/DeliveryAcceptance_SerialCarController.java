@@ -6,6 +6,7 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Serial;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
@@ -67,9 +68,10 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
     private JSONObject poJSON;
     int pnEntryNo = 0;
     int pnDetail = -1;
-    private final String pxeModuleName = "Purchase Order Receiving Serial Car";
+    private final String pxeModuleName = "Inventory Serial Car";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
+    public boolean pbIsFinancing = false;
 
     private ObservableList<ModelDeliveryAcceptance_Serial> details_data = FXCollections.observableArrayList();
 
@@ -81,6 +83,8 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
     private Button btnOkay, btnClose;
     @FXML
     private TextField tfEngineNo, tfFrameNo, tfCSNo, tfPlateNo, tfLocation;
+    @FXML
+    private Label lblApplyToAll;
     @FXML
     private CheckBox cbApplyToAll;
     @FXML
@@ -120,12 +124,22 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
                 }
             });
             delay.play();
+            
+            JFXUtil.setButtonsVisibility(!pbIsFinancing, btnOkay);
+            JFXUtil.setDisabled(pbIsFinancing,  apDetail);
+            cbApplyToAll.setVisible(!pbIsFinancing);
+            lblApplyToAll.setVisible(!pbIsFinancing);
+            
         });
     }
 
 //    @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+    
+    public void isFinancing(boolean fbValue) {
+        pbIsFinancing = fbValue;
     }
 
     @FXML
