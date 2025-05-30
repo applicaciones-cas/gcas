@@ -286,6 +286,9 @@ public class PaymentRequest_HistoryController implements Initializable, ScreenIn
                 case PaymentRequestStatus.PAID:
                     lsStatus = "PAID";
                     break;
+                case PaymentRequestStatus.VOID:
+                    lsStatus = "VOID";
+                    break;
                 case PaymentRequestStatus.POSTED:
                     lsStatus = "POSTED";
                     break;
@@ -852,8 +855,8 @@ public class PaymentRequest_HistoryController implements Initializable, ScreenIn
     private void initButtons(int fnEditMode) {
         CustomCommonUtil.setVisible(true, btnBrowse, btnClose);
         CustomCommonUtil.setManaged(true, btnBrowse, btnClose);
-        btnHistory.setVisible(fnEditMode != EditMode.UNKNOWN);
-        btnHistory.setManaged(fnEditMode != EditMode.UNKNOWN);
+        btnHistory.setVisible(false);
+        btnHistory.setManaged(false);
     }
 
     private <T> void initComboBoxCellDesign(ComboBox<T> comboBox) {

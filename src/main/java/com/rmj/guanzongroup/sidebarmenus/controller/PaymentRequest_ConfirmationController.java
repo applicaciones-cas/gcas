@@ -226,6 +226,14 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
         try {
             poGLControllers.PaymentRequest().Master().setBranchCode(poApp.getBranchCode());
             poGLControllers.PaymentRequest().Master().setDepartmentID(poApp.getDepartment());
+            tfBranch.setText(poGLControllers.PaymentRequest().Master().Branch().getBranchName());
+            if (poApp.isMainOffice() || poApp.isWarehouse()) {
+                String lsDepartment = "";
+                if (poGLControllers.PaymentRequest().Master().Department().getDescription() != null) {
+                    lsDepartment = poGLControllers.PaymentRequest().Master().Department().getDescription();
+                }
+                tfDepartment.setText(lsDepartment);
+            }
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(PaymentRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -309,6 +317,9 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                     break;
                 case PaymentRequestStatus.PAID:
                     lsStatus = "PAID";
+                    break;
+                case PaymentRequestStatus.VOID:
+                    lsStatus = "VOID";
                     break;
                 case PaymentRequestStatus.POSTED:
                     lsStatus = "POSTED";
@@ -604,9 +615,18 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                             break;
                         }
                         ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        poGLControllers.PaymentRequest().resetMaster();
+                        poGLControllers.PaymentRequest().resetOthers();
+                        poGLControllers.PaymentRequest().Detail().clear();
+                        detail_data.clear();
+                        attachment_data.clear();
+                        tblVwPRDetail.getItems().clear();
+                        tblAttachments.getItems().clear();
+                        tblAttachments.setPlaceholder(new Label("NO RECORD TO LOAD"));
                         clearMasterFields();
                         clearDetailFields();
-                        detail_data.clear();
+                        CustomCommonUtil.switchToTab(tabDetails, ImTabPane);
                         pnEditMode = EditMode.UNKNOWN;
                         tblVwPaymentRequest.refresh();
                         main_data.get(pnTblMainRow).setIndex05(PaymentRequestStatus.RETURNED);
@@ -615,19 +635,25 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                     }
                     break;
                 case "btnVoid":
-                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
                         poJSON = poGLControllers.PaymentRequest().VoidTransaction("Voided");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             break;
                         }
                         ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        poGLControllers.PaymentRequest().resetMaster();
+                        poGLControllers.PaymentRequest().resetOthers();
+                        poGLControllers.PaymentRequest().Detail().clear();
+                        detail_data.clear();
+                        attachment_data.clear();
+                        tblVwPRDetail.getItems().clear();
+                        tblAttachments.getItems().clear();
+                        tblAttachments.setPlaceholder(new Label("NO RECORD TO LOAD"));
                         clearMasterFields();
                         clearDetailFields();
-                        detail_data.clear();
+                        CustomCommonUtil.switchToTab(tabDetails, ImTabPane);
                         pnEditMode = EditMode.UNKNOWN;
-
-                        //this code below use to highlight tblpurchase
                         tblVwPaymentRequest.refresh();
                         main_data.get(pnTblMainRow).setIndex05(PaymentRequestStatus.VOID);
                     } else {
@@ -981,6 +1007,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
     private void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(tfAmount, tfDiscRate, tfDiscAmountDetail);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
+
         tfSearchPayee.setOnMouseClicked(e -> activeField = tfSearchPayee);
         tfSearchTransaction.setOnMouseClicked(e -> activeField = tfSearchTransaction);
         tfParticular.setOnMouseClicked(e -> activeField = tfParticular);
@@ -1385,9 +1412,8 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
 
             CustomCommonUtil.setVisible(false, btnConfirm, btnReturn, btnVoid, btnUpdate);
             CustomCommonUtil.setManaged(false, btnConfirm, btnReturn, btnVoid, btnUpdate);
-
-            btnHistory.setVisible(fnEditMode != EditMode.UNKNOWN);
-            btnHistory.setManaged(fnEditMode != EditMode.UNKNOWN);
+            btnHistory.setVisible(fnEditMode == EditMode.READY);
+            btnHistory.setManaged(fnEditMode == EditMode.READY);
             if (fnEditMode == EditMode.READY) {
 
                 switch (poGLControllers.PaymentRequest().Master().getTransactionStatus()) {
@@ -1413,7 +1439,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
         CustomCommonUtil.setDisable(true, tfParticular, tfPayee, dpTransaction, tfTransactionNo, tfBranch,
                 tfSeriesNo, tfTotalAmount, tfDiscountAmount, tfTotalVATableAmount, tfNetAmount,
                 chkbVatable, tfDiscRate,
-                tfDiscAmountDetail);
+                tfDiscAmountDetail, tfDepartment);
         if (poApp.isMainOffice() || poApp.isWarehouse()) {
             tfDepartment.setDisable(!lbShow); //mag open siya pag add new or update sa editmode
         }
@@ -1479,6 +1505,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
 
                 if (main_data == null || main_data.isEmpty()) {
                     tblVwPaymentRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                    ShowMessageFX.Warning("No Record Payment Request to Load.", psFormName, null);
                 } else {
                     if (pagination != null) {
                         int pageCount = (int) Math.ceil((double) main_data.size() / pnTblMain_Page);

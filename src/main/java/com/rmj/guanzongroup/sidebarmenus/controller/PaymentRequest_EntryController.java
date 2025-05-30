@@ -1387,57 +1387,6 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
         }
     }
 
-//    private void setAmountToDetail(String fsValue) {
-//        try {
-//            if (fsValue.isEmpty()) {
-//                fsValue = "0.00";
-//            }
-//            if (Double.parseDouble(fsValue.replace(",", "")) < 0.0) {
-//                ShowMessageFX.Warning("Invalid Amount", psFormName, null);
-//                fsValue = "0.00";
-//            }
-//            if (tfAmount.isFocused()) {
-//                if (tfParticular.getText().isEmpty()) {
-//                    ShowMessageFX.Warning("Invalid action, Please enter particular first. ", psFormName, null);
-//                    tfParticular.requestFocus();
-//                    fsValue = "0.00";
-//                }
-//            }
-//            if (pnTblDetailRow < 0) {
-//                ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-//                fsValue = "0.00";
-//                clearDetailFields();
-//                int detailCount = poGLControllers.PaymentRequest().getDetailCount();
-//                pnTblDetailRow = detailCount > 0 ? detailCount - 1 : 0;
-//            }
-//            boolean isExisted = false;
-//            int lnCtr = 0;
-//            for (lnCtr = 0; lnCtr <= poGLControllers.PaymentRequest().getDetailCount() - 1; lnCtr++) {
-//                if (poGLControllers.PaymentRequest().Detail(pnTblDetailRow).equals(poGLControllers.PaymentRequest().Detail(lnCtr))
-//                        && Double.parseDouble(fsValue.replace(",", "")) == poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue()) {
-//                    isExisted = true;
-//                }
-//            }
-//            if (isExisted) {
-//                fsValue = "0.00";
-//                ShowMessageFX.Warning("Amount and Particular already existed in table row: " + lnCtr + 1, psFormName, null);
-//                pnTblDetailRow = lnCtr + 1;
-//                loadTableDetail();
-//                loadRecordDetail();
-//                initDetailFocus();
-//            }
-//            if (Double.parseDouble(fsValue.replace(",", "")) == 0.00) {
-//                poGLControllers.PaymentRequest().Detail(pnTblDetailRow).setDiscount(0.00);
-//                poGLControllers.PaymentRequest().Detail(pnTblDetailRow).setAddDiscount(0.00);
-//            }
-//            poGLControllers.PaymentRequest().Detail(pnTblDetailRow).setAmount(Double.valueOf(fsValue.replace(",", "")));
-//            tfAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAmount()));
-//
-//        } catch (SQLException | GuanzonException ex) {
-//            Logger.getLogger(PaymentRequest_EntryController.class
-//                    .getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
     private void initTextFieldPattern() {
         CustomCommonUtil.inputDecimalOnly(
                 tfTotalAmount, tfDiscountAmount, tfTotalVATableAmount, tfNetAmount,
@@ -1655,6 +1604,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                     Platform.runLater(() -> {
                         if (main_data.isEmpty()) {
                             tblVwRecurringExpense.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                            ShowMessageFX.Warning("No Record Recurring Expense to Load.", psFormName, null);
                             tblVwRecurringExpense.setItems(FXCollections.observableArrayList(main_data));
                         } else {
                             tblVwRecurringExpense.setItems(FXCollections.observableArrayList(main_data));
@@ -1835,7 +1785,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
             protected List<ModelTableDetail> call() throws Exception {
                 try {
                     int detailCount = poGLControllers.PaymentRequest().getDetailCount();
-                    if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                         if (poGLControllers.PaymentRequest().Detail(detailCount - 1).getParticularID() != null
                                 && !poGLControllers.PaymentRequest().Detail(detailCount - 1).getParticularID().isEmpty()) {
                             poGLControllers.PaymentRequest().AddDetail();
