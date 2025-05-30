@@ -1292,7 +1292,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                 }
 
                 LocalDate dateNow = LocalDate.now();
-                Date ldLastTransactionDate = poPurchasingController.PurchaseOrder().Master().getTransactionDate();
+                psOldDate = CustomCommonUtil.formatLocalDateToShortString(transactionDate);
                 String lsReferNo = tfReferenceNo.getText().trim();
                 boolean approved = true;
                 if (pnEditMode == EditMode.UPDATE) {
@@ -1364,14 +1364,14 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                         dpTransactionDate.setValue(dateNow);
                         poPurchasingController.PurchaseOrder().Master().setTransactionDate(
                                 SQLUtil.toDate(dateNow.toString(), SQLUtil.FORMAT_SHORT_DATE));
-                    } else if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
-                                SQLUtil.dateFormat(ldLastTransactionDate, SQLUtil.FORMAT_SHORT_DATE)));
+                    } else if (pnEditMode == EditMode.UPDATE) {
                         poPurchasingController.PurchaseOrder().Master().setTransactionDate(
-                                SQLUtil.toDate(dateNow.toString(), SQLUtil.FORMAT_SHORT_DATE));
+                                SQLUtil.toDate(psOldDate, SQLUtil.FORMAT_SHORT_DATE));
                     }
 
                 }
+                dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+                        SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
             }
         }
         );

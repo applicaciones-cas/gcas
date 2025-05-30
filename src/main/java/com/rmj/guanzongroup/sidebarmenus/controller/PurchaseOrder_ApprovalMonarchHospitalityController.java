@@ -788,7 +788,6 @@ public class PurchaseOrder_ApprovalMonarchHospitalityController implements Initi
                     return;
                 }
                 LocalDate dateNow = LocalDate.now();
-                Date ldLastTransactionDate = poPurchasingController.PurchaseOrder().Master().getTransactionDate();
                 String lsReferNo = tfReferenceNo.getText().trim();
                 boolean approved = true;
                 psOldDate = CustomCommonUtil.formatLocalDateToShortString(transactionDate);
@@ -824,18 +823,11 @@ public class PurchaseOrder_ApprovalMonarchHospitalityController implements Initi
                     poPurchasingController.PurchaseOrder().Master().setTransactionDate(
                             SQLUtil.toDate(selectedLocalDate.toString(), SQLUtil.FORMAT_SHORT_DATE));
                 } else {
-                    if (pnEditMode == EditMode.ADDNEW) {
-                        dpTransactionDate.setValue(dateNow);
-                        poPurchasingController.PurchaseOrder().Master().setTransactionDate(
-                                SQLUtil.toDate(dateNow.toString(), SQLUtil.FORMAT_SHORT_DATE));
-                    } else if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
-                                SQLUtil.dateFormat(ldLastTransactionDate, SQLUtil.FORMAT_SHORT_DATE)));
-                        poPurchasingController.PurchaseOrder().Master().setTransactionDate(
-                                SQLUtil.toDate(dateNow.toString(), SQLUtil.FORMAT_SHORT_DATE));
-                    }
-
+                    poPurchasingController.PurchaseOrder().Master().setTransactionDate(
+                            SQLUtil.toDate(psOldDate, SQLUtil.FORMAT_SHORT_DATE));
                 }
+                dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+                        SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
             }
         }
         );
