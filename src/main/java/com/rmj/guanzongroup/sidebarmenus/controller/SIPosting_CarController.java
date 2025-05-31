@@ -73,12 +73,17 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import java.time.YearMonth;
 import javafx.animation.PauseTransition;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.guanzon.appdriver.constant.DocumentType;
 import javafx.util.Pair;
 
@@ -86,7 +91,7 @@ import javafx.util.Pair;
  *
  * @author Arsiela & Aldrich Team 2
  */
-public class SIPosting_Controller implements Initializable, ScreenInterface {
+public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
@@ -94,7 +99,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     int pnJEDetail = 0;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "SI Posting";
+    private final String pxeModuleName = "SI Posting Car";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
     boolean isPrinted = false;
@@ -131,6 +136,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private double xOffset = 0;
     private double yOffset = 0;
     private Stage dialogStage = null;
+    private Stage dialogSerialStage = null;
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
     JFXUtil.StageManager stage = new JFXUtil.StageManager();
 
@@ -146,17 +152,17 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private Label lblSource, lblStatus, lblJEStatus;
 
     @FXML
-    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPost, btnPrint, btnHistory, btnRetrieve, btnClose, btnArrowLeft, btnArrowRight;
+    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPost, btnPrint, btnHistory, btnSerials, btnRetrieve, btnClose, btnArrowLeft, btnArrowRight;
 
     @FXML
     private TextField tfSearchSupplier, tfSearchReferenceNo, tfSearchReceiveBranch, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo,
             tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfNetTotal,
-            tfTransactionTotal, tfOrderNo, tfBarcode, tfDescription, tfSupersede, tfMeasure, tfOrderQuantity, tfReceiveQuantity, tfCost, tfDiscRateDetail,
+            tfTransactionTotal, tfOrderNo, tfBrand, tfDescription, tfOrderQuantity, tfReceiveQuantity, tfCost, tfDiscRateDetail,
             tfAddlDiscAmtDetail, tfTotalDetail, tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfReportMonthYear, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt,
             tfTotalDebitAmt, tfAttachmentNo;
 
     @FXML
-    private DatePicker dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate;
+    private DatePicker dpTransactionDate, dpReferenceDate, dpJETransactionDate;
 
     @FXML
     private CheckBox cbVatInclusive, cbVatable;
@@ -174,7 +180,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private TableView tblViewTransDetailList, tblViewMainList, tblViewJEDetails, tblAttachments;
 
     @FXML
-    private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail, tblReceiveQuantityDetail,
+    private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBrandDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail, tblReceiveQuantityDetail,
             tblDiscountAmtDetail, tblTotalDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo, tblJERowNoDetail, tblJEAcctCodeDetail, tblJEAcctDescriptionDetail,
             tblJECreditAmtDetail, tblJEDebitAmtDetail, tblRowNoAttachment, tblFileNameAttachment;
 
@@ -275,7 +281,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.F5) {
                 System.out.println("tested key press");
-                if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+                if (poPurchaseReceivingController.getEditMode() == EditMode.READY) {
                     showAttachmentlDialog();
                 }
             }
@@ -305,9 +311,93 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         try {
             stage.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
         } catch (IOException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+    
+    public void showSerialDialog() {
+        poJSON = new JSONObject();
+        try {
+            if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
+                return;
+            }
+
+            if (poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue() == 0) {
+                return;
+            }
+
+            //Populate Purchase Order Receiving Detail
+            poJSON = poPurchaseReceivingController.getPurchaseOrderReceivingSerial(pnDetail + 1);
+            if ("error".equals((String) poJSON.get("result"))) {
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                return;
+            }
+
+//             Check if the dialog is already open
+            if (dialogSerialStage != null) {
+                if (dialogSerialStage.isShowing()) {
+                    dialogSerialStage.toFront();
+                    return;
+                }
+            }
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"));
+            DeliveryAcceptance_SerialCarController controller = new DeliveryAcceptance_SerialCarController();
+            loader.setController(controller);
+
+            if (controller != null) {
+                controller.setGRider(oApp);
+                controller.setObject(poPurchaseReceivingController);
+                controller.setEntryNo(pnDetail + 1);
+                controller.isFinancing(true);
+            }
+
+            Parent root = loader.load();
+
+            // Handle drag events for the undecorated window
+            root.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            root.setOnMouseDragged(event -> {
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            dialogSerialStage = new Stage();
+            dialogSerialStage.initStyle(StageStyle.UNDECORATED);
+            dialogSerialStage.initModality(Modality.APPLICATION_MODAL);
+            dialogSerialStage.setTitle("Inventory Serial");
+            dialogSerialStage.setScene(new Scene(root));
+
+            // Clear the reference when closed
+            dialogSerialStage.setOnHidden(event -> {
+                dialogSerialStage = null;
+                moveNext();
+                Platform.runLater(() -> {
+                    loadTableDetail();
+                });
+            });
+            dialogSerialStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+    }
+
+    public void closeSerialDialog() {
+        if (dialogSerialStage != null && dialogSerialStage.isShowing()) {
+            dialogSerialStage.close();
+            dialogSerialStage = null;
+        } else {
+        }
     }
 
     @FXML
@@ -338,6 +428,13 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 Button clickedButton = (Button) source;
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
+                    case "btnSerials":
+                        if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Selected item is not serialized.");
+                            return;
+                        }
+                        showSerialDialog();
+                        return;
                     case "btnPrint":
                         poJSON = poPurchaseReceivingController.printRecord(() -> {
                             if (isPrinted) {
@@ -360,11 +457,11 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                     loadTableDetail();
                                     loadTableAttachment();
                                 } catch (CloneNotSupportedException ex) {
-                                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
                                 } catch (SQLException ex) {
-                                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
                                 } catch (GuanzonException ex) {
-                                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                                    Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 isPrinted = false;
                             });
@@ -531,7 +628,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 initButton(pnEditMode);
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -955,9 +1052,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             }
 
         } catch (GuanzonException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1088,9 +1185,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                         String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                                 ));
                             } catch (SQLException ex) {
-                                Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             } catch (GuanzonException ex) {
-                                Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
 
                             if (poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.POSTED)) {
@@ -1164,7 +1261,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             }
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1236,14 +1333,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
                 return;
             }
-            // Expiry Date
-            String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Detail(pnDetail).getExpiryDate());
-            dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
 
-            tfBarcode.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBarCode());
+            tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Brand().getDescription());
             tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
-            tfSupersede.setText(poPurchaseReceivingController.Detail(pnDetail).Supersede().getBarCode());
-            tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
             tfOrderNo.setText(poPurchaseReceivingController.Detail(pnDetail).getOrderNo());
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
 //            tfDiscRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getDiscount().doubleValue()*100));
@@ -1270,9 +1362,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1378,9 +1470,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
              */
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1453,7 +1545,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1532,9 +1624,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         }
                         loadRecordMaster();
                     } catch (SQLException ex) {
-                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
                 });
 
@@ -1637,9 +1729,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate);
-        JFXUtil.setFocusListener(datepicker_Focus, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate);
-        JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate);
+        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpJETransactionDate);
+        JFXUtil.setFocusListener(datepicker_Focus, dpTransactionDate, dpReferenceDate,  dpJETransactionDate);
+        JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate, dpReferenceDate,  dpJETransactionDate);
     }
 
     public void initTextFields() {
@@ -1773,12 +1865,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
         // Manage visibility and managed state of other buttons
         //Update 
-        JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel);
+        JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel, btnSerials);
 
         //Ready
         JFXUtil.setButtonsVisibility(lbShow3, btnPrint, btnUpdate, btnHistory);
         JFXUtil.setButtonsVisibility(false, btnPost);
-
+        
         //Unkown || Ready
         JFXUtil.setButtonsVisibility(lbShow4, btnClose);
         JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apAttachments);
@@ -1855,7 +1947,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     public void initDetailsGrid() {
 
         JFXUtil.setColumnCenter(tblRowNoDetail, tblOrderQuantityDetail, tblReceiveQuantityDetail);
-        JFXUtil.setColumnLeft(tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail);
+        JFXUtil.setColumnLeft(tblOrderNoDetail, tblBrandDetail, tblDescriptionDetail);
         JFXUtil.setColumnRight(tblCostDetail, tblDiscountAmtDetail, tblTotalDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetailList);
 
@@ -1954,7 +2046,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         previousSearchedTextField = null;
         lastFocusedTextField = null;
 
-        JFXUtil.setValueToNull(dpTransactionDate, dpReferenceDate, dpExpiryDate);
+        JFXUtil.setValueToNull(dpTransactionDate, dpReferenceDate);
         psSupplierId = "";
         psBranchId = "";
 
