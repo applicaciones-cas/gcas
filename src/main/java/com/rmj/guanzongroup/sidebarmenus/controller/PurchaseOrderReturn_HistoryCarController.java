@@ -313,11 +313,12 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
         
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
+
     }
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate);
-        JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate);
+        
     }
 
     public void initDetailsGrid() {
@@ -382,7 +383,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
+             tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
             tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
 
             JFXUtil.updateCaretPositions(apDetail);
@@ -503,7 +504,7 @@ public class PurchaseOrderReturn_HistoryCarController implements Initializable, 
         });
 
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 3); // need to use computed-size the column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails); // need to use computed-size the column to work
     }
 
     public void loadTableDetail() {

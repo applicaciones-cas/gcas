@@ -66,6 +66,10 @@ import javafx.animation.PauseTransition;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
 import javafx.util.Pair;
 import java.util.ArrayList;
+import org.guanzon.appdriver.agent.ShowDialogFX;
+import org.guanzon.appdriver.constant.UserRight;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 
 /**
  * FXML Controller class
@@ -282,6 +286,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                            JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
                             break;
                         } else {
                             return;
@@ -735,17 +740,24 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
         }
     }
 
-    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
+    boolean pbSuccess = true;
+
+    private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         poJSON.put("message", "success");
+
         try {
-            if (!newValue) { // Lost focus
-                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
-                String lsID = datePicker.getId();
+            Object source = event.getSource();
+            if (source instanceof DatePicker) {
+                DatePicker datePicker = (DatePicker) source;
                 String inputText = datePicker.getEditor().getText();
-                LocalDate currentDate = LocalDate.now();
+                SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+                LocalDate currentDate = null;
                 LocalDate selectedDate = null;
+                String lsServerDate = "";
+                String lsTransDate = "";
+                String lsSelectedDate = "";
 
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
@@ -757,39 +769,70 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
                     loadRecordMaster();
                     return;
                 }
+                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                    return;
+                }
                 selectedDate = ldtResult.selectedDate;
 
-                String formattedDate = selectedDate.toString();
-
-                switch (lsID) {
+                switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
-                        } else {
-                            poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+                        if (poPurchaseReturnController.getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReturnController.getEditMode() == EditMode.UPDATE) {
+                            lsServerDate = sdfFormat.format(oApp.getServerDate());
+                            lsTransDate = sdfFormat.format(poPurchaseReturnController.Master().getTransactionDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+                            if (selectedDate.isAfter(currentDate)) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Future dates are not allowed.");
+                                pbSuccess = false;
+                            }
+
+                            if (pbSuccess && ((poPurchaseReturnController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                                    || !lsServerDate.equals(lsSelectedDate))) {
+                                pbSuccess = false;
+                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                        + "If YES, please seek approval to proceed with the new selected date.\n"
+                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                        poJSON = ShowDialogFX.getUserApproval(oApp);
+                                        if (!"success".equals((String) poJSON.get("result"))) {
+                                            pbSuccess = false;
+                                        } else {
+                                            poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+
+                                        }
+                                    }
+                                } else {
+                                    pbSuccess = false;
+                                }
+                            }
+
+                            if (pbSuccess) {
+
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+
+                                }
+                            }
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordMaster();
+                            pbSuccess = true; //Set to original value
+
                         }
                         break;
                     default:
 
                         break;
                 }
-                datePicker.getEditor().setText(formattedDate);
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    // datePicker.requestFocus();
-                }
-                Platform.runLater(() -> {
-                    loadRecordMaster();
-                });
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    };
+    }
 
     public void showRetainedHighlight(boolean isRetained) {
         if (isRetained) {
@@ -1184,8 +1227,8 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate);
-        JFXUtil.setFocusListener(datepicker_Focus, dpTransactionDate);
-        JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate);
+
     }
 
     public void initTextFields() {
@@ -1201,6 +1244,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
 
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
+
     }
 
     public void initTableOnClick() {
@@ -1251,8 +1295,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchHospitalityController implem
         });
 
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 1); // need to use computed-size in min-width of the column to work
-        JFXUtil.adjustColumnForScrollbar(tblViewPuchaseOrderReturn, 1);
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails, tblViewPuchaseOrderReturn); // need to use computed-size in min-width of the column to work
     }
 
     private void initButton(int fnValue) {
