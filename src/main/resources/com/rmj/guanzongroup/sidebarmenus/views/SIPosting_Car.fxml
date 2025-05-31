@@ -393,10 +393,6 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                              <Label text="Supersede" GridPane.columnIndex="4" GridPane.rowIndex="1">
-                                                                                 <font>
-                                                                                    <Font size="12.0" />
-                                                                                 </font></Label>
                                                       <Label text="Cost" GridPane.columnIndex="8">
                                                                                  <font>
                                                                                     <Font size="12.0" />
@@ -415,7 +411,6 @@
                                                                         <TextField fx:id="tfOrderNo" disable="true" editable="false" GridPane.columnIndex="2" />
                                                                           <TextField fx:id="tfBrand" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                                           <TextField fx:id="tfDescription" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="2" />
-                                                                              <TextField fx:id="tfSupersede" disable="true" editable="false" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                                       <TextField fx:id="tfOrderQuantity" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                       <TextField fx:id="tfReceiveQuantity" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="6" GridPane.rowIndex="5" />
                                                       <TextField fx:id="tfCost" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="10" />
