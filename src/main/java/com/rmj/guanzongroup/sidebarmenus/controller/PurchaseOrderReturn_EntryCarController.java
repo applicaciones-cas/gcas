@@ -684,6 +684,8 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfReferenceNo.setText("");
+                            } else {
+                                JFXUtil.focusFirstTextField(apDetail);
                             }
                             loadRecordMaster();
                             break;
@@ -704,6 +706,8 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfPOReceivingNo.setText("");
+                            } else {
+                                JFXUtil.focusFirstTextField(apDetail);
                             }
                             loadRecordMaster();
                             break;

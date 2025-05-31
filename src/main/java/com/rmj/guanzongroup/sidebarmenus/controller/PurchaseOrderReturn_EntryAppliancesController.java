@@ -683,6 +683,8 @@ public class PurchaseOrderReturn_EntryAppliancesController implements Initializa
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfReferenceNo.setText("");
+                            } else {
+                                JFXUtil.focusFirstTextField(apDetail);
                             }
                             loadRecordMaster();
                             break;
@@ -703,6 +705,8 @@ public class PurchaseOrderReturn_EntryAppliancesController implements Initializa
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfPOReceivingNo.setText("");
+                            } else {
+                                JFXUtil.focusFirstTextField(apDetail);
                             }
                             loadRecordMaster();
                             break;
