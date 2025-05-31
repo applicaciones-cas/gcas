@@ -615,7 +615,6 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                             break;
                         }
                         ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                         poGLControllers.PaymentRequest().resetMaster();
                         poGLControllers.PaymentRequest().resetOthers();
                         poGLControllers.PaymentRequest().Detail().clear();
