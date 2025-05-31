@@ -483,8 +483,8 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
-            tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
+            tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getOrderQty()));
+            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -668,15 +668,15 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             try {
 
-                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
+                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue();
 
                             } catch (Exception e) {
 
                             }
 
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
-                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
+                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().doubleValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue()
+                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue() != 0) {
                                 highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
@@ -686,8 +686,8 @@ public class DeliveryAcceptance_HistoryLPController implements Initializable, Sc
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getOrderQty())),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getQuantity())),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
                         }

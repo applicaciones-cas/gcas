@@ -570,7 +570,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
                     if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
-                        if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
+                        if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().doubleValue() < Double.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
                             poPurchaseReceivingController.Detail(pnDetail).setQuantity(0);
                             tfReceiveQuantity.requestFocus();
@@ -578,7 +578,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         }
                     }
 
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
+                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -699,9 +699,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        double lnReceiveQty = Double.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        double lnNewvalue = Double.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -739,9 +739,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReceiveQuantity":
-                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            double lnReceiveQty = Double.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            double lnNewvalue = Double.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                                     && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -1046,8 +1046,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         for (TextField textField : textFields) {
             textField.setOnKeyPressed(this::txtField_KeyPressed);
         }
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost);
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
     }
     
     boolean pbSuccess = true;
@@ -1492,8 +1491,8 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
-            tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
+            tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getOrderQty()));
+            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
             updateCaretPositions(apDetail);
         } catch (SQLException ex) {
@@ -2039,17 +2038,17 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             try {
 
-                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
+                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue();
                             } catch (Exception e) {
                             }
 
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
-                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
+                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().doubleValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue()
+                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue() != 0) {
                                 highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
-                            plOrderNoPartial.add(new Pair<>(poPurchaseReceivingController.Detail(lnCtr).getOrderNo(), String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue())));
+                            plOrderNoPartial.add(new Pair<>(poPurchaseReceivingController.Detail(lnCtr).getOrderNo(), String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue())));
 
                             details_data.add(
                                     new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
@@ -2057,8 +2056,8 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getOrderQty())),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getQuantity())),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
                         }
