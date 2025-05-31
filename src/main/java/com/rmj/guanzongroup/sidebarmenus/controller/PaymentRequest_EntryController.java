@@ -427,22 +427,13 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                     }
                     break;
                 case "btnUpdate":
-                    poJSON = poGLControllers.PaymentRequest().OpenTransaction(poGLControllers.PaymentRequest().Master().getTransactionNo());
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), "Warning", null);
-                        break;
-                    }
-                    pnEditMode = poGLControllers.PaymentRequest().getEditMode();
-                    loadRecordMaster();
                     poJSON = poGLControllers.PaymentRequest().UpdateTransaction();
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), "Warning", null);
                         break;
                     }
-                    pnTblDetailRow = - 1;
+                    pnTblDetailRow = -1;
                     pnEditMode = poGLControllers.PaymentRequest().getEditMode();
-                    loadTableDetail();
-                    loadTableMain();
                     break;
                 case "btnSearch":
                     if (activeField != null) {
