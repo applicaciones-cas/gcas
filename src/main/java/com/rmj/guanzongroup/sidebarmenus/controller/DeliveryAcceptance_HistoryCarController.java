@@ -323,27 +323,6 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         }
     }
 
-    public void retrievePOR() {
-
-        poJSON = new JSONObject();
-
-        String lsMessage = "";
-        poJSON.put("result", "success");
-
-        if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId, "");
-
-            if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-            } else {
-
-            }
-        } else {
-            poJSON.put("message", lsMessage + " cannot be empty.");
-            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-        }
-    }
-
     public void showSerialDialog() {
         poJSON = new JSONObject();
         try {
@@ -639,9 +618,18 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                             } else {
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                             }
-                            retrievePOR();
                             loadRecordSearch();
                             return;
+                        case "tfSearchReferenceNo":
+                            poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, 
+                                    tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSearchReferenceNo.setText("");
+                                return;
+                            } 
+                            loadRecordSearch();
+                        break;
 
                     }
                     loadRecordMaster();
@@ -664,6 +652,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
             Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DeliveryAcceptance_HistoryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1139,6 +1129,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
 
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
+        tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
         // Combobox
         cmbAttachmentType.setItems(documentType);

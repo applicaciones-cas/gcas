@@ -379,6 +379,7 @@ public class DeliveryAcceptance_ConfirmationSPMCController implements Initializa
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 poPurchaseReceivingController.AddDetail();
+                                loadTableDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));

@@ -484,6 +484,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 poPurchaseReceivingController.AddDetail();
+                                loadTableDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));

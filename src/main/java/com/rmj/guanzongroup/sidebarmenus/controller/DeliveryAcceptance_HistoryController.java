@@ -297,27 +297,6 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
 
     }
 
-    public void retrievePOR() {
-
-        poJSON = new JSONObject();
-
-        String lsMessage = "";
-        poJSON.put("result", "success");
-
-        if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId, "");
-
-            if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-            } else {
-
-            }
-        } else {
-            poJSON.put("message", lsMessage + " cannot be empty.");
-            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-        }
-    }
-
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -365,13 +344,18 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                             } else {
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                             }
-                            retrievePOR();
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReceivingController.Master().setTransactionNo(lsValue);
-                            retrievePOR();
-                            return;
+                            poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, 
+                                    tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSearchReferenceNo.setText("");
+                                return;
+                            } 
+                            loadRecordSearch();
+                        break;
 
                     }
                     loadRecordMaster();
@@ -395,6 +379,8 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
             Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -868,6 +854,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         tfAttachmentNo.focusedProperty().addListener(txtField_Focus);
 
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
+        tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
         // Combobox
         cmbAttachmentType.setItems(documentType);

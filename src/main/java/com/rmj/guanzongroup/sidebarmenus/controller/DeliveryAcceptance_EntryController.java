@@ -374,6 +374,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 poPurchaseReceivingController.AddDetail();
+                                loadTableDetail();
                                 return;
                             } else {
 
