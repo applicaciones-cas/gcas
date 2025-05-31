@@ -606,12 +606,13 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     }
 
                     for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
-                        int quantity = (int) poPurchasingController.PurchaseOrder().Detail(lnCntr).getValue("nQuantity");
-                        String stockID = (String) poPurchasingController.PurchaseOrder().Detail(lnCntr).getValue("sStockIDx");
+                         
+                        double quantity =  (double) poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity();
+                        String stockID = (String) poPurchasingController.PurchaseOrder().Detail(lnCntr).getStockID();
 
                         // If any stock ID is empty OR quantity is 0, show an error and prevent saving
                         if (detailCount == 1) {
-                            if (stockID == null || stockID.trim().isEmpty() || quantity == 0) {
+                            if (stockID == null || stockID.trim().isEmpty() || quantity == 0.0) {
                                 ShowMessageFX.Warning("Invalid item in order. Ensure all items have a valid Stock ID and quantity greater than 0.", psFormName, null);
                                 return;
                             }
@@ -1118,7 +1119,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                 int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
                 pnTblDetailRow = detailCount > 0 ? detailCount - 1 : 0;
             }
-            double lnRequestQuantity = 0;
+            double lnRequestQuantity = 0.0;
             try {
                 lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved();
                 if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty()) {

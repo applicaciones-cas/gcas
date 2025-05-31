@@ -547,7 +547,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                     }
 
                     for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
-                        int quantity = (int) poPurchasingController.PurchaseOrder().Detail(lnCntr).getValue("nQuantity");
+                        double quantity = (int) poPurchasingController.PurchaseOrder().Detail(lnCntr).getValue("nQuantity");
                         String stockID = (String) poPurchasingController.PurchaseOrder().Detail(lnCntr).getValue("sStockIDx");
 
                         // If any stock ID is empty OR quantity is 0, show an error and prevent saving
