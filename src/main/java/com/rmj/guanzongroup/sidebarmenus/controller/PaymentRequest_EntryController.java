@@ -218,6 +218,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
             }
             tblVwPRDetail.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             Platform.runLater(() -> setBranchAndDepartment());
+            Platform.runLater(() -> loadTableMain());
             Platform.runLater(() -> btnNew.fire());
             initAll();
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
