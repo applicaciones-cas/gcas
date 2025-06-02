@@ -428,7 +428,7 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
                     }
                     if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
                             && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
-                        if (poPurchaseReturnController.getReceiveQty(pnDetail).intValue() < Integer.valueOf(lsValue)) {
+                        if (poPurchaseReturnController.getReceiveQty(pnDetail).doubleValue() < Double.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Return quantity cannot be greater than the receive quantity.");
                             poPurchaseReturnController.Detail(pnDetail).setQuantity(0);
                             tfReturnQuantity.requestFocus();
@@ -436,7 +436,7 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
                         }
                     }
 
-                    poJSON = poPurchaseReturnController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
+                    poJSON = poPurchaseReturnController.Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -559,9 +559,9 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        double lnReceiveQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -598,9 +598,9 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            double lnQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             if (lnQty != lnNewvalue && (lnQty > 0
                                     && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -622,9 +622,9 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            double lnQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             if (lnQty != lnNewvalue && (lnQty > 0
                                     && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -782,8 +782,7 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
 
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
-        CustomCommonUtil.inputDecimalOnly(tfCost);
+        CustomCommonUtil.inputDecimalOnly(tfCost, tfReceiveQuantity, tfReturnQuantity);
 
     }
 
@@ -945,8 +944,8 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
-            tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
+            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(pnDetail)));
+            tfReturnQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -1120,7 +1119,7 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poPurchaseReturnController.getDetailCount(); lnCtr++) {
                             try {
-                                lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue();
+                                lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().doubleValue();
                             } catch (Exception e) {
                             }
 
@@ -1129,8 +1128,8 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(lnCtr))),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getQuantity())),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
                         }
