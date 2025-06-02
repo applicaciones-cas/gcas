@@ -369,8 +369,8 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
                                 break;
                             case "tfSearchReferenceNo":
                                 poJSON = poPurchasingController.PurchaseOrder().SearchTransaction(lsValue,
-                            psSupplierID,
-                            psReferID);
+                                        psSupplierID,
+                                        psReferID);
                                 if ("success".equals((String) poJSON.get("result"))) {
                                     clearDetailFields();
                                     pnTblDetailRow = -1;
@@ -454,13 +454,13 @@ public class PurchaseOrder_HistoryMonarchHospitalityController implements Initia
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
-                        int lnRequestQuantity = 0;
+                        double lnRequestQuantity = 0;
                         String status = "0";
-                        int lnTotalQty = 0;
-                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved();
-                        lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase()
-                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued()
-                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getCancelled());
+                        double lnTotalQty = 0;
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved().doubleValue();
+                        lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase().doubleValue()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued().doubleValue()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getCancelled().doubleValue());
                         if (!poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()) {
                             if (lnRequestQuantity != lnTotalQty) {
                                 status = "1";
