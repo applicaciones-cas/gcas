@@ -248,7 +248,7 @@
                                                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                              <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                               <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                       </rowConstraints>
@@ -519,10 +519,10 @@
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
                                 
-                                          <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                          <HBox spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                              <children>
                                                 
-                                                <VBox maxWidth="885.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                                                <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                     <children>
                                           <AnchorPane>
                                               <children>
@@ -536,10 +536,10 @@
                                                                           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" />
                                                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="393.0" />
-                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="50.0" />
+                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="50.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="95.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="140.0" minWidth="-Infinity" prefWidth="140.0" />
+                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" prefWidth="140.0" />
                                                                               <ColumnConstraints />
                                                                       </columnConstraints>
                                                                       <rowConstraints>
@@ -589,7 +589,7 @@
                                                                   </GridPane>
                                                               </children>
                                                           </AnchorPane>
-                                                          <AnchorPane fx:id="apJEDetail" minWidth="800.0" style="-fx-border-color: FF8201;">
+                                                          <AnchorPane fx:id="apJEDetail" style="-fx-border-color: FF8201;">
                                                               <children>
                                                                   <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="5.0">
                                                                       <columnConstraints>
@@ -600,7 +600,7 @@
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="132.0" />
                                                                               <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" />
-                                                                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
+                                                                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="10.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="95.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" />
@@ -645,21 +645,21 @@
                                             <children>
                                                 <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                                     <columnConstraints>
-                                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="1000.0" minWidth="950.0" prefWidth="1000.0" />
+                                                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" />
                                                         <ColumnConstraints />
                                                     </columnConstraints>
                                                     <rowConstraints>
                                                         <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <TableView fx:id="tblViewJEDetails" prefHeight="200.0" prefWidth="200.0">
+                                                        <TableView fx:id="tblViewJEDetails">
                                                             <columns>
                                                                 <TableColumn fx:id="tblJERowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                                         <TableColumn fx:id="tblReportMonthDetail" editable="false" maxWidth="131.0" minWidth="100.0" prefWidth="131.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Report Month" />
                                                                 <TableColumn fx:id="tblJEAcctCodeDetail" editable="false" maxWidth="131.0" minWidth="100.0" prefWidth="131.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Account Code" />
-                                                                <TableColumn fx:id="tblJEAcctDescriptionDetail" editable="false" maxWidth="380.0" minWidth="-1.0" prefWidth="380.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
-                                                                <TableColumn fx:id="tblJECreditAmtDetail" editable="false" maxWidth="131.0" minWidth="80.0" prefWidth="131.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Credit Amount" />
-                                                                <TableColumn fx:id="tblJEDebitAmtDetail" editable="false" maxWidth="142.0" minWidth="142.0" prefWidth="142.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Debit Amount" />
+                                                                <TableColumn fx:id="tblJEAcctDescriptionDetail" editable="false" maxWidth="375.0" minWidth="-1.0" prefWidth="375.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
+                                                                <TableColumn fx:id="tblJECreditAmtDetail" editable="false" maxWidth="130.0" minWidth="120.0" prefWidth="130.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Credit Amount" />
+                                                                <TableColumn fx:id="tblJEDebitAmtDetail" editable="false" maxWidth="130.0" minWidth="120.0" prefWidth="130.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Debit Amount" />
                                                             </columns>
                                              <columnResizePolicy>
                                              </columnResizePolicy>
