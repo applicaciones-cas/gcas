@@ -356,6 +356,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                            disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                             break;
                         } else {
                             return;
@@ -741,7 +742,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
 
                     if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
-                        if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().doubleValue()< Double.valueOf(lsValue)) {
+                        if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().doubleValue() < Double.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
                             poPurchaseReceivingController.Detail(pnDetail).setQuantity(0);
                             tfReceiveQuantity.requestFocus();
@@ -1053,13 +1054,14 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
             Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     boolean pbSuccess = true;
+
     private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         poJSON.put("message", "success");
-        
+
         try {
             Object source = event.getSource();
             if (source instanceof DatePicker) {
@@ -1099,39 +1101,39 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                         return;
                     }
                 }
-                
+
                 System.out.println("input text : " + inputText);
-                
-                if(inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)){
+
+                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
                     return;
                 }
-                
+
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if(poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW 
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE){
+                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate =  sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
-                            lsRefDate =  sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
-                            lsSelectedDate =  sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             referenceDate = LocalDate.parse(lsRefDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                            
+
                             if (selectedDate.isAfter(currentDate)) {
                                 poJSON.put("result", "error");
                                 poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
                             }
-                            
+
                             if (pbSuccess && (selectedDate.isBefore(referenceDate))) {
                                 poJSON.put("result", "error");
                                 poJSON.put("message", "Receiving date cannot be before reference date.");
                                 pbSuccess = false;
                             }
-                            
-                            if(pbSuccess && ( (poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
-                                    || !lsServerDate.equals(lsSelectedDate) )){
+
+                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                                    || !lsServerDate.equals(lsSelectedDate))) {
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
                                         + "If YES, please seek approval to proceed with the new selected date.\n"
                                         + "If NO, the previous transaction date will be retained.") == true) {
@@ -1144,53 +1146,53 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                                 } else {
                                     pbSuccess = false;
                                 }
-                            } 
-                            
-                            if(pbSuccess){
+                            }
+
+                            if (pbSuccess) {
                                 poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                    
+
                                 }
                             }
-                            
+
                             pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                             loadRecordMaster();
                             pbSuccess = true; //Set to original value
                         }
-                    break;
+                        break;
                     case "dpReferenceDate":
-                        if(poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW 
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE){
+                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate =  sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
-                            lsRefDate =  sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
-                            lsSelectedDate =  sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                            
+
                             if (selectedDate.isAfter(currentDate)) {
                                 poJSON.put("result", "error");
                                 poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
                             }
-                            
+
                             if (pbSuccess && (selectedDate.isAfter(transactionDate))) {
                                 poJSON.put("result", "error");
                                 poJSON.put("message", "Reference date cannot be later than the receiving date.");
                                 pbSuccess = false;
                             }
-                            
-                            if(pbSuccess){
+
+                            if (pbSuccess) {
                                 poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 }
                             }
-                            
+
                             pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                             loadRecordMaster();
                             pbSuccess = true; //Set to original value
@@ -1676,7 +1678,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue()*100.00)));
+                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() * 100.00)));
 
                 } else {
                     tfDiscountRate.setText(String.format("%.2f", 0.00));
@@ -2061,8 +2063,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
         setDatePickerFormat(dpTransactionDate);
         setDatePickerFormat(dpReferenceDate);
         setDatePickerFormat(dpExpiryDate);
-        
-        
+
         dpTransactionDate.setOnAction(this::datepicker_Action);
         dpReferenceDate.setOnAction(this::datepicker_Action);
 

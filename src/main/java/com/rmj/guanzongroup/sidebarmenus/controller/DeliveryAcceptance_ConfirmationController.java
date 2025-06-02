@@ -356,6 +356,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                             disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                             break;
                         } else {
                             return;
