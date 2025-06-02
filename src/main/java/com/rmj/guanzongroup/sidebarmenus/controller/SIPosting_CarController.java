@@ -158,7 +158,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     private TextField tfSearchSupplier, tfSearchReferenceNo, tfSearchReceiveBranch, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo,
             tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfNetTotal,
             tfTransactionTotal, tfOrderNo, tfBrand, tfDescription, tfOrderQuantity, tfReceiveQuantity, tfCost, tfDiscRateDetail,
-            tfAddlDiscAmtDetail, tfTotalDetail, tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfReportMonthYear, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt,
+            tfAddlDiscAmtDetail, tfSRPAmount, tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfReportMonthYear, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt,
             tfTotalDebitAmt, tfAttachmentNo;
 
     @FXML
@@ -976,7 +976,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         case "tfCost":
                         case "tfDiscRateDetail":
                         case "tfAddlDiscAmtDetail":
-                        case "tfTotalDetail":
+                        case "tfSRPAmount":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
                             int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
@@ -998,7 +998,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         case "tfCost":
                         case "tfDiscRateDetail":
                         case "tfAddlDiscAmtDetail":
-                        case "tfTotalDetail":
+                        case "tfSRPAmount":
                             moveNext();
                             event.consume();
                             break;
@@ -1355,7 +1355,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             tfDiscRateDetail.setText("0.00");
             tfAddlDiscAmtDetail.setText("0.00");
             double lnTotal = 0.00; //TODO
-            tfTotalDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal));
+            tfSRPAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
             cbVatable.setSelected(poPurchaseReceivingController.Detail(pnDetail).isVatable());
@@ -1740,7 +1740,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount,
                 tfVatSales, tfZeroVatSales, tfVatAmount, tfVatExemptSales, tfTotalCreditAmt, tfTotalDebitAmt,
                 tfTotalCreditAmt, tfTotalDebitAmt);
-        JFXUtil.setFocusListener(txtDetail_Focus, tfCost, tfDiscRateDetail, tfAddlDiscAmtDetail, tfTotalDetail,
+        JFXUtil.setFocusListener(txtDetail_Focus, tfCost, tfDiscRateDetail, tfAddlDiscAmtDetail, tfSRPAmount,
                 tfJEAcctCode, tfJEAcctDescription, tfReportMonthYear, tfCreditAmt, tfDebitAmt);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apJEDetail, apBrowse);
@@ -1749,7 +1749,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfCost, tfAddlDiscAmtDetail, tfCreditAmt, tfDebitAmt);
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscRateDetail,
-                tfAddlDiscAmtDetail, tfTotalDetail);
+                tfAddlDiscAmtDetail, tfSRPAmount);
         // Combobox
         JFXUtil.initComboBoxCellDesignColor(cmbAttachmentType, "#FF8201");
         cmbAttachmentType.setItems(documentType);
