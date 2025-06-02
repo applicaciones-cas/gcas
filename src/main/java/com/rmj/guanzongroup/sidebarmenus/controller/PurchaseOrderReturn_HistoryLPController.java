@@ -377,7 +377,7 @@ public class PurchaseOrderReturn_HistoryLPController implements Initializable, S
             tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce(), true));
              tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(pnDetail)));
             tfReturnQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
 
@@ -446,7 +446,7 @@ public class PurchaseOrderReturn_HistoryLPController implements Initializable, S
             tfPOReceivingNo.setText(poPurchaseReturnController.Master().getSourceNo());
             taRemarks.setText(poPurchaseReturnController.Master().getRemarks());
 
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReturnController.Master().getTransactionTotal().doubleValue())));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Master().getTransactionTotal().doubleValue(), true));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
@@ -558,11 +558,11 @@ public class PurchaseOrderReturn_HistoryLPController implements Initializable, S
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
+                                               String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(lnCtr))),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getQuantity())),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
-                                    ));
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true))) //identify total
+                                    );
                         }
 
                         if (pnDetail < 0 || pnDetail

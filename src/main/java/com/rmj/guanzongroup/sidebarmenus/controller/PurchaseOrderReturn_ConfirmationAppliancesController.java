@@ -992,12 +992,9 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
             tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-//            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
-//            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
-//            tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce(), true));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
-            tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
+            tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue()));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
@@ -1065,8 +1062,7 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
             tfPOReceivingNo.setText(poPurchaseReturnController.Master().getSourceNo());
             taRemarks.setText(poPurchaseReturnController.Master().getRemarks());
 
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReturnController.Master().getTransactionTotal().doubleValue())));
-
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Master().getTransactionTotal().doubleValue(), true));
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(PurchaseOrderReturn_ConfirmationAppliancesController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1161,16 +1157,17 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                             } else {
                                 lsImeiNo = poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial02();
                             }
+
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(lsImeiNo),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
                                             String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal))
-                                    ));
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)))
+                        );
                         }
 
                         if (pnDetail < 0 || pnDetail
