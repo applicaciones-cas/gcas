@@ -16,9 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -301,10 +298,10 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
             }
             tfPayee.setText(lsPayee);
             tfSeriesNo.setText(poGLControllers.PaymentRequest().Master().getSeriesNo());
-            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getTranTotal()));
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getDiscountAmount()));
-            tfTotalVATableAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getTaxAmount()));
-            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getNetTotal()));
+            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getTranTotal(), true));
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getDiscountAmount(), true));
+            tfTotalVATableAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getTaxAmount(), true));
+            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getNetTotal(), true));
             taRemarks.setText(poGLControllers.PaymentRequest().Master().Payee().getPayeeName());
             lblStatus.setText("");
             String lsStatus = "";
@@ -347,9 +344,9 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                 tfParticular.setText(lsParticular);
 
                 tfAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
-                        poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAmount().doubleValue()));
+                        poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAmount().doubleValue(), true));
                 tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getDiscount().doubleValue())); // rate
-                tfDiscAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAddDiscount().doubleValue())); // amount
+                tfDiscAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAddDiscount().doubleValue(), true)); // amount
 
                 if (poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getVatable().equals("1")) {
                     chkbVatable.setSelected(true);
@@ -376,7 +373,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
 //            totalTaxAmount = Double.parseDouble(poJSON.get("vat").toString());
 //            tfTaxAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(totalTaxAmount));
 //            totalNetPayable = Double.parseDouble(poJSON.get("netPayable").toString());
-        tfAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnAmount));
+        tfAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnAmount, true));
     }
 
     private void initButtonsClickActions() {
@@ -1223,7 +1220,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
             poGLControllers.PaymentRequest().Detail(pnTblDetailRow).setAddDiscount(lnDiscountAmount);   // amount: 10.00
 
             tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountRate));        // show: 0.10
-            tfDiscAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountAmount));
+            tfDiscAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAddDiscount(), true));
             computePerDetailTaxAndTotal();
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(PaymentRequest_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
@@ -1258,7 +1255,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
 
             // ✅ Display to user
             tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountRate));        // 0.10
-            tfDiscAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountAmount));
+            tfDiscAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAddDiscount(), true));
             computePerDetailTaxAndTotal();
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(PaymentRequest_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
@@ -1323,8 +1320,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
             }
 
             poGLControllers.PaymentRequest().Detail(pnTblDetailRow).setAmount(amount);
-            tfAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(amount));
-
+            tfAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAmount(), true));
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(PaymentRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NumberFormatException ex) {
@@ -1380,13 +1376,14 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
     private void clearMasterFields() {
         pnTblDetailRow = -1;
         dpTransaction.setValue(null);
-        taRemarks.setText("");
+        taRemarks.clear();
         lblStatus.setText("");
         CustomCommonUtil.setText("", tfTransactionNo, tfSeriesNo, tfAttachmentNo
         );
+
         cmbAttachmentType.setValue(null);
         imageView.setImage(null);
-        CustomCommonUtil.setText("0.00", tfTotalAmount, tfDiscountAmount, tfTotalVATableAmount,
+        CustomCommonUtil.setText("0.0000", tfTotalAmount, tfDiscountAmount, tfTotalVATableAmount,
                 tfNetAmount
         );
     }
@@ -1394,9 +1391,10 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
     private void clearDetailFields() {
         CustomCommonUtil.setText("", tfParticular);
         CustomCommonUtil.setSelected(false, chkbVatable);
-        CustomCommonUtil.setText("0.00", tfAmount, tfDiscRate, tfDiscAmountDetail,
+        CustomCommonUtil.setText("0.0000", tfAmount, tfDiscAmountDetail,
                 tfTaxAmount, tfAmountDetail
         );
+        CustomCommonUtil.setText("0.00", tfDiscRate);
     }
 
     private void initButtons(int fnEditMode) {
@@ -1677,12 +1675,12 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                                 String.valueOf(lnCtr + 1),
                                 poGLControllers.PaymentRequest().Detail(lnCtr).getParticularID(),
                                 poGLControllers.PaymentRequest().Detail(lnCtr).Particular().getDescription(),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue()),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue(), true),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getDiscount().doubleValue()),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAddDiscount().doubleValue()),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAddDiscount().doubleValue(), true),
                                 lsIsVatable,
                                 "0.00",
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue()),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue(), true),
                                 ""
                         ));
                     }
@@ -1691,10 +1689,10 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                             detail_data.setAll(detailsList); // Properly update list
                             tblVwPRDetail.setItems(detail_data);
                             poJSON = poGLControllers.PaymentRequest().computeMasterFields();
-                            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getTranTotal()));
-                            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getDiscountAmount()));
-                            tfTotalVATableAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getTaxAmount()));
-                            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getNetTotal()));
+                            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getTranTotal(), true));
+                            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getDiscountAmount(), true));
+                            tfTotalVATableAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getTaxAmount(), true));
+                            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Master().getNetTotal(), true));
                             reselectLastRow();
                             initFields(pnEditMode);
 
