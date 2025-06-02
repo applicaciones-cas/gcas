@@ -813,7 +813,7 @@ public class DeliveryAcceptance_EntryAppliancesController implements Initializab
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", "")) / 100.00));
+                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -1662,6 +1662,16 @@ public class DeliveryAcceptance_EntryAppliancesController implements Initializab
                 tfBarcode.getStyleClass().add("DisabledTextField");
                 tfDescription.getStyleClass().add("DisabledTextField");
             }
+            
+            if (oApp.getUserLevel() == UserRight.ENCODER) {
+                tfCost.getStyleClass().add("DisabledTextField");
+                tfCost.setDisable(true);
+            } else {
+                while (tfCost.getStyleClass().contains("DisabledTextField")) {
+                    tfCost.getStyleClass().remove("DisabledTextField");
+                }
+                tfCost.setDisable(false);
+            }
 
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
@@ -1676,9 +1686,10 @@ public class DeliveryAcceptance_EntryAppliancesController implements Initializab
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
+             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+//            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
+            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
 
             updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -1775,14 +1786,15 @@ public class DeliveryAcceptance_EntryAppliancesController implements Initializab
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue()*100.00)));
-
+                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscountRate(), false));
                 } else {
-                    tfDiscountRate.setText(String.format("%.2f", 0.00));
+                    tfDiscountRate.setText("0.00");
                 }
             });
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
+            
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
+            
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryAppliancesController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -2217,10 +2229,10 @@ public class DeliveryAcceptance_EntryAppliancesController implements Initializab
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                     ));
                         }
 

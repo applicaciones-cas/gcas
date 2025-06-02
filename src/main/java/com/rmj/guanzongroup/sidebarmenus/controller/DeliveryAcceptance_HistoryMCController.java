@@ -749,9 +749,9 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
+             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
+            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
 
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -839,14 +839,15 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue()*100.00)));
-
+                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscountRate(), false));
                 } else {
-                    tfDiscountRate.setText(String.format("%.2f", 0.00));
+                    tfDiscountRate.setText("0.00");
                 }
             });
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
+            
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
+            
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
@@ -953,10 +954,10 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
                                             lsBrand,
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                     ));
                         }
 
