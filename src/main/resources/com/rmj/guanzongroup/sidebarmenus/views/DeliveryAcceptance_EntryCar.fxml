@@ -306,7 +306,7 @@
                                                       <TextField fx:id="tfReferenceNo" maxHeight="25.0" GridPane.columnIndex="7" GridPane.rowIndex="3" />
                                                                           <TextField fx:id="tfTerm" maxHeight="25.0" maxWidth="-Infinity" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.rowIndex="4" />
                                                                               <TextField fx:id="tfDiscountRate" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="11" GridPane.rowIndex="2" />
-                                                                              <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="11" GridPane.rowIndex="3" />
+                                                                              <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="11" GridPane.rowIndex="3" />
                                                                               <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="4" />
                                                       <TextArea fx:id="taRemarks" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="10" GridPane.rowIndex="5">
                                                          <GridPane.margin>
