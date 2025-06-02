@@ -676,7 +676,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
             initFields(pnEditMode);
 
         } catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | ParseException | NullPointerException ex) {
-            Logger.getLogger(PurchaseOrder_EntryMPController.class
+            Logger.getLogger(PurchaseOrder_EntryCarController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -997,7 +997,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                 }
             }
         } catch (ExceptionInInitializerError | SQLException | GuanzonException | NullPointerException ex) {
-            Logger.getLogger(PurchaseOrder_EntryMPController.class
+            Logger.getLogger(PurchaseOrder_EntryCarController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -1061,8 +1061,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
 
     private void initTextFieldPattern() {
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfAdvancePRate,
-                tfAdvancePAmount, tfCost);
-        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
+                tfAdvancePAmount, tfCost, tfOrderQuantity);
     }
 
     private void initDatePickerActions() {
@@ -1245,16 +1244,16 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
         CustomCommonUtil.setSelected(false, chkbAdvancePayment, chkbPreOwned);
         CustomCommonUtil.setText("", tfTransactionNo,
                 tfDestination, tfReferenceNo, tfTerm);
-        CustomCommonUtil.setText("0.00", tfTotalAmount, tfAdvancePAmount, tfAdvancePRate,
-                tfDiscountAmount, tfDiscountRate, tfNetAmount);
+        CustomCommonUtil.setText("0.00", tfAdvancePRate, tfDiscountRate);
+        CustomCommonUtil.setText("0.0000", tfTotalAmount, tfAdvancePAmount,
+                tfDiscountAmount, tfNetAmount);
     }
 
     private void clearDetailFields() {
-        /* Detail Fields*/
-        CustomCommonUtil.setText("", tfBrand, tfModel, tfVariant, tfInventoryType, tfColor, tfClass, tfAMC, tfROQ,
-                tfRO, tfBO, tfQOH, tfRequestQuantity);
-        tfCost.setText("0.00");
-        CustomCommonUtil.setText("0", tfOrderQuantity);
+        CustomCommonUtil.setText("", tfBrand, tfModel, tfVariant, tfInventoryType, tfColor, tfClass, tfAMC
+        );
+        CustomCommonUtil.setText("0.00", tfOrderQuantity, tfQOH, tfRequestQuantity, tfBO, tfRO, tfROQ);
+        tfCost.setText("0.0000");
     }
 
     private void initButtons(int fnEditMode) {
@@ -1329,7 +1328,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                 pagination.setVisible(false);
                 pagination.setManaged(false);
             }
-            if (poPurchasingController.PurchaseOrder().Master().getTranTotal().doubleValue() > 0.0) {
+            if (poPurchasingController.PurchaseOrder().Master().getTranTotal().doubleValue() > 0.0000) {
                 CustomCommonUtil.setDisable(!lbShow, tfDiscountRate, tfDiscountAmount);
             }
 
@@ -1553,16 +1552,16 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                             detailCount++;
                         }
                     }
-                    double grandTotalAmount = 0.0;
+                    double grandTotalAmount = 0.0000;
                     List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
-                        double lnRequestQuantity = 0;
+                        double lnRequestQuantity = 0.00;
                         String status = "0";
-                        double lnTotalQty = 0;
+                        double lnTotalQty = 0.0000;
                         lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved().doubleValue();
                         lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase().doubleValue()
                                 + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued().doubleValue()
@@ -1882,8 +1881,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                     tfBrand.setDisable(isSourceNotEmpty);
                     tfModel.setDisable(isSourceNotEmpty);
                     if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
-                        tfBrand.setDisable(false);
-                        tfModel.setDisable(false);
+                        CustomCommonUtil.setDisable(false, tfBrand, tfModel);
                         tfOrderQuantity.requestFocus();
                     } else {
                         if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {

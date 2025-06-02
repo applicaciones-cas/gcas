@@ -84,21 +84,25 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order";
+    private String psFormName = "Purchase Order MH";
     private LogWrapper logWrapper;
-    private int pnEditMode;
     private JSONObject poJSON;
-    unloadForm poUnload = new unloadForm();
-    private ObservableList<ModelPurchaseOrder> main_data = FXCollections.observableArrayList();
-    private ObservableList<ModelPurchaseOrderDetail> detail_data = FXCollections.observableArrayList();
+
+    private int pnEditMode;
     private int pnTblMainRow = -1;
     private int pnTblDetailRow = -1;
     private int pnTblMain_Page = 50;
+
     private String prevSupplier = "";
     private String psIndustryID = "";
     private String psCompanyID = "";
     private String psCategoryID = "";
     private String psOldDate = "";
+
+    private unloadForm poUnload = new unloadForm();
+    private ObservableList<ModelPurchaseOrder> main_data = FXCollections.observableArrayList();
+    private ObservableList<ModelPurchaseOrderDetail> detail_data = FXCollections.observableArrayList();
+
     private TextField activeField;
     @FXML
     private AnchorPane AnchorMaster, AnchorDetails, AnchorMain, apBrowse, apButton;
@@ -186,7 +190,9 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
 
     private void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
+//            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
+            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
+
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -281,46 +287,21 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                     lsStatus = "VOID";
                     break;
             }
-
             lblTransactionStatus.setText(lsStatus);
-            dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
-                    SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-
-            String lsSupplierName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null) {
-                lsSupplierName = poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName();
-            }
-            tfSupplier.setText(lsSupplierName);
-
-            String lsDestinationName = "";
-            if (poPurchasingController.PurchaseOrder().Master().Branch().getBranchName() != null) {
-                lsDestinationName = poPurchasingController.PurchaseOrder().Master().Branch().getBranchName();
-            }
-            tfDestination.setText(lsDestinationName);
+            dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+            tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null ? poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() : "");
+            tfDestination.setText(poPurchasingController.PurchaseOrder().Master().Branch().getBranchName() != null ? poPurchasingController.PurchaseOrder().Master().Branch().getBranchName() : "");
             tfReferenceNo.setText(poPurchasingController.PurchaseOrder().Master().getReference());
-            String lsTermCode = "";
-            if (poPurchasingController.PurchaseOrder().Master().Term().getDescription() != null) {
-                lsTermCode = poPurchasingController.PurchaseOrder().Master().Term().getDescription();
-            }
-
-            tfTerm.setText(lsTermCode);
-
+            tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription() != null ? poPurchasingController.PurchaseOrder().Master().Term().getDescription() : "");
             taRemarks.setText(poPurchasingController.PurchaseOrder().Master().getRemarks());
-
-            dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
-                    SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
-            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount().doubleValue() * 100));
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
-
-            if (poPurchasingController.PurchaseOrder().Master().getWithAdvPaym() == true) {
-                chkbAdvancePayment.setSelected(true);
-            } else {
-                chkbAdvancePayment.setSelected(false);
-            }
-            tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
-            tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
-            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal()));
-            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
+            dpExpectedDlvrDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
+            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount().doubleValue()));
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount(), true));
+            chkbAdvancePayment.setSelected(poPurchasingController.PurchaseOrder().Master().getWithAdvPaym() == true);
+            tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage().doubleValue()));
+            tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount(), true));
+            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal(), true));
+            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -330,8 +311,8 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
     private void loadRecordDetail() {
         try {
             if (pnTblDetailRow >= 0) {
-                tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getBarCode());
-                tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getDescription());
+                tfBarcode.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getBarCode() != null ? poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getBarCode() : "");
+                tfDescription.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getDescription() != null ? poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getDescription() : "");
                 tfBrand.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Brand().getDescription());
                 tfModel.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Model().getDescription());
                 tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Color().getDescription());
@@ -340,15 +321,13 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                 tfMeasure.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Measure().getDescription());
                 tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getInventoryClassification());
                 tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getAverageCost()));
-                tfROQ.setText("0");
-                tfRO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived()));
-                tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder()));
-                tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand()));
-                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice()));
-                //                int lnRequestQuantity = 0;
-//                lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved() - (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getPurchase() + poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getIssued());
-                tfRequestQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved()));
-                tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
+                tfROQ.setText("0.00");
+                tfRO.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived()));
+                tfBO.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder()));
+                tfQOH.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand()));
+                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice(), true));
+                tfRequestQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved()));
+                tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
             }
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
@@ -479,7 +458,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblDetailRow,
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeGeneral(lsValue, false, pnTblDetailRow,
                                         true);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -501,7 +480,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblDetailRow,
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescriptionGeneral(lsValue, false, pnTblDetailRow,
                                         true);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -535,6 +514,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                             }
                         }
                     }
+
                     prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
 
                     // Validate Detail Count Before Backend Processing
@@ -617,7 +597,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
 
                     // Print Transaction Prompt
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_Pedritos);
+                        poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CARSp_MCSp_General);
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), "Print Purchase Order", null);
                         }
@@ -666,7 +646,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                     }
                     break;
                 case "btnPrint":
-                    poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_Pedritos);
+                    poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CARSp_MCSp_General);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                     }
@@ -735,26 +715,23 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    poJSON = new JSONObject();
                     poJSON = poPurchasingController.PurchaseOrder().setDiscountRate(lsValue);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                     }
-                    tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
-                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount().doubleValue() * 100));
-                    tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
+                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount().doubleValue()));
+                    tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
                     break;
                 case "tfDiscountAmount":
                     if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
+                        lsValue = "0.0000";
                     }
                     poJSON = poPurchasingController.PurchaseOrder().setDiscountAmount(lsValue);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                     }
-                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount().doubleValue() * 100));
-                    tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount()));
-                    tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
+                    tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getAdditionalDiscount(), true));
+                    tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
                     break;
                 case "tfAdvancePRate":
                     if (lsValue.isEmpty()) {
@@ -765,21 +742,19 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                     }
 
-                    tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
-                    tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
-                    tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
+                    tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage().doubleValue()));
+                    tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
                     break;
                 case "tfAdvancePAmount":
                     if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
+                        lsValue = "0.0000";
                     }
                     poJSON = poPurchasingController.PurchaseOrder().setAdvancePaymentAmount(lsValue);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                     }
-                    tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
-                    tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
-                    tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
+                    tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount(), true));
+                    tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
                     break;
                 case "tfOrderQuantity":
                     break;
@@ -876,8 +851,8 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblDetailRow,
-                                        true);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeGeneral(lsValue, false, pnTblDetailRow, true
+                                );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfBarcode.setText("");
@@ -892,14 +867,13 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                 initDetailFocus();
                                 selectTheExistedDetailFromMainTable();
                                 break;
-
                             case "tfDescription":
                                 if (pnTblDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblDetailRow,
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescriptionGeneral(lsValue, false, pnTblDetailRow,
                                         true);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -928,7 +902,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
                                 break;
                             case "tfOrderQuantity":
-                                setOrderQuantityToDetail(tfOrderQuantity.getText());
+                                setOrderQuantityToDetail(tfOrderQuantity.getText().replace(",", ""));
                                 if (!detail_data.isEmpty() && pnTblDetailRow < detail_data.size() - 1) {
                                     pnTblDetailRow++;
                                 }
@@ -946,7 +920,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcode(lsValue, false, pnTblDetailRow, false);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeGeneral(lsValue, false, pnTblDetailRow, false);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfBarcode.setText("");
@@ -967,7 +941,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescription(lsValue, false, pnTblDetailRow, false);
+                                poJSON = poPurchasingController.PurchaseOrder().SearchBarcodeDescriptionGeneral(lsValue, false, pnTblDetailRow, false);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     tfDescription.setText("");
@@ -987,7 +961,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         event.consume();
                         break;
                     case UP:
-                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                        setOrderQuantityToDetail(tfOrderQuantity.getText().replace(",", ""));
                         if (!lsTxtField.equals("tfBarcode") && !lsTxtField.equals("tfDescription")) {
                             if (pnTblDetailRow > 0 && !detail_data.isEmpty()) {
                                 pnTblDetailRow--;
@@ -1002,7 +976,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         event.consume();
                         break;
                     case DOWN:
-                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                        setOrderQuantityToDetail(tfOrderQuantity.getText().replace(",", ""));
                         if ("tfOrderQuantity".equals(lsTxtField.getId())) {
                             if (!detail_data.isEmpty() && pnTblDetailRow < detail_data.size() - 1) {
                                 pnTblDetailRow++;
@@ -1025,46 +999,46 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
 
     private void setOrderQuantityToDetail(String fsValue) {
         if (fsValue.isEmpty()) {
-            fsValue = "0.0";
+            fsValue = "0.00";
         }
-        if (Double.parseDouble(fsValue) < 0.0) {
+        if (Double.parseDouble(fsValue) < 0.00) {
             ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
-            fsValue = "0.0";
+            fsValue = "0.00";
         }
         if (tfOrderQuantity.isFocused()) {
             if (tfBarcode.getText().isEmpty()) {
                 ShowMessageFX.Warning("Invalid action, Please enter barcode first. ", psFormName, null);
                 tfBarcode.requestFocus();
-                fsValue = "0.0";
+                fsValue = "0.00";
             }
         }
+
         if (pnTblDetailRow < 0) {
-            fsValue = "0.0";
+            fsValue = "0.00";
             ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
             clearDetailFields();
             int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
             pnTblDetailRow = detailCount > 0 ? detailCount - 1 : 0;
         }
-        double lnRequestQuantity = 0.0;
+        double lnRequestQuantity = 0.00;
         try {
             lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved().doubleValue();
             if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty()) {
-                if (Integer.parseInt(tfOrderQuantity.getText()) > lnRequestQuantity) {
+                if (Double.parseDouble(tfOrderQuantity.getText().replace(",", "")) > lnRequestQuantity) {
                     ShowMessageFX.Warning("Invalid order quantity entered. The item is from a stock request, and the order quantity must not be greater than the requested quantity.", psFormName, null);
-                    fsValue = "0.0";
+                    fsValue = "0.00";
                 }
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        tfOrderQuantity.setText(fsValue);
-        poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Double.parseDouble(fsValue));
+        poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Double.valueOf(fsValue));
+        tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
     }
 
     private void initTextFieldPattern() {
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfAdvancePRate,
-                tfAdvancePAmount, tfCost);
-        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
+                tfAdvancePAmount, tfCost, tfOrderQuantity);
     }
 
     private void initDatePickerActions() {
@@ -1189,24 +1163,23 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 poJSON = new JSONObject();
                 if (tfTotalAmount.getText().isEmpty()
-                        || Double.parseDouble(tfTotalAmount.getText().replace(",", "")) > 0.00
-                        || Double.parseDouble(tfTotalAmount.getText().replace(",", "")) > 0.0) {
+                        || Double.parseDouble(tfTotalAmount.getText().replace(",", "")) > 0.0000) {
 
                     if (chkbAdvancePayment.isSelected()) {
                         chkbAdvancePayment.setSelected(true);
                         poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(true);
                     } else {
-                        if (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) > 0.00
+                        if (Double.parseDouble(tfAdvancePAmount.getText().replace(",", "")) > 0.0000
                                 || Double.parseDouble(tfAdvancePRate.getText().replace(",", "")) > 0.00) {
                             if (ShowMessageFX.YesNo("An advance payment amount has already been entered. Are you sure you want to unselect it?", psFormName, null)) {
                                 poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(false);
                                 chkbAdvancePayment.setSelected(false);
-                                poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.00);
+                                poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.0000);
                                 poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(0.00);
-                                tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage()));
-                                tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount()));
+                                tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage().doubleValue()));
+                                tfAdvancePAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesAmount(), true));
                                 poPurchasingController.PurchaseOrder().computeNetTotal();
-                                tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
+                                tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
                             } else {
                                 chkbAdvancePayment.setSelected(true);
                                 poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(true);
@@ -1218,7 +1191,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         }
                     }
                 } else {
-                    ShowMessageFX.Warning("Advance payment cannot be entered until the total amount is greater than 0.00.", psFormName, null);
+                    ShowMessageFX.Warning("Advance payment cannot be entered until the total amount is greater than 0.0000.", psFormName, null);
                     poPurchasingController.PurchaseOrder().Master().setWithAdvPaym(false);
                     chkbAdvancePayment.setSelected(false);
                 }
@@ -1237,18 +1210,16 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
         CustomCommonUtil.setSelected(false, chkbAdvancePayment);
         CustomCommonUtil.setText("", tfTransactionNo,
                 tfDestination, tfReferenceNo, tfTerm);
-        CustomCommonUtil.setText("0.00", tfTotalAmount, tfAdvancePAmount, tfAdvancePRate,
+        CustomCommonUtil.setText("0.0000", tfTotalAmount, tfAdvancePAmount, tfAdvancePRate,
                 tfDiscountAmount, tfDiscountRate, tfNetAmount);
     }
 
     private void clearDetailFields() {
-        /* Detail Fields*/
         CustomCommonUtil.setText("", tfBarcode, tfDescription, tfBrand, tfModel,
-                tfColor, tfCategory, tfInventoryType, tfMeasure, tfClass,
-                tfAMC, tfROQ, tfRO, tfBO, tfQOH,
-                tfRequestQuantity);
-        tfCost.setText("0.00");
-        CustomCommonUtil.setText("0", tfOrderQuantity);
+                tfColor, tfCategory, tfInventoryType, tfMeasure, tfClass, tfAMC
+        );
+        CustomCommonUtil.setText("0.00", tfOrderQuantity, tfQOH, tfRequestQuantity, tfBO, tfRO, tfROQ);
+        tfCost.setText("0.0000");
     }
 
     private void initButtons(int fnEditMode) {
@@ -1324,7 +1295,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
             pagination.setVisible(false);
             pagination.setManaged(false);
         }
-        if (poPurchasingController.PurchaseOrder().Master().getTranTotal().doubleValue() > 0.0) {
+        if (poPurchasingController.PurchaseOrder().Master().getTranTotal().doubleValue() > 0.0000) {
             tfDiscountRate.setDisable(!lbShow);
             tfDiscountAmount.setDisable(!lbShow);
         }
@@ -1543,16 +1514,16 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                             detailCount++;
                         }
                     }
-                    double grandTotalAmount = 0.0;
+                    double grandTotalAmount = 0.0000;
                     List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
                         double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
                         grandTotalAmount += lnTotalAmount;
-                        double lnRequestQuantity = 0;
+                        double lnRequestQuantity = 0.00;
                         String status = "0";
-                        double lnTotalQty = 0;
+                        double lnTotalQty = 0.0000;
                         lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved().doubleValue();
                         lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase().doubleValue()
                                 + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued().doubleValue()
@@ -1567,11 +1538,11 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                                 orderDetail.getSouceNo(),
                                 orderDetail.Inventory().getBarCode(),
                                 orderDetail.Inventory().getDescription(),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice()),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice(), true),
                                 "",
-                                String.valueOf(lnRequestQuantity),
-                                String.valueOf(orderDetail.getQuantity()),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnRequestQuantity),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getQuantity()),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount, true),
                                 status
                         ));
                     }
@@ -1583,19 +1554,19 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                             if (totalAmountFinal <= 0.0) {
                                 tfDiscountRate.setText("0.00");
                                 tfAdvancePRate.setText("0.00");
-                                tfDiscountAmount.setText("0.00");
-                                tfDiscountAmount.setText("0.00");
-                                poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(0.0);
+                                tfDiscountAmount.setText("0.0000");
+                                tfAdvancePAmount.setText("0.0000");
+                                poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(0.0000);
                                 poPurchasingController.PurchaseOrder().Master().setDiscount(0.0);
-                                poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.0);
+                                poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.0000);
                                 poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(0.0);
                             }
                             poPurchasingController.PurchaseOrder().Master().setTranTotal(totalAmountFinal);
                             poPurchasingController.PurchaseOrder().computeNetTotal();
-                            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount().doubleValue() * 100));
-                            tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage().doubleValue() * 100));
-                            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal()));
-                            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal()));
+                            tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount().doubleValue()));
+                            tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage().doubleValue()));
+                            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal(), true));
+                            tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
                         }
                         reselectLastDetailRow();
                         initFields(pnEditMode);
@@ -1669,9 +1640,9 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         tfSupplier.setText("");
                         tblVwStockRequest.getItems().clear();
                         main_data.clear();
+                        tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
                         poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
                         tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
-                        tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
                     } catch (GuanzonException | SQLException ex) {
                         Logger.getLogger(PurchaseOrder_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1687,7 +1658,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
             if (poPurchasingController.PurchaseOrder().getDetailCount() >= 1) {
                 if (poPurchasingController.PurchaseOrder().Detail(0).getStockID() != null && poPurchasingController.PurchaseOrder().Detail(0).getQuantity() != null) {
                     if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
-                            || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0)) {
+                            || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0.00)) {
                         isHaveQuantityAndStockId = true;
                     }
                 }
@@ -1699,16 +1670,16 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
                             if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()
                                     && poPurchasingController.PurchaseOrder().Detail(lnCtr).getStockID().isEmpty()
-                                    && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().equals(0)) {
+                                    && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().equals(0.00)) {
                                 continue; // Skip deleting this row
                             }
                             poPurchasingController.PurchaseOrder().Detail().remove(lnCtr);
                         }
                         pnTblDetailRow = -1;
                         pnTblMainRow = -1;
-                        tblVwStockRequest.getSelectionModel().clearSelection();
                         poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
                         tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
+                        tblVwStockRequest.getSelectionModel().clearSelection();
                         clearDetailFields();
                         loadTableDetail();
                     } catch (GuanzonException | SQLException ex) {
@@ -1865,8 +1836,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                     tfBarcode.setDisable(isSourceNotEmpty);
                     tfDescription.setDisable(isSourceNotEmpty);
                     if (poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
-                        tfBarcode.setDisable(false);
-                        tfDescription.setDisable(false);
+                        CustomCommonUtil.setDisable(false, tfBarcode, tfDescription);
                         tfOrderQuantity.requestFocus();
                     }
                     if (isSourceNotEmpty && !tfBarcode.getText().isEmpty()) {

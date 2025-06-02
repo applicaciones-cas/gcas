@@ -1190,8 +1190,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
 
     private void initTextFieldPattern() {
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfAdvancePRate,
-                tfAdvancePAmount, tfCost);
-        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
+                tfAdvancePAmount, tfCost, tfOrderQuantity);
     }
 
     private void initDatePickerActions() {
@@ -1455,7 +1454,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
             pagination.setVisible(false);
             pagination.setManaged(false);
         }
-        if (poPurchasingController.PurchaseOrder().Master().getTranTotal().doubleValue() > 0.0) {
+        if (poPurchasingController.PurchaseOrder().Master().getTranTotal().doubleValue() > 0.0000) {
             CustomCommonUtil.setDisable(!lbShow, tfDiscountRate, tfDiscountAmount);
         }
 
@@ -1674,7 +1673,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                             detailCount++;
                         }
                     }
-                    double grandTotalAmount = 0.0;
+                    double grandTotalAmount = 0.0000;
                     List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
@@ -1683,7 +1682,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                         grandTotalAmount += lnTotalAmount;
                         double lnRequestQuantity = 0.00;
                         String status = "0";
-                        double lnTotalQty = 0.00;
+                        double lnTotalQty = 0.0000;
                         lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved().doubleValue();
                         lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase().doubleValue()
                                 + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued().doubleValue()

@@ -1171,7 +1171,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                 lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved().doubleValue();
                 if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty()) {
                     if (Double.parseDouble(tfOrderQuantity.getText().replace(",", "")) > lnRequestQuantity) {
-                        ShowMessageFX.Warning("Invalid order quantity entered. The item is from a stock request, and the order quantity must not be greater than the requested quantity.", psFormName, null);
+                        ShowMessageFX.Warning("Invalid order quantity entered. Thle item is from a stock request, and the order quantity must not be greater than the requested quantity.", psFormName, null);
                         fsValue = "0.00";
                     }
                 }
@@ -1179,7 +1179,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                 Logger.getLogger(PurchaseOrder_EntryAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Double.valueOf(fsValue.replace(",", "")));
+            poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Double.valueOf(fsValue));
             tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
 
         } catch (GuanzonException | SQLException ex) {
@@ -1189,8 +1189,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
 
     private void initTextFieldPattern() {
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfAdvancePRate,
-                tfAdvancePAmount, tfCost);
-        CustomCommonUtil.inputIntegersOnly(tfOrderQuantity);
+                tfAdvancePAmount, tfCost, tfOrderQuantity);
     }
 
     private void initDatePickerActions() {
@@ -1454,7 +1453,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
             pagination.setVisible(false);
             pagination.setManaged(false);
         }
-        if (poPurchasingController.PurchaseOrder().Master().getTranTotal().doubleValue() > 0.0) {
+        if (poPurchasingController.PurchaseOrder().Master().getTranTotal().doubleValue() > 0.0000) {
             CustomCommonUtil.setDisable(!lbShow, tfDiscountRate, tfDiscountAmount);
         }
 
@@ -1673,7 +1672,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                             detailCount++;
                         }
                     }
-                    double grandTotalAmount = 0.0;
+                    double grandTotalAmount = 0.0000;
                     List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
@@ -1682,7 +1681,7 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                         grandTotalAmount += lnTotalAmount;
                         double lnRequestQuantity = 0.00;
                         String status = "0";
-                        double lnTotalQty = 0.00;
+                        double lnTotalQty = 0.0000;
                         lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved().doubleValue();
                         lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase().doubleValue()
                                 + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued().doubleValue()
