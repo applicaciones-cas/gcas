@@ -308,8 +308,7 @@ public class PurchaseOrderReturn_HistoryMonarchFoodController implements Initial
         JFXUtil.setFocusListener(txtField_Focus, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse);
         
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
-        CustomCommonUtil.inputDecimalOnly(tfCost);
+        CustomCommonUtil.inputDecimalOnly(tfCost, tfReceiveQuantity, tfReturnQuantity);
 
     }
 
@@ -379,8 +378,8 @@ public class PurchaseOrderReturn_HistoryMonarchFoodController implements Initial
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
-             tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
-            tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
+             tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(pnDetail)));
+            tfReturnQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -551,7 +550,7 @@ public class PurchaseOrderReturn_HistoryMonarchFoodController implements Initial
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poPurchaseReturnController.getDetailCount(); lnCtr++) {
                             try {
-                                lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue();
+                                lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().doubleValue();
                             } catch (Exception e) {
                             }
 
@@ -560,8 +559,8 @@ public class PurchaseOrderReturn_HistoryMonarchFoodController implements Initial
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(lnCtr))),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getQuantity())),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
                                     ));
                         }
