@@ -8,21 +8,34 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.IOException;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Observable;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
@@ -33,25 +46,36 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ComboBoxBase;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.Pagination;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
@@ -134,23 +158,25 @@ public class JFXUtil {
         table.refresh();
     }
 
-    public static <T> void setDatePickerNextFocusByEnter(DatePicker datePicker) {
-        datePicker.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                Node source = (Node) event.getSource();
-                source.fireEvent(new KeyEvent(
-                        KeyEvent.KEY_PRESSED,
-                        "",
-                        "",
-                        KeyCode.TAB,
-                        false,
-                        false,
-                        false,
-                        false
-                ));
-                event.consume();
-            }
-        });
+    public static void setDatePickerNextFocusByEnter(DatePicker... datePickers) {
+        for (DatePicker datePicker : datePickers) {
+            datePicker.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                if (event.getCode() == KeyCode.ENTER) {
+                    Node source = (Node) event.getSource();
+                    source.fireEvent(new KeyEvent(
+                            KeyEvent.KEY_PRESSED,
+                            "",
+                            "",
+                            KeyCode.TAB,
+                            false,
+                            false,
+                            false,
+                            false
+                    ));
+                    event.consume();
+                }
+            });
+        }
     }
 
     public static <T> void initComboBoxCellDesignColor(ComboBox<T> comboBox, String hexcolor) {
@@ -223,19 +249,22 @@ public class JFXUtil {
         });
     }
 
-    public static <T> void setDatePickerFormat(DatePicker datePicker) {
+    public static void setDatePickerFormat(DatePicker... datePickers) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        datePicker.setConverter(new StringConverter<LocalDate>() {
-            @Override
-            public String toString(LocalDate date) {
-                return (date != null) ? date.format(formatter) : "";
-            }
 
-            @Override
-            public LocalDate fromString(String string) {
-                return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
-            }
-        });
+        for (DatePicker datePicker : datePickers) {
+            datePicker.setConverter(new StringConverter<LocalDate>() {
+                @Override
+                public String toString(LocalDate date) {
+                    return (date != null) ? date.format(formatter) : "";
+                }
+
+                @Override
+                public LocalDate fromString(String string) {
+                    return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
+                }
+            });
+        }
     }
 
     public static void updateCaretPositions(AnchorPane anchorPane) {
@@ -265,7 +294,6 @@ public class JFXUtil {
             if (node instanceof TextField) {
                 textFields.add((TextField) node);
             } else if (node instanceof DatePicker) {
-                // Try to find the internal TextField of DatePicker
                 Node datePickerEditor = ((DatePicker) node).lookup(".text-field");
                 if (datePickerEditor instanceof TextField) {
                     textFields.add((TextField) datePickerEditor);
@@ -307,34 +335,37 @@ public class JFXUtil {
         pgPagination.setPageCount(totalPage);
         pgPagination.setCurrentPageIndex(0);
         changeTableView(0, ROWS_PER_PAGE, tbl, tbldata_list_size, filteredData);
-        pgPagination.currentPageIndexProperty().addListener(
-                (observable, oldValue, newValue) -> changeTableView(newValue.intValue(), ROWS_PER_PAGE, tbl, tbldata_list_size, filteredData));
+        pgPagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
+            changeTableView(newValue.intValue(), ROWS_PER_PAGE, tbl, tbldata_list_size, filteredData);
+            tbl.scrollTo(0);
+        });
     }
 
-    private static void changeTableView(int index, int limit, TableView tbl, int tbldata_list_size, FilteredList filteredData) {
+    public static void changeTableView(int index, int limit, TableView tbl, int tbldata_list_size, FilteredList filteredData) {
         tbl.getSelectionModel().clearSelection();
         int fromIndex = index * limit;
         int toIndex = Math.min(fromIndex + limit, tbldata_list_size);
         int minIndex = Math.min(toIndex, tbldata_list_size);
-        SortedList<T> sortedData = new SortedList<>(
-                FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
-        sortedData.comparatorProperty().bind(tbl.comparatorProperty());
+        try {
+            SortedList<T> sortedData = new SortedList<>(
+                    FXCollections.observableArrayList(filteredData.subList(Math.min(fromIndex, minIndex), minIndex)));
+            sortedData.comparatorProperty().bind(tbl.comparatorProperty());
+        } catch (Exception e) {
+        }
         try {
             tbl.setItems(FXCollections.observableArrayList(filteredData.subList(fromIndex, toIndex)));
         } catch (Exception e) {
 
         }
-
-        tbl.scrollTo(0);
     }
 
-    public void showDialog(String lsFxml,
+    public static void showDialog(URL fxmlurl,
             Object controller,
-            String lsDialogTitle
+            String lsDialogTitle, boolean enableWindowDrag
     ) throws IOException {
 
-        // no need to set dialogstage null or not as background is locked upon opening
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(lsFxml));
+        // no need to set dialogstage null or not as the background is auto locked upon opening
+        FXMLLoader loader = new FXMLLoader(fxmlurl);
         loader.setController(controller);
 
         Parent root = loader.load();
@@ -344,12 +375,13 @@ public class JFXUtil {
             xyOffset.x = event.getSceneX();
             xyOffset.y = event.getSceneY();
         });
-
-        root.setOnMouseDragged(event -> {
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setX(event.getScreenX() - xyOffset.x);
-            stage.setY(event.getScreenY() - xyOffset.y);
-        });
+        if (enableWindowDrag) {
+            root.setOnMouseDragged(event -> {
+                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                stage.setX(event.getScreenX() - xyOffset.x);
+                stage.setY(event.getScreenY() - xyOffset.y);
+            });
+        }
 
         Stage dialog = new Stage();
         dialog.initStyle(StageStyle.UNDECORATED);
@@ -365,19 +397,19 @@ public class JFXUtil {
         double x, y;
     }
 
-    public void stackPaneClip(StackPane stackPane1) {
+    public static void stackPaneClip(StackPane stackPane1) {
         javafx.scene.shape.Rectangle clip = new javafx.scene.shape.Rectangle(
-                stackPane1.getWidth() - 8, // Subtract 10 for padding (5 on each side)
-                stackPane1.getHeight() - 8 // Subtract 10 for padding (5 on each side)
+                stackPane1.getWidth() - 8,
+                stackPane1.getHeight() - 8
         );
-        clip.setArcWidth(8); // Optional: Rounded corners for aesthetics
+        clip.setArcWidth(8);
         clip.setArcHeight(8);
-        clip.setLayoutX(4); // Set padding offset for X
-        clip.setLayoutY(4); // Set padding offset for Y
+        clip.setLayoutX(4);
+        clip.setLayoutY(4);
         stackPane1.setClip(clip);
     }
 
-    public boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
+    public static boolean isImageViewOutOfBounds(ImageView imageView, StackPane stackPane) {
         Bounds clipBounds = stackPane.getClip().getBoundsInParent();
         Bounds imageBounds = imageView.getBoundsInParent();
 
@@ -387,7 +419,7 @@ public class JFXUtil {
                 || imageBounds.getMinY() > clipBounds.getMaxY();
     }
 
-    public void resetImageBounds(ImageView imageView, StackPane stackPane1) {
+    public static void resetImageBounds(ImageView imageView, StackPane stackPane1) {
         imageView.setScaleX(1.0);
         imageView.setScaleY(1.0);
         imageView.setTranslateX(0);
@@ -395,7 +427,49 @@ public class JFXUtil {
         stackPane1.setAlignment(imageView, javafx.geometry.Pos.CENTER);
     }
 
-    public void adjustImageSize(Image image, ImageView imageView, int ldstackPaneWidth, int ldstackPaneHeight) {
+    public static class ImageViewer {
+        public double ldstackPaneWidth = 0;
+        public double ldstackPaneHeight = 0;
+        public double mouseAnchorX;
+        public double mouseAnchorY;
+        public double scaleFactor = 1.0;
+
+        public void initAttachmentPreviewPane(StackPane stackPane, ImageView imageView) {
+            stackPane.layoutBoundsProperty().addListener((observable, oldBounds, newBounds) -> {
+                stackPane.setClip(new javafx.scene.shape.Rectangle(
+                        newBounds.getMinX(),
+                        newBounds.getMinY(),
+                        newBounds.getWidth(),
+                        newBounds.getHeight()
+                ));
+            });
+
+            imageView.setOnScroll((ScrollEvent event) -> {
+                double delta = event.getDeltaY();
+                scaleFactor = Math.max(0.5, Math.min(scaleFactor * (delta > 0 ? 1.1 : 0.9), 5.0));
+                imageView.setScaleX(scaleFactor);
+                imageView.setScaleY(scaleFactor);
+            });
+
+            imageView.setOnMousePressed((MouseEvent event) -> {
+                mouseAnchorX = event.getSceneX() - imageView.getTranslateX();
+                mouseAnchorY = event.getSceneY() - imageView.getTranslateY();
+            });
+
+            imageView.setOnMouseDragged((MouseEvent event) -> {
+                double translateX = event.getSceneX() - mouseAnchorX;
+                double translateY = event.getSceneY() - mouseAnchorY;
+                imageView.setTranslateX(translateX);
+                imageView.setTranslateY(translateY);
+            });
+
+            stackPane.widthProperty().addListener((observable, oldValue, newWidth) -> {
+                ldstackPaneWidth = newWidth.doubleValue();
+            });
+        }
+    }
+
+    public static void adjustImageSize(Image image, ImageView imageView, double ldstackPaneWidth, double ldstackPaneHeight) {
         double imageRatio = image.getWidth() / image.getHeight();
         double containerRatio = ldstackPaneWidth / ldstackPaneHeight;
 
@@ -464,7 +538,6 @@ public class JFXUtil {
         }
     }
 
-// Helper method to recursively find and clear TextFields/TextAreas
     private static void clearTextInputsRecursive(Parent parent) {
         for (Node node : parent.getChildrenUnmodifiable()) {
             if (node instanceof TextInputControl) {
@@ -496,7 +569,7 @@ public class JFXUtil {
 
     public static boolean isTextFieldContainsStyleClass(String lsCssClassName, TextField... textFields) {
         for (TextField tf : textFields) {
-            if (tf.getStyleClass().contains("DisabledTextField")) {
+            if (tf.getStyleClass().contains(lsCssClassName)) {
                 return true;
             }
         }
@@ -603,11 +676,11 @@ public class JFXUtil {
         }
     }
 
-    public static List<String> getTextFieldsIDWithPrompt(String lsprompt, AnchorPane... panes) {
+    public static List<String> getTextFieldsIDWithPrompt(String lsPromptMsg, AnchorPane... panes) {
         List<String> results = new ArrayList<>();
         for (AnchorPane pane : panes) {
             for (Node node : pane.getChildren()) {
-                collectTextFieldIDs(node, lsprompt, results);
+                collectTextFieldIDs(node, lsPromptMsg, results);
             }
         }
         return results;
@@ -672,7 +745,356 @@ public class JFXUtil {
         } else {
         }
         textArea.getStyleClass().add("custom-text-area");
+    }
 
+    public static class LoadScreenComponents {
+
+        public final ProgressIndicator progressIndicator;
+        public final StackPane loadingPane;
+        public final Label placeholderLabel;
+
+        public LoadScreenComponents(ProgressIndicator pi, StackPane sp, Label lbl) {
+            this.progressIndicator = pi;
+            this.loadingPane = sp;
+            this.placeholderLabel = lbl;
+        }
+    }
+
+    //JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
+    //tblViewDetails.setPlaceholder(loading.loadingPane);
+    public static LoadScreenComponents createLoadingComponents() {
+        ProgressIndicator progressIndicator = new ProgressIndicator();
+        progressIndicator.setMaxHeight(50);
+        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
+        progressIndicator.setVisible(true);
+
+        StackPane loadingPane = new StackPane(progressIndicator);
+        loadingPane.setAlignment(Pos.CENTER);
+
+        Label placeholderLabel = new Label("NO RECORD TO LOAD");
+        placeholderLabel.setStyle("-fx-font-size: 10px;");
+
+        return new LoadScreenComponents(progressIndicator, loadingPane, placeholderLabel);
+    }
+
+    public static String getFormattedClassTitle(Class<?> javaclass) {
+        String className = javaclass.getSimpleName();
+        if (className.endsWith("Controller")) {
+            className = className.substring(0, className.length() - "Controller".length());
+        }
+        className = className.replace("MonarchFood", "MF");
+        className = className.replace("MonarchHospitality", "MH");
+
+        className = className.replace("_", " ");
+        className = className.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+        System.out.println(className.trim());
+        return className.trim();
+    }
+
+    //JFXUtil.getFormattedClassTitle(this.getClass());
+    public static <T> void selectAndFocusRow(TableView<T> tableView, int index) {
+        tableView.getSelectionModel().select(index);
+        tableView.getFocusModel().focus(index);
+    }
+
+    public static void setValueToNull(Node... nodes) {
+        for (Node node : nodes) {
+            if (node instanceof TextInputControl) {
+                ((TextInputControl) node).clear();
+            } else if (node instanceof ComboBox<?>) {
+                ((ComboBox<?>) node).setValue(null);
+            } else if (node instanceof CheckBox) {
+                ((CheckBox) node).setSelected(false);
+            } else if (node instanceof DatePicker) {
+                ((DatePicker) node).setValue(null);
+            }
+        }
+    }
+
+    public static String safeString(Object value) {
+        return value != null ? value.toString() : "";
+    }
+
+    public static TextFieldControlInfo getControlInfo(Observable o) {
+        if (o instanceof ReadOnlyProperty) {
+            Object bean = ((ReadOnlyProperty<?>) o).getBean();
+            if (bean instanceof TextInputControl) {
+                TextInputControl control = (TextInputControl) bean;
+                String id = control.getId();
+                String value = control.getText() != null ? control.getText() : "";
+                return new TextFieldControlInfo(id, value, control);
+            }
+        }
+        return null;
+    }
+
+    public static class TextFieldControlInfo {
+
+        public final String lsID;
+        public final String lsTxtValue;
+        public final TextInputControl txtField;
+
+        public TextFieldControlInfo(String id, String value, TextInputControl control) {
+            this.lsID = id;
+            this.lsTxtValue = value;
+            this.txtField = control;
+        }
+    }
+
+    //JFXUtil.TextFieldControlInfo txtcontrol = JFXUtil.getControlInfo((Observable) o);
+    public static void setActionListener(EventHandler<ActionEvent> handler, Node... nodes) {
+        for (Node node : nodes) {
+            if (node instanceof ComboBoxBase) {
+                ((ComboBoxBase<?>) node).setOnAction(handler);
+            } else if (node instanceof TextField) {
+                ((TextField) node).setOnAction(handler);
+            }
+        }
+    }
+
+    public static void setJSONSuccess(JSONObject json, String message) {
+        json.put("result", "success");
+        json.put("message", message);
+    }
+
+    public static void setJSONError(JSONObject json, String message) {
+        json.put("result", "error");
+        json.put("message", message);
+    }
+
+    public static boolean isJSONSuccess(JSONObject json) {
+        return ("success".equals((String) json.get("result"))) ? true : false;
+    }
+
+    public static String getJSONMessage(JSONObject json) {
+        return (String) json.get("message");
+    }
+
+    private static boolean isUpdating = false;
+    private static AtomicBoolean isAdjusting = new AtomicBoolean(false);
+    private static int newCaretPos = 0;
+
+    public static void setCommaFormatter(TextField... textFields) {
+        DecimalFormat finalFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
+        finalFormat.setGroupingUsed(true);
+        finalFormat.setMinimumFractionDigits(2);
+        finalFormat.setMaximumFractionDigits(2);
+
+        for (TextField textField : textFields) {
+            // Disables other character
+            UnaryOperator<TextFormatter.Change> filter = change -> {
+                String newText = change.getControlNewText();
+                if (!newText.matches("[\\d,\\.]*")) {
+                    return null;
+                }
+
+                long dotCount = newText.chars().filter(c -> c == '.').count();
+                if (dotCount > 1) {
+                    return null;
+                }
+
+                return change;
+            };
+            textField.setTextFormatter(new TextFormatter<>(filter));
+            // Real-time formatting
+            textField.textProperty().addListener((obs, oldValue, newValue) -> {
+                if (isAdjusting.get() == true) {
+                    return;
+                }
+                try {
+                    if (isUpdating) {
+                        return;
+                    }
+                    isUpdating = true;
+                    String clean = newValue.replaceAll(",", "");
+                    if (clean.isEmpty() || clean.equals(".") || clean.matches("0*\\.0*")) {
+                        isUpdating = false;
+                        return;
+                    }
+                    try {
+                        String integerPart = clean;
+                        String decimalPart = "";
+                        int dotIndex = clean.indexOf(".");
+                        if (dotIndex >= 0) {
+                            integerPart = clean.substring(0, dotIndex);
+                            decimalPart = clean.substring(dotIndex);
+                        }
+                        long integerVal = integerPart.isEmpty() ? 0 : Long.parseLong(integerPart);
+                        String formattedInteger = NumberFormat.getIntegerInstance(Locale.US).format(integerVal);
+                        String formatted = formattedInteger + decimalPart;
+                        Platform.runLater(() -> {
+                            isAdjusting.set(true);
+                            int originalCaretPos = textField.getCaretPosition();
+                            textField.setText(formatted);
+                            int offset = formatted.length() - newValue.length();
+                            newCaretPos = originalCaretPos + offset;
+                            newCaretPos = Math.max(0, Math.min(formatted.length(), newCaretPos));
+                            isAdjusting.set(false);
+                        });
+                        Platform.runLater(() -> {
+                            textField.positionCaret(newCaretPos);
+                        });
+                    } catch (Exception e) {
+                    }
+                    isUpdating = false;
+                } catch (Exception e) {
+                    isUpdating = false;
+                }
+
+            });
+        }
+    }
+
+    public static class MonthYearPicker {
+
+        public static class Picker {
+
+            public final TextField textField;
+            public final Popup popup;
+            public final Label yearLabel;
+            public final GridPane monthGrid;
+            public int selectedYear;
+            public int selectedMonth;
+            public final Consumer<YearMonth> onDateSelected;
+
+            public Picker(TextField textField, Consumer<YearMonth> onDateSelected) {
+
+                this.textField = textField;
+                this.onDateSelected = onDateSelected;
+                this.popup = new Popup();
+                this.popup.setAutoHide(true);
+
+                selectedYear = YearMonth.now().getYear();
+                selectedMonth = YearMonth.now().getMonthValue();
+
+                textField.setPromptText("MM/YYYY");
+//                textField.setEditable(false);
+
+                VBox popupContent = new VBox(10);
+                popupContent.setPadding(new Insets(10));
+                popupContent.getStyleClass().add("popup-content");
+
+                yearLabel = new Label(String.valueOf(selectedYear));
+                yearLabel.getStyleClass().add("year-label");
+
+                Button btnPrev = new Button("<");
+                Button btnNext = new Button(">");
+                btnPrev.getStyleClass().add("year-button");
+                btnNext.getStyleClass().add("year-button");
+
+                btnPrev.setOnAction(e -> {
+                    selectedYear--;
+                    yearLabel.setText(String.valueOf(selectedYear));
+                    refreshMonthSelection();
+                });
+
+                btnNext.setOnAction(e -> {
+                    selectedYear++;
+                    yearLabel.setText(String.valueOf(selectedYear));
+                    refreshMonthSelection();
+                });
+
+                HBox yearControls = new HBox(10, btnPrev, yearLabel, btnNext);
+                yearControls.setAlignment(Pos.CENTER);
+                yearControls.getStyleClass().add("year-bar");
+                monthGrid = new GridPane();
+                monthGrid.setHgap(2);
+                monthGrid.setVgap(2);
+                monthGrid.setAlignment(Pos.CENTER);
+
+                Month[] months = Month.values();
+                for (int i = 0; i < months.length; i++) {
+                    Button btn = new Button(months[i].getDisplayName(java.time.format.TextStyle.SHORT, Locale.ENGLISH));
+                    btn.getStyleClass().add("month-button");
+                    int monthValue = i + 1;
+                    btn.setOnAction(e -> {
+                        selectedMonth = monthValue;
+                        updateTextFieldAndNotify();
+                        refreshMonthSelection();
+                        popup.hide();
+                        textField.getParent().requestFocus();
+
+                    });
+                    monthGrid.add(btn, i % 3, i / 3);
+                }
+
+                popupContent.getChildren().addAll(yearControls, monthGrid);
+                popup.getContent().add(popupContent);
+
+                // Load CSS
+                popupContent.getStylesheets().add(
+                        MonthYearPicker.class.getResource("/com/rmj/guanzongroup/sidebarmenus/css/StyleSheet.css").toExternalForm()
+                );
+                textField.setOnMouseClicked(e -> {
+                    if (!popup.isShowing()) {
+                        Bounds bounds = textField.localToScreen(textField.getBoundsInLocal());
+                        double x = bounds.getMinX();
+                        double y = bounds.getMaxY();
+                        popup.show(textField, x - 13, y - 7);
+                    } else {
+                        popup.hide();
+                    }
+                });
+
+                popup.setOnHiding(e -> {
+                    updateTextFieldAndNotify();
+                });
+
+                // Initialize textField with current date
+                updateTextFieldAndNotify();
+                refreshMonthSelection();
+            }
+
+            public void updateTextFieldAndNotify() {
+                YearMonth ym = YearMonth.of(selectedYear, selectedMonth);
+                textField.setText(String.format("%02d/%d", ym.getMonthValue(), ym.getYear()));
+                if (onDateSelected != null) {
+                    onDateSelected.accept(ym);
+                }
+            }
+
+            public void refreshMonthSelection() {
+                monthGrid.getChildren().forEach(node -> node.getStyleClass().remove("selected-month"));
+                for (javafx.scene.Node node : monthGrid.getChildren()) {
+                    if (node instanceof Button) {
+                        Button btn = (Button) node;
+                        // Get the month value by matching the displayed short text to Month enum correctly
+                        String shortMonthName = btn.getText();
+                        Month m = Month.from(
+                                java.time.format.DateTimeFormatter.ofPattern("MMM", Locale.ENGLISH)
+                                        .parse(shortMonthName)
+                        );
+                        if (m.getValue() == selectedMonth) {
+                            btn.getStyleClass().add("selected-month");
+                            break;
+                        }
+                    }
+                }
+                yearLabel.setText(String.valueOf(selectedYear));
+            }
+
+            public void setYearMonth(YearMonth ym) {
+                selectedYear = ym.getYear();
+                selectedMonth = ym.getMonthValue();
+                updateTextFieldAndNotify();
+                refreshMonthSelection();
+            }
+
+            public YearMonth getYearMonth() {
+                return YearMonth.of(selectedYear, selectedMonth);
+            }
+
+            public void clear() {
+                selectedYear = 0;
+                selectedMonth = 0;
+                textField.clear();
+                monthGrid.getChildren().forEach(node -> node.getStyleClass().remove("selected-month"));
+            }
+        }
+
+        public static Picker setupMonthYearPicker(TextField textField, Consumer<YearMonth> onDateSelected) {
+            return new Picker(textField, onDateSelected);
+        }
     }
 
 }

@@ -341,6 +341,39 @@ public class CustomCommonUtil {
         return "0.00";
     }
 
+    /**
+     * Formats a given numeric object into a string using either a 2-decimal or
+     * 4-decimal format.
+     *
+     * <p>
+     * This method attempts to parse the given object to a {@code double} and
+     * format it using {@link java.text.DecimalFormat}. If the object is
+     * {@code null} or parsing fails, it returns a default formatted value
+     * ("0.00" or "0.0000" depending on the flag).</p>
+     *
+     * @param foObject the numeric object to be formatted (e.g., {@code Double},
+     * {@code Integer}, {@code String} that can be parsed as a number)
+     * @param fbIs4Decimal if {@code true}, formats using 4 decimal places
+     * ("#,##0.0000"); if {@code false}, formats using 2 decimal places
+     * ("#,##0.00")
+     * @return the formatted string representation of the number, or
+     * "0.0000"/"0.00" if input is null or invalid
+     */
+    public static String setIntegerValueToDecimalFormat(Object foObject, boolean fbIs4Decimal) {
+        String lsDecimalFormat = fbIs4Decimal ? "#,##0.0000" : "#,##0.00";
+        DecimalFormat format = new DecimalFormat(lsDecimalFormat);
+        try {
+            if (foObject != null) {
+                return format.format(Double.parseDouble(String.valueOf(foObject)));
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Error: Invalid number format for input - " + foObject);
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+        }
+        return fbIs4Decimal ? "0.0000" : "0.00";
+    }
+
     /* DATE FORMATTER UTILITY SECTION */
     /**
      * Converts a string representing a date in "yyyy-MM-dd" format to a
