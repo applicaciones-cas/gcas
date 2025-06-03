@@ -1485,6 +1485,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
+                    plOrderNoFinal.clear();
                     String lsMainDate = "";
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
 

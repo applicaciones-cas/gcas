@@ -229,6 +229,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             tfTransactionNo.requestFocus();
                             return;
                         }
+                        showRetainedHighlight(false);
                         pnEditMode = poPurchaseReceivingController.getEditMode();
 //                        psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
@@ -359,8 +360,9 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             }
                         }
-                        plOrderNoFinal.clear();
-                        showRetainedHighlight(false);
+                        if (pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.READY && pnEditMode != EditMode.UPDATE) {
+                            showRetainedHighlight(false);
+                        }
                         break;
                     case "btnSave":
                         //Validator
@@ -654,6 +656,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
                                         poPurchaseReceivingController.removePORDetails();
+                                        showRetainedHighlight(false);
                                         loadTableDetail();
                                     } else {
                                         loadRecordMaster();

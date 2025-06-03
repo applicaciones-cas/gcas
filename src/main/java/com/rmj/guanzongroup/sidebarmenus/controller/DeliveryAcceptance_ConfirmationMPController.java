@@ -1512,7 +1512,6 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                 highlight(tblViewPuchaseOrder, Integer.parseInt(pair.getKey()), "#C1E1C1", highlightedRowsMain);
             }
         }
-        plOrderNoFinal.clear();
     }
 
     public void loadTableMain() {
