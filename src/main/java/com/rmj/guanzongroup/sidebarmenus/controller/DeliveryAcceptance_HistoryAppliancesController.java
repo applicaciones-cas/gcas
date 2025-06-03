@@ -964,7 +964,7 @@ public class DeliveryAcceptance_HistoryAppliancesController implements Initializ
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                     ));
                         }

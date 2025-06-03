@@ -878,7 +878,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         break;
                     }
                     int lnNewVal = Integer.valueOf(lsValue);
-                    int lnOldVal = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                    int lnOldVal = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
 
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -2071,7 +2071,7 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                     ));
                         }
