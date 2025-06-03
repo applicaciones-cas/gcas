@@ -656,6 +656,14 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                                 break;
                             case "tfOrderQuantity":
                                 setOrderQuantityToDetail(tfOrderQuantity.getText());
+                                poJSON = poPurchasingController.PurchaseOrder().netTotalChecker(pnTblDetailRow);
+                                if ("error".equals(poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    tfOrderQuantity.setText("0");
+                                    loadRecordMaster();
+                                    loadTableDetailAndSelectedRow();
+                                    break;
+                                }
                                 if (!detail_data.isEmpty() && pnTblDetailRow < detail_data.size() - 1) {
                                     pnTblDetailRow++;
                                 }
@@ -667,6 +675,14 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                         break;
                     case UP:
                         setOrderQuantityToDetail(tfOrderQuantity.getText());
+                        poJSON = poPurchasingController.PurchaseOrder().netTotalChecker(pnTblDetailRow);
+                        if ("error".equals(poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            tfOrderQuantity.setText("0");
+                            loadRecordMaster();
+                            loadTableDetailAndSelectedRow();
+                            break;
+                        }
                         if (!lsTxtField.equals("tfBrand") && !lsTxtField.equals("tfModel")) {
                             if (pnTblDetailRow > 0 && !detail_data.isEmpty()) {
                                 pnTblDetailRow--;
@@ -682,6 +698,14 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                         break;
                     case DOWN:
                         setOrderQuantityToDetail(tfOrderQuantity.getText());
+                        poJSON = poPurchasingController.PurchaseOrder().netTotalChecker(pnTblDetailRow);
+                        if ("error".equals(poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            tfOrderQuantity.setText("0");
+                            loadRecordMaster();
+                            loadTableDetailAndSelectedRow();
+                            break;
+                        }
                         if ("tfOrderQuantity".equals(lsTxtField.getId())) {
                             if (!detail_data.isEmpty() && pnTblDetailRow < detail_data.size() - 1) {
                                 pnTblDetailRow++;
