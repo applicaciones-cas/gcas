@@ -596,7 +596,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                             tblVwRecurringExpense.setPlaceholder(new Label("NO RECORD TO LOAD"));
                             tblAttachments.getItems().clear();
                             tblAttachments.setPlaceholder(new Label("NO RECORD TO LOAD"));
-                            loadTableMain();
+                            main_data.clear();
                             CustomCommonUtil.switchToTab(tabDetails, ImTabPane);
                         } else {
                             clearMasterFields();
