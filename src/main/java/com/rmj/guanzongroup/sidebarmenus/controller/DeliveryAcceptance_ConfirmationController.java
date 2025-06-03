@@ -85,10 +85,6 @@ import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import javafx.scene.control.ScrollBar;
-import javafx.geometry.Orientation;
-import com.sun.javafx.scene.control.skin.TableViewSkin;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;
 import javafx.scene.Node;
@@ -2222,54 +2218,9 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
-        adjustLastColumnForScrollbar(tblViewPuchaseOrder);
-        adjustLastColumnForScrollbar(tblAttachments);
-    }
-
-    public void adjustLastColumnForScrollbar(TableView<?> tableView) {
-        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
-            if (!(newSkin instanceof TableViewSkin<?>)) {
-                return;
-            }
-
-            TableViewSkin<?> skin = (TableViewSkin<?>) newSkin;
-            VirtualFlow<?> flow = skin.getChildren().stream()
-                    .filter(node -> node instanceof VirtualFlow<?>)
-                    .map(node -> (VirtualFlow<?>) node)
-                    .findFirst().orElse(null);
-
-            if (flow == null) {
-                return;
-            }
-
-            ScrollBar vScrollBar = flow.getChildrenUnmodifiable().stream()
-                    .filter(node -> node instanceof ScrollBar && ((ScrollBar) node).getOrientation() == Orientation.VERTICAL)
-                    .map(node -> (ScrollBar) node)
-                    .findFirst().orElse(null);
-
-            if (vScrollBar == null || tableView.getColumns().isEmpty()) {
-                return;
-            }
-
-            TableColumn<?, ?> lastColumn = (TableColumn<?, ?>) tableView.getColumns()
-                    .get(tableView.getColumns().size() - 1);
-
-            vScrollBar.visibleProperty().addListener((observable, oldValue, newValue) -> {
-                Platform.runLater(() -> {
-                    double scrollBarWidth = newValue ? vScrollBar.getWidth() : 0;
-                    double remainingWidth = tableView.getWidth() - scrollBarWidth;
-
-                    double totalFixedWidth = tableView.getColumns().stream()
-                            .filter(col -> col != lastColumn)
-                            .mapToDouble(col -> ((TableColumn<?, ?>) col).getWidth())
-                            .sum();
-
-                    double newWidth = Math.max(0, remainingWidth - totalFixedWidth);
-                    lastColumn.setPrefWidth(newWidth - 5);
-                });
-            });
-        });
+        JFXUtil.adjustColumnForScrollbar(tblViewOrderDetails, tblViewPuchaseOrder, tblAttachments);  // need to use computed-size as min-width on particular column to work
+        
+        
     }
 
     private void initButton(int fnValue) {
