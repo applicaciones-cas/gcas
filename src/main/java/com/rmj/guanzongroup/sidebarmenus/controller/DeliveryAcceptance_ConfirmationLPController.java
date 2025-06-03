@@ -724,10 +724,38 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
+                    
+                    if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
+                        return;
+                    }
+                    
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    }
+                    
+                    double ldblOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
+                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                        return;
+                    }
+                    
+                    try {
+                        poJSON = poPurchaseReceivingController.computeFields();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            poPurchaseReceivingController.Detail(pnDetail).setUnitPrce(ldblOldVal);
+                            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                            return;
+                        }
+                    }  catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
                     break;
@@ -746,11 +774,26 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                         }
                     }
 
+                    double lnOldVal = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
+                    
+                    try {
+                        poJSON = poPurchaseReceivingController.computeFields();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            poPurchaseReceivingController.Detail(pnDetail).setQuantity(lnOldVal);
+                            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
+                            return;
+                        }
+                    }  catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                    }
+                    
                     if (pbEntered) {
                         moveNext();
                         pbEntered = false;

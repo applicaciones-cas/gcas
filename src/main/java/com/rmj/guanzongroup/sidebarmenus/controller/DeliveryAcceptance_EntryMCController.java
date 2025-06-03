@@ -666,11 +666,27 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                         return;
                     }
+                    
+                    double ldblOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
                         return;
+                    }
+                    
+                    try {
+                        poJSON = poPurchaseReceivingController.computeFields();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            poPurchaseReceivingController.Detail(pnDetail).setUnitPrce(ldblOldVal);
+                            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                            return;
+                        }
+                    }  catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
                     break;
@@ -704,6 +720,19 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
+                    }
+                    
+                    try {
+                        poJSON = poPurchaseReceivingController.computeFields();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            poPurchaseReceivingController.Detail(pnDetail).setQuantity(lnOldVal);
+                            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
+                            return;
+                        }
+                    }  catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DeliveryAcceptance_EntryMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
                     if (pbEntered) {
@@ -832,9 +861,9 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        int lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        int lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -881,9 +910,9 @@ public class DeliveryAcceptance_EntryMCController implements Initializable, Scre
                     switch (lsID) {
                         case "tfBrand":
                         case "tfReceiveQuantity":
-                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            int lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            int lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
                             if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                                     && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {

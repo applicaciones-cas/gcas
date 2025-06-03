@@ -840,15 +840,32 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
+                    
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                         break;
                     }
+                    
+                    double ldblOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
+                        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                        return;
+                    }
+                    
+                    try {
+                        poJSON = poPurchaseReceivingController.computeFields();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            poPurchaseReceivingController.Detail(pnDetail).setUnitPrce(ldblOldVal);
+                            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                            return;
+                        }
+                    }  catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
                     break;
@@ -881,6 +898,19 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
+                    }
+                    
+                    try {
+                        poJSON = poPurchaseReceivingController.computeFields();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            poPurchaseReceivingController.Detail(pnDetail).setQuantity(lnOldVal);
+                            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
+                            return;
+                        }
+                    }  catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
                     if (pbEntered) {
@@ -943,9 +973,9 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        int lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        int lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -984,9 +1014,9 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
                     switch (lsID) {
                         case "tfBrand":
                         case "tfReceiveQuantity":
-                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            int lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            int lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
                             if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                                     && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -1471,7 +1501,6 @@ public class DeliveryAcceptance_ConfirmationMPController implements Initializabl
         if (isRetained) {
             for (Pair<String, String> pair : plOrderNoPartial) {
                 if (!"0".equals(pair.getValue())) {
-
                     plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
                 }
             }
