@@ -527,8 +527,8 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     }
 
                     for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
-                        double quantity = (int) poPurchasingController.PurchaseOrder().Detail(lnCntr).getValue("nQuantity");
-                        String stockID = (String) poPurchasingController.PurchaseOrder().Detail(lnCntr).getValue("sStockIDx");
+                        double quantity = poPurchasingController.PurchaseOrder().Detail(lnCntr).getQuantity().doubleValue();
+                        String stockID = poPurchasingController.PurchaseOrder().Detail(lnCntr).getStockID();
 
                         // If any stock ID is empty OR quantity is 0, show an error and prevent saving
                         if (detailCount == 1) {
