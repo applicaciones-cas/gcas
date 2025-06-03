@@ -1034,7 +1034,7 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
 
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce(), true));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
+            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail).intValue()));
             tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue()));
 
             JFXUtil.updateCaretPositions(apDetail);
@@ -1206,7 +1206,7 @@ public class PurchaseOrderReturn_ConfirmationCarController implements Initializa
                                             String.valueOf(lsCSPlateNo),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
-                                            String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),
+                                            String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr).intValue()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)))
                                     );
