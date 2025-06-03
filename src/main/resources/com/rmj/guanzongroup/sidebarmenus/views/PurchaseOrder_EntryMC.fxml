@@ -242,8 +242,8 @@
                                                                 <Label text="Addl. Disc. Amt" GridPane.columnIndex="10" GridPane.rowIndex="6" />
                                                                 <Label text="Expected Delivery Date" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                 <Label text="Adv Amount" GridPane.columnIndex="10" GridPane.rowIndex="8" />
-                                                                <Label text="Total Amount" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                                 <TextField fx:id="tfTotalAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" promptText="0.0000" GridPane.columnIndex="12" GridPane.rowIndex="4" />
+                                                                <Label text="Total Amount" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                             </children>
                                                         </GridPane>
                                                     </children>
@@ -283,9 +283,9 @@
                                                                 <Label text="Model" GridPane.rowIndex="1" />
                                                                 <TextField fx:id="tfBrand" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" />
                                                                 <TextField fx:id="tfModel" maxHeight="25.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                <TextField fx:id="tfOrderQuantity" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="14" GridPane.rowIndex="5" />
                                                                 <TextField fx:id="tfCost" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" GridPane.columnIndex="14" GridPane.rowIndex="3" />
-                                                                <TextField fx:id="tfRequestQuantity" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" GridPane.columnIndex="14" GridPane.rowIndex="4" />
+                                                                <TextField fx:id="tfOrderQuantity" alignment="CENTER_RIGHT" promptText="0" GridPane.columnIndex="14" GridPane.rowIndex="5" />
+                                                                <TextField fx:id="tfRequestQuantity" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0" GridPane.columnIndex="14" GridPane.rowIndex="4" />
                                                                 <TextField fx:id="tfVariant" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                 <TextField fx:id="tfInventoryType" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                 <Label text="Request" GridPane.columnIndex="12" GridPane.rowIndex="4">
@@ -299,11 +299,11 @@
                                                                 <Label text="Color" GridPane.rowIndex="5" />
                                                                 <Label text="Rec.  Order Qty" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                                                 <TextField fx:id="tfColor" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                                <TextField fx:id="tfROQ" disable="true" editable="false" maxHeight="25.0" promptText="0.00" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                                                                <TextField fx:id="tfROQ" disable="true" editable="false" maxHeight="25.0" promptText="0" GridPane.columnIndex="6" GridPane.rowIndex="5" />
                                                                 <Label text="Qty On Hand" GridPane.columnIndex="8" GridPane.rowIndex="5" />
-                                                                <TextField fx:id="tfBO" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="4" />
-                                                                <TextField fx:id="tfRO" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="3" />
-                                                                <TextField fx:id="tfQOH" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="5" />
+                                                                <TextField fx:id="tfBO" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" promptText="0" GridPane.columnIndex="10" GridPane.rowIndex="4" />
+                                                                <TextField fx:id="tfRO" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" promptText="0" GridPane.columnIndex="10" GridPane.rowIndex="3" />
+                                                                <TextField fx:id="tfQOH" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" promptText="0" GridPane.columnIndex="10" GridPane.rowIndex="5" />
                                                                 <Label text="Order Qty" GridPane.columnIndex="12" GridPane.rowIndex="5">
                                                                     <font>
                                                                         <Font name="System Bold" size="15.0" />
@@ -314,10 +314,6 @@
                                                                 <TextField fx:id="tfAMC" disable="true" editable="false" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                 <Label text="Reserved order" GridPane.columnIndex="8" GridPane.rowIndex="3" />
                                                                 <Label text="Back Order" GridPane.columnIndex="8" GridPane.rowIndex="4" />
-                                                                <TextField fx:id="tfBarcode" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.columnSpan="3" />
-                                                                <TextField fx:id="tfDescription" maxHeight="25.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.columnSpan="9" GridPane.rowIndex="1" />
-                                                                <Label text="Barcode" GridPane.columnIndex="4" />
-                                                                <Label text="Description" GridPane.columnIndex="4" GridPane.rowIndex="1" />
                                                             </children>
                                                         </GridPane>
                                                     </children>

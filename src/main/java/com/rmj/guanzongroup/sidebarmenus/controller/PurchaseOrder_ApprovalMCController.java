@@ -112,7 +112,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
     @FXML
     private Label lblTransactionStatus, lblSource;
     @FXML
-    private CheckBox chkbAdvancePayment;
+    private CheckBox chkbAdvancePayment, chkbPreOwned;
     @FXML
     private DatePicker dpTransactionDate, dpExpectedDlvrDate;
     @FXML
@@ -232,6 +232,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                     break;
             }
             lblTransactionStatus.setText(lsStatus);
+            chkbPreOwned.setSelected(poPurchasingController.PurchaseOrder().Master().getPreOwned() == true);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null ? poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() : "");
             tfDestination.setText(poPurchasingController.PurchaseOrder().Master().Branch().getBranchName() != null ? poPurchasingController.PurchaseOrder().Master().Branch().getBranchName() : "");
@@ -247,7 +248,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal(), true));
             tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ApprovalMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -262,16 +263,16 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                 tfColor.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().Color().getDescription());
                 tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getInventoryClassification());
                 tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InventoryMaster().getAverageCost()));
-                tfROQ.setText("0.00");
-                tfRO.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived().doubleValue()));
-                tfBO.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder().doubleValue()));
-                tfQOH.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand().doubleValue()));
+                tfROQ.setText("0");
+                tfRO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived().intValue()));
+                tfBO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder().intValue()));
+                tfQOH.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand().intValue()));
                 tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice(), true));
-                tfRequestQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved()));
-                tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
+                tfRequestQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved().intValue()));
+                tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity().intValue()));
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ApprovalMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -419,7 +420,6 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                         break;
                     }
-
                     break;
                 case "btnRetrieve":
                     loadTableMain();
@@ -709,52 +709,53 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             fsValue = "0.0000";
         }
 
-        double lnCostDetail = Double.parseDouble(fsValue);
+        double lnCostDetail = Double.parseDouble(fsValue.replace(",", ""));
         if (lnCostDetail < 0.0000) {
             ShowMessageFX.Warning("Invalid Order Cost", psFormName, null);
             fsValue = "0.0000";
         }
 
         poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setUnitPrice(lnCostDetail);
-        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice(), true));
+        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setUnitPrice(lnCostDetail), true));
     }
 
     private void setOrderQuantityToDetail(String fsValue) {
         if (fsValue.isEmpty()) {
-            fsValue = "0.00";
+            fsValue = "0";
         }
-        if (Double.parseDouble(fsValue) < 0.00) {
+        if (Integer.parseInt(fsValue) < 0) {
             ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
-            fsValue = "0.00";
+            fsValue = "0";
         }
         if (pnTblDetailRow < 0) {
-            fsValue = "0.00";
+            fsValue = "0";
             ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
             clearDetailFields();
             int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
             pnTblDetailRow = detailCount > 0 ? detailCount - 1 : 0;
         }
-        double lnRequestQuantity = 0.00;
+        int lnRequestQuantity = 0;
         try {
-            lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved().doubleValue();
+            lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved().intValue();
             if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getSouceNo().isEmpty()) {
-                if (Double.parseDouble(fsValue) > lnRequestQuantity) {
+                if (Integer.parseInt(fsValue) > lnRequestQuantity) {
                     ShowMessageFX.Warning("Invalid order quantity entered. The item is from a stock request, and the order quantity must not be greater than the requested quantity.", psFormName, null);
-                    fsValue = "0.00";
+                    fsValue = "0";
 
                 }
             }
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_ApprovalMCController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrder_ApprovalMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
         poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Double.valueOf(fsValue));
-        tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
+        tfOrderQuantity.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity().intValue()));
     }
 
     private void initTextFieldPattern() {
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfAdvancePRate,
-                tfAdvancePAmount, tfCost, tfOrderQuantity);
+                tfAdvancePAmount, tfCost);
+
+        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
     }
 
     private void initDatePickerActions() {
@@ -882,7 +883,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
         dpExpectedDlvrDate.setValue(null);
         taRemarks.setText("");
         psOldDate = "";
-        CustomCommonUtil.setSelected(false, chkbAdvancePayment);
+        CustomCommonUtil.setSelected(false, chkbAdvancePayment, chkbPreOwned);
         CustomCommonUtil.setText("", tfTransactionNo, tfDestination, tfReferenceNo, tfTerm);
         CustomCommonUtil.setText("0.00", tfAdvancePRate, tfDiscountRate);
         CustomCommonUtil.setText("0.0000", tfTotalAmount, tfAdvancePAmount, tfDiscountAmount, tfNetAmount);
@@ -891,7 +892,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
     private void clearDetailFields() {
         /* Detail Fields*/
         CustomCommonUtil.setText("", tfBrand, tfModel, tfBrand, tfVariant, tfColor, tfInventoryType, tfClass, tfAMC);
-        CustomCommonUtil.setText("0.00", tfOrderQuantity, tfQOH, tfRequestQuantity, tfBO, tfRO, tfROQ);
+        CustomCommonUtil.setText("0", tfOrderQuantity, tfQOH, tfRequestQuantity, tfBO, tfRO, tfROQ);
         tfCost.setText("0.0000");
     }
 
@@ -935,7 +936,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             CustomCommonUtil.setDisable(!lbShow,
                     dpTransactionDate, tfDestination, taRemarks,
                     dpExpectedDlvrDate, tfReferenceNo, tfTerm,
-                    chkbAdvancePayment);
+                    chkbAdvancePayment, chkbPreOwned);
 
             CustomCommonUtil.setDisable(true, tfSupplier, tfDiscountRate, tfDiscountAmount,
                     tfAdvancePRate, tfAdvancePAmount, tfBrand, tfModel, tfCost, tfOrderQuantity);
@@ -1148,20 +1149,27 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             protected List<ModelPurchaseOrderDetail> call() throws Exception {
                 try {
                     int detailCount = poPurchasingController.PurchaseOrder().getDetailCount();
+                    if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                        Model_PO_Detail lastDetail = poPurchasingController.PurchaseOrder().Detail(detailCount - 1);
+                        if (lastDetail.getStockID() != null && !lastDetail.getStockID().isEmpty()) {
+                            poPurchasingController.PurchaseOrder().AddDetail();
+                            detailCount++;
+                        }
+                    }
                     double grandTotalAmount = 0.0000;
                     List<ModelPurchaseOrderDetail> detailsList = new ArrayList<>();
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
-                        double lnTotalAmount = orderDetail.getUnitPrice().doubleValue() * orderDetail.getQuantity().doubleValue();
+                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().intValue();
                         grandTotalAmount += lnTotalAmount;
-                        double lnRequestQuantity = 0.00;
+                        int lnRequestQuantity = 0;
                         String status = "0";
                         double lnTotalQty = 0.0000;
-                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved().doubleValue();
-                        lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase().doubleValue()
-                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued().doubleValue()
-                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getCancelled().doubleValue());
+                        lnRequestQuantity = poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getApproved().intValue();
+                        lnTotalQty = (poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getPurchase().intValue()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getIssued().intValue()
+                                + poPurchasingController.PurchaseOrder().Detail(lnCtr).InvStockRequestDetail().getCancelled().intValue());
                         if (!poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()) {
                             if (lnRequestQuantity != lnTotalQty) {
                                 status = "1";
@@ -1174,24 +1182,23 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                                 orderDetail.Inventory().getDescription(),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getUnitPrice(), true),
                                 "",
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnRequestQuantity),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(orderDetail.getQuantity()),
+                                String.valueOf(lnRequestQuantity),
+                                String.valueOf(orderDetail.getQuantity().intValue()),
                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalAmount, true),
                                 status
                         ));
                     }
-
                     final double totalAmountFinal = grandTotalAmount;
                     Platform.runLater(() -> {
                         detail_data.setAll(detailsList); // Properly update list
                         tblVwOrderDetails.setItems(detail_data);
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            if (totalAmountFinal <= 0.0) {
-                                tfAdvancePAmount.setText("0.0000");
+                            if (totalAmountFinal <= 0.0000) {
+                                tfDiscountRate.setText("0.00");
                                 tfAdvancePRate.setText("0.00");
                                 tfDiscountAmount.setText("0.0000");
-                                tfDiscountRate.setText("0.00");
-                                poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(0.000);
+                                tfAdvancePAmount.setText("0.0000");
+                                poPurchasingController.PurchaseOrder().Master().setAdditionalDiscount(0.0000);
                                 poPurchasingController.PurchaseOrder().Master().setDiscount(0.00);
                                 poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesAmount(0.0000);
                                 poPurchasingController.PurchaseOrder().Master().setDownPaymentRatesPercentage(0.00);
@@ -1200,16 +1207,18 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                             poPurchasingController.PurchaseOrder().computeNetTotal();
                             tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDiscount().doubleValue()));
                             tfAdvancePRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getDownPaymentRatesPercentage().doubleValue()));
-                            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal()));
+                            tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getTranTotal(), true
+                            ));
                             tfNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Master().getNetTotal(), true));
                         }
                         reselectLastDetailRow();
                         initFields(pnEditMode);
                     });
+
                     return detailsList;
 
                 } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(PurchaseOrder_ApprovalMCController.class
+                    Logger.getLogger(PurchaseOrder_EntryAppliancesController.class
                             .getName()).log(Level.SEVERE, null, ex);
                     return null;
                 }
@@ -1227,6 +1236,31 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
         };
 
         new Thread(task).start();
+    }
+
+    private void initTableDetail() {
+        tblCostDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 0 0 5;");
+        tblTotalAmountDetail.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 0 0 5;");
+        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
+
+        // Prevent column reordering
+        tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
+            if (header != null) {
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
+            }
+        });
+        initTableHighlithers();
     }
 
     private void reselectLastDetailRow() {
@@ -1250,26 +1284,6 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                 }
             }
         }
-    }
-
-    private void initTableDetail() {
-        tblRowNoDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        tblOrderNoDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        tblBarcodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-        tblCostDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-        tblRequestQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-        tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
-
-        tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-        initTableHighlithers();
     }
 
     private void tblVwMain_Clicked(MouseEvent event) {

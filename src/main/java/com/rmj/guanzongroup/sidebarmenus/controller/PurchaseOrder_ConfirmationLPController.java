@@ -652,11 +652,11 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
                                 break;
                             case "tfCost":
-                                setOrderCost(tfCost.getText());
+                                setOrderCost(tfCost.getText().replace(",", ""));
                                 loadTableDetailAndSelectedRow();
                                 break;
                             case "tfOrderQuantity":
-                                setOrderQuantityToDetail(tfOrderQuantity.getText());
+                                setOrderQuantityToDetail(tfOrderQuantity.getText().replace(",", ""));
                                 if (!detail_data.isEmpty() && pnTblDetailRow < detail_data.size() - 1) {
                                     pnTblDetailRow++;
                                 }
@@ -667,7 +667,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                         event.consume();
                         break;
                     case UP:
-                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                        setOrderQuantityToDetail(tfOrderQuantity.getText().replace(",", ""));
                         if (!lsTxtField.equals("tfBrand") && !lsTxtField.equals("tfModel")) {
                             if (pnTblDetailRow > 0 && !detail_data.isEmpty()) {
                                 pnTblDetailRow--;
@@ -682,7 +682,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                         event.consume();
                         break;
                     case DOWN:
-                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                        setOrderQuantityToDetail(tfOrderQuantity.getText().replace(",", ""));
                         if ("tfOrderQuantity".equals(lsTxtField.getId())) {
                             if (!detail_data.isEmpty() && pnTblDetailRow < detail_data.size() - 1) {
                                 pnTblDetailRow++;

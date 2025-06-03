@@ -205,6 +205,7 @@
                                                                 <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" maxWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                 <DatePicker fx:id="dpExpectedDlvrDate" disable="true" editable="false" maxWidth="150.0" GridPane.columnIndex="8" GridPane.rowIndex="4" />
                                                                 <Label text="Adv Amount" GridPane.columnIndex="10" GridPane.rowIndex="8" />
+                                                                <CheckBox fx:id="chkbPreOwned" disable="true" mnemonicParsing="false" text="Pre-Owned" GridPane.columnIndex="10" GridPane.rowIndex="2" />
                                                                 <TextField fx:id="tfTotalAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="4" />
                                                                 <Label text="Total Amount" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                             </children>
@@ -262,7 +263,7 @@
                                                                 <Label text="Color" GridPane.rowIndex="5" />
                                                                 <Label text="Rec.  Order Qty" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                                                 <TextField fx:id="tfColor" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                                                                <TextField fx:id="tfROQ" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+                                                                <TextField fx:id="tfROQ" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="5" />
                                                                 <Label text="Qty On Hand" GridPane.columnIndex="8" GridPane.rowIndex="5" />
                                                                 <TextField fx:id="tfBO" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                                 <TextField fx:id="tfRO" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="10" GridPane.rowIndex="3" />

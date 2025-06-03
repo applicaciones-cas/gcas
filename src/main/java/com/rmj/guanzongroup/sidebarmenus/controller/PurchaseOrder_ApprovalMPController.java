@@ -654,7 +654,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
                                 break;
                             case "tfCost":
-                                setOrderCost(tfCost.getText());
+                                setOrderCost(tfCost.getText().replace(",", ""));
                                 loadTableDetailAndSelectedRow();
                                 break;
                             case "tfOrderQuantity":
@@ -727,6 +727,10 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
         if (Double.parseDouble(fsValue) < 0.0) {
             ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
             fsValue = "0.0";
+        }
+        if (Double.parseDouble(fsValue) % 1 != 0) {
+            ShowMessageFX.Warning("Invalid Order Quantity. Only whole numbers are allowed.", psFormName, null);
+            fsValue = "0.00";
         }
         if (pnTblDetailRow < 0) {
             fsValue = "0.0";
@@ -896,7 +900,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
     private void clearDetailFields() {
         CustomCommonUtil.setText("", tfBrand, tfModel, tfBarcode, tfDescription, tfVariant, tfInventoryType, tfColor, tfClass, tfAMC
         );
-        CustomCommonUtil.setText("0.00", tfOrderQuantity, tfQOH, tfRequestQuantity, tfBO, tfRO, tfROQ);
+        CustomCommonUtil.setText("0", tfOrderQuantity, tfQOH, tfRequestQuantity, tfBO, tfRO, tfROQ);
         tfCost.setText("0.0000");
     }
 
