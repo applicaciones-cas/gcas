@@ -1016,7 +1016,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
             tfPOReceivingNo.setText(poPurchaseReturnController.Master().getSourceNo());
             taRemarks.setText(poPurchaseReturnController.Master().getRemarks());
 
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Master().getTransactionTotal(), true));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Master().getTransactionTotal().doubleValue(), true));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
