@@ -1727,34 +1727,37 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                         }
                         pnTblDetailRow = -1;
                         pnTblMainRow = -1;
+                        tblVwStockRequest.getSelectionModel().clearSelection();
                         poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
                         tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
-                        tblVwStockRequest.getSelectionModel().clearSelection();
                         clearDetailFields();
                         loadTableDetail();
-
                     } catch (GuanzonException | SQLException ex) {
-                        Logger.getLogger(PurchaseOrder_EntryMCController.class
-                                .getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(PurchaseOrder_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
-                    try {
-                        poJSON = new JSONObject();
-                        poJSON = poPurchasingController.PurchaseOrder().SearchSupplier(poPurchasingController.PurchaseOrder().Master().getSupplierID(), true);
-                        if (!"success".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            return false;
-                        }
-                        tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
-                        poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
-                        tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
-                        selectTheExistedDetailFromMainTable();
+                    if (poPurchasingController.PurchaseOrder().Master().getSupplierID().isEmpty()) {
                         return false;
+                    } else {
+                        try {
+                            poJSON = new JSONObject();
+                            poJSON = poPurchasingController.PurchaseOrder().SearchSupplier(poPurchasingController.PurchaseOrder().Master().getSupplierID(), true);
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                return false;
+                            }
+                            tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
+                            poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
+                            tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
+                            selectTheExistedDetailFromMainTable();
+                            return false;
 
-                    } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-                        Logger.getLogger(PurchaseOrder_EntryMCController.class
-                                .getName()).log(Level.SEVERE, null, ex);
+                        } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+                            Logger.getLogger(PurchaseOrder_EntryMPController.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
+
                 }
             }
         }
@@ -1790,7 +1793,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     }
                 }
             } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-                Logger.getLogger(PurchaseOrder_EntryMCController.class
+                Logger.getLogger(PurchaseOrder_EntryMPController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }

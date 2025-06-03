@@ -1685,7 +1685,7 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
             if (poPurchasingController.PurchaseOrder().getDetailCount() >= 1) {
                 if (poPurchasingController.PurchaseOrder().Detail(0).getStockID() != null && poPurchasingController.PurchaseOrder().Detail(0).getQuantity() != null) {
                     if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
-                            || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0.00)) {
+                            || poPurchasingController.PurchaseOrder().Detail(0).getQuantity().intValue() != 0) {
                         isHaveQuantityAndStockId = true;
                     }
                 }
@@ -1697,39 +1697,44 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                         for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
                             if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()
                                     && poPurchasingController.PurchaseOrder().Detail(lnCtr).getStockID().isEmpty()
-                                    && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().equals(0.00)) {
+                                    && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().intValue() == 0) {
                                 continue; // Skip deleting this row
                             }
                             poPurchasingController.PurchaseOrder().Detail().remove(lnCtr);
                         }
                         pnTblDetailRow = -1;
                         pnTblMainRow = -1;
+                        tblVwStockRequest.getSelectionModel().clearSelection();
                         poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
                         tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
-                        tblVwStockRequest.getSelectionModel().clearSelection();
                         clearDetailFields();
                         loadTableDetail();
                     } catch (GuanzonException | SQLException ex) {
-                        Logger.getLogger(PurchaseOrder_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(PurchaseOrder_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
-                    try {
-                        poJSON = new JSONObject();
-                        poJSON = poPurchasingController.PurchaseOrder().SearchSupplier(poPurchasingController.PurchaseOrder().Master().getSupplierID(), true);
-                        if (!"success".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            return false;
-                        }
-                        tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
-                        poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
-                        tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
-                        selectTheExistedDetailFromMainTable();
+                    if (poPurchasingController.PurchaseOrder().Master().getSupplierID().isEmpty()) {
                         return false;
+                    } else {
+                        try {
+                            poJSON = new JSONObject();
+                            poJSON = poPurchasingController.PurchaseOrder().SearchSupplier(poPurchasingController.PurchaseOrder().Master().getSupplierID(), true);
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                return false;
+                            }
+                            tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
+                            poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
+                            tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
+                            selectTheExistedDetailFromMainTable();
+                            return false;
 
-                    } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-                        Logger.getLogger(PurchaseOrder_EntryMonarchFoodController.class
-                                .getName()).log(Level.SEVERE, null, ex);
+                        } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+                            Logger.getLogger(PurchaseOrder_EntryMPController.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
+
                 }
             }
         }
@@ -1761,10 +1766,11 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                         tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
                         selectTheExistedDetailFromMainTable();
                         return false;
+
                     }
                 }
             } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-                Logger.getLogger(PurchaseOrder_EntryMonarchFoodController.class
+                Logger.getLogger(PurchaseOrder_EntryMPController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }
