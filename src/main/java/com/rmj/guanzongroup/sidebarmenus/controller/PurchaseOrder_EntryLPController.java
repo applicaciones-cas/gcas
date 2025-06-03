@@ -1636,15 +1636,18 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                         poPurchasingController.PurchaseOrder().Master().setSupplierID("");
                         poPurchasingController.PurchaseOrder().Master().setAddressID("");
                         poPurchasingController.PurchaseOrder().Master().setContactID("");
-                        prevSupplier = "";
                         tfSupplier.setText("");
+                        prevSupplier = "";
                         tblVwStockRequest.getItems().clear();
                         main_data.clear();
                         tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
-                        poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
-                        tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
+                            tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
+                        }
                     } catch (GuanzonException | SQLException ex) {
-                        Logger.getLogger(PurchaseOrder_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(PurchaseOrder_EntryLPController.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }

@@ -1785,27 +1785,33 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
     }
 
     private void initTextFieldsProperty() {
-        tfSupplier.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            if (!isExchangingSupplier()) {
-                                return;
-                            }
-                            poPurchasingController.PurchaseOrder().Master().setSupplierID("");
-                            poPurchasingController.PurchaseOrder().Master().setAddressID("");
-                            poPurchasingController.PurchaseOrder().Master().setContactID("");
-                            tfSupplier.setText("");
-                            prevSupplier = "";
-                            tblVwStockRequest.getItems().clear();
-                            poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
-                            tfTerm.setText(poPurchasingController.PurchaseOrder().Master().getTermCode());
-                            main_data.clear();
-                            tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+        tfSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    try {
+                        if (!isExchangingSupplier()) {
+                            return;
                         }
+                        poPurchasingController.PurchaseOrder().Master().setSupplierID("");
+                        poPurchasingController.PurchaseOrder().Master().setAddressID("");
+                        poPurchasingController.PurchaseOrder().Master().setContactID("");
+                        tfSupplier.setText("");
+                        prevSupplier = "";
+                        tblVwStockRequest.getItems().clear();
+                        main_data.clear();
+                        tblVwStockRequest.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            poPurchasingController.PurchaseOrder().Master().setTermCode("0000004");
+                            tfTerm.setText(poPurchasingController.PurchaseOrder().Master().Term().getDescription());
+                        }
+                    } catch (GuanzonException | SQLException ex) {
+                        Logger.getLogger(PurchaseOrder_EntryAppliancesController.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                );
+            }
+        }
+        );
     }
 
     private boolean isExchangingSupplier() {
