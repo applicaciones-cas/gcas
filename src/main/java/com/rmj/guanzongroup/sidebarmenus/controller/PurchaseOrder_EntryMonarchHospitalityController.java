@@ -1663,7 +1663,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
             if (poPurchasingController.PurchaseOrder().getDetailCount() >= 1) {
                 if (poPurchasingController.PurchaseOrder().Detail(0).getStockID() != null && poPurchasingController.PurchaseOrder().Detail(0).getQuantity() != null) {
                     if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
-                            || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0.00)) {
+                            || poPurchasingController.PurchaseOrder().Detail(0).getQuantity().intValue() != 0.00) {
                         isHaveQuantityAndStockId = true;
                     }
                 }
@@ -1675,7 +1675,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
                             if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()
                                     && poPurchasingController.PurchaseOrder().Detail(lnCtr).getStockID().isEmpty()
-                                    && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().equals(0.00)) {
+                                    && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().intValue() == 0.00) {
                                 continue; // Skip deleting this row
                             }
                             poPurchasingController.PurchaseOrder().Detail().remove(lnCtr);

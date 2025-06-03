@@ -1694,7 +1694,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
             if (poPurchasingController.PurchaseOrder().getDetailCount() >= 1) {
                 if (poPurchasingController.PurchaseOrder().Detail(0).getStockID() != null && poPurchasingController.PurchaseOrder().Detail(0).getQuantity() != null) {
                     if (!poPurchasingController.PurchaseOrder().Detail(0).getStockID().isEmpty()
-                            || !poPurchasingController.PurchaseOrder().Detail(0).getQuantity().equals(0)) {
+                            || poPurchasingController.PurchaseOrder().Detail(0).getQuantity().intValue() != 0) {
                         isHaveQuantityAndStockId = true;
                     }
                 }
@@ -1706,7 +1706,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                         for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
                             if (poPurchasingController.PurchaseOrder().Detail(lnCtr).getSouceNo().isEmpty()
                                     && poPurchasingController.PurchaseOrder().Detail(lnCtr).getStockID().isEmpty()
-                                    && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().equals(0)) {
+                                    && poPurchasingController.PurchaseOrder().Detail(lnCtr).getQuantity().intValue() == 0) {
                                 continue; // Skip deleting this row
                             }
                             poPurchasingController.PurchaseOrder().Detail().remove(lnCtr);
