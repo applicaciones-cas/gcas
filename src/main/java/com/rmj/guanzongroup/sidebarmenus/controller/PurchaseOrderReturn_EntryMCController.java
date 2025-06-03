@@ -557,9 +557,9 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        int lnReceiveQty = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        int lnNewvalue = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -596,9 +596,9 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
                     switch (lsID) {
                         case "tfEngineNo":
                         case "tfReturnQuantity":
-                            int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            int lnQty = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            int lnNewvalue = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
                             if (lnQty != lnNewvalue && (lnQty > 0
                                     && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -620,23 +620,8 @@ public class PurchaseOrderReturn_EntryMCController implements Initializable, Scr
                     switch (lsID) {
                         case "tfEngineNo":
                         case "tfReturnQuantity":
-                            int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            if (lnQty != lnNewvalue && (lnQty > 0
-                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
-                                tfReturnQuantity.requestFocus();
-                            } else {
-                                pnDetail = JFXUtil.moveToNextRow(currentTable);
-                                loadRecordDetail();
-                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
-                                    tfReturnQuantity.requestFocus();
-                                } else {
-                                    tfEngineNo.requestFocus();
-                                }
-                                event.consume();
-                            }
+                            moveNext();
+                            event.consume();
                             break;
                         default:
                             break;

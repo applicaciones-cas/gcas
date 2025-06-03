@@ -559,9 +559,9 @@ public class PurchaseOrderReturn_EntrySPMCController implements Initializable, S
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        int lnReceiveQty = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        int lnNewvalue = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -598,9 +598,9 @@ public class PurchaseOrderReturn_EntrySPMCController implements Initializable, S
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            int lnQty = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            int lnNewvalue = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
                             if (lnQty != lnNewvalue && (lnQty > 0
                                     && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -622,23 +622,8 @@ public class PurchaseOrderReturn_EntrySPMCController implements Initializable, S
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            if (lnQty != lnNewvalue && (lnQty > 0
-                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
-                                tfReturnQuantity.requestFocus();
-                            } else {
-                                pnDetail = JFXUtil.moveToNextRow(currentTable);
-                                loadRecordDetail();
-                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
-                                    tfReturnQuantity.requestFocus();
-                                } else {
-                                    tfBarcode.requestFocus();
-                                }
-                                event.consume();
-                            }
+                            moveNext();
+                            event.consume();
                             break;
                         default:
                             break;
@@ -1126,11 +1111,11 @@ public class PurchaseOrderReturn_EntrySPMCController implements Initializable, S
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
-                                               String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
                                             String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr).intValue()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true))) //identify total
-                                    );
+                            );
                         }
 
                         if (pnDetail < 0 || pnDetail

@@ -562,9 +562,9 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        int lnReceiveQty = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        int lnNewvalue = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -603,9 +603,9 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                         case "tfIMEINo":
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            int lnReceiveQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            int lnReceiveQty = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            int lnNewvalue = poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue();
                             if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                                     && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -1167,7 +1167,7 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                                             String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr).intValue()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)))
-                        );
+                            );
                         }
 
                         if (pnDetail < 0 || pnDetail

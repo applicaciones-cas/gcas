@@ -622,23 +622,8 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            double lnQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            apDetail.requestFocus();
-                            double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            if (lnQty != lnNewvalue && (lnQty > 0
-                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
-                                tfReturnQuantity.requestFocus();
-                            } else {
-                                pnDetail = JFXUtil.moveToNextRow(currentTable);
-                                loadRecordDetail();
-                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
-                                    tfReturnQuantity.requestFocus();
-                                } else {
-                                    tfBarcode.requestFocus();
-                                }
-                                event.consume();
-                            }
+                            moveNext();
+                            event.consume();
                             break;
                         default:
                             break;

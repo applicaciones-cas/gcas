@@ -622,23 +622,8 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            double lnQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            apDetail.requestFocus();
-                            double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            if (lnQty != lnNewvalue && (lnQty > 0
-                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
-                                tfReturnQuantity.requestFocus();
-                            } else {
-                                pnDetail = JFXUtil.moveToNextRow(currentTable);
-                                loadRecordDetail();
-                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
-                                    tfReturnQuantity.requestFocus();
-                                } else {
-                                    tfBarcode.requestFocus();
-                                }
-                                event.consume();
-                            }
+                            moveNext();
+                            event.consume();
                             break;
                         default:
                             break;
@@ -1127,11 +1112,11 @@ public class PurchaseOrderReturn_EntryMonarchFoodController implements Initializ
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
-                                               String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(lnCtr))),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getQuantity())),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true))) //identify total
-                                    );
+                            );
                         }
 
                         if (pnDetail < 0 || pnDetail
