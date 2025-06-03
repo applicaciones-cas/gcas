@@ -1148,6 +1148,10 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0.00";
             }
+            if (Double.parseDouble(fsValue) % 1 != 0) {
+                ShowMessageFX.Warning("Invalid Order Quantity. Only whole numbers are allowed.", psFormName, null);
+                fsValue = "0.00";
+            }
             if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
                 if (tfOrderQuantity.isFocused()) {
                     if (tfBrand.getText().isEmpty()) {

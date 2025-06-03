@@ -318,7 +318,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                 tfRO.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getReceived().doubleValue()));
                 tfBO.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getBackOrder().doubleValue()));
                 tfQOH.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getQuantityOnHand().doubleValue()));
-                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice()));
+                tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getUnitPrice(), true));
                 tfRequestQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).InvStockRequestDetail().getApproved()));
                 tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
             }
@@ -1011,6 +1011,11 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0.00";
             }
+            // Reject values that are not whole numbers
+            if (Double.parseDouble(fsValue) % 1 != 0) {
+                ShowMessageFX.Warning("Invalid Order Quantity. Only whole numbers are allowed.", psFormName, null);
+                fsValue = "0.00";
+            }
             if (!poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).Inventory().getInventoryTypeId().equals("0007")) {
                 if (tfOrderQuantity.isFocused()) {
                     if (tfBrand.getText().isEmpty()) {
@@ -1053,7 +1058,7 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
             poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).setQuantity(Double.valueOf(fsValue.replace(",", "")));
             tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblDetailRow).getQuantity()));
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(PurchaseOrder_EntryMCController.class
+            Logger.getLogger(PurchaseOrder_EntryCarController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
 
