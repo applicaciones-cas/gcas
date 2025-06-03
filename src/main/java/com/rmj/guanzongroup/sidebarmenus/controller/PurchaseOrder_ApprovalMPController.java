@@ -1281,6 +1281,7 @@ public class PurchaseOrder_ApprovalMPController implements Initializable, Screen
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

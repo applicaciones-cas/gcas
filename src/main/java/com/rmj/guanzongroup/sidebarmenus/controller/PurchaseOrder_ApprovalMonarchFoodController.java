@@ -1274,6 +1274,7 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

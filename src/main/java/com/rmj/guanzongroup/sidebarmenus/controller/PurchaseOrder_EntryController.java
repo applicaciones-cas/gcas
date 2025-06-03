@@ -1859,6 +1859,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

@@ -1306,6 +1306,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

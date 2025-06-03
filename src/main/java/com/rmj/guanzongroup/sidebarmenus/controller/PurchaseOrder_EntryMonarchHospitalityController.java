@@ -1859,6 +1859,7 @@ public class PurchaseOrder_EntryMonarchHospitalityController implements Initiali
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

@@ -2016,8 +2016,10 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                     if (pnTblDetailRow >= 0) {
                         loadRecordDetail();
                         initDetailFocus();
+
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

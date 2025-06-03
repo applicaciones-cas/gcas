@@ -1307,6 +1307,7 @@ public class PurchaseOrder_ConfirmationAppliancesController implements Initializ
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

@@ -1306,6 +1306,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

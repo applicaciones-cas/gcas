@@ -1311,6 +1311,7 @@ public class PurchaseOrder_ConfirmationMonarchHospitalityController implements I
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

@@ -1318,6 +1318,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

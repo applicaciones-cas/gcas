@@ -62,7 +62,7 @@
                                                 </Label>
                                                 <TextField fx:id="tfSearchSupplier" promptText="Press F3: Search" GridPane.columnIndex="2" />
                                                 <TextField fx:id="tfSearchReferenceNo" promptText="Press F3: Search" GridPane.columnIndex="6" />
-                                                <Label fx:id="lblSource" layoutX="367.0" layoutY="14.0" text="Company - Industry" GridPane.columnIndex="9">
+                                                <Label fx:id="lblSource" alignment="CENTER_RIGHT" layoutX="367.0" layoutY="14.0" maxWidth="1.7976931348623157E308" text="Company - Industry" GridPane.columnIndex="9">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
@@ -205,7 +205,6 @@
                                                                 <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" maxWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                 <DatePicker fx:id="dpExpectedDlvrDate" disable="true" editable="false" maxWidth="150.0" GridPane.columnIndex="8" GridPane.rowIndex="4" />
                                                                 <Label text="Adv Amount" GridPane.columnIndex="10" GridPane.rowIndex="8" />
-                                                                <CheckBox fx:id="chkbPreOwned" disable="true" mnemonicParsing="false" text="Pre-Owned" GridPane.columnIndex="10" GridPane.rowIndex="2" />
                                                                 <TextField fx:id="tfTotalAmount" alignment="CENTER_RIGHT" disable="true" editable="false" maxHeight="25.0" maxWidth="1.7976931348623157E308" GridPane.columnIndex="12" GridPane.rowIndex="4" />
                                                                 <Label text="Total Amount" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                             </children>

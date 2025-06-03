@@ -1277,6 +1277,7 @@ public class PurchaseOrder_ConfirmationLPController implements Initializable, Sc
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

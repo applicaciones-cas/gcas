@@ -1307,6 +1307,7 @@ public class PurchaseOrder_ConfirmationMCController implements Initializable, Sc
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

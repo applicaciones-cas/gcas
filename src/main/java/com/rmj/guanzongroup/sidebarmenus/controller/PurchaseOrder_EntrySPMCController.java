@@ -1859,6 +1859,7 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

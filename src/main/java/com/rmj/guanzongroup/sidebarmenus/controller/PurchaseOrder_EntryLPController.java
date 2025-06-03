@@ -1855,8 +1855,10 @@ public class PurchaseOrder_EntryLPController implements Initializable, ScreenInt
                     if (pnTblDetailRow >= 0) {
                         loadRecordDetail();
                         initDetailFocus();
+
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

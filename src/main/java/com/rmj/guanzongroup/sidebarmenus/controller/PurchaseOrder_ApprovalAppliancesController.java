@@ -1310,6 +1310,7 @@ public class PurchaseOrder_ApprovalAppliancesController implements Initializable
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

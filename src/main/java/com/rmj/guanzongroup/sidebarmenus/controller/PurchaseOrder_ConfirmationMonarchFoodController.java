@@ -1277,6 +1277,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

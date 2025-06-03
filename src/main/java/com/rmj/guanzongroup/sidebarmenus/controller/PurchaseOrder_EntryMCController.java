@@ -1880,8 +1880,8 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
-            initFields(pnEditMode);
         }
     }
 

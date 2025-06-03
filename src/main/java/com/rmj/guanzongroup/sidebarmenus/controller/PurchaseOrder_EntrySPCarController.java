@@ -1859,6 +1859,7 @@ public class PurchaseOrder_EntrySPCarController implements Initializable, Screen
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

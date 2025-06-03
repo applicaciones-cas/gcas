@@ -1890,8 +1890,9 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
-            initFields(pnEditMode);
+
         }
     }
 

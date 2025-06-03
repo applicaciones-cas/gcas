@@ -1307,6 +1307,7 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

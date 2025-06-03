@@ -1311,6 +1311,7 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
                         initDetailFocus();
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }

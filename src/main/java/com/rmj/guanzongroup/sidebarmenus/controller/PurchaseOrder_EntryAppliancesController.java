@@ -2024,8 +2024,10 @@ public class PurchaseOrder_EntryAppliancesController implements Initializable, S
                     if (pnTblDetailRow >= 0) {
                         loadRecordDetail();
                         initDetailFocus();
+                        initFields(pnEditMode);
                     }
                 }
+                initFields(pnEditMode);
             }
         }
     }
