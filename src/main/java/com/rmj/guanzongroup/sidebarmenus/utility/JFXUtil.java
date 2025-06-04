@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyProperty;
@@ -57,6 +58,7 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -89,48 +91,66 @@ import org.json.simple.JSONObject;
  */
 public class JFXUtil {
 
-    public static <T> void adjustColumnForScrollbar(TableView<?> tableView, int columnIndex) {
-        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
-            if (!(newSkin instanceof TableViewSkin<?>)) {
-                return;
-            }
+    public static void adjustColumnForScrollbar(TableView<?>... tableViews) {
+        for (TableView<?> tableView : tableViews) {
+            tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+                if (!(newSkin instanceof TableViewSkin<?>)) {
+                    return;
+                }
 
-            TableViewSkin<?> skin = (TableViewSkin<?>) newSkin;
-            VirtualFlow<?> flow = skin.getChildren().stream()
-                    .filter(node -> node instanceof VirtualFlow<?>)
-                    .map(node -> (VirtualFlow<?>) node)
-                    .findFirst().orElse(null);
+                TableViewSkin<?> skin = (TableViewSkin<?>) newSkin;
+                VirtualFlow<?> flow = skin.getChildren().stream()
+                        .filter(node -> node instanceof VirtualFlow<?>)
+                        .map(node -> (VirtualFlow<?>) node)
+                        .findFirst().orElse(null);
 
-            if (flow == null) {
-                return;
-            }
+                if (flow == null) {
+                    return;
+                }
 
-            ScrollBar vScrollBar = flow.getChildrenUnmodifiable().stream()
-                    .filter(node -> node instanceof ScrollBar && ((ScrollBar) node).getOrientation() == Orientation.VERTICAL)
-                    .map(node -> (ScrollBar) node)
-                    .findFirst().orElse(null);
+                ScrollBar vScrollBar = flow.getChildrenUnmodifiable().stream()
+                        .filter(node -> node instanceof ScrollBar && ((ScrollBar) node).getOrientation() == Orientation.VERTICAL)
+                        .map(node -> (ScrollBar) node)
+                        .findFirst().orElse(null);
 
-            if (vScrollBar == null || tableView.getColumns().isEmpty() || columnIndex < 0 || columnIndex >= tableView.getColumns().size()) {
-                return;
-            }
+                if (vScrollBar == null || tableView.getColumns().isEmpty()) {
+                    return;
+                }
 
-            TableColumn<?, ?> targetColumn = tableView.getColumns().get(columnIndex);
+                TableColumn<?, ?> foundColumn = null;
+                for (TableColumn<?, ?> column : tableView.getColumns()) {
+                    double minWidth = column.getMinWidth();
 
-            vScrollBar.visibleProperty().addListener((observable, oldValue, newValue) -> {
-                Platform.runLater(() -> {
-                    double scrollBarWidth = newValue ? vScrollBar.getWidth() : 0;
-                    double remainingWidth = tableView.getWidth() - scrollBarWidth;
+                    // Safely compare with USE_COMPUTED_SIZE
+                    if ((minWidth) == 0) {
+                        foundColumn = column;
+                        break;
+                    }
+                }
 
-                    double totalFixedWidth = tableView.getColumns().stream()
-                            .filter(col -> col != targetColumn)
-                            .mapToDouble(col -> ((TableColumn<?, ?>) col).getWidth())
-                            .sum();
+                if (foundColumn == null) {
+                    System.err.println("NO COLUMN WITH minWidth == 0 (USE_COMPUTED_SIZE) found in table: " + tableView.getId());
+                    return;
+                }
 
-                    double newWidth = Math.max(0, remainingWidth - totalFixedWidth);
-                    targetColumn.setPrefWidth(newWidth - 5);
+                final TableColumn<?, ?> targetColumn = foundColumn;
+                // Optional debug log
+                vScrollBar.visibleProperty().addListener((observable, oldValue, newValue) -> {
+                    Platform.runLater(() -> {
+                        double scrollBarWidth = newValue ? vScrollBar.getWidth() : 0;
+                        double remainingWidth = tableView.getWidth() - scrollBarWidth;
+
+                        double totalFixedWidth = tableView.getColumns().stream()
+                                .filter(col -> col != targetColumn)
+                                .mapToDouble(TableColumn::getWidth)
+                                .sum();
+
+                        double newWidth = Math.max(0, remainingWidth - totalFixedWidth);
+                        targetColumn.setPrefWidth(newWidth - 5);
+                    });
                 });
             });
-        });
+        }
     }
 
     public static <T> void highlightByKey(TableView<T> table, String key, String color, Map<String, List<String>> highlightMap) {
@@ -359,37 +379,55 @@ public class JFXUtil {
         }
     }
 
-    public static void showDialog(URL fxmlurl,
-            Object controller,
-            String lsDialogTitle, boolean enableWindowDrag
-    ) throws IOException {
+    public static class StageManager {
 
-        // no need to set dialogstage null or not as the background is auto locked upon opening
-        FXMLLoader loader = new FXMLLoader(fxmlurl);
-        loader.setController(controller);
+        private static Stage dialog;
 
-        Parent root = loader.load();
+        public static void showDialog(URL fxmlurl,
+                Object controller,
+                String lsDialogTitle, boolean enableWindowDrag, boolean enableblock, boolean stayOnTop
+        ) throws IOException {
 
-        final xyOffset xyOffset = new xyOffset();
-        root.setOnMousePressed(event -> {
-            xyOffset.x = event.getSceneX();
-            xyOffset.y = event.getSceneY();
-        });
-        if (enableWindowDrag) {
-            root.setOnMouseDragged(event -> {
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setX(event.getScreenX() - xyOffset.x);
-                stage.setY(event.getScreenY() - xyOffset.y);
+            FXMLLoader loader = new FXMLLoader(fxmlurl);
+            loader.setController(controller);
+
+            Parent root = loader.load();
+
+            final xyOffset xyOffset = new xyOffset();
+            root.setOnMousePressed(event -> {
+                xyOffset.x = event.getSceneX();
+                xyOffset.y = event.getSceneY();
             });
+
+            if (enableWindowDrag) {
+                root.setOnMouseDragged(event -> {
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.setX(event.getScreenX() - xyOffset.x);
+                    stage.setY(event.getScreenY() - xyOffset.y);
+                });
+            }
+
+            dialog = new Stage(); // assign to static field
+            dialog.initStyle(StageStyle.UNDECORATED);
+
+            if (enableblock) {
+                dialog.initModality(Modality.APPLICATION_MODAL);
+            }
+            if (stayOnTop) {
+                dialog.setAlwaysOnTop(true);
+            }
+
+            dialog.setTitle(lsDialogTitle);
+            dialog.setScene(new Scene(root));
+            dialog.show();
         }
 
-        Stage dialog = new Stage();
-        dialog.initStyle(StageStyle.UNDECORATED);
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.setTitle(lsDialogTitle);
-        dialog.setScene(new Scene(root));
-        dialog.show();
-
+        public static void closeSerialDialog() {
+            if (dialog != null) {
+                dialog.close();
+                dialog = null;
+            }
+        }
     }
 
     private static class xyOffset {
@@ -428,6 +466,7 @@ public class JFXUtil {
     }
 
     public static class ImageViewer {
+
         public double ldstackPaneWidth = 0;
         public double ldstackPaneHeight = 0;
         public double mouseAnchorX;
@@ -1097,4 +1136,97 @@ public class JFXUtil {
         }
     }
 
+    public static void makeKeyPressed(Node targetNode, KeyCode keyCode) {
+        if (targetNode == null || keyCode == null) {
+            return;
+        }
+        KeyEvent keyEvent = new KeyEvent(
+                KeyEvent.KEY_PRESSED,
+                "", // character
+                "", // text
+                keyCode,
+                false, // shiftDown
+                false, // controlDown
+                false, // altDown
+                false // metaDown
+        );
+        targetNode.fireEvent(keyEvent);
+    }
+
+    public static void setKeyEventFilter(EventHandler<KeyEvent> handler, Node... nodes) {
+        if (handler == null || nodes == null) {
+            return;
+        }
+
+        for (Node node : nodes) {
+            if (node != null) {
+                node.addEventFilter(KeyEvent.KEY_PRESSED, handler);
+            }
+        }
+    }
+
+    public static void focusFirstTextField(final AnchorPane anchorPane) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                TextField textField = findFirstTextField(anchorPane);
+                if (textField != null) {
+                    textField.requestFocus();
+                }
+            }
+        });
+    }
+
+    private static TextField findFirstTextField(Parent parent) {
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            if (node instanceof TextField) {
+                return (TextField) node;
+            } else if (node instanceof Parent) {
+                TextField result = findFirstTextField((Parent) node);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static <T> void applyRowHighlighting(
+            final TableView<T> tableView,
+            final Function<T, String> keyExtractor,
+            final Map<String, List<String>> highlightMap) {
+
+        tableView.setRowFactory(new javafx.util.Callback<TableView<T>, TableRow<T>>() {
+            @Override
+            public TableRow<T> call(final TableView<T> tv) {
+                return new TableRow<T>() {
+                    @Override
+                    protected void updateItem(T item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setStyle(""); // Reset style
+                        } else {
+                            String key = keyExtractor.apply(item);
+                            if (highlightMap.containsKey(key)) {
+                                List<String> colors = highlightMap.get(key);
+                                if (!colors.isEmpty()) {
+                                    setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
+                                }
+                            } else {
+                                setStyle(""); // Default
+                            }
+                        }
+                    }
+                };
+            }
+        });
+    }
+
+    public static String removeComma(String numberStr) {
+        if (numberStr == null) {
+            return "0";
+        }
+        String result = numberStr.replace(",", "");
+        return result.isEmpty() ? "0" : result;
+    }
 }
