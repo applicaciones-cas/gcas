@@ -1675,7 +1675,7 @@ public class DashboardController implements Initializable {
         if (tabpane.getTabs().isEmpty()) {
             tabpane = new TabPane();
         }
-//        psIndustryID = psUserIndustryId;
+        psIndustryID = psUserIndustryId;
         psCompanyID = psUserCompanyId;
 
         setTabPane();
