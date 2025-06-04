@@ -791,7 +791,8 @@ public class PurchaseOrderReturn_EntryMonarchHospitalityController implements In
                 String lsServerDate = "";
                 String lsTransDate = "";
                 String lsSelectedDate = "";
-
+                String lsReceivingDate = "";
+                LocalDate receivingDate = null;
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
@@ -822,7 +823,21 @@ public class PurchaseOrderReturn_EntryMonarchHospitalityController implements In
                                 poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
                             }
-
+                            if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
+                                lsReceivingDate = sdfFormat.format(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getTransactionDate());
+                                receivingDate = LocalDate.parse(lsReceivingDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                                if (selectedDate.isBefore(receivingDate)) {
+                                    poJSON.put("result", "error");
+                                    poJSON.put("message", "Transaction date cannot be before the receiving date.");
+                                    pbSuccess = false;
+                                }
+                            } else {
+                                if (pbSuccess && !lsServerDate.equals(lsSelectedDate) && pnEditMode == EditMode.ADDNEW) {
+                                    poJSON.put("result", "error");
+                                    poJSON.put("message", "Select PO Receiving before changing the transaction date.");
+                                    pbSuccess = false;
+                                }
+                            }
                             if (pbSuccess && ((poPurchaseReturnController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 pbSuccess = false;
@@ -863,7 +878,9 @@ public class PurchaseOrderReturn_EntryMonarchHospitalityController implements In
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrderReturn_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(PurchaseOrderReturn_EntryMonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1114,11 +1131,11 @@ public class PurchaseOrderReturn_EntryMonarchHospitalityController implements In
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
-                                               String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
                                             String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr).intValue()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true))) //identify total
-                                    );
+                            );
                         }
 
                         if (pnDetail < 0 || pnDetail

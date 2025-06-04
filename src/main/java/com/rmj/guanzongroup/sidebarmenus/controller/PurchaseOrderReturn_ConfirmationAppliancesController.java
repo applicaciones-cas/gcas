@@ -753,10 +753,11 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                 SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
                 LocalDate currentDate = null;
                 LocalDate selectedDate = null;
+                LocalDate receivingDate = null;
                 String lsServerDate = "";
                 String lsTransDate = "";
                 String lsSelectedDate = "";
-
+                String lsReceivingDate = "";
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
@@ -786,6 +787,22 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                                 poJSON.put("result", "error");
                                 poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
+                            }
+
+                            if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
+                                lsReceivingDate = sdfFormat.format(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getTransactionDate());
+                                receivingDate = LocalDate.parse(lsReceivingDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                                if (selectedDate.isBefore(receivingDate)) {
+                                    poJSON.put("result", "error");
+                                    poJSON.put("message", "Transaction date cannot be before the receiving date.");
+                                    pbSuccess = false;
+                                }
+                            } else {
+                                if (pbSuccess && !lsServerDate.equals(lsSelectedDate) && pnEditMode == EditMode.ADDNEW) {
+                                    poJSON.put("result", "error");
+                                    poJSON.put("message", "Select PO Receiving before changing the transaction date.");
+                                    pbSuccess = false;
+                                }
                             }
 
                             if (pbSuccess && ((poPurchaseReturnController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
@@ -828,7 +845,9 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
