@@ -180,6 +180,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         initButton(pnEditMode);
 
         Platform.runLater(() -> {
+            psIndustryId = "";
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
             poPurchaseReceivingController.setIndustryId(psIndustryId);

@@ -214,6 +214,7 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
         clearTextFields();
 
         Platform.runLater(() -> {
+            psIndustryId = "";
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
             poPurchaseReceivingController.setIndustryId(psIndustryId);
