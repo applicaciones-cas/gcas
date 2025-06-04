@@ -147,7 +147,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
     @FXML
     private DatePicker dpTransaction;
     @FXML
-    private Label lblStatus;
+    private Label lblStatus, lblSource;
     @FXML
     private TextField tfParticular, tfAmount, tfDiscRate, tfDiscAmountDetail, tfTaxAmount, tfAmountDetail;
     @FXML
@@ -211,12 +211,30 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
             }
             tblVwPRDetail.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+            Platform.runLater((() -> {
+                try {
+                    poGLControllers.PaymentRequest().Master().setIndustryID(psIndustryID);
+                    poGLControllers.PaymentRequest().Master().setCompanyID(psCompanyID);
+                    loadRecordSearch();
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(PaymentRequest_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }));
             Platform.runLater(() -> setBranchAndDepartment());
             initAll();
 
         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
             Logger.getLogger(PaymentRequest_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void loadRecordSearch() {
+        try {
+            lblSource.setText(poGLControllers.PaymentRequest().Master().Company().getCompanyName() + " - " + poGLControllers.PaymentRequest().Master().Industry().getDescription());
+        } catch (GuanzonException | SQLException ex) {
+            Logger.getLogger(PaymentRequest_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     private void setBranchAndDepartment() {
@@ -232,7 +250,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                 tfDepartment.setText(lsDepartment);
             }
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(PaymentRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PaymentRequest_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
