@@ -724,12 +724,12 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    
+
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                         return;
                     }
-                    
+
                     double ldblOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -738,7 +738,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                         tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
                         return;
                     }
-                    
+
                     try {
                         poJSON = poPurchaseReceivingController.computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -748,7 +748,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
                             return;
                         }
-                    }  catch (SQLException | GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
@@ -757,7 +757,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
                         if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
@@ -767,14 +767,14 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                             break;
                         }
                     }
-                    
+
                     int lnOldVal = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
-                    
+
                     try {
                         poJSON = poPurchaseReceivingController.computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -784,10 +784,10 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
                             return;
                         }
-                    }  catch (SQLException | GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
-                    
+
                     if (pbEntered) {
                         moveNext();
                         pbEntered = false;
@@ -1590,7 +1590,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                 tfBarcode.getStyleClass().add("DisabledTextField");
                 tfDescription.getStyleClass().add("DisabledTextField");
             }
-            
+
             if (oApp.getUserLevel() == UserRight.ENCODER) {
                 tfCost.getStyleClass().add("DisabledTextField");
                 tfCost.setDisable(true);
@@ -1610,7 +1610,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
 //            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
@@ -1718,10 +1718,10 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
                     tfDiscountRate.setText("0.00");
                 }
             });
-            
+
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
-            
+
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationMonarchHospitalityController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -2235,8 +2235,7 @@ public class DeliveryAcceptance_ConfirmationMonarchHospitalityController impleme
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewOrderDetails, tblViewPuchaseOrder, tblAttachments);  // need to use computed-size as min-width on particular column to work
-        
-        
+
     }
 
     private void initButton(int fnValue) {

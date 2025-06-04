@@ -724,18 +724,18 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    
+
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                         return;
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
-                    
+
                     double ldblOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -744,7 +744,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                         tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
                         return;
                     }
-                    
+
                     try {
                         poJSON = poPurchaseReceivingController.computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -754,7 +754,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
                             return;
                         }
-                    }  catch (SQLException | GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
@@ -763,7 +763,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
                         if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().doubleValue() < Double.valueOf(lsValue)) {
@@ -780,7 +780,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
-                    
+
                     try {
                         poJSON = poPurchaseReceivingController.computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -790,10 +790,10 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                             tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
                             return;
                         }
-                    }  catch (SQLException | GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
-                    
+
                     if (pbEntered) {
                         moveNext();
                         pbEntered = false;
@@ -1602,7 +1602,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                 tfBarcode.getStyleClass().add("DisabledTextField");
                 tfDescription.getStyleClass().add("DisabledTextField");
             }
-            
+
             if (oApp.getUserLevel() == UserRight.ENCODER) {
                 tfCost.getStyleClass().add("DisabledTextField");
                 tfCost.setDisable(true);
@@ -1612,7 +1612,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                 }
                 tfCost.setDisable(false);
             }
-            
+
             // Expiry Date
             String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Detail(pnDetail).getExpiryDate());
             dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
@@ -1626,7 +1626,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
 //            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getOrderQty()));
             tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
@@ -1734,10 +1734,10 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                     tfDiscountRate.setText("0.00");
                 }
             });
-            
+
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
-            
+
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationLPController.class.getName()).log(Level.SEVERE, null, ex);
@@ -2254,8 +2254,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewOrderDetails, tblViewPuchaseOrder, tblAttachments);  // need to use computed-size as min-width on particular column to work
-        
-        
+
     }
 
     private void initButton(int fnValue) {

@@ -692,7 +692,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
                         if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {

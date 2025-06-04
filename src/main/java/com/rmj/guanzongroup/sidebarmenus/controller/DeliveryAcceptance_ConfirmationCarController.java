@@ -846,7 +846,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                         break;
                     }
-                    
+
                     double ldblOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -855,7 +855,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
                         return;
                     }
-                    
+
                     try {
                         poJSON = poPurchaseReceivingController.computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -865,7 +865,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
                             return;
                         }
-                    }  catch (SQLException | GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
@@ -874,7 +874,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
                         if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
@@ -900,7 +900,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    
+
                     try {
                         poJSON = poPurchaseReceivingController.computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -910,10 +910,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
                             return;
                         }
-                    }  catch (SQLException | GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
-                    
+
                     if (pbEntered) {
                         if (lnNewVal != lnOldVal) {
                             if ((Integer.valueOf(lsValue) > 0
@@ -1677,7 +1677,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 tfBrand.getStyleClass().add("DisabledTextField");
                 tfModel.getStyleClass().add("DisabledTextField");
             }
-            
+
             if (oApp.getUserLevel() == UserRight.ENCODER) {
                 tfCost.getStyleClass().add("DisabledTextField");
                 tfCost.setDisable(true);
@@ -1700,7 +1700,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
 //            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
@@ -1807,10 +1807,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     tfDiscountRate.setText("0.00");
                 }
             });
-            
+
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
-            
+
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -2345,7 +2345,6 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewOrderDetails, tblViewPuchaseOrder, tblAttachments);  // need to use computed-size as min-width on particular column to work
     }
-
 
     private int moveToNextRow(TableView table, TablePosition focusedCell) {
         int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();

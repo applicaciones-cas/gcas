@@ -555,12 +555,12 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    
+
                     if (Double.parseDouble(lsValue.replace(",", "")) < 0.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                         return;
                     }
-                    
+
                     double ldblOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -569,7 +569,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
                         return;
                     }
-                    
+
                     try {
                         poJSON = poPurchaseReceivingController.computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -579,7 +579,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
                             return;
                         }
-                    }  catch (SQLException | GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
@@ -588,7 +588,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
                         if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().doubleValue() < Double.valueOf(lsValue)) {
@@ -605,7 +605,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
-                    
+
                     try {
                         poJSON = poPurchaseReceivingController.computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -615,10 +615,10 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
                             return;
                         }
-                    }  catch (SQLException | GuanzonException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
-                    
+
                     if (pbEntered) {
                         moveNext();
                         pbEntered = false;
@@ -1085,13 +1085,14 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         }
         CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscountAmount, tfCost, tfReceiveQuantity);
     }
-    
+
     boolean pbSuccess = true;
+
     private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         poJSON.put("message", "success");
-        
+
         try {
             Object source = event.getSource();
             if (source instanceof DatePicker) {
@@ -1131,39 +1132,39 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         return;
                     }
                 }
-                
+
                 System.out.println("input text : " + inputText);
-                
-                if(inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)){
+
+                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
                     return;
                 }
-                
+
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if(poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW 
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE){
+                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate =  sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
-                            lsRefDate =  sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
-                            lsSelectedDate =  sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             referenceDate = LocalDate.parse(lsRefDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                            
+
                             if (selectedDate.isAfter(currentDate)) {
                                 poJSON.put("result", "error");
                                 poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
                             }
-                            
+
                             if (pbSuccess && (selectedDate.isBefore(referenceDate))) {
                                 poJSON.put("result", "error");
                                 poJSON.put("message", "Receiving date cannot be before reference date.");
                                 pbSuccess = false;
                             }
-                            
-                            if(pbSuccess && ( (poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
-                                    || !lsServerDate.equals(lsSelectedDate) )){
+
+                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                                    || !lsServerDate.equals(lsSelectedDate))) {
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
                                         + "If YES, please seek approval to proceed with the new selected date.\n"
                                         + "If NO, the previous transaction date will be retained.") == true) {
@@ -1176,53 +1177,53 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 } else {
                                     pbSuccess = false;
                                 }
-                            } 
-                            
-                            if(pbSuccess){
+                            }
+
+                            if (pbSuccess) {
                                 poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                    
+
                                 }
                             }
-                            
+
                             pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                             loadRecordMaster();
                             pbSuccess = true; //Set to original value
                         }
-                    break;
+                        break;
                     case "dpReferenceDate":
-                        if(poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW 
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE){
+                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate =  sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
-                            lsRefDate =  sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
-                            lsSelectedDate =  sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                            
+
                             if (selectedDate.isAfter(currentDate)) {
                                 poJSON.put("result", "error");
                                 poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
                             }
-                            
+
                             if (pbSuccess && (selectedDate.isAfter(transactionDate))) {
                                 poJSON.put("result", "error");
                                 poJSON.put("message", "Reference date cannot be later than the receiving date.");
                                 pbSuccess = false;
                             }
-                            
-                            if(pbSuccess){
+
+                            if (pbSuccess) {
                                 poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 }
                             }
-                            
+
                             pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                             loadRecordMaster();
                             pbSuccess = true; //Set to original value
@@ -1377,8 +1378,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         setDatePickerFormat(dpTransactionDate);
         setDatePickerFormat(dpReferenceDate);
         setDatePickerFormat(dpExpiryDate);
-        
-        
+
         dpTransactionDate.setOnAction(this::datepicker_Action);
         dpReferenceDate.setOnAction(this::datepicker_Action);
 
@@ -1514,7 +1514,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 tfBarcode.getStyleClass().add("DisabledTextField");
                 tfDescription.getStyleClass().add("DisabledTextField");
             }
-            
+
             if (oApp.getUserLevel() == UserRight.ENCODER) {
                 tfCost.getStyleClass().add("DisabledTextField");
                 tfCost.setDisable(true);
@@ -1524,7 +1524,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 }
                 tfCost.setDisable(false);
             }
-            
+
             // Expiry Date
             String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Detail(pnDetail).getExpiryDate());
             dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
@@ -1538,7 +1538,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
 //            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getOrderQty()));
             tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
@@ -1645,10 +1645,10 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     tfDiscountRate.setText("0.00");
                 }
             });
-            
+
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
-            
+
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1809,7 +1809,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         });
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewOrderDetails, tblViewPuchaseOrder);  // need to use computed-size as min-width on particular column to work
-        
+
     }
 
     public void loadTableMain() {
