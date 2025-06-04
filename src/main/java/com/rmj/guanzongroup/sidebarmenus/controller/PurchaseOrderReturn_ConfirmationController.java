@@ -502,6 +502,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
                             && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
                         if (poPurchaseReturnController.getReceiveQty(pnDetail).intValue() < Integer.valueOf(lsValue)) {

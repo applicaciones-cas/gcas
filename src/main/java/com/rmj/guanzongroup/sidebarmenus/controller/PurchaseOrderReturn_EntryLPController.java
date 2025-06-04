@@ -426,6 +426,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
                             && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
                         if (poPurchaseReturnController.getReceiveQty(pnDetail).doubleValue() < Double.valueOf(lsValue)) {

@@ -501,6 +501,7 @@ public class PurchaseOrderReturn_ConfirmationMonarchFoodController implements In
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
                             && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
                         if (poPurchaseReturnController.getReceiveQty(pnDetail).doubleValue() < Double.valueOf(lsValue)) {
