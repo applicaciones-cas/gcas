@@ -307,7 +307,6 @@ public class PurchaseOrderReturn_ConfirmationSPMCController implements Initializ
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-
                                 // Confirmation Prompt
                                 JSONObject loJSON = poPurchaseReturnController.OpenTransaction(psTransactionNo);
                                 if ("success".equals(loJSON.get("result"))) {
@@ -744,7 +743,8 @@ public class PurchaseOrderReturn_ConfirmationSPMCController implements Initializ
                 String lsServerDate = "";
                 String lsTransDate = "";
                 String lsSelectedDate = "";
-
+                String lsReceivingDate = "";
+                LocalDate receivingDate = null;
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
@@ -775,7 +775,21 @@ public class PurchaseOrderReturn_ConfirmationSPMCController implements Initializ
                                 poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
                             }
-
+                            if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
+                                lsReceivingDate = sdfFormat.format(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getTransactionDate());
+                                receivingDate = LocalDate.parse(lsReceivingDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                                if (selectedDate.isBefore(receivingDate)) {
+                                    poJSON.put("result", "error");
+                                    poJSON.put("message", "Transaction date cannot be before the receiving date.");
+                                    pbSuccess = false;
+                                }
+                            } else {
+                                if (pbSuccess && !lsServerDate.equals(lsSelectedDate) && pnEditMode == EditMode.ADDNEW) {
+                                    poJSON.put("result", "error");
+                                    poJSON.put("message", "Select PO Receiving before changing the transaction date.");
+                                    pbSuccess = false;
+                                }
+                            }
                             if (pbSuccess && ((poPurchaseReturnController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 pbSuccess = false;
@@ -816,7 +830,9 @@ public class PurchaseOrderReturn_ConfirmationSPMCController implements Initializ
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(PurchaseOrderReturn_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
