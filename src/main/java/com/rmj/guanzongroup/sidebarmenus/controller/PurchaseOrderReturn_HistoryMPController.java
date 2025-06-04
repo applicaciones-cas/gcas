@@ -311,11 +311,12 @@ public class PurchaseOrderReturn_HistoryMPController implements Initializable, S
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse);
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
         CustomCommonUtil.inputDecimalOnly(tfCost);
+
     }
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate);
-        JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate);
+        
     }
 
     public void initDetailsGrid() {
@@ -378,9 +379,9 @@ public class PurchaseOrderReturn_HistoryMPController implements Initializable, S
             tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
-            tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce(), true));
+             tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail).intValue()));
+            tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue()));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -447,7 +448,7 @@ public class PurchaseOrderReturn_HistoryMPController implements Initializable, S
             tfPOReceivingNo.setText(poPurchaseReturnController.Master().getSourceNo());
             taRemarks.setText(poPurchaseReturnController.Master().getRemarks());
 
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReturnController.Master().getTransactionTotal().doubleValue())));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Master().getTransactionTotal().doubleValue(), true));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
@@ -500,7 +501,7 @@ public class PurchaseOrderReturn_HistoryMPController implements Initializable, S
         });
 
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 3); // need to use computed-size the column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails); // need to use computed-size the column to work
     }
 
     public void loadTableDetail() {
@@ -558,11 +559,11 @@ public class PurchaseOrderReturn_HistoryMPController implements Initializable, S
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).InventorySerial().getSerial01()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal))
-                                    ));
+                                               String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr).intValue()),
+                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)))
+                                    );
                         }
 
                         if (pnDetail < 0 || pnDetail

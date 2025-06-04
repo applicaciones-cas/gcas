@@ -121,7 +121,7 @@
                                           <Label text="Location" GridPane.rowIndex="5" />
                                           <TextField fx:id="tfLocation" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                           <CheckBox fx:id="cbApplyToAll" mnemonicParsing="false" onAction="#cmdCheckBox_Click" GridPane.columnIndex="6" GridPane.rowIndex="5" />
-                                          <Label text="Apply to All" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                                          <Label fx:id="lblApplyToAll" text="Apply to All" GridPane.columnIndex="4" GridPane.rowIndex="5" />
                                                           </children>
                                                       </GridPane>
                                                   </children>

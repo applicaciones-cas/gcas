@@ -74,13 +74,9 @@ import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
-import javafx.scene.control.ScrollBar;
-import javafx.geometry.Orientation;
-import com.sun.javafx.scene.control.skin.TableViewSkin;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
-
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 /**
  * FXML Controller class
  *
@@ -297,27 +293,6 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
 
     }
 
-    public void retrievePOR() {
-
-        poJSON = new JSONObject();
-
-        String lsMessage = "";
-        poJSON.put("result", "success");
-
-        if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("history", psCompanyId, psSupplierId, "");
-
-            if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-            } else {
-
-            }
-        } else {
-            poJSON.put("message", lsMessage + " cannot be empty.");
-            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-        }
-    }
-
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -364,18 +339,26 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                             } else {
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                             }
-                            retrievePOR();
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReceivingController.Master().setTransactionNo(lsValue);
-                            retrievePOR();
+                            poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, 
+                                    tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSearchReferenceNo.setText("");
+                                return;
+                            } else {
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                pnEditMode = poPurchaseReceivingController.getEditMode();
+                                loadRecordMaster();
+                                loadTableDetail();
+                                loadTableAttachment();
+                                initButton(pnEditMode);
+                            }
+                            loadRecordSearch();
                             return;
-
                     }
-                    loadRecordMaster();
-                    loadTableDetail();
-
                     break;
                 default:
                     break;
@@ -394,6 +377,8 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
             Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DeliveryAcceptance_HistoryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -497,9 +482,9 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
-            tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
+             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+            tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getOrderQty()));
+            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
 
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -587,14 +572,15 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue()*100.00)));
-
+                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscountRate(), false));
                 } else {
-                    tfDiscountRate.setText(String.format("%.2f", 0.00));
+                    tfDiscountRate.setText("0.00");
                 }
             });
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
+            
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
+            
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
@@ -684,15 +670,15 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             try {
 
-                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
+                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue();
 
                             } catch (Exception e) {
 
                             }
 
                             if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
-                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
+                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().doubleValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue()
+                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue() != 0) {
                                 highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
@@ -701,10 +687,10 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getOrderQty())),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getQuantity())),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                     ));
                         }
 
@@ -867,6 +853,7 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
         tfSearchReferenceNo.focusedProperty().addListener(txtField_Focus);
 
         tfSearchSupplier.setOnKeyPressed(this::txtField_KeyPressed);
+        tfSearchReferenceNo.setOnKeyPressed(this::txtField_KeyPressed);
 
         // Combobox
         cmbAttachmentType.setItems(documentType);
@@ -925,54 +912,9 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
 
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewOrderDetails, tblAttachments);  // need to use computed-size as min-width on particular column to work
 
-        adjustLastColumnForScrollbar(tblAttachments);
-    }
-
-    public void adjustLastColumnForScrollbar(TableView<?> tableView) {
-        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
-            if (!(newSkin instanceof TableViewSkin<?>)) {
-                return;
-            }
-
-            TableViewSkin<?> skin = (TableViewSkin<?>) newSkin;
-            VirtualFlow<?> flow = skin.getChildren().stream()
-                    .filter(node -> node instanceof VirtualFlow<?>)
-                    .map(node -> (VirtualFlow<?>) node)
-                    .findFirst().orElse(null);
-
-            if (flow == null) {
-                return;
-            }
-
-            ScrollBar vScrollBar = flow.getChildrenUnmodifiable().stream()
-                    .filter(node -> node instanceof ScrollBar && ((ScrollBar) node).getOrientation() == Orientation.VERTICAL)
-                    .map(node -> (ScrollBar) node)
-                    .findFirst().orElse(null);
-
-            if (vScrollBar == null || tableView.getColumns().isEmpty()) {
-                return;
-            }
-
-            TableColumn<?, ?> lastColumn = (TableColumn<?, ?>) tableView.getColumns()
-                    .get(tableView.getColumns().size() - 1);
-
-            vScrollBar.visibleProperty().addListener((observable, oldValue, newValue) -> {
-                Platform.runLater(() -> {
-                    double scrollBarWidth = newValue ? vScrollBar.getWidth() : 0;
-                    double remainingWidth = tableView.getWidth() - scrollBarWidth;
-
-                    double totalFixedWidth = tableView.getColumns().stream()
-                            .filter(col -> col != lastColumn)
-                            .mapToDouble(col -> ((TableColumn<?, ?>) col).getWidth())
-                            .sum();
-
-                    double newWidth = Math.max(0, remainingWidth - totalFixedWidth);
-                    lastColumn.setPrefWidth(newWidth - 5);
-                });
-            });
-        });
+        
     }
 
     private void initButton(int fnValue) {

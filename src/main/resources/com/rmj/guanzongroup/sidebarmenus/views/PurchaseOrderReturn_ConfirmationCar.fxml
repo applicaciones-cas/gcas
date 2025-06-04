@@ -299,7 +299,7 @@
                                                             <Insets top="1.0" />
                                                          </GridPane.margin>
                                                       </TextArea>
-                                                                              <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="5" />
+                                                                              <TextField fx:id="tfTotal" alignment="CENTER_RIGHT" disable="true" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="5" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
@@ -367,7 +367,7 @@
                                                                           <TextField fx:id="tfColor" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                       <TextField fx:id="tfInventoryType" disable="true" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                           <TextField fx:id="tfMeasure" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                                      <TextField fx:id="tfCost" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="3" />
+                                                      <TextField fx:id="tfCost" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="11" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfBrand" disable="true" editable="false" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfModel" disable="true" editable="false" styleClass="DisabledTextField" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                   <Label text="Model Vrnt." GridPane.rowIndex="4">
@@ -427,11 +427,11 @@
                                                                 <TableColumn fx:id="tblEngineNoDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Engine No" />
                                                             <TableColumn fx:id="tblFrameNoDetail" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Frame No" />
                                                             <TableColumn fx:id="tblCSPlateNoDetail" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="CS / Plate No" />
-                                                                <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="215.0" minWidth="-1.0" prefWidth="215.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
-                                                                <TableColumn fx:id="tblCostDetail" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
+                                                                <TableColumn fx:id="tblDescriptionDetail" editable="false" maxWidth="197.0" minWidth="-1.0" prefWidth="197.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
+                                                                <TableColumn fx:id="tblCostDetail" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Cost" />
                                                             <TableColumn fx:id="tblReceiveQuantityDetail" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Receive" />
                                                                 <TableColumn fx:id="tblReturnQuantityDetail" editable="false" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Return" />
-                                                                <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="119.0" minWidth="-1.0" prefWidth="119.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
+                                                                <TableColumn fx:id="tblTotalDetail" editable="false" maxWidth="115.0" minWidth="-1.0" prefWidth="115.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Total" />
                                                             </columns>
                                              <columnResizePolicy>
                                              </columnResizePolicy>
