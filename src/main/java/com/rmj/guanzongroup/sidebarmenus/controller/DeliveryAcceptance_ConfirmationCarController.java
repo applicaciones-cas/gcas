@@ -2008,6 +2008,8 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {
                                 cbPreOwned.setSelected(poPurchaseReceivingController.Detail(lnCtr).PurchaseOrderMaster().getPreOwned());
+                            } else {
+                                cbPreOwned.setSelected(false);
                             }
                             try {
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
@@ -2751,6 +2753,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         tfAttachmentNo.clear();
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.getSelectionModel().select(0);
+        cbPreOwned.setSelected(false);
     }
 
     public void generateAttachment() {

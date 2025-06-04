@@ -635,17 +635,17 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
                                 return;
-                            } 
+                            } else {
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                pnEditMode = poPurchaseReceivingController.getEditMode();
+                                loadRecordMaster();
+                                loadTableDetail();
+                                loadTableAttachment();
+                                initButton(pnEditMode);
+                            }
                             loadRecordSearch();
-                        break;
-//                        case "tfSearchReferenceNo":
-//                            poPurchaseReceivingController.Master().setTransactionNo(lsValue);
-//                            retrievePOR();
-//                            return;
-
+                            return;
                     }
-                    loadRecordMaster();
-                    loadTableDetail();
                     break;
                 default:
                     break;

@@ -624,13 +624,17 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
                                 return;
-                            } 
+                            } else {
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                pnEditMode = poPurchaseReceivingController.getEditMode();
+                                loadRecordMaster();
+                                loadTableDetail();
+                                loadTableAttachment();
+                                initButton(pnEditMode);
+                            }
                             loadRecordSearch();
-                        break;
-
+                            return;
                     }
-                    loadRecordMaster();
-                    loadTableDetail();
                     break;
                 default:
                     break;
@@ -936,6 +940,8 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
 
                             if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {
                                 cbPreOwned.setSelected(poPurchaseReceivingController.Detail(lnCtr).PurchaseOrderMaster().getPreOwned());
+                            } else {
+                                cbPreOwned.setSelected(false);
                             }
 
                             try {
@@ -1530,6 +1536,7 @@ public class DeliveryAcceptance_HistoryCarController implements Initializable, S
         tfAttachmentNo.clear();
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.getSelectionModel().select(0);
+        cbPreOwned.setSelected(false);
     }
 
     public void generateAttachment() {

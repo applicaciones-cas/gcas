@@ -347,14 +347,17 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
                                 return;
-                            } 
+                            } else {
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                pnEditMode = poPurchaseReceivingController.getEditMode();
+                                loadRecordMaster();
+                                loadTableDetail();
+                                loadTableAttachment();
+                                initButton(pnEditMode);
+                            }
                             loadRecordSearch();
-                        break;
-
+                            return;
                     }
-                    loadRecordMaster();
-                    loadTableDetail();
-
                     break;
                 default:
                     break;
