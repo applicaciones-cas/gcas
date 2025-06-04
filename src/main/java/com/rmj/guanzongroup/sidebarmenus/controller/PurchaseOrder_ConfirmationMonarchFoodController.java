@@ -315,7 +315,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                             return;
                         }
                         if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                            poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CARSp_MCSp_General);
+                            poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_Pedritos);
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             }
@@ -415,7 +415,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                     }
                     break;
                 case "btnPrint":
-                    poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CARSp_MCSp_General);
+                    poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_Pedritos);
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                     }
