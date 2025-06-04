@@ -428,6 +428,8 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                     tblAttachments.getItems().clear();
                     poJSON = poGLControllers.PaymentRequest().NewTransaction();
                     if ("success".equals((String) poJSON.get("result"))) {
+                        poGLControllers.PaymentRequest().Master().setIndustryID(psIndustryID);
+                        poGLControllers.PaymentRequest().Master().setCompanyID(psCompanyID);
                         poGLControllers.PaymentRequest().Master().setSeriesNo(poGLControllers.PaymentRequest().getSeriesNoByBranch());
                         poGLControllers.PaymentRequest().Master().setPayeeID(prevPayee);
                         if (poApp.isMainOffice() || poApp.isWarehouse()) {

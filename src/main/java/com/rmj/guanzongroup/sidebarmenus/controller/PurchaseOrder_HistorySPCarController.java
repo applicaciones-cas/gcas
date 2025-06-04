@@ -169,7 +169,7 @@ public class PurchaseOrder_HistorySPCarController implements Initializable, Scre
 
     private void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
+            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_HistorySPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -182,7 +182,7 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
 
     private void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
+            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_ConfirmationMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
         }

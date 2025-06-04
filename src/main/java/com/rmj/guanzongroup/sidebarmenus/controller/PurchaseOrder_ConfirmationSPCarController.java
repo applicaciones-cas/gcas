@@ -182,7 +182,7 @@ public class PurchaseOrder_ConfirmationSPCarController implements Initializable,
 
     private void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName());
+            lblSource.setText(poPurchasingController.PurchaseOrder().Master().Company().getCompanyName() + " - " + poPurchasingController.PurchaseOrder().Master().Industry().getDescription());
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(PurchaseOrder_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
