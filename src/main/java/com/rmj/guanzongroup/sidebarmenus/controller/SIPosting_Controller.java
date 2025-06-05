@@ -15,6 +15,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +42,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -72,6 +72,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import javafx.animation.PauseTransition;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
@@ -81,6 +82,8 @@ import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.constant.DocumentType;
 import javafx.util.Pair;
+import org.guanzon.appdriver.agent.ShowDialogFX;
+import org.guanzon.appdriver.constant.UserRight;
 
 /**
  *
@@ -291,7 +294,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
             return;
         }
-        
+
         openedAttachment = poPurchaseReceivingController.Master().getTransactionNo();
         Map<String, Pair<String, String>> data = new HashMap<>();
         data.clear();
@@ -426,10 +429,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         break;
                     case "btnRetrieve":
                         //Retrieve data from purchase order to table main
-
                         retrievePOR();
                         JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
-                        showRetainedHighlight(false);
+                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
                         break;
                     case "btnSave":
                         //Validator
@@ -495,7 +497,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
                                 plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
-                                showRetainedHighlight(true);
+                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -961,17 +963,23 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         }
     }
 
-    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
+    boolean pbSuccess = true;
+
+    private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         JFXUtil.setJSONSuccess(poJSON, "success");
-        try {
-            if (!newValue) { // Lost focus
-                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
-                String lsID = datePicker.getId();
-                String inputText = datePicker.getEditor().getText();
-                LocalDate currentDate = LocalDate.now();
-                LocalDate selectedDate = null;
 
+        try {
+            Object source = event.getSource();
+            if (source instanceof DatePicker) {
+                DatePicker datePicker = (DatePicker) source;
+                String inputText = datePicker.getEditor().getText();
+                SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+                LocalDate currentDate = null;
+                LocalDate selectedDate = null;
+                String lsServerDate = "";
+                String lsTransDate = "";
+                String lsSelectedDate = "";
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
@@ -982,83 +990,71 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     loadRecordMaster();
                     return;
                 }
+                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                    return;
+                }
                 selectedDate = ldtResult.selectedDate;
 
-                String formattedDate = selectedDate.toString();
+                lsServerDate = sdfFormat.format(oApp.getServerDate());
+                lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
+                lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
-                switch (lsID) {
+                switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
-                        } else {
-                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+                            if (selectedDate.isAfter(currentDate)) {
+                                JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
+                                pbSuccess = false;
+                            }
+                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                                    || !lsServerDate.equals(lsSelectedDate))) {
+                                pbSuccess = false;
+                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                        + "If YES, please seek approval to proceed with the new selected date.\n"
+                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                        poJSON = ShowDialogFX.getUserApproval(oApp);
+                                        if (!"success".equals((String) poJSON.get("result"))) {
+                                            pbSuccess = false;
+                                        } else {
+                                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                        }
+                                    }
+                                } else {
+                                    pbSuccess = false;
+                                }
+                            }
+
                         }
                         break;
                     case "dpReferenceDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
-                        } else {
-                            poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
-                        }
                         break;
                     case "dpExpiryDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isBefore(currentDate)) {
-                            JFXUtil.setJSONError(poJSON, "The selected date cannot be earlier than the current date.");
-                        } else {
-                            poPurchaseReceivingController.Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
-                        }
+                        break;
+                    case "dpJETransactionDate":
                         break;
                     default:
-
                         break;
+
                 }
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    // datePicker.requestFocus();
+                if (pbSuccess) {
+                } else {
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    }
                 }
-                if (JFXUtil.isObjectEqualTo(lsID, "dpJETransactionDate")) {
+                pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                if (JFXUtil.isObjectEqualTo(datePicker.getId(), "dpJETransactionDate")) {
                     loadRecordJEMaster();
                 } else {
-                    Platform.runLater(() -> {
-                        if (lsID.equals("dpExpiryDate")) {
-                            loadRecordDetail();
-                        } else {
-                            loadRecordMaster();
-                        }
-                    });
+                    loadRecordMaster();
                 }
-
-                datePicker.getEditor().setText(formattedDate);
-
+                pbSuccess = true; //Set to original valueF
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    };
-
-    public void showRetainedHighlight(boolean isRetained) {
-        if (isRetained) {
-            for (Pair<String, String> pair : plOrderNoPartial) {
-                if (!"0".equals(pair.getValue())) {
-                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
-                }
-            }
-        }
-        JFXUtil.disableAllHighlightByColor(tblViewMainList, "#C1E1C1", highlightedRowsMain);
-        plOrderNoPartial.clear();
-        for (Pair<String, String> pair : plOrderNoFinal) {
-            if (!"0".equals(pair.getValue())) {
-                JFXUtil.highlightByKey(tblViewMainList, pair.getKey(), "#C1E1C1", highlightedRowsMain);
-            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PurchaseOrderReturn_ConfirmationAppliancesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1097,7 +1093,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                 plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
                             }
                         }
-                        showRetainedHighlight(true);
+                        JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
                     }
 
                     if (pnMain < 0 || pnMain
@@ -1224,10 +1220,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 //        tfJEAcctCode.setText("");
 //        tfJEAcctDescription.setText("");
         //tfReportMonthYear.setText(""); //
-
         month_year_picker.setYearMonth(month_year_picker.getYearMonth());
-//        tfCreditAmt.setText("");
-//        tfDebitAmt.setText("");
+//        tfCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(""));
+//        tfDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(""));
     }
 
     public void loadRecordDetail() {
@@ -1280,10 +1275,10 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     public void loadRecordJEMaster() {
         lblJEStatus.setText("");
         tfJETransactionNo.setText("");
-        dpJETransactionDate.setValue(null);
-        tfTotalCreditAmt.setText("");
-        tfTotalDebitAmt.setText("");
-        lblJEStatus.setText("");
+        String lsJETransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
+        dpJETransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsJETransactionDate, "yyyy-MM-dd"));
+        tfTotalCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(""));
+        tfTotalDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(""));
         taJERemarks.setText("");
 
     }
@@ -1301,7 +1296,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             Platform.runLater(() -> {
                 String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
                 boolean lbPrintStat = pnEditMode == EditMode.READY && !PurchaseOrderReceivingStatus.VOID.equals(lsActive);
-
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(PurchaseOrderReceivingStatus.POSTED, "POSTED");
                 statusMap.put(PurchaseOrderReceivingStatus.PAID, "PAID");
@@ -1325,36 +1319,55 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             }
             poPurchaseReceivingController.computeFields();
 
-            // Transaction Date
+            tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
-            //ReferenceDate
-            String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getReferenceDate());
-            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
-
-            tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
 
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfBranch.setText(poPurchaseReceivingController.Master().Branch().getBranchName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
-            tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
+
+            String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getReferenceDate());
+            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
+
             tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
+            tfSINo.setText(poPurchaseReceivingController.Master().getSalesInvoice());
+            tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
+
             taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
 
+            tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poPurchaseReceivingController.Master().getTransactionTotal().doubleValue()));
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() * 100.00)));
-
+                    tfDiscountRate.setText(String.format("%.2f", lnValue * 100.00));
                 } else {
                     tfDiscountRate.setText(String.format("%.2f", 0.00));
                 }
             });
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
-            tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
-
-            tfSINo.setText(poPurchaseReceivingController.Master().getSalesInvoice());
-            tfFreightAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getFreight().doubleValue())));
+//            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+//                    poPurchaseReceivingController.Master().getDiscount().doubleValue()));
+//
+//            tfFreightAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+//                    poPurchaseReceivingController.Master().getFreight().doubleValue()));
+//
+//            cbVatInclusive.setSelected(poPurchaseReceivingController.Master().isVatInclusive());
+//
+//            tfVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+//                    poPurchaseReceivingController.Master().getVatSales().doubleValue()));
+//
+//            tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+//                    poPurchaseReceivingController.Master().getVatAmount().doubleValue()));
+//
+//            tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+//                    poPurchaseReceivingController.Master().getZeroVatSales().doubleValue()));
+//
+//            tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+//                    poPurchaseReceivingController.Master().getVatExemptSales().doubleValue()));
+//
+//            tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+//                    poPurchaseReceivingController.Master().getTransactionTotal().doubleValue()));
 
             /* TODO 
             Vat Inclucsive
@@ -1368,13 +1381,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
             net total computation
             Net Total = Transaction total - Discount Rate - Additional Discount - Freight - Vat Sales - Vat Amount - Zero Vat sales - Vat Exempt Sales 
-            
-            tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf());
-            tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf());
-            tfVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf());
-            tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf());
-            tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf());
-            cbVatInclusive.setSelected();
              */
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
@@ -1638,7 +1644,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate);
-        JFXUtil.setFocusListener(datepicker_Focus, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate);
         JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate);
     }
 
@@ -1717,52 +1723,10 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 }
             }
         });
-
-        tblViewMainList.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Main>() {
-            @Override
-            protected void updateItem(ModelDeliveryAcceptance_Main item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else {
-                    String key = item.getIndex01(); // defines the ReferenceNo
-                    if (highlightedRowsMain.containsKey(key)) {
-                        List<String> colors = highlightedRowsMain.get(key);
-                        if (!colors.isEmpty()) {
-                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
-                        }
-                    } else {
-                        setStyle(""); // Default style
-                    }
-                }
-            }
-        });
-
-        tblViewTransDetailList.setRowFactory(tv -> new TableRow<ModelDeliveryAcceptance_Detail>() {
-            @Override
-            protected void updateItem(ModelDeliveryAcceptance_Detail item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else {
-                    String key = item.getIndex01(); // defines the ReferenceNo
-                    if (highlightedRowsDetail.containsKey(key)) {
-                        List<String> colors = highlightedRowsDetail.get(key);
-                        if (!colors.isEmpty()) {
-                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
-                        }
-                    } else {
-                        setStyle("");
-                    }
-                }
-            }
-        });
+        JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelDeliveryAcceptance_Main) item).getIndex01(), highlightedRowsMain);
+        JFXUtil.applyRowHighlighting(tblViewTransDetailList, item -> ((ModelDeliveryAcceptance_Detail) item).getIndex01(), highlightedRowsDetail);
         JFXUtil.setKeyEventFilter(this::tableKeyEvents, tblViewTransDetailList, tblViewJEDetails, tblAttachments);
-
-        JFXUtil.adjustColumnForScrollbar(tblViewMainList);
-        JFXUtil.adjustColumnForScrollbar(tblViewTransDetailList);
-        JFXUtil.adjustColumnForScrollbar(tblAttachments);
-        JFXUtil.adjustColumnForScrollbar(tblViewJEDetails);
+        JFXUtil.adjustColumnForScrollbar(tblViewMainList, tblViewTransDetailList, tblAttachments, tblViewJEDetails);
     }
 
     private void initButton(int fnValue) {
@@ -1774,7 +1738,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         // Manage visibility and managed state of other buttons
         //Update 
         JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel);
-
         //Ready
         JFXUtil.setButtonsVisibility(lbShow3, btnPrint, btnUpdate, btnHistory);
         JFXUtil.setButtonsVisibility(false, btnPost);
@@ -1813,7 +1776,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         /*FOCUS ON FIRST ROW*/
         JFXUtil.setColumnCenter(tblRowNoAttachment, tblFileNameAttachment);
         JFXUtil.setColumnsIndexAndDisableReordering(tblAttachments);
-
         tblAttachments.setItems(attachment_data);
     }
 
