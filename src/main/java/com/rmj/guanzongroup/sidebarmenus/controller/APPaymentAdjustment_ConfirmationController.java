@@ -214,6 +214,17 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                 case F3:
                     switch (lsID) {
                         case "tfSearchCompany":
+                            poJSON = poAPPaymentAdjustmentController.SearchCompany(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfCompany.setText("");
+                                psCompanyId = "";
+                                break;
+                            }
+                            psCompanyId = poAPPaymentAdjustmentController.getModel().getCompanyId();
+                            retrieveAPAdjustment();
+                            loadRecordSearch();
+                            break;
                         case "tfCompany":
                             poJSON = poAPPaymentAdjustmentController.SearchCompany(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
@@ -223,10 +234,24 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                                 break;
                             }
                             psCompanyId = poAPPaymentAdjustmentController.getModel().getCompanyId();
+                            retrieveAPAdjustment();
                             loadRecordSearch();
-                            loadRecordMaster();
+                            break;
+                        case "tfSearchReferenceNo":
+                            retrieveAPAdjustment();
                             break;
                         case "tfSearchSupplier":
+                            poJSON = poAPPaymentAdjustmentController.SearchClient(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfClient.setText("");
+                                psSupplierId = "";
+                                break;
+                            }
+                            psSupplierId = poAPPaymentAdjustmentController.getModel().getClientId();
+                            retrieveAPAdjustment();
+                            loadRecordSearch();
+                            break;
                         case "tfClient":
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poAPPaymentAdjustmentController.getAPPaymentAdjustmentCount() > 1) {
@@ -242,11 +267,8 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfClient.setText("");
-                                psSupplierId = "";
                                 break;
                             }
-                            psSupplierId = poAPPaymentAdjustmentController.getModel().getClientId();
-                            loadRecordSearch();
                             loadRecordMaster();
                             break;
                         case "tfIssuedTo":
@@ -254,7 +276,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfIssuedTo.setText("");
-                                psSupplierId = "";
                                 break;
                             }
                             loadRecordMaster();
@@ -277,7 +298,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             } else {
                 tfSearchSupplier.setText(poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
             }
-            if (psSupplierId.equals("")) {
+            if (psCompanyId.equals("")) {
                 tfSearchCompany.setText("");
             } else {
                 tfSearchCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
