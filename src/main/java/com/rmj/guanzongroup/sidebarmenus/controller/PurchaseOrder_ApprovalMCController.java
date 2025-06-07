@@ -112,7 +112,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
     @FXML
     private Label lblTransactionStatus, lblSource;
     @FXML
-    private CheckBox chkbAdvancePayment, chkbPreOwned;
+    private CheckBox chkbAdvancePayment;
     @FXML
     private DatePicker dpTransactionDate, dpExpectedDlvrDate;
     @FXML
@@ -232,7 +232,6 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
                     break;
             }
             lblTransactionStatus.setText(lsStatus);
-            chkbPreOwned.setSelected(poPurchasingController.PurchaseOrder().Master().getPreOwned() == true);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poPurchasingController.PurchaseOrder().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() != null ? poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName() : "");
             tfDestination.setText(poPurchasingController.PurchaseOrder().Master().Branch().getBranchName() != null ? poPurchasingController.PurchaseOrder().Master().Branch().getBranchName() : "");
@@ -907,7 +906,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
         dpExpectedDlvrDate.setValue(null);
         taRemarks.setText("");
         psOldDate = "";
-        CustomCommonUtil.setSelected(false, chkbAdvancePayment, chkbPreOwned);
+        CustomCommonUtil.setSelected(false, chkbAdvancePayment);
         CustomCommonUtil.setText("", tfTransactionNo, tfDestination, tfReferenceNo, tfTerm);
         CustomCommonUtil.setText("0.00", tfAdvancePRate, tfDiscountRate);
         CustomCommonUtil.setText("0.0000", tfTotalAmount, tfAdvancePAmount, tfDiscountAmount, tfNetAmount);
@@ -960,7 +959,7 @@ public class PurchaseOrder_ApprovalMCController implements Initializable, Screen
             CustomCommonUtil.setDisable(!lbShow,
                     dpTransactionDate, tfDestination, taRemarks,
                     dpExpectedDlvrDate, tfReferenceNo, tfTerm,
-                    chkbAdvancePayment, chkbPreOwned);
+                    chkbAdvancePayment);
 
             CustomCommonUtil.setDisable(true, tfSupplier, tfDiscountRate, tfDiscountAmount,
                     tfAdvancePRate, tfAdvancePAmount, tfBrand, tfModel, tfCost, tfOrderQuantity);

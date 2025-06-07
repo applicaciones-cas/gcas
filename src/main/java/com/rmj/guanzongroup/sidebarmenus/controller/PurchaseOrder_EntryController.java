@@ -176,6 +176,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
             tblVwOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
             Platform.runLater((() -> {
+                psIndustryID = "";
                 poPurchasingController.PurchaseOrder().Master().setIndustryID(psIndustryID);
                 poPurchasingController.PurchaseOrder().Master().setCompanyID(psCompanyID);
                 poPurchasingController.PurchaseOrder().Master().setCategoryCode(psCategoryID);
