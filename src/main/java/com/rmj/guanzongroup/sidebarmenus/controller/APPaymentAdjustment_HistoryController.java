@@ -157,7 +157,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
                                 + "" + APPaymentAdjustmentStatus.PAID
                                 + "" + APPaymentAdjustmentStatus.VOID
                                 + "" + APPaymentAdjustmentStatus.CANCELLED);
-                            poJSON = poAPPaymentAdjustmentController.searchTransaction(psIndustryId, psCompanyId, 
+                            poJSON = poAPPaymentAdjustmentController.searchTransaction(psIndustryId, tfSearchCompany.getText(), 
                                     tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -339,7 +339,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
                                 + "" + APPaymentAdjustmentStatus.PAID
                                 + "" + APPaymentAdjustmentStatus.VOID
                                 + "" + APPaymentAdjustmentStatus.CANCELLED);
-                        poJSON = poAPPaymentAdjustmentController.searchTransaction(psIndustryId, psCompanyId, 
+                        poJSON = poAPPaymentAdjustmentController.searchTransaction(psIndustryId, tfSearchCompany.getText(), 
                                     tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
