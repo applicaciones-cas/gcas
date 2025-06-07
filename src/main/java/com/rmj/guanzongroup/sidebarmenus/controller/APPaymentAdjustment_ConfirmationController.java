@@ -244,7 +244,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                             poJSON = poAPPaymentAdjustmentController.SearchClient(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfClient.setText("");    
+                                tfClient.setText("");
                                 psSupplierId = "";
                                 break;
                             }
@@ -375,7 +375,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                             tfCreditAmount.requestFocus();
                             break;
                         }
-                        
+
                         if (Double.valueOf(lsValue) > 0.00) {
                             if (poAPPaymentAdjustmentController.getModel().getDebitAmount().doubleValue() > 0.0000) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
@@ -386,7 +386,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                             }
                         }
                     }
-                    
+
                     poJSON = poAPPaymentAdjustmentController.getModel().setCreditAmount((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -406,7 +406,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                             tfDebitAmount.requestFocus();
                             break;
                         }
-                        
+
                         if (Double.valueOf(lsValue) > 0.00) {
                             if (poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue() > 0.0000) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
@@ -425,6 +425,10 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                     break;
 
             }
+            if (!JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfSearchSupplier", "tfSearchCompany", "tfSearchReferenceNo")) {
+                loadRecordMaster();
+            }
+
         }
     };
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
@@ -445,7 +449,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             /* Lost Focus */
             lsValue = lsValue.trim();
             switch (lsID) {
-                case "taRemarks": { // Remarks
+                case "taRemarks":  // Remarks
                     poJSON = poAPPaymentAdjustmentController.getModel().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -453,12 +457,15 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                         return;
                     }
                     break;
-                }
             }
+            loadRecordMaster();
         }
     };
 
     public void initTextFields() {
+        Platform.runLater(() -> {
+            JFXUtil.setVerticalScroll(taRemarks);
+        });
         JFXUtil.setCommaFormatter(tfDebitAmount, tfCreditAmount);
         JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfCompany, tfClient, tfIssuedTo, tfCreditAmount, tfDebitAmount,
                 tfSearchCompany, tfSearchSupplier);
@@ -634,7 +641,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        
+
                         psSupplierId = poAPPaymentAdjustmentController.getModel().getClientId();
                         psCompanyId = poAPPaymentAdjustmentController.getModel().getCompanyId();
                         pnEditMode = poAPPaymentAdjustmentController.getEditMode();

@@ -103,7 +103,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             String lsID = txtField.getId();
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
-            
+
             switch (event.getCode()) {
                 case TAB:
                 case ENTER:
@@ -210,7 +210,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                             tfCreditAmount.requestFocus();
                             break;
                         }
-                        
+
                         if (Double.valueOf(lsValue) > 0.00) {
                             if (poAPPaymentAdjustmentController.getModel().getDebitAmount().doubleValue() > 0.0000) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
@@ -221,7 +221,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                             }
                         }
                     }
-                    
+
                     poJSON = poAPPaymentAdjustmentController.getModel().setCreditAmount((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -241,7 +241,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                             tfDebitAmount.requestFocus();
                             break;
                         }
-                        
+
                         if (Double.valueOf(lsValue) > 0.00) {
                             if (poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue() > 0.0000) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
@@ -258,8 +258,8 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
                     break;
-
             }
+            loadRecordMaster();
         }
     };
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
@@ -287,6 +287,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
+                    loadRecordMaster();
                     break;
                 }
             }
@@ -344,6 +345,9 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
     }
 
     public void initTextFields() {
+        Platform.runLater(() -> {
+            JFXUtil.setVerticalScroll(taRemarks);
+        });
         JFXUtil.setCommaFormatter(tfDebitAmount, tfCreditAmount);
         JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfCompany, tfClient, tfIssuedTo, tfCreditAmount, tfDebitAmount);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
@@ -424,8 +428,8 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
-            Object source = event.getSource();
-            if (source instanceof Button) {
+        Object source = event.getSource();
+        if (source instanceof Button) {
             try {
                 Button clickedButton = (Button) source;
                 String lsButton = clickedButton.getId();
@@ -551,7 +555,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             } catch (ParseException ex) {
                 Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            }
+        }
     }
 
     private void initButton(int fnValue) {
