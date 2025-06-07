@@ -223,6 +223,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                                 break;
                             }
                             psCompanyId = poAPPaymentAdjustmentController.getModel().getCompanyId();
+                            loadRecordSearch();
                             loadRecordMaster();
                             break;
                         case "tfSearchSupplier":
@@ -245,6 +246,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                                 break;
                             }
                             psSupplierId = poAPPaymentAdjustmentController.getModel().getClientId();
+                            loadRecordSearch();
                             loadRecordMaster();
                             break;
                         case "tfIssuedTo":
@@ -316,9 +318,9 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                     }
                     loadRecordSearch();
                     break;
-                case "tfSearchReferenceNo":
-                    break;
                 case "tfSearchCompany":
+                    break;
+                case "tfSearchReferenceNo":
                     break;
                 case "tfCompany":
                     if (lsValue.isEmpty()) {
@@ -332,7 +334,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                     break;
                 case "tfIssuedTo":
                     if (lsValue.isEmpty()) {
-                        poJSON = poAPPaymentAdjustmentController.getModel().setPayerCode("");
+                        poJSON = poAPPaymentAdjustmentController.getModel().setIssuedTo("");
                     }
                     break;
                 case "tfReferenceNo":
@@ -618,7 +620,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             taRemarks.setText(poAPPaymentAdjustmentController.getModel().getRemarks());
             tfIssuedTo.setText(poAPPaymentAdjustmentController.getModel().Payee().getPayeeName());
             tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue(), true));
-            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue(), true));
+            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getDebitAmount().doubleValue(), true));
             tfReferenceNo.setText(poAPPaymentAdjustmentController.getModel().getReferenceNo());
             tfCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
@@ -651,7 +653,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                         break;
                     case "btnNew":
                         //Clear data
-//                        poAPPaymentAdjustmentController.resetMaster();
+                        poAPPaymentAdjustmentController.resetMaster();
 //                        poAPPaymentAdjustmentController.getModel().clear();
                         clearTextFields();
 
@@ -697,7 +699,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                             //Clear data
-//                            poAPPaymentAdjustmentController.resetMaster();
+                            poAPPaymentAdjustmentController.resetMaster();
 //                            poAPPaymentAdjustmentController.Detail().clear();
                             clearTextFields();
                             poAPPaymentAdjustmentController.getModel().setIndustryId(psIndustryId);

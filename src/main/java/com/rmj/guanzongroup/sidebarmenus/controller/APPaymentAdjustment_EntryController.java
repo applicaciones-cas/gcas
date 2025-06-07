@@ -31,6 +31,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
+import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.gl.APPaymentAdjustment;
@@ -101,6 +102,8 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             poAPPaymentAdjustmentController.setCompanyId(psCompanyId);
 //            poAPPaymentAdjustmentController.setCategoryId(psCategoryId);
             poAPPaymentAdjustmentController.initFields();
+            loadRecordSearch();
+            btnNew.fire();
         });
     }
 
@@ -198,7 +201,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                     break;
                 case "tfIssuedTo":
                     if (lsValue.isEmpty()) {
-                        poJSON = poAPPaymentAdjustmentController.getModel().setPayerCode("");
+                        poJSON = poAPPaymentAdjustmentController.getModel().setIssuedTo("");
                     }
                     break;
                 case "tfReferenceNo":
@@ -355,10 +358,19 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
         JFXUtil.clearTextFields(apMaster);
     }
 
+    public void loadRecordSearch() {
+        try {
+            lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+    }
+
     public void loadRecordMaster() {
         try {
             tfTransactionNo.setText(poAPPaymentAdjustmentController.getModel().getTransactionNo());
             Platform.runLater(() -> {
+
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
                 String lsActive = poAPPaymentAdjustmentController.getModel().getTransactionStatus();
                 String lsStat = "UNKNOWN";
@@ -397,10 +409,9 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             taRemarks.setText(poAPPaymentAdjustmentController.getModel().getRemarks());
             tfIssuedTo.setText(poAPPaymentAdjustmentController.getModel().Payee().getPayeeName());
             tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue(), true));
-            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue(), true));
+            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getDebitAmount().doubleValue(), true));
             tfReferenceNo.setText(poAPPaymentAdjustmentController.getModel().getReferenceNo());
             tfCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
-
         } catch (SQLException ex) {
             Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
@@ -430,7 +441,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                         break;
                     case "btnNew":
                         //Clear data
-//                        poAPPaymentAdjustmentController.resetMaster();
+                        poAPPaymentAdjustmentController.resetMaster();
 //                        poAPPaymentAdjustmentController.getModel().clear();
                         clearTextFields();
 
@@ -476,7 +487,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                             //Clear data
-//                            poAPPaymentAdjustmentController.resetMaster();
+                            poAPPaymentAdjustmentController.resetMaster();
 //                            poAPPaymentAdjustmentController.Detail().clear();
                             clearTextFields();
                             poAPPaymentAdjustmentController.getModel().setIndustryId(psIndustryId);
