@@ -405,7 +405,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                         }
                     }
 
-                    poJSON = poAPPaymentAdjustmentController.getModel().setCreditAmount((Double.valueOf(lsValue)));
+                    poJSON = poAPPaymentAdjustmentController.getModel().setDebitAmount((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
@@ -767,9 +767,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
 
                                 // Print Transaction Prompt
                                 lsIsSaved = false;
-                                loJSON = poAPPaymentAdjustmentController.OpenTransaction(poAPPaymentAdjustmentController.getModel().getTransactionNo());
-                                loadRecordMaster();
-
+                                pnEditMode = poAPPaymentAdjustmentController.getEditMode();
                             }
                         } else {
                             return;
@@ -837,9 +835,28 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                         break;
                 }
 
-                loadRecordMaster();
-                initButton(pnEditMode);
+                boolean lbproceed = false;
+                if (lsButton.equals("btnSave") || lsButton.equals("btnConfirm") || lsButton.equals("btnReturn")
+                        || lsButton.equals("btnVoid") || lsButton.equals("btnCancel")) {
+                    if (lsButton.equals("btnSave")) {
+                        if (!isPrinted) {
+                            lbproceed = true;
+                        }
+                    } else {
+                        lbproceed = true;
+                    }
+                    if (lbproceed) {
+                        poAPPaymentAdjustmentController.resetMaster();
+                        pnEditMode = EditMode.UNKNOWN;
+                        clearTextFields();
+                    }
+                }
 
+                if (lsButton.equals("btnRetrieve")) {
+                } else {
+                    loadRecordMaster();
+                }
+                initButton(pnEditMode);
 //                if (lsButton.equals("btnUpdate")) {
 //                    if (poAPPaymentAdjustmentController.Detail(pnMain).getStockId() != null && !"".equals(poAPPaymentAdjustmentController.Detail(pnMain).getStockId())) {
 //                        tfReturnQuantity.requestFocus();
@@ -915,7 +932,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
 
     @Override
     public void setCompanyID(String fsValue) {
-        psCompanyId = fsValue;
     }
 
     @Override

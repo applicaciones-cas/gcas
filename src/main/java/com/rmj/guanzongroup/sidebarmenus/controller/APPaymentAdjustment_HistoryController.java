@@ -313,7 +313,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
             taRemarks.setText(poAPPaymentAdjustmentController.getModel().getRemarks());
             tfIssuedTo.setText(poAPPaymentAdjustmentController.getModel().Payee().getPayeeName());
             tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue(), true));
-            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue(), true));
+            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getDebitAmount().doubleValue(), true));
             tfReferenceNo.setText(poAPPaymentAdjustmentController.getModel().getReferenceNo());
             tfCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
