@@ -16,6 +16,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -88,7 +89,9 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             System.err.println((String) poJSON.get("message"));
 //            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
+
         poAPPaymentAdjustmentController.initialize(); // Initialize transaction
+        poAPPaymentAdjustmentController.initFields();
         initTextFields();
         initDatePickers();
         clearTextFields();
@@ -101,7 +104,6 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             poAPPaymentAdjustmentController.setIndustryId(psIndustryId);
             poAPPaymentAdjustmentController.setCompanyId(psCompanyId);
 //            poAPPaymentAdjustmentController.setCategoryId(psCategoryId);
-            poAPPaymentAdjustmentController.initFields();
             loadRecordSearch();
             btnNew.fire();
         });
@@ -580,7 +582,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
 //        apMaster.setDisable(!lbShow);
-        JFXUtil.setDisabled(!lbShow, dpTransactionDate, taRemarks);
+        JFXUtil.setDisabled(!lbShow, taRemarks);
 
         switch (poAPPaymentAdjustmentController.getModel().getTransactionStatus()) {
             case APPaymentAdjustmentStatus.PAID:

@@ -116,6 +116,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
 //            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
         poAPPaymentAdjustmentController.initialize(); // Initialize transaction
+        poAPPaymentAdjustmentController.initFields();
         initTextFields();
         initDatePickers();
         clearTextFields();
@@ -131,7 +132,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             poAPPaymentAdjustmentController.setIndustryId(psIndustryId);
             poAPPaymentAdjustmentController.setCompanyId(psCompanyId);
 //            poAPPaymentAdjustmentController.setCategoryId(psCategoryId);
-            poAPPaymentAdjustmentController.initFields();
             loadRecordSearch();
         });
     }
