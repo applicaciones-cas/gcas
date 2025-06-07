@@ -93,6 +93,15 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
         clearTextFields();
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
+
+        Platform.runLater(() -> {
+            poAPPaymentAdjustmentController.getModel().setIndustryId(psIndustryId);
+            poAPPaymentAdjustmentController.getModel().setCompanyId(psCompanyId);
+            poAPPaymentAdjustmentController.setIndustryId(psIndustryId);
+            poAPPaymentAdjustmentController.setCompanyId(psCompanyId);
+//            poAPPaymentAdjustmentController.setCategoryId(psCategoryId);
+            poAPPaymentAdjustmentController.initFields();
+        });
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -513,16 +522,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                                 lsIsSaved = false;
                                 loJSON = poAPPaymentAdjustmentController.OpenTransaction(poAPPaymentAdjustmentController.getModel().getTransactionNo());
                                 loadRecordMaster();
-                                if ("success".equals(loJSON.get("result"))) {
-                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
-                                        lsIsSaved = true;
-//                                        btnPrint.fire();
-                                    } else {
-                                        btnNew.fire();
-                                    }
-                                } else {
-                                    btnNew.fire();
-                                }
+                                btnNew.fire();
 
                             }
                         } else {

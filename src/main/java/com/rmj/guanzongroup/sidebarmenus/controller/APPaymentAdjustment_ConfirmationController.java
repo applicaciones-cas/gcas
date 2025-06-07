@@ -121,8 +121,19 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
         clearTextFields();
         initMainGrid();
         initTableOnClick();
+        pgPagination.setPageCount(1);
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
+
+        Platform.runLater(() -> {
+            poAPPaymentAdjustmentController.getModel().setIndustryId(psIndustryId);
+            poAPPaymentAdjustmentController.getModel().setCompanyId(psCompanyId);
+            poAPPaymentAdjustmentController.setIndustryId(psIndustryId);
+            poAPPaymentAdjustmentController.setCompanyId(psCompanyId);
+//            poAPPaymentAdjustmentController.setCategoryId(psCategoryId);
+            poAPPaymentAdjustmentController.initFields();
+            loadRecordSearch();
+        });
     }
 
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
@@ -161,6 +172,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                     return;
                 }
                 goToPageBasedOnSelectedRow(String.valueOf(pnMain));
+                loadRecordMaster();
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -734,16 +746,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                                 lsIsSaved = false;
                                 loJSON = poAPPaymentAdjustmentController.OpenTransaction(poAPPaymentAdjustmentController.getModel().getTransactionNo());
                                 loadRecordMaster();
-                                if ("success".equals(loJSON.get("result"))) {
-                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
-                                        lsIsSaved = true;
-//                                        btnPrint.fire();
-                                    } else {
-//                                        btnNew.fire();
-                                    }
-                                } else {
-//                                    btnNew.fire();
-                                }
 
                             }
                         } else {
@@ -830,6 +832,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
 
     public void retrieveAPAdjustment() {
         poJSON = new JSONObject();
+        poAPPaymentAdjustmentController.setRecordStatus(APPaymentAdjustmentStatus.OPEN + "" + APPaymentAdjustmentStatus.CONFIRMED);
         poJSON = poAPPaymentAdjustmentController.loadAPPaymentAdjustment(psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
