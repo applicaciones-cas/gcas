@@ -483,7 +483,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
         psSearchSupplierId = "";
         psSupplierId = "";
         dpTransactionDate.setValue(null);
-        JFXUtil.clearTextFields(apMaster, apBrowse);
+        JFXUtil.clearTextFields(apMaster);
     }
 
     public void initMainGrid() {
