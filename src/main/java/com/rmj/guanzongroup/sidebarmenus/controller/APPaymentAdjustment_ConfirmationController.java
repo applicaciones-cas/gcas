@@ -458,7 +458,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                     }
                     break;
             }
-            loadRecordMaster();
+//            loadRecordMaster();
         }
     };
 

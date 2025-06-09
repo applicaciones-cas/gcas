@@ -287,7 +287,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
-                    loadRecordMaster();
+//                    loadRecordMaster();
                     break;
                 }
             }
