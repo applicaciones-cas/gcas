@@ -300,8 +300,8 @@
                                                                                  </font>
                                                                               </Label>
                                                                           <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                                                              <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                      <TextField fx:id="tfSOANo" disable="true" editable="false" maxHeight="25.0" promptText="" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                              <DatePicker fx:id="dpTransactionDate" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                      <TextField fx:id="tfSOANo" maxHeight="25.0" promptText="" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                           <TextField fx:id="tfClient" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                                   <TextField fx:id="tfIssuedTo" layoutX="85.0" layoutY="107.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
                                                       <TextArea fx:id="taRemarks" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" GridPane.rowSpan="3">
