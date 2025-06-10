@@ -179,6 +179,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         initTableOnClick();
         clearTextFields();
         Platform.runLater(() -> {
+            psIndustryId = "";
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
             poPurchaseReceivingController.setIndustryId(psIndustryId);

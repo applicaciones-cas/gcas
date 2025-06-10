@@ -129,6 +129,7 @@ public class PurchaseOrderReturn_HistoryController implements Initializable, Scr
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
         Platform.runLater(() -> {
+            psIndustryId = "";
             poPurchaseReturnController.Master().setIndustryId(psIndustryId);
             poPurchaseReturnController.Master().setCompanyId(psCompanyId);
             poPurchaseReturnController.setIndustryId(psIndustryId);
