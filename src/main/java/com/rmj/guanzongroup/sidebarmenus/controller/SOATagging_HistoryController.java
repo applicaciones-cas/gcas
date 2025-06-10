@@ -4,24 +4,17 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelAPPaymentAdjustment;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Detail;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Main;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSOATagging;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSOATagging_Detail;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyBooleanPropertyBase;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -33,13 +26,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -49,26 +40,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.cas.gl.status.SOATaggingStatus;
-import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
-import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import javafx.animation.PauseTransition;
-import javafx.util.Pair;
-import java.util.ArrayList;
 import org.guanzon.cas.gl.SOATagging;
 import org.guanzon.cas.gl.services.SOATaggingControllers;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import org.guanzon.appdriver.agent.ShowDialogFX;
-import org.guanzon.appdriver.constant.UserRight;
 
 /**
  * FXML Controller class
@@ -90,8 +71,8 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     private String psSupplierId = "";
     private String psTransactionNo = "";
     
-    private ObservableList<ModelSOATagging> details_data = FXCollections.observableArrayList();
-    private FilteredList<ModelSOATagging> filteredDataDetail;
+    private ObservableList<ModelSOATagging_Detail> details_data = FXCollections.observableArrayList();
+    private FilteredList<ModelSOATagging_Detail> filteredDataDetail;
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
@@ -448,7 +429,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                     double lnTotal = 0.0;
                     for (lnCtr = 0; lnCtr < poSOATaggingController.getDetailCount(); lnCtr++) {
                         details_data.add(
-                                new ModelSOATagging(String.valueOf(lnCtr + 1),
+                                new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),
                                         String.valueOf(poSOATaggingController.Detail(lnCtr).getSourceNo()),
                                         String.valueOf(poSOATaggingController.Detail(lnCtr).getSourceCode()),
                                         String.valueOf("TODO"),
@@ -556,7 +537,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 
-        SortedList<ModelSOATagging> sortedData = new SortedList<>(filteredDataDetail);
+        SortedList<ModelSOATagging_Detail> sortedData = new SortedList<>(filteredDataDetail);
         sortedData.comparatorProperty().bind(tblViewTransDetailList.comparatorProperty());
         tblViewTransDetailList.setItems(sortedData);
         tblViewTransDetailList.autosize();
