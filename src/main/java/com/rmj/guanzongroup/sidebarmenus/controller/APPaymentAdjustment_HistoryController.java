@@ -164,7 +164,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
                                 tfSearchReferenceNo.setText("");
                                 return;
                             } else {
-                                psSupplierId = poAPPaymentAdjustmentController.getModel().getClientId();
+//                                psSupplierId = poAPPaymentAdjustmentController.getModel().getClientId();
                                 pnEditMode = poAPPaymentAdjustmentController.getEditMode();
                                 loadRecordMaster();
                                 initButton(pnEditMode);

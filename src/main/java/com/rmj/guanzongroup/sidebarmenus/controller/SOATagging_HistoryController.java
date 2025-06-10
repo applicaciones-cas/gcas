@@ -4,17 +4,24 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelAPPaymentAdjustment;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Detail;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Main;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSOATagging;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSOATagging_Detail;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -26,11 +33,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -40,16 +49,27 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.cas.gl.status.SOATaggingStatus;
+import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+import javafx.animation.PauseTransition;
+import javafx.util.Pair;
+import java.util.ArrayList;
 import org.guanzon.cas.gl.SOATagging;
 import org.guanzon.cas.gl.services.SOATaggingControllers;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import org.guanzon.appdriver.agent.ShowDialogFX;
+import org.guanzon.appdriver.constant.UserRight;
+import org.guanzon.cas.gl.status.SOATaggingStatic;
 
 /**
  * FXML Controller class
@@ -282,7 +302,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                                 tfSearchReferenceNo.setText("");
                                 return;
                             } else {
-                                psSupplierId = poSOATaggingController.Master().getClientId();
+                                //psSupplierId = poSOATaggingController.Master().getClientId();
                                 pnEditMode = poSOATaggingController.getEditMode();
                                 loadRecordMaster();
                                 initButton(pnEditMode);
@@ -312,6 +332,37 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
+        poJSON = new JSONObject();
+        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTxtFieldID = txtPersonalInfo.getId();
+        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
+
+        if (lsValue == null) {
+            return;
+        }
+
+        if (!nv) {
+            /* Lost Focus */
+            switch (lsTxtFieldID) {
+                case "tfSearchSupplier":
+                    if (lsValue.equals("")) {
+                        psSupplierId = "";
+                    }
+                    loadRecordSearch();
+                    break;
+                case "tfSearchCompany":
+                    if (lsValue.equals("")) {
+                        psCompanyId = "";
+                    }
+                    loadRecordSearch();
+                    break;
+                case "tfSearchReferenceNo":
+                    break;
+            }
+        }
+    };
     
     public void loadRecordSearch() {
         try {
@@ -345,16 +396,33 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     
     public void loadRecordDetail() {
 
-        if (pnDetail < 0 || pnDetail > poSOATaggingController.getDetailCount() - 1) {
-            return;
+        try {
+            if (pnDetail < 0 || pnDetail > poSOATaggingController.getDetailCount() - 1) {
+                return;
+            }
+            tfSourceNo.setText(poSOATaggingController.Detail(pnDetail).getSourceNo());
+            tfSourceCode.setText(poSOATaggingController.Detail(pnDetail).getSourceCode());
+            String lsReferenceDate = "";
+            String lsReferenceNo = "";
+            switch(poSOATaggingController.Detail(pnDetail).getSourceCode()){
+                case SOATaggingStatic.PaymentRequest:
+                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getSeriesNo();
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
+                    break;
+                case SOATaggingStatic.CachePayable:
+                    break;
+            }
+            tfReferenceNo.setText(lsReferenceNo);
+            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
+            tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getCreditAmount(), true));
+            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getDebitAmount(), true));
+            tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getAppliedAmount(), true));
+            JFXUtil.updateCaretPositions(apDetail);
+        } catch (SQLException ex) {
+            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        tfSourceNo.setText(poSOATaggingController.Detail(pnDetail).getSourceNo());
-        tfSourceCode.setText(poSOATaggingController.Detail(pnDetail).getSourceCode());
-        tfReferenceNo.setText("TODO");
-        tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getCreditAmount(), true));
-        tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getDebitAmount(), true));
-        tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getAppliedAmount(), true));
-        JFXUtil.updateCaretPositions(apDetail);
 
     }
 
@@ -426,17 +494,32 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                 Platform.runLater(() -> {
                     details_data.clear();
                     int lnCtr;
-                    double lnTotal = 0.0;
+                    String lsReferenceNo = "";
                     for (lnCtr = 0; lnCtr < poSOATaggingController.getDetailCount(); lnCtr++) {
-                        details_data.add(
-                                new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),
-                                        String.valueOf(poSOATaggingController.Detail(lnCtr).getSourceNo()),
-                                        String.valueOf(poSOATaggingController.Detail(lnCtr).getSourceCode()),
-                                        String.valueOf("TODO"),
-                                        String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(lnCtr).getCreditAmount(), true)),
-                                        String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(lnCtr).getDebitAmount(), true)),
-                                        String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(lnCtr).getTransactionTotal(), true))
-                                ));
+                        try {
+                            switch(poSOATaggingController.Detail(pnDetail).getSourceCode()){
+                                case SOATaggingStatic.PaymentRequest:
+                                    lsReferenceNo = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
+                                    break;
+                                case SOATaggingStatic.CachePayable:
+                                    break;
+                            }
+                            
+                            details_data.add(
+                                    new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),
+                                            String.valueOf(poSOATaggingController.Detail(lnCtr).getSourceNo()),
+                                            String.valueOf(poSOATaggingController.Detail(lnCtr).getSourceCode()),
+                                            String.valueOf(lsReferenceNo),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(lnCtr).getCreditAmount(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(lnCtr).getDebitAmount(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(lnCtr).getTransactionTotal(), true))
+                                    ));
+                            lsReferenceNo = "";
+                        } catch (SQLException ex) {
+                            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (GuanzonException ex) {
+                            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                     if (pnDetail < 0 || pnDetail
                             >= details_data.size()) {
@@ -490,6 +573,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             JFXUtil.setVerticalScroll(taRemarks);
         });
 
+        JFXUtil.setFocusListener(txtMaster_Focus, tfSearchCompany, tfSearchSupplier);
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
     }
 
