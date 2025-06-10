@@ -210,7 +210,7 @@
                                                               <children>
                                                                   <GridPane layoutX="11.0" layoutY="6.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="6.0">
                                                                       <columnConstraints>
-                                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="65.0" />
+                                                                          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="69.0" />
                                                                           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" />
                                                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
@@ -281,10 +281,10 @@
                                                          </GridPane.margin>
                                                       </TextArea>
                                                                   <TextField fx:id="tfTransactionTotal" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfVatAmount" alignment="CENTER_RIGHT" layoutX="733.0" layoutY="78.0" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="5" />
-                                                                  <TextField fx:id="tfNonVatSales" alignment="CENTER_RIGHT" layoutX="733.0" layoutY="107.0" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="6" />
-                                                                  <TextField fx:id="tfZeroVatSales" alignment="CENTER_RIGHT" layoutX="733.0" layoutY="136.0" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="7" />
-                                                                  <TextField fx:id="tfVatExemptSales" alignment="CENTER_RIGHT" layoutX="733.0" layoutY="165.0" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="8" />
+                                                                  <TextField fx:id="tfVatAmount" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="78.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="5" />
+                                                                  <TextField fx:id="tfNonVatSales" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="107.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="6" />
+                                                                  <TextField fx:id="tfZeroVatSales" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="136.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="7" />
+                                                                  <TextField fx:id="tfVatExemptSales" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="165.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="8" />
                                                                 <TextField fx:id="tfNetTotal" alignment="CENTER_RIGHT" disable="true" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="9">
                                                                      </TextField>
                                                                   <Label layoutX="50.0" layoutY="54.0" text="Transaction Total" GridPane.columnIndex="6" GridPane.rowIndex="2">
@@ -305,7 +305,7 @@
                                                                   <Label layoutX="596.0" layoutY="85.0" text="Discount Amount" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" layoutX="674.0" layoutY="80.0" promptText="0.0000" GridPane.columnIndex="8" GridPane.rowIndex="3" />
                                                                   <Label layoutX="571.0" layoutY="115.0" text="Freight" GridPane.columnIndex="6" GridPane.rowIndex="4" />
-                                                                  <TextField fx:id="tfFreight" alignment="CENTER_RIGHT" layoutX="674.0" layoutY="110.0" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="tfFreight" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="674.0" layoutY="110.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="4" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>

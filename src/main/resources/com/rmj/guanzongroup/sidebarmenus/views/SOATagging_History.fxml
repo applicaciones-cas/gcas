@@ -37,7 +37,7 @@
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="230.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
-                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="40.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="110.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="230.0" />
                                     <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
@@ -52,7 +52,7 @@
                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Label text="Supplier">
+                                    <Label text="Company">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
@@ -62,19 +62,19 @@
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfSearchSupplier" promptText="Press F3: Search" GridPane.columnIndex="2" />
+                                    <TextField fx:id="tfSearchCompany" promptText="Press F3: Search" GridPane.columnIndex="2" />
                                     <TextField fx:id="tfSearchReferenceNo" promptText="Press F3: Search" GridPane.columnIndex="10" />
                                     <Label fx:id="lblSource" layoutX="367.0" layoutY="14.0" text="Company - Industry" GridPane.columnIndex="12">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="55.0" layoutY="14.0" text="Payee" GridPane.columnIndex="4">
+                                    <Label layoutX="55.0" layoutY="14.0" text="Supplier / Payee" GridPane.columnIndex="4">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfSearchPayee" layoutX="120.0" layoutY="11.0" promptText="Press F3: Search" GridPane.columnIndex="6" />
+                                    <TextField fx:id="tfSearchSupplierPayee" layoutX="120.0" layoutY="11.0" promptText="Press F3: Search" GridPane.columnIndex="6" />
                                  </children>
                               </GridPane>
                            </children>
@@ -224,8 +224,8 @@
                                                                           <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                                               <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                       <TextField fx:id="tfSOANo" disable="true" editable="false" maxHeight="25.0" promptText="" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                          <TextField fx:id="tfClient" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                                                  <TextField fx:id="tfIssuedTo" layoutX="85.0" layoutY="107.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                                                          <TextField fx:id="tfClient" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                                  <TextField fx:id="tfIssuedTo" layoutX="85.0" layoutY="107.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
                                                       <TextArea fx:id="taRemarks" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" GridPane.rowSpan="3">
                                                          <GridPane.margin>
                                                             <Insets top="1.0" />
@@ -252,7 +252,7 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <TextField fx:id="tfCompany" layoutX="105.0" layoutY="140.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="tfCompany" layoutX="105.0" layoutY="140.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                   <Label layoutX="596.0" layoutY="85.0" text="Discount Amount" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" layoutX="674.0" layoutY="80.0" promptText="0.0000" GridPane.columnIndex="8" GridPane.rowIndex="3" />
                                                                   <Label layoutX="571.0" layoutY="115.0" text="Freight" GridPane.columnIndex="6" GridPane.rowIndex="4" />
