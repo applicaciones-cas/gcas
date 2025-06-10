@@ -3,18 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
-
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelAPPaymentAdjustment;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Detail;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderReturn_Main;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSOATagging;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSOATagging_Detail;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -33,13 +27,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -49,26 +41,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.cas.gl.status.SOATaggingStatus;
-import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
-import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import javafx.animation.PauseTransition;
-import javafx.util.Pair;
-import java.util.ArrayList;
 import org.guanzon.cas.gl.SOATagging;
 import org.guanzon.cas.gl.services.SOATaggingControllers;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import org.guanzon.appdriver.agent.ShowDialogFX;
-import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.cas.gl.status.SOATaggingStatic;
 
 /**

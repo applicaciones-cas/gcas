@@ -71,9 +71,9 @@ import org.guanzon.cas.gl.status.SOATaggingStatic;
 /**
  * FXML Controller class
  *
- * @author Aldrich & Arsiela Team 2 06102025
+ * @author User
  */
-public class SOATagging_EntryController implements Initializable, ScreenInterface {
+public class SOATagging_ConfirmationController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     static SOATagging poSOATaggingController;
@@ -88,7 +88,8 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     private String psCompanyId = "";
     private String psCategoryId = "";
     private boolean pbEntered = false;
-
+    private String psSearchCompanyId = "";
+    private String psSearchSupplierId = "";
     private ObservableList<ModelSOATagging_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelSOATagging_Detail> details_data = FXCollections.observableArrayList();
 
@@ -111,11 +112,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnPrint, btnHistory, btnRetrieve, btnClose;
+    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnConfirm, btnVoid, btnPrint, btnReturn, btnHistory, btnRetrieve, btnClose;
 
     @FXML
-    private TextField tfTransactionNo, tfSOANo, tfClient, tfIssuedTo, tfTransactionTotal, tfVatAmount, tfNonVatSales, tfZeroVatSales, tfVatExemptSales,
-            tfNetTotal, tfCompany, tfDiscountAmount, tfFreight, tfSourceNo, tfSourceCode, tfReferenceNo, tfCreditAmount, tfDebitAmount, tfAppliedAmtDetail;
+    private TextField tfSearchCompany, tfSearchReferenceNo, tfSearchSupplier, tfTransactionNo, tfSOANo, tfClient, tfIssuedTo, tfTransactionTotal,
+            tfVatAmount, tfNonVatSales, tfZeroVatSales, tfVatExemptSales, tfNetTotal, tfCompany, tfDiscountAmount, tfFreight, tfSourceNo, tfSourceCode, tfReferenceNo, tfCreditAmount, tfDebitAmount, tfAppliedAmtDetail;
 
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate;
@@ -127,7 +128,8 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     private TableView tblViewTransDetailList, tblViewMainList;
 
     @FXML
-    private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail, tblAppliedAmtDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo;
+    private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail,
+            tblAppliedAmtDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo;
 
     @FXML
     private Pagination pgPagination;
@@ -158,7 +160,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             poSOATaggingController.setCategoryId(psCategoryId);
             poSOATaggingController.initFields();
             loadRecordSearch();
-            btnNew.fire();
         });
 
         pgPagination.setPageCount(1);
@@ -198,6 +199,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 Button clickedButton = (Button) source;
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
+
                     case "btnBrowse":
                         poSOATaggingController.setTransactionStatus(SOATaggingStatus.OPEN);
                         poJSON = poSOATaggingController.searchTransaction();
@@ -288,7 +290,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     case "btnHistory":
                         break;
                     case "btnRetrieve":
-                        retrievePayables();
+                        retrieveSOATagging();
                         JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
                         JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
                         break;
@@ -337,17 +339,38 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             return;
                         }
                         break;
-                    case "btnNew":
-                        //Clear data
-                        poSOATaggingController.resetMaster();
-                        clearTextFields();
-                        poJSON = poSOATaggingController.NewTransaction();
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    case "btnConfirm":
+                        poJSON = new JSONObject();
+                        if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to confirm transaction?") == true) {
+                            poJSON = poSOATaggingController.ConfirmTransaction("");
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                return;
+                            } else {
+                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
+                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
+                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
+                            }
+                        } else {
                             return;
                         }
-                        poSOATaggingController.initFields();
-                        pnEditMode = poSOATaggingController.getEditMode();
+                        break;
+                    case "btnVoid":
+                        poJSON = new JSONObject();
+                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
+                            poJSON = poSOATaggingController.VoidTransaction("");
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                return;
+                            } else {
+                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#FAA0A0", highlightedRowsMain);
+                            }
+                        } else {
+                            return;
+                        }
                         break;
 
                     default:
@@ -382,13 +405,13 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
-    public void retrievePayables() {
+    public void retrieveSOATagging() {
         poJSON = new JSONObject();
-        poJSON = poSOATaggingController.loadPayables();   //("confirmation", psSupplierId, tfSearchReferenceNo.getText());
+        poJSON = poSOATaggingController.loadSOATagging(psIndustryId, psSearchCompanyId, psSearchSupplierId, tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
@@ -492,6 +515,20 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
+                case "tfSearchSupplier":
+                    if (lsValue.equals("")) {
+                        psSearchSupplierId = "";
+                    }
+                    loadRecordSearch();
+                    break;
+                case "tfSearchCompany":
+                    if (lsValue.equals("")) {
+                        psSearchCompanyId = "";
+                    }
+                    loadRecordSearch();
+                    break;
+                case "tfSearchReferenceNo":
+                    break;
                 case "tfSOANo":
                     if (!lsValue.isEmpty()) {
                         poJSON = poSOATaggingController.Master().setSOANumber(lsValue);
@@ -554,7 +591,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     }
                     break;
             }
-            loadRecordMaster();
+            if (!JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfSearchSupplier", "tfSearchCompany", "tfSearchReferenceNo")) {
+                loadRecordMaster();
+            }
         }
     };
 
@@ -632,6 +671,33 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     break;
                 case F3:
                     switch (lsID) {
+                        case "tfSearchCompany":
+                            poJSON = poSOATaggingController.SearchCompany(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSearchCompany.setText("");
+                                psSearchCompanyId = "";
+                                break;
+                            }
+                            psSearchCompanyId = poSOATaggingController.Master().getCompanyId();
+                            loadRecordSearch();
+                            retrieveSOATagging();
+                            return;
+                        case "tfSearchSupplier":
+                            poJSON = poSOATaggingController.SearchSupplier(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSearchSupplier.setText("");
+                                psSearchSupplierId = "";
+                                break;
+                            }
+                            psSearchSupplierId = poSOATaggingController.Master().getClientId();
+                            loadRecordSearch();
+                            retrieveSOATagging();
+                            return;
+                        case "tfSearchReferenceNo":
+                            retrieveSOATagging();
+                            return;
                         case "tfClient":
                             poJSON = poSOATaggingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
@@ -666,9 +732,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     break;
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -772,7 +838,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -796,13 +862,13 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     String lsTransDate = "";
 
                     //retreiving using column index
-                    for (int lnCtr = 0; lnCtr <= poSOATaggingController.getPayablesCount() - 1; lnCtr++) {
+                    for (int lnCtr = 0; lnCtr <= poSOATaggingController.getSOATaggingCount() - 1; lnCtr++) {
                         try {
                             switch (poSOATaggingController.PayableType(lnCtr)) {
                                 case SOATaggingStatic.PaymentRequest:
-                                    lsPayeeName = poSOATaggingController.PaymentRequestList(lnCtr).Payee().getPayeeName();
-                                    lsTransNo = poSOATaggingController.PaymentRequestList(lnCtr).getTransactionNo();
-                                    lsTransDate = String.valueOf(poSOATaggingController.PaymentRequestList(lnCtr).getTransactionDate());
+                                    lsPayeeName = poSOATaggingController.APPaymentMasterList(lnCtr).Payee().getPayeeName();
+                                    lsTransNo = poSOATaggingController.APPaymentMasterList(lnCtr).getTransactionNo();
+                                    lsTransDate = String.valueOf(poSOATaggingController.APPaymentMasterList(lnCtr).getTransactionDate());
                                     break;
                                 case SOATaggingStatic.CachePayable:
                                     break;
@@ -814,11 +880,14 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsTransNo
                             ));
                         } catch (SQLException ex) {
-                            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         } catch (GuanzonException ex) {
-                            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
 
+//                        if (poSOATaggingController.PaymentRequestList(lnCtr).getTransactionStatus().equals(PurchaseOrderReturnStatus.CONFIRMED)) {
+//                            plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
+//                        }
 //                        if (poSOATaggingController.PaymentRequestList(lnCtr).getTransactionStatus().equals(PurchaseOrderReturnStatus.CONFIRMED)) {
 //                            plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
 //                        }
@@ -870,51 +939,47 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
     public void loadRecordSearch() {
         try {
+            poSOATaggingController.Master().setIndustryId(psIndustryId);
             lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
+
+            if (psSearchSupplierId.equals("")) {
+                tfSearchSupplier.setText("");
+            } else {
+                tfSearchSupplier.setText(poSOATaggingController.Master().Supplier().getCompanyName());
+            }
+            if (psSearchCompanyId.equals("")) {
+                tfSearchCompany.setText("");
+            } else {
+                tfSearchCompany.setText(poSOATaggingController.Master().Company().getCompanyName());
+            }
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
     public void loadRecordDetail() {
-        try {
-            if (pnDetail < 0 || pnDetail > poSOATaggingController.getDetailCount() - 1) {
-                return;
-            }
-
-            boolean lbDisable = poSOATaggingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
-            JFXUtil.setDisabled(!lbDisable, tfSourceNo, tfReferenceNo);
-            if (lbDisable) {
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSourceNo, tfReferenceNo)) {
-                    JFXUtil.AddStyleClass("DisabledTextField", tfSourceNo, tfReferenceNo);
-                }
-            } else {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfSourceNo, tfReferenceNo);
-            }
-
-            tfSourceNo.setText(poSOATaggingController.Detail(pnDetail).getSourceNo());
-            tfSourceCode.setText(poSOATaggingController.Detail(pnDetail).getSourceCode());
-
-            String lsReferenceDate = "";
-            switch (poSOATaggingController.Detail(pnDetail).getSourceCode()) {
-                case SOATaggingStatic.PaymentRequest:
-                    tfReferenceNo.setText(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getSeriesNo());
-                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
-                    dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
-                    break;
-                case SOATaggingStatic.CachePayable:
-                    break;
-            }
-
-            tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getCreditAmount(), true));
-            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getDebitAmount(), true));
-            tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getAppliedAmount(), true));
-            JFXUtil.updateCaretPositions(apDetail);
-        } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        if (pnDetail < 0 || pnDetail > poSOATaggingController.getDetailCount() - 1) {
+            return;
         }
+
+        boolean lbDisable = poSOATaggingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
+        JFXUtil.setDisabled(!lbDisable, tfSourceNo, tfReferenceNo);
+        if (lbDisable) {
+            while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSourceNo, tfReferenceNo)) {
+                JFXUtil.AddStyleClass("DisabledTextField", tfSourceNo, tfReferenceNo);
+            }
+        } else {
+            JFXUtil.RemoveStyleClass("DisabledTextField", tfSourceNo, tfReferenceNo);
+        }
+
+        tfSourceNo.setText(poSOATaggingController.Detail(pnDetail).getSourceNo());
+        tfSourceCode.setText(poSOATaggingController.Detail(pnDetail).getSourceCode());
+        tfReferenceNo.setText("TODO");
+        tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getCreditAmount(), true));
+        tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getDebitAmount(), true));
+        tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getAppliedAmount(), true));
+        JFXUtil.updateCaretPositions(apDetail);
+
     }
 
     public void loadRecordMaster() {
@@ -946,6 +1011,17 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
             poSOATaggingController.computeFields();
 
+            String lsReferenceDate = "";
+            switch (poSOATaggingController.Detail(pnDetail).getSourceCode()) {
+                case SOATaggingStatic.PaymentRequest:
+                    tfReferenceNo.setText(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getSeriesNo());
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
+                    dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
+                    break;
+                case SOATaggingStatic.CachePayable:
+                    break;
+            }
+
             tfTransactionNo.setText(poSOATaggingController.Master().getTransactionNo());
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
@@ -965,9 +1041,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getNetTotal(), true));
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -995,7 +1071,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             });
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1070,11 +1146,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         }
                         loadRecordMaster();
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (SQLException ex) {
-                        Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
 
@@ -1115,7 +1191,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             JFXUtil.setVerticalScroll(taRemarks);
         });
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfCompany, tfClient, tfIssuedTo, tfSOANo);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfCompany, tfClient, tfIssuedTo, tfSOANo, tfSearchCompany, tfSearchSupplier);
         JFXUtil.setFocusListener(txtDetail_Focus, tfSourceNo, tfSourceCode, tfReferenceNo, tfAppliedAmtDetail);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
@@ -1154,25 +1230,37 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
 
     private void initButton(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        boolean lbShow2 = fnValue == EditMode.READY;
-        boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
-
+        boolean lbShow1 = (fnValue == EditMode.UPDATE);
+//        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
+        boolean lbShow3 = (fnValue == EditMode.READY);
+        boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
         // Manage visibility and managed state of other buttons
-        JFXUtil.setButtonsVisibility(!lbShow, btnNew);
-        JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);
-        JFXUtil.setButtonsVisibility(lbShow2, btnUpdate, btnHistory);
-        JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
+        //Update 
+        JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel);
+        //Ready
+        JFXUtil.setButtonsVisibility(lbShow3, btnPrint, btnUpdate, btnHistory, btnConfirm, btnVoid);
+        //Unkown || Ready
+        JFXUtil.setDisabled(!lbShow1, apMaster, apDetail);
+        JFXUtil.setButtonsVisibility(lbShow4, btnClose);
+        JFXUtil.setButtonsVisibility(false, btnReturn);
 
-        apMaster.setDisable(!lbShow);
-        JFXUtil.setDisabled(!lbShow, taRemarks);
         switch (poSOATaggingController.Master().getTransactionStatus()) {
+            case SOATaggingStatus.CONFIRMED:
+                JFXUtil.setButtonsVisibility(false, btnConfirm);
+                if (poSOATaggingController.Master().isProcessed()) {
+                    JFXUtil.setButtonsVisibility(false, btnUpdate, btnVoid);
+                } else {
+                    JFXUtil.setButtonsVisibility(lbShow3, btnReturn);
+                }
+                break;
+//            case SOATaggingStatus.POSTED:
             case SOATaggingStatus.PAID:
-                JFXUtil.setButtonsVisibility(false, btnUpdate);
+            case SOATaggingStatus.RETURNED:
+                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate, btnReturn, btnVoid);
                 break;
             case SOATaggingStatus.VOID:
             case SOATaggingStatus.CANCELLED:
-                JFXUtil.setButtonsVisibility(false, btnUpdate);
+                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate, btnReturn, btnVoid, btnPrint);
                 break;
         }
     }
@@ -1227,6 +1315,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
 
     public void clearTextFields() {
+        psSearchCompanyId = "";
+        psCompanyId = "";
+        psSearchSupplierId = "";
         previousSearchedTextField = null;
         lastFocusedTextField = null;
         dpTransactionDate.setValue(null);
