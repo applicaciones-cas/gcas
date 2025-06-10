@@ -788,6 +788,14 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml":
                     return "Payment Request History";
 
+                /*DISBURSEMENT VOUCHER */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml":
+                    return "Disbursement Voucher";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml":
+                    return "Disbursement Voucher Verification";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
+                    return "Disbursement Voucher Certification";
+
                 /* OTHERS/PARAMETERS/ADDRESS */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
                     return "Barangay";
@@ -1152,6 +1160,14 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml";
             /*END PAYMENT REQUEST*/
 
+ /*DISBURSEMENT VOUCHER */
+            case "Disbursement Voucher":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml";
+            case "Disbursement Voucher Verification":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml";
+            case "Disbursement Voucher Certification":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml";
+
         }
 
         return "";
@@ -1459,6 +1475,15 @@ public class DashboardController implements Initializable {
                     return new PaymentRequest_ConfirmationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml":
                     return new PaymentRequest_HistoryController();
+
+                /*DISBURSEMENT VOUCHER */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml":
+                    return new DisbursementVoucher_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml":
+                    return new DisbursementVoucher_VerificationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
+                    return new DisbursementVoucher_CertificationController();
+
                 /* INVENTORY/INVENTORY/ */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
 //                    return new InventoryMaintenanceController();
@@ -2451,9 +2476,16 @@ public class DashboardController implements Initializable {
                 //Entry
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Entry\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"002\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Entry.fxml\",\"controller_path\":\"PaymentRequestEntry.controller\",\"menu_id\":\"003\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml\",\"controller_path\":\"DisbursementVoucher_EntryController\",\"menu_id\":\"009\",\"menu_parent\":\"002\"},"
                 //Confirmation
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"004\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Confirmation.fxml\",\"controller_path\":\"PaymentRequestConfirmation.controller\",\"menu_id\":\"005\",\"menu_parent\":\"004\"},"
+                //Verification
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Verification\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"010\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml\",\"controller_path\":\"DisbursementVoucher_VerificationController\",\"menu_id\":\"011\",\"menu_parent\":\"010\"},"
+                //Cerification
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Certification\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"012\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml\",\"controller_path\":\"DisbursementVoucher_CertificationController\",\"menu_id\":\"013\",\"menu_parent\":\"012\"},"
                 //Approval
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Approval\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"006\",\"menu_parent\":\"001\"},"
                 //History
