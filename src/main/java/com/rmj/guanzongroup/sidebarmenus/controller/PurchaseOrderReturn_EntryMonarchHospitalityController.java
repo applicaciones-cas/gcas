@@ -841,21 +841,22 @@ public class PurchaseOrderReturn_EntryMonarchHospitalityController implements In
                             if (pbSuccess && ((poPurchaseReturnController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 pbSuccess = false;
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
                                         + "If YES, please seek approval to proceed with the new selected date.\n"
                                         + "If NO, the previous transaction date will be retained.") == true) {
-                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
                                             poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-
                                         }
+                                    } else {
+                                        pbSuccess = false;
                                     }
                                 } else {
-                                    pbSuccess = false;
-                                }
+                                    poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                } 
                             }
 
                             if (pbSuccess) {

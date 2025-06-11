@@ -1214,17 +1214,17 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
 
                             if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
                                         + "If YES, please seek approval to proceed with the new selected date.\n"
                                         + "If NO, the previous transaction date will be retained.") == true) {
-                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         }
+                                    } else {
+                                        pbSuccess = false;
                                     }
-                                } else {
-                                    pbSuccess = false;
                                 }
                             }
 
