@@ -40,6 +40,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.util.Pair;
+import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -47,6 +48,7 @@ import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
+import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.cas.gl.APPaymentAdjustment;
 import org.guanzon.cas.gl.services.GLControllers;
 import org.guanzon.cas.gl.status.APPaymentAdjustmentStatus;
@@ -461,6 +463,100 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
 //            loadRecordMaster();
         }
     };
+    
+    boolean pbSuccess = true;
+    private void datepicker_Action(ActionEvent event) {
+        poJSON = new JSONObject();
+        JFXUtil.setJSONSuccess(poJSON, "success");
+
+        try {
+            Object source = event.getSource();
+            if (source instanceof DatePicker) {
+                DatePicker datePicker = (DatePicker) source;
+                String inputText = datePicker.getEditor().getText();
+                SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+                LocalDate currentDate = null;
+                LocalDate selectedDate = null;
+                String lsServerDate = "";
+                String lsTransDate = "";
+                String lsSelectedDate = "";
+                lastFocusedTextField = datePicker;
+                previousSearchedTextField = null;
+
+                JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
+                poJSON = ldtResult.poJSON;
+                if ("error".equals(poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    loadRecordMaster();
+                    return;
+                }
+                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                    return;
+                }
+                selectedDate = ldtResult.selectedDate;
+
+                lsServerDate = sdfFormat.format(oApp.getServerDate());
+//                lsTransDate = sdfFormat.format(poAPPaymentAdjustmentController.Master().getTransactionDate());
+                lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+                switch (datePicker.getId()) {
+                    case "dpTransactionDate":
+                        if (poAPPaymentAdjustmentController.getEditMode() == EditMode.ADDNEW
+                                || poAPPaymentAdjustmentController.getEditMode() == EditMode.UPDATE) {
+                            lsServerDate = sdfFormat.format(oApp.getServerDate());
+                            lsTransDate = sdfFormat.format(poAPPaymentAdjustmentController.getModel().getTransactionDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+                            if (selectedDate.isAfter(currentDate)) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Future dates are not allowed.");
+                                pbSuccess = false;
+                            }
+
+                            if (pbSuccess && ((poAPPaymentAdjustmentController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                                    || !lsServerDate.equals(lsSelectedDate))) {
+                                if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                        + "If YES, please seek approval to proceed with the new selected date.\n"
+                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                        poJSON = ShowDialogFX.getUserApproval(oApp);
+                                        if (!"success".equals((String) poJSON.get("result"))) {
+                                            pbSuccess = false;
+                                        }
+                                    } else {
+                                        pbSuccess = false;
+                                    }
+                                } 
+                            }
+
+                            if (pbSuccess) {
+                                poAPPaymentAdjustmentController.getModel().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+
+                                }
+                            }
+
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordMaster();
+                            pbSuccess = true; //Set to original value
+                        }
+                        break;
+//                    case "dpTransactionDate": {
+//                        poJSON.put("TransactionDate", lsSelectedDate);
+//                        System.out.println("Transaction Date updated with value: " + lsSelectedDate);
+//                        break;
+//                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void initTextFields() {
         Platform.runLater(() -> {
@@ -475,6 +571,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate);
     }
 
     public void clearTextFields() {
