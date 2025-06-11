@@ -460,7 +460,12 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.VoidTransaction("");
+                            if(PurchaseOrderReceivingStatus.CONFIRMED.equals(poPurchaseReceivingController.Master().getTransactionStatus())){
+                                poJSON = poPurchaseReceivingController.CancelTransaction("Cancel");
+                            } else {
+                                poJSON = poPurchaseReceivingController.VoidTransaction("Void");
+                            }
+                            
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;

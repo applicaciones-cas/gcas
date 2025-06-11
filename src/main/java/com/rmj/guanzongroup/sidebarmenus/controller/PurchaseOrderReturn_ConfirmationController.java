@@ -366,7 +366,11 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            poJSON = poPurchaseReturnController.VoidTransaction("");
+                            if(PurchaseOrderReturnStatus.CONFIRMED.equals(poPurchaseReturnController.Master().getTransactionStatus())){
+                                poJSON = poPurchaseReturnController.CancelTransaction("Cancel");
+                            } else {
+                                poJSON = poPurchaseReturnController.VoidTransaction("Void");
+                            }
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
