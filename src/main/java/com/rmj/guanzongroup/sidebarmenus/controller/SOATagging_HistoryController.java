@@ -86,7 +86,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     private Label lblSource, lblStatus;
 
     @FXML
-    private Button btnBrowse, btnPrint, btnHistory, btnClose;
+    private Button btnBrowse, btnHistory, btnClose;
 
     @FXML
     private TextField tfTransactionNo, tfSOANo, tfClient, tfIssuedTo, tfTransactionTotal, tfVatAmount, tfNonVatSales, tfZeroVatSales, tfVatExemptSales,
@@ -165,37 +165,6 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                 Button clickedButton = (Button) source;
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
-                    case "btnPrint":
-//                        poJSON = poSOATaggingController.printRecord(() -> {
-//                            if (isPrinted) {
-//                                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-//                                poSOATaggingController.resetMaster();
-//                                poSOATaggingController.Detail().clear();
-//                                pnEditMode = EditMode.UNKNOWN;
-//                                clearTextFields();
-//                                initButton(pnEditMode);
-//                            }
-//                            Platform.runLater(() -> {
-//                                try {
-//                                    if (!isPrinted) {
-//                                        poSOATaggingController.OpenTransaction(poSOATaggingController.PurchaseOrderReturnList(pnMain).getTransactionNo());
-//                                    }
-//                                    loadRecordMaster();
-//                                    loadTableDetail();
-//                                } catch (CloneNotSupportedException ex) {
-//                                    Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-//                                } catch (SQLException ex) {
-//                                    Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-//                                } catch (GuanzonException ex) {
-//                                    Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-//                                }
-//                                isPrinted = false;
-//                            });
-//                        });
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        }
-                        break;
                     case "btnBrowse":
                         poSOATaggingController.setTransactionStatus(SOATaggingStatus.OPEN
                                                         + SOATaggingStatus.CONFIRMED
@@ -225,11 +194,8 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                         break;
                 }
 
-                if (JFXUtil.isObjectEqualTo(lsButton, "btnPrint")) {
-                } else {
-                    loadRecordMaster();
-                    loadTableDetail();
-                }
+                loadRecordMaster();
+                loadTableDetail();
                 initButton(pnEditMode);
 
             }
@@ -409,30 +375,15 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     }
 
     public void loadRecordMaster() {
-//        boolean lbIsReprint = poSOATaggingController.Master().getPrint().equals("1") ? true : false;
-//        if (lbIsReprint) {
-//            btnPrint.setText("Reprint");
-//        } else {
-//            btnPrint.setText("Print");
-//        }
-
         try {
             Platform.runLater(() -> {
-                String lsActive = poSOATaggingController.Master().getTransactionStatus();
-                boolean lbPrintStat = pnEditMode == EditMode.READY && !SOATaggingStatus.VOID.equals(lsActive);
-
                 Map<String, String> statusMap = new HashMap<>();
-//                statusMap.put(SOATaggingStatus.POSTED, "POSTED");
                 statusMap.put(SOATaggingStatus.OPEN, "OPEN");
                 statusMap.put(SOATaggingStatus.PAID, "PAID");
                 statusMap.put(SOATaggingStatus.CONFIRMED, "CONFIRMED");
                 statusMap.put(SOATaggingStatus.RETURNED, "RETURNED");
                 statusMap.put(SOATaggingStatus.VOID, "VOIDED");
                 statusMap.put(SOATaggingStatus.CANCELLED, "CANCELLED");
-
-                String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
-                lblStatus.setText(lsStat);
-                JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
             });
 
             poSOATaggingController.computeFields();
@@ -577,22 +528,12 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     private void initButton(int fnValue) {
 
         boolean lbShow3 = (fnValue == EditMode.READY);
-        boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
-        // Manage visibility and managed state of other buttons
-
         //Ready
-        JFXUtil.setButtonsVisibility(lbShow3, btnPrint, btnHistory);
+        JFXUtil.setButtonsVisibility(lbShow3, btnHistory);
 
         //Unkown || Ready
         JFXUtil.setDisabled(true, apMaster, apDetail);
-        JFXUtil.setButtonsVisibility(lbShow3, btnPrint, btnHistory);
-
-        switch (poSOATaggingController.Master().getTransactionStatus()) {
-            case PurchaseOrderReturnStatus.VOID:
-            case PurchaseOrderReturnStatus.CANCELLED:
-                JFXUtil.setButtonsVisibility(false, btnPrint);
-                break;
-        }
+        JFXUtil.setButtonsVisibility(lbShow3, btnHistory);
     }
 
     public void initDetailsGrid() {
