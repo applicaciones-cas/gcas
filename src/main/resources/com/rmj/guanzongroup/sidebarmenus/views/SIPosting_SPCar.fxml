@@ -375,7 +375,7 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                      <Label text="Cost" GridPane.columnIndex="8">
+                                                      <Label text="SRP" GridPane.columnIndex="8">
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font>
@@ -396,14 +396,14 @@
                                                                               <TextField fx:id="tfSupersede" disable="true" editable="false" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                                       <TextField fx:id="tfOrderQuantity" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                       <TextField fx:id="tfReceiveQuantity" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="6" GridPane.rowIndex="5" />
-                                                      <TextField fx:id="tfCost" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="10" />
+                                                      <TextField fx:id="tfCost" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="5" />
                                                                               <TextField fx:id="tfDiscRateDetail" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="10" GridPane.rowIndex="1" />
                                                                               <TextField fx:id="tfAddlDiscAmtDetail" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="2" />
                                                                               <CheckBox fx:id="cbVatable" mnemonicParsing="false" onAction="#cmdCheckBox_Click" prefHeight="17.0" prefWidth="8.0" GridPane.columnIndex="10" GridPane.rowIndex="4" />
-                                                                              <TextField fx:id="tfTotalDetail" alignment="CENTER_RIGHT" layoutX="743.0" layoutY="69.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="5" />
+                                                                              <TextField fx:id="tfSRPAmount" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="743.0" layoutY="69.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="10" />
                                                                               <Label text="Disc. Rate (%)" GridPane.columnIndex="8" GridPane.rowIndex="1" />
                                                                               <Label text="Addl. Disc. Amt" GridPane.columnIndex="8" GridPane.rowIndex="2" />
-                                                                              <Label layoutX="654.0" layoutY="74.0" text="Total" GridPane.columnIndex="8" GridPane.rowIndex="5">
+                                                                              <Label layoutX="654.0" layoutY="74.0" text="Cost" GridPane.columnIndex="8" GridPane.rowIndex="5">
                                                                                  <font>
                                                                                     <Font name="System Bold" size="12.0" />
                                                                                  </font>

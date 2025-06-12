@@ -92,15 +92,14 @@ import org.guanzon.appdriver.constant.UserRight;
 public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
+    static PurchaseOrderReceiving poPurchaseReceivingController;
     private JSONObject poJSON;
+    public int pnEditMode;
+    private final String pxeModuleName = "SI Posting";
     private static final int ROWS_PER_PAGE = 50;
     int pnJEDetail = 0;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = "SI Posting";
-    static PurchaseOrderReceiving poPurchaseReceivingController;
-    public int pnEditMode;
-    boolean isPrinted = false;
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
@@ -149,7 +148,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private Label lblSource, lblStatus, lblJEStatus;
 
     @FXML
-    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPost, btnPrint, btnHistory, btnRetrieve, btnClose, btnArrowLeft, btnArrowRight;
+    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPost, btnHistory, btnRetrieve, btnClose, btnArrowLeft, btnArrowRight;
 
     @FXML
     private TextField tfSearchSupplier, tfSearchReferenceNo, tfSearchReceiveBranch, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo,
@@ -341,42 +340,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 Button clickedButton = (Button) source;
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
-                    case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord(() -> {
-                            if (isPrinted) {
-                                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                poPurchaseReceivingController.resetMaster();
-                                poPurchaseReceivingController.resetOthers();
-                                poPurchaseReceivingController.Detail().clear();
-                                imageView.setImage(null);
-                                pnEditMode = EditMode.UNKNOWN;
-                                clearTextFields();
-                                initButton(pnEditMode);
-                            }
-                            Platform.runLater(() -> {
-                                try {
-                                    if (!isPrinted) {
-                                        poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-                                        poPurchaseReceivingController.loadAttachments();
-                                    }
-                                    loadRecordMaster();
-                                    loadTableDetail();
-                                    loadTableAttachment();
-                                } catch (CloneNotSupportedException ex) {
-                                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (GuanzonException ex) {
-                                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                isPrinted = false;
-                            });
-
-                        });
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        }
-                        break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
@@ -460,21 +423,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                         }
                                     }
                                 }
-
-                                // Print Transaction Prompt
-                                loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
-                                poPurchaseReceivingController.loadAttachments();
-                                loadRecordMaster();
-                                isPrinted = false;
-                                if ("success".equals(loJSON.get("result"))) {
-                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
-                                        isPrinted = true;
-                                        btnPrint.fire();
-                                    }
-                                }
-                                if (!isPrinted) {
-                                    JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                }
+                                
+                                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -524,7 +474,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     clearTextFields();
                 }
 
-                if (JFXUtil.isObjectEqualTo(lsButton, "btnPrint", "btnArrowRight", "btnArrowLeft", "btnRetrieve")) {
+                if (JFXUtil.isObjectEqualTo(lsButton,  "btnArrowRight", "btnArrowLeft", "btnRetrieve")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
@@ -1284,18 +1234,10 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     public void loadRecordMaster() {
-        boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
-        if (lbIsReprint) {
-            btnPrint.setText("Reprint");
-        } else {
-            btnPrint.setText("Print");
-        }
-
         try {
 
             Platform.runLater(() -> {
                 String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
-                boolean lbPrintStat = pnEditMode == EditMode.READY && !PurchaseOrderReceivingStatus.VOID.equals(lsActive);
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(PurchaseOrderReceivingStatus.POSTED, "POSTED");
                 statusMap.put(PurchaseOrderReceivingStatus.PAID, "PAID");
@@ -1307,7 +1249,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
                 lblStatus.setText(lsStat);
-                JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
             });
 
             if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
@@ -1739,7 +1680,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         //Update 
         JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel);
         //Ready
-        JFXUtil.setButtonsVisibility(lbShow3, btnPrint, btnUpdate, btnHistory);
+        JFXUtil.setButtonsVisibility(lbShow3, btnUpdate, btnHistory);
         JFXUtil.setButtonsVisibility(false, btnPost);
 
         //Unkown || Ready
