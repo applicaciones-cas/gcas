@@ -104,6 +104,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
     private String psSupplierId = "";
     boolean lbresetpredicate = false;
     boolean pbEntered = false;
+    boolean pbKeyPressed = false;
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
@@ -654,15 +655,17 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                     if (lsValue.isEmpty()) {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             if (poPurchaseReceivingController.Master().getSupplierId() != null && !"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
-                                if (poPurchaseReceivingController.getDetailCount() > 1) {
-                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
-                                        poPurchaseReceivingController.removePORDetails();
-                                        showRetainedHighlight(false);
-                                        loadTableDetail();
-                                    } else {
-                                        loadRecordMaster();
-                                        return;
+                                if(!pbKeyPressed){
+                                    if (poPurchaseReceivingController.getDetailCount() > 1) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                            poPurchaseReceivingController.removePORDetails();
+                                            showRetainedHighlight(false);
+                                            loadTableDetail();
+                                        } else {
+                                            loadRecordMaster();
+                                            return;
+                                        }
                                     }
                                 }
                             }
@@ -873,6 +876,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poPurchaseReceivingController.getDetailCount() > 1) {
+                                    pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
                                         poPurchaseReceivingController.removePORDetails();
@@ -880,6 +884,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                     } else {
                                         return;
                                     }
+                                    pbKeyPressed = false;
                                 }
                             }
 
