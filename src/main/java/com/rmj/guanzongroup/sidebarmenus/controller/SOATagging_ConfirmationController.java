@@ -241,6 +241,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                            JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
                             break;
                         } else {
                             return;
@@ -295,9 +296,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
-                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1),  "#C1E1C1", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -306,15 +305,15 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            switch(poSOATaggingController.Master().getTransactionStatus()){
+                            switch (poSOATaggingController.Master().getTransactionStatus()) {
                                 case SOATaggingStatus.OPEN:
                                     poJSON = poSOATaggingController.VoidTransaction("Void");
-                                break;
+                                    break;
                                 case SOATaggingStatus.CONFIRMED:
                                     poJSON = poSOATaggingController.CancelTransaction("Cancel");
-                                break;
+                                    break;
                             }
-                            
+
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
@@ -506,7 +505,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                         poJSON = poSOATaggingController.Master().setClientId("");
                         psSupplierId = "";
                     }
-                    
+
                     break;
                 case "tfIssuedTo":
                     if (lsValue.isEmpty()) {
@@ -753,11 +752,11 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             if (pbSuccess && ((poSOATaggingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 pbSuccess = false;
-                                
+
                                 if (oApp.getUserLevel() == UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                            + "If YES, please seek approval to proceed with the new selected date.\n"
+                                            + "If NO, the previous transaction date will be retained.") == true) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
@@ -765,10 +764,10 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                             poSOATaggingController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
 
                                         }
-                                    }else {
+                                    } else {
                                         pbSuccess = false;
                                     }
-                                } 
+                                }
                             }
 
                             if (pbSuccess) {
@@ -811,30 +810,28 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     String lsPayeeName = "";
                     String lsTransNo = "";
                     String lsTransDate = "";
+                    JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
 
                     //retreiving using column index
                     for (int lnCtr = 0; lnCtr <= poSOATaggingController.getSOATaggingCount() - 1; lnCtr++) {
+
+                        lsTransNo = String.valueOf(poSOATaggingController.APPaymentMasterList(lnCtr).getTransactionNo());
                         try {
                             main_data.add(new ModelSOATagging_Main(String.valueOf(lnCtr + 1),
                                     String.valueOf(poSOATaggingController.APPaymentMasterList(lnCtr).Supplier().getCompanyName()),
-                                     String.valueOf(poSOATaggingController.APPaymentMasterList(lnCtr).getTransactionDate()),
-                                     String.valueOf(poSOATaggingController.APPaymentMasterList(lnCtr).getTransactionNo())
+                                    String.valueOf(poSOATaggingController.APPaymentMasterList(lnCtr).getTransactionDate()),
+                                    String.valueOf(poSOATaggingController.APPaymentMasterList(lnCtr).getTransactionNo())
                             ));
                         } catch (SQLException ex) {
                             Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         } catch (GuanzonException ex) {
                             Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
-
-//                        if (poSOATaggingController.PaymentRequestList(lnCtr).getTransactionStatus().equals(PurchaseOrderReturnStatus.CONFIRMED)) {
-//                            plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
-//                        }
-//                        if (poSOATaggingController.PaymentRequestList(lnCtr).getTransactionStatus().equals(PurchaseOrderReturnStatus.CONFIRMED)) {
-//                            plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
-//                        }
+                        if (poSOATaggingController.APPaymentMasterList(lnCtr).getTransactionStatus().equals(SOATaggingStatus.CONFIRMED)) {
+                            JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
+                        }
                     }
 
-                    JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
 
                     if (pnMain < 0 || pnMain
                             >= main_data.size()) {
@@ -903,11 +900,10 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             if (pnDetail < 0 || pnDetail > poSOATaggingController.getDetailCount() - 1) {
                 return;
             }
-            
+
             boolean lbDisable = poSOATaggingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             JFXUtil.setDisabled(!lbDisable, tfSourceNo, tfReferenceNo);
-            
-            
+
             String lsReferenceDate = "1900-01-01";
             String lsReferenceNo = "";
             switch (poSOATaggingController.Detail(pnDetail).getSourceCode()) {
@@ -918,7 +914,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                 case SOATaggingStatic.CachePayable:
                     break;
             }
-            
+
             tfSourceNo.setText(poSOATaggingController.Detail(pnDetail).getSourceNo());
             tfSourceCode.setText(poSOATaggingController.Detail(pnDetail).getSourceCode());
             tfReferenceNo.setText(lsReferenceNo);
@@ -1002,7 +998,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-    
+
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
         int realIndex = Integer.parseInt(pnRowMain);
 
@@ -1056,7 +1052,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 poSOATaggingController.AddDetail();
                             }
                         }
-                        
+
                         String lsReferenceNo = "";
                         for (lnCtr = 0; lnCtr < poSOATaggingController.getDetailCount(); lnCtr++) {
                             switch (poSOATaggingController.Detail(lnCtr).getSourceCode()) {
@@ -1066,7 +1062,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 case SOATaggingStatic.CachePayable:
                                     break;
                             }
-                            
+
                             details_data.add(
                                     new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poSOATaggingController.Detail(lnCtr).getSourceNo()),
