@@ -118,8 +118,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
     Map<String, String> imageinfo_temp = new HashMap<>();
-    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
-    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
     private FileChooser fileChooser;
     private int pnAttachment;
@@ -296,7 +294,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
             return;
         }
-        
+
         openedAttachment = poPurchaseReceivingController.Master().getTransactionNo();
         Map<String, Pair<String, String>> data = new HashMap<>();
         data.clear();
@@ -314,7 +312,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         }
 
     }
-    
+
     public void showSerialDialog() {
         poJSON = new JSONObject();
         try {
@@ -522,10 +520,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         break;
                     case "btnRetrieve":
                         //Retrieve data from purchase order to table main
-
                         retrievePOR();
-                        JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
-                        showRetainedHighlight(false);
                         break;
                     case "btnSave":
                         //Validator
@@ -577,8 +572,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
-                                showRetainedHighlight(true);
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
+
                             }
                         } else {
                             return;
@@ -1128,23 +1123,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         }
     };
 
-    public void showRetainedHighlight(boolean isRetained) {
-        if (isRetained) {
-            for (Pair<String, String> pair : plOrderNoPartial) {
-                if (!"0".equals(pair.getValue())) {
-                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
-                }
-            }
-        }
-        JFXUtil.disableAllHighlightByColor(tblViewMainList, "#C1E1C1", highlightedRowsMain);
-        plOrderNoPartial.clear();
-        for (Pair<String, String> pair : plOrderNoFinal) {
-            if (!"0".equals(pair.getValue())) {
-                JFXUtil.highlightByKey(tblViewMainList, pair.getKey(), "#C1E1C1", highlightedRowsMain);
-            }
-        }
-    }
-
     public void loadTableMain() {
         // Setting data to table detail
         JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
@@ -1158,8 +1136,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
-                    plOrderNoFinal.clear();
-
+                    JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
                     if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
                         //pending
                         //retreiving using column index
@@ -1177,10 +1154,10 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                             }
 
                             if (poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.POSTED)) {
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         }
-                        showRetainedHighlight(true);
+
                     }
 
                     if (pnMain < 0 || pnMain
@@ -1707,8 +1684,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpJETransactionDate);
-        JFXUtil.setFocusListener(datepicker_Focus, dpTransactionDate, dpReferenceDate,  dpJETransactionDate);
-        JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate, dpReferenceDate,  dpJETransactionDate);
+        JFXUtil.setFocusListener(datepicker_Focus, dpTransactionDate, dpReferenceDate, dpJETransactionDate);
+        JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate, dpReferenceDate, dpJETransactionDate);
     }
 
     public void initTextFields() {
@@ -1845,9 +1822,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel, btnSerials);
 
         //Ready
-        JFXUtil.setButtonsVisibility(lbShow3,btnUpdate, btnHistory);
+        JFXUtil.setButtonsVisibility(lbShow3, btnUpdate, btnHistory);
         JFXUtil.setButtonsVisibility(false, btnPost);
-        
+
         //Unkown || Ready
         JFXUtil.setButtonsVisibility(lbShow4, btnClose);
         JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apAttachments);

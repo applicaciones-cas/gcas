@@ -116,8 +116,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
     Map<String, String> imageinfo_temp = new HashMap<>();
-    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
-    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
+
 
     private FileChooser fileChooser;
     private int pnAttachment;
@@ -393,8 +392,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     case "btnRetrieve":
                         //Retrieve data from purchase order to table main
                         retrievePOR();
-                        JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
-                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
                         break;
                     case "btnSave":
                         //Validator
@@ -446,8 +443,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
-                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -1021,7 +1017,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
-                    plOrderNoFinal.clear();
+                    JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
 
                     if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
                         //pending
@@ -1040,10 +1036,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                             }
 
                             if (poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.POSTED)) {
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "C1E1C1", highlightedRowsMain);
                             }
                         }
-                        JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
                     }
 
                     if (pnMain < 0 || pnMain

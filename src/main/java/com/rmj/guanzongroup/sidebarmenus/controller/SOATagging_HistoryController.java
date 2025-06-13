@@ -47,7 +47,6 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
 import org.guanzon.cas.gl.SOATagging;
 import org.guanzon.cas.gl.services.SOATaggingControllers;

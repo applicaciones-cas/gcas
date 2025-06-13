@@ -95,8 +95,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 
     private FilteredList<ModelSOATagging_Main> filteredData;
     private FilteredList<ModelSOATagging_Detail> filteredDataDetail;
-    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
-    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
+
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
     private Object lastFocusedTextField = null;
@@ -250,8 +249,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                         break;
                     case "btnRetrieve":
                         retrieveSOATagging();
-                        JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
-                        JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
                         break;
                     case "btnSave":
                         //Validator
@@ -370,7 +367,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         } else {
             loadTableMain();
         }
-        JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
 
     }
 
@@ -806,11 +802,10 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
-                    plOrderNoFinal.clear();
+                    JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
                     String lsPayeeName = "";
                     String lsTransNo = "";
                     String lsTransDate = "";
-                    JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
 
                     //retreiving using column index
                     for (int lnCtr = 0; lnCtr <= poSOATaggingController.getSOATaggingCount() - 1; lnCtr++) {
