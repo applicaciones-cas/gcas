@@ -23,9 +23,13 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -57,6 +61,7 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -78,6 +83,7 @@ import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Pair;
 import javafx.util.StringConverter;
 import org.apache.poi.ss.formula.functions.T;
 import org.json.simple.JSONObject;
@@ -89,48 +95,66 @@ import org.json.simple.JSONObject;
  */
 public class JFXUtil {
 
-    public static <T> void adjustColumnForScrollbar(TableView<?> tableView, int columnIndex) {
-        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
-            if (!(newSkin instanceof TableViewSkin<?>)) {
-                return;
-            }
+    public static void adjustColumnForScrollbar(TableView<?>... tableViews) {
+        for (TableView<?> tableView : tableViews) {
+            tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+                if (!(newSkin instanceof TableViewSkin<?>)) {
+                    return;
+                }
 
-            TableViewSkin<?> skin = (TableViewSkin<?>) newSkin;
-            VirtualFlow<?> flow = skin.getChildren().stream()
-                    .filter(node -> node instanceof VirtualFlow<?>)
-                    .map(node -> (VirtualFlow<?>) node)
-                    .findFirst().orElse(null);
+                TableViewSkin<?> skin = (TableViewSkin<?>) newSkin;
+                VirtualFlow<?> flow = skin.getChildren().stream()
+                        .filter(node -> node instanceof VirtualFlow<?>)
+                        .map(node -> (VirtualFlow<?>) node)
+                        .findFirst().orElse(null);
 
-            if (flow == null) {
-                return;
-            }
+                if (flow == null) {
+                    return;
+                }
 
-            ScrollBar vScrollBar = flow.getChildrenUnmodifiable().stream()
-                    .filter(node -> node instanceof ScrollBar && ((ScrollBar) node).getOrientation() == Orientation.VERTICAL)
-                    .map(node -> (ScrollBar) node)
-                    .findFirst().orElse(null);
+                ScrollBar vScrollBar = flow.getChildrenUnmodifiable().stream()
+                        .filter(node -> node instanceof ScrollBar && ((ScrollBar) node).getOrientation() == Orientation.VERTICAL)
+                        .map(node -> (ScrollBar) node)
+                        .findFirst().orElse(null);
 
-            if (vScrollBar == null || tableView.getColumns().isEmpty() || columnIndex < 0 || columnIndex >= tableView.getColumns().size()) {
-                return;
-            }
+                if (vScrollBar == null || tableView.getColumns().isEmpty()) {
+                    return;
+                }
 
-            TableColumn<?, ?> targetColumn = tableView.getColumns().get(columnIndex);
+                TableColumn<?, ?> foundColumn = null;
+                for (TableColumn<?, ?> column : tableView.getColumns()) {
+                    double minWidth = column.getMinWidth();
 
-            vScrollBar.visibleProperty().addListener((observable, oldValue, newValue) -> {
-                Platform.runLater(() -> {
-                    double scrollBarWidth = newValue ? vScrollBar.getWidth() : 0;
-                    double remainingWidth = tableView.getWidth() - scrollBarWidth;
+                    // Safely compare with USE_COMPUTED_SIZE
+                    if ((minWidth) == 0) {
+                        foundColumn = column;
+                        break;
+                    }
+                }
 
-                    double totalFixedWidth = tableView.getColumns().stream()
-                            .filter(col -> col != targetColumn)
-                            .mapToDouble(col -> ((TableColumn<?, ?>) col).getWidth())
-                            .sum();
+                if (foundColumn == null) {
+                    System.err.println("NO COLUMN WITH minWidth == 0 (USE_COMPUTED_SIZE) found in table: " + tableView.getId());
+                    return;
+                }
 
-                    double newWidth = Math.max(0, remainingWidth - totalFixedWidth);
-                    targetColumn.setPrefWidth(newWidth - 5);
+                final TableColumn<?, ?> targetColumn = foundColumn;
+                // Optional debug log
+                vScrollBar.visibleProperty().addListener((observable, oldValue, newValue) -> {
+                    Platform.runLater(() -> {
+                        double scrollBarWidth = newValue ? vScrollBar.getWidth() : 0;
+                        double remainingWidth = tableView.getWidth() - scrollBarWidth;
+
+                        double totalFixedWidth = tableView.getColumns().stream()
+                                .filter(col -> col != targetColumn)
+                                .mapToDouble(TableColumn::getWidth)
+                                .sum();
+
+                        double newWidth = Math.max(0, remainingWidth - totalFixedWidth);
+                        targetColumn.setPrefWidth(newWidth - 5);
+                    });
                 });
             });
-        });
+        }
     }
 
     public static <T> void highlightByKey(TableView<T> table, String key, String color, Map<String, List<String>> highlightMap) {
@@ -359,37 +383,55 @@ public class JFXUtil {
         }
     }
 
-    public static void showDialog(URL fxmlurl,
-            Object controller,
-            String lsDialogTitle, boolean enableWindowDrag
-    ) throws IOException {
+    public static class StageManager {
 
-        // no need to set dialogstage null or not as the background is auto locked upon opening
-        FXMLLoader loader = new FXMLLoader(fxmlurl);
-        loader.setController(controller);
+        private static Stage dialog;
 
-        Parent root = loader.load();
+        public static void showDialog(URL fxmlurl,
+                Object controller,
+                String lsDialogTitle, boolean enableWindowDrag, boolean enableblock, boolean stayOnTop
+        ) throws IOException {
 
-        final xyOffset xyOffset = new xyOffset();
-        root.setOnMousePressed(event -> {
-            xyOffset.x = event.getSceneX();
-            xyOffset.y = event.getSceneY();
-        });
-        if (enableWindowDrag) {
-            root.setOnMouseDragged(event -> {
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                stage.setX(event.getScreenX() - xyOffset.x);
-                stage.setY(event.getScreenY() - xyOffset.y);
+            FXMLLoader loader = new FXMLLoader(fxmlurl);
+            loader.setController(controller);
+
+            Parent root = loader.load();
+
+            final xyOffset xyOffset = new xyOffset();
+            root.setOnMousePressed(event -> {
+                xyOffset.x = event.getSceneX();
+                xyOffset.y = event.getSceneY();
             });
+
+            if (enableWindowDrag) {
+                root.setOnMouseDragged(event -> {
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.setX(event.getScreenX() - xyOffset.x);
+                    stage.setY(event.getScreenY() - xyOffset.y);
+                });
+            }
+
+            dialog = new Stage(); // assign to static field
+            dialog.initStyle(StageStyle.UNDECORATED);
+
+            if (enableblock) {
+                dialog.initModality(Modality.APPLICATION_MODAL);
+            }
+            if (stayOnTop) {
+                dialog.setAlwaysOnTop(true);
+            }
+
+            dialog.setTitle(lsDialogTitle);
+            dialog.setScene(new Scene(root));
+            dialog.show();
         }
 
-        Stage dialog = new Stage();
-        dialog.initStyle(StageStyle.UNDECORATED);
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        dialog.setTitle(lsDialogTitle);
-        dialog.setScene(new Scene(root));
-        dialog.show();
-
+        public static void closeSerialDialog() {
+            if (dialog != null) {
+                dialog.close();
+                dialog = null;
+            }
+        }
     }
 
     private static class xyOffset {
@@ -428,6 +470,7 @@ public class JFXUtil {
     }
 
     public static class ImageViewer {
+
         public double ldstackPaneWidth = 0;
         public double ldstackPaneHeight = 0;
         public double mouseAnchorX;
@@ -568,6 +611,7 @@ public class JFXUtil {
     }
 
     public static boolean isTextFieldContainsStyleClass(String lsCssClassName, TextField... textFields) {
+        //used for removal
         for (TextField tf : textFields) {
             if (tf.getStyleClass().contains(lsCssClassName)) {
                 return true;
@@ -579,6 +623,15 @@ public class JFXUtil {
     public static void setDisabled(boolean disable, Node... nodes) {
         for (Node node : nodes) {
             node.setDisable(disable);
+            if (node instanceof TextField) {
+                if (disable) {
+                    while (node.getStyleClass().contains("DisabledTextField")) {
+                        node.getStyleClass().remove("DisabledTextField");
+                    }
+                } else {
+                    node.getStyleClass().add("DisabledTextField");
+                }
+            }
         }
     }
 
@@ -706,6 +759,12 @@ public class JFXUtil {
         }
     }
 
+    private static class scrollOffset {
+
+        double y;
+        int caretPos;
+    }
+
     public static void setVerticalScroll(TextArea textArea) {
         textArea.applyCss();
         textArea.layout();
@@ -718,22 +777,8 @@ public class JFXUtil {
                 + "-fx-text-fill: black;"
                 + "-fx-border-color: grey;"
         );
-        textArea.focusedProperty().addListener((obs, oldVal, isFocused) -> {
-            if (isFocused) {
-                textArea.setStyle(
-                        "-fx-background-color: orange, white;"
-                        + "-fx-text-fill: black;"
-                        + "-fx-border-color: orange;"
-                );
-            } else {
-                textArea.setStyle(
-                        "-fx-background-color: grey, white;"
-                        + "-fx-text-fill: black;"
-                        + "-fx-border-color: grey;"
-                );
-            }
-        });
 
+        // Access the internal ScrollPane
         ScrollPane scrollPane = (ScrollPane) textArea.lookup(".scroll-pane");
         if (scrollPane != null) {
             scrollPane.setStyle(
@@ -742,8 +787,65 @@ public class JFXUtil {
                     + "-fx-background-color: transparent;"
                     + "-fx-opacity: 1.0;"
             );
-        } else {
+
+            // Track vertical scroll position
+            final scrollOffset xyOffset = new scrollOffset();
+            final scrollOffset state = new scrollOffset();
+
+            scrollPane.vvalueProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal.intValue() == 0) {
+
+                } else {
+                    xyOffset.y = newVal.doubleValue();
+                    System.out.println(xyOffset.y);
+                }
+            });
+            textArea.caretPositionProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal.intValue() <= 0) {
+
+                } else {
+                    state.caretPos = newVal.intValue();
+                }
+            });
+            // Restore scroll position on focus lost
+            textArea.focusedProperty().addListener((obs, oldVal, isFocused) -> {
+                if (isFocused) {
+                    textArea.setStyle(
+                            "-fx-background-color: orange, white;"
+                            + "-fx-text-fill: black;"
+                            + "-fx-border-color: orange;"
+                    );
+
+                } else {
+                    textArea.setStyle(
+                            "-fx-background-color: grey, white;"
+                            + "-fx-text-fill: black;"
+                            + "-fx-border-color: grey;"
+                    );
+                    // Restore previous scroll position
+//                    Platform.runLater(() -> {
+//                        Platform.runLater(() -> {
+//                            scrollPane.setVvalue(xyOffset.y);
+//                            xyOffset.y = 0.0;
+//                        });
+//                    });
+//                    PauseTransition delay = new PauseTransition(Duration.millis(10));
+//                    delay.setOnFinished(e -> {
+//                        scrollPane.setVvalue(xyOffset.y);
+//                        xyOffset.y = 0.0;
+//                    });
+//                    delay.play();
+//                    Platform.runLater(() -> {
+//                        // Delay to override internal behavior
+//                        Platform.runLater(() -> {
+//                            textArea.positionCaret(state.caretPos);
+//                            state.caretPos = 0;
+//                        });
+//                    });
+                }
+            });
         }
+
         textArea.getStyleClass().add("custom-text-area");
     }
 
@@ -779,14 +881,20 @@ public class JFXUtil {
 
     public static String getFormattedClassTitle(Class<?> javaclass) {
         String className = javaclass.getSimpleName();
+
         if (className.endsWith("Controller")) {
             className = className.substring(0, className.length() - "Controller".length());
         }
+
+        // Handle specific company renaming
         className = className.replace("MonarchFood", "MF");
         className = className.replace("MonarchHospitality", "MH");
 
+        // Add space before capital letters, but keep acronyms like SOA, SI intact
         className = className.replace("_", " ");
+        className = className.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " "); // Break after acronyms like SOA
         className = className.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+
         System.out.println(className.trim());
         return className.trim();
     }
@@ -870,17 +978,28 @@ public class JFXUtil {
         return (String) json.get("message");
     }
 
-    private static boolean isUpdating = false;
-    private static AtomicBoolean isAdjusting = new AtomicBoolean(false);
-    private static int newCaretPos = 0;
+    private static class CommaFormater {
+
+        boolean isUpdating;
+        AtomicBoolean isAdjusting;
+        int newCaretPos;
+    }
+//    private static boolean isUpdating = false;
+//   private static  AtomicBoolean isAdjusting = new AtomicBoolean(false);
+//    private static int newCaretPos = 0;
 
     public static void setCommaFormatter(TextField... textFields) {
+
         DecimalFormat finalFormat = (DecimalFormat) NumberFormat.getNumberInstance(Locale.US);
         finalFormat.setGroupingUsed(true);
         finalFormat.setMinimumFractionDigits(2);
         finalFormat.setMaximumFractionDigits(2);
 
         for (TextField textField : textFields) {
+            final CommaFormater data = new CommaFormater();
+            data.isUpdating = false;
+            data.isAdjusting = new AtomicBoolean(false);
+            data.newCaretPos = 0;
             // Disables other character
             UnaryOperator<TextFormatter.Change> filter = change -> {
                 String newText = change.getControlNewText();
@@ -898,17 +1017,17 @@ public class JFXUtil {
             textField.setTextFormatter(new TextFormatter<>(filter));
             // Real-time formatting
             textField.textProperty().addListener((obs, oldValue, newValue) -> {
-                if (isAdjusting.get() == true) {
+                if (data.isAdjusting.get() == true) {
                     return;
                 }
                 try {
-                    if (isUpdating) {
+                    if (data.isUpdating) {
                         return;
                     }
-                    isUpdating = true;
+                    data.isUpdating = true;
                     String clean = newValue.replaceAll(",", "");
                     if (clean.isEmpty() || clean.equals(".") || clean.matches("0*\\.0*")) {
-                        isUpdating = false;
+                        data.isUpdating = false;
                         return;
                     }
                     try {
@@ -923,22 +1042,22 @@ public class JFXUtil {
                         String formattedInteger = NumberFormat.getIntegerInstance(Locale.US).format(integerVal);
                         String formatted = formattedInteger + decimalPart;
                         Platform.runLater(() -> {
-                            isAdjusting.set(true);
+                            data.isAdjusting.set(true);
                             int originalCaretPos = textField.getCaretPosition();
                             textField.setText(formatted);
                             int offset = formatted.length() - newValue.length();
-                            newCaretPos = originalCaretPos + offset;
-                            newCaretPos = Math.max(0, Math.min(formatted.length(), newCaretPos));
-                            isAdjusting.set(false);
+                            data.newCaretPos = originalCaretPos + offset;
+                            data.newCaretPos = Math.max(0, Math.min(formatted.length(), data.newCaretPos));
+                            data.isAdjusting.set(false);
                         });
                         Platform.runLater(() -> {
-                            textField.positionCaret(newCaretPos);
+                            textField.positionCaret(data.newCaretPos);
                         });
                     } catch (Exception e) {
                     }
-                    isUpdating = false;
+                    data.isUpdating = false;
                 } catch (Exception e) {
-                    isUpdating = false;
+                    data.isUpdating = false;
                 }
 
             });
@@ -1097,4 +1216,114 @@ public class JFXUtil {
         }
     }
 
+    public static void makeKeyPressed(Node targetNode, KeyCode keyCode) {
+        if (targetNode == null || keyCode == null) {
+            return;
+        }
+        KeyEvent keyEvent = new KeyEvent(
+                KeyEvent.KEY_PRESSED,
+                "", // character
+                "", // text
+                keyCode,
+                false, // shiftDown
+                false, // controlDown
+                false, // altDown
+                false // metaDown
+        );
+        targetNode.fireEvent(keyEvent);
+    }
+
+    public static void setKeyEventFilter(EventHandler<KeyEvent> handler, Node... nodes) {
+        if (handler == null || nodes == null) {
+            return;
+        }
+
+        for (Node node : nodes) {
+            if (node != null) {
+                node.addEventFilter(KeyEvent.KEY_PRESSED, handler);
+            }
+        }
+    }
+
+    public static void focusFirstTextField(final AnchorPane anchorPane) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                TextField textField = findFirstTextField(anchorPane);
+                if (textField != null) {
+                    textField.requestFocus();
+                }
+            }
+        });
+    }
+
+    private static TextField findFirstTextField(Parent parent) {
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            if (node instanceof TextField) {
+                return (TextField) node;
+            } else if (node instanceof Parent) {
+                TextField result = findFirstTextField((Parent) node);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static <T> void applyRowHighlighting(
+            final TableView<T> tableView,
+            final Function<T, String> keyExtractor,
+            final Map<String, List<String>> highlightMap) {
+
+        tableView.setRowFactory(new javafx.util.Callback<TableView<T>, TableRow<T>>() {
+            @Override
+            public TableRow<T> call(final TableView<T> tv) {
+                return new TableRow<T>() {
+                    @Override
+                    protected void updateItem(T item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item == null || empty) {
+                            setStyle(""); // Reset style
+                        } else {
+                            String key = keyExtractor.apply(item);
+                            if (highlightMap.containsKey(key)) {
+                                List<String> colors = highlightMap.get(key);
+                                if (!colors.isEmpty()) {
+                                    setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";");
+                                }
+                            } else {
+                                setStyle(""); // Default
+                            }
+                        }
+                    }
+                };
+            }
+        });
+    }
+
+    public static String removeComma(String numberStr) {
+        if (numberStr == null) {
+            return "0";
+        }
+        String result = numberStr.replace(",", "");
+        return result.isEmpty() ? "0" : result;
+    }
+
+    public static void showRetainedHighlight(boolean isRetained, TableView<?> tblView, String color, List<Pair<String, String>> plOrderNoPartial, List<Pair<String, String>> plOrderNoFinal, Map<String, List<String>> highlightedRows) {
+        if (isRetained) {
+            for (Pair<String, String> pair : plOrderNoPartial) {
+                if (!"0".equals(pair.getValue())) {
+                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
+                }
+            }
+        }
+        disableAllHighlightByColor(tblView, color, highlightedRows);
+        plOrderNoPartial.clear();
+        for (Pair<String, String> pair : plOrderNoFinal) {
+            if (!"0".equals(pair.getValue())) {
+                highlightByKey(tblView, pair.getKey(), color, highlightedRows);
+            }
+        }
+    }
 }
