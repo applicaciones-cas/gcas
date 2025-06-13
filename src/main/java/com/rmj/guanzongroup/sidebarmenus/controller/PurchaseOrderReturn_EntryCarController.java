@@ -980,14 +980,6 @@ public class PurchaseOrderReturn_EntryCarController implements Initializable, Sc
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
 
             JFXUtil.setDisabled(!lbDisable, tfEngineNo, tfFrameNo, tfPlateNo, tfCSNo);
-            if (lbDisable) {
-
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfEngineNo, tfFrameNo, tfPlateNo, tfCSNo)) {
-                    JFXUtil.AddStyleClass("DisabledTextField", tfEngineNo, tfFrameNo, tfPlateNo, tfCSNo);
-                }
-            } else {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfEngineNo, tfFrameNo, tfPlateNo, tfCSNo);
-            }
 
             tfEngineNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial01());
             tfFrameNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial02());

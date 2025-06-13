@@ -933,13 +933,6 @@ public class PurchaseOrderReturn_EntrySPCarController implements Initializable, 
             }
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             JFXUtil.setDisabled(!lbDisable, tfBarcode, tfDescription);
-            if (lbDisable) {
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfBarcode, tfDescription)) {
-                    JFXUtil.AddStyleClass("DisabledTextField", tfBarcode, tfDescription);
-                }
-            } else {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfBarcode, tfDescription);
-            }
 
             tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());
@@ -962,13 +955,6 @@ public class PurchaseOrderReturn_EntrySPCarController implements Initializable, 
 
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.ADDNEW;
-        if (!lbDisable) {
-            JFXUtil.AddStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
-        } else {
-            while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo)) {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
-            }
-        }
 
         JFXUtil.setDisabled(!lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
 

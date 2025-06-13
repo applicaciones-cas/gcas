@@ -960,23 +960,10 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
 
             JFXUtil.setDisabled(!lbDisable, tfIMEINo, tfBarcode, tfDescription);
             if (lbDisable) {
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription)) {
-                    JFXUtil.RemoveStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription);
-                }
-
                 if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
-                    tfIMEINo.setDisable(!lbDisableField);
-                    if (lbDisableField) {
-                        while (tfIMEINo.getStyleClass().contains("DisabledTextField")) {
-                            tfIMEINo.getStyleClass().remove("DisabledTextField");
-                        }
-                    } else {
-                        tfIMEINo.getStyleClass().add("DisabledTextField");
-                    }
+                     JFXUtil.setDisabled(!lbDisableField,tfIMEINo);
                 }
-
             } else {
-                JFXUtil.AddStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription);
             }
 
             tfIMEINo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial01());

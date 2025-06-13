@@ -958,21 +958,10 @@ public class PurchaseOrderReturn_EntryAppliancesController implements Initializa
 
             JFXUtil.setDisabled(!lbDisable, tfIMEINo, tfBarcode, tfDescription);
             if (lbDisable) {
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription)) {
-                    JFXUtil.RemoveStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription);
-                }
                 if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
-                    tfIMEINo.setDisable(!lbDisableField);
-                    if (lbDisableField) {
-                        while (tfIMEINo.getStyleClass().contains("DisabledTextField")) {
-                            tfIMEINo.getStyleClass().remove("DisabledTextField");
-                        }
-                    } else {
-                        tfIMEINo.getStyleClass().add("DisabledTextField");
-                    }
+                     JFXUtil.setDisabled(!lbDisableField, tfIMEINo);
                 }
             } else {
-                JFXUtil.AddStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription);
             }
 
             tfIMEINo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial01());
@@ -998,13 +987,6 @@ public class PurchaseOrderReturn_EntryAppliancesController implements Initializa
 
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.ADDNEW;
-        if (!lbDisable) {
-            JFXUtil.AddStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
-        } else {
-            while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo)) {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
-            }
-        }
 
         JFXUtil.setDisabled(!lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
 

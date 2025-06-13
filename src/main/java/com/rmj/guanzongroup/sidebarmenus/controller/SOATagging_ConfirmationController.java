@@ -906,13 +906,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             
             boolean lbDisable = poSOATaggingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             JFXUtil.setDisabled(!lbDisable, tfSourceNo, tfReferenceNo);
-            if (lbDisable) {
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSourceNo, tfReferenceNo)) {
-                    JFXUtil.AddStyleClass("DisabledTextField", tfSourceNo, tfReferenceNo);
-                }
-            } else {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfSourceNo, tfReferenceNo);
-            }
             
             
             String lsReferenceDate = "1900-01-01";

@@ -997,14 +997,6 @@ public class PurchaseOrderReturn_ConfirmationMCController implements Initializab
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
 
             JFXUtil.setDisabled(!lbDisable, tfEngineNo, tfFrameNo, tfPlateNo);
-            if (lbDisable) {
-
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfEngineNo, tfFrameNo, tfPlateNo)) {
-                    JFXUtil.AddStyleClass("DisabledTextField", tfEngineNo, tfFrameNo, tfPlateNo);
-                }
-            } else {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfEngineNo, tfFrameNo, tfPlateNo);
-            }
 
             tfEngineNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial01());
             tfFrameNo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial02());

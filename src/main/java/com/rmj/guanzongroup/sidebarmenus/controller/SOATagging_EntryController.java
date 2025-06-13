@@ -261,7 +261,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         break;
                     case "btnRetrieve":
 //                        JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
-                        retrievePayables();
+                        retrievePayables(false);
 //                        if (pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.READY && pnEditMode != EditMode.UPDATE) {
 //                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
                         loadTableDetail();
@@ -360,9 +360,16 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         }
     }
 
-    public void retrievePayables() {
+    public void retrievePayables(boolean isInReferenceNo) {
+
         poJSON = new JSONObject();
-        poJSON = poSOATaggingController.loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(), tfReferenceNo.getText());
+        if (isInReferenceNo) {
+            poJSON = poSOATaggingController.loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(), tfReferenceNo.getText());
+        } else {
+            //general
+            poJSON = poSOATaggingController.loadPayables("", "", "", "");
+        }
+
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
@@ -607,7 +614,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 case F3:
                     switch (lsID) {
                         case "tfReferenceNo":
-                            retrievePayables();
+                            retrievePayables(true);
                             break;
                         case "tfClient":
                             poJSON = poSOATaggingController.SearchSupplier(lsValue, false);
@@ -616,7 +623,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 break;
                             }
                             poSOATaggingController.Master().Supplier().getCompanyName();
-                            retrievePayables();
+                            retrievePayables(false);
                             loadRecordMaster();
                             return;
                         case "tfCompany":
@@ -625,7 +632,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             }
-                            retrievePayables();
+                            retrievePayables(false);
                             loadRecordMaster();
                             return;
                         case "tfIssuedTo":
@@ -634,7 +641,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 break;
                             }
-                            retrievePayables();
+                            retrievePayables(false);
                             loadRecordMaster();
                             return;
                     }
@@ -871,7 +878,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 case SOATaggingStatic.CachePayable:
                     break;
             }
-            
+
             tfSourceNo.setText(poSOATaggingController.Detail(pnDetail).getSourceNo());
             tfSourceCode.setText(poSOATaggingController.Detail(pnDetail).getSourceCode());
             tfReferenceNo.setText(lsReferenceNo);
@@ -949,8 +956,8 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 pnMain = pnRowMain;
 //                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
 //                JFXUtil.highlightByKey(tblViewMainList, poSOATaggingController.PaymentRequestList(pnMain).getTransactionNo(), "#A7C7E7", highlightedRowsMain);
-                
-                switch(poSOATaggingController.PayableType(pnMain)){
+
+                switch (poSOATaggingController.PayableType(pnMain)) {
                     case SOATaggingStatic.PaymentRequest:
                         poJSON = poSOATaggingController.addPayablesToSOADetail(
                                 poSOATaggingController.PaymentRequestList(pnMain).getTransactionNo(),
@@ -1024,7 +1031,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 case SOATaggingStatic.CachePayable:
                                     break;
                             }
-                            plOrderNoPartial.add(new Pair<>(poSOATaggingController.Detail(lnCtr).getSourceNo(), "1"));
+                            plOrderNoPartial.add(new Pair<>(lsReferenceNo, "1"));
 
                             details_data.add(
                                     new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),
@@ -1130,7 +1137,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 if (event.getClickCount() == 2) {
                     loadTableDetailFromMain();
                     if (JFXUtil.isObjectEqualTo(pnEditMode, EditMode.ADDNEW, EditMode.READY)) {
-                        retrievePayables();
+                        retrievePayables(false);
                     }
                     JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
 //                    loadTableDetail();
@@ -1191,7 +1198,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         tblViewMainList.setItems(filteredData);
 
     }
-
 
     private void tableKeyEvents(KeyEvent event) {
         if (details_data.size() > 0) {

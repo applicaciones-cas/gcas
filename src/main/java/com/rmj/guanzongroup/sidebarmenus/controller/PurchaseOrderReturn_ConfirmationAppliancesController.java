@@ -363,7 +363,7 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            if(PurchaseOrderReturnStatus.CONFIRMED.equals(poPurchaseReturnController.Master().getTransactionStatus())){
+                            if (PurchaseOrderReturnStatus.CONFIRMED.equals(poPurchaseReturnController.Master().getTransactionStatus())) {
                                 poJSON = poPurchaseReturnController.CancelTransaction("Cancel");
                             } else {
                                 poJSON = poPurchaseReturnController.VoidTransaction("Void");
@@ -814,8 +814,8 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                                 pbSuccess = false;
                                 if (oApp.getUserLevel() == UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                            + "If YES, please seek approval to proceed with the new selected date.\n"
+                                            + "If NO, the previous transaction date will be retained.") == true) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
@@ -998,14 +998,6 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
 
             JFXUtil.setDisabled(!lbDisable, tfIMEINo, tfBarcode, tfDescription);
-            if (lbDisable) {
-
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription)) {
-                    JFXUtil.AddStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription);
-                }
-            } else {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfIMEINo, tfBarcode, tfDescription);
-            }
 
             tfIMEINo.setText(poPurchaseReturnController.Detail(pnDetail).InventorySerial().getSerial01());
             tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
