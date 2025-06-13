@@ -729,12 +729,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
 
     private void loadRecordMasterCheck() {
         try {
-
-            System.out.println("MASTER EDIT MODE == " + poDisbursementController.Master().getEditMode());
-            System.out.println("CheckPayments EDIT MODE == " + poDisbursementController.CheckPayments().getEditMode());
-            System.out.println("bank name == " + poDisbursementController.CheckPayments().getModel().Banks().getBankName());
             tfBankNameCheck.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName());
-//            tfBankNameCheck.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "");
+            tfBankNameCheck.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "");
             tfBankAccountCheck.setText(poDisbursementController.CheckPayments().getModel().getBankAcountID() != null ? poDisbursementController.CheckPayments().getModel().getBankAcountID() : "");
             tfPayeeName.setText(poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "");
             tfCheckNo.setText(poDisbursementController.CheckPayments().getModel().getCheckNo());
@@ -813,9 +809,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     initFields(pnEditMode);
                     initButton(pnEditMode);
                 });
-            } catch (SQLException | GuanzonException ex) {
-                Logger.getLogger(DisbursementVoucher_VerificationController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (CloneNotSupportedException ex) {
+            } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(DisbursementVoucher_VerificationController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -1109,7 +1103,6 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     }
                     break;
             }
-            loadRecordMasterCheck();
         }
     };
     final ChangeListener<? super Boolean> txtMasterOnlinePayment_Focus = (o, ov, nv) -> {
@@ -1321,9 +1314,6 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void initTextFieldsJournal() {
-        //Initialise  TextField Focus
-        tfSupplier.focusedProperty().addListener(txtMasterDV_Focus);
-
         JFXUtil.setFocusListener(txtDetailDV_Focus, tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount);
         //Initialise  TextField KeyPressed
         List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount);

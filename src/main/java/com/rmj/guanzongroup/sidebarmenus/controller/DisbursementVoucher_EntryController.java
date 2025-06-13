@@ -722,7 +722,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             tfCheckNo.setText(poDisbursementController.CheckPayments().getModel().getCheckNo());
             dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poDisbursementController.CheckPayments().getModel().getCheckDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfCheckAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.CheckPayments().getModel().getAmount(), true));
-
             cmbPayeeType.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getPayeeType().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getPayeeType()) : -1);
             cmbDisbursementMode.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getDesbursementMode().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getDesbursementMode()) : -1);
             cmbClaimantType.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getClaimant().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getClaimant()) : -1);
@@ -730,7 +729,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             chbkIsCrossCheck.setSelected(poDisbursementController.CheckPayments().getModel().isCross() == true);
             chbkIsPersonOnly.setSelected(poDisbursementController.CheckPayments().getModel().isPayee() == true);
             chbkPrintByBank.setSelected(poDisbursementController.Master().getBankPrint().equals(Logical.YES));
-
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DisbursementVoucher_EntryController.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -1115,7 +1113,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     break;
             }
             loadRecordMasterCheck();
-
         }
     };
     final ChangeListener<? super Boolean> txtMasterOnlinePayment_Focus = (o, ov, nv) -> {
@@ -1203,7 +1200,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfSupplier.setText(poDisbursementController.Master().Payee().getPayeeName());
+                                tfSupplier.setText(poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "");
                                 tfPayeeName.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? poDisbursementController.Master().Payee().getPayeeName() : "");
                                 break;
                             case "tfBankNameCheck":
@@ -1212,7 +1209,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-
                                 tfBankNameCheck.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "") : "");
                                 break;
                             case "tfBankAccountCheck":
