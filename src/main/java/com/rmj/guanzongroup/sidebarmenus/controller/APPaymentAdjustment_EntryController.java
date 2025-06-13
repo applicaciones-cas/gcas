@@ -353,8 +353,8 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 if (oApp.getUserLevel() == UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                            + "If YES, please seek approval to proceed with the new selected date.\n"
+                                            + "If NO, the previous transaction date will be retained.") == true) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
@@ -362,7 +362,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                                     } else {
                                         pbSuccess = false;
                                     }
-                                } 
+                                }
                             }
 
                             if (pbSuccess) {
@@ -618,6 +618,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
 
 //        apMaster.setDisable(!lbShow);
         JFXUtil.setDisabled(!lbShow, taRemarks);
+        JFXUtil.setDisabled(lbShow3, apMaster);
 
         switch (poAPPaymentAdjustmentController.getModel().getTransactionStatus()) {
             case APPaymentAdjustmentStatus.PAID:

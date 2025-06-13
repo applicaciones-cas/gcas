@@ -76,8 +76,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
     private ObservableList<ModelAPPaymentAdjustment> main_data = FXCollections.observableArrayList();
     private FilteredList<ModelAPPaymentAdjustment> filteredData;
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
-    List<Pair<String, String>> plTransNoPartial = new ArrayList<>();
-    List<Pair<String, String>> plTransNoFinal = new ArrayList<>();
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster;
@@ -463,8 +461,9 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
 //            loadRecordMaster();
         }
     };
-    
+
     boolean pbSuccess = true;
+
     private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         JFXUtil.setJSONSuccess(poJSON, "success");
@@ -520,8 +519,8 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 if (oApp.getUserLevel() == UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                            + "If YES, please seek approval to proceed with the new selected date.\n"
+                                            + "If NO, the previous transaction date will be retained.") == true) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
@@ -529,7 +528,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                                     } else {
                                         pbSuccess = false;
                                     }
-                                } 
+                                }
                             }
 
                             if (pbSuccess) {
@@ -605,7 +604,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
-                    plTransNoFinal.clear();
+                    JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
 
                     if (poAPPaymentAdjustmentController.getAPPaymentAdjustmentCount() > 0) {
                         //pending
@@ -624,10 +623,9 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                             }
 
                             if (poAPPaymentAdjustmentController.APPaymentAdjustmentList(lnCtr).getTransactionStatus().equals(APPaymentAdjustmentStatus.CONFIRMED)) {
-                                plTransNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         }
-                        JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plTransNoPartial, plTransNoFinal, highlightedRowsMain);
                     }
 
                     if (pnMain < 0 || pnMain
@@ -834,8 +832,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                plTransNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
-                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plTransNoPartial, plTransNoFinal, highlightedRowsMain);
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -915,7 +912,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
         } else {
             loadTableMain();
         }
-        JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
     }
 
     private void initButton(int fnValue) {
