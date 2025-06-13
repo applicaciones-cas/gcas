@@ -98,8 +98,7 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
 
     private FilteredList<ModelPurchaseOrderReturn_Main> filteredData;
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
-    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
-    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
+
     private int pnAttachment;
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
@@ -353,8 +352,7 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
-                                showRetainedHighlight(true);
+                                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -443,7 +441,7 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
         } else {
             loadTableMain();
         }
-        JFXUtil.disableAllHighlight(tblViewPuchaseOrderReturn, highlightedRowsMain);
+
     }
 
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
@@ -856,23 +854,6 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
         }
     }
 
-    public void showRetainedHighlight(boolean isRetained) {
-        if (isRetained) {
-            for (Pair<String, String> pair : plOrderNoPartial) {
-                if (!"0".equals(pair.getValue())) {
-                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
-                }
-            }
-        }
-        JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#C1E1C1", highlightedRowsMain);
-        plOrderNoPartial.clear();
-        for (Pair<String, String> pair : plOrderNoFinal) {
-            if (!"0".equals(pair.getValue())) {
-                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, pair.getKey(), "#C1E1C1", highlightedRowsMain);
-            }
-        }
-    }
-
     public void loadTableMain() {
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -895,7 +876,7 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
-                    plOrderNoFinal.clear();
+                    JFXUtil.disableAllHighlight(tblViewPuchaseOrderReturn, highlightedRowsMain);
                     if (poPurchaseReturnController.getPurchaseOrderReturnCount() > 0) {
                         //pending
                         //retreiving using column index
@@ -913,11 +894,10 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                             }
 
                             if (poPurchaseReturnController.PurchaseOrderReturnList(lnCtr).getTransactionStatus().equals(PurchaseOrderReturnStatus.CONFIRMED)) {
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
+                                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         }
                     }
-                    showRetainedHighlight(true);
 
                     if (pnMain < 0 || pnMain
                             >= main_data.size()) {
