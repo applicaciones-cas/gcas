@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
+
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSOATagging_Detail;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
@@ -64,47 +65,36 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     static SOATagging poSOATaggingController;
     public int pnEditMode;
     private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
-    boolean isPrinted = false;
     public int pnDetail = 0;
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
     private String psTransactionNo = "";
-    
+
     private ObservableList<ModelSOATagging_Detail> details_data = FXCollections.observableArrayList();
     private FilteredList<ModelSOATagging_Detail> filteredDataDetail;
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
-
     @FXML
     private HBox hbButtons, hboxid;
-
     @FXML
     private Label lblSource, lblStatus;
-
     @FXML
     private Button btnBrowse, btnHistory, btnClose;
-
     @FXML
     private TextField tfTransactionNo, tfSOANo, tfClient, tfIssuedTo, tfTransactionTotal, tfVatAmount, tfNonVatSales, tfZeroVatSales, tfVatExemptSales,
             tfNetTotal, tfCompany, tfDiscountAmount, tfFreight, tfSourceNo, tfSourceCode, tfReferenceNo, tfCreditAmount, tfDebitAmount, tfAppliedAmtDetail,
             tfSearchCompany, tfSearchSupplier, tfSearchReferenceNo;
-
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate;
-
     @FXML
     private TextArea taRemarks;
-
     @FXML
     private TableView tblViewTransDetailList;
-
     @FXML
     private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail, tblAppliedAmtDetail;
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -166,10 +156,10 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                 switch (lsButton) {
                     case "btnBrowse":
                         poSOATaggingController.setTransactionStatus(SOATaggingStatus.OPEN
-                                                        + SOATaggingStatus.CONFIRMED
-                                                        + SOATaggingStatus.CANCELLED
-                                                        + SOATaggingStatus.VOID
-                                                        + SOATaggingStatus.PAID);
+                                + SOATaggingStatus.CONFIRMED
+                                + SOATaggingStatus.CANCELLED
+                                + SOATaggingStatus.VOID
+                                + SOATaggingStatus.PAID);
                         poJSON = poSOATaggingController.searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -198,7 +188,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                 initButton(pnEditMode);
 
             }
-        } catch (CloneNotSupportedException | SQLException | GuanzonException  ex) {
+        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
@@ -238,11 +228,11 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                             return;
                         case "tfSearchReferenceNo":
                             poSOATaggingController.setTransactionStatus(SOATaggingStatus.OPEN
-                                                        + SOATaggingStatus.CONFIRMED
-                                                        + SOATaggingStatus.CANCELLED
-                                                        + SOATaggingStatus.VOID
-                                                        + SOATaggingStatus.PAID);
-                            poJSON = poSOATaggingController.searchTransaction(psIndustryId, tfSearchCompany.getText(), 
+                                    + SOATaggingStatus.CONFIRMED
+                                    + SOATaggingStatus.CANCELLED
+                                    + SOATaggingStatus.VOID
+                                    + SOATaggingStatus.PAID);
+                            poJSON = poSOATaggingController.searchTransaction(psIndustryId, tfSearchCompany.getText(),
                                     tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -279,7 +269,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -310,7 +300,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             }
         }
     };
-    
+
     public void loadRecordSearch() {
         try {
             lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
@@ -340,7 +330,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-    
+
     public void loadRecordDetail() {
 
         try {
@@ -351,12 +341,14 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             tfSourceCode.setText(poSOATaggingController.Detail(pnDetail).getSourceCode());
             String lsReferenceDate = "";
             String lsReferenceNo = "";
-            switch(poSOATaggingController.Detail(pnDetail).getSourceCode()){
+            switch (poSOATaggingController.Detail(pnDetail).getSourceCode()) {
                 case SOATaggingStatic.PaymentRequest:
                     lsReferenceNo = poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getSeriesNo();
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
                     break;
                 case SOATaggingStatic.CachePayable:
+                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).CachePayableMaster().getTransactionNo();
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).CachePayableMaster().getTransactionDate());
                     break;
             }
             tfReferenceNo.setText(lsReferenceNo);
@@ -429,14 +421,15 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                     String lsReferenceNo = "";
                     for (lnCtr = 0; lnCtr < poSOATaggingController.getDetailCount(); lnCtr++) {
                         try {
-                            switch(poSOATaggingController.Detail(pnDetail).getSourceCode()){
+                            switch (poSOATaggingController.Detail(pnDetail).getSourceCode()) {
                                 case SOATaggingStatic.PaymentRequest:
                                     lsReferenceNo = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                                     break;
                                 case SOATaggingStatic.CachePayable:
+                                    lsReferenceNo = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getTransactionNo();
                                     break;
                             }
-                            
+
                             details_data.add(
                                     new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poSOATaggingController.Detail(lnCtr).getSourceNo()),

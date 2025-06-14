@@ -58,8 +58,6 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import javafx.animation.PauseTransition;
-import javafx.util.Pair;
-import java.util.ArrayList;
 import org.guanzon.cas.gl.SOATagging;
 import org.guanzon.cas.gl.services.SOATaggingControllers;
 import java.text.SimpleDateFormat;
@@ -96,40 +94,30 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     private FilteredList<ModelSOATagging_Main> filteredData;
     private FilteredList<ModelSOATagging_Detail> filteredDataDetail;
 
-
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apMainList;
-
     @FXML
     private HBox hbButtons, hboxid;
-
     @FXML
     private Label lblSource, lblStatus;
-
     @FXML
     private Button btnUpdate, btnSearch, btnSave, btnCancel, btnConfirm, btnVoid, btnReturn, btnHistory, btnRetrieve, btnClose;
-
     @FXML
     private TextField tfSearchCompany, tfSearchReferenceNo, tfSearchSupplier, tfTransactionNo, tfSOANo, tfClient, tfIssuedTo, tfTransactionTotal,
             tfVatAmount, tfNonVatSales, tfZeroVatSales, tfVatExemptSales, tfNetTotal, tfCompany, tfDiscountAmount, tfFreight, tfSourceNo, tfSourceCode, tfReferenceNo, tfCreditAmount, tfDebitAmount, tfAppliedAmtDetail;
-
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate;
-
     @FXML
     private TextArea taRemarks;
-
     @FXML
     private TableView tblViewTransDetailList, tblViewMainList;
-
     @FXML
     private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail,
             tblAppliedAmtDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo;
-
     @FXML
     private Pagination pgPagination;
 
@@ -293,7 +281,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
-                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1),  "#C1E1C1", highlightedRowsMain);
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -725,7 +713,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     loadRecordMaster();
                     return;
                 }
-                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                if (JFXUtil.isObjectEqualTo(inputText, null, "", "1900-01-01")) {
                     return;
                 }
                 selectedDate = ldtResult.selectedDate;
@@ -798,7 +786,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             protected Void call() throws Exception {
                 Thread.sleep(100);
 //                Thread.sleep(1000);
-
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
@@ -826,7 +813,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
                         }
                     }
-
 
                     if (pnMain < 0 || pnMain
                             >= main_data.size()) {
@@ -907,6 +893,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
                     break;
                 case SOATaggingStatic.CachePayable:
+                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionNo();
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).CachePayableMaster().getTransactionDate());
                     break;
             }
 
@@ -1055,6 +1043,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                     lsReferenceNo = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                                     break;
                                 case SOATaggingStatic.CachePayable:
+                                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionNo();
                                     break;
                             }
 
