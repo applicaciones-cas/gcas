@@ -796,6 +796,10 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
                     return "Disbursement Voucher Certification";
 
+                /*CHECK */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
+                    return "Check Authorization";
+
                 /* OTHERS/PARAMETERS/ADDRESS */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
                     return "Barangay";
@@ -1168,6 +1172,10 @@ public class DashboardController implements Initializable {
             case "Disbursement Voucher Certification":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml";
 
+            /*CHECK */
+            case "Check Authorization":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml";
+
         }
 
         return "";
@@ -1483,6 +1491,10 @@ public class DashboardController implements Initializable {
                     return new DisbursementVoucher_VerificationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
                     return new DisbursementVoucher_CertificationController();
+
+                /*CHECK */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
+                    return new CheckAuthorizationController();
 
                 /* INVENTORY/INVENTORY/ */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
@@ -2488,6 +2500,9 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml\",\"controller_path\":\"DisbursementVoucher_CertificationController\",\"menu_id\":\"013\",\"menu_parent\":\"012\"},"
                 //Approval
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Approval\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"006\",\"menu_parent\":\"001\"},"
+                //Authorize
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Authorize\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"014\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Authorization\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml\",\"controller_path\":\"CheckAuthorizationController\",\"menu_id\":\"015\",\"menu_parent\":\"014\"},"
                 //History
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"007\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml\",\"controller_path\":\"PaymentRequestHistory.controller\",\"menu_id\":\"008\",\"menu_parent\":\"007\"}"
