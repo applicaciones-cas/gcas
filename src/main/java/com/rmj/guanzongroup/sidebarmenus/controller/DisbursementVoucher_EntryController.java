@@ -267,7 +267,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             poJSON = new JSONObject();
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
-                System.err.println((String) poJSON.get("message"));
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             }
             initAll();
@@ -358,9 +357,9 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
                     }
+                    pnEditMode = poDisbursementController.getEditMode();
                     loadTableDetailDV();
                     loadRecordDetailDV();
-                    pnEditMode = poDisbursementController.getEditMode();
                     break;
                 case "btnSearch":
                     String lsMessage = "Focus a searchable textfield to search";
