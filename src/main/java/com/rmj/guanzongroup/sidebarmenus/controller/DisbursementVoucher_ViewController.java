@@ -275,8 +275,8 @@ public class DisbursementVoucher_ViewController implements Initializable {
             cmbDisbursementMode.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getDesbursementMode().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getDesbursementMode()) : -1);
             cmbClaimantType.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getClaimant().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getClaimant()) : -1);
             tfAuthorizedPerson.setText(poDisbursementController.CheckPayments().getModel().getAuthorize() != null ? poDisbursementController.CheckPayments().getModel().getAuthorize() : "");
-            chbkIsCrossCheck.setSelected(poDisbursementController.CheckPayments().getModel().isCross() == true);
-            chbkIsPersonOnly.setSelected(poDisbursementController.CheckPayments().getModel().isPayee() == true);
+            chbkIsCrossCheck.setSelected(poDisbursementController.CheckPayments().getModel().isCross());
+            chbkIsPersonOnly.setSelected(poDisbursementController.CheckPayments().getModel().isPayee());
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DisbursementVoucher_EntryController.class
@@ -316,7 +316,7 @@ public class DisbursementVoucher_ViewController implements Initializable {
                 tfTaxAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetail).getTaxAmount(), true));
                 tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetail).getAmount().doubleValue()
                         - poDisbursementController.Detail(pnDetail).getTaxAmount().doubleValue(), true));
-                chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetail).isWithVat() == true);
+                chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetail).isWithVat());
             } catch (SQLException | GuanzonException ex) {
                 Logger.getLogger(DisbursementVoucher_ViewController.class
                         .getName()).log(Level.SEVERE, null, ex);

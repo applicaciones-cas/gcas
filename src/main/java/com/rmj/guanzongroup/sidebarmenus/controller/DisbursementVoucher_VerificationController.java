@@ -362,6 +362,10 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     if (!isSavingValid()) {
                         return;
                     }
+                    if (pnEditMode == EditMode.UPDATE) {
+                        poDisbursementController.Master().setModifiedDate(oApp.getServerDate());
+                        poDisbursementController.Master().setModifyingId(oApp.getUserID());
+                    }
                     poJSON = poDisbursementController.SaveTransaction();
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -729,7 +733,6 @@ public class DisbursementVoucher_VerificationController implements Initializable
 
     private void loadRecordMasterCheck() {
         try {
-            tfBankNameCheck.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName());
             tfBankNameCheck.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "");
             tfBankAccountCheck.setText(poDisbursementController.CheckPayments().getModel().getBankAcountID() != null ? poDisbursementController.CheckPayments().getModel().getBankAcountID() : "");
             tfPayeeName.setText(poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "");
@@ -741,8 +744,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
             cmbDisbursementMode.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getDesbursementMode().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getDesbursementMode()) : -1);
             cmbClaimantType.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getClaimant().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getClaimant()) : -1);
             tfAuthorizedPerson.setText(poDisbursementController.CheckPayments().getModel().getAuthorize() != null ? poDisbursementController.CheckPayments().getModel().getAuthorize() : "");
-            chbkIsCrossCheck.setSelected(poDisbursementController.CheckPayments().getModel().isCross() == true);
-            chbkIsPersonOnly.setSelected(poDisbursementController.CheckPayments().getModel().isPayee() == true);
+            chbkIsCrossCheck.setSelected(poDisbursementController.CheckPayments().getModel().isCross());
+            chbkIsPersonOnly.setSelected(poDisbursementController.CheckPayments().getModel().isPayee());
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DisbursementVoucher_VerificationController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -780,7 +783,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 tfTaxAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
                 tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue()
                         - poDisbursementController.Detail(pnDetailDV).getTaxAmount().doubleValue(), true));
-                chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat() == true);
+                chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
             } catch (SQLException | GuanzonException ex) {
                 Logger.getLogger(DisbursementVoucher_VerificationController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1539,7 +1542,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
 
     private void initDatePicker() {
         dpCheckDate.setOnAction(e -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (pnEditMode == EditMode.UPDATE) {
                 LocalDate selectedLocalDate = dpCheckDate.getValue();
                 LocalDate checkDate = new java.sql.Date(poDisbursementController.CheckPayments().getModel().getCheckDate().getTime()).toLocalDate();
                 String psOldDate = CustomCommonUtil.formatLocalDateToShortString(checkDate); // abang lang ito
@@ -1553,7 +1556,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
 
     private void initCheckBox() {
         chbkVatClassification.setOnAction(event -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (pnEditMode == EditMode.UPDATE) {
                 if (pnDetailDV >= 0) {
                     // Check for invalid purchase amount first
                     if (poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue() <= 0.0000) {
@@ -1561,28 +1564,31 @@ public class DisbursementVoucher_VerificationController implements Initializable
                         chbkVatClassification.setSelected(false); // Optional: uncheck the box
                         return;
                     }
+
                     if (!isUncheckVatSales()) {
                         return;
                     }
                     poDisbursementController.Detail(pnDetailDV).isWithVat(chbkVatClassification.isSelected());
-                    loadTableDetailDV();
+                    Platform.runLater(() -> {
+                        loadTableDetailDV();
+                    });
                     initFields(pnEditMode);
                 }
             }
         });
 
         chbkIsCrossCheck.setOnAction(event -> {
-            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+            if (pnEditMode == EditMode.UPDATE) {
                 poDisbursementController.CheckPayments().getModel().isCross(chbkIsCrossCheck.isSelected());
             }
         });
         chbkIsPersonOnly.setOnAction(event -> {
-            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+            if (pnEditMode == EditMode.UPDATE) {
                 poDisbursementController.CheckPayments().getModel().isPayee(chbkIsPersonOnly.isSelected());
             }
         });
         chbkPrintByBank.setOnAction(event -> {
-            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+            if (pnEditMode == EditMode.UPDATE) {
                 poDisbursementController.Master().setBankPrint(chbkPrintByBank.isSelected() == true ? "1" : "0");
             }
         });
@@ -1681,5 +1687,4 @@ public class DisbursementVoucher_VerificationController implements Initializable
             }
         }
     }
-
 }
