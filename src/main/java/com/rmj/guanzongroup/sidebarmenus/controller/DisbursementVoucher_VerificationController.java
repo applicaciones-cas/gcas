@@ -261,13 +261,11 @@ public class DisbursementVoucher_VerificationController implements Initializable
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poDisbursementController = new GLControllers(oApp, null).Disbursement();
-
             poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN
                     + DisbursementStatic.VERIFIED);
             poJSON = new JSONObject();
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
-                System.err.println((String) poJSON.get("message"));
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             }
             initAll();
@@ -379,9 +377,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
                             ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                         }
                     }
-                    loadRecordMasterDV();
-                    loadRecordDetailDV();
                     loadTableDetailDV();
+                    loadRecordDetailDV();
                     pnEditMode = poDisbursementController.getEditMode();
                     pagination.toBack();
                     break;
@@ -676,12 +673,12 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void loadRecordMasterDV() {
-        tfDVTransactionNo.setText(poDisbursementController.Master().getTransactionNo());
+        tfDVTransactionNo.setText(poDisbursementController.Master().getTransactionNo() != null ? poDisbursementController.Master().getTransactionNo() : "");
         dpDVTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poDisbursementController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
         tfVoucherNo.setText(poDisbursementController.Master().getVoucherNo());
         lblDVTransactionStatus.setText(getStatus(poDisbursementController.Master().getTransactionStatus()));
         cmbPaymentMode.getSelectionModel().select(!poDisbursementController.Master().getDisbursementType().equals("") ? Integer.valueOf(poDisbursementController.Master().getDisbursementType()) : -1);
-        switch (cmbPaymentMode.getSelectionModel().toString()) {
+        switch (poDisbursementController.Master().getDisbursementType()) {
             case DisbursementStatic.DisbursementType.CHECK:
                 loadRecordMasterCheck();
                 break;
@@ -734,6 +731,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     private void loadRecordMasterCheck() {
         try {
             tfBankNameCheck.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "");
+            System.out.println("Bank Name:" + poDisbursementController.CheckPayments().getModel().Banks().getBankName() + " and ID:" + poDisbursementController.CheckPayments().getModel().getBankID());
             tfBankAccountCheck.setText(poDisbursementController.CheckPayments().getModel().getBankAcountID() != null ? poDisbursementController.CheckPayments().getModel().getBankAcountID() : "");
             tfPayeeName.setText(poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "");
             tfCheckNo.setText(poDisbursementController.CheckPayments().getModel().getCheckNo());
@@ -799,6 +797,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                 pnMain = pnRowMain;
                 String lsTransactionNo = selected.getIndex05();
+                clearFields();
                 poJSON = poDisbursementController.OpenTransaction(lsTransactionNo);
                 if ("error".equals(poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -806,12 +805,10 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 }
                 JFXUtil.disableAllHighlightByColor(tblVwDisbursementVoucher, "#A7C7E7", highlightedRowsMain);
                 JFXUtil.highlightByKey(tblVwDisbursementVoucher, String.valueOf(pnRowMain + 1), "#A7C7E7", highlightedRowsMain);
-                Platform.runLater(() -> {
-                    loadTableDetailDV();
-                    pnEditMode = poDisbursementController.getEditMode();
-                    initFields(pnEditMode);
-                    initButton(pnEditMode);
-                });
+                loadTableDetailDV();
+                pnEditMode = poDisbursementController.getEditMode();
+                initFields(pnEditMode);
+                initButton(pnEditMode);
             } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(DisbursementVoucher_VerificationController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1645,19 +1642,16 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 tabCheck.setDisable(!lbShow);
                 apMasterDVOp.setDisable(!lbShow);
                 CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
-                loadRecordMasterCheck();
                 break;
             case DisbursementStatic.DisbursementType.WIRED:
                 tabBankTransfer.setDisable(!lbShow);
                 apMasterDVBTransfer.setDisable(!lbShow);
                 CustomCommonUtil.switchToTab(tabBankTransfer, tabPanePaymentMode);
-                loadRecordMasterBankTransfer();
                 break;
             case DisbursementStatic.DisbursementType.DIGITAL_PAYMENT:
                 tabOnlinePayment.setDisable(!lbShow);
                 apMasterDVOp.setDisable(!lbShow);
                 CustomCommonUtil.switchToTab(tabOnlinePayment, tabPanePaymentMode);
-                loadRecordMasterOnlinePayment();
                 break;
         }
         if (pnDetailDV >= 0) {
