@@ -206,7 +206,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
+                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         pnEditMode = poSOATaggingController.getEditMode();
                         break;
                     case "btnClose":
@@ -251,8 +251,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                            plOrderNoFinal.clear();
-                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
+                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                             pnEditMode = EditMode.UNKNOWN;
                             break;
                         } else {
@@ -261,11 +260,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     case "btnHistory":
                         break;
                     case "btnRetrieve":
-//                        JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
                         retrievePayables(false);
-//                        if (pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.READY && pnEditMode != EditMode.UPDATE) {
-//                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
-//                        }
                         break;
                     case "btnSave":
                         //Validator
@@ -303,7 +298,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 }
 //                                if (!isPrinted) {
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
+                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
 //                                }
                             }
                         } else {
@@ -321,7 +316,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         }
                         poSOATaggingController.initFields();
                         pnEditMode = poSOATaggingController.getEditMode();
-                        JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
+                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         break;
 
                     default:
@@ -360,6 +355,40 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         }
     }
 
+    public void loadHighlightFromDetail() {
+        try {
+            String lsReferenceNo = "";
+            for (int lnCtr = 0; lnCtr < poSOATaggingController.getDetailCount(); lnCtr++) {
+                switch (poSOATaggingController.Detail(lnCtr).getSourceCode()) {
+                    case SOATaggingStatic.PaymentRequest: {
+                        lsReferenceNo = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
+                    }
+                    break;
+
+                    case SOATaggingStatic.CachePayable:
+                        break;
+                }
+                if (!JFXUtil.isObjectEqualTo(poSOATaggingController.Detail(lnCtr).getAppliedAmount(), null, "")) {
+                    if (poSOATaggingController.Detail(lnCtr).getAppliedAmount().doubleValue() > 0.0000) {
+                        plOrderNoPartial.add(new Pair<>(lsReferenceNo, "1"));
+                    } else {
+                        plOrderNoPartial.add(new Pair<>(lsReferenceNo, "0"));
+                    }
+                }
+            }
+            for (Pair<String, String> pair : plOrderNoPartial) {
+                if (!"".equals(pair.getKey()) && pair.getKey() != null) {
+                    JFXUtil.highlightByKey(tblViewMainList, pair.getKey(), "#A7C7E7", highlightedRowsMain);
+                }
+            }
+            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, false);
+        } catch (SQLException ex) {
+            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void retrievePayables(boolean isInReferenceNo) {
 
         poJSON = new JSONObject();
@@ -373,10 +402,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
-            loadTableMain();
+            Platform.runLater(() -> {
+                loadTableMain();
+            });
         }
-        JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
-        loadTableDetail();
     }
 
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
@@ -774,11 +803,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
-                    plOrderNoFinal.clear();
+                    JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
                     String lsPayeeName = "";
                     String lsTransNo = "";
                     String lsTransDate = "";
-
                     //retreiving using column index
                     for (int lnCtr = 0; lnCtr <= poSOATaggingController.getPayablesCount() - 1; lnCtr++) {
                         try {
@@ -802,13 +830,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         } catch (GuanzonException ex) {
                             Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
-
-//                        if (poSOATaggingController.PaymentRequestList(lnCtr).getTransactionStatus().equals(PurchaseOrderReturnStatus.CONFIRMED)) {
-//                            plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
-//                        }
                     }
 
-//                    JFXUtil.showRetainedHighlight(true, tblViewMainList, "#C1E1C1", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
+                    loadHighlightFromDetail();
                     if (pnMain < 0 || pnMain
                             >= main_data.size()) {
                         if (!main_data.isEmpty()) {
@@ -1032,7 +1056,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 case SOATaggingStatic.CachePayable:
                                     break;
                             }
-                            plOrderNoPartial.add(new Pair<>(lsReferenceNo, "1"));
 
                             details_data.add(
                                     new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),
@@ -1045,11 +1068,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     ));
                             lsReferenceNo = "";
                         }
-                        for (Pair<String, String> pair : plOrderNoPartial) {
-                            if (!"".equals(pair.getKey()) && pair.getKey() != null) {
-                                JFXUtil.highlightByKey(tblViewMainList, pair.getKey(), "#A7C7E7", highlightedRowsMain);
-                            }
-                        }
+                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                        loadHighlightFromDetail();
+
                         if (pnDetail < 0 || pnDetail
                                 >= details_data.size()) {
                             if (!details_data.isEmpty()) {
@@ -1138,8 +1159,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 if (event.getClickCount() == 2) {
                     loadTableDetailFromMain();
 
-                    JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain);
-//                    pnEditMode = poSOATaggingController.getEditMode();
                     initButton(pnEditMode);
                 }
             }
