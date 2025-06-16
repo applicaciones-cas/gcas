@@ -72,9 +72,9 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.DocumentType;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.Logical;
-import org.guanzon.cas.gl.services.GLControllers;
-import org.guanzon.cas.gl.status.PaymentRequestStatus;
 import org.json.simple.JSONObject;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
+import ph.com.guanzongroup.cas.cashflow.status.PaymentRequestStatus;
 
 /**
  * FXML Controller class
@@ -84,7 +84,7 @@ import org.json.simple.JSONObject;
 public class PaymentRequest_HistoryController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
-    private GLControllers poGLControllers;
+    private CashflowControllers poGLControllers;
     private String psFormName = "Payment Request History";
     private LogWrapper logWrapper;
     private int pnEditMode;
@@ -179,7 +179,7 @@ public class PaymentRequest_HistoryController implements Initializable, ScreenIn
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            poGLControllers = new GLControllers(poApp, logWrapper);
+            poGLControllers = new CashflowControllers(poApp, logWrapper);
             poGLControllers.PaymentRequest().setTransactionStatus(PaymentRequestStatus.OPEN
                     + PaymentRequestStatus.CONFIRMED
                     + PaymentRequestStatus.RETURNED

@@ -60,10 +60,12 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.gl.Disbursement;
-import org.guanzon.cas.gl.services.GLControllers;
-import org.guanzon.cas.gl.status.DisbursementStatic;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+import ph.com.guanzongroup.cas.cashflow.Disbursement;
+import ph.com.guanzongroup.cas.cashflow.model.SelectedITems;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
+import ph.com.guanzongroup.cas.cashflow.status.DisbursementStatic;
 
 /**
  * FXML Controller class
@@ -94,7 +96,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
 
     private ObservableList<ModelDisbursementVoucher_Main> main_data = FXCollections.observableArrayList();
     private FilteredList<ModelDisbursementVoucher_Main> filteredMain_Data;
-
+    ArrayList<SelectedITems> getSelectedItems = new ArrayList<>();
     List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
     List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
@@ -144,7 +146,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            poDisbursementController = new GLControllers(oApp, null).Disbursement();
+            poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poDisbursementController.setTransactionStatus(DisbursementStatic.VERIFIED);
             poJSON = new JSONObject();
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
@@ -220,40 +222,62 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
     }
 
     private void handleDisbursementAction(String action) {
-//        try {
-//            ObservableList<ModelDisbursementVoucher_Main> selectedItems = FXCollections.observableArrayList();
-//
-//            for (ModelDisbursementVoucher_Main item : tblVwMain.getItems()) {
-//                if (item.getSelect().isSelected()) {
-//                    selectedItems.add(item);
-//                }
-//            }
-//
-//            if (selectedItems.isEmpty()) {
-//                ShowMessageFX.Information(null, pxeModuleName, "No items selected to " + action + ".");
-//                return;
-//            }
-//
-//            if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to " + action + "?")) {
-//                return;
-//            }
-//
-//            int successCount = 0;
-//            for (ModelDisbursementVoucher_Main item : selectedItems) {
-//                String lsDVNO = item.getIndex03();
-//                String Remarks = "Certified";
-//
-//                authorizeItems.add(new CertifyItem(lsDVNO, Remarks));
-//                successCount++;
-//            }
-//            poJSON = poDisbursementController.CertifyTransaction("Certified", authorizeItems);
-//            if (!"success".equals((String) poJSON.get("result"))) {
-//                ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-//            }
-//            loadTableMain();
-//        } catch (ParseException | SQLException | GuanzonException | CloneNotSupportedException ex) {
-//            Logger.getLogger(CheckAuthorizationController.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+
+        try {
+            ObservableList<ModelDisbursementVoucher_Main> selectedItems = FXCollections.observableArrayList();
+
+            for (ModelDisbursementVoucher_Main item : tblVwMain.getItems()) {
+                if (item.getSelect().isSelected()) {
+                    selectedItems.add(item);
+                }
+            }
+
+            if (selectedItems.isEmpty()) {
+                ShowMessageFX.Information(null, pxeModuleName, "No items selected to " + action + ".");
+                return;
+            }
+
+            if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to " + action + "?")) {
+                return;
+            }
+            
+            
+
+            int successCount = 0;
+            for (ModelDisbursementVoucher_Main item : selectedItems) {
+                String lsDVNO = item.getIndex03();
+                String Remarks = action;
+
+                getSelectedItems.add(new SelectedITems(lsDVNO, Remarks));
+                successCount++;
+            }
+           switch (action) {
+                case "authorize":
+                    poJSON = poDisbursementController.AuthorizeTransaction("Authorized", getSelectedItems);
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                    }
+                    break;
+                case "return":
+                    poJSON = poDisbursementController.ReturnTransaction("Returned", getSelectedItems);
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                    }
+                    break;
+                case "dissapprove":
+                    poJSON = poDisbursementController.DisapprovedTransaction("Disapproved", getSelectedItems);
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                    }
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+            loadTableMain();
+        } catch (ParseException | SQLException | GuanzonException | CloneNotSupportedException ex) {
+            Logger.getLogger(CheckAuthorizationController.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        
     }
 
     private String capitalize(String text) {
@@ -321,25 +345,14 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poDisbursementController.getDisbursement(psDVNo, psSupplierId);
+                        poJSON = poDisbursementController.getDisbursement(psDVNo, psSupplierId,true);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
                                 int checkIndex = 0;
+                                int otherIndex = 0;
                                 for (int lnCntr = 0; lnCntr < poDisbursementController.getDisbursementMasterCount(); lnCntr++) {
-                                    String lsPaymentForm = "";
                                     String lsBankName = "";
                                     String lsBankAccount = "";
-                                    String disbursementType = poDisbursementController.poDisbursementMaster(lnCntr).getDisbursementType();
-                                    if (disbursementType.equals(DisbursementStatic.DisbursementType.CHECK)) {
-                                        lsPaymentForm = "CHECK";
-//                                            if (checkIndex < poDisbursementController.CheckPayments().getCheckPaymentsCount()) {
-//                                                lsBankName = poDisbursementController.CheckPayments().poCheckPayments(checkIndex).Banks().getBankName();
-//                                                lsBankAccount = poDisbursementController.CheckPayments().poCheckPayments(checkIndex).getBankAcountID();
-//                                            }
-                                        checkIndex++; // Move to next CHECK payment
-                                        break;
-                                    }
-
                                     main_data.add(new ModelDisbursementVoucher_Main(
                                             String.valueOf(lnCntr + 1),
                                             "",
@@ -347,9 +360,9 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                                             CustomCommonUtil.formatDateToShortString(poDisbursementController.poDisbursementMaster(lnCntr).getTransactionDate()),
                                             poDisbursementController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
                                             poDisbursementController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
-                                            lsPaymentForm,
-                                            lsBankName,
-                                            lsBankAccount,
+                                            poDisbursementController.poDisbursementMaster(lnCntr).checkPayments().Banks().getBankName(),
+                                            poDisbursementController.poDisbursementMaster(lnCntr).checkPayments().Bank_Account_Master().getAccountNo(),
+                                            "",
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.poDisbursementMaster(lnCntr).getNetTotal(), true)
                                     ));
                                 }

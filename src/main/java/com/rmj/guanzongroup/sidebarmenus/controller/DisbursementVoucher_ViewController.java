@@ -48,10 +48,10 @@ import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.Logical;
-import org.guanzon.cas.gl.Disbursement;
-import org.guanzon.cas.gl.services.GLControllers;
-import org.guanzon.cas.gl.status.DisbursementStatic;
 import org.json.simple.JSONObject;
+import ph.com.guanzongroup.cas.cashflow.Disbursement;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
+import ph.com.guanzongroup.cas.cashflow.status.DisbursementStatic;
 
 /**
  * FXML Controller class
@@ -172,7 +172,7 @@ public class DisbursementVoucher_ViewController implements Initializable {
         CustomCommonUtil.setDropShadow(AnchorMain, StackPane);
         if (!psTransactionNo.isEmpty()) {
             try {
-                poDisbursementController = new GLControllers(oApp, null).Disbursement();
+                poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
                 poJSON = new JSONObject();
                 poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
                 if (!"success".equals((String) poJSON.get("result"))) {
@@ -240,20 +240,26 @@ public class DisbursementVoucher_ViewController implements Initializable {
             case DisbursementStatic.OPEN:
                 lsStatus = "OPEN";
                 break;
-            case DisbursementStatic.CANCELLED:
-                lsStatus = "CANCELLED";
-                break;
-            case DisbursementStatic.PAID:
-                lsStatus = "PAID";
-                break;
-            case DisbursementStatic.POSTED:
-                lsStatus = "POSTED";
-                break;
             case DisbursementStatic.VERIFIED:
                 lsStatus = "VERIFIED";
                 break;
+            case DisbursementStatic.CERTIFIED:
+                lsStatus = "CERTIFIED";
+                break;
+            case DisbursementStatic.CANCELLED:
+                lsStatus = "CANCELLED";
+                break;
+            case DisbursementStatic.AUTHORIZED:
+                lsStatus = "AUTHORIZED";
+                break;
             case DisbursementStatic.VOID:
                 lsStatus = "VOID";
+                break;
+            case DisbursementStatic.DISAPPROVED:
+                lsStatus = "DISAPPROVED";
+                break;
+            case DisbursementStatic.RETURNED:
+                lsStatus = "RETURNED";
                 break;
             default:
                 lsStatus = "STATUS";

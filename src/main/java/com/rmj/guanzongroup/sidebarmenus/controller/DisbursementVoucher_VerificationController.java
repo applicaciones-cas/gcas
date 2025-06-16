@@ -67,11 +67,11 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.Logical;
-import org.guanzon.cas.gl.Disbursement;
-import org.guanzon.cas.gl.services.GLControllers;
-import org.guanzon.cas.gl.status.DisbursementStatic;
+import ph.com.guanzongroup.cas.cashflow.Disbursement;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
+import ph.com.guanzongroup.cas.cashflow.status.DisbursementStatic;
 
 /**
  * FXML Controller class
@@ -260,7 +260,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            poDisbursementController = new GLControllers(oApp, null).Disbursement();
+            poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN + DisbursementStatic.VERIFIED);
             poJSON = new JSONObject();
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
@@ -586,7 +586,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poDisbursementController.getDisbursement(psTransactionNo, psSupplierId);
+                        poJSON = poDisbursementController.getDisbursement(psTransactionNo, psSupplierId,false);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
                                 for (int lnCntr = 0; lnCntr <= poDisbursementController.getDisbursementMasterCount() - 1; lnCntr++) {
@@ -714,20 +714,26 @@ public class DisbursementVoucher_VerificationController implements Initializable
             case DisbursementStatic.OPEN:
                 lsStatus = "OPEN";
                 break;
-            case DisbursementStatic.CANCELLED:
-                lsStatus = "CANCELLED";
-                break;
-            case DisbursementStatic.PAID:
-                lsStatus = "PAID";
-                break;
-            case DisbursementStatic.POSTED:
-                lsStatus = "POSTED";
-                break;
             case DisbursementStatic.VERIFIED:
                 lsStatus = "VERIFIED";
                 break;
+            case DisbursementStatic.CERTIFIED:
+                lsStatus = "CERTIFIED";
+                break;
+            case DisbursementStatic.CANCELLED:
+                lsStatus = "CANCELLED";
+                break;
+            case DisbursementStatic.AUTHORIZED:
+                lsStatus = "AUTHORIZED";
+                break;
             case DisbursementStatic.VOID:
                 lsStatus = "VOID";
+                break;
+            case DisbursementStatic.DISAPPROVED:
+                lsStatus = "DISAPPROVED";
+                break;
+            case DisbursementStatic.RETURNED:
+                lsStatus = "RETURNED";
                 break;
             default:
                 lsStatus = "STATUS";

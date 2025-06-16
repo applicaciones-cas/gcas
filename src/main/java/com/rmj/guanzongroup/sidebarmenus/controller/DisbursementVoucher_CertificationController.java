@@ -52,16 +52,16 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.gl.Disbursement;
-import org.guanzon.cas.gl.services.GLControllers;
-import org.guanzon.cas.gl.status.DisbursementStatic;
 import org.json.simple.JSONObject;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
-import org.guanzon.cas.gl.model.CertifyItem;
 import org.json.simple.parser.ParseException;
+import ph.com.guanzongroup.cas.cashflow.Disbursement;
+import ph.com.guanzongroup.cas.cashflow.model.SelectedITems;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
+import ph.com.guanzongroup.cas.cashflow.status.DisbursementStatic;
 
 /**
  * FXML Controller class
@@ -93,7 +93,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
     private ObservableList<ModelDisbursementVoucher_Main> main_data = FXCollections.observableArrayList();
     private FilteredList<ModelDisbursementVoucher_Main> filteredMain_Data;
 
-    ArrayList<CertifyItem> certifyItems = new ArrayList<>();
+    ArrayList<SelectedITems> getSelectedItems = new ArrayList<>();
     List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
     List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
@@ -143,7 +143,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            poDisbursementController = new GLControllers(oApp, null).Disbursement();
+            poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poDisbursementController.setTransactionStatus(DisbursementStatic.VERIFIED);
             poJSON = new JSONObject();
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
@@ -241,14 +241,37 @@ public class DisbursementVoucher_CertificationController implements Initializabl
             int successCount = 0;
             for (ModelDisbursementVoucher_Main item : selectedItems) {
                 String lsDVNO = item.getIndex03();
-                String Remarks = "Certified";
+                String Remarks = action;
 
-                certifyItems.add(new CertifyItem(lsDVNO, Remarks));
+                getSelectedItems.add(new SelectedITems(lsDVNO, Remarks));
                 successCount++;
             }
-            poJSON = poDisbursementController.CertifyTransaction("Certified", certifyItems);
-            if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+            switch (action) {
+                case "certify":
+                    poJSON = poDisbursementController.CertifyTransaction("Certified", getSelectedItems);
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        break;
+                    }
+                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                    break;
+                case "return":
+                    poJSON = poDisbursementController.ReturnTransaction("Returned", getSelectedItems);
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        break;
+                    }
+                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                    break;
+                case "dissapprove":
+                    poJSON = poDisbursementController.DisapprovedTransaction("Disapproved", getSelectedItems);
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        break;
+                    }
+                    break;
+                default:
+                    throw new AssertionError();
             }
             loadTableMain();
         } catch (ParseException | SQLException | GuanzonException | CloneNotSupportedException ex) {
@@ -333,7 +356,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poDisbursementController.getDisbursement(psDVNo, psSupplierId);
+                        poJSON = poDisbursementController.getDisbursement(psDVNo, psSupplierId, false);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
                                 int checkIndex = 0;

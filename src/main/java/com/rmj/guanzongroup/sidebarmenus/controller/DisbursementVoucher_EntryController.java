@@ -67,12 +67,12 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.Logical;
-import org.guanzon.cas.gl.Disbursement;
-import org.guanzon.cas.gl.services.GLControllers;
-import org.guanzon.cas.gl.status.DisbursementStatic;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import ph.com.guanzongroup.cas.cashflow.Disbursement;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
+import ph.com.guanzongroup.cas.cashflow.status.DisbursementStatic;
 
 /**
  * FXML Controller class
@@ -263,7 +263,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            poDisbursementController = new GLControllers(oApp, null).Disbursement();
+            poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poJSON = new JSONObject();
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
@@ -695,20 +695,26 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             case DisbursementStatic.OPEN:
                 lsStatus = "OPEN";
                 break;
-            case DisbursementStatic.CANCELLED:
-                lsStatus = "CANCELLED";
-                break;
-            case DisbursementStatic.PAID:
-                lsStatus = "PAID";
-                break;
-            case DisbursementStatic.POSTED:
-                lsStatus = "POSTED";
-                break;
             case DisbursementStatic.VERIFIED:
                 lsStatus = "VERIFIED";
                 break;
+            case DisbursementStatic.CERTIFIED:
+                lsStatus = "CERTIFIED";
+                break;
+            case DisbursementStatic.CANCELLED:
+                lsStatus = "CANCELLED";
+                break;
+            case DisbursementStatic.AUTHORIZED:
+                lsStatus = "AUTHORIZED";
+                break;
             case DisbursementStatic.VOID:
                 lsStatus = "VOID";
+                break;
+            case DisbursementStatic.DISAPPROVED:
+                lsStatus = "DISAPPROVED";
+                break;
+            case DisbursementStatic.RETURNED:
+                lsStatus = "RETURNED";
                 break;
             default:
                 lsStatus = "STATUS";
@@ -1188,12 +1194,13 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                 tfBankNameCheck.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "") : "");
                                 break;
                             case "tfBankAccountCheck":
-                                poJSON = poDisbursementController.CheckPayments().searchBankAcounts(lsValue);
+                                poJSON = poDisbursementController.SearchBankAccount(lsValue, false);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfBankAccountCheck.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.CheckPayments().getModel().getBankAcountID() != null ? poDisbursementController.CheckPayments().getModel().getBankAcountID() : "") : "");
+//                                tfBankAccountCheck.setText(poDisbursementController.c.);
+                                tfBankAccountCheck.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo()!= null ? poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() : "") : "");
                                 break;
                             case "tfPayeeName":
                                 poJSON = poDisbursementController.SearchPayee(lsValue, false);
