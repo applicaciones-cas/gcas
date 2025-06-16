@@ -49,11 +49,11 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.UserRight;
-import org.guanzon.cas.gl.APPaymentAdjustment;
-import org.guanzon.cas.gl.services.GLControllers;
-import org.guanzon.cas.gl.status.APPaymentAdjustmentStatus;
+import ph.com.guanzongroup.cas.cashflow.APPaymentAdjustment;
+import ph.com.guanzongroup.cas.cashflow.status.APPaymentAdjustmentStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 
 public class APPaymentAdjustment_ConfirmationController implements Initializable, ScreenInterface {
 
@@ -110,7 +110,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         poJSON = new JSONObject();
-        poAPPaymentAdjustmentController = new GLControllers(oApp, null).APPayementAdjustment();
+        poAPPaymentAdjustmentController = new CashflowControllers(oApp, null).APPayementAdjustment();
         poAPPaymentAdjustmentController.initialize(); // Initialize transaction
         initTextFields();
         initDatePickers();
@@ -713,6 +713,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             tfReferenceNo.setText(poAPPaymentAdjustmentController.getModel().getReferenceNo());
             tfCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
+            poAPPaymentAdjustmentController.computeFields();
         } catch (SQLException ex) {
             Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {

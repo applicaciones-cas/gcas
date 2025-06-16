@@ -46,7 +46,7 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import org.guanzon.cas.gl.status.SOATaggingStatus;
+import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatus;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -60,13 +60,13 @@ import org.json.simple.parser.ParseException;
 import javafx.animation.PauseTransition;
 import javafx.util.Pair;
 import java.util.ArrayList;
-import org.guanzon.cas.gl.SOATagging;
-import org.guanzon.cas.gl.services.SOATaggingControllers;
+import ph.com.guanzongroup.cas.cashflow.SOATagging;
+import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatic;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.constant.UserRight;
-import org.guanzon.cas.gl.status.SOATaggingStatic;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 
 /**
  * FXML Controller class
@@ -125,7 +125,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        poSOATaggingController = new SOATaggingControllers(oApp, null).SOATagging();
+        poSOATaggingController = new CashflowControllers(oApp, null).SOATagging();
         poJSON = new JSONObject();
         poJSON = poSOATaggingController.InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
@@ -196,7 +196,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+//                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         pnEditMode = poSOATaggingController.getEditMode();
                         break;
                     case "btnClose":
@@ -241,7 +241,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+//                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                             pnEditMode = EditMode.UNKNOWN;
                             break;
                         } else {
@@ -286,7 +286,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
                                 }
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+//                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                             }
                         } else {
                             return;
@@ -303,7 +303,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         }
                         poSOATaggingController.initFields();
                         pnEditMode = poSOATaggingController.getEditMode();
-                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+//                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         break;
 
                     default:
@@ -368,7 +368,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     JFXUtil.highlightByKey(tblViewMainList, pair.getKey(), "#A7C7E7", highlightedRowsMain);
                 }
             }
-            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, false);
+//            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, false);
         } catch (SQLException ex) {
             Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
@@ -516,7 +516,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     }
                     break;
                 case "tfDiscountAmount":
-                    JFXUtil.removeComma(lsValue);
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (Double.valueOf(lsValue) > 0.00) {
                         if (poSOATaggingController.Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Discount amount cannot be greater than the transaction total.");
@@ -533,7 +533,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     }
                     break;
                 case "tfFreight":
-                    JFXUtil.removeComma(lsValue);
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (Double.valueOf(lsValue) > 0.00) {
                         if (poSOATaggingController.Master().getTransactionTotal().doubleValue() < Double.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Freight amount cannot be greater than the transaction total.");
@@ -1060,7 +1060,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     ));
                             lsReferenceNo = "";
                         }
-                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+//                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         loadHighlightFromDetail();
 
                         if (pnDetail < 0 || pnDetail

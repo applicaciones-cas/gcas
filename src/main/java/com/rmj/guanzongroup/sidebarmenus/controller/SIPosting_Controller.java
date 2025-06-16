@@ -599,6 +599,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
+                    
+                    if (Double.valueOf(lsValue.replace(",", "")) > 100.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid vat rate.");
+                        break;
+                    }
+                    
                     poJSON = poPurchaseReceivingController.Master().setVatRate((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -683,6 +689,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
+                    
+                    if (Double.valueOf(lsValue.replace(",", "")) > 100.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid discount rate.");
+                        break;
+                    }
+                    
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setDiscount((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -1204,23 +1216,23 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
             tfOrderNo.setText(poPurchaseReceivingController.Detail(pnDetail).getOrderNo());
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
-//            tfDiscRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getDiscount().doubleValue()*100));
-//            Platform.runLater(() -> {
-//                double lnValue = 0.00;
-//                if(poPurchaseReceivingController.Detail(pnDetail).getDiscount() != null){
-//                    lnValue = poPurchaseReceivingController.Detail(pnDetail).getDiscount().doubleValue();
-//                }
-//                if (!Double.isNaN(lnValue)) {
-//                    tfDiscRateDetail.setText(String.format("%.2f", (lnValue*100.00)));
-//                } else {
-//                    tfDiscRateDetail.setText(String.format("%.2f", 0.00));
-//                }
-//            });
-//            
-//            tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getAdditionalDiscount()));
-            tfDiscRateDetail.setText("0.00");
-            tfAddlDiscAmtDetail.setText("0.00");
-            double lnTotal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue() ; //TODO + Discount Amount + Discount Rate
+            Platform.runLater(() -> {
+                double lnValue = 0.00;
+                if(poPurchaseReceivingController.Detail(pnDetail).getDiscount() != null){
+                    lnValue = poPurchaseReceivingController.Detail(pnDetail).getDiscount().doubleValue();
+                }
+                if (!Double.isNaN(lnValue)) {
+                    tfDiscRateDetail.setText(String.format("%.2f",lnValue));
+                } else {
+                    tfDiscRateDetail.setText(String.format("%.2f", 0.00));
+                }
+            });
+            double ldblDiscountRate = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue()
+                    * (poPurchaseReceivingController.Detail(pnDetail).getDiscountRate().doubleValue() / 100);
+            tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getAdditionalDiscount()));
+            double lnTotal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue() 
+                    + poPurchaseReceivingController.Detail(pnDetail).getAdditionalDiscount().doubleValue()
+                    + ldblDiscountRate;
             tfSRPAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
@@ -1297,13 +1309,13 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", lnValue * 100.00));
+                    tfDiscountRate.setText(String.format("%.2f", lnValue));
                 } else {
                     tfDiscountRate.setText(String.format("%.2f", 0.00));
                 }
                 double lnVat = poPurchaseReceivingController.Master().getVatRate().doubleValue();
                 if (!Double.isNaN(lnVat)) {
-                    tfVatRate.setText(String.format("%.2f", lnVat * 100.00));
+                    tfVatRate.setText(String.format("%.2f", lnVat));
                 } else {
                     tfVatRate.setText(String.format("%.2f", 0.00));
                 }

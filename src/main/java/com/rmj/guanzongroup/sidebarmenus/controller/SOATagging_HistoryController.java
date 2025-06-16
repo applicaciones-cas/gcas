@@ -41,7 +41,7 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import org.guanzon.cas.gl.status.SOATaggingStatus;
+import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatus;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -49,9 +49,9 @@ import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
-import org.guanzon.cas.gl.SOATagging;
-import org.guanzon.cas.gl.services.SOATaggingControllers;
-import org.guanzon.cas.gl.status.SOATaggingStatic;
+import ph.com.guanzongroup.cas.cashflow.SOATagging;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
+import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatic;
 
 /**
  * FXML Controller class
@@ -98,7 +98,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        poSOATaggingController = new SOATaggingControllers(oApp, null).SOATagging();
+        poSOATaggingController = new CashflowControllers(oApp, null).SOATagging();
         poJSON = poSOATaggingController.InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));

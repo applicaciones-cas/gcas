@@ -36,10 +36,10 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.gl.APPaymentAdjustment;
-import org.guanzon.cas.gl.services.GLControllers;
-import org.guanzon.cas.gl.status.APPaymentAdjustmentStatus;
+import ph.com.guanzongroup.cas.cashflow.APPaymentAdjustment;
+import ph.com.guanzongroup.cas.cashflow.status.APPaymentAdjustmentStatus;
 import org.json.simple.JSONObject;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 
 public class APPaymentAdjustment_HistoryController implements Initializable, ScreenInterface {
 
@@ -78,7 +78,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         poJSON = new JSONObject();
-        poAPPaymentAdjustmentController = new GLControllers(oApp, null).APPayementAdjustment();
+        poAPPaymentAdjustmentController = new CashflowControllers(oApp, null).APPayementAdjustment();
         poAPPaymentAdjustmentController.initialize(); // Initialize transaction
         initTextFields();
         initDatePickers();
