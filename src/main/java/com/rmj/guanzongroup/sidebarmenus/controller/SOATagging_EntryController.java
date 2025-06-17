@@ -279,19 +279,14 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     }
                                 }
 
-                                // Print Transaction Prompt
-                                loJSON = poSOATaggingController.OpenTransaction(poSOATaggingController.Master().getTransactionNo());
-                                loadRecordMaster();
-                                if ("success".equals(loJSON.get("result"))) {
-
-                                }
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
                                 JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                btnNew.fire();
                             }
                         } else {
                             return;
                         }
-                        break;
+                        return;
                     case "btnNew":
                         //Clear data
                         poSOATaggingController.resetMaster();
@@ -619,7 +614,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             if (poSOATaggingController.Detail(pnDetail).getSourceNo() != null && !poSOATaggingController.Detail(pnDetail).getSourceNo().equals("")) {
                 tfAppliedAmtDetail.requestFocus();
             } else {
-                tfSourceNo.requestFocus();
+                tfReferenceNo.requestFocus();
             }
         }
     }
@@ -659,7 +654,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.Detail(pnDetail).getSourceNo() != null && !poSOATaggingController.Detail(pnDetail).getSourceNo().equals("")) {
                                     tfAppliedAmtDetail.requestFocus();
                                 } else {
-                                    tfSourceNo.requestFocus();
+                                    tfReferenceNo.requestFocus();
                                 }
                                 event.consume();
                             }
@@ -688,7 +683,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 //                                ShowMessageFX.Warning(null, pxeModuleName, "Company Name is not set.");
 //                                return;
 //                            }
-
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     pbKeyPressed = true;
@@ -707,10 +701,8 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfClient.setText("");
-//                                psSupplierId = "";
                                 break;
                             }
-//                            psSupplierId = poSOATaggingController.Master().getSupplierId();
                             Platform.runLater(() -> {
                                 PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                 delay.setOnFinished(e -> {
@@ -744,7 +736,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 //                                psSupplierId = "";
                                 break;
                             }
-//                            psSupplierId = poSOATaggingController.Master().getSupplierId();
                             Platform.runLater(() -> {
                                 PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                 delay.setOnFinished(e -> {
@@ -775,10 +766,8 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfIssuedTo.setText("");
-//                                psSupplierId = "";
                                 break;
                             }
-//                            psSupplierId = poSOATaggingController.Master().getSupplierId();
                             Platform.runLater(() -> {
                                 PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                 delay.setOnFinished(e -> {
@@ -1050,7 +1039,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 boolean lbPrintStat = pnEditMode == EditMode.READY && !SOATaggingStatus.VOID.equals(lsActive);
 
                 Map<String, String> statusMap = new HashMap<>();
-//                statusMap.put(SOATaggingStatus.POSTED, "POSTED");
                 statusMap.put(SOATaggingStatus.OPEN, "OPEN");
                 statusMap.put(SOATaggingStatus.PAID, "PAID");
                 statusMap.put(SOATaggingStatus.CONFIRMED, "CONFIRMED");
@@ -1090,7 +1078,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         }
 
     }
-
 
     public void loadTableDetailFromMain() {
         try {

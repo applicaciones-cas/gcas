@@ -259,6 +259,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
                                             loJSON = poSOATaggingController.ConfirmTransaction("Confirmed");
                                             if ("success".equals((String) loJSON.get("result"))) {
+                                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             } else {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
@@ -558,7 +559,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             if (poSOATaggingController.Detail(pnDetail).getSourceNo() != null && !poSOATaggingController.Detail(pnDetail).getSourceNo().equals("")) {
                 tfAppliedAmtDetail.requestFocus();
             } else {
-                tfSourceNo.requestFocus();
+                tfReferenceNo.requestFocus();
             }
         }
     }
@@ -583,7 +584,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     break;
                 case UP:
                     switch (lsID) {
-                        case "tfSourceNo":
+                        case "tfReferenceNo":
                         case "tfAppliedAmtDetail":
                             double ldblAppliedAmt = poSOATaggingController.Detail(pnDetail).getAppliedAmount().doubleValue();
                             apDetail.requestFocus();
@@ -598,7 +599,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 if (poSOATaggingController.Detail(pnDetail).getSourceNo() != null && !poSOATaggingController.Detail(pnDetail).getSourceNo().equals("")) {
                                     tfAppliedAmtDetail.requestFocus();
                                 } else {
-                                    tfSourceNo.requestFocus();
+                                    tfReferenceNo.requestFocus();
                                 }
                                 event.consume();
                             }
@@ -607,7 +608,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     break;
                 case DOWN:
                     switch (lsID) {
-                        case "tfSourceNo":
+                        case "tfReferenceNo":
                         case "tfAppliedAmtDetail":
                             moveNext();
                             event.consume();
