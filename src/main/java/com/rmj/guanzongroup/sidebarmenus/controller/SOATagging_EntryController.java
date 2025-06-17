@@ -196,7 +196,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             tfTransactionNo.requestFocus();
                             return;
                         }
-//                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         pnEditMode = poSOATaggingController.getEditMode();
                         break;
                     case "btnClose":
@@ -241,7 +241,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
-//                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                             pnEditMode = EditMode.UNKNOWN;
                             break;
                         } else {
@@ -286,7 +286,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
                                 }
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
-//                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                JFXUtil.showRetainedHighlight(true, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                             }
                         } else {
                             return;
@@ -303,7 +303,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         }
                         poSOATaggingController.initFields();
                         pnEditMode = poSOATaggingController.getEditMode();
-//                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         break;
 
                     default:
@@ -368,7 +368,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     JFXUtil.highlightByKey(tblViewMainList, pair.getKey(), "#A7C7E7", highlightedRowsMain);
                 }
             }
-//            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, false);
+            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, false);
         } catch (SQLException ex) {
             Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
@@ -1060,7 +1060,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     ));
                             lsReferenceNo = "";
                         }
-//                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                        JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                         loadHighlightFromDetail();
 
                         if (pnDetail < 0 || pnDetail
