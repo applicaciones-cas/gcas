@@ -160,7 +160,8 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                                 + SOATaggingStatus.CANCELLED
                                 + SOATaggingStatus.VOID
                                 + SOATaggingStatus.PAID);
-                        poJSON = poSOATaggingController.searchTransaction();
+                        poJSON = poSOATaggingController.searchTransaction(psIndustryId, tfSearchCompany.getText(),
+                                tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
@@ -239,9 +240,9 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                                 tfSearchReferenceNo.setText("");
                                 return;
                             } else {
-                                //psSupplierId = poSOATaggingController.Master().getClientId();
                                 pnEditMode = poSOATaggingController.getEditMode();
                                 loadRecordMaster();
+                                loadTableDetail(); 
                                 initButton(pnEditMode);
                             }
                             loadRecordSearch();
