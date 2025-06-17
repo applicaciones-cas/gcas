@@ -1645,8 +1645,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
         JFXUtil.setCommaFormatter(tfDiscountAmount, tfFreightAmt, tfVatSales, tfTaxAmount,
                 tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfCost, tfAddlDiscAmtDetail, tfCreditAmt, tfDebitAmt);
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscRateDetail,tfVatRate,
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfSINo);
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscRateDetail,tfVatRate, tfTaxAmount,
                 tfAddlDiscAmtDetail, tfSRPAmount);
         // Combobox
         JFXUtil.initComboBoxCellDesignColor(cmbAttachmentType, "#FF8201");

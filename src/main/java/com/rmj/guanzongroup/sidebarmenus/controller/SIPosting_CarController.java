@@ -153,7 +153,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     @FXML
     private TextField tfSearchSupplier, tfSearchReferenceNo, tfSearchReceiveBranch, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo,
-            tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfNetTotal,
+            tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfNetTotal,  tfTaxAmount,tfVatRate,
             tfTransactionTotal, tfOrderNo, tfBrand, tfDescription, tfOrderQuantity, tfReceiveQuantity, tfCost, tfDiscRateDetail,
             tfAddlDiscAmtDetail, tfSRPAmount, tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfReportMonthYear, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt,
             tfTotalDebitAmt, tfAttachmentNo;
@@ -407,7 +407,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             CheckBox checkedBox = (CheckBox) source;
             switch (checkedBox.getId()) {
                 case "cbVatInclusive":
-//                    poPurchaseReceivingController.Master().se
+                    poPurchaseReceivingController.Master().isVatTaxable(cbVatInclusive.isSelected());
+                    loadRecordMaster();
                     break;
                 case "cbVatable":
                     poPurchaseReceivingController.Detail(pnDetail).isVatable(cbVatable.isSelected());
@@ -675,7 +676,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", "")) / 100.00));
+                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", "")) ));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -703,13 +704,37 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-
-                    poJSON = poPurchaseReceivingController.computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
+                    
+                    poJSON = poPurchaseReceivingController.Master().setFreight(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setFreight(Double.valueOf(lsValue.replace(",", "")));
+
+                    break;
+                case "tfTaxAmount":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+
+                    poJSON = poPurchaseReceivingController.Master().setWithHoldingTax(Double.valueOf(lsValue.replace(",", "")));
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        break;
+                    }
+
+                    break;
+                case "tfVatRate":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.00";
+                    }
+                    
+                    if (Double.valueOf(lsValue.replace(",", "")) > 100.00) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid vat rate.");
+                        break;
+                    }
+                    
+                    poJSON = poPurchaseReceivingController.Master().setVatRate((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -957,7 +982,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         case "tfCost":
                         case "tfDiscRateDetail":
                         case "tfAddlDiscAmtDetail":
-                        case "tfSRPAmount":
                             int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
                             int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
@@ -979,7 +1003,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         case "tfCost":
                         case "tfDiscRateDetail":
                         case "tfAddlDiscAmtDetail":
-                        case "tfSRPAmount":
                             moveNext();
                             event.consume();
                             break;
@@ -1300,25 +1323,25 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Brand().getDescription());
             tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
             tfOrderNo.setText(poPurchaseReceivingController.Detail(pnDetail).getOrderNo());
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
-//            tfDiscRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getDiscount().doubleValue()*100));
-//            Platform.runLater(() -> {
-//                double lnValue = 0.00;
-//                if(poPurchaseReceivingController.Detail(pnDetail).getDiscount() != null){
-//                    lnValue = poPurchaseReceivingController.Detail(pnDetail).getDiscount().doubleValue();
-//                }
-//                if (!Double.isNaN(lnValue)) {
-//                    tfDiscRateDetail.setText(String.format("%.2f", (lnValue*100.00)));
-//                } else {
-//                    tfDiscRateDetail.setText(String.format("%.2f", 0.00));
-//                }
-//            });
-//            
-//            tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getAdditionalDiscount()));
-            tfDiscRateDetail.setText("0.00");
-            tfAddlDiscAmtDetail.setText("0.00");
-            double lnTotal = 0.00; //TODO
-            tfSRPAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+            Platform.runLater(() -> {
+                double lnValue = 0.00;
+                if(poPurchaseReceivingController.Detail(pnDetail).getDiscount() != null){
+                    lnValue = poPurchaseReceivingController.Detail(pnDetail).getDiscount().doubleValue();
+                }
+                if (!Double.isNaN(lnValue)) {
+                    tfDiscRateDetail.setText(String.format("%.2f",lnValue));
+                } else {
+                    tfDiscRateDetail.setText(String.format("%.2f", 0.00));
+                }
+            });
+            double ldblDiscountRate = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue()
+                    * (poPurchaseReceivingController.Detail(pnDetail).getDiscountRate().doubleValue() / 100);
+            tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getAdditionalDiscount()));
+            double lnTotal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue() 
+                    + poPurchaseReceivingController.Detail(pnDetail).getAdditionalDiscount().doubleValue()
+                    + ldblDiscountRate;
+            tfSRPAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
             cbVatable.setSelected(poPurchaseReceivingController.Detail(pnDetail).isVatable());
@@ -1348,7 +1371,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
             Platform.runLater(() -> {
                 String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
-
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(PurchaseOrderReceivingStatus.POSTED, "POSTED");
                 statusMap.put(PurchaseOrderReceivingStatus.PAID, "PAID");
@@ -1369,59 +1391,80 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
                 }
             }
+            
             poPurchaseReceivingController.computeFields();
 
-            // Transaction Date
+            tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
-            //ReferenceDate
-            String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getReferenceDate());
-            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
-
-            tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
 
             tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfBranch.setText(poPurchaseReceivingController.Master().Branch().getBranchName());
             tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
-            tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
-            tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
-            taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
 
+            String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getReferenceDate());
+            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
+            tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
+            tfSINo.setText(poPurchaseReceivingController.Master().getSalesInvoice());
+            tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
+            taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
+//
+//            tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+//                    poPurchaseReceivingController.Master().getTransactionTotal().doubleValue(), true));
+
+            tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    getGrossTotal(), true));
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() * 100.00)));
-
+                    tfDiscountRate.setText(String.format("%.2f", lnValue));
                 } else {
                     tfDiscountRate.setText(String.format("%.2f", 0.00));
                 }
+                double lnVat = poPurchaseReceivingController.Master().getVatRate().doubleValue();
+                if (!Double.isNaN(lnVat)) {
+                    tfVatRate.setText(String.format("%.2f", lnVat));
+                } else {
+                    tfVatRate.setText(String.format("%.2f", 0.00));
+                }
             });
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
-            tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poPurchaseReceivingController.Master().getDiscount().doubleValue(), true));
+            tfFreightAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poPurchaseReceivingController.Master().getFreight().doubleValue(), true));
+            tfTaxAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poPurchaseReceivingController.Master().getWithHoldingTax().doubleValue(), true));
 
-            tfSINo.setText(poPurchaseReceivingController.Master().getSalesInvoice());
-            tfFreightAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getFreight().doubleValue())));
+            cbVatInclusive.setSelected(poPurchaseReceivingController.Master().isVatTaxable());
+            tfVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poPurchaseReceivingController.Master().getVatSales().doubleValue()));
 
-            /* TODO 
-            Vat Inclucsive
-            cVATaxabl ano ito
-            nVATRatex ano ito
+            tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poPurchaseReceivingController.Master().getVatAmount().doubleValue()));
 
-            vat sales = computation
-            vat amount = computation and column?
-            zero vat sales = computation
-            vat exempt sales = computation
+            tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poPurchaseReceivingController.Master().getZeroVatSales().doubleValue()));
 
-            net total computation
-            Net Total = Transaction total - Discount Rate - Additional Discount - Freight - Vat Sales - Vat Amount - Zero Vat sales - Vat Exempt Sales 
+            tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poPurchaseReceivingController.Master().getVatExemptSales().doubleValue()));
+            //Net Total = Vat Amount - Tax Amount
+            double ldblNetTotal = 0.00;
+            if(poPurchaseReceivingController.Master().isVatTaxable()){
+                //Net VAT Amount : VAT Sales - VAT Amount
+                //Net Total : VAT Sales - Withholding Tax
+                ldblNetTotal = poPurchaseReceivingController.Master().getVatSales().doubleValue() - poPurchaseReceivingController.Master().getWithHoldingTax().doubleValue();
+            } else {
+                //Net VAT Amount : VAT Sales + VAT Amount
+                //Net Total : Net VAT Amount - Withholding Tax
+                ldblNetTotal = (poPurchaseReceivingController.Master().getVatSales().doubleValue() 
+                            + poPurchaseReceivingController.Master().getVatAmount().doubleValue())
+                            - poPurchaseReceivingController.Master().getWithHoldingTax().doubleValue();
             
-            tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf());
-            tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf());
-            tfVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf());
-            tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf());
-            tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf());
-            cbVatInclusive.setSelected();
-             */
+            }
+            
+            tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    ldblNetTotal, true));
+
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1429,6 +1472,15 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
+    }
+    
+    private double getGrossTotal(){
+        double ldblGrossTotal = 0.0000;
+        for(int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getDetailCount()-1; lnCtr++){
+            ldblGrossTotal = ldblGrossTotal + (poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() 
+                            * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue());
+        }
+        return ldblGrossTotal;
     }
 
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
@@ -1550,19 +1602,18 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                                 details_data.add(
                                         new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
                                                 String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
+                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().Brand().getDescription()),
                                                 String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
+                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
                                                 String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountAmt)),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
+                                                String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()),
+                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountAmt, true)),
+                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                         ));
                             }
                         }
 
-                        tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTransactionTotal));
-
+                        tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTransactionTotal, true));
                         if (pnDetail < 0 || pnDetail
                                 >= details_data.size()) {
                             if (!details_data.isEmpty()) {
@@ -1691,7 +1742,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     public void initTextFields() {
         JFXUtil.setFocusListener(txtField_Focus, tfSearchReceiveBranch, tfSearchSupplier, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks, taJERemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount,
+        JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount,  tfTaxAmount, tfVatRate,
                 tfVatSales, tfZeroVatSales, tfVatAmount, tfVatExemptSales, tfTotalCreditAmt, tfTotalDebitAmt,
                 tfTotalCreditAmt, tfTotalDebitAmt);
         JFXUtil.setFocusListener(txtDetail_Focus, tfCost, tfDiscRateDetail, tfAddlDiscAmtDetail, tfSRPAmount,
@@ -1699,10 +1750,10 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apJEDetail, apBrowse);
 
-        JFXUtil.setCommaFormatter(tfDiscountAmount, tfFreightAmt, tfVatSales,
+        JFXUtil.setCommaFormatter(tfDiscountAmount, tfFreightAmt, tfVatSales,  tfTaxAmount,
                 tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfCost, tfAddlDiscAmtDetail, tfCreditAmt, tfDebitAmt);
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity);
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscRateDetail,
+        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfSINo);
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscRateDetail,tfVatRate,tfTaxAmount,
                 tfAddlDiscAmtDetail, tfSRPAmount);
         // Combobox
         JFXUtil.initComboBoxCellDesignColor(cmbAttachmentType, "#FF8201");
