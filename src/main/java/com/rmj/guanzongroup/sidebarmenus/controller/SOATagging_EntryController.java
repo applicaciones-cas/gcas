@@ -87,7 +87,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     private String psCompanyId = "";
     private String psCategoryId = "";
     private boolean pbEntered = false;
-
+    boolean pbKeyPressed = false;
     private ObservableList<ModelSOATagging_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelSOATagging_Detail> details_data = FXCollections.observableArrayList();
 
@@ -502,16 +502,67 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     break;
                 case "tfCompany":
                     if (lsValue.isEmpty()) {
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            if (poSOATaggingController.Master().getCompanyId() != null && !"".equals(poSOATaggingController.Master().getCompanyId())) {
+                                if (poSOATaggingController.getDetailCount() > 1) {
+                                    if (!pbKeyPressed) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                "Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                            poSOATaggingController.removeDetails();
+                                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                            loadTableDetail();
+                                        } else {
+                                            loadRecordMaster();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         poJSON = poSOATaggingController.Master().setCompanyId("");
                     }
                     break;
                 case "tfClient":
                     if (lsValue.isEmpty()) {
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            if (poSOATaggingController.Master().getClientId() != null && !"".equals(poSOATaggingController.Master().getClientId())) {
+                                if (poSOATaggingController.getDetailCount() > 1) {
+                                    if (!pbKeyPressed) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                            poSOATaggingController.removeDetails();
+                                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                            loadTableDetail();
+                                        } else {
+                                            loadRecordMaster();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         poJSON = poSOATaggingController.Master().setClientId("");
                     }
                     break;
                 case "tfIssuedTo":
                     if (lsValue.isEmpty()) {
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            if (poSOATaggingController.Master().getIssuedTo() != null && !"".equals(poSOATaggingController.Master().getIssuedTo())) {
+                                if (poSOATaggingController.getDetailCount() > 1) {
+                                    if (!pbKeyPressed) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                "Are you sure you want to change the payee name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                            poSOATaggingController.removeDetails();
+                                            JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
+                                            loadTableDetail();
+                                        } else {
+                                            loadRecordMaster();
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         poJSON = poSOATaggingController.Master().setIssuedTo("");
                     }
                     break;
@@ -632,31 +683,111 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             retrievePayables(true);
                             break;
                         case "tfClient":
+//                            if (poSOATaggingController.Master().getCompanyId() == null
+//                                    || "".equals(poSOATaggingController.Master().getCompanyId())) {
+//                                ShowMessageFX.Warning(null, pxeModuleName, "Company Name is not set.");
+//                                return;
+//                            }
+
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poSOATaggingController.getDetailCount() > 1) {
+                                    pbKeyPressed = true;
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all SOA details. Do you wish to proceed?") == true) {
+                                        poSOATaggingController.removeDetails();
+                                        loadTableDetail();
+                                    } else {
+                                        return;
+                                    }
+                                    pbKeyPressed = false;
+                                }
+                            }
+
                             poJSON = poSOATaggingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfClient.setText("");
+//                                psSupplierId = "";
                                 break;
                             }
-                            poSOATaggingController.Master().Supplier().getCompanyName();
-                            retrievePayables(false);
+//                            psSupplierId = poSOATaggingController.Master().getSupplierId();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(e -> {
+                                    if (!"".equals(poSOATaggingController.Master().getClientId())) {
+                                        retrievePayables(false);
+                                    }
+                                });
+                                delay.play();
+                            });
                             loadRecordMaster();
                             return;
                         case "tfCompany":
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poSOATaggingController.getDetailCount() > 1) {
+                                    pbKeyPressed = true;
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                            "Are you sure you want to change the company name? Please note that doing so will delete all SOA details. Do you wish to proceed?") == true) {
+                                        poSOATaggingController.removeDetails();
+                                        loadTableDetail();
+                                    } else {
+                                        return;
+                                    }
+                                    pbKeyPressed = false;
+                                }
+                            }
+
                             poJSON = poSOATaggingController.SearchCompany(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfClient.setText("");
+//                                psSupplierId = "";
                                 break;
                             }
-                            retrievePayables(false);
+//                            psSupplierId = poSOATaggingController.Master().getSupplierId();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(e -> {
+                                    if (!"".equals(poSOATaggingController.Master().getCompanyId())) {
+                                        retrievePayables(false);
+                                    }
+                                });
+                                delay.play();
+                            });
                             loadRecordMaster();
                             return;
                         case "tfIssuedTo":
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poSOATaggingController.getDetailCount() > 1) {
+                                    pbKeyPressed = true;
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                            "Are you sure you want to change the payee name? Please note that doing so will delete all SOA details. Do you wish to proceed?") == true) {
+                                        poSOATaggingController.removeDetails();
+                                        loadTableDetail();
+                                    } else {
+                                        return;
+                                    }
+                                    pbKeyPressed = false;
+                                }
+                            }
+
                             poJSON = poSOATaggingController.SearchPayee(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfIssuedTo.setText("");
+//                                psSupplierId = "";
                                 break;
                             }
-                            retrievePayables(false);
+//                            psSupplierId = poSOATaggingController.Master().getSupplierId();
+                            Platform.runLater(() -> {
+                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                delay.setOnFinished(e -> {
+                                    if (!"".equals(poSOATaggingController.Master().getIssuedTo())) {
+                                        retrievePayables(false);
+                                    }
+                                });
+                                delay.play();
+                            });
                             loadRecordMaster();
                             return;
                     }
@@ -960,6 +1091,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
     }
 
+
     public void loadTableDetailFromMain() {
         try {
             poJSON = new JSONObject();
@@ -1015,6 +1147,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 Platform.runLater(() -> {
                     details_data.clear();
                     plOrderNoPartial.clear();
+
                     int lnCtr;
                     try {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
