@@ -341,6 +341,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
                     }
+                    poDisbursementController.Master().setVoucherNo(poDisbursementController.getVoucherNo());
                     poDisbursementController.Master().setIndustryID(psIndustryId);
                     poDisbursementController.Master().setCompanyID(psCompanyId);
                     poDisbursementController.Master().setDisbursementType(DisbursementStatic.DisbursementType.CHECK);
@@ -353,6 +354,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     break;
                 case "btnUpdate":
                     poJSON = poDisbursementController.UpdateTransaction();
+                    System.out.println("update db type == " + poDisbursementController.Master().getDisbursementType());
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
@@ -669,6 +671,12 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     loadRecordMasterCheck();
                     break;
                 case DisbursementStatic.DisbursementType.WIRED:
+                    poJSON = poDisbursementController.setCheckpayment();
+                    if ("error".equals((String) poJSON.get("message"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        break;
+                    }
+//                    
                     loadRecordMasterBankTransfer();
                     break;
                 case DisbursementStatic.DisbursementType.DIGITAL_PAYMENT:
@@ -1519,6 +1527,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 
         cmbPaymentMode.setOnAction(e -> {
             if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) && cmbPaymentMode.getSelectionModel().getSelectedIndex() >= 0) {
+                poDisbursementController.Master().setOldDisbursementType(poDisbursementController.Master().getDisbursementType());
                 poDisbursementController.Master().setDisbursementType(String.valueOf(cmbPaymentMode.getSelectionModel().getSelectedIndex()));
                 loadRecordMasterDV();
             }

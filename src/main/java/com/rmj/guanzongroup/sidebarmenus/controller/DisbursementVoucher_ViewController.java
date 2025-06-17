@@ -180,7 +180,13 @@ public class DisbursementVoucher_ViewController implements Initializable {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                 }
                 poJSON = poDisbursementController.OpenTransaction(psTransactionNo);
+                System.out.println("db type == " + poDisbursementController.Master().getDisbursementType());
                 if (!"error".equals((String) poJSON.get("result"))) {
+                    
+                    if (poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK)){
+                        poDisbursementController.setCheckpayment();
+                    }
+                    
                     loadRecordMasterDV();
                     initComboBox();
                     initTableDetailDV();
@@ -271,7 +277,7 @@ public class DisbursementVoucher_ViewController implements Initializable {
     private void loadRecordMasterCheck() {
         try {
             tfBankNameCheck.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "");
-            tfBankAccountCheck.setText(poDisbursementController.CheckPayments().getModel().getBankAcountID() != null ? poDisbursementController.CheckPayments().getModel().getBankAcountID() : "");
+            tfBankAccountCheck.setText(poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() != null ? poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() : "");
             tfPayeeName.setText(poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "");
             tfCheckNo.setText(poDisbursementController.CheckPayments().getModel().getCheckNo());
             dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poDisbursementController.CheckPayments().getModel().getCheckDate(), SQLUtil.FORMAT_SHORT_DATE)));

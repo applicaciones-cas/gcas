@@ -1512,6 +1512,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
 
         cmbPaymentMode.setOnAction(e -> {
             if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) && cmbPaymentMode.getSelectionModel().getSelectedIndex() >= 0) {
+                poDisbursementController.Master().setOldDisbursementType(poDisbursementController.Master().getDisbursementType());
                 poDisbursementController.Master().setDisbursementType(String.valueOf(cmbPaymentMode.getSelectionModel().getSelectedIndex()));
                 loadRecordMasterDV();
             }

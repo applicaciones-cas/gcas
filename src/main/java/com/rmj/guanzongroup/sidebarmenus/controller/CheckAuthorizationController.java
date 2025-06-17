@@ -147,7 +147,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
-            poDisbursementController.setTransactionStatus(DisbursementStatic.VERIFIED);
+            poDisbursementController.setTransactionStatus(DisbursementStatic.CERTIFIED);
             poJSON = new JSONObject();
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
@@ -360,8 +360,8 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                                             CustomCommonUtil.formatDateToShortString(poDisbursementController.poDisbursementMaster(lnCntr).getTransactionDate()),
                                             poDisbursementController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
                                             poDisbursementController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
-                                            poDisbursementController.poDisbursementMaster(lnCntr).checkPayments().Banks().getBankName(),
-                                            poDisbursementController.poDisbursementMaster(lnCntr).checkPayments().Bank_Account_Master().getAccountNo(),
+                                            poDisbursementController.poDisbursementMaster(lnCntr).CheckPayments().Banks().getBankName(),
+                                            poDisbursementController.poDisbursementMaster(lnCntr).CheckPayments().Bank_Account_Master().getAccountNo(),
                                             "",
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.poDisbursementMaster(lnCntr).getNetTotal(), true)
                                     ));
