@@ -2513,9 +2513,12 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Entry\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"002\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Entry.fxml\",\"controller_path\":\"PaymentRequestEntry.controller\",\"menu_id\":\"003\",\"menu_parent\":\"002\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml\",\"controller_path\":\"DisbursementVoucher_EntryController\",\"menu_id\":\"009\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Print Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml\",\"controller_path\":\"CheckPrintRequest_EntryController\",\"menu_id\":\"017\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Printing\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml\",\"controller_path\":\"CheckPrintingController\",\"menu_id\":\"018\",\"menu_parent\":\"002\"},"
                 //Confirmation
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"004\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Confirmation.fxml\",\"controller_path\":\"PaymentRequestConfirmation.controller\",\"menu_id\":\"005\",\"menu_parent\":\"004\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Print Request Confirmation\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml\",\"controller_path\":\"CheckPrintRequest_ConfirmationController\",\"menu_id\":\"016\",\"menu_parent\":\"004\"},"
                 //Verification
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Verification\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"010\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml\",\"controller_path\":\"DisbursementVoucher_VerificationController\",\"menu_id\":\"011\",\"menu_parent\":\"010\"},"
@@ -2529,7 +2532,8 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Authorization\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml\",\"controller_path\":\"CheckAuthorizationController\",\"menu_id\":\"015\",\"menu_parent\":\"014\"},"
                 //History
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"007\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml\",\"controller_path\":\"PaymentRequestHistory.controller\",\"menu_id\":\"008\",\"menu_parent\":\"007\"}"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml\",\"controller_path\":\"PaymentRequestHistoryController\",\"menu_id\":\"008\",\"menu_parent\":\"007\"}"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_History.fxml\",\"controller_path\":\"DisbursementVoucher_HistoryController\",\"menu_id\":\"016\",\"menu_parent\":\"007\"}"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
