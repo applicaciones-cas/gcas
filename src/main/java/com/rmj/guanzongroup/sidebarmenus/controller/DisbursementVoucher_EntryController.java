@@ -676,7 +676,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         break;
                     }
-//                    
+//
                     loadRecordMasterBankTransfer();
                     break;
                 case DisbursementStatic.DisbursementType.DIGITAL_PAYMENT:
@@ -1015,7 +1015,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     private void initTextFieldsDV() {
         //Initialise  TextField Focus
 
-        JFXUtil.setFocusListener(txtDetailDV_Focus, tfPurchasedAmountDetail, tfTaxCodeDetail);
+        JFXUtil.setFocusListener(txtDetailDV_Focus, tfPurchasedAmountDetail);
 //        JFXUtil.setFocusListener(txtMasterCheck_Focus, tfPayeeName, tfBankNameCheck, tfBankAccountCheck);
         JFXUtil.setFocusListener(txtMasterBankTransfer_Focus, tfBankNameBTransfer, tfBankAccountBTransfer, tfSupplierBank, tfSupplierAccountNoBTransfer);
         JFXUtil.setFocusListener(txtMasterOnlinePayment_Focus, tfBankNameOnlinePayment, tfBankAccountOnlinePayment, tfSupplierServiceName, tfSupplierAccountNo);
@@ -1056,6 +1056,8 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         poDisbursementController.Detail(pnDetailDV).setTAxCode("");
                         poDisbursementController.Detail(pnDetailDV).setTaxRates(0.0000);
                         poDisbursementController.Detail(pnDetailDV).setTaxAmount(0.0000);
+                        tfTaxRateDetail.setText("0.00");
+                        tfTaxAmountDetail.setText("0.0000");
                     }
                     break;
             }
@@ -1208,7 +1210,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     return;
                                 }
 //                                tfBankAccountCheck.setText(poDisbursementController.c.);
-                                tfBankAccountCheck.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo()!= null ? poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() : "") : "");
+                                tfBankAccountCheck.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() != null ? poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() : "") : "");
                                 break;
                             case "tfPayeeName":
                                 poJSON = poDisbursementController.SearchPayee(lsValue, false);
@@ -1582,29 +1584,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     }
 
     private void initCheckBox() {
-        chbkVatClassification.setOnAction(event -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (pnDetailDV >= 0) {
-                    // Check for invalid purchase amount first
-                    if (poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue() <= 0.0000) {
-                        ShowMessageFX.Warning("Invalid to check VAT classification, no purchase amount.", pxeModuleName, null);
-                        chbkVatClassification.setSelected(false); // Optional: uncheck the box
-                        return;
-                    }
-
-                    if (!isUncheckVatSales()) {
-                        return;
-                    }
-                    poDisbursementController.Detail(pnDetailDV).isWithVat(chbkVatClassification.isSelected());
-                    chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
-                    Platform.runLater(() -> {
-                        loadTableDetailDV();
-                    });
-                    initFields(pnEditMode);
-                }
-            }
-        });
-
         chbkIsCrossCheck.setOnAction(event -> {
             if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                 poDisbursementController.CheckPayments().getModel().isCross(chbkIsCrossCheck.isSelected());
@@ -1622,28 +1601,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         });
     }
 
-    private boolean isUncheckVatSales() {
-        if (!poDisbursementController.Detail(pnDetailDV).getTAxCode().isEmpty()) {
-            if (ShowMessageFX.YesNo("This detail have already tax code, Are you sure want to change?", pxeModuleName, null)) {
-                poDisbursementController.Detail(pnDetailDV).isWithVat(false);
-                chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
-                poDisbursementController.Detail(pnDetailDV).setTAxCode("");
-                poDisbursementController.Detail(pnDetailDV).setTaxRates(0.00);
-                poDisbursementController.Detail(pnDetailDV).setTaxAmount(0.0000);
-                Platform.runLater(() -> {
-                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                    delay.setOnFinished(event -> {
-                        loadTableDetailDV();
-                    });
-                    delay.play();
-                });
-                loadRecordDetailDV();
-                return false;
-            }
-        }
-        return true;
-    }
-
     private void clearFields() {
         previousSearchedTextField = null;
         lastFocusedTextField = null;
@@ -1656,8 +1613,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     private void initFields(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
         JFXUtil.setDisabled(!lbShow, apDVMaster1, apDVMaster2, apDVMaster3, apJournalMaster, apJournalDetails);
-        JFXUtil.setDisabled(true, apDVDetail, apMasterDVCheck, apMasterDVOp, apMasterDVBTransfer);
-        tfTaxCodeDetail.setDisable(true);
+        JFXUtil.setDisabled(true, apDVDetail, apMasterDVCheck, apMasterDVOp, apMasterDVBTransfer, tfTaxAmountDetail);
         tabJournal.setDisable(tfDVTransactionNo.getText().isEmpty());
         tabCheck.setDisable(true);
         tabOnlinePayment.setDisable(true);
@@ -1690,10 +1646,11 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         }
         if (pnDetailDV >= 0) {
             if (!tfRefNoDetail.getText().isEmpty()) {
-                JFXUtil.setDisabled(!lbShow, apDVDetail);
-                if (chbkVatClassification.isSelected()) {
-                    tfTaxCodeDetail.setDisable(!lbShow);
+                if (poDisbursementController.Detail(pnDetailDV).getSourceCode().equals("Cche")) {
+                    tfTaxAmountDetail.setDisable(!lbShow);
                 }
+                JFXUtil.setDisabled(!lbShow, apDVDetail);
+                chbkVatClassification.setDisable(true);
             }
         }
 

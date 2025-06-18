@@ -586,7 +586,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poDisbursementController.getDisbursement(psTransactionNo, psSupplierId,false);
+                        poJSON = poDisbursementController.getDisbursement(psTransactionNo, psSupplierId, false);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
                                 for (int lnCntr = 0; lnCntr <= poDisbursementController.getDisbursementMasterCount() - 1; lnCntr++) {
@@ -1041,6 +1041,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
                         poDisbursementController.Detail(pnDetailDV).setTAxCode("");
                         poDisbursementController.Detail(pnDetailDV).setTaxRates(0.0000);
                         poDisbursementController.Detail(pnDetailDV).setTaxAmount(0.0000);
+                        tfTaxRateDetail.setText("0.00");
+                        tfTaxAmountDetail.setText("0.0000");
                     }
                     break;
             }
@@ -1567,28 +1569,6 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void initCheckBox() {
-        chbkVatClassification.setOnAction(event -> {
-            if (pnEditMode == EditMode.UPDATE) {
-                if (pnDetailDV >= 0) {
-                    // Check for invalid purchase amount first
-                    if (poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue() <= 0.0000) {
-                        ShowMessageFX.Warning("Invalid to check VAT classification, no purchase amount.", pxeModuleName, null);
-                        chbkVatClassification.setSelected(false); // Optional: uncheck the box
-                        return;
-                    }
-
-                    if (!isUncheckVatSales()) {
-                        return;
-                    }
-                    poDisbursementController.Detail(pnDetailDV).isWithVat(chbkVatClassification.isSelected());
-                    Platform.runLater(() -> {
-                        loadTableDetailDV();
-                    });
-                    initFields(pnEditMode);
-                }
-            }
-        });
-
         chbkIsCrossCheck.setOnAction(event -> {
             if (pnEditMode == EditMode.UPDATE) {
                 poDisbursementController.CheckPayments().getModel().isCross(chbkIsCrossCheck.isSelected());
@@ -1606,28 +1586,6 @@ public class DisbursementVoucher_VerificationController implements Initializable
         });
     }
 
-    private boolean isUncheckVatSales() {
-        if (!poDisbursementController.Detail(pnDetailDV).getTAxCode().isEmpty()) {
-            if (ShowMessageFX.YesNo("This detail have already tax code, Are you sure want to change?", pxeModuleName, null)) {
-                poDisbursementController.Detail(pnDetailDV).isWithVat(false);
-                chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
-                poDisbursementController.Detail(pnDetailDV).setTAxCode("");
-                poDisbursementController.Detail(pnDetailDV).setTaxRates(0.00);
-                poDisbursementController.Detail(pnDetailDV).setTaxAmount(0.0000);
-                Platform.runLater(() -> {
-                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                    delay.setOnFinished(event -> {
-                        loadTableDetailDV();
-                    });
-                    delay.play();
-                });
-                loadRecordDetailDV();
-                return false;
-            }
-        }
-        return true;
-    }
-
     private void clearFields() {
         previousSearchedTextField = null;
         lastFocusedTextField = null;
@@ -1641,7 +1599,6 @@ public class DisbursementVoucher_VerificationController implements Initializable
         boolean lbShow = (fnEditMode == EditMode.UPDATE);
         JFXUtil.setDisabled(!lbShow, apDVMaster1, apDVMaster2, apDVMaster3, apJournalMaster, apJournalDetails);
         JFXUtil.setDisabled(true, apDVDetail, apMasterDVCheck, apMasterDVOp, apMasterDVBTransfer);
-        tfTaxCodeDetail.setDisable(true);
         tabJournal.setDisable(tfDVTransactionNo.getText().isEmpty());
         tabCheck.setDisable(true);
         tabOnlinePayment.setDisable(true);
@@ -1671,12 +1628,19 @@ public class DisbursementVoucher_VerificationController implements Initializable
         }
         if (pnDetailDV >= 0) {
             if (!tfRefNoDetail.getText().isEmpty()) {
-                JFXUtil.setDisabled(!lbShow, apDVDetail);
-                if (chbkVatClassification.isSelected()) {
-                    tfTaxCodeDetail.setDisable(!lbShow);
+                if (poDisbursementController.Detail(pnDetailDV).getSourceCode().equals("Cche")) {
+                    tfTaxAmountDetail.setDisable(!lbShow);
                 }
+                JFXUtil.setDisabled(!lbShow, apDVDetail);
+                chbkVatClassification.setDisable(true);
             }
         }
+//        if (pnDetailDV >= 0) {
+//            if (!tfRefNoDetail.getText().isEmpty()) {
+//                JFXUtil.setDisabled(!lbShow, apDVDetail);
+//                chbkVatClassification.setDisable(true);
+//            }
+//        }
     }
 
     private void initButton(int fnEditMode) {
