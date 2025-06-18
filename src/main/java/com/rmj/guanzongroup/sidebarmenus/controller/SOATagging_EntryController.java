@@ -132,14 +132,13 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
-
         initTextFields();
         initDatePickers();
         initMainGrid();
         initDetailsGrid();
         initTableOnClick();
         clearTextFields();
-
+        
         Platform.runLater(() -> {
             poSOATaggingController.Master().setIndustryId(psIndustryId);
 //            poSOATaggingController.Master().setCompanyID(psCompanyId);
@@ -346,7 +345,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         lsReferenceNo = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                         break;
                     case SOATaggingStatic.CachePayable: {
-                        lsReferenceNo = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getTransactionNo();
+                        lsReferenceNo = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getReferNo();
                     }
                     break;
                 }
@@ -924,7 +923,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     break;
                                 case SOATaggingStatic.CachePayable:
                                     lsPayeeName = poSOATaggingController.CachePayableList(lnCtr).Client().getCompanyName();
-                                    lsTransNo = poSOATaggingController.CachePayableList(lnCtr).getTransactionNo();
+                                    lsTransNo = poSOATaggingController.CachePayableList(lnCtr).getReferNo();
                                     lsTransDate = String.valueOf(poSOATaggingController.CachePayableList(lnCtr).getTransactionDate());
                                     break;
                             }
@@ -1006,7 +1005,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
                     break;
                 case SOATaggingStatic.CachePayable:
-                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).CachePayableMaster().getTransactionNo();
+                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).CachePayableMaster().getReferNo();
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
                     break;
             }
@@ -1095,7 +1094,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             break;
                         case SOATaggingStatic.CachePayable:
                             poJSON = poSOATaggingController.addPayablesToSOADetail(
-                                    poSOATaggingController.CachePayableList(pnMain).getTransactionNo(),
+                                    poSOATaggingController.CachePayableList(pnMain).getReferNo(),
                                     poSOATaggingController.PayableType(pnMain));
                             break;
                     }
@@ -1130,7 +1129,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             @Override
             protected Void call() throws Exception {
 //                Thread.sleep(1000);
-                // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     details_data.clear();
                     plOrderNoPartial.clear();
@@ -1165,7 +1163,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsReferenceNo = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                                     break;
                                 case SOATaggingStatic.CachePayable:
-                                    lsReferenceNo = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getTransactionNo();
+                                    lsReferenceNo = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getReferNo();
                                     break;
                             }
 

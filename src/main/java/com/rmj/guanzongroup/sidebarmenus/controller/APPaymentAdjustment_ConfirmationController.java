@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,6 @@ import static javafx.scene.input.KeyCode.TAB;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.util.Pair;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -277,27 +275,8 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
         try {
             poAPPaymentAdjustmentController.getModel().setIndustryId(psIndustryId);
             lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
-
-            if (psSearchSupplierId.equals("")) {
-                tfSearchSupplier.setText("");
-            } else {
-                tfSearchSupplier.setText(poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
-            }
-            if (psSearchCompanyId.equals("")) {
-                tfSearchCompany.setText("");
-            } else {
-                tfSearchCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
-            }
-
-            try {
-                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
-                    tfSearchReferenceNo.setText("");
-                } else {
-
-                }
-            } catch (Exception e) {
-                tfSearchReferenceNo.setText("");
-            }
+            tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
+            tfSearchCompany.setText(psSearchCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);

@@ -307,26 +307,8 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
         try {
             lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
 
-            if (psSupplierId.equals("")) {
-                tfSearchSupplier.setText("");
-            } else {
-                tfSearchSupplier.setText(poSOATaggingController.Master().Supplier().getCompanyName());
-            }
-            if (psCompanyId.equals("")) {
-                tfSearchCompany.setText("");
-            } else {
-                tfSearchCompany.setText(poSOATaggingController.Master().Company().getCompanyName());
-            }
-
-            try {
-                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
-                    tfSearchReferenceNo.setText("");
-                } else {
-
-                }
-            } catch (Exception e) {
-                tfSearchReferenceNo.setText("");
-            }
+            tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poSOATaggingController.Master().Supplier().getCompanyName());
+            tfSearchCompany.setText(psCompanyId.equals("") ? "" : poSOATaggingController.Master().Company().getCompanyName());
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -349,7 +331,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
                     break;
                 case SOATaggingStatic.CachePayable:
-                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).CachePayableMaster().getTransactionNo();
+                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).CachePayableMaster().getReferNo();
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).CachePayableMaster().getTransactionDate());
                     break;
             }
@@ -432,7 +414,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                                     lsReferenceNo = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                                     break;
                                 case SOATaggingStatic.CachePayable:
-                                    lsReferenceNo = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getTransactionNo();
+                                    lsReferenceNo = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getReferNo();
                                     break;
                             }
 

@@ -257,23 +257,6 @@
                                                                                     <Font name="System Bold" size="15.0" />
                                                                                  </font>
                                                                               </Label>
-                                                                          <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                                                              <DatePicker fx:id="dpTransactionDate" editable="false" showWeekNumbers="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                      <TextField fx:id="tfSOANo" maxHeight="25.0" promptText="" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                          <TextField fx:id="tfClient" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                                                  <TextField fx:id="tfIssuedTo" layoutX="85.0" layoutY="107.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-                                                      <TextArea fx:id="taRemarks" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" GridPane.rowSpan="3">
-                                                         <GridPane.margin>
-                                                            <Insets top="1.0" />
-                                                         </GridPane.margin>
-                                                      </TextArea>
-                                                                  <TextField fx:id="tfTransactionTotal" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfVatAmount" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="78.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="5" />
-                                                                  <TextField fx:id="tfNonVatSales" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="107.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="6" />
-                                                                  <TextField fx:id="tfZeroVatSales" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="136.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="7" />
-                                                                  <TextField fx:id="tfVatExemptSales" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="165.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="8" />
-                                                                <TextField fx:id="tfNetTotal" alignment="CENTER_RIGHT" disable="true" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="9">
-                                                                     </TextField>
                                                                   <Label layoutX="50.0" layoutY="54.0" text="Transaction Total" GridPane.columnIndex="6" GridPane.rowIndex="2">
                                                                      <font>
                                                                         <Font name="System Bold" size="12.0" />
@@ -288,11 +271,28 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <TextField fx:id="tfCompany" layoutX="105.0" layoutY="140.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                                   <Label layoutX="596.0" layoutY="85.0" text="Discount Amount" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-                                                                  <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" layoutX="674.0" layoutY="80.0" promptText="0.0000" GridPane.columnIndex="8" GridPane.rowIndex="3" />
                                                                   <Label layoutX="571.0" layoutY="115.0" text="Freight" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                                                                          <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                                              <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" showWeekNumbers="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                      <TextField fx:id="tfSOANo" maxHeight="25.0" promptText="" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                  <TextField fx:id="tfCompany" layoutX="105.0" layoutY="140.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                          <TextField fx:id="tfClient" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                                  <TextField fx:id="tfIssuedTo" layoutX="85.0" layoutY="107.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                                                  <TextField fx:id="tfTransactionTotal" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="tfDiscountAmount" alignment="CENTER_RIGHT" layoutX="674.0" layoutY="80.0" promptText="0.0000" GridPane.columnIndex="8" GridPane.rowIndex="3" />
                                                                   <TextField fx:id="tfFreight" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="674.0" layoutY="110.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="tfVatAmount" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="78.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="5" />
+                                                                  <TextField fx:id="tfNonVatSales" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="107.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="6" />
+                                                                  <TextField fx:id="tfZeroVatSales" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="136.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="7" />
+                                                                  <TextField fx:id="tfVatExemptSales" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="165.0" promptText="0.00" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="8" />
+                                                                <TextField fx:id="tfNetTotal" alignment="CENTER_RIGHT" disable="true" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="8" GridPane.rowIndex="9">
+                                                                     </TextField>
+                                                      <TextArea fx:id="taRemarks" wrapText="true" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" GridPane.rowSpan="3">
+                                                         <GridPane.margin>
+                                                            <Insets top="1.0" />
+                                                         </GridPane.margin>
+                                                      </TextArea>
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
@@ -333,14 +333,6 @@
                                                                                   <Font name="System Bold" size="15.0" />
                                                                               </font>
                                                                           </Label>
-                                                                          <TextField fx:id="tfSourceNo" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" />
-                                                                  <TextField fx:id="tfSourceCode" disable="true" editable="false" layoutX="105.0" layoutY="13.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <TextField fx:id="tfReferenceNo" layoutX="85.0" layoutY="12.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="6" />
-                                                                  <TextField fx:id="tfCreditAmount" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="418.0" layoutY="71.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="10" />
-                                                                  <TextField fx:id="tfDebitAmount" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="13.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="10" GridPane.rowIndex="1" />
-                                                                  <TextField fx:id="tfAppliedAmtDetail" alignment="CENTER_RIGHT" layoutX="733.0" layoutY="100.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="3">
-                                                                     
-                                                                  </TextField>
                                                                   <Label text="Credit Amount" GridPane.columnIndex="8" />
                                                                   <Label text="Debit Amount" GridPane.columnIndex="8" GridPane.rowIndex="1" />
                                                                   <Label layoutX="39.0" layoutY="17.0" text="Source Code" GridPane.rowIndex="1">
@@ -353,7 +345,15 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
+                                                                          <TextField fx:id="tfSourceNo" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="2" />
+                                                                  <TextField fx:id="tfSourceCode" disable="true" editable="false" layoutX="105.0" layoutY="13.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                  <TextField fx:id="tfReferenceNo" layoutX="85.0" layoutY="12.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="6" />
                                                                   <DatePicker fx:id="dpReferenceDate" disable="true" editable="false" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                                  <TextField fx:id="tfCreditAmount" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="418.0" layoutY="71.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="10" />
+                                                                  <TextField fx:id="tfDebitAmount" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="733.0" layoutY="13.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="10" GridPane.rowIndex="1" />
+                                                                  <TextField fx:id="tfAppliedAmtDetail" alignment="CENTER_RIGHT" layoutX="733.0" layoutY="100.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="3">
+                                                                     
+                                                                  </TextField>
                                                                       </children>
                                                                   </GridPane>
                                                               </children>

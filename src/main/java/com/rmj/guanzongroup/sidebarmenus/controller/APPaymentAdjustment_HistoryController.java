@@ -1,17 +1,9 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelAPPaymentAdjustment;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,22 +48,16 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster;
-
     @FXML
     private HBox hbButtons, hboxid;
-
     @FXML
     private Label lblSource, lblStatus;
-
     @FXML
     private Button btnBrowse, btnHistory, btnClose;
-
     @FXML
     private TextField tfSearchSupplier, tfSearchReferenceNo, tfSearchCompany, tfTransactionNo, tfClient, tfIssuedTo, tfCreditAmount, tfDebitAmount, tfReferenceNo, tfCompany;
-
     @FXML
     private DatePicker dpTransactionDate;
-
     @FXML
     private TextArea taRemarks;
 
@@ -187,27 +173,9 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     public void loadRecordSearch() {
         try {
             lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
-
-            if (psSupplierId.equals("")) {
-                tfSearchSupplier.setText("");
-            } else {
-                tfSearchSupplier.setText(poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
-            }
-            if (psCompanyId.equals("")) {
-                tfSearchCompany.setText("");
-            } else {
-                tfSearchCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
-            }
-
-            try {
-                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
-                    tfSearchReferenceNo.setText("");
-                } else {
-
-                }
-            } catch (Exception e) {
-                tfSearchReferenceNo.setText("");
-            }
+            
+            tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
+            tfSearchCompany.setText(psCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(APPaymentAdjustment_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);

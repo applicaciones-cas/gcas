@@ -862,16 +862,9 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             poSOATaggingController.Master().setIndustryId(psIndustryId);
             lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
 
-            if (psSearchSupplierId.equals("")) {
-                tfSearchSupplier.setText("");
-            } else {
-                tfSearchSupplier.setText(poSOATaggingController.Master().Supplier().getCompanyName());
-            }
-            if (psSearchCompanyId.equals("")) {
-                tfSearchCompany.setText("");
-            } else {
-                tfSearchCompany.setText(poSOATaggingController.Master().Company().getCompanyName());
-            }
+            tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poSOATaggingController.Master().Supplier().getCompanyName());
+            tfSearchCompany.setText(psSearchCompanyId.equals("") ? "" : poSOATaggingController.Master().Company().getCompanyName());
+            
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -894,7 +887,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
                     break;
                 case SOATaggingStatic.CachePayable:
-                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionNo();
+                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).CachePayableMaster().getReferNo();
                     lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).CachePayableMaster().getTransactionDate());
                     break;
             }
@@ -1044,7 +1037,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                     lsReferenceNo = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                                     break;
                                 case SOATaggingStatic.CachePayable:
-                                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionNo();
+                                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).CachePayableMaster().getReferNo();
                                     break;
                             }
 
