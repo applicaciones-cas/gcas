@@ -310,11 +310,11 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
+                    clearFields();
                     pnEditMode = poDisbursementController.getEditMode();
                     psSupplierId = poDisbursementController.Master().getPayeeID();
                     loadTableDetailDV();
-                    loadRecordMasterDV();
-                    loadRecordDetailDV();
+
                     break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this Tab?", "Close Tab", null)) {
@@ -517,7 +517,6 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
                     poJSON = poDisbursementController.computeFields();
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                        return;
                     }
                     loadRecordMasterDV();
                 });
@@ -750,19 +749,26 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
     }
 
     private void initFields() {
-        tabJournal.setDisable(tfDVTransactionNo.getText().isEmpty());
+        JFXUtil.setDisabled(true, apDVDetail, apDVMaster1, apDVMaster2, apDVMaster3);
+        JFXUtil.setDisabled(true, apMasterDVCheck, apMasterDVOp, apMasterDVBTransfer);
         tabCheck.setDisable(true);
         tabOnlinePayment.setDisable(true);
         tabBankTransfer.setDisable(true);
         switch (poDisbursementController.Master().getDisbursementType()) {
             case DisbursementStatic.DisbursementType.CHECK:
+                tabCheck.setDisable(false);
                 CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
+                loadRecordMasterCheck();
                 break;
             case DisbursementStatic.DisbursementType.WIRED:
+                tabBankTransfer.setDisable(false);
                 CustomCommonUtil.switchToTab(tabBankTransfer, tabPanePaymentMode);
+                loadRecordMasterBankTransfer();
                 break;
             case DisbursementStatic.DisbursementType.DIGITAL_PAYMENT:
+                tabOnlinePayment.setDisable(false);
                 CustomCommonUtil.switchToTab(tabOnlinePayment, tabPanePaymentMode);
+                loadRecordMasterOnlinePayment();
                 break;
         }
     }
