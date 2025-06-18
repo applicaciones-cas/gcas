@@ -1204,7 +1204,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                 tfBankNameCheck.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "") : "");
                                 break;
                             case "tfBankAccountCheck":
-                                poJSON = poDisbursementController.SearchBankAccount(lsValue, false);
+                                poJSON = poDisbursementController.SearchBankAccount(lsValue, poDisbursementController.CheckPayments().getModel().getBankID(), false);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
@@ -1776,7 +1776,9 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             if (newValue != null) {
                 if (newValue.isEmpty()) {
                     poDisbursementController.CheckPayments().getModel().setBankID("");
+                    poDisbursementController.CheckPayments().getModel().setBankAcountID("");
                     tfBankNameCheck.setText("");
+                    tfBankAccountCheck.setText("");
                 }
             }
         }
@@ -1784,7 +1786,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         tfBankAccountCheck.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-
                     poDisbursementController.CheckPayments().getModel().setBankAcountID("");
                     tfBankAccountCheck.setText("");
                 }
