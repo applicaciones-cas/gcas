@@ -800,6 +800,14 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
                     return "Check Authorization";
 
+                /*CHECK PRINT REQUEST*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml":
+                    return "Check Print Request";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml":
+                    return "Check Print Request Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml":
+                    return "Check Printing";
+
                 /* OTHERS/PARAMETERS/ADDRESS */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
                     return "Barangay";
@@ -1175,6 +1183,13 @@ public class DashboardController implements Initializable {
             /*CHECK */
             case "Check Authorization":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml";
+            /*CHECK PRINT REQUEST */
+            case "Check Print Request":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml";
+            case "Check Print Request Confirmation":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml";
+            case "Check Printing":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml";
 
         }
 
@@ -1495,6 +1510,15 @@ public class DashboardController implements Initializable {
                 /*CHECK */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
                     return new CheckAuthorizationController();
+
+                /*CHECK PRINT REQUEST */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml":
+                    return new CheckPrintRequest_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml":
+                    return new CheckPrintRequest_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml":
+                    return new CheckPrintingController();
+
 
                 /* INVENTORY/INVENTORY/ */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
