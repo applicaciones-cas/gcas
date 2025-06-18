@@ -95,6 +95,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     private TableView tblViewTransDetailList;
     @FXML
     private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail, tblAppliedAmtDetail;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -242,7 +243,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                             } else {
                                 pnEditMode = poSOATaggingController.getEditMode();
                                 loadRecordMaster();
-                                loadTableDetail(); 
+                                loadTableDetail();
                                 initButton(pnEditMode);
                             }
                             loadRecordSearch();
@@ -369,6 +370,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     public void loadRecordMaster() {
         try {
             Platform.runLater(() -> {
+                String lsActive = poSOATaggingController.Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(SOATaggingStatus.OPEN, "OPEN");
                 statusMap.put(SOATaggingStatus.PAID, "PAID");
@@ -376,6 +378,9 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                 statusMap.put(SOATaggingStatus.RETURNED, "RETURNED");
                 statusMap.put(SOATaggingStatus.VOID, "VOIDED");
                 statusMap.put(SOATaggingStatus.CANCELLED, "CANCELLED");
+
+                String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
+                lblStatus.setText(lsStat);
             });
 
             poSOATaggingController.computeFields();
