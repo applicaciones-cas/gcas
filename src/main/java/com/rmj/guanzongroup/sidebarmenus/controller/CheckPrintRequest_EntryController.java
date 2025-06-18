@@ -60,6 +60,7 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.Logical;
 import org.json.simple.JSONArray;
@@ -477,17 +478,20 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
 
     private void loadRecordDetail() {
         if (pnDetail >= 0) {
-            tfReferNo.setText("");
-            tfCheckNo.setText("");
-            tfCheckAmount.setText("0.0000");
-            tfPayeeNAme.setText("");
-            tfDVNo.setText("");
-            tfDVAmount.setText("0.0000");
-            dpDVDate.setValue(null);
-            dpCheckDate.setValue(null);
-
-            cmbPayeeType.getSelectionModel().select(0);
-            taRemarksDetails.setText("");
+            try {
+                tfReferNo.setText(poCheckPrintingRequest.Detail(pnDetail).DisbursementMaster().CheckPayments().getTransactionNo());
+                tfCheckNo.setText(poCheckPrintingRequest.Detail(pnDetail).DisbursementMaster().CheckPayments().getCheckNo());
+                tfCheckAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequest.Detail(pnDetail).DisbursementMaster().CheckPayments().getAmount()));
+                tfPayeeNAme.setText(poCheckPrintingRequest.Detail(pnDetail).DisbursementMaster().Payee().getPayeeName());
+                tfDVNo.setText(poCheckPrintingRequest.Detail(pnDetail).DisbursementMaster().getTransactionNo());
+                tfDVAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequest.Detail(pnDetail).DisbursementMaster().getNetTotal(), true));
+                dpDVDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poCheckPrintingRequest.Detail(pnDetail).DisbursementMaster().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+                dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poCheckPrintingRequest.Detail(pnDetail).DisbursementMaster().CheckPayments().getCheckDate(), SQLUtil.FORMAT_SHORT_DATE)));
+                cmbPayeeType.getSelectionModel().select(!poCheckPrintingRequest.Detail(pnDetail).DisbursementMaster().CheckPayments().getPayeeType().equals("") ? Integer.valueOf(poCheckPrintingRequest.Detail(pnDetail).DisbursementMaster().CheckPayments().getPayeeType()) : -1);
+                taRemarksDetails.setText("");
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(CheckPrintRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
