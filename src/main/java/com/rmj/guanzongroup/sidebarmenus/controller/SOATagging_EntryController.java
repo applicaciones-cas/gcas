@@ -138,7 +138,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         initDetailsGrid();
         initTableOnClick();
         clearTextFields();
-        
+
         Platform.runLater(() -> {
             poSOATaggingController.Master().setIndustryId(psIndustryId);
 //            poSOATaggingController.Master().setCompanyID(psCompanyId);
@@ -899,6 +899,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
         tblViewMainList.setPlaceholder(loading.loadingPane);
         loading.progressIndicator.setVisible(true);
+
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -1028,7 +1029,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
 
     public void loadRecordMaster() {
-
         try {
             boolean lbDisable = pnEditMode == EditMode.UPDATE;
             JFXUtil.setDisabled(lbDisable, tfCompany, tfClient, tfIssuedTo);
@@ -1094,7 +1094,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                             break;
                         case SOATaggingStatic.CachePayable:
                             poJSON = poSOATaggingController.addPayablesToSOADetail(
-                                    poSOATaggingController.CachePayableList(pnMain).getReferNo(),
+                                    poSOATaggingController.CachePayableList(pnMain).getTransactionNo(),
                                     poSOATaggingController.PayableType(pnMain));
                             break;
                     }
@@ -1150,7 +1150,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     poSOATaggingController.AddDetail();
                                 }
                             }
-
+                            
                             if ((poSOATaggingController.getDetailCount() - 1) < 0) {
                                 poSOATaggingController.AddDetail();
                             }
