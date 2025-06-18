@@ -864,7 +864,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 
             tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poSOATaggingController.Master().Supplier().getCompanyName());
             tfSearchCompany.setText(psSearchCompanyId.equals("") ? "" : poSOATaggingController.Master().Company().getCompanyName());
-            
+
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -911,7 +911,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     public void loadRecordMaster() {
         try {
             Platform.runLater(() -> {
-                String lsActive = poSOATaggingController.Master().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSOATaggingController.Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(SOATaggingStatus.OPEN, "OPEN");
                 statusMap.put(SOATaggingStatus.PAID, "PAID");

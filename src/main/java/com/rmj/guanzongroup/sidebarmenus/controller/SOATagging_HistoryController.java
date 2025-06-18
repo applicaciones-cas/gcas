@@ -352,7 +352,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     public void loadRecordMaster() {
         try {
             Platform.runLater(() -> {
-                String lsActive = poSOATaggingController.Master().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSOATaggingController.Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(SOATaggingStatus.OPEN, "OPEN");
                 statusMap.put(SOATaggingStatus.PAID, "PAID");

@@ -1034,7 +1034,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             JFXUtil.setDisabled(lbDisable, tfCompany, tfClient, tfIssuedTo);
 
             Platform.runLater(() -> {
-                String lsActive = poSOATaggingController.Master().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSOATaggingController.Master().getTransactionStatus();
                 boolean lbPrintStat = pnEditMode == EditMode.READY && !SOATaggingStatus.VOID.equals(lsActive);
 
                 Map<String, String> statusMap = new HashMap<>();
@@ -1143,7 +1143,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 }
                                 lnCtr--;
                             }
-
+                            
                             if ((poSOATaggingController.getDetailCount() - 1) >= 0) {
                                 if (poSOATaggingController.Detail(poSOATaggingController.getDetailCount() - 1).getSourceNo() != null
                                         && !"".equals(poSOATaggingController.Detail(poSOATaggingController.getDetailCount() - 1).getSourceNo())) {
@@ -1166,6 +1166,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsReferenceNo = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getReferNo();
                                     break;
                             }
+                            
 
                             details_data.add(
                                     new ModelSOATagging_Detail(String.valueOf(lnCtr + 1),

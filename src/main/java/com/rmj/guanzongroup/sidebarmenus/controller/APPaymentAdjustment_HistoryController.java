@@ -45,7 +45,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     private String psCategoryId = "";
     private String psSupplierId = "";
     private String psTransactionNo = "";
-    
+
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster;
     @FXML
@@ -72,7 +72,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
-    
+
     @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
@@ -92,7 +92,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
     }
-    
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -127,12 +127,12 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poAPPaymentAdjustmentController.setRecordStatus(APPaymentAdjustmentStatus.OPEN 
-                                + "" + APPaymentAdjustmentStatus.CONFIRMED
-                                + "" + APPaymentAdjustmentStatus.PAID
-                                + "" + APPaymentAdjustmentStatus.VOID
-                                + "" + APPaymentAdjustmentStatus.CANCELLED);
-                            poJSON = poAPPaymentAdjustmentController.searchTransaction(psIndustryId, tfSearchCompany.getText(), 
+                            poAPPaymentAdjustmentController.setRecordStatus(APPaymentAdjustmentStatus.OPEN
+                                    + "" + APPaymentAdjustmentStatus.CONFIRMED
+                                    + "" + APPaymentAdjustmentStatus.PAID
+                                    + "" + APPaymentAdjustmentStatus.VOID
+                                    + "" + APPaymentAdjustmentStatus.CANCELLED);
+                            poJSON = poAPPaymentAdjustmentController.searchTransaction(psIndustryId, tfSearchCompany.getText(),
                                     tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -173,7 +173,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     public void loadRecordSearch() {
         try {
             lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
-            
+
             tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
             tfSearchCompany.setText(psCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
@@ -181,7 +181,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
             Logger.getLogger(APPaymentAdjustment_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-    
+
     final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -212,7 +212,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
             }
         }
     };
-    
+
     public void initTextFields() {
         JFXUtil.setCommaFormatter(tfDebitAmount, tfCreditAmount);
         JFXUtil.setFocusListener(txtMaster_Focus, tfSearchCompany, tfSearchSupplier);
@@ -233,7 +233,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
             tfTransactionNo.setText(poAPPaymentAdjustmentController.getModel().getTransactionNo());
             Platform.runLater(() -> {
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
-                String lsActive = poAPPaymentAdjustmentController.getModel().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poAPPaymentAdjustmentController.getModel().getTransactionStatus();
                 String lsStat = "UNKNOWN";
                 switch (lsActive) {
                     case APPaymentAdjustmentStatus.PAID:
@@ -291,13 +291,13 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poAPPaymentAdjustmentController.setRecordStatus(APPaymentAdjustmentStatus.OPEN 
+                        poAPPaymentAdjustmentController.setRecordStatus(APPaymentAdjustmentStatus.OPEN
                                 + "" + APPaymentAdjustmentStatus.CONFIRMED
                                 + "" + APPaymentAdjustmentStatus.PAID
                                 + "" + APPaymentAdjustmentStatus.VOID
                                 + "" + APPaymentAdjustmentStatus.CANCELLED);
-                        poJSON = poAPPaymentAdjustmentController.searchTransaction(psIndustryId, tfSearchCompany.getText(), 
-                                    tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                        poJSON = poAPPaymentAdjustmentController.searchTransaction(psIndustryId, tfSearchCompany.getText(),
+                                tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
@@ -327,7 +327,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
 
         }
     }
-    
+
     private void initButton(int fnValue) {
         //Unkown || Ready
         JFXUtil.setDisabled(true, apMaster);

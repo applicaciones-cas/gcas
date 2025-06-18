@@ -651,7 +651,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             tfTransactionNo.setText(poAPPaymentAdjustmentController.getModel().getTransactionNo());
             Platform.runLater(() -> {
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
-                String lsActive = poAPPaymentAdjustmentController.getModel().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poAPPaymentAdjustmentController.getModel().getTransactionStatus();
                 String lsStat = "UNKNOWN";
                 switch (lsActive) {
                     case APPaymentAdjustmentStatus.PAID:

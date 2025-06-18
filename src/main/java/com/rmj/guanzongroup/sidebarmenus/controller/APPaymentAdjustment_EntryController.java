@@ -57,22 +57,16 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster;
-
     @FXML
     private HBox hbButtons, hboxid;
-
     @FXML
     private Label lblSource, lblStatus;
-
     @FXML
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnHistory, btnClose;
-
     @FXML
     private TextField tfTransactionNo, tfClient, tfIssuedTo, tfCreditAmount, tfDebitAmount, tfReferenceNo, tfCompany;
-
     @FXML
     private DatePicker dpTransactionDate;
-
     @FXML
     private TextArea taRemarks;
 
@@ -424,7 +418,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             Platform.runLater(() -> {
 
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
-                String lsActive = poAPPaymentAdjustmentController.getModel().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poAPPaymentAdjustmentController.getModel().getTransactionStatus();
                 String lsStat = "UNKNOWN";
                 switch (lsActive) {
                     case APPaymentAdjustmentStatus.PAID:
