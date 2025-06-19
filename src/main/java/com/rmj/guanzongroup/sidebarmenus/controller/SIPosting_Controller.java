@@ -128,8 +128,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
     AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
 
-    private double xOffset = 0;
-    private double yOffset = 0;
     private Stage dialogStage = null;
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
     JFXUtil.StageManager stage = new JFXUtil.StageManager();
@@ -225,6 +223,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
+        JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField);
     }
 
     @Override

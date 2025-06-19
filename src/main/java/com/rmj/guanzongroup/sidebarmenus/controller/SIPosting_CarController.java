@@ -129,10 +129,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
     AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
 
-    private double xOffset = 0;
-    private double yOffset = 0;
     private Stage dialogStage = null;
-    private Stage dialogSerialStage = null;
+
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
     JFXUtil.StageManager stage = new JFXUtil.StageManager();
     JFXUtil.StageManager stage2 = new JFXUtil.StageManager();
