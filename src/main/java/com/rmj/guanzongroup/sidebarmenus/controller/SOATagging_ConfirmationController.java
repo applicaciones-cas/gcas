@@ -350,7 +350,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 
     public void retrieveSOATagging() {
         poJSON = new JSONObject();
-        poJSON = poSOATaggingController.loadSOATagging(psIndustryId, psSearchCompanyId, psSearchSupplierId, tfSearchReferenceNo.getText());
+        poJSON = poSOATaggingController.loadSOATagging(psIndustryId, tfSearchCompany.getText(), tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
@@ -1018,16 +1018,16 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 lnCtr--;
                             }
 
-                            if ((poSOATaggingController.getDetailCount() - 1) >= 0) {
-                                if (poSOATaggingController.Detail(poSOATaggingController.getDetailCount() - 1).getSourceNo() != null
-                                        && !"".equals(poSOATaggingController.Detail(poSOATaggingController.getDetailCount() - 1).getSourceNo())) {
-                                    poSOATaggingController.AddDetail();
-                                }
-                            }
-
-                            if ((poSOATaggingController.getDetailCount() - 1) < 0) {
-                                poSOATaggingController.AddDetail();
-                            }
+//                            if ((poSOATaggingController.getDetailCount() - 1) >= 0) {
+//                                if (poSOATaggingController.Detail(poSOATaggingController.getDetailCount() - 1).getSourceNo() != null
+//                                        && !"".equals(poSOATaggingController.Detail(poSOATaggingController.getDetailCount() - 1).getSourceNo())) {
+//                                    poSOATaggingController.AddDetail();
+//                                }
+//                            }
+//
+//                            if ((poSOATaggingController.getDetailCount() - 1) < 0) {
+//                                poSOATaggingController.AddDetail();
+//                            }
                         }
 
                         String lsReferenceNo = "";
@@ -1037,7 +1037,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                     lsReferenceNo = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                                     break;
                                 case SOATaggingStatic.CachePayable:
-                                    lsReferenceNo = poSOATaggingController.Detail(pnDetail).CachePayableMaster().getReferNo();
+                                    lsReferenceNo = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getReferNo();
                                     break;
                             }
 
@@ -1067,8 +1067,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             loadRecordDetail();
                         }
                         loadRecordMaster();
-                    } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (SQLException ex) {
                         Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
