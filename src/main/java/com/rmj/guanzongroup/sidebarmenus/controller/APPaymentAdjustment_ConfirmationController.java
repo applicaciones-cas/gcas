@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -68,8 +69,8 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
     private String psTransactionNo = "";
     private static final int ROWS_PER_PAGE = 50;
     int pnMain = 0;
-    private Object lastFocusedTextField = null;
-    private Object previousSearchedTextField = null;
+    AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
+    AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
     private boolean pbEntered = false;
     private ObservableList<ModelAPPaymentAdjustment> main_data = FXCollections.observableArrayList();
     private FilteredList<ModelAPPaymentAdjustment> filteredData;
@@ -77,31 +78,22 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster;
-
     @FXML
     private HBox hbButtons, hboxid;
-
     @FXML
     private Label lblSource, lblStatus;
-
     @FXML
     private Button btnUpdate, btnSearch, btnSave, btnCancel, btnConfirm, btnVoid, btnReturn, btnHistory, btnRetrieve, btnClose;
-
     @FXML
     private TextField tfSearchSupplier, tfSearchReferenceNo, tfSearchCompany, tfTransactionNo, tfClient, tfIssuedTo, tfCreditAmount, tfDebitAmount, tfReferenceNo, tfCompany;
-
     @FXML
     private DatePicker dpTransactionDate;
-
     @FXML
     private TextArea taRemarks;
-
     @FXML
     private TableView tblViewMainList;
-
     @FXML
     private TableColumn tblRowNo, tblSupplier, tblDate, tblReferenceNo;
-
     @FXML
     private Pagination pgPagination;
 
@@ -125,6 +117,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             poAPPaymentAdjustmentController.setCompanyId(psSearchCompanyId);
             loadRecordSearch();
         });
+        JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField);
     }
 
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
@@ -287,8 +280,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = txtPersonalInfo.getId();
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
 
         if (lsValue == null) {
             return;
@@ -415,9 +406,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
         String lsID = txtField.getId();
         String lsValue = txtField.getText();
 
-        lastFocusedTextField = txtField;
-        previousSearchedTextField = null;
-
         if (lsValue == null) {
             return;
         }
@@ -458,8 +446,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                 String lsServerDate = "";
                 String lsTransDate = "";
                 String lsSelectedDate = "";
-                lastFocusedTextField = datePicker;
-                previousSearchedTextField = null;
 
                 JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
                 poJSON = ldtResult.poJSON;
@@ -524,11 +510,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                             pbSuccess = true; //Set to original value
                         }
                         break;
-//                    case "dpTransactionDate": {
-//                        poJSON.put("TransactionDate", lsSelectedDate);
-//                        System.out.println("Transaction Date updated with value: " + lsSelectedDate);
-//                        break;
-//                    }
                 }
             }
         } catch (Exception e) {
@@ -557,7 +538,8 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
         psCompanyId = "";
         psSearchSupplierId = "";
         psSupplierId = "";
-        dpTransactionDate.setValue(null);
+
+        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate);
         JFXUtil.clearTextFields(apMaster);
     }
 
@@ -723,14 +705,14 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
-                        if ((lastFocusedTextField != null)) {
-                            if (lastFocusedTextField instanceof TextField) {
-                                TextField tf = (TextField) lastFocusedTextField;
+                        if ((lastFocusedTextField.get() != null)) {
+                            if (lastFocusedTextField.get() instanceof TextField) {
+                                TextField tf = (TextField) lastFocusedTextField.get();
                                 if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apMaster).contains(tf.getId())) {
-                                    if (lastFocusedTextField == previousSearchedTextField) {
+                                    if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
-                                    previousSearchedTextField = lastFocusedTextField;
+                                    previousSearchedTextField.set(lastFocusedTextField);;
                                     // Create a simulated KeyEvent for F3 key press
                                     JFXUtil.makeKeyPressed(tf, KeyCode.F3);
                                 } else {

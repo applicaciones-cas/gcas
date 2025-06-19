@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -52,8 +53,8 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
     private String psIndustryId = "";
     private String psCompanyId = "";
     private boolean pbEntered = false;
-    private Object lastFocusedTextField = null;
-    private Object previousSearchedTextField = null;
+    AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
+    AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster;
@@ -90,6 +91,8 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             loadRecordSearch();
             btnNew.fire();
         });
+        
+        JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField);
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -154,8 +157,6 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = txtPersonalInfo.getId();
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
 
         if (lsValue == null) {
             return;
@@ -262,9 +263,6 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
         String lsID = txtField.getId();
         String lsValue = txtField.getText();
 
-        lastFocusedTextField = txtField;
-        previousSearchedTextField = null;
-
         if (lsValue == null) {
             return;
         }
@@ -306,8 +304,6 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                 String lsServerDate = "";
                 String lsTransDate = "";
                 String lsSelectedDate = "";
-                lastFocusedTextField = datePicker;
-                previousSearchedTextField = null;
 
                 JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
                 poJSON = ldtResult.poJSON;
@@ -400,7 +396,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
     }
 
     public void clearTextFields() {
-        dpTransactionDate.setValue(null);
+        JFXUtil.setValueToNull(lastFocusedTextField, previousSearchedTextField, dpTransactionDate);
         JFXUtil.clearTextFields(apMaster);
     }
 
@@ -458,7 +454,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getDebitAmount().doubleValue(), true));
             tfReferenceNo.setText(poAPPaymentAdjustmentController.getModel().getReferenceNo());
             tfCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
-            
+
             poAPPaymentAdjustmentController.computeFields();
         } catch (SQLException ex) {
             Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
@@ -510,14 +506,14 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
-                        if ((lastFocusedTextField != null)) {
-                            if (lastFocusedTextField instanceof TextField) {
-                                TextField tf = (TextField) lastFocusedTextField;
+                        if ((lastFocusedTextField.get() != null)) {
+                            if (lastFocusedTextField.get() instanceof TextField) {
+                                TextField tf = (TextField) lastFocusedTextField.get();
                                 if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apMaster).contains(tf.getId())) {
-                                    if (lastFocusedTextField == previousSearchedTextField) {
+                                    if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
-                                    previousSearchedTextField = lastFocusedTextField;
+                                    previousSearchedTextField.set(lastFocusedTextField);
                                     // Create a simulated KeyEvent for F3 key press
                                     JFXUtil.makeKeyPressed(tf, KeyCode.F3);
                                 } else {
