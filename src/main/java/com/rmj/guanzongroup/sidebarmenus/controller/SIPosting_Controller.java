@@ -17,7 +17,6 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +72,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicReference;
 import javafx.animation.PauseTransition;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
@@ -117,7 +117,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
     Map<String, String> imageinfo_temp = new HashMap<>();
 
-
     private FileChooser fileChooser;
     private int pnAttachment;
 
@@ -126,8 +125,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
     private final Map<String, List<String>> highlightedRowsDetail = new HashMap<>();
-    private Object lastFocusedTextField = null;
-    private Object previousSearchedTextField = null;
+    AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
+    AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -139,55 +138,40 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apJEMaster, apJEDetail, apAttachments;
-
     @FXML
     private HBox hbButtons;
-
     @FXML
     private Label lblSource, lblStatus, lblJEStatus;
-
     @FXML
     private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPost, btnHistory, btnRetrieve, btnClose, btnArrowLeft, btnArrowRight;
-
     @FXML
     private TextField tfSearchSupplier, tfSearchReferenceNo, tfSearchReceiveBranch, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo,
-            tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfNetTotal, tfTaxAmount,tfVatRate,
+            tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfNetTotal, tfTaxAmount, tfVatRate,
             tfTransactionTotal, tfOrderNo, tfBarcode, tfDescription, tfSupersede, tfMeasure, tfOrderQuantity, tfReceiveQuantity, tfCost, tfDiscRateDetail,
             tfAddlDiscAmtDetail, tfSRPAmount, tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfReportMonthYear, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt,
             tfTotalDebitAmt, tfAttachmentNo;
-
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate;
-
     @FXML
     private CheckBox cbVatInclusive, cbVatable;
-
     @FXML
     private TextArea taRemarks, taJERemarks;
-
     @FXML
     private TabPane tabPaneForm;
-
     @FXML
     private Tab tabSIPosting, tabJE, tabAttachments;
-
     @FXML
     private TableView tblViewTransDetailList, tblViewMainList, tblViewJEDetails, tblAttachments;
-
     @FXML
     private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBarcodeDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail, tblReceiveQuantityDetail,
             tblTotalDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo, tblJERowNoDetail, tblJEAcctCodeDetail, tblJEAcctDescriptionDetail,
             tblJECreditAmtDetail, tblJEDebitAmtDetail, tblRowNoAttachment, tblFileNameAttachment;
-
     @FXML
     private ComboBox cmbAttachmentType;
-
     @FXML
     private Pagination pgPagination;
-
     @FXML
     private StackPane stackPane1;
-
     @FXML
     private ImageView imageView;
 
@@ -281,8 +265,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     showAttachmentlDialog();
                 }
             }
-        }
-        );
+        });
     }
 
     public void showAttachmentlDialog() {
@@ -316,8 +299,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private void cmdCheckBox_Click(ActionEvent event) {
         poJSON = new JSONObject();
         Object source = event.getSource();
-        lastFocusedTextField = source;
-        previousSearchedTextField = null;
         if (source instanceof CheckBox) {
             CheckBox checkedBox = (CheckBox) source;
             switch (checkedBox.getId()) {
@@ -362,15 +343,15 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
-                        if ((lastFocusedTextField != null)) {
-                            if (lastFocusedTextField instanceof TextField) {
-                                TextField tf = (TextField) lastFocusedTextField;
+                        if ((lastFocusedTextField.get() != null)) {
+                            if (lastFocusedTextField.get() instanceof TextField) {
+                                TextField tf = (TextField) lastFocusedTextField.get();
                                 if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail,
                                         apJEMaster, apJEDetail).contains(tf.getId())) {
-                                    if (lastFocusedTextField == previousSearchedTextField) {
+                                    if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
-                                    previousSearchedTextField = lastFocusedTextField;
+                                    previousSearchedTextField.set(lastFocusedTextField);
                                     // Create a simulated KeyEvent for F3 key press
                                     JFXUtil.makeKeyPressed(tf, KeyCode.F3);
                                 } else {
@@ -422,7 +403,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                         }
                                     }
                                 }
-                                
+
                                 JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
                             }
                         } else {
@@ -463,7 +444,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         break;
                 }
 
-                if (lsButton.equals("btnSave") || lsButton.equals("btnCancel")) {
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnCancel")) {
                     poPurchaseReceivingController.resetMaster();
                     poPurchaseReceivingController.resetOthers();
                     poPurchaseReceivingController.Detail().clear();
@@ -472,7 +453,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     clearTextFields();
                 }
 
-                if (JFXUtil.isObjectEqualTo(lsButton,  "btnArrowRight", "btnArrowLeft", "btnRetrieve")) {
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnArrowRight", "btnArrowLeft", "btnRetrieve")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
@@ -500,8 +481,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
 
         if (lsValue == null) {
             return;
@@ -547,7 +526,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", "")) ));
+                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -575,12 +554,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    
-                    if (Double.valueOf(lsValue.replace(",", "")) > poPurchaseReceivingController.Master().getTransactionTotal().doubleValue()){
+
+                    if (Double.valueOf(lsValue.replace(",", "")) > poPurchaseReceivingController.Master().getTransactionTotal().doubleValue()) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid freight amount");
                         break;
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.Master().setFreight(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -604,12 +583,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    
+
                     if (Double.valueOf(lsValue.replace(",", "")) > 100.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid vat rate.");
                         break;
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.Master().setVatRate((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -635,9 +614,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsID = (txtField.getId());
         String lsValue = txtField.getText();
-
-        lastFocusedTextField = txtField;
-        previousSearchedTextField = null;
 
         if (lsValue == null) {
             return;
@@ -671,8 +647,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
         if (lsValue == null) {
             return;
         }
@@ -694,12 +668,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    
+
                     if (Double.valueOf(lsValue.replace(",", "")) > 100.00) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid discount rate.");
                         break;
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -710,7 +684,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.0000";
                     }
-                    
+
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setDiscountAmount((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
@@ -800,8 +774,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
         if (lsValue == null) {
             return;
         }
@@ -946,6 +918,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     boolean pbSuccess = true;
+
     private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         JFXUtil.setJSONSuccess(poJSON, "success");
@@ -964,8 +937,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 String lsTransDate = "";
                 String lsRefDate = "";
                 String lsSelectedDate = "";
-                lastFocusedTextField = datePicker;
-                previousSearchedTextField = null;
 
                 JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
                 poJSON = ldtResult.poJSON;
@@ -1086,7 +1057,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             protected Void call() throws Exception {
                 Thread.sleep(100);
 //                Thread.sleep(1000);
-                // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
                     JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
@@ -1154,28 +1124,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     public void loadRecordSearch() {
         try {
-//            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
-            if (psSupplierId.equals("")) {
-                tfSearchSupplier.setText("");
-            } else {
-                tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
-            }
-            if (psBranchId.equals("")) {
-                tfSearchReceiveBranch.setText("");
-            } else {
-                tfSearchReceiveBranch.setText(poPurchaseReceivingController.Master().Branch().getBranchName());
-            }
-            try {
-                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
-                    tfSearchReferenceNo.setText("");
-                } else {
-
-                }
-            } catch (Exception e) {
-                tfSearchReferenceNo.setText("");
-            }
-
+            tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poPurchaseReceivingController.Master().Supplier().getCompanyName());
+            tfSearchReceiveBranch.setText(psBranchId.equals("") ? "" : poPurchaseReceivingController.Master().Branch().getBranchName());
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -1260,19 +1211,15 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
             Platform.runLater(() -> {
                 double lnValue = 0.00;
-                if(poPurchaseReceivingController.Detail(pnDetail).getDiscountRate()!= null){
+                if (poPurchaseReceivingController.Detail(pnDetail).getDiscountRate() != null) {
                     lnValue = poPurchaseReceivingController.Detail(pnDetail).getDiscountRate().doubleValue();
                 }
-                if (!Double.isNaN(lnValue)) {
-                    tfDiscRateDetail.setText(String.format("%.2f",lnValue));
-                } else {
-                    tfDiscRateDetail.setText(String.format("%.2f", 0.00));
-                }
+                tfDiscRateDetail.setText(String.format("%.2f", Double.isNaN(lnValue) ? 0.00 : lnValue));
             });
             double ldblDiscountRate = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue()
                     * (poPurchaseReceivingController.Detail(pnDetail).getDiscountRate().doubleValue() / 100);
-            tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getDiscountAmount(),true));
-            double lnTotal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue() 
+            tfAddlDiscAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getDiscountAmount(), true));
+            double lnTotal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue()
                     + poPurchaseReceivingController.Detail(pnDetail).getDiscountAmount().doubleValue()
                     + ldblDiscountRate;
             tfSRPAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true));
@@ -1304,7 +1251,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         try {
 
             Platform.runLater(() -> {
-                String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(PurchaseOrderReceivingStatus.POSTED, "POSTED");
                 statusMap.put(PurchaseOrderReceivingStatus.PAID, "PAID");
@@ -1325,7 +1272,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
                 }
             }
-            
+
             poPurchaseReceivingController.computeFields();
 
             tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
@@ -1349,17 +1296,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             tfTransactionTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(getGrossTotal(), true));
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
-                if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", lnValue));
-                } else {
-                    tfDiscountRate.setText(String.format("%.2f", 0.00));
-                }
+                tfDiscountRate.setText(String.format("%.2f", Double.isNaN(lnValue) ? 0.00 : lnValue));
                 double lnVat = poPurchaseReceivingController.Master().getVatRate().doubleValue();
-                if (!Double.isNaN(lnVat)) {
-                    tfVatRate.setText(String.format("%.2f", lnVat));
-                } else {
-                    tfVatRate.setText(String.format("%.2f", 0.00));
-                }
+                tfVatRate.setText(String.format("%.2f", Double.isNaN(lnVat) ? 0.00 : lnVat));
             });
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount().doubleValue(), true));
             tfFreightAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getFreight().doubleValue()));
@@ -1371,19 +1310,19 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getVatExemptSales().doubleValue(), true));
             //Net Total = Vat Amount - Tax Amount
             double ldblNetTotal = 0.00;
-            if(poPurchaseReceivingController.Master().isVatTaxable()){
+            if (poPurchaseReceivingController.Master().isVatTaxable()) {
                 //Net VAT Amount : VAT Sales - VAT Amount
                 //Net Total : VAT Sales - Withholding Tax
                 ldblNetTotal = poPurchaseReceivingController.Master().getVatSales().doubleValue() - poPurchaseReceivingController.Master().getWithHoldingTax().doubleValue();
             } else {
                 //Net VAT Amount : VAT Sales + VAT Amount
                 //Net Total : Net VAT Amount - Withholding Tax
-                ldblNetTotal = (poPurchaseReceivingController.Master().getVatSales().doubleValue() 
-                            + poPurchaseReceivingController.Master().getVatAmount().doubleValue())
-                            - poPurchaseReceivingController.Master().getWithHoldingTax().doubleValue();
-            
+                ldblNetTotal = (poPurchaseReceivingController.Master().getVatSales().doubleValue()
+                        + poPurchaseReceivingController.Master().getVatAmount().doubleValue())
+                        - poPurchaseReceivingController.Master().getWithHoldingTax().doubleValue();
+
             }
-            
+
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(ldblNetTotal, true));
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
@@ -1393,12 +1332,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         }
 
     }
-    
-    private double getGrossTotal(){
+
+    private double getGrossTotal() {
         double ldblGrossTotal = 0.0000;
-        for(int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getDetailCount()-1; lnCtr++){
-            ldblGrossTotal = ldblGrossTotal + (poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() 
-                            * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue());
+        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getDetailCount() - 1; lnCtr++) {
+            ldblGrossTotal = ldblGrossTotal + (poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue()
+                    * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue());
         }
         return ldblGrossTotal;
     }
@@ -1502,8 +1441,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             try {
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
-                                lnDiscountAmt = poPurchaseReceivingController.Detail(lnCtr).getDiscountAmount().doubleValue() 
-                                            + (lnTotal * (poPurchaseReceivingController.Detail(lnCtr).getDiscountRate().doubleValue() / 100));
+                                lnDiscountAmt = poPurchaseReceivingController.Detail(lnCtr).getDiscountAmount().doubleValue()
+                                        + (lnTotal * (poPurchaseReceivingController.Detail(lnCtr).getDiscountRate().doubleValue() / 100));
                             } catch (Exception e) {
                             }
 
@@ -1522,7 +1461,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                                 String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
                                                 String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
                                                 String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()),
-//                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountAmt, true)),
+                                                //                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnDiscountAmt, true)),
                                                 String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                         ));
                             }
@@ -1666,7 +1605,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         JFXUtil.setCommaFormatter(tfDiscountAmount, tfFreightAmt, tfVatSales, tfTaxAmount,
                 tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfCost, tfAddlDiscAmtDetail, tfCreditAmt, tfDebitAmt);
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfSINo);
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscRateDetail,tfVatRate, tfTaxAmount,tfFreightAmt,
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscRateDetail, tfVatRate, tfTaxAmount, tfFreightAmt,
                 tfAddlDiscAmtDetail, tfSRPAmount);
         // Combobox
         JFXUtil.initComboBoxCellDesignColor(cmbAttachmentType, "#FF8201");
@@ -1917,16 +1856,11 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     public void clearTextFields() {
         imageinfo_temp.clear();
-        previousSearchedTextField = null;
-        lastFocusedTextField = null;
-
-        JFXUtil.setValueToNull(dpTransactionDate, dpReferenceDate, dpExpiryDate);
+        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpExpiryDate);
         psSupplierId = "";
         psBranchId = "";
-
         JFXUtil.clearTextFields(apBrowse, apMaster, apDetail,
                 apJEDetail, apJEMaster, apAttachments);
-
         cbVatInclusive.setSelected(false);
         cbVatable.setSelected(false);
     }
