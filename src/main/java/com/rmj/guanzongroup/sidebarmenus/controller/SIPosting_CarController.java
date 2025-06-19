@@ -401,7 +401,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                                     if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
-                                    previousSearchedTextField.set(lastFocusedTextField);
+                                    previousSearchedTextField.set(lastFocusedTextField.get());
                                     // Create a simulated KeyEvent for F3 keypress
                                     JFXUtil.makeKeyPressed(tf, KeyCode.F3);
                                 } else {

@@ -228,7 +228,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
-                                    previousSearchedTextField.set(lastFocusedTextField);;
+                                    previousSearchedTextField.set(lastFocusedTextField.get());
                                     // Create a simulated KeyEvent for F3 key press
                                     JFXUtil.makeKeyPressed(tf, KeyCode.F3);
                                 } else {

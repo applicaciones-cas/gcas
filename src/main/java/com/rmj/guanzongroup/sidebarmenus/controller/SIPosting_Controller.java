@@ -347,10 +347,10 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                 TextField tf = (TextField) lastFocusedTextField.get();
                                 if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail,
                                         apJEMaster, apJEDetail).contains(tf.getId())) {
-                                    if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
+                                    if (lastFocusedTextField.get() ==  previousSearchedTextField.get()) {
                                         break;
                                     }
-                                    previousSearchedTextField.set(lastFocusedTextField);
+                                    previousSearchedTextField.set(lastFocusedTextField.get());
                                     // Create a simulated KeyEvent for F3 key press
                                     JFXUtil.makeKeyPressed(tf, KeyCode.F3);
                                 } else {
