@@ -262,7 +262,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.F5) {
                 System.out.println("tested key press");
-                if (poPurchaseReceivingController.getEditMode() == EditMode.READY) {
+                
+                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.getEditMode(), EditMode.READY, EditMode.UPDATE)) {
                     showAttachmentlDialog();
                 }
             }
@@ -852,9 +853,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -889,9 +890,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         case "tfCost":
                         case "tfDiscRateDetail":
                         case "tfAddlDiscAmtDetail":
-                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
                             if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                                     && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -1754,7 +1755,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
         month_year_picker = JFXUtil.MonthYearPicker.setupMonthYearPicker(tfReportMonthYear, ym -> {
         });
-
+        JFXUtil.setCheckboxHoverCursor(apMaster, apDetail);
     }
 
     public void initTableOnClick() {

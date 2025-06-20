@@ -799,9 +799,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        double lnReceiveQty =poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -836,9 +836,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         case "tfCost":
                         case "tfDiscRateDetail":
                         case "tfAddlDiscAmtDetail":
-                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
                             if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                                     && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -1622,7 +1622,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
         month_year_picker = JFXUtil.MonthYearPicker.setupMonthYearPicker(tfReportMonthYear, ym -> {
         });
-
+        JFXUtil.setCheckboxHoverCursor(apMaster, apDetail);
     }
 
     public void initTableOnClick() {
