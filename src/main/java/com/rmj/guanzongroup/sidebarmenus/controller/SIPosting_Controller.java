@@ -287,7 +287,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         AttachmentDialogController controller = new AttachmentDialogController();
         controller.addData(data);
         try {
-            stageAttachment.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
+            stageAttachment.showDialog((Stage) btnSave.getScene().getWindow(),getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
         } catch (IOException ex) {
             Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -5,6 +5,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ConfirmationCarController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -116,7 +117,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
     Map<String, String> imageinfo_temp = new HashMap<>();
-
+    private Stage dialogStage = null;
     private FileChooser fileChooser;
     private int pnAttachment;
 
@@ -128,8 +129,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
     AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
-
-    private Stage dialogStage = null;
 
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
     JFXUtil.StageManager stageAttachment = new JFXUtil.StageManager();
@@ -262,7 +261,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.F5) {
                 System.out.println("tested key press");
-                
+
                 if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.getEditMode(), EditMode.READY, EditMode.UPDATE)) {
                     showAttachmentlDialog();
                 }
@@ -300,7 +299,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         AttachmentDialogController controller = new AttachmentDialogController();
         controller.addData(data);
         try {
-            stageAttachment.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
+            stageAttachment.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
         } catch (IOException ex) {
             Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -330,13 +329,13 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 controller.isFinancing(true);
             }
             stageSerial.setOnHidden(event -> {
-                stageSerial = null;
+//                stageSerial = null;
                 moveNext();
                 Platform.runLater(() -> {
                     loadTableDetail();
                 });
             });
-            stageSerial.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"), controller, "Inventory Serial", true, true, false);
+            stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"), controller, "Inventory Serial", true, true, false);
 
         } catch (IOException ex) {
             Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
@@ -346,6 +345,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 
     @FXML
     private void cmdCheckBox_Click(ActionEvent event) {
