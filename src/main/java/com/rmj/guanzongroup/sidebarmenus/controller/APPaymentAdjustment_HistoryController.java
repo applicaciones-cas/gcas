@@ -164,11 +164,11 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(APPaymentAdjustment_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(APPaymentAdjustment_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(APPaymentAdjustment_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -180,7 +180,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
             tfSearchCompany.setText(psCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(APPaymentAdjustment_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -260,9 +260,9 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
             tfCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
         } catch (SQLException ex) {
-            Logger.getLogger(APPaymentAdjustment_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(APPaymentAdjustment_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 

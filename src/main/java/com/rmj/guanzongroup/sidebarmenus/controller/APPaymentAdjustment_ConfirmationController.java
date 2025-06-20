@@ -157,7 +157,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                 loadRecordMaster();
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -256,11 +256,11 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                     break;
             }
         } catch (ExceptionInInitializerError ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -272,7 +272,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             tfSearchCompany.setText(psSearchCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
     final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
@@ -578,9 +578,9 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                                         String.valueOf(poAPPaymentAdjustmentController.APPaymentAdjustmentList(lnCtr).getTransactionNo())
                                 ));
                             } catch (SQLException ex) {
-                                Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             } catch (GuanzonException ex) {
-                                Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
 
                             if (poAPPaymentAdjustmentController.APPaymentAdjustmentList(lnCtr).getTransactionStatus().equals(APPaymentAdjustmentStatus.CONFIRMED)) {
@@ -658,9 +658,9 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
 
             poAPPaymentAdjustmentController.computeFields();
         } catch (SQLException ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -837,13 +837,13 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                 initButton(pnEditMode);
             }
         } catch (ParseException ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(APPaymentAdjustment_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 

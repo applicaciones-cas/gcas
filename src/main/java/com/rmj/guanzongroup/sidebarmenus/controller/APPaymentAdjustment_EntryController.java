@@ -147,11 +147,11 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                     break;
             }
         } catch (ExceptionInInitializerError ex) {
-            Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
     final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
@@ -441,9 +441,9 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
 
             poAPPaymentAdjustmentController.computeFields();
         } catch (SQLException ex) {
-            Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -569,13 +569,13 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                 loadRecordMaster();
                 initButton(pnEditMode);
             } catch (CloneNotSupportedException ex) {
-                Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
-                Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             } catch (GuanzonException ex) {
-                Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             } catch (ParseException ex) {
-                Logger.getLogger(APPaymentAdjustment_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
