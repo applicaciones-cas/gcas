@@ -17,6 +17,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -624,7 +625,7 @@ public class JFXUtil {
         for (Node node : nodes) {
             node.setDisable(disable);
             if (node instanceof TextField) {
-                if (disable) {
+                if (!disable) {
                     while (node.getStyleClass().contains("DisabledTextField")) {
                         node.getStyleClass().remove("DisabledTextField");
                     }
@@ -1310,7 +1311,7 @@ public class JFXUtil {
         return result.isEmpty() ? "0" : result;
     }
 
-    public static void showRetainedHighlight(boolean isRetained, TableView<?> tblView, String color, List<Pair<String, String>> plOrderNoPartial, List<Pair<String, String>> plOrderNoFinal, Map<String, List<String>> highlightedRows) {
+    public static void showRetainedHighlight(boolean isRetained, TableView<?> tblView, String color, List<Pair<String, String>> plOrderNoPartial, List<Pair<String, String>> plOrderNoFinal, Map<String, List<String>> highlightedRows, boolean resetpartial) {
         if (isRetained) {
             for (Pair<String, String> pair : plOrderNoPartial) {
                 if (!"0".equals(pair.getValue())) {
@@ -1318,11 +1319,28 @@ public class JFXUtil {
                 }
             }
         }
-        disableAllHighlightByColor(tblView, color, highlightedRows);
-        plOrderNoPartial.clear();
+        if (resetpartial) {
+            disableAllHighlightByColor(tblView, color, highlightedRows);
+            plOrderNoPartial.clear();
+        }
         for (Pair<String, String> pair : plOrderNoFinal) {
             if (!"0".equals(pair.getValue())) {
                 highlightByKey(tblView, pair.getKey(), color, highlightedRows);
+            }
+        }
+    }
+
+    public static void removeNoByKey(List<Pair<String, String>> plOrderNoPartial, List<Pair<String, String>> plOrderNoFinal, String lsNo) {
+        removeFromListByKey(plOrderNoPartial, lsNo);
+        removeFromListByKey(plOrderNoFinal, lsNo);
+    }
+
+    private static void removeFromListByKey(List<Pair<String, String>> list, String key) {
+        Iterator<Pair<String, String>> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            Pair<String, String> pair = iterator.next();
+            if (pair.getKey().equals(key)) {
+                iterator.remove();
             }
         }
     }
