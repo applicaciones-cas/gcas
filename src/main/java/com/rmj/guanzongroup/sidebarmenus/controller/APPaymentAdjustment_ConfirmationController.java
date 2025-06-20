@@ -60,7 +60,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
     static APPaymentAdjustment poAPPaymentAdjustmentController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private final String pxeModuleName = "AP Payment Adjustment Confirmation";
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psSupplierId = "";

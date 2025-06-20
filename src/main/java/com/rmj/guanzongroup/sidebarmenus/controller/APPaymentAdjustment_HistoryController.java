@@ -41,7 +41,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     static APPaymentAdjustment poAPPaymentAdjustmentController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private final String pxeModuleName = "AP Payment Adjustment History";
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";

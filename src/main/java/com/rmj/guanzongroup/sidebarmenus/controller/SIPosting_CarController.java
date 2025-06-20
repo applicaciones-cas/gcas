@@ -5,7 +5,6 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_ConfirmationCarController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
