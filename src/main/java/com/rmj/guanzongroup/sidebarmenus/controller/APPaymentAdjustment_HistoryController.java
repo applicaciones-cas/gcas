@@ -4,6 +4,8 @@ import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -228,38 +230,21 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
         JFXUtil.clearTextFields(apMaster);
     }
 
+
     public void loadRecordMaster() {
         try {
             tfTransactionNo.setText(poAPPaymentAdjustmentController.getModel().getTransactionNo());
             Platform.runLater(() -> {
-                boolean lbPrintStat = pnEditMode == EditMode.READY;
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poAPPaymentAdjustmentController.getModel().getTransactionStatus();
-                String lsStat = "UNKNOWN";
-                switch (lsActive) {
-                    case APPaymentAdjustmentStatus.PAID:
-                        lsStat = "PAID";
-                        break;
-                    case APPaymentAdjustmentStatus.CONFIRMED:
-                        lsStat = "CONFIRMED";
-                        break;
-                    case APPaymentAdjustmentStatus.OPEN:
-                        lsStat = "OPEN";
-                        break;
-                    case APPaymentAdjustmentStatus.RETURNED:
-                        lsStat = "RETURNED";
-                        break;
-                    case APPaymentAdjustmentStatus.VOID:
-                        lsStat = "VOIDED";
-                        lbPrintStat = false;
-                        break;
-                    case APPaymentAdjustmentStatus.CANCELLED:
-                        lsStat = "CANCELLED";
-                        break;
-                    default:
-                        lsStat = "UNKNOWN";
-                        break;
+                Map<String, String> statusMap = new HashMap<>();
+                statusMap.put(APPaymentAdjustmentStatus.OPEN, "OPEN");
+                statusMap.put(APPaymentAdjustmentStatus.PAID, "PAID");
+                statusMap.put(APPaymentAdjustmentStatus.CONFIRMED, "CONFIRMED");
+                statusMap.put(APPaymentAdjustmentStatus.RETURNED, "RETURNED");
+                statusMap.put(APPaymentAdjustmentStatus.VOID, "VOIDED");
+                statusMap.put(APPaymentAdjustmentStatus.CANCELLED, "CANCELLED");
 
-                }
+                String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
                 lblStatus.setText(lsStat);
             });
             // Transaction Date

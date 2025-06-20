@@ -632,34 +632,16 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
         try {
             tfTransactionNo.setText(poAPPaymentAdjustmentController.getModel().getTransactionNo());
             Platform.runLater(() -> {
-                boolean lbPrintStat = pnEditMode == EditMode.READY;
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poAPPaymentAdjustmentController.getModel().getTransactionStatus();
-                String lsStat = "UNKNOWN";
-                switch (lsActive) {
-                    case APPaymentAdjustmentStatus.PAID:
-                        lsStat = "PAID";
-                        break;
-                    case APPaymentAdjustmentStatus.CONFIRMED:
-                        lsStat = "CONFIRMED";
-                        break;
-                    case APPaymentAdjustmentStatus.OPEN:
-                        lsStat = "OPEN";
-                        break;
-//                    case APPaymentAdjustmentStatus.RETURNED:
-//                        lsStat = "RETURNED";
-//                        break;
-                    case APPaymentAdjustmentStatus.VOID:
-                        lsStat = "VOIDED";
-                        lbPrintStat = false;
-                        break;
-                    case APPaymentAdjustmentStatus.CANCELLED:
-                        lsStat = "CANCELLED";
-                        break;
-                    default:
-                        lsStat = "UNKNOWN";
-                        break;
+                Map<String, String> statusMap = new HashMap<>();
+                statusMap.put(APPaymentAdjustmentStatus.OPEN, "OPEN");
+                statusMap.put(APPaymentAdjustmentStatus.PAID, "PAID");
+                statusMap.put(APPaymentAdjustmentStatus.CONFIRMED, "CONFIRMED");
+                statusMap.put(APPaymentAdjustmentStatus.RETURNED, "RETURNED");
+                statusMap.put(APPaymentAdjustmentStatus.VOID, "VOIDED");
+                statusMap.put(APPaymentAdjustmentStatus.CANCELLED, "CANCELLED");
 
-                }
+                String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
                 lblStatus.setText(lsStat);
             });
             // Transaction Date
@@ -712,7 +694,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                                     if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
-                                    previousSearchedTextField.set(lastFocusedTextField);;
+                                    previousSearchedTextField.set(lastFocusedTextField.get());
                                     // Create a simulated KeyEvent for F3 key press
                                     JFXUtil.makeKeyPressed(tf, KeyCode.F3);
                                 } else {

@@ -95,7 +95,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     static PurchaseOrderReceiving poPurchaseReceivingController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private final String pxeModuleName = "SI Posting";
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     private static final int ROWS_PER_PAGE = 50;
     int pnJEDetail = 0;
     int pnDetail = 0;
@@ -130,7 +130,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     private Stage dialogStage = null;
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
-    JFXUtil.StageManager stage = new JFXUtil.StageManager();
+    JFXUtil.StageManager stageAttachment = new JFXUtil.StageManager();
 
     JFXUtil.MonthYearPicker.Picker month_year_picker;
 
@@ -269,7 +269,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     public void showAttachmentlDialog() {
         poJSON = new JSONObject();
-        stage.closeSerialDialog();
+        stageAttachment.closeSerialDialog();
         openedAttachment = "";
         if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
@@ -287,7 +287,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         AttachmentDialogController controller = new AttachmentDialogController();
         controller.addData(data);
         try {
-            stage.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
+            stageAttachment.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
         } catch (IOException ex) {
             Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -347,7 +347,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                 TextField tf = (TextField) lastFocusedTextField.get();
                                 if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail,
                                         apJEMaster, apJEDetail).contains(tf.getId())) {
-                                    if (lastFocusedTextField.get() ==  previousSearchedTextField.get()) {
+                                    if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
                                     previousSearchedTextField.set(lastFocusedTextField.get());
@@ -1384,10 +1384,10 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             poPurchaseReceivingController.loadAttachments();
             if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
                 if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
-                    stage.closeSerialDialog();
+                    stageAttachment.closeSerialDialog();
                 }
             } else {
-                stage.closeSerialDialog();
+                stageAttachment.closeSerialDialog();
             }
 
             Platform.runLater(() -> {

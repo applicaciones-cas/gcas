@@ -61,6 +61,7 @@ import javafx.animation.PauseTransition;
 import ph.com.guanzongroup.cas.cashflow.SOATagging;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicReference;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.constant.UserRight;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
@@ -95,8 +96,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     private FilteredList<ModelSOATagging_Detail> filteredDataDetail;
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
-    private Object lastFocusedTextField = null;
-    private Object previousSearchedTextField = null;
+    AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
+    AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apMainList;
@@ -151,6 +152,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
+        
+        JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField);
     }
 
     @Override
@@ -205,15 +208,15 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
-                        if ((lastFocusedTextField != null)) {
-                            if (lastFocusedTextField instanceof TextField) {
-                                TextField tf = (TextField) lastFocusedTextField;
+                        if ((lastFocusedTextField.get() != null)) {
+                            if (lastFocusedTextField.get() instanceof TextField) {
+                                TextField tf = (TextField) lastFocusedTextField.get();
                                 if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail).contains(tf.getId())) {
 
-                                    if (lastFocusedTextField == previousSearchedTextField) {
+                                    if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
-                                    previousSearchedTextField = lastFocusedTextField;
+                                    previousSearchedTextField.set(lastFocusedTextField.get());
                                     // Create a simulated KeyEvent for F3 key press
                                     JFXUtil.makeKeyPressed(tf, KeyCode.F3);
                                 } else {
@@ -366,9 +369,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         String lsID = (txtField.getId());
         String lsValue = txtField.getText();
 
-        lastFocusedTextField = txtField;
-        previousSearchedTextField = null;
-
         if (lsValue == null) {
             return;
         }
@@ -397,8 +397,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
         if (lsValue == null) {
             return;
         }
@@ -447,8 +445,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
         if (lsValue == null) {
             return;
         }
@@ -706,8 +702,6 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                 String lsTransDate = "";
                 String lsSelectedDate = "";
                 String lsReceivingDate = "";
-                lastFocusedTextField = datePicker;
-                previousSearchedTextField = null;
 
                 JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
                 poJSON = ldtResult.poJSON;
@@ -1241,9 +1235,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         psCompanyId = "";
         psSearchSupplierId = "";
         psSupplierId = "";
-        previousSearchedTextField = null;
-        lastFocusedTextField = null;
-        dpTransactionDate.setValue(null);
+        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate);
         JFXUtil.clearTextFields(apMaster, apDetail, apBrowse);
     }
 

@@ -95,7 +95,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     static PurchaseOrderReceiving poPurchaseReceivingController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private final String pxeModuleName = "SI Posting Car";
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     private static final int ROWS_PER_PAGE = 50;
     int pnJEDetail = 0;
     int pnDetail = 0;
@@ -132,8 +132,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     private Stage dialogStage = null;
 
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
-    JFXUtil.StageManager stage = new JFXUtil.StageManager();
-    JFXUtil.StageManager stage2 = new JFXUtil.StageManager();
+    JFXUtil.StageManager stageAttachment = new JFXUtil.StageManager();
+    JFXUtil.StageManager stageSerial = new JFXUtil.StageManager();
 
     JFXUtil.MonthYearPicker.Picker month_year_picker;
 
@@ -225,8 +225,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
-        
-        JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField);
+
     }
 
     @Override
@@ -269,11 +268,20 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             }
         }
         );
+        scene.focusOwnerProperty().addListener((obs, oldNode, newNode) -> {
+            if (newNode != null) {
+                if (newNode instanceof Button) {
+                } else {
+                    lastFocusedTextField.set(newNode);
+                    previousSearchedTextField.set(null);
+                }
+            }
+        });
     }
 
     public void showAttachmentlDialog() {
         poJSON = new JSONObject();
-        stage.closeSerialDialog();
+        stageAttachment.closeSerialDialog();
         openedAttachment = "";
         if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
@@ -291,7 +299,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         AttachmentDialogController controller = new AttachmentDialogController();
         controller.addData(data);
         try {
-            stage.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
+            stageAttachment.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
         } catch (IOException ex) {
             Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -300,7 +308,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     public void showSerialDialog() {
         try {
             poJSON = new JSONObject();
-            stage2.closeSerialDialog();
+            stageSerial.closeSerialDialog();
             if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
                 return;
             }
@@ -320,14 +328,14 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 controller.setEntryNo(pnDetail + 1);
                 controller.isFinancing(true);
             }
-            stage2.setOnHidden(event -> {
-                stage2 = null;
+            stageSerial.setOnHidden(event -> {
+                stageSerial = null;
                 moveNext();
                 Platform.runLater(() -> {
                     loadTableDetail();
                 });
             });
-            stage2.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"), controller, "Inventory Serial", true, true, false);
+            stageSerial.showDialog(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"), controller, "Inventory Serial", true, true, false);
 
         } catch (IOException ex) {
             Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
@@ -1508,10 +1516,10 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             poPurchaseReceivingController.loadAttachments();
             if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
                 if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
-                    stage.closeSerialDialog();
+                    stageAttachment.closeSerialDialog();
                 }
             } else {
-                stage.closeSerialDialog();
+                stageAttachment.closeSerialDialog();
             }
 
             Platform.runLater(() -> {
