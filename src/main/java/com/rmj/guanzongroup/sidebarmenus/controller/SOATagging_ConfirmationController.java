@@ -350,6 +350,8 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 
     public void retrieveSOATagging() {
         poJSON = new JSONObject();
+        poSOATaggingController.setTransactionStatus(SOATaggingStatus.OPEN
+                + SOATaggingStatus.CONFIRMED);
         poJSON = poSOATaggingController.loadSOATagging(psIndustryId, tfSearchCompany.getText(), tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));

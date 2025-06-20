@@ -64,7 +64,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         poJSON = new JSONObject();
-        poAPPaymentAdjustmentController = new CashflowControllers(oApp, null).APPayementAdjustment();
+        poAPPaymentAdjustmentController = new CashflowControllers(oApp, null).APPaymentAdjustment();
         poAPPaymentAdjustmentController.initialize(); // Initialize transaction
         initTextFields();
         initDatePickers();
