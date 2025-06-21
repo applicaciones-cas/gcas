@@ -1431,4 +1431,24 @@ public class JFXUtil {
             }
         }
     }
+
+public static boolean isGeneralFXML(String fxmlPath) {
+    String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
+
+    int underscoreIndex = fileName.indexOf('_');
+
+    if (underscoreIndex == -1) return true;
+
+    String suffix = fileName.substring(underscoreIndex + 1);
+
+    String[] generalSuffixes = {
+        "Entry", "Confirmation", "History"
+    };
+    for (String general : generalSuffixes) {
+        if (suffix.equals(general)) {
+            return true;
+        }
+    }
+    return false;
+}
 }
