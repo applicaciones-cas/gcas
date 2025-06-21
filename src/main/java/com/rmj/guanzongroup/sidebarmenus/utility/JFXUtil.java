@@ -905,6 +905,30 @@ public class JFXUtil {
         return className.trim();
     }
 
+    public static String getFormattedFXMLTitle(String fxmlPath) {
+        // Extract the FXML file name without extension
+        String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
+
+        // Remove common suffixes like "Controller" or "_EntryMonarch" if desired
+        if (fileName.endsWith("Controller")) {
+            fileName = fileName.substring(0, fileName.length() - "Controller".length());
+        }
+
+        // Handle specific company renaming
+        fileName = fileName.replace("MonarchFood", "MF");
+        fileName = fileName.replace("MonarchHospitality", "MH");
+
+        // Replace underscores with space
+        fileName = fileName.replace("_", " ");
+
+        // Add space before capital letters, keeping acronyms intact
+        fileName = fileName.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " "); // Handles "SOAAdjustment" => "SOA Adjustment"
+        fileName = fileName.replaceAll("(?<=[a-z])(?=[A-Z])", " ");     // Handles "EntryForm" => "Entry Form"
+
+        System.out.println(fileName.trim());
+        return fileName.trim();
+    }
+
     //JFXUtil.getFormattedClassTitle(this.getClass());
     public static <T> void selectAndFocusRow(TableView<T> tableView, int index) {
         tableView.getSelectionModel().select(index);
