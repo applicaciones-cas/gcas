@@ -116,7 +116,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
     Map<String, String> imageinfo_temp = new HashMap<>();
-    private Stage dialogStage = null;
     private FileChooser fileChooser;
     private int pnAttachment;
 
@@ -262,7 +261,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 System.out.println("tested key press");
 
                 if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.getEditMode(), EditMode.READY, EditMode.UPDATE)) {
-                    showAttachmentlDialog();
+                    showAttachmentDialog();
                 }
             }
         }
@@ -278,7 +277,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         });
     }
 
-    public void showAttachmentlDialog() {
+    public void showAttachmentDialog() {
         poJSON = new JSONObject();
         stageAttachment.closeSerialDialog();
         openedAttachment = "";
@@ -300,7 +299,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         try {
             stageAttachment.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
         } catch (IOException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -328,7 +327,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 controller.isFinancing(true);
             }
             stageSerial.setOnHidden(event -> {
-//                stageSerial = null;
                 moveNext();
                 Platform.runLater(() -> {
                     loadTableDetail();
@@ -337,11 +335,11 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"), controller, "Inventory Serial", true, true, false);
 
         } catch (IOException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -521,7 +519,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 initButton(pnEditMode);
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -963,92 +961,11 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             }
 
         } catch (GuanzonException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-
-    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
-        poJSON = new JSONObject();
-        JFXUtil.setJSONSuccess(poJSON, "success");
-        try {
-            if (!newValue) { // Lost focus
-                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
-                String lsID = datePicker.getId();
-                String inputText = datePicker.getEditor().getText();
-                LocalDate currentDate = LocalDate.now();
-                LocalDate selectedDate = null;
-
-                JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
-                poJSON = ldtResult.poJSON;
-                if ("error".equals(poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    loadRecordMaster();
-                    return;
-                }
-                selectedDate = ldtResult.selectedDate;
-
-                String formattedDate = selectedDate.toString();
-
-                switch (lsID) {
-                    case "dpTransactionDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
-                        } else {
-                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
-                        }
-                        break;
-                    case "dpReferenceDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
-                        } else {
-                            poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
-                        }
-                        break;
-                    case "dpExpiryDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isBefore(currentDate)) {
-                            JFXUtil.setJSONError(poJSON, "The selected date cannot be earlier than the current date.");
-                        } else {
-                            poPurchaseReceivingController.Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
-                        }
-                        break;
-                    default:
-
-                        break;
-                }
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    // datePicker.requestFocus();
-                }
-                if (JFXUtil.isObjectEqualTo(lsID, "dpJETransactionDate")) {
-                    loadRecordJEMaster();
-                } else {
-                    Platform.runLater(() -> {
-                        if (lsID.equals("dpExpiryDate")) {
-                            loadRecordDetail();
-                        } else {
-                            loadRecordMaster();
-                        }
-                    });
-                }
-
-                datePicker.getEditor().setText(formattedDate);
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    };
 
     boolean pbSuccess = true;
 
@@ -1176,7 +1093,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 pbSuccess = true; //Set to original valueF
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1205,9 +1122,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                                         String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                                 ));
                             } catch (SQLException ex) {
-                                Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             } catch (GuanzonException ex) {
-                                Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
 
                             if (poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.POSTED)) {
@@ -1262,7 +1179,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfSearchReceiveBranch.setText(psBranchId.equals("") ? "" : poPurchaseReceivingController.Master().Branch().getBranchName());
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1358,9 +1275,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1457,9 +1374,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(ldblNetTotal, true));
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1534,14 +1451,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 loadTableAttachment();
             });
 
-            if (dialogStage != null) {
-                if (dialogStage.isShowing()) {
-                    dialogStage.close();
-                }
-            }
-
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1612,9 +1523,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         }
                         loadRecordMaster();
                     } catch (SQLException ex) {
-                        Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
                 });
 

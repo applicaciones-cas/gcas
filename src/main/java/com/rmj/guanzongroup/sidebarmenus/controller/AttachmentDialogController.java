@@ -86,11 +86,6 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
     /**
      * Initializes the controller class.
      */
-    public void addData(Map<String, Pair<String, String>> dataMap) {
-        cloned = new HashMap<>(dataMap);
-        loadTableAttachment();
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
@@ -198,8 +193,9 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
                             Image loimage = new Image(convertedPath);
                             imageView.setImage(loimage);
                             JFXUtil.adjustImageSize(loimage, imageView, imageviewerutil.ldstackPaneWidth, imageviewerutil.ldstackPaneHeight);
-                            JFXUtil.stackPaneClip(stackPane1);
-                            JFXUtil.stackPaneClip(stackPane1); // dont remove duplicate
+                            Platform.runLater(() -> {
+                                JFXUtil.stackPaneClip(stackPane1);
+                            });
 
                         } else {
                             imageView.setImage(null);
@@ -236,28 +232,20 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
         }
     }
 
-    private void initStackPaneListener() {
-        stackPane1.widthProperty().addListener((observable, oldValue, newWidth) -> {
-            double computedWidth = newWidth.doubleValue();
-            imageviewerutil.ldstackPaneWidth = computedWidth;
-
-        });
+    private void initAttachmentPreviewPane() {
+        imageviewerutil.initAttachmentPreviewPane(stackPane1, imageView);
         stackPane1.heightProperty().addListener((observable, oldValue, newHeight) -> {
             double computedHeight = newHeight.doubleValue();
             imageviewerutil.ldstackPaneHeight = computedHeight;
             loadTableAttachment();
             loadRecordAttachment(true);
         });
+        enableDrag(apButton, apAttachment);
     }
 
-    private void initAttachmentPreviewPane() {
-        imageviewerutil.initAttachmentPreviewPane(stackPane1, imageView);
-        stackPane1.heightProperty().addListener((observable, oldValue, newHeight) -> {
-            double computedHeight = newHeight.doubleValue();
-            imageviewerutil.ldstackPaneHeight = computedHeight;
-            initStackPaneListener();
-        });
-        enableDrag(apButton, apAttachment);
+    public void addData(Map<String, Pair<String, String>> dataMap) {
+        cloned = new HashMap<>(dataMap);
+        loadTableAttachment();
     }
 
     public void loadTableAttachment() {
@@ -269,12 +257,12 @@ public class AttachmentDialogController implements Initializable, ScreenInterfac
 
         for (int i = 0; i < entryList.size(); i++) {
             Map.Entry<String, Pair<String, String>> entry = entryList.get(i);
-            String mapKey = entry.getKey();
-            String valueFromPair1 = entryList.get(i).getValue().getKey();
-            String valueFromPair2 = entryList.get(i).getValue().getValue();
+            String lsRowNo = entry.getKey();
+            String lsFileName = entryList.get(i).getValue().getKey();
+            String lsAttachmentType = entryList.get(i).getValue().getValue();
             attachment_data.add(
-                    new ModelDeliveryAcceptance_Attachment(mapKey, valueFromPair1,
-                            valueFromPair2
+                    new ModelDeliveryAcceptance_Attachment(lsRowNo, lsFileName,
+                            lsAttachmentType
                     ));
         }
         loadRecordAttachment(true);
