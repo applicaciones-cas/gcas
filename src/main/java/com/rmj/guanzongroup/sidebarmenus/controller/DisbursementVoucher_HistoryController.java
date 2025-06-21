@@ -199,7 +199,7 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
     @FXML
     private TableView tblVwDetails;
     @FXML
-    private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount;
+    private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblTransactionTypeDetail, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount;
 
     /*Journal Master */
     @FXML
@@ -408,7 +408,6 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
     private void loadRecordMasterCheck() {
         try {
             tfBankNameCheck.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "");
-            System.out.println("Bank Name:" + poDisbursementController.CheckPayments().getModel().Banks().getBankName() + " and ID:" + poDisbursementController.CheckPayments().getModel().getBankID());
             tfBankAccountCheck.setText(poDisbursementController.CheckPayments().getModel().getBankAcountID() != null ? poDisbursementController.CheckPayments().getModel().getBankAcountID() : "");
             tfPayeeName.setText(poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "");
             tfCheckNo.setText(poDisbursementController.CheckPayments().getModel().getCheckNo());
@@ -492,6 +491,7 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
                                             poDisbursementController.Detail(lnCtr).getAccountCode(),
+                                            poDisbursementController.Detail(lnCtr).getInvType(),
                                             poDisbursementController.Detail(lnCtr).Particular().getDescription(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getAmount(), true),
                                             poDisbursementController.Detail(lnCtr).TaxCode().getTaxCode(),
@@ -545,7 +545,7 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
     }
 
     private void initTableDetailDV() {
-        JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblAccountCode, tblParticulars, tblTaxCode);
+        JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode);
         JFXUtil.setColumnRight(tblTaxAmount, tblPurchasedAmount, tblNetAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwDetails);
         filteredDataDetailDV = new FilteredList<>(detailsdv_data, b -> true);

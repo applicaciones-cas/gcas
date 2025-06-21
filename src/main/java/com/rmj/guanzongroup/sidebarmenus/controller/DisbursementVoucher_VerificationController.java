@@ -216,7 +216,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     @FXML
     private TableView tblVwDetails;
     @FXML
-    private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount;
+    private TableColumn tblDVRowNo, tblReferenceNo, tblAccountCode, tblTransactionTypeDetail, tblParticulars, tblPurchasedAmount, tblTaxCode, tblTaxAmount, tblNetAmount;
 
     /*Journal Master */
     @FXML
@@ -856,6 +856,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
                                             poDisbursementController.Detail(lnCtr).getAccountCode(),
+                                            poDisbursementController.Detail(lnCtr).getInvType(),
                                             poDisbursementController.Detail(lnCtr).Particular().getDescription(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getAmount(), true),
                                             poDisbursementController.Detail(lnCtr).TaxCode().getTaxCode(),
@@ -910,7 +911,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void initTableDetailDV() {
-        JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblAccountCode, tblParticulars, tblTaxCode);
+        JFXUtil.setColumnCenter(tblDVRowNo, tblReferenceNo, tblTransactionTypeDetail, tblAccountCode, tblParticulars, tblTaxCode);
         JFXUtil.setColumnRight(tblTaxAmount, tblPurchasedAmount, tblNetAmount);
         JFXUtil.setColumnsIndexAndDisableReordering(tblVwDetails);
         filteredDataDetailDV = new FilteredList<>(detailsdv_data, b -> true);

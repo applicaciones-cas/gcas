@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
@@ -24,7 +25,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import java.net.URL?>
+
 <AnchorPane fx:id="AnchorMain" minWidth="1455.0" prefHeight="1000.0" prefWidth="1761.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -35,7 +36,7 @@
                             <children>
                                 <AnchorPane style="-fx-background-color: A0A0A0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <GridPane prefHeight="28.0" prefWidth="1447.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                        <GridPane prefHeight="28.0" prefWidth="1447.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                             <columnConstraints>
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
@@ -52,7 +53,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <Label fx:id="lblSource" layoutX="367.0" layoutY="14.0" text="Company - Industry" GridPane.columnIndex="8">
+                                                <Label fx:id="lblSource" alignment="CENTER_RIGHT" layoutX="367.0" layoutY="14.0" maxWidth="1.7976931348623157E308" text="Company - Industry" GridPane.columnIndex="8">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
@@ -518,7 +519,7 @@
                                                                                                 <Label text="Particulars" GridPane.rowIndex="4" />
                                                                                                 <Label text="Account Code" GridPane.rowIndex="3" />
                                                                                                 <TextField fx:id="tfAccountCodeDetail" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                                                <Label text="Purchased Amount" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                                                                <Label text="Amount" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                                                 <Label text="Vat Classification" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                                                                                 <Label text="Tax Code" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                                                                 <TextField fx:id="tfPurchasedAmountDetail" alignment="CENTER_RIGHT" promptText="0.00" GridPane.columnIndex="8" GridPane.rowIndex="2" />
@@ -541,8 +542,9 @@
                                                                                                 <TableColumn fx:id="tblDVRowNo" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" text="No." />
                                                                                                 <TableColumn fx:id="tblReferenceNo" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Reference No." />
                                                                                                 <TableColumn fx:id="tblAccountCode" editable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Account Code" />
+                                                                                                <TableColumn fx:id="tblTransactionTypeDetail" editable="false" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Transaction Type" />
                                                                                                 <TableColumn fx:id="tblParticulars" editable="false" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" resizable="false" sortable="false" text="Particulars" />
-                                                                                                <TableColumn fx:id="tblPurchasedAmount" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Purchased Amount" />
+                                                                                                <TableColumn fx:id="tblPurchasedAmount" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Amount" />
                                                                                                 <TableColumn fx:id="tblTaxCode" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" text="Tax Code" />
                                                                                                 <TableColumn fx:id="tblTaxAmount" editable="false" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Tax Amount" />
                                                                                                 <TableColumn fx:id="tblNetAmount" editable="false" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" sortable="false" style="-fx-alignment: CENTER-RIGHT;" text="Net Amount" />
