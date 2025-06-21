@@ -437,8 +437,16 @@ public class CustomCommonUtil {
      * }</pre>
      */
     public static LocalDate parseDateStringToLocalDate(String fsDateValue) {
+        if (fsDateValue == null || fsDateValue.trim().isEmpty()) {
+            return null;
+        }
+
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(fsDateValue, dateFormatter);
+        try {
+            return LocalDate.parse(fsDateValue.trim(), dateFormatter);
+        } catch (DateTimeParseException e) {
+            return null; // or log the error if needed
+        }
     }
 
     /**

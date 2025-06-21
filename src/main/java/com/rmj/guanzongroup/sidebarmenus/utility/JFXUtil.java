@@ -23,14 +23,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -46,6 +44,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -84,6 +83,7 @@ import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
 import org.apache.poi.ss.formula.functions.T;
@@ -201,6 +201,12 @@ public class JFXUtil {
                     event.consume();
                 }
             });
+        }
+    }
+
+    public static void initComboBoxCellDesignColor(String hexColor, ComboBox<?>... comboBoxes) {
+        for (ComboBox<?> comboBox : comboBoxes) {
+            initComboBoxCellDesignColor(comboBox, hexColor);
         }
     }
 
@@ -386,11 +392,16 @@ public class JFXUtil {
 
     public static class StageManager {
 
-        private static Stage dialog;
+        private Stage dialog;
+        private EventHandler<WindowEvent> onHiddenHandler; // Store handler
+        private final xyOffset xyOffset = new xyOffset();
 
-        public static void showDialog(URL fxmlurl,
+        public void showDialog(Stage parentStage, URL fxmlurl,
                 Object controller,
-                String lsDialogTitle, boolean enableWindowDrag, boolean enableblock, boolean stayOnTop
+                String lsDialogTitle,
+                boolean enableWindowDrag,
+                boolean enableblock,
+                boolean stayOnTop
         ) throws IOException {
 
             FXMLLoader loader = new FXMLLoader(fxmlurl);
@@ -398,7 +409,6 @@ public class JFXUtil {
 
             Parent root = loader.load();
 
-            final xyOffset xyOffset = new xyOffset();
             root.setOnMousePressed(event -> {
                 xyOffset.x = event.getSceneX();
                 xyOffset.y = event.getSceneY();
@@ -412,22 +422,37 @@ public class JFXUtil {
                 });
             }
 
-            dialog = new Stage(); // assign to static field
+            dialog = new Stage();
             dialog.initStyle(StageStyle.UNDECORATED);
 
             if (enableblock) {
-                dialog.initModality(Modality.APPLICATION_MODAL);
+                dialog.initModality(Modality.WINDOW_MODAL);
+                if (parentStage != null) {
+                    dialog.initOwner(parentStage); // sets the blocking owner
+                }
             }
+
             if (stayOnTop) {
                 dialog.setAlwaysOnTop(true);
             }
 
             dialog.setTitle(lsDialogTitle);
             dialog.setScene(new Scene(root));
+
+            // Attach stored onHiddenHandler if available
+            if (onHiddenHandler != null) {
+                dialog.setOnHidden(onHiddenHandler);
+                onHiddenHandler = null; // Clear after assigning
+            }
+
             dialog.show();
         }
 
-        public static void closeSerialDialog() {
+        public void setOnHidden(EventHandler<WindowEvent> handler) {
+            onHiddenHandler = handler;
+        }
+
+        public void closeSerialDialog() {
             if (dialog != null) {
                 dialog.close();
                 dialog = null;
@@ -690,14 +715,14 @@ public class JFXUtil {
     }
 
     public static boolean isObjectEqualTo(Object source, Object... others) {
-        if (source == null && others != null) {
-            for (Object other : others) {
-                if (other == null) {
-                    return true;
-                }
-            }
-            return false;
-        }
+//        if (source == null && others != null) {
+//            for (Object other : others) {
+//                if (other == null) {
+//                    return true;
+//                }
+//            }
+//            return false;
+//        }
 
         for (Object other : others) {
             if (source != null && source.equals(other)) {
@@ -823,26 +848,6 @@ public class JFXUtil {
                             + "-fx-text-fill: black;"
                             + "-fx-border-color: grey;"
                     );
-                    // Restore previous scroll position
-//                    Platform.runLater(() -> {
-//                        Platform.runLater(() -> {
-//                            scrollPane.setVvalue(xyOffset.y);
-//                            xyOffset.y = 0.0;
-//                        });
-//                    });
-//                    PauseTransition delay = new PauseTransition(Duration.millis(10));
-//                    delay.setOnFinished(e -> {
-//                        scrollPane.setVvalue(xyOffset.y);
-//                        xyOffset.y = 0.0;
-//                    });
-//                    delay.play();
-//                    Platform.runLater(() -> {
-//                        // Delay to override internal behavior
-//                        Platform.runLater(() -> {
-//                            textArea.positionCaret(state.caretPos);
-//                            state.caretPos = 0;
-//                        });
-//                    });
                 }
             });
         }
@@ -906,16 +911,24 @@ public class JFXUtil {
         tableView.getFocusModel().focus(index);
     }
 
-    public static void setValueToNull(Node... nodes) {
-        for (Node node : nodes) {
-            if (node instanceof TextInputControl) {
-                ((TextInputControl) node).clear();
-            } else if (node instanceof ComboBox<?>) {
-                ((ComboBox<?>) node).setValue(null);
-            } else if (node instanceof CheckBox) {
-                ((CheckBox) node).setSelected(false);
-            } else if (node instanceof DatePicker) {
-                ((DatePicker) node).setValue(null);
+    public static void setValueToNull(Object... items) {
+        for (Object item : items) {
+            if (item instanceof Node) {
+                Node node = (Node) item;
+
+                if (node instanceof TextInputControl) {
+                    ((TextInputControl) node).clear();
+                } else if (node instanceof ComboBox) {
+                    ((ComboBox<?>) node).setValue(null);
+                } else if (node instanceof CheckBox) {
+                    ((CheckBox) node).setSelected(false);
+                } else if (node instanceof DatePicker) {
+                    ((DatePicker) node).setValue(null);
+                } else {
+                }
+            } else if (item instanceof AtomicReference) {
+                ((AtomicReference<?>) item).set(null);
+            } else {
             }
         }
     }
@@ -1311,7 +1324,8 @@ public class JFXUtil {
         return result.isEmpty() ? "0" : result;
     }
 
-    public static void showRetainedHighlight(boolean isRetained, TableView<?> tblView, String color, List<Pair<String, String>> plOrderNoPartial, List<Pair<String, String>> plOrderNoFinal, Map<String, List<String>> highlightedRows, boolean resetpartial) {
+    public static void showRetainedHighlight(boolean isRetained, TableView<?> tblView, String color, List<Pair<String, String>> plOrderNoPartial, List<Pair<String, String>> plOrderNoFinal,
+            Map<String, List<String>> highlightedRows, boolean resetpartial) {
         if (isRetained) {
             for (Pair<String, String> pair : plOrderNoPartial) {
                 if (!"0".equals(pair.getValue())) {
@@ -1341,6 +1355,55 @@ public class JFXUtil {
             Pair<String, String> pair = iterator.next();
             if (pair.getKey().equals(key)) {
                 iterator.remove();
+            }
+        }
+    }
+
+    private static void setKeyEvent(Scene scene, AtomicReference<Object> lastFocusedTextField, AtomicReference<Object> previousSearchedTextField) {
+        scene.focusOwnerProperty().addListener((obs, oldNode, newNode) -> {
+            if (newNode != null) {
+                if (newNode instanceof Button) {
+                } else {
+                    lastFocusedTextField.set(newNode);
+                    previousSearchedTextField.set(null);
+                }
+            }
+        });
+    }
+
+    public static void initKeyClickObject(AnchorPane ap, AtomicReference<Object> lastFocusedTextField, AtomicReference<Object> previousSearchedTextField) {
+        AnchorPane root = (AnchorPane) ap;
+        Scene scene = root.getScene();
+        if (scene != null) {
+            setKeyEvent(scene, lastFocusedTextField, previousSearchedTextField);
+        } else {
+            root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+                if (newScene != null) {
+                    setKeyEvent(newScene, lastFocusedTextField, previousSearchedTextField);
+                }
+            });
+        }
+    }
+
+    public static void setCheckboxHoverCursor(Parent... anchorpane) {
+        for (Parent container : anchorpane) {
+            applyToCheckBoxes(container);
+        }
+    }
+
+    private static void applyToCheckBoxes(Parent parent) {
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            if (node instanceof CheckBox) {
+                final CheckBox checkBox = (CheckBox) node;
+                checkBox.hoverProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal) {
+                        checkBox.setCursor(checkBox.isDisabled() ? Cursor.DEFAULT : Cursor.HAND);
+                    } else {
+                        checkBox.setCursor(Cursor.DEFAULT);
+                    }
+                });
+            } else if (node instanceof Parent) {
+                applyToCheckBoxes((Parent) node); // recursively check inner containers
             }
         }
     }
