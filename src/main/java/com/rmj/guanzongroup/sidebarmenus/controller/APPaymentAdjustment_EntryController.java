@@ -52,6 +52,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
     private JSONObject poJSON;
     public int pnEditMode;
     private String pxeModuleName = "";
+    private boolean isGeneral = false;
     private String psIndustryId = "";
     private String psCompanyId = "";
     private boolean pbEntered = false;
@@ -73,12 +74,15 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
     @FXML
     private TextArea taRemarks;
 
-    public void setTabTitle(String lsTabTitle) {
+    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
         this.pxeModuleName = lsTabTitle;
+        this.isGeneral = isGeneral;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        psIndustryId = isGeneral ? "" : psIndustryId;
+
         poJSON = new JSONObject();
         poAPPaymentAdjustmentController = new CashflowControllers(oApp, null).APPaymentAdjustment();
         poAPPaymentAdjustmentController.initialize(); // Initialize transaction
@@ -99,6 +103,27 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
         });
 
         JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField);
+    }
+
+    @Override
+    public void setGRider(GRiderCAS foValue) {
+        oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+        System.out.println(fsValue);
+        this.psIndustryId = fsValue;
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        //Company is not autoset
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
+        //No category
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -608,26 +633,6 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                 JFXUtil.setButtonsVisibility(false, btnUpdate);
                 break;
         }
-    }
-
-    @Override
-    public void setGRider(GRiderCAS foValue) {
-        oApp = foValue;
-    }
-
-    @Override
-    public void setIndustryID(String fsValue) {
-        psIndustryId = fsValue;
-    }
-
-    @Override
-    public void setCompanyID(String fsValue) {
-        //Company is not autoset
-    }
-
-    @Override
-    public void setCategoryID(String fsValue) {
-        //No category
     }
 
 }

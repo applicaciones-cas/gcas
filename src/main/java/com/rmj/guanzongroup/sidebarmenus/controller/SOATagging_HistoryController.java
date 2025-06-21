@@ -67,6 +67,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     private String pxeModuleName = "";
     public int pnDetail = 0;
     private String psIndustryId = "";
+    private boolean isGeneral = false;
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
@@ -96,12 +97,14 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     @FXML
     private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail, tblAppliedAmtDetail;
 
-    public void setTabTitle(String lsTabTitle) {
+    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
         this.pxeModuleName = lsTabTitle;
+        this.isGeneral = isGeneral;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        psIndustryId = isGeneral ? "" : psIndustryId;
 
         poSOATaggingController = new CashflowControllers(oApp, null).SOATagging();
         poJSON = poSOATaggingController.InitTransaction(); // Initialize transaction

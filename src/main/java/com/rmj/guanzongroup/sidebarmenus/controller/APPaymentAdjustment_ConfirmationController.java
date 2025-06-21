@@ -62,6 +62,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
     public int pnEditMode;
 
     private String pxeModuleName = "";
+    private boolean isGeneral = false;
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psSupplierId = "";
@@ -98,12 +99,14 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
     @FXML
     private Pagination pgPagination;
 
-    public void setTabTitle(String lsTabTitle) {
+    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
         this.pxeModuleName = lsTabTitle;
+        this.isGeneral = isGeneral;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        psIndustryId = isGeneral ? "" : psIndustryId;
 
         poJSON = new JSONObject();
         poAPPaymentAdjustmentController = new CashflowControllers(oApp, null).APPaymentAdjustment();
@@ -124,6 +127,26 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             loadRecordSearch();
         });
         JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField);
+    }
+
+    @Override
+    public void setGRider(GRiderCAS foValue) {
+        oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+        psIndustryId = fsValue;
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        //Company is not autoset
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
+        //No Category
     }
 
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
@@ -900,26 +923,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                 JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate, btnReturn, btnVoid);
                 break;
         }
-    }
-
-    @Override
-    public void setGRider(GRiderCAS foValue) {
-        oApp = foValue;
-    }
-
-    @Override
-    public void setIndustryID(String fsValue) {
-        psIndustryId = fsValue;
-    }
-
-    @Override
-    public void setCompanyID(String fsValue) {
-        //Company is not autoset
-    }
-
-    @Override
-    public void setCategoryID(String fsValue) {
-        //No Category
     }
 
 }

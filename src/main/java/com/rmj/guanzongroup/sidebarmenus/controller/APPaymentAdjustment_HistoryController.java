@@ -42,6 +42,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     private JSONObject poJSON;
     public int pnEditMode;
     private String pxeModuleName = "";
+    private boolean isGeneral = false;
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
@@ -63,12 +64,14 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     @FXML
     private TextArea taRemarks;
 
-    public void setTabTitle(String lsTabTitle) {
+    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
         this.pxeModuleName = lsTabTitle;
+        this.isGeneral = isGeneral;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        psIndustryId = isGeneral ? "" : psIndustryId;
         poJSON = new JSONObject();
         poAPPaymentAdjustmentController = new CashflowControllers(oApp, null).APPaymentAdjustment();
         poAPPaymentAdjustmentController.initialize(); // Initialize transaction

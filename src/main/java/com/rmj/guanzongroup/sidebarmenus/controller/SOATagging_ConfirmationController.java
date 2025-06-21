@@ -83,6 +83,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     int pnMain = 0;
     private String pxeModuleName = "";
     private String psIndustryId = "";
+    private boolean isGeneral = false;
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
@@ -122,12 +123,14 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     @FXML
     private Pagination pgPagination;
 
-    public void setTabTitle(String lsTabTitle) {
+    public void setTabTitle(String lsTabTitle, boolean isGeneral) {
         this.pxeModuleName = lsTabTitle;
+        this.isGeneral = isGeneral;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        psIndustryId = isGeneral ? "" : psIndustryId;
 
         poSOATaggingController = new CashflowControllers(oApp, null).SOATagging();
         poJSON = new JSONObject();
