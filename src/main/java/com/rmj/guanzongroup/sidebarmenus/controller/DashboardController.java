@@ -795,6 +795,8 @@ public class DashboardController implements Initializable {
                     return "Disbursement Voucher Verification";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
                     return "Disbursement Voucher Certification";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_History.fxml":
+                    return "Disbursement Voucher History";
 
                 /*CHECK */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
@@ -807,7 +809,7 @@ public class DashboardController implements Initializable {
                     return "Check Print Request Confirmation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml":
                     return "Check Printing";
-                    
+
                 /*AP Payment Adjustment */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml":
                     psIndustryID = "";
@@ -830,7 +832,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml":
                     psIndustryID = "04";
                     return "AP Payment Adjustment Entry Monarch";
-                
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml":
                     psIndustryID = "";
                     return "AP Payment Adjustment Confirmation";
@@ -852,7 +854,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMonarch.fxml":
                     psIndustryID = "04";
                     return "AP Payment Adjustment Confirmation Monarch";
-                    
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml":
                     psIndustryID = "";
                     return "AP Payment Adjustment History";
@@ -874,8 +876,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMonarch.fxml":
                     psIndustryID = "04";
                     return "AP Payment Adjustment History Monarch";
-                    
-                
+
                 /*SOA Tagging*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml":
                     psIndustryID = "";
@@ -898,7 +899,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml":
                     psIndustryID = "04";
                     return "SOA Tagging Entry Monarch";
-                
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml":
                     psIndustryID = "";
                     return "SOA Tagging Confirmation";
@@ -920,7 +921,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMonarch.fxml":
                     psIndustryID = "04";
                     return "SOA Tagging Confirmation Monarch";
-                    
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml":
                     psIndustryID = "";
                     return "SOA Tagging History";
@@ -942,7 +943,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMonarch.fxml":
                     psIndustryID = "04";
                     return "SOA Tagging History Monarch";
-                    
+
                 /*SI POSTING */
                 //General
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting.fxml":
@@ -1268,7 +1269,7 @@ public class DashboardController implements Initializable {
             case "Purchase Order Receiving History MH":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml";
             /*END PURCHASE ORDER RECEIVING*/
-             /*PURCHASE ORDER RETURN*/
+ /*PURCHASE ORDER RETURN*/
             // General
             case "Purchase Order Return Entry":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_Entry.fxml";
@@ -1350,7 +1351,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PurchaseOrderReturn_HistoryMonarchHospitality.fxml";
             /*END PURCHASE ORDER RETURN*/
 
-            /*START PAYMENT REQUEST */
+ /*START PAYMENT REQUEST */
             case "Payment Request":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Entry.fxml";
             case "Payment Request Confirmation":
@@ -1359,14 +1360,15 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml";
             /*END PAYMENT REQUEST*/
 
-            /*DISBURSEMENT VOUCHER */
+ /*DISBURSEMENT VOUCHER */
             case "Disbursement Voucher":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml";
             case "Disbursement Voucher Verification":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml";
             case "Disbursement Voucher Certification":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml";
-
+            case "Disbursement Voucher History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_History.fxml";
             /*CHECK */
             case "Check Authorization":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml";
@@ -1377,7 +1379,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml";
             case "Check Printing":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml";
-                
+
             /*AP PAYMENT ADJUSTMENT*/
             case "AP Payment Adjustment Entry":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml";
@@ -1393,7 +1395,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryLP.fxml";
             case "AP Payment Adjustment Entry Monarch":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml";
-            //Confirmation    
+            //Confirmation
             case "AP Payment Adjustment Confirmation":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml";
             case "AP Payment Adjustment Confirmation Appliances":
@@ -1408,7 +1410,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationLP.fxml";
             case "AP Payment Adjustment Confirmation Monarch":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMonarch.fxml";
-            //History    
+            //History
             case "AP Payment Adjustment History":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml";
             case "AP Payment Adjustment History Appliances":
@@ -1423,7 +1425,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryLP.fxml";
             case "AP Payment Adjustment History Monarch":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMonarch.fxml";
-                
+
             /*SOA TAGGING*/
             case "SOA Tagging Entry":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml";
@@ -1439,7 +1441,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryLP.fxml";
             case "SOA Tagging Entry Monarch":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml";
-            //Confirmation    
+            //Confirmation
             case "SOA Tagging Confirmation":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml";
             case "SOA Tagging Confirmation Appliances":
@@ -1454,7 +1456,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationLP.fxml";
             case "SOA Tagging Confirmation Monarch":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMonarch.fxml";
-            //History    
+            //History
             case "SOA Tagging History":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml";
             case "SOA Tagging History Appliances":
@@ -1468,7 +1470,7 @@ public class DashboardController implements Initializable {
             case "SOA Tagging History LP":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryLP.fxml";
             case "SOA Tagging History Monarch":
-                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMonarch.fxml";    
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMonarch.fxml";
 
             /*START SI POSTING */
             // General
@@ -1818,6 +1820,8 @@ public class DashboardController implements Initializable {
                     return new DisbursementVoucher_VerificationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
                     return new DisbursementVoucher_CertificationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_History.fxml":
+                    return new DisbursementVoucher_HistoryController();
 
                 /*CHECK */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
@@ -1830,8 +1834,8 @@ public class DashboardController implements Initializable {
                     return new CheckPrintRequest_ConfirmationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml":
                     return new CheckPrintingController();
-                    
-                     /* SI POSTING */
+
+                /* SI POSTING */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting.fxml":
                     return new SIPosting_Controller();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_Appliances.fxml":
@@ -1878,7 +1882,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryLP.fxml":
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMonarch.fxml":
                     return new APPaymentAdjustment_HistoryController();
-                    
+
                 /* SOA TAGGING */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml":
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryAppliances.fxml":
@@ -2176,10 +2180,10 @@ public class DashboardController implements Initializable {
         }
         return null;
     }
-    
-    private String updateFxmlName(String fsFormName){
-        switch(fsFormName){
-             /*AP PAYMENT ADJUSTMENT*/
+
+    private String updateFxmlName(String fsFormName) {
+        switch (fsFormName) {
+            /*AP PAYMENT ADJUSTMENT*/
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryAppliances.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryCar.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMC.fxml":
@@ -2187,7 +2191,7 @@ public class DashboardController implements Initializable {
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryLP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml";
-            //Confirmation    
+            //Confirmation
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationAppliances.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationCar.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMC.fxml":
@@ -2195,7 +2199,7 @@ public class DashboardController implements Initializable {
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationLP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMonarch.fxml":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml";
-            //History    
+            //History
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryAppliances.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryCar.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMC.fxml":
@@ -2203,7 +2207,7 @@ public class DashboardController implements Initializable {
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryLP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMonarch.fxml":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml";
-                
+
             /*SOA TAGGING*/
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryAppliances.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryCar.fxml":
@@ -2212,7 +2216,7 @@ public class DashboardController implements Initializable {
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryLP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml";
-            //Confirmation  
+            //Confirmation
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationAppliances.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationCar.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMC.fxml":
@@ -2220,17 +2224,17 @@ public class DashboardController implements Initializable {
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationLP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMonarch.fxml":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml";
-            //History    
+            //History
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryAppliances.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryCar.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMC.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryLP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMonarch.fxml":
-                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml"; 
-        
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml";
+
         }
-        
+
         return fsFormName;
     }
 
@@ -2976,7 +2980,6 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMP.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"047\",\"menu_parent\":\"042\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryLP.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"048\",\"menu_parent\":\"042\"},"
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"049\",\"menu_parent\":\"042\"},"
-                
                 //Confirmation
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"004\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Confirmation.fxml\",\"controller_path\":\"PaymentRequestConfirmation.controller\",\"menu_id\":\"005\",\"menu_parent\":\"004\"},"
@@ -3044,8 +3047,6 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml\",\"controller_path\":\"SIPosting_MonarchHospitality.controller\",\"menu_id\":\"074\",\"menu_parent\":\"066\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchFood.fxml\",\"controller_path\":\"SIPosting_MonarchFood.controller\",\"menu_id\":\"075\",\"menu_parent\":\"066\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_LP.fxml\",\"controller_path\":\"SIPosting_LP.controller\",\"menu_id\":\"076\",\"menu_parent\":\"066\"},"
-                
-                
                 + "]";
         JSONParser parser = new JSONParser();
         try {
