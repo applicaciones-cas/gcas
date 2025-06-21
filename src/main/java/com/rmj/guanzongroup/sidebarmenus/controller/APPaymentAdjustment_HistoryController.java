@@ -41,7 +41,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     static APPaymentAdjustment poAPPaymentAdjustmentController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private String pxeModuleName = "";
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
@@ -62,6 +62,10 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     private DatePicker dpTransactionDate;
     @FXML
     private TextArea taRemarks;
+
+    public void setTabTitle(String lsTabTitle) {
+        this.pxeModuleName = lsTabTitle;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -229,7 +233,6 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
         dpTransactionDate.setValue(null);
         JFXUtil.clearTextFields(apMaster);
     }
-
 
     public void loadRecordMaster() {
         try {

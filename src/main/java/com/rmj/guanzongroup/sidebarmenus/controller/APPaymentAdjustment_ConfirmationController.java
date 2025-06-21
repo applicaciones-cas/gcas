@@ -60,7 +60,8 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
     static APPaymentAdjustment poAPPaymentAdjustmentController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+
+    private String pxeModuleName = "";
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psSupplierId = "";
@@ -97,8 +98,13 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
     @FXML
     private Pagination pgPagination;
 
+    public void setTabTitle(String lsTabTitle) {
+        this.pxeModuleName = lsTabTitle;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         poJSON = new JSONObject();
         poAPPaymentAdjustmentController = new CashflowControllers(oApp, null).APPaymentAdjustment();
         poAPPaymentAdjustmentController.initialize(); // Initialize transaction
@@ -122,10 +128,10 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
 
     private void goToPageBasedOnSelectedRow(String pnRowMain) {
         int realIndex = Integer.parseInt(pnRowMain);
-
         if (realIndex == -1) {
             return; // Not found
         }
+
         int targetPage = realIndex / ROWS_PER_PAGE;
         int indexInPage = realIndex % ROWS_PER_PAGE;
 

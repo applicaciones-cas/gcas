@@ -51,7 +51,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
     static APPaymentAdjustment poAPPaymentAdjustmentController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private String pxeModuleName = "";
     private String psIndustryId = "";
     private String psCompanyId = "";
     private boolean pbEntered = false;
@@ -72,6 +72,10 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
     private DatePicker dpTransactionDate;
     @FXML
     private TextArea taRemarks;
+
+    public void setTabTitle(String lsTabTitle) {
+        this.pxeModuleName = lsTabTitle;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -426,7 +430,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
                 lblStatus.setText(lsStat);
             });
-            
+
             // Transaction Date
             String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poAPPaymentAdjustmentController.getModel().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));

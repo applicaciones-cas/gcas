@@ -64,7 +64,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     private JSONObject poJSON;
     static SOATagging poSOATaggingController;
     public int pnEditMode;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private String pxeModuleName = "";
     public int pnDetail = 0;
     private String psIndustryId = "";
     private String psCompanyId = "";
@@ -95,6 +95,10 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     private TableView tblViewTransDetailList;
     @FXML
     private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail, tblAppliedAmtDetail;
+
+    public void setTabTitle(String lsTabTitle) {
+        this.pxeModuleName = lsTabTitle;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

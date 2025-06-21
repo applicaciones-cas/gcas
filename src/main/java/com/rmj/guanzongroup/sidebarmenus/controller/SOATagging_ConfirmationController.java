@@ -81,7 +81,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     private static final int ROWS_PER_PAGE = 50;
     int pnDetail = 0;
     int pnMain = 0;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private String pxeModuleName = "";
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
@@ -122,6 +122,10 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     @FXML
     private Pagination pgPagination;
 
+    public void setTabTitle(String lsTabTitle) {
+        this.pxeModuleName = lsTabTitle;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -152,7 +156,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
-        
+
         JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField);
     }
 
