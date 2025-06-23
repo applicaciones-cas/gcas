@@ -1023,7 +1023,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         JFXUtil.setFocusListener(txtMasterOnlinePayment_Focus, tfBankNameOnlinePayment, tfBankAccountOnlinePayment, tfSupplierServiceName, tfSupplierAccountNo);
 
         //Initialise  TextField KeyPressed
-        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSupplier, tfPayeeName, tfBankNameCheck, tfBankAccountCheck, tfPurchasedAmountDetail, tfTaxCodeDetail);
+        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSupplier, tfPayeeName, tfBankNameCheck, tfBankAccountCheck, tfPurchasedAmountDetail, tfTaxCodeDetail, tfParticularsDetail);
         loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtFieldDV_KeyPressed(event)));
     }
 
@@ -1228,6 +1228,15 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 
                                 tfPayeeName.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? poDisbursementController.Master().Payee().getPayeeName() : "");
                                 break;
+                            case "tfParticularsDetail":
+                                poJSON = poDisbursementController.SearchParticular(lsValue, pnDetailDV, false);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                    return;
+                                }
+                                tfParticularsDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getDescription() != null ? poDisbursementController.Detail(pnDetailDV).Particular().getDescription() : "");
+                                moveNextDV();
+                                break;
                             case "tfAuthorizedPerson":
                                 break;
                             case "tfTaxCodeDetail":
@@ -1355,30 +1364,23 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 //        loadRecordDetailDV();
 //    }
     private void initWhereFieldSOAAndCacheFocus(boolean isNextRow) {
-        double lnPurchaseAmount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
         apDVDetail.requestFocus();
-        double lnNewvalue = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
-        if (lnPurchaseAmount != lnNewvalue && (lnPurchaseAmount > 0.0000
-                && poDisbursementController.Detail(pnDetailDV).getSourceNo() != null
-                && !"".equals(poDisbursementController.Detail(pnDetailDV).getSourceNo()))) {
+        double lnPurchaseAmount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
+        String lsSourceNo = poDisbursementController.Detail(pnDetailDV).getSourceNo();
+        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTAxCode();
+        String lsParticular = poDisbursementController.Detail(pnDetailDV).getParticular();
+        if ((lsSourceNo != null && !lsSourceNo.isEmpty()) && lnPurchaseAmount > 0.0000) {
             tfParticularsDetail.requestFocus();
-        } else if (poDisbursementController.Detail(pnDetailDV).getSourceNo() != null
-                && !"".equals(poDisbursementController.Detail(pnDetailDV).getSourceNo())
-                && lnPurchaseAmount != lnNewvalue && (lnPurchaseAmount > 0.0000)
-                && poDisbursementController.Detail(pnDetailDV).getTAxCode() != null) {
+        } else if ((lsSourceNo != null && lsSourceNo.isEmpty()) && (lsTaxCode != null && lsTaxCode.isEmpty()) && lnPurchaseAmount > 0.0000) {
             tfPurchasedAmountDetail.requestFocus();
         } else {
-            if (isNextRow) {
-                pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
-            } else {
-                pnDetailDV = JFXUtil.moveToPreviousRow(tblVwDetails);
-            }
+            pnDetailDV = isNextRow ? JFXUtil.moveToNextRow(tblVwDetails) : JFXUtil.moveToPreviousRow(tblVwDetails);
             loadRecordDetailDV();
-            if (poDisbursementController.Detail(pnDetailDV).getSourceNo() != null && !poDisbursementController.Detail(pnDetailDV).getSourceNo().equals("")) {
-                if (poDisbursementController.Detail(pnDetailDV).getTAxCode() != null && !poDisbursementController.Detail(pnDetailDV).getTAxCode().isEmpty()) {
-                    if (poDisbursementController.Detail(pnDetailDV).getParticular() != null && !poDisbursementController.Detail(pnDetailDV).getParticular().isEmpty()) {
+            if (lsSourceNo != null && !lsSourceNo.isEmpty()) {
+                if (lsTaxCode != null && !lsTaxCode.isEmpty()) {
+                    if (lsParticular != null && !lsParticular.isEmpty()) {
                         tfPurchasedAmountDetail.requestFocus();
-                    } else if (poDisbursementController.Detail(pnDetailDV).getParticular() != null && !poDisbursementController.Detail(pnDetailDV).getParticular().isEmpty()) {
+                    } else if (lsParticular != null && !lsParticular.isEmpty()) {
                         tfTaxCodeDetail.requestFocus();
                     }
                 } else {
@@ -1400,7 +1402,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         if (sourceNo != null && !sourceNo.isEmpty()) {
             if (taxCode != null && amount > 0.0000) {
                 // Case 1: All complete, skip
-                return;
             } else if (taxCode == null && amount > 0.0000) {
                 // Case 2: Focus tax code
                 tfTaxCodeDetail.requestFocus();
@@ -1864,6 +1865,26 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     tfSupplier.setText("");
                     psSupplierId = "";
                     loadTableMain();
+                }
+            }
+        }
+        );
+        tfTaxCodeDetail.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.Detail(pnDetailDV).setTAxCode("");
+                    poDisbursementController.Detail(pnDetailDV).setTaxRates(0.00);
+                    poDisbursementController.Detail(pnDetailDV).setTaxAmount(0.0000);
+                    tfTaxCodeDetail.setText("");
+                    tfTaxRateDetail.setText("0.00");
+                    tfTaxAmountDetail.setText("0.0000");
+                    Platform.runLater(() -> {
+                        PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                        delay.setOnFinished(event -> {
+                            loadTableDetailDV();
+                        });
+                        delay.play();
+                    });
                 }
             }
         }
