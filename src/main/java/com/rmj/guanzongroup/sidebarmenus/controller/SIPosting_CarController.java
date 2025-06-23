@@ -5,9 +5,11 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.SIPosting_Controller.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelJournalEntry_Detail;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.io.IOException;
@@ -70,7 +72,6 @@ import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.animation.PauseTransition;
@@ -82,6 +83,7 @@ import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.constant.DocumentType;
 import javafx.util.Pair;
+import javax.script.ScriptException;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.constant.UserRight;
 
@@ -110,7 +112,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
-    private ObservableList<ModelDeliveryAcceptance_Detail> JEdetails_data = FXCollections.observableArrayList();
+    private ObservableList<ModelJournalEntry_Detail> JEdetails_data = FXCollections.observableArrayList();
     private final ObservableList<ModelDeliveryAcceptance_Attachment> attachment_data = FXCollections.observableArrayList();
     ObservableList<String> documentType = ModelDeliveryAcceptance_Attachment.documentType;
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
@@ -132,8 +134,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     JFXUtil.StageManager stageAttachment = new JFXUtil.StageManager();
     JFXUtil.StageManager stageSerial = new JFXUtil.StageManager();
 
-    JFXUtil.MonthYearPicker.Picker month_year_picker;
-
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apJEMaster, apJEDetail, apAttachments;
     @FXML
@@ -141,15 +141,11 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     @FXML
     private Label lblSource, lblStatus, lblJEStatus;
     @FXML
-    private Button btnUpdate, btnSearch, btnSave, btnCancel, btnPost, btnHistory, btnSerials, btnRetrieve, btnClose, btnArrowLeft, btnArrowRight;
+    private Button btnUpdate, btnSearch, btnSerials, btnSave, btnCancel, btnPost, btnHistory, btnRetrieve, btnClose, btnArrowLeft, btnArrowRight;
     @FXML
-    private TextField tfSearchSupplier, tfSearchReferenceNo, tfSearchReceiveBranch, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo,
-            tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfNetTotal, tfTaxAmount, tfVatRate,
-            tfTransactionTotal, tfOrderNo, tfBrand, tfDescription, tfOrderQuantity, tfReceiveQuantity, tfCost, tfDiscRateDetail,
-            tfAddlDiscAmtDetail, tfSRPAmount, tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfReportMonthYear, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt,
-            tfTotalDebitAmt, tfAttachmentNo;
+    private TextField tfSearchSupplier, tfSearchReceiveBranch, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo, tfSINo, tfTerm, tfTransactionTotal, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatRate, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfTaxAmount, tfNetTotal, tfOrderNo, tfBrand, tfDescription, tfOrderQuantity, tfReceiveQuantity, tfSRPAmount, tfDiscRateDetail, tfAddlDiscAmtDetail, tfCost, tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt, tfTotalDebitAmt, tfAttachmentNo;
     @FXML
-    private DatePicker dpTransactionDate, dpReferenceDate, dpJETransactionDate;
+    private DatePicker dpTransactionDate, dpReferenceDate, dpReportMonthYear, dpJETransactionDate;
     @FXML
     private CheckBox cbVatInclusive, cbVatable;
     @FXML
@@ -161,9 +157,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     @FXML
     private TableView tblViewTransDetailList, tblViewMainList, tblViewJEDetails, tblAttachments;
     @FXML
-    private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBrandDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail, tblReceiveQuantityDetail,
-            tblTotalDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo, tblJERowNoDetail, tblJEAcctCodeDetail, tblJEAcctDescriptionDetail,
-            tblJECreditAmtDetail, tblJEDebitAmtDetail, tblRowNoAttachment, tblFileNameAttachment;
+    private TableColumn tblRowNoDetail, tblOrderNoDetail, tblBrandDetail, tblDescriptionDetail, tblCostDetail, tblOrderQuantityDetail, tblReceiveQuantityDetail, tblTotalDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo, tblJERowNoDetail, tblReportMonthYearDetail, tblJEAcctCodeDetail, tblJEAcctDescriptionDetail, tblJECreditAmtDetail, tblJEDebitAmtDetail, tblRowNoAttachment, tblFileNameAttachment;
     @FXML
     private ComboBox cmbAttachmentType;
     @FXML
@@ -249,7 +243,23 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         tabJE.setOnSelectionChanged(event -> {
             if (tabJE.isSelected()) {
                 if (pnEditMode == EditMode.READY) {
-                    lbSelectTabJE = true;
+                    try {
+                        lbSelectTabJE = true;
+                        JSONObject pnJSON = new JSONObject();
+                        pnJSON = poPurchaseReceivingController.populateJournal();
+                        if (JFXUtil.isJSONSuccess(pnJSON)) {
+                            loadTableJEDetail();
+                        } else {
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (GuanzonException ex) {
+                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (CloneNotSupportedException ex) {
+                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ScriptException ex) {
+                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });
@@ -342,7 +352,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 
     @FXML
     private void cmdCheckBox_Click(ActionEvent event) {
@@ -691,6 +700,12 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     loadRecordMaster();
                     break;
                 case "taJERemarks":
+                    poJSON = poPurchaseReceivingController.Journal().Master().setRemarks(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        break;
+                    }
                     loadRecordJEMaster();
                     break;
             }
@@ -744,60 +759,40 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
                 case "tfJEAcctCode":
                     if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
+                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setAccountCode(lsValue);
                     }
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
                     break;
                 case "tfJEAcctDescription":
                     if (lsValue.isEmpty()) {
-                        lsValue = "0.00";
+//                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).Account_Chart().setDescription(lsValue);
                     }
-//                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setDiscount((Double.valueOf(lsValue.replace(",", ""))));
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        System.err.println((String) poJSON.get("message"));
-//                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-//                    }
-                    break;
-                case "tfReportMonthYear":
-                    String value = tfReportMonthYear.getText().trim();
-                    boolean lbproceed = false;
-                    if (value.matches("\\d{1,2}/\\d{4}")) {
-                        try {
-                            int month = Integer.parseInt(value.split("/")[0]);
-                            int year = Integer.parseInt(value.split("/")[1]);
-                            if (month >= 1 && month <= 12) {
-                                month_year_picker.selectedMonth = month;
-                                month_year_picker.selectedYear = year;
-
-                                tfReportMonthYear.setText(String.format("%02d/%d", month, year));
-                                month_year_picker.refreshMonthSelection();
-                                if (month_year_picker.onDateSelected != null) {
-                                    month_year_picker.onDateSelected.accept(YearMonth.of(year, month));
-                                }
-                            } else {
-                                lbproceed = true;
-                            }
-                        } catch (NumberFormatException ignored) {
-                            lbproceed = true;
-                        }
-                    } else {
-                        lbproceed = true;
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
-                    if (lbproceed) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid input");
-                    }
-                    month_year_picker.popup.hide();
                     break;
                 case "tfCreditAmt":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.0000";
+                    }
+                    poJSON = poPurchaseReceivingController.Journal().Detail(pnDetail).setCreditAmount((Double.valueOf(lsValue.replace(",", ""))));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    }
                     break;
                 case "tfDebitAmt":
+                    if (lsValue.isEmpty()) {
+                        lsValue = "0.0000";
+                    }
+                    poJSON = poPurchaseReceivingController.Journal().Detail(pnDetail).setDebitAmount((Double.valueOf(lsValue.replace(",", ""))));
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    }
                     break;
             }
-            if (JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfJEAcctCode", "tfJEAcctDescription", "tfReportMonthYear", "tfReportMonthYear",
+            if (JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfJEAcctCode", "tfJEAcctDescription",
                     "tfCreditAmt", "tfDebitAmt")) {
                 Platform.runLater(() -> {
                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
@@ -865,6 +860,21 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         }
     }
 
+    public void moveNextJE() {
+//        double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
+//        apJEDetail.requestFocus();
+//        double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
+//        if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+//                && poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode() != null
+//                && !"".equals(poPurchaseReceivingController.Journal().Detail(pnDetail).getAccountCode()))) {
+//            tfCreditAmt.requestFocus();
+//        } else {
+//            pnJEDetail = JFXUtil.moveToPreviousRow(tblViewJEDetails);
+//            loadRecordJEDetail();
+//            tfCreditAmt.requestFocus();
+//        }
+    }
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -901,6 +911,23 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                                 event.consume();
                             }
                             break;
+                        case "tfJEAcctCode":
+                        case "tfCreditAmt":
+                        case "tfDebitAmt":
+//                            double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
+//                            apJEDetail.requestFocus();
+//                            double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
+//                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+//                                    && poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode() != null
+//                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(pnDetail).getAccountCode()))) {
+//                                tfCreditAmt.requestFocus();
+//                            } else {
+//                                pnJEDetail = JFXUtil.moveToPreviousRow(currentTable);
+//                                loadRecordJEDetail();
+//                                tfCreditAmt.requestFocus();
+//                                event.consume();
+//                            }
+                            break;
                     }
                     break;
                 case DOWN:
@@ -909,6 +936,12 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         case "tfDiscRateDetail":
                         case "tfAddlDiscAmtDetail":
                             moveNext();
+                            event.consume();
+                            break;
+                        case "tfJEAcctCode":
+                        case "tfCreditAmt":
+                        case "tfDebitAmt":
+                            moveNextJE();
                             event.consume();
                             break;
                         default:
@@ -953,6 +986,24 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                                 break;
                             }
                             loadRecordMaster();
+                            break;
+                        case "tfJEAcctCode":
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(lnRow, lsValue, true, null, null);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfTerm.setText("");
+                                break;
+                            }
+                            loadTableJEDetail();
+                            break;
+                        case "tfJEAcctDescription":
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(lnRow, lsValue, false, psIndustryId, "");
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfTerm.setText("");
+                                break;
+                            }
+                            loadTableJEDetail();
                             break;
                     }
                     break;
@@ -1007,32 +1058,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                            if (selectedDate.isAfter(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
-                                pbSuccess = false;
-                            }
-                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
-                                    || !lsServerDate.equals(lsSelectedDate))) {
-                                pbSuccess = false;
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
-                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
-                                        poJSON = ShowDialogFX.getUserApproval(oApp);
-                                        if (!"success".equals((String) poJSON.get("result"))) {
-                                            pbSuccess = false;
-                                        } else {
-                                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                                        }
-                                    }
-                                } else {
-                                    pbSuccess = false;
-                                }
-                            }
-
-                        }
                         break;
                     case "dpReferenceDate":
                         if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
@@ -1070,9 +1095,35 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                             pbSuccess = true; //Set to original value
                         }
                         break;
-                    case "dpExpiryDate":
-                        break;
                     case "dpJETransactionDate":
+                        break;
+                    case "dpReportMonthYear":
+                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+                            if (selectedDate.isAfter(currentDate)) {
+                                JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
+                                pbSuccess = false;
+                            }
+                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                                    || !lsServerDate.equals(lsSelectedDate))) {
+                                pbSuccess = false;
+                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                        + "If YES, please seek approval to proceed with the new selected date.\n"
+                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                        poJSON = ShowDialogFX.getUserApproval(oApp);
+                                        if (!"success".equals((String) poJSON.get("result"))) {
+                                            pbSuccess = false;
+                                        } else {
+                                            poPurchaseReceivingController.Journal().Detail(pnJEDetail).setForMonthOf((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                        }
+                                    }
+                                } else {
+                                    pbSuccess = false;
+                                }
+                            }
+
+                        }
                         break;
                     default:
                         break;
@@ -1085,7 +1136,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     }
                 }
                 pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
-                if (JFXUtil.isObjectEqualTo(datePicker.getId(), "dpJETransactionDate")) {
+                if (JFXUtil.isObjectEqualTo(datePicker.getId(), "dpJETransactionDate", "dpReportMonthYear")) {
                     loadRecordJEMaster();
                 } else {
                     loadRecordMaster();
@@ -1236,12 +1287,18 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     }
 
     public void loadRecordJEDetail() {
-//        tfJEAcctCode.setText("");
-//        tfJEAcctDescription.setText("");
-        //tfReportMonthYear.setText(""); //
-        month_year_picker.setYearMonth(month_year_picker.getYearMonth());
-//        tfCreditAmt.setText("");
-//        tfDebitAmt.setText("");
+        try {
+            tfJEAcctCode.setText(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode());
+            tfJEAcctDescription.setText(poPurchaseReceivingController.Journal().Detail(pnJEDetail).Account_Chart().getDescription());
+            String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getForMonthOf());
+            dpReportMonthYear.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd"));
+            tfCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount(), true));
+            tfDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount(), true));
+        } catch (SQLException ex) {
+            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void loadRecordDetail() {
@@ -1257,9 +1314,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
             Platform.runLater(() -> {
                 double lnValue = 0.00;
-                if (poPurchaseReceivingController.Detail(pnDetail).getDiscountRate() != null) {
-                    lnValue = poPurchaseReceivingController.Detail(pnDetail).getDiscountRate().doubleValue();
-                }
+                lnValue = poPurchaseReceivingController.Detail(pnDetail).getDiscountRate() != null ? poPurchaseReceivingController.Detail(pnDetail).getDiscountRate().doubleValue() : lnValue;
                 tfDiscRateDetail.setText(String.format("%.2f", Double.isNaN(lnValue) ? 0.00 : lnValue));
             });
             double ldblDiscountRate = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue()
@@ -1283,19 +1338,40 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     }
 
     public void loadRecordJEMaster() {
-        lblJEStatus.setText("");
-        tfJETransactionNo.setText("");
-        dpJETransactionDate.setValue(null);
-        tfTotalCreditAmt.setText("");
-        tfTotalDebitAmt.setText("");
-        lblJEStatus.setText("");
-        taJERemarks.setText("");
+        Platform.runLater(() -> {
+            String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Journal().Master().getTransactionStatus();
+            Map<String, String> statusMap = new HashMap<>();
+            statusMap.put(PurchaseOrderReceivingStatus.POSTED, "POSTED");
+            statusMap.put(PurchaseOrderReceivingStatus.PAID, "PAID");
+            statusMap.put(PurchaseOrderReceivingStatus.CONFIRMED, "CONFIRMED");
+            statusMap.put(PurchaseOrderReceivingStatus.OPEN, "OPEN");
+            statusMap.put(PurchaseOrderReceivingStatus.RETURNED, "RETURNED");
+            statusMap.put(PurchaseOrderReceivingStatus.VOID, "VOIDED");
+            statusMap.put(PurchaseOrderReceivingStatus.CANCELLED, "CANCELLED");
 
+            String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
+            lblJEStatus.setText(lsStat);
+        });
+
+        tfJETransactionNo.setText(poPurchaseReceivingController.Journal().Master().getTransactionNo());
+
+        String lsJETransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
+        dpJETransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsJETransactionDate, "yyyy-MM-dd"));
+
+        taJERemarks.setText(poPurchaseReceivingController.Journal().Master().getRemarks());
+        double lnTotalDebit = 0;
+        double lnTotalCredit = 0;
+        for (int lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
+            lnTotalCredit += poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount();
+            lnTotalDebit += poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount();
+        }
+
+        tfTotalCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalCredit, true));
+        tfTotalDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalDebit, true));
     }
 
     public void loadRecordMaster() {
         try {
-
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
@@ -1457,7 +1533,105 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     }
 
     public void loadTableJEDetail() {
-        loadRecordJEDetail();
+//        pbEntered = false;
+        // Setting data to table detail
+
+        JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
+        tblViewJEDetails.setPlaceholder(loading.loadingPane);
+        loading.progressIndicator.setVisible(true);
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+//                Thread.sleep(1000);
+                // contains try catch, for loop of loading data to observable list until loadTab()
+                Platform.runLater(() -> {
+                    JEdetails_data.clear();
+                    int lnCtr;
+                    try {
+
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            lnCtr = poPurchaseReceivingController.Journal().getDetailCount() - 1;
+                            while (lnCtr >= 0) {
+                                if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() == null || poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode().equals("")) {
+                                    poPurchaseReceivingController.Journal().Detail().remove(lnCtr);
+                                }
+                                lnCtr--;
+                            }
+                            if ((poPurchaseReceivingController.Journal().getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode() != null 
+                                        && !poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode().equals("")) {
+                                    poPurchaseReceivingController.Journal().AddDetail();
+                                }
+                            }
+                            if ((poPurchaseReceivingController.Journal().getDetailCount() - 1) < 0) {
+                                poPurchaseReceivingController.Journal().AddDetail();
+                            }
+                        }
+
+                        double lnTotal = 0.00;
+                        double lnDiscountAmt = 0.00;
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
+
+                            String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getForMonthOf());
+                            if (poPurchaseReceivingController.Detail(lnCtr).getStockId() != null && !"".equals(poPurchaseReceivingController.Detail(lnCtr).getStockId())) {
+                                JEdetails_data.add(
+                                        new ModelJournalEntry_Detail(String.valueOf(lnCtr + 1),
+                                                String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
+                                                String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode()),
+                                                String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription()),
+                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount(), true)),
+                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount(), true))) //identify total
+                                );
+                            }
+                        }
+                        if (pnJEDetail < 0 || pnJEDetail
+                                >= JEdetails_data.size()) {
+                            if (!JEdetails_data.isEmpty()) {
+                                /* FOCUS ON FIRST ROW */
+                                JFXUtil.selectAndFocusRow(tblViewJEDetails, 0);
+                                pnJEDetail = tblViewJEDetails.getSelectionModel().getSelectedIndex();
+                                loadRecordJEDetail();
+                            }
+                        } else {
+                            /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                            JFXUtil.selectAndFocusRow(tblViewJEDetails, pnDetail);
+                            loadRecordJEDetail();
+                        }
+                        loadRecordJEMaster();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                    } catch (GuanzonException ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                    } catch (CloneNotSupportedException ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                if (JEdetails_data == null || JEdetails_data.isEmpty()) {
+                    tblViewJEDetails.setPlaceholder(loading.placeholderLabel);
+                } else {
+                    tblViewJEDetails.toFront();
+                }
+                loading.progressIndicator.setVisible(false);
+
+            }
+
+            @Override
+            protected void failed() {
+                if (JEdetails_data == null || JEdetails_data.isEmpty()) {
+                    tblViewJEDetails.setPlaceholder(loading.placeholderLabel);
+                }
+                loading.progressIndicator.setVisible(false);
+            }
+
+        };
+        new Thread(task).start(); // Run task in background
     }
 
     public void loadTableDetail() {
@@ -1628,9 +1802,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpJETransactionDate);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpJETransactionDate);
-        JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate, dpReferenceDate, dpJETransactionDate);
+        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
     }
 
     public void initTextFields() {
@@ -1639,15 +1812,16 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount, tfTaxAmount, tfVatRate, tfFreightAmt,
                 tfVatSales, tfZeroVatSales, tfVatAmount, tfVatExemptSales, tfTotalCreditAmt, tfTotalDebitAmt, tfTotalCreditAmt, tfTotalDebitAmt);
         JFXUtil.setFocusListener(txtDetail_Focus, tfCost, tfDiscRateDetail, tfAddlDiscAmtDetail, tfSRPAmount,
-                tfJEAcctCode, tfJEAcctDescription, tfReportMonthYear, tfCreditAmt, tfDebitAmt);
+                tfJEAcctCode, tfJEAcctDescription, tfCreditAmt, tfDebitAmt);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apJEDetail, apBrowse);
 
-        JFXUtil.setCommaFormatter(tfDiscountAmount, tfFreightAmt, tfVatSales, tfTaxAmount,
-                tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfCost, tfAddlDiscAmtDetail, tfCreditAmt, tfDebitAmt);
+        JFXUtil.setCommaFormatter(tfDiscountAmount, tfFreightAmt, tfVatSales, tfTaxAmount, tfVatAmount,
+                tfZeroVatSales, tfVatExemptSales, tfCost, tfAddlDiscAmtDetail, tfCreditAmt,
+                tfDebitAmt, tfAddlDiscAmtDetail, tfSRPAmount);
+
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfSINo);
-        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscRateDetail, tfVatRate, tfTaxAmount, tfFreightAmt,
-                tfAddlDiscAmtDetail, tfSRPAmount);
+        CustomCommonUtil.inputDecimalOnly(tfDiscountRate, tfDiscRateDetail, tfVatRate);
 
         // Combobox
         JFXUtil.initComboBoxCellDesignColor(cmbAttachmentType, "#FF8201");
@@ -1662,16 +1836,14 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 }
             }
         });
-
-        month_year_picker = JFXUtil.MonthYearPicker.setupMonthYearPicker(tfReportMonthYear, ym -> {
-        });
         JFXUtil.setCheckboxHoverCursor(apMaster, apDetail);
     }
 
     public void initTableOnClick() {
         tblViewJEDetails.setOnMouseClicked(event -> {
-            pnJEDetail = tblViewJEDetails.getSelectionModel().getSelectedIndex();
-            if (pnJEDetail >= 0) {
+            ModelJournalEntry_Detail selected = (ModelJournalEntry_Detail) tblViewJEDetails.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                pnJEDetail = Integer.parseInt(selected.getIndex01()) - 1;
                 loadRecordJEDetail();
             }
         });
@@ -1814,7 +1986,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     }
 
     public void initJEDetailsGrid() {
-        JFXUtil.setColumnCenter(tblJERowNoDetail);
+        JFXUtil.setColumnCenter(tblJERowNoDetail, tblReportMonthYearDetail);
         JFXUtil.setColumnLeft(tblJEAcctCodeDetail, tblJEAcctDescriptionDetail);
         JFXUtil.setColumnRight(tblJECreditAmtDetail, tblJEDebitAmtDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewJEDetails);

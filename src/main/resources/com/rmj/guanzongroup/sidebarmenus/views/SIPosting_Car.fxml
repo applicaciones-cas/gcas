@@ -622,9 +622,9 @@
                                                                               <Label text="Report Month/Year" GridPane.columnIndex="4" />
                                                                         <TextField fx:id="tfJEAcctCode" promptText="Press F3: Search" GridPane.columnIndex="2" />
                                                                           <TextField fx:id="tfJEAcctDescription" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="1" />
-                                                                              <TextField fx:id="tfReportMonthYear" GridPane.columnIndex="6" />
                                                                               <TextField fx:id="tfCreditAmt" alignment="CENTER_RIGHT" promptText="0.0000" GridPane.columnIndex="10" />
                                                       <TextField fx:id="tfDebitAmt" alignment="CENTER_RIGHT" prefWidth="171.0" promptText="0.0000" GridPane.columnIndex="10" GridPane.rowIndex="1" />
+                                                                              <DatePicker fx:id="dpReportMonthYear" GridPane.columnIndex="6" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
@@ -647,7 +647,7 @@
                                                         <TableView fx:id="tblViewJEDetails" prefHeight="200.0" prefWidth="200.0">
                                                             <columns>
                                                                 <TableColumn fx:id="tblJERowNoDetail" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
-                                                                        <TableColumn fx:id="tblJEReportMonthDetail" editable="false" maxWidth="131.0" minWidth="100.0" prefWidth="131.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Report Month" />
+                                                                        <TableColumn fx:id="tblReportMonthYearDetail" editable="false" maxWidth="131.0" minWidth="100.0" prefWidth="131.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Report Month" />
                                                                 <TableColumn fx:id="tblJEAcctCodeDetail" editable="false" maxWidth="131.0" minWidth="100.0" prefWidth="131.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Account Code" />
                                                                 <TableColumn fx:id="tblJEAcctDescriptionDetail" editable="false" maxWidth="365.0" minWidth="-1.0" prefWidth="365.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Description" />
                                                                 <TableColumn fx:id="tblJECreditAmtDetail" editable="false" maxWidth="131.0" minWidth="131.0" prefWidth="131.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Credit Amount" />
