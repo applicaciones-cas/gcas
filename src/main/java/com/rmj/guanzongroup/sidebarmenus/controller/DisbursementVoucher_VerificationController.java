@@ -290,6 +290,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
         initTableMain();
         initTableDetailJournal();
         initTableOnClick();
+        initTextFieldsProperty();
         clearFields();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
@@ -927,13 +928,18 @@ public class DisbursementVoucher_VerificationController implements Initializable
             if (!detailsdv_data.isEmpty()) {
                 if (event.getClickCount() == 1) {
                     pnDetailDV = tblVwDetails.getSelectionModel().getSelectedIndex();
-                    loadRecordDetailDV();
-                    if (poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue() != 0.0000) {
-                        tfTaxCodeDetail.requestFocus();
-                    } else {
-                        tfPurchasedAmountDetail.requestFocus();
+                    switch (poDisbursementController.Detail(pnDetailDV).getSourceCode()) {
+                        case DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE:
+                            initDetailClickFocus(true);
+                            break;
+                        case DisbursementStatic.SourceCode.PAYMENT_REQUEST:
+                            initDetailClickFocus(false);
+                            break;
+                        case DisbursementStatic.SourceCode.CASH_PAYABLE:
+                            initDetailClickFocus(true);
+                            break;
                     }
-                    initFields(pnEditMode);
+
                 }
             }
         });
@@ -1001,13 +1007,13 @@ public class DisbursementVoucher_VerificationController implements Initializable
     private void initTextFieldsDV() {
         //Initialise  TextField Focus
         JFXUtil.setFocusListener(txtMasterDV_Focus, tfSearchSupplier, tfSearchTransaction);
-        JFXUtil.setFocusListener(txtDetailDV_Focus, tfPurchasedAmountDetail, tfTaxCodeDetail);
+        JFXUtil.setFocusListener(txtDetailDV_Focus, tfPurchasedAmountDetail);
         JFXUtil.setFocusListener(txtMasterCheck_Focus, tfPayeeName, tfBankNameCheck, tfBankAccountCheck);
         JFXUtil.setFocusListener(txtMasterBankTransfer_Focus, tfBankNameBTransfer, tfBankAccountBTransfer, tfSupplierBank, tfSupplierAccountNoBTransfer);
         JFXUtil.setFocusListener(txtMasterOnlinePayment_Focus, tfBankNameOnlinePayment, tfBankAccountOnlinePayment, tfSupplierServiceName, tfSupplierAccountNo);
 
         //Initialise  TextField KeyPressed
-        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchTransaction, tfSearchSupplier, tfPayeeName, tfBankNameCheck, tfBankAccountCheck, tfPurchasedAmountDetail, tfTaxCodeDetail);
+        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchTransaction, tfSearchSupplier, tfPayeeName, tfBankNameCheck, tfBankAccountCheck, tfPurchasedAmountDetail, tfTaxCodeDetail, tfParticularsDetail);
         loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtFieldDV_KeyPressed(event)));
     }
 
@@ -1037,23 +1043,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                         pbEnteredDV = false;
                     }
                     break;
-                case "tfTaxCodeDetail":
-                    if (lsValue.equals("")) {
-                        poDisbursementController.Detail(pnDetailDV).setTAxCode("");
-                        poDisbursementController.Detail(pnDetailDV).setTaxRates(0.0000);
-                        poDisbursementController.Detail(pnDetailDV).setTaxAmount(0.0000);
-                        tfTaxRateDetail.setText("0.00");
-                        tfTaxAmountDetail.setText("0.0000");
-                    }
-                    break;
             }
-            Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                delay.setOnFinished(event -> {
-                    loadTableDetailDV();
-                });
-                delay.play();
-            });
         }
     };
     final ChangeListener<? super Boolean> txtMasterDV_Focus = (o, ov, nv) -> {
@@ -1190,6 +1180,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
                         switch (lsID) {
                             case "tfPurchasedAmountDetail":
                             case "tfTaxCodeDetail":
+                            case "tfParticularsDetail":
+                                tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount(), true));
                                 moveNextDV();
                                 event.consume();
                                 break;
@@ -1233,6 +1225,16 @@ public class DisbursementVoucher_VerificationController implements Initializable
 
                                 tfPayeeName.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? poDisbursementController.Master().Payee().getPayeeName() : "");
                                 break;
+                            case "tfParticularsDetail":
+                                poJSON = poDisbursementController.SearchParticular(lsValue, pnDetailDV, false);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                    return;
+                                }
+                                tfParticularsDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getDescription() != null ? poDisbursementController.Detail(pnDetailDV).Particular().getDescription() : "");
+                                moveNextDV();
+                                loadTableDetailDV();
+                                break;
                             case "tfAuthorizedPerson":
                                 break;
                             case "tfTaxCodeDetail":
@@ -1241,8 +1243,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfTaxCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).TaxCode().getTaxCode() != null ? poDisbursementController.Detail(pnDetailDV).TaxCode().getTaxCode() : "");
                                 moveNextDV();
+                                loadTableDetailDV();
                                 break;
                         }
                         event.consume();
@@ -1277,55 +1279,94 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void movePreviousDV() {
-        double lnPurchaseAmount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
-        apDVDetail.requestFocus();
-        double lnNewvalue = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
-        if (lnPurchaseAmount != lnNewvalue && (lnPurchaseAmount > 0.0000
-                && poDisbursementController.Detail(pnDetailDV).getSourceNo() != null
-                && !"".equals(poDisbursementController.Detail(pnDetailDV).getSourceNo()))) {
-            tfPurchasedAmountDetail.requestFocus();
-        } else {
-            pnDetailDV = JFXUtil.moveToPreviousRow(tblVwDetails);
-            loadRecordDetailDV();
-            if (poDisbursementController.Detail(pnDetailDV).getSourceNo() != null && !poDisbursementController.Detail(pnDetailDV).getSourceNo().equals("")) {
-                if (poDisbursementController.Detail(pnDetailDV).getTAxCode() != null && !poDisbursementController.Detail(pnDetailDV).getTAxCode().isEmpty()) {
-                    tfPurchasedAmountDetail.requestFocus();
-                } else {
-                    if (chbkVatClassification.isSelected()) {
-                        tfTaxCodeDetail.requestFocus();
-                    }
-                }
-            } else {
-                if (chbkVatClassification.isSelected()) {
-                    tfTaxCodeDetail.requestFocus();
-                }
+        if (pnDetailDV >= 0) {
+            switch (poDisbursementController.Detail(pnDetailDV - 1).getSourceCode()) {
+                case DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE:
+                    initDetailTblVwKeyFocus(true, false);
+                    break;
+                case DisbursementStatic.SourceCode.PAYMENT_REQUEST:
+                    initDetailTblVwKeyFocus(false, false);
+                    break;
+                case DisbursementStatic.SourceCode.CASH_PAYABLE:
+                    initDetailTblVwKeyFocus(true, false);
+                    break;
             }
         }
     }
 
     private void moveNextDV() {
-        double lnPurchaseAmount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
-        apDVDetail.requestFocus();
-        double lnNewvalue = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
-        if (lnPurchaseAmount != lnNewvalue && (lnPurchaseAmount > 0.0000
-                && poDisbursementController.Detail(pnDetailDV).getSourceNo() != null
-                && !"".equals(poDisbursementController.Detail(pnDetailDV).getSourceNo()))) {
-            tfPurchasedAmountDetail.requestFocus();
-        } else {
-            pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
-            loadRecordDetailDV();
-            if (poDisbursementController.Detail(pnDetailDV).getSourceNo() != null && !poDisbursementController.Detail(pnDetailDV).getSourceNo().equals("")) {
-                if (poDisbursementController.Detail(pnDetailDV).getTAxCode() != null && !poDisbursementController.Detail(pnDetailDV).getTAxCode().isEmpty()) {
-                    tfPurchasedAmountDetail.requestFocus();
-                } else {
-                    if (chbkVatClassification.isSelected()) {
-                        tfTaxCodeDetail.requestFocus();
-                    }
-                }
+        if (pnDetailDV >= 0) {
+            switch (poDisbursementController.Detail(pnDetailDV + 1).getSourceCode()) {
+                case DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE:
+                    initDetailTblVwKeyFocus(true, true);
+                    break;
+                case DisbursementStatic.SourceCode.PAYMENT_REQUEST:
+                    initDetailTblVwKeyFocus(false, true);
+                    break;
+                case DisbursementStatic.SourceCode.CASH_PAYABLE:
+                    initDetailTblVwKeyFocus(true, true);
+                    break;
+            }
+        }
+    }
+
+    private void initDetailClickFocus(boolean isSOACache) {
+        String lsSourceNo = poDisbursementController.Detail(pnDetailDV).getSourceNo();
+        double amount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
+        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTAxCode();
+        String lsParticular = poDisbursementController.Detail(pnDetailDV).getParticularID();
+
+        loadRecordDetailDV();
+        initFields(pnEditMode);
+        if (lsSourceNo.isEmpty()) {
+            return;
+        }
+        if (isSOACache) {
+            if (!lsTaxCode.isEmpty() && amount > 0.0000) {
+                tfParticularsDetail.requestFocus();
+            } else if (lsTaxCode.isEmpty() && lsParticular.isEmpty()) {
+                tfParticularsDetail.requestFocus();
+            } else if (!lsTaxCode.isEmpty() && amount <= 0.0000 && !lsParticular.isEmpty()) {
+                tfPurchasedAmountDetail.requestFocus();
             } else {
-                if (chbkVatClassification.isSelected()) {
-                    tfTaxCodeDetail.requestFocus();
-                }
+                tfTaxCodeDetail.requestFocus();
+            }
+        } else {
+            if (lsTaxCode.isEmpty() && amount > 0.0000) {
+                tfTaxCodeDetail.requestFocus();
+            } else if (lsTaxCode.isEmpty() && amount <= 0.0000) {
+                tfPurchasedAmountDetail.requestFocus();
+            }
+        }
+    }
+
+    private void initDetailTblVwKeyFocus(boolean isSOACache, boolean isNextRow) {
+        apDVDetail.requestFocus();
+        pnDetailDV = isNextRow ? JFXUtil.moveToNextRow(tblVwDetails) : JFXUtil.moveToPreviousRow(tblVwDetails);
+        loadRecordDetailDV();
+        String lsSourceNo = poDisbursementController.Detail(pnDetailDV).getSourceNo();
+        double amount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
+        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTAxCode();
+        String lsParticular = poDisbursementController.Detail(pnDetailDV).getParticularID();
+        initFields(pnEditMode);
+        if (lsSourceNo.isEmpty()) {
+            return;
+        }
+        if (isSOACache) {
+            if (!lsTaxCode.isEmpty() && amount > 0.0000) {
+                tfParticularsDetail.requestFocus();
+            } else if (lsTaxCode.isEmpty() && lsParticular.isEmpty()) {
+                tfParticularsDetail.requestFocus();
+            } else if (!lsTaxCode.isEmpty() && amount <= 0.0000 && !lsParticular.isEmpty()) {
+                tfPurchasedAmountDetail.requestFocus();
+            } else {
+                tfTaxCodeDetail.requestFocus();
+            }
+        } else {
+            if (lsTaxCode.isEmpty() && amount > 0.0000) {
+                tfTaxCodeDetail.requestFocus();
+            } else if (lsTaxCode.isEmpty() && amount <= 0.0000) {
+                tfPurchasedAmountDetail.requestFocus();
             }
         }
     }
@@ -1599,7 +1640,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     private void initFields(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.UPDATE);
         JFXUtil.setDisabled(!lbShow, apDVMaster1, apDVMaster2, apDVMaster3, apJournalMaster, apJournalDetails);
-        JFXUtil.setDisabled(true, apDVDetail, apMasterDVCheck, apMasterDVOp, apMasterDVBTransfer);
+        JFXUtil.setDisabled(true, apDVDetail, apMasterDVCheck, apMasterDVOp, apMasterDVBTransfer, tfParticularsDetail);
         tabJournal.setDisable(tfDVTransactionNo.getText().isEmpty());
         tabCheck.setDisable(true);
         tabOnlinePayment.setDisable(true);
@@ -1628,20 +1669,19 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 break;
         }
         if (pnDetailDV >= 0) {
-            if (!tfRefNoDetail.getText().isEmpty()) {
-                if (poDisbursementController.Detail(pnDetailDV).getSourceCode().equals("Cche")) {
-                    tfTaxAmountDetail.setDisable(!lbShow);
+            if (tfRefNoDetail.getText() != null) {
+                if (!tfRefNoDetail.getText().isEmpty()) {
+                    JFXUtil.setDisabled(!lbShow, apDVDetail);
+                    switch (poDisbursementController.Detail(pnDetailDV).getSourceCode()) {
+                        case DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE:
+                        case DisbursementStatic.SourceCode.CASH_PAYABLE:
+                            tfParticularsDetail.setDisable(!lbShow);
+                            break;
+                    }
                 }
-                JFXUtil.setDisabled(!lbShow, apDVDetail);
-                chbkVatClassification.setDisable(true);
             }
         }
-//        if (pnDetailDV >= 0) {
-//            if (!tfRefNoDetail.getText().isEmpty()) {
-//                JFXUtil.setDisabled(!lbShow, apDVDetail);
-//                chbkVatClassification.setDisable(true);
-//            }
-//        }
+
     }
 
     private void initButton(int fnEditMode) {
@@ -1660,5 +1700,70 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     break;
             }
         }
+    }
+
+    private void initTextFieldsProperty() {
+        tfTaxCodeDetail.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.Detail(pnDetailDV).setTAxCode("");
+                    poDisbursementController.Detail(pnDetailDV).setTaxRates(0.00);
+                    poDisbursementController.Detail(pnDetailDV).setTaxAmount(0.0000);
+                    tfTaxCodeDetail.setText("");
+                    tfTaxRateDetail.setText("0.00");
+                    tfTaxAmountDetail.setText("0.0000");
+                    loadTableDetailDV();
+                }
+            }
+        }
+        );
+        tfParticularsDetail.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.Detail(pnDetailDV).setParticularID("");
+                    tfParticularsDetail.setText("");
+                    loadTableDetailDV();
+                }
+            }
+        }
+        );
+        tfBankNameCheck.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.CheckPayments().getModel().setBankID("");
+                    poDisbursementController.CheckPayments().getModel().setBankAcountID("");
+                    tfBankNameCheck.setText("");
+                    tfBankAccountCheck.setText("");
+                }
+            }
+        }
+        );
+        tfBankAccountCheck.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.CheckPayments().getModel().setBankAcountID("");
+                    tfBankAccountCheck.setText("");
+                }
+            }
+        }
+        );
+        tfPayeeName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.CheckPayments().getModel().setPayeeID("");
+                    tfPayeeName.setText("");
+                }
+            }
+        }
+        );
+        tfAuthorizedPerson.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.CheckPayments().getModel().setAuthorize("");
+                    tfAuthorizedPerson.setText("");
+                }
+            }
+        }
+        );
     }
 }

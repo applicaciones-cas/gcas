@@ -526,7 +526,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
             try {
                 int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                 pnMain = pnRowMain;
-                String lsTransactionNo = selected.getIndex05();
+                String lsTransactionNo = selected.getIndex04();
                 clearFields();
                 poJSON = poCheckPrintingRequestController.OpenTransaction(lsTransactionNo);
                 if ("error".equals(poJSON.get("result"))) {
@@ -537,6 +537,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                 JFXUtil.highlightByKey(tblVwMain, String.valueOf(pnRowMain + 1), "#A7C7E7", highlightedRowsMain);
                 pnEditMode = poCheckPrintingRequestController.getEditMode();
                 loadTableDetail();
+                loadRecordDetail();
                 initFields(pnEditMode);
                 initButton(pnEditMode);
             } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
