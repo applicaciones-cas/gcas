@@ -391,14 +391,14 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                         plOrderNoFinal.clear();
                         poJSON = poCheckPrintingRequestController.getCheckPrintingRequest(psTransactionNo, psSupplierId);
                         if ("success".equals(poJSON.get("result"))) {
-                            if (poCheckPrintingRequestController.getCheckPaymentCount() > 0) {
-                                for (int lnCntr = 0; lnCntr <= poCheckPrintingRequestController.getCheckPaymentCount() - 1; lnCntr++) {
+                            if (poCheckPrintingRequestController.getPrintRequestMasterCount() > 0) {
+                                for (int lnCntr = 0; lnCntr <= poCheckPrintingRequestController.getPrintRequestMasterCount() - 1; lnCntr++) {
                                     main_data.add(new ModelDisbursementVoucher_Main(
                                             String.valueOf(lnCntr + 1),
-                                            poCheckPrintingRequestController.Master().Banks().getBankName(),
-                                            CustomCommonUtil.formatDateToShortString(poCheckPrintingRequestController.Master().getTransactionDate()),
-                                            poCheckPrintingRequestController.Master().getTransactionNo(),
-                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Master().getTotalAmount(), true)
+                                            poCheckPrintingRequestController.poCheckPrinting(lnCntr).Banks().getBankName(),
+                                            CustomCommonUtil.formatDateToShortString(poCheckPrintingRequestController.poCheckPrinting(lnCntr).getTransactionDate()),
+                                            poCheckPrintingRequestController.poCheckPrinting(lnCntr).getTransactionNo(),
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.poCheckPrinting(lnCntr).getTotalAmount(), true)
                                     ));
                                     if (poCheckPrintingRequestController.Master().getTransactionStatus().equals(DisbursementStatic.VERIFIED)) {
                                         plOrderNoPartial.add(new Pair<>(String.valueOf(lnCntr + 1), "1"));
@@ -410,7 +410,6 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                                 tblVwMain.setPlaceholder(placeholderLabel);
                             }
                             JFXUtil.loadTab(pagination, main_data.size(), ROWS_PER_PAGE, tblVwMain, filteredMain_Data);
-
                         }
                     } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(DisbursementVoucher_VerificationController.class.getName()).log(Level.SEVERE, null, ex);
