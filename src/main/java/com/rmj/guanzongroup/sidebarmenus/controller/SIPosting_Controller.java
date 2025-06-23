@@ -731,7 +731,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.0000";
                     }
-                    poJSON = poPurchaseReceivingController.Journal().Detail(pnDetail).setCreditAmount((Double.valueOf(lsValue.replace(",", ""))));
+                    poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setCreditAmount((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
@@ -740,7 +740,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.0000";
                     }
-                    poJSON = poPurchaseReceivingController.Journal().Detail(pnDetail).setDebitAmount((Double.valueOf(lsValue.replace(",", ""))));
+                    poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setDebitAmount((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
@@ -903,19 +903,19 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                             loadRecordMaster();
                             break;
                         case "tfJEAcctCode":
-                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(lnRow, lsValue, true, null, null);
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, true, null, null);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfTerm.setText("");
+                                tfJEAcctCode.setText("");
                                 break;
                             }
                             loadTableJEDetail();
                             break;
                         case "tfJEAcctDescription":
-                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(lnRow, lsValue, false, null, null);
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, false, null, null);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfTerm.setText("");
+                                tfJEAcctDescription.setText("");
                                 break;
                             }
                             loadTableJEDetail();
@@ -1521,22 +1521,21 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                 poPurchaseReceivingController.Journal().AddDetail();
                             }
                         }
-                        double lnTotal = 0.00;
-                        double lnDiscountAmt = 0.00;
+
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
 
                             String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(lnCtr).getForMonthOf());
-                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode()!= null 
-                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode())) {
-                                JEdetails_data.add(
-                                        new ModelJournalEntry_Detail(String.valueOf(lnCtr + 1),
-                                                String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
-                                                String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode()),
-                                                String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription()),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount(), true)),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount(), true))) //identify total
-                                );
-                            }
+//                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode()!= null 
+//                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode())) {
+                            JEdetails_data.add(
+                                    new ModelJournalEntry_Detail(String.valueOf(lnCtr + 1),
+                                            String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
+                                            String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode()),
+                                            String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount(), true))) //identify total
+                            );
+//                            }
                         }
                         if (pnJEDetail < 0 || pnJEDetail
                                 >= JEdetails_data.size()) {
@@ -1548,7 +1547,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                             }
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                            JFXUtil.selectAndFocusRow(tblViewJEDetails, pnDetail);
+                            JFXUtil.selectAndFocusRow(tblViewJEDetails, pnJEDetail);
                             loadRecordJEDetail();
                         }
                         loadRecordJEMaster();
