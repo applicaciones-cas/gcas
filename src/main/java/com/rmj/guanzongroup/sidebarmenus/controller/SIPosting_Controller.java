@@ -248,25 +248,25 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private void initTabSelection() {
         tabJE.setOnSelectionChanged(event -> {
             if (tabJE.isSelected()) {
-                if (pnEditMode == EditMode.READY) {
-                    try {
-                        lbSelectTabJE = true;
-                        JSONObject pnJSON = new JSONObject();
-                        pnJSON = poPurchaseReceivingController.populateJournal();
-                        if (JFXUtil.isJSONSuccess(pnJSON)) {
-                            loadTableJEDetail();
-                        } else {
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ScriptException ex) {
-                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+//                if (pnEditMode == EditMode.READY) {
+                try {
+                    lbSelectTabJE = true;
+                    JSONObject pnJSON = new JSONObject();
+                    pnJSON = poPurchaseReceivingController.populateJournal();
+                    if (JFXUtil.isJSONSuccess(pnJSON)) {
+                        loadTableJEDetail();
+                    } else {
                     }
+                } catch (SQLException ex) {
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                } catch (GuanzonException ex) {
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                } catch (CloneNotSupportedException ex) {
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                } catch (ScriptException ex) {
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                 }
+//                }
             }
         });
     }
@@ -903,7 +903,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                             loadRecordMaster();
                             break;
                         case "tfJEAcctCode":
-                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(lnRow, lsValue, true, psIndustryId, "");
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(lnRow, lsValue, true, null, null);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfTerm.setText("");
@@ -912,7 +912,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                             loadTableJEDetail();
                             break;
                         case "tfJEAcctDescription":
-                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(lnRow, lsValue, false, psIndustryId, "");
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(lnRow, lsValue, false, null, null);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfTerm.setText("");
@@ -1039,32 +1039,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     case "dpExpiryDate":
                         break;
                     case "dpJETransactionDate":
-                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                            if (selectedDate.isAfter(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
-                                pbSuccess = false;
-                            }
-                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
-                                    || !lsServerDate.equals(lsSelectedDate))) {
-                                pbSuccess = false;
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
-                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
-                                        poJSON = ShowDialogFX.getUserApproval(oApp);
-                                        if (!"success".equals((String) poJSON.get("result"))) {
-                                            pbSuccess = false;
-                                        } else {
-                                            poPurchaseReceivingController.Journal().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                                        }
-                                    }
-                                } else {
-                                    pbSuccess = false;
-                                }
-                            }
-
-                        }
                         break;
                     case "dpReportMonthYear":
                         if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
@@ -1105,7 +1079,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     }
                 }
                 pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
-                if (JFXUtil.isObjectEqualTo(datePicker.getId(), "dpJETransactionDate")) {
+                if (JFXUtil.isObjectEqualTo(datePicker.getId(), "dpJETransactionDate", "dpReportMonthYear")) {
                     loadRecordJEMaster();
                 } else {
                     loadRecordMaster();
@@ -1263,9 +1237,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             tfCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount(), true));
             tfDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount(), true));
         } catch (SQLException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1338,7 +1312,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         double lnTotalCredit = 0;
         for (int lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
             lnTotalDebit += poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount();
-            lnTotalCredit += poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount();
+            lnTotalCredit += poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount();
         }
 
         tfTotalCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalCredit, true));
@@ -1515,7 +1489,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     public void loadTableJEDetail() {
 //        pbEntered = false;
         // Setting data to table detail
-//        JFXUtil.disableAllHighlight(tblViewTransDetailList, highlightedRowsDetail);
 
         JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
         tblViewJEDetails.setPlaceholder(loading.loadingPane);
@@ -1530,23 +1503,31 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     JEdetails_data.clear();
                     int lnCtr;
                     try {
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            lnCtr = poPurchaseReceivingController.Journal().getDetailCount() - 1;
+                            while (lnCtr >= 0) {
+                                if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() == null || poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode().equals("")) {
+                                    poPurchaseReceivingController.Journal().Detail().remove(lnCtr);
+                                }
+                                lnCtr--;
+                            }
+                            if ((poPurchaseReceivingController.Journal().getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode() != null
+                                        && !poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode().equals("")) {
+                                    poPurchaseReceivingController.Journal().AddDetail();
+                                }
+                            }
+                            if ((poPurchaseReceivingController.Journal().getDetailCount() - 1) < 0) {
+                                poPurchaseReceivingController.Journal().AddDetail();
+                            }
+                        }
                         double lnTotal = 0.00;
                         double lnDiscountAmt = 0.00;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
-//                            try {
-//                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
-//                                lnDiscountAmt = poPurchaseReceivingController.Detail(lnCtr).getDiscountAmount().doubleValue()
-//                                        + (lnTotal * (poPurchaseReceivingController.Detail(lnCtr).getDiscountRate().doubleValue() / 100));
-//                            } catch (Exception e) {
-//                            }
 
-//                            if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-//                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
-//                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
-////                                JFXUtil.highlightByKey(tblViewTransDetailList, String.valueOf(lnCtr + 1), "#FAA0A0", highlightedRowsDetail);
-//                            }
-                            String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getForMonthOf());
-                            if (poPurchaseReceivingController.Detail(lnCtr).getStockId() != null && !"".equals(poPurchaseReceivingController.Detail(lnCtr).getStockId())) {
+                            String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(lnCtr).getForMonthOf());
+                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode()!= null 
+                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode())) {
                                 JEdetails_data.add(
                                         new ModelJournalEntry_Detail(String.valueOf(lnCtr + 1),
                                                 String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
@@ -1575,6 +1556,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (GuanzonException ex) {
                         Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                    } catch (CloneNotSupportedException ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                 });
 
@@ -1774,7 +1757,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear);
-//        JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate);
     }
 
     public void initTextFields() {
@@ -1814,7 +1796,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             ModelJournalEntry_Detail selected = (ModelJournalEntry_Detail) tblViewJEDetails.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 pnJEDetail = Integer.parseInt(selected.getIndex01()) - 1;
-                loadRecordDetail();
+                loadRecordJEDetail();
             }
         });
         tblAttachments.setOnMouseClicked(event -> {

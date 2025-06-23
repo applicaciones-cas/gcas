@@ -242,25 +242,25 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     private void initTabSelection() {
         tabJE.setOnSelectionChanged(event -> {
             if (tabJE.isSelected()) {
-                if (pnEditMode == EditMode.READY) {
-                    try {
-                        lbSelectTabJE = true;
-                        JSONObject pnJSON = new JSONObject();
-                        pnJSON = poPurchaseReceivingController.populateJournal();
-                        if (JFXUtil.isJSONSuccess(pnJSON)) {
-                            loadTableJEDetail();
-                        } else {
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ScriptException ex) {
-                        Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+//                if (pnEditMode == EditMode.READY) {
+                try {
+                    lbSelectTabJE = true;
+                    JSONObject pnJSON = new JSONObject();
+                    pnJSON = poPurchaseReceivingController.populateJournal();
+                    if (JFXUtil.isJSONSuccess(pnJSON)) {
+                        loadTableJEDetail();
+                    } else {
                     }
+                } catch (SQLException ex) {
+                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (GuanzonException ex) {
+                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (CloneNotSupportedException ex) {
+                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ScriptException ex) {
+                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
+//                }
             }
         });
     }
@@ -1559,7 +1559,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                                 lnCtr--;
                             }
                             if ((poPurchaseReceivingController.Journal().getDetailCount() - 1) >= 0) {
-                                if (poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode() != null 
+                                if (poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode() != null
                                         && !poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode().equals("")) {
                                     poPurchaseReceivingController.Journal().AddDetail();
                                 }
@@ -1569,12 +1569,11 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                             }
                         }
 
-                        double lnTotal = 0.00;
-                        double lnDiscountAmt = 0.00;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
 
                             String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getForMonthOf());
-                            if (poPurchaseReceivingController.Detail(lnCtr).getStockId() != null && !"".equals(poPurchaseReceivingController.Detail(lnCtr).getStockId())) {
+                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() != null
+                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode())) {
                                 JEdetails_data.add(
                                         new ModelJournalEntry_Detail(String.valueOf(lnCtr + 1),
                                                 String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
