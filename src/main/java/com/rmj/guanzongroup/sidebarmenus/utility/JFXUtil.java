@@ -715,14 +715,14 @@ public class JFXUtil {
     }
 
     public static boolean isObjectEqualTo(Object source, Object... others) {
-//        if (source == null && others != null) {
-//            for (Object other : others) {
-//                if (other == null) {
-//                    return true;
-//                }
-//            }
-//            return false;
-//        }
+        if (source == null && others != null) {
+            for (Object other : others) {
+                if (other == null) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         for (Object other : others) {
             if (source != null && source.equals(other)) {
@@ -1432,23 +1432,25 @@ public class JFXUtil {
         }
     }
 
-public static boolean isGeneralFXML(String fxmlPath) {
-    String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
+    public static boolean isGeneralFXML(String fxmlPath) {
+        String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
 
-    int underscoreIndex = fileName.indexOf('_');
+        int underscoreIndex = fileName.indexOf('_');
 
-    if (underscoreIndex == -1) return true;
-
-    String suffix = fileName.substring(underscoreIndex + 1);
-
-    String[] generalSuffixes = {
-        "Entry", "Confirmation", "History"
-    };
-    for (String general : generalSuffixes) {
-        if (suffix.equals(general)) {
+        if (underscoreIndex == -1) {
             return true;
         }
+
+        String suffix = fileName.substring(underscoreIndex + 1);
+
+        String[] generalSuffixes = {
+            "Entry", "Confirmation", "History"
+        };
+        for (String general : generalSuffixes) {
+            if (suffix.equals(general)) {
+                return true;
+            }
+        }
+        return false;
     }
-    return false;
-}
 }
