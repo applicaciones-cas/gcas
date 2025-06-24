@@ -1,5 +1,6 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -80,7 +81,6 @@ public class DashboardController implements Initializable {
     private GRiderCAS oApp;
     private String lastClickedBtnLeftSideBar = "";
     private String lastClickedBtnRightSideBar = "";
-//    private String psDefaultScreenFXML = "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml";
     private String psDefaultScreenFXML = "/com/rmj/guanzongroup/sidebarmenus/views/Log_In.fxml";
     private String psDefaultScreenFXML2 = "/com/rmj/guanzongroup/sidebarmenus/views/DefaultScreen.fxml";
     private int notificationCount = 0;
@@ -788,21 +788,159 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml":
                     return "Payment Request History";
 
+                /*DISBURSEMENT VOUCHER */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml":
+                    return "Disbursement Voucher";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml":
+                    return "Disbursement Voucher Verification";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
+                    return "Disbursement Voucher Certification";
+
+                /*CHECK */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
+                    return "Check Authorization";
+
+                /*CHECK PRINT REQUEST*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml":
+                    return "Check Print Request";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml":
+                    return "Check Print Request Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml":
+                    return "Check Printing";
+
                 /*AP Payment Adjustment */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml":
+                    psIndustryID = "";
                     return "AP Payment Adjustment Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryAppliances.fxml":
+                    psIndustryID = "07";
+                    return "AP Payment Adjustment Entry Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryCar.fxml":
+                    psIndustryID = "03";
+                    return "AP Payment Adjustment Entry Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMC.fxml":
+                    psIndustryID = "02";
+                    return "AP Payment Adjustment Entry MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMP.fxml":
+                    psIndustryID = "01";
+                    return "AP Payment Adjustment Entry MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryLP.fxml":
+                    psIndustryID = "05";
+                    return "AP Payment Adjustment Entry LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml":
+                    psIndustryID = "04";
+                    return "AP Payment Adjustment Entry Monarch";
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml":
+                    psIndustryID = "";
                     return "AP Payment Adjustment Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationAppliances.fxml":
+                    psIndustryID = "07";
+                    return "AP Payment Adjustment Confirmation Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationCar.fxml":
+                    psIndustryID = "03";
+                    return "AP Payment Adjustment Confirmation Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMC.fxml":
+                    psIndustryID = "02";
+                    return "AP Payment Adjustment Confirmation MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMP.fxml":
+                    psIndustryID = "01";
+                    return "AP Payment Adjustment Confirmation MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationLP.fxml":
+                    psIndustryID = "05";
+                    return "AP Payment Adjustment Confirmation LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMonarch.fxml":
+                    psIndustryID = "04";
+                    return "AP Payment Adjustment Confirmation Monarch";
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml":
+                    psIndustryID = "";
                     return "AP Payment Adjustment History";
-                    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryAppliances.fxml":
+                    psIndustryID = "07";
+                    return "AP Payment Adjustment History Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryCar.fxml":
+                    psIndustryID = "03";
+                    return "AP Payment Adjustment History Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMC.fxml":
+                    psIndustryID = "02";
+                    return "AP Payment Adjustment History MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMP.fxml":
+                    psIndustryID = "01";
+                    return "AP Payment Adjustment History MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryLP.fxml":
+                    psIndustryID = "05";
+                    return "AP Payment Adjustment History LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMonarch.fxml":
+                    psIndustryID = "04";
+                    return "AP Payment Adjustment History Monarch";
+
                 /*SOA Tagging*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml":
+                    psIndustryID = "";
                     return "SOA Tagging Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryAppliances.fxml":
+                    psIndustryID = "07";
+                    return "SOA Tagging Entry Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryCar.fxml":
+                    psIndustryID = "03";
+                    return "SOA Tagging Entry Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMC.fxml":
+                    psIndustryID = "02";
+                    return "SOA Tagging Entry MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMP.fxml":
+                    psIndustryID = "01";
+                    return "SOA Tagging Entry MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryLP.fxml":
+                    psIndustryID = "05";
+                    return "SOA Tagging Entry LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml":
+                    psIndustryID = "04";
+                    return "SOA Tagging Entry Monarch";
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml":
+                    psIndustryID = "";
                     return "SOA Tagging Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationAppliances.fxml":
+                    psIndustryID = "07";
+                    return "SOA Tagging Confirmation Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationCar.fxml":
+                    psIndustryID = "03";
+                    return "SOA Tagging Confirmation Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMC.fxml":
+                    psIndustryID = "02";
+                    return "SOA Tagging Confirmation MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMP.fxml":
+                    psIndustryID = "01";
+                    return "SOA Tagging Confirmation MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationLP.fxml":
+                    psIndustryID = "05";
+                    return "SOA Tagging Confirmation LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMonarch.fxml":
+                    psIndustryID = "04";
+                    return "SOA Tagging Confirmation Monarch";
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml":
+                    psIndustryID = "";
                     return "SOA Tagging History";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryAppliances.fxml":
+                    psIndustryID = "07";
+                    return "SOA Tagging History Appliances";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryCar.fxml":
+                    psIndustryID = "03";
+                    return "SOA Tagging History Car";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMC.fxml":
+                    psIndustryID = "02";
+                    return "SOA Tagging History MC";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMP.fxml":
+                    psIndustryID = "01";
+                    return "SOA Tagging History MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryLP.fxml":
+                    psIndustryID = "05";
+                    return "SOA Tagging History LP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMonarch.fxml":
+                    psIndustryID = "04";
+                    return "SOA Tagging History Monarch";
 
                 /*SI POSTING */
                 //General
@@ -1220,20 +1358,116 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml";
             /*END PAYMENT REQUEST*/
 
+ /*DISBURSEMENT VOUCHER */
+            case "Disbursement Voucher":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml";
+            case "Disbursement Voucher Verification":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml";
+            case "Disbursement Voucher Certification":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml";
+
+            /*CHECK */
+            case "Check Authorization":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml";
+            /*CHECK PRINT REQUEST */
+            case "Check Print Request":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml";
+            case "Check Print Request Confirmation":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml";
+            case "Check Printing":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml";
+
             /*AP PAYMENT ADJUSTMENT*/
             case "AP Payment Adjustment Entry":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml";
+            case "AP Payment Adjustment Entry Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryAppliances.fxml";
+            case "AP Payment Adjustment Entry Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryCar.fxml";
+            case "AP Payment Adjustment Entry MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMC.fxml";
+            case "AP Payment Adjustment Entry MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMP.fxml";
+            case "AP Payment Adjustment Entry LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryLP.fxml";
+            case "AP Payment Adjustment Entry Monarch":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml";
+            //Confirmation    
             case "AP Payment Adjustment Confirmation":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml";
+            case "AP Payment Adjustment Confirmation Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationAppliances.fxml";
+            case "AP Payment Adjustment Confirmation Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationCar.fxml";
+            case "AP Payment Adjustment Confirmation MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMC.fxml";
+            case "AP Payment Adjustment Confirmation MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMP.fxml";
+            case "AP Payment Adjustment Confirmation LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationLP.fxml";
+            case "AP Payment Adjustment Confirmation Monarch":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMonarch.fxml";
+            //History    
             case "AP Payment Adjustment History":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml";
+            case "AP Payment Adjustment History Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryAppliances.fxml";
+            case "AP Payment Adjustment History Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryCar.fxml";
+            case "AP Payment Adjustment History MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMC.fxml";
+            case "AP Payment Adjustment History MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMP.fxml";
+            case "AP Payment Adjustment History LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryLP.fxml";
+            case "AP Payment Adjustment History Monarch":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMonarch.fxml";
+
             /*SOA TAGGING*/
             case "SOA Tagging Entry":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml";
+            case "SOA Tagging Entry Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryAppliances.fxml";
+            case "SOA Tagging Entry Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryCar.fxml";
+            case "SOA Tagging Entry MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMC.fxml";
+            case "SOA Tagging Entry MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMP.fxml";
+            case "SOA Tagging Entry LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryLP.fxml";
+            case "SOA Tagging Entry Monarch":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml";
+            //Confirmation    
             case "SOA Tagging Confirmation":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml";
+            case "SOA Tagging Confirmation Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationAppliances.fxml";
+            case "SOA Tagging Confirmation Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationCar.fxml";
+            case "SOA Tagging Confirmation MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMC.fxml";
+            case "SOA Tagging Confirmation MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMP.fxml";
+            case "SOA Tagging Confirmation LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationLP.fxml";
+            case "SOA Tagging Confirmation Monarch":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMonarch.fxml";
+            //History    
             case "SOA Tagging History":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml";
+            case "SOA Tagging History Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryAppliances.fxml";
+            case "SOA Tagging History Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryCar.fxml";
+            case "SOA Tagging History MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMC.fxml";
+            case "SOA Tagging History MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMP.fxml";
+            case "SOA Tagging History LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryLP.fxml";
+            case "SOA Tagging History Monarch":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMonarch.fxml";
 
             /*START SI POSTING */
             // General
@@ -1453,33 +1687,24 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchHospitality.fxml":
                     return new DeliveryAcceptance_ConfirmationMonarchHospitalityController();
                 // APPROVAL
-                // case
-                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml":
-                // return new DeliveryAcceptance_ApprovalController();
-                // case
-                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalCar.fxml":
-                // return new DeliveryAcceptance_ApprovalCarController();
-                // case
-                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMC.fxml":
-                // return new DeliveryAcceptance_ApprovalMCController();
-                // case
-                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMP.fxml":
-                // return new DeliveryAcceptance_ApprovalMPController();
-                // case
-                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalLP.fxml":
-                // return new DeliveryAcceptance_ApprovalLPController();
-                // case
-                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPCar.fxml":
-                // return new DeliveryAcceptance_ApprovalSPCarController();
-                // case
-                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPMC.fxml":
-                // return new DeliveryAcceptance_ApprovalSPMCController();
-                // case
-                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchFood.fxml":
-                // return new DeliveryAcceptance_ApprovalMonarchFoodController();
-                // case
-                // "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchHospitality.fxml":
-                // return new DeliveryAcceptance_ApprovalMonarchHospitalityController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml":
+//                    return new DeliveryAcceptance_ApprovalController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalCar.fxml":
+//                    return new DeliveryAcceptance_ApprovalCarController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMC.fxml":
+//                    return new DeliveryAcceptance_ApprovalMCController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMP.fxml":
+//                    return new DeliveryAcceptance_ApprovalMPController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalLP.fxml":
+//                    return new DeliveryAcceptance_ApprovalLPController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPCar.fxml":
+//                    return new DeliveryAcceptance_ApprovalSPCarController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPMC.fxml":
+//                    return new DeliveryAcceptance_ApprovalSPMCController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchFood.fxml":
+//                    return new DeliveryAcceptance_ApprovalMonarchFoodController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchHospitality.fxml":
+//                    return new DeliveryAcceptance_ApprovalMonarchHospitalityController();
                 // HISTORY
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryAppliances.fxml":
                     return new DeliveryAcceptance_HistoryAppliancesController();
@@ -1575,6 +1800,26 @@ public class DashboardController implements Initializable {
                     return new PaymentRequest_ConfirmationController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml":
                     return new PaymentRequest_HistoryController();
+
+                /*DISBURSEMENT VOUCHER */
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml":
+//                    return new DisbursementVoucher_EntryController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml":
+//                    return new DisbursementVoucher_VerificationController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
+//                    return new DisbursementVoucher_CertificationController();
+//
+//                /*CHECK */
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
+//                    return new CheckAuthorizationController();
+//
+//                /*CHECK PRINT REQUEST */
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml":
+//                    return new CheckPrintRequest_EntryController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml":
+//                    return new CheckPrintRequest_ConfirmationController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml":
+//                    return new CheckPrintingController();
                 /* SI POSTING */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting.fxml":
                     return new SIPosting_Controller();
@@ -1599,18 +1844,81 @@ public class DashboardController implements Initializable {
 
                 /* AP PAYMENT ADJUSTMENT */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml":
-                    return new APPaymentAdjustment_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryAppliances.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryCar.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMC.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryLP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml":
+                    return new APPaymentAdjustment_EntryController() {
+                        {
+                            boolean isGeneral = JFXUtil.isGeneralFXML(fsValue) ? true : false;
+                            setTabTitle(JFXUtil.getFormattedFXMLTitle(fsValue), isGeneral);
+                        }
+                    };
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml":
-                    return new APPaymentAdjustment_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationAppliances.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationCar.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMC.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationLP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMonarch.fxml":
+                    return new APPaymentAdjustment_ConfirmationController() {
+                        {
+                            setTabTitle(JFXUtil.getFormattedFXMLTitle(fsValue), JFXUtil.isGeneralFXML(fsValue));
+                        }
+                    };
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml":
-                    return new APPaymentAdjustment_HistoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryAppliances.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryCar.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMC.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryLP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMonarch.fxml":
+                    return new APPaymentAdjustment_HistoryController() {
+                        {
+                            setTabTitle(JFXUtil.getFormattedFXMLTitle(fsValue), JFXUtil.isGeneralFXML(fsValue));
+                        }
+                    };
+
                 /* SOA TAGGING */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml":
-                    return new SOATagging_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryAppliances.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryCar.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMC.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryLP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml":
+                    return new SOATagging_EntryController() {
+                        {
+                            setTabTitle(JFXUtil.getFormattedFXMLTitle(fsValue), JFXUtil.isGeneralFXML(fsValue));
+                        }
+                    };
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml":
-                    return new SOATagging_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationAppliances.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationCar.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMC.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationLP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMonarch.fxml":
+                    return new SOATagging_ConfirmationController() {
+                        {
+                            setTabTitle(JFXUtil.getFormattedFXMLTitle(fsValue), JFXUtil.isGeneralFXML(fsValue));
+                        }
+                    };
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml":
-                    return new SOATagging_HistoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryAppliances.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryCar.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMC.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryLP.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMonarch.fxml":
+                    return new SOATagging_HistoryController() {
+                        {
+                            setTabTitle(JFXUtil.getFormattedFXMLTitle(fsValue), JFXUtil.isGeneralFXML(fsValue));
+                        }
+                    };
+
                 /* INVENTORY/INVENTORY/ */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
 //                    return new InventoryMaintenanceController();
@@ -1840,15 +2148,13 @@ public class DashboardController implements Initializable {
         fxObj.setCategoryID(psCategoryID);
 
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
+        fxmlLoader.setLocation(fxObj.getClass().getResource(updateFxmlName(fsFormName)));
         fxmlLoader.setController(fxObj);
 
         Tab newTab = new Tab(SetTabTitle(fsFormName));
         newTab.setContent(new javafx.scene.control.Label("Content of Tab " + fsFormName));
         newTab.setContextMenu(createContextMenu(tabpane, newTab, oApp));
-
         tabName.add(SetTabTitle(fsFormName));
-
         try {
             Node content = fxmlLoader.load();
             newTab.setContent(content);
@@ -1880,6 +2186,63 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private String updateFxmlName(String fsFormName) {
+        switch (fsFormName) {
+            /*AP PAYMENT ADJUSTMENT*/
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryAppliances.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryCar.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMC.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryLP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml";
+            //Confirmation    
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationAppliances.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationCar.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMC.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationLP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMonarch.fxml":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml";
+            //History    
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryAppliances.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryCar.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMC.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryLP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMonarch.fxml":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml";
+
+            /*SOA TAGGING*/
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryAppliances.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryCar.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMC.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryLP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml";
+            //Confirmation  
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationAppliances.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationCar.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMC.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationLP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMonarch.fxml":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml";
+            //History    
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryAppliances.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryCar.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMC.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryLP.fxml":
+            case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMonarch.fxml":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml";
+
+        }
+
+        return fsFormName;
     }
 
     private void setScene(Pane foPane) {
@@ -2599,52 +2962,98 @@ public class DashboardController implements Initializable {
 //                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Accounts Receivable\", \"fxml_path\": \"Accounts/Accounts Receivable\", \"controller_path\": \"\", \"menu_id\": \"003\", \"menu_parent\": \"001\"}"
 //                + "]";
         String jsonString = "["
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Accounts Receivable\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"001\",\"menu_parent\":\"\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Accounts Payables\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"001\",\"menu_parent\":\"\"},"
                 //Entry
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Entry\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"002\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Entry.fxml\",\"controller_path\":\"PaymentRequestEntry.controller\",\"menu_id\":\"003\",\"menu_parent\":\"002\"},"
-                //Confirmation
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"004\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Confirmation.fxml\",\"controller_path\":\"PaymentRequestConfirmation.controller\",\"menu_id\":\"005\",\"menu_parent\":\"004\"},"
-                //Approval
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Approval\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"006\",\"menu_parent\":\"001\"},"
-                //History
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"007\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml\",\"controller_path\":\"PaymentRequestHistory.controller\",\"menu_id\":\"008\",\"menu_parent\":\"007\"}"
-                //SI Posting
-                + "{\"access_level\":\"01 02 03 04 05 00 07\",\"menu_name\":\"SI Posting\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"009\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_Appliances.fxml\",\"controller_path\":\"SIPosting_Appliances.controller\",\"menu_id\":\"010\",\"menu_parent\":\"009\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting.fxml\",\"controller_path\":\"SIPosting.controller\",\"menu_id\":\"011\",\"menu_parent\":\"009\"},"
-                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_Car.fxml\",\"controller_path\":\"SIPosting_Car.controller\",\"menu_id\":\"012\",\"menu_parent\":\"009\"},"
-                + "{\"access_level\":\"03\",\"menu_name\":\"SPCar\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_SPCar.fxml\",\"controller_path\":\"SIPosting_SPCar.controller\",\"menu_id\":\"013\",\"menu_parent\":\"009\"},"
-                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MC.fxml\",\"controller_path\":\"SIPosting_MC.controller\",\"menu_id\":\"014\",\"menu_parent\":\"009\"},"
-                + "{\"access_level\":\"02\",\"menu_name\":\"SPMC\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_SPMC.fxml\",\"controller_path\":\"SIPosting_SPMC.controller\",\"menu_id\":\"015\",\"menu_parent\":\"009\"},"
-                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MP.fxml\",\"controller_path\":\"SIPosting_MP.controller\",\"menu_id\":\"016\",\"menu_parent\":\"009\"},"
-                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml\",\"controller_path\":\"SIPosting_MonarchHospitality.controller\",\"menu_id\":\"017\",\"menu_parent\":\"009\"},"
-                + "{\"access_level\":\"05\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchFood.fxml\",\"controller_path\":\"SIPosting_MonarchFood.controller\",\"menu_id\":\"018\",\"menu_parent\":\"009\"},"
-                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_LP.fxml\",\"controller_path\":\"SIPosting_LP.controller\",\"menu_id\":\"019\",\"menu_parent\":\"009\"},"
-                //AP PAYMENT ADJUSTMENT
-                + "{\"access_level\":\"01 02 03 04 05 00 07\",\"menu_name\":\"AP Adjustment\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"020\",\"menu_parent\":\"001\"},"
-                //Entry
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Entry\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"021\",\"menu_parent\":\"020\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"AP Adjustment\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml\",\"controller_path\":\"APPaymentAdjustmentEntry.controller\",\"menu_id\":\"022\",\"menu_parent\":\"021\"},"
-                //Confirmation
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"023\",\"menu_parent\":\"020\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"AP Adjustment\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml\",\"controller_path\":\"APPaymentAdjustmentConfirmation.controller\",\"menu_id\":\"024\",\"menu_parent\":\"023\"},"
-                //History
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"025\",\"menu_parent\":\"020\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"AP Adjustment\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml\",\"controller_path\":\"APPaymentAdjustmentHistory.controller\",\"menu_id\":\"026\",\"menu_parent\":\"025\"}"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Entry\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"002\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Entry.fxml\",\"controller_path\":\"PaymentRequestEntry.controller\",\"menu_id\":\"003\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml\",\"controller_path\":\"DisbursementVoucher_EntryController\",\"menu_id\":\"009\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Print Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml\",\"controller_path\":\"CheckPrintRequest_EntryController\",\"menu_id\":\"017\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Printing\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml\",\"controller_path\":\"CheckPrintingController\",\"menu_id\":\"018\",\"menu_parent\":\"002\"},"
+                //AP Adjustment
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"AP Adjustment\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"019\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml\",\"controller_path\":\"APPaymentAdjustmentEntry.controller\",\"menu_id\":\"020\",\"menu_parent\":\"019\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryAppliances.fxml\",\"controller_path\":\"APPaymentAdjustmentEntry.controller\",\"menu_id\":\"021\",\"menu_parent\":\"019\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryCar.fxml\",\"controller_path\":\"APPaymentAdjustmentEntry.controller\",\"menu_id\":\"022\",\"menu_parent\":\"019\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMC.fxml\",\"controller_path\":\"APPaymentAdjustmentEntry.controller\",\"menu_id\":\"023\",\"menu_parent\":\"019\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMP.fxml\",\"controller_path\":\"APPaymentAdjustmentEntry.controller\",\"menu_id\":\"024\",\"menu_parent\":\"019\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryLP.fxml\",\"controller_path\":\"APPaymentAdjustmentEntry.controller\",\"menu_id\":\"025\",\"menu_parent\":\"019\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml\",\"controller_path\":\"APPaymentAdjustmentEntry.controller\",\"menu_id\":\"026\",\"menu_parent\":\"019\"},"
                 //SOA TAGGING
-                + "{\"access_level\":\"01 02 03 04 05 00 07\",\"menu_name\":\"SOA Tagging\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"027\",\"menu_parent\":\"001\"},"
-                //Entry
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Entry\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"028\",\"menu_parent\":\"027\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"SOA Tagging\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"029\",\"menu_parent\":\"028\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"SOA Tagging\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"043\",\"menu_parent\":\"002\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"044\",\"menu_parent\":\"043\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryAppliances.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"045\",\"menu_parent\":\"043\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryCar.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"046\",\"menu_parent\":\"043\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMC.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"047\",\"menu_parent\":\"043\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMP.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"048\",\"menu_parent\":\"043\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryLP.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"049\",\"menu_parent\":\"043\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml\",\"controller_path\":\"SOATaggingEntry.controller\",\"menu_id\":\"050\",\"menu_parent\":\"043\"},"
                 //Confirmation
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"030\",\"menu_parent\":\"027\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"SOA Tagging\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml\",\"controller_path\":\"SOATaggingConfirmation.controller\",\"menu_id\":\"031\",\"menu_parent\":\"030\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"004\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_Confirmation.fxml\",\"controller_path\":\"PaymentRequestConfirmation.controller\",\"menu_id\":\"005\",\"menu_parent\":\"004\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Print Request Confirmation\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml\",\"controller_path\":\"CheckPrintRequest_ConfirmationController\",\"menu_id\":\"016\",\"menu_parent\":\"004\"},"
+                //AP Adjustment
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"AP Adjustment\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"027\",\"menu_parent\":\"004\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml\",\"controller_path\":\"APPaymentAdjustmentConfirmation.controller\",\"menu_id\":\"028\",\"menu_parent\":\"027\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationAppliances.fxml\",\"controller_path\":\"APPaymentAdjustmentConfirmation.controller\",\"menu_id\":\"029\",\"menu_parent\":\"027\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationCar.fxml\",\"controller_path\":\"APPaymentAdjustmentConfirmation.controller\",\"menu_id\":\"030\",\"menu_parent\":\"027\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMC.fxml\",\"controller_path\":\"APPaymentAdjustmentConfirmation.controller\",\"menu_id\":\"031\",\"menu_parent\":\"027\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMP.fxml\",\"controller_path\":\"APPaymentAdjustmentConfirmation.controller\",\"menu_id\":\"032\",\"menu_parent\":\"027\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationLP.fxml\",\"controller_path\":\"APPaymentAdjustmentConfirmation.controller\",\"menu_id\":\"033\",\"menu_parent\":\"027\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMonarch.fxml\",\"controller_path\":\"APPaymentAdjustmentConfirmation.controller\",\"menu_id\":\"034\",\"menu_parent\":\"027\"},"
+                //SOA TAGGING
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"SOA Tagging\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"051\",\"menu_parent\":\"004\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml\",\"controller_path\":\"SOATaggingConfirmation.controller\",\"menu_id\":\"052\",\"menu_parent\":\"051\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationAppliances.fxml\",\"controller_path\":\"SOATaggingConfirmation.controller\",\"menu_id\":\"053\",\"menu_parent\":\"051\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationCar.fxml\",\"controller_path\":\"SOATaggingConfirmation.controller\",\"menu_id\":\"054\",\"menu_parent\":\"051\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMC.fxml\",\"controller_path\":\"SOATaggingConfirmation.controller\",\"menu_id\":\"055\",\"menu_parent\":\"051\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMP.fxml\",\"controller_path\":\"SOATaggingConfirmation.controller\",\"menu_id\":\"056\",\"menu_parent\":\"051\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationLP.fxml\",\"controller_path\":\"SOATaggingConfirmation.controller\",\"menu_id\":\"057\",\"menu_parent\":\"051\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMonarch.fxml\",\"controller_path\":\"SOATaggingConfirmation.controller\",\"menu_id\":\"058\",\"menu_parent\":\"051\"},"
+                //Verification
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Verification\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"010\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml\",\"controller_path\":\"DisbursementVoucher_VerificationController\",\"menu_id\":\"011\",\"menu_parent\":\"010\"},"
+                //Cerification
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Certification\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"012\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml\",\"controller_path\":\"DisbursementVoucher_CertificationController\",\"menu_id\":\"013\",\"menu_parent\":\"012\"},"
+                //Approval
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Approval\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"006\",\"menu_parent\":\"001\"},"
+                //Authorize
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Authorize\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"014\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Authorization\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml\",\"controller_path\":\"CheckAuthorizationController\",\"menu_id\":\"015\",\"menu_parent\":\"014\"},"
                 //History
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"032\",\"menu_parent\":\"027\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00\",\"menu_name\":\"SOA Tagging\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml\",\"controller_path\":\"SOATaggingHistory.controller\",\"menu_id\":\"033\",\"menu_parent\":\"032\"}"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"007\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml\",\"controller_path\":\"PaymentRequestHistoryController\",\"menu_id\":\"008\",\"menu_parent\":\"007\"}"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_History.fxml\",\"controller_path\":\"DisbursementVoucher_HistoryController\",\"menu_id\":\"016\",\"menu_parent\":\"007\"},"
+                //AP Adjustment
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"AP Adjustment\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"035\",\"menu_parent\":\"007\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml\",\"controller_path\":\"APPaymentAdjustmentHistory.controller\",\"menu_id\":\"036\",\"menu_parent\":\"035\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryAppliances.fxml\",\"controller_path\":\"APPaymentAdjustmentHistory.controller\",\"menu_id\":\"037\",\"menu_parent\":\"035\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryCar.fxml\",\"controller_path\":\"APPaymentAdjustmentHistory.controller\",\"menu_id\":\"038\",\"menu_parent\":\"035\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMC.fxml\",\"controller_path\":\"APPaymentAdjustmentHistory.controller\",\"menu_id\":\"039\",\"menu_parent\":\"035\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMP.fxml\",\"controller_path\":\"APPaymentAdjustmentHistory.controller\",\"menu_id\":\"040\",\"menu_parent\":\"035\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryLP.fxml\",\"controller_path\":\"APPaymentAdjustmentHistory.controller\",\"menu_id\":\"041\",\"menu_parent\":\"035\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMonarch.fxml\",\"controller_path\":\"APPaymentAdjustmentHistory.controller\",\"menu_id\":\"042\",\"menu_parent\":\"035\"},"
+                //SOA TAGGING
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"SOA Tagging\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"059\",\"menu_parent\":\"007\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml\",\"controller_path\":\"SOATaggingHistory.controller\",\"menu_id\":\"060\",\"menu_parent\":\"059\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryAppliances.fxml\",\"controller_path\":\"SOATaggingHistory.controller\",\"menu_id\":\"061\",\"menu_parent\":\"059\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryCar.fxml\",\"controller_path\":\"SOATaggingHistory.controller\",\"menu_id\":\"062\",\"menu_parent\":\"059\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMC.fxml\",\"controller_path\":\"SOATaggingHistory.controller\",\"menu_id\":\"063\",\"menu_parent\":\"059\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMP.fxml\",\"controller_path\":\"SOATaggingHistory.controller\",\"menu_id\":\"064\",\"menu_parent\":\"059\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryLP.fxml\",\"controller_path\":\"SOATaggingHistory.controller\",\"menu_id\":\"065\",\"menu_parent\":\"059\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMonarch.fxml\",\"controller_path\":\"SOATaggingHistory.controller\",\"menu_id\":\"066\",\"menu_parent\":\"059\"},"
+                //SI Posting
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"SI Posting\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"067\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_Appliances.fxml\",\"controller_path\":\"SIPosting_Appliances.controller\",\"menu_id\":\"068\",\"menu_parent\":\"067\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting.fxml\",\"controller_path\":\"SIPosting.controller\",\"menu_id\":\"069\",\"menu_parent\":\"067\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_Car.fxml\",\"controller_path\":\"SIPosting_Car.controller\",\"menu_id\":\"070\",\"menu_parent\":\"067\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"SPCar\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_SPCar.fxml\",\"controller_path\":\"SIPosting_SPCar.controller\",\"menu_id\":\"071\",\"menu_parent\":\"067\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MC.fxml\",\"controller_path\":\"SIPosting_MC.controller\",\"menu_id\":\"072\",\"menu_parent\":\"067\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"SPMC\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_SPMC.fxml\",\"controller_path\":\"SIPosting_SPMC.controller\",\"menu_id\":\"073\",\"menu_parent\":\"067\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MP.fxml\",\"controller_path\":\"SIPosting_MP.controller\",\"menu_id\":\"074\",\"menu_parent\":\"067\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml\",\"controller_path\":\"SIPosting_MonarchHospitality.controller\",\"menu_id\":\"075\",\"menu_parent\":\"067\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchFood.fxml\",\"controller_path\":\"SIPosting_MonarchFood.controller\",\"menu_id\":\"076\",\"menu_parent\":\"067\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_LP.fxml\",\"controller_path\":\"SIPosting_LP.controller\",\"menu_id\":\"077\",\"menu_parent\":\"067\"}"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
