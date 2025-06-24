@@ -1349,7 +1349,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
         tfJETransactionNo.setText(poPurchaseReceivingController.Journal().Master().getTransactionNo());
 
-        String lsJETransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
+        String lsJETransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Master().getTransactionDate());
         dpJETransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsJETransactionDate, "yyyy-MM-dd"));
 
         taJERemarks.setText(poPurchaseReceivingController.Journal().Master().getRemarks());
@@ -1566,19 +1566,28 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                 poPurchaseReceivingController.Journal().AddDetail();
                             }
                         }
-
+                        String lsReportMonthYear = "";
+                        String lsAcctCode = "";
+                        String lsAccDesc = "";
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
-
-                            String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(lnCtr).getForMonthOf());
-
+                            lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(lnCtr).getForMonthOf());
+                            if(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() != null){
+                                lsAcctCode = poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode();
+                            }
+                            if(poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription() != null){
+                                lsAccDesc = poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription();
+                            }
+                            
                             JEdetails_data.add(
                                     new ModelJournalEntry_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
-                                            String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode()),
-                                            String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription()),
+                                            String.valueOf(lsAcctCode),
+                                            String.valueOf(lsAccDesc),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount(), true))) //identify total
                             );
+                            
+                            lsReportMonthYear = "";lsAcctCode = "";lsAccDesc = "";
                         }
                         if (pnJEDetail < 0 || pnJEDetail
                                 >= JEdetails_data.size()) {
