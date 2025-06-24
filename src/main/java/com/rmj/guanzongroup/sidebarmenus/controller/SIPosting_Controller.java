@@ -380,6 +380,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                            JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
                             break;
                         } else {
                             return;

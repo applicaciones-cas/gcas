@@ -486,13 +486,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                 if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
                     return;
                 }
-                selectedDate = ldtResult.selectedDate;
-
-                lsServerDate = sdfFormat.format(oApp.getServerDate());
-//                lsTransDate = sdfFormat.format(poAPPaymentAdjustmentController.Master().getTransactionDate());
-                lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
-                currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-
+//                selectedDate = ldtResult.selectedDate;
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
                         if (poAPPaymentAdjustmentController.getEditMode() == EditMode.ADDNEW
@@ -738,6 +732,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                            JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
                             //Clear data
                             poAPPaymentAdjustmentController.resetMaster();
                             clearTextFields();

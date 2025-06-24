@@ -188,7 +188,6 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = txtPersonalInfo.getId();
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
         if (lsValue == null) {
             return;
         }
@@ -346,13 +345,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                 if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
                     return;
                 }
-                selectedDate = ldtResult.selectedDate;
-
-                lsServerDate = sdfFormat.format(oApp.getServerDate());
-//                lsTransDate = sdfFormat.format(poAPPaymentAdjustmentController.Master().getTransactionDate());
-                lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
-                currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-
+//                selectedDate = ldtResult.selectedDate;
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
                         if (poAPPaymentAdjustmentController.getEditMode() == EditMode.ADDNEW
