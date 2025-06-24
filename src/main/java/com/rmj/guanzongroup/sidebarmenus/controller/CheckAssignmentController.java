@@ -1,30 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
-import java.time.LocalDate;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import static javafx.scene.input.KeyCode.DOWN;
-import static javafx.scene.input.KeyCode.ENTER;
-import static javafx.scene.input.KeyCode.TAB;
-import static javafx.scene.input.KeyCode.UP;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -32,18 +22,14 @@ import javafx.scene.layout.StackPane;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.cashflow.CheckPrinting;
-import ph.com.guanzongroup.cas.cashflow.Disbursement;
+import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 import ph.com.guanzongroup.cas.cashflow.status.DisbursementStatic;
 
-/**
- * FXML Controller class
- *
- * @author User
- */
 public class CheckAssignmentController implements Initializable {
 
     private GRiderCAS oApp;
@@ -53,6 +39,10 @@ public class CheckAssignmentController implements Initializable {
 
     public int pnEditMode;
     private String psTransactionNo = "";
+    private int currentTransactionIndex = 0;
+    private boolean isAutoProcessing = false;
+    private long startingCheckNo = -1;
+    private int checkNoLength = 6;
 
     @FXML
     private AnchorPane AnchorMain, apMaster;
@@ -65,7 +55,7 @@ public class CheckAssignmentController implements Initializable {
     @FXML
     private AnchorPane AnchorInputs;
     @FXML
-    private TextField tfDVNo, tfCheckNo;
+    private TextField tfDVNo, tfCheckNo, tfCheckAmount;
     @FXML
     private DatePicker dpCheckDate;
     @FXML
@@ -73,8 +63,10 @@ public class CheckAssignmentController implements Initializable {
     @FXML
     private CheckBox chbkApplyToAll;
 
-    public void setTransaction(String fsValue) {
-        psTransactionNo = fsValue;
+    private List<String> transactionNos;
+
+    public void setTransaction(List<String> transactionNos) {
+        this.transactionNos = transactionNos;
     }
 
     public void setGRider(GRiderCAS foValue) {
@@ -85,35 +77,175 @@ public class CheckAssignmentController implements Initializable {
         poCheckPrintingController = foValue;
     }
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         CustomCommonUtil.setDropShadow(AnchorMain, StackPane);
-//        if (!psTransactionNo.isEmpty()) {
-        initAll();
-        loadRecordMaster();
-//        }
+
+        if (transactionNos != null && !transactionNos.isEmpty()) {
+            try {
+                if (transactionNos.size() > 1) {
+                    chbkApplyToAll.setSelected(true);
+                }
+
+                poCheckPrintingController = new CashflowControllers(oApp, null).CheckPrinting();
+                poJSON = poCheckPrintingController.InitTransaction();
+
+                if (!"success".equals((String) poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    return;
+                }
+
+                loadTransaction(currentTransactionIndex);
+            } catch (Exception ex) {
+                Logger.getLogger(CheckAssignmentController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
+
+    private void loadTransaction(int index) throws SQLException, GuanzonException, CloneNotSupportedException {
+        if (index >= transactionNos.size()) {
+            ShowMessageFX.Information(null, pxeModuleName, "All transactions have been processed.");
+            CommonUtils.closeStage(btnClose);
+            return;
+        }
+
+        psTransactionNo = transactionNos.get(index);
+        poJSON = poCheckPrintingController.OpenTransaction(psTransactionNo);
+
+        if (!"success".equals((String) poJSON.get("result"))) {
+            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+            loadTransaction(++currentTransactionIndex);
+            return;
+        }
+
+        poJSON = poCheckPrintingController.UpdateTransaction();
+
+        if (!"error".equals((String) poJSON.get("result"))) {
+            if (poCheckPrintingController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK)) {
+                poCheckPrintingController.setCheckpayment();
+                poCheckPrintingController.setBankAccountCheckNo();
+                
+            }
+            initAll();
+            loadRecordMaster();
+        } else {
+            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+            CommonUtils.closeStage(btnClose);
+        }
+    }
+
+    private void assignAndProceed() {
+        try {
+            if (startingCheckNo == -1 && currentTransactionIndex == 0) {
+                ShowMessageFX.Warning(null, pxeModuleName, "Please enter a valid starting check number.", null);
+                isAutoProcessing = false;
+                return;
+            }
+
+            poJSON = poCheckPrintingController.SaveTransaction();
+
+            if (!"success".equals((String) poJSON.get("result"))) {
+                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                isAutoProcessing = false;
+                return;
+            }
+
+            currentTransactionIndex++;
+            if (currentTransactionIndex < transactionNos.size()) {
+                loadTransaction(currentTransactionIndex);
+                assignAndProceed();
+            } else {
+                ShowMessageFX.Information(null, pxeModuleName, "All transactions have been assigned.");
+                CommonUtils.closeStage(btnClose);
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(CheckAssignmentController.class.getName()).log(Level.SEVERE, null, ex);
+            ShowMessageFX.Warning("Unexpected error during assignment.", pxeModuleName, null);
+            isAutoProcessing = false;
+        }
+    }
+    
+    private void loadRecordMaster() throws SQLException, GuanzonException {
+    tfDVNo.setText(poCheckPrintingController.Master().getTransactionNo());
+
+    // Always allow editing
+    tfCheckNo.setEditable(true);
+
+    // Populate initial check number from Bank Account Master
+    String initialCheckNo = poCheckPrintingController.BankAccountMaster().getModel().getCheckNo();
+    tfCheckNo.setText(initialCheckNo);
+
+    String checkNoValue = tfCheckNo.getText();
+    if (currentTransactionIndex == 0 && startingCheckNo == -1 && checkNoValue != null && checkNoValue.matches("\\d+")) {
+        startingCheckNo = Long.parseLong(checkNoValue);
+        checkNoLength = checkNoValue.length();
+        poCheckPrintingController.CheckPayments().getModel().setCheckNo(checkNoValue);
+        poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(checkNoValue);
+    } else if (startingCheckNo != -1) {
+        long currentCheckNo = startingCheckNo + currentTransactionIndex;
+        String formatted = String.format("%0" + checkNoLength + "d", currentCheckNo);
+        tfCheckNo.setText(formatted);
+        poCheckPrintingController.CheckPayments().getModel().setCheckNo(formatted);
+        poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(formatted);
+    }
+
+    dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+        SQLUtil.dateFormat(poCheckPrintingController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)
+    ));
+
+    tfCheckAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+        poCheckPrintingController.Master().getTransactionTotal(), true
+    ));
+
+    taRemarks.setText(poCheckPrintingController.Master().getRemarks());
+}
+
+
+//    private void loadRecordMaster() throws SQLException, GuanzonException {
+//        tfDVNo.setText(poCheckPrintingController.Master().getTransactionNo());
+//
+//        if (currentTransactionIndex == 0 && startingCheckNo == -1) {
+//            String lastCheckNoUse = poCheckPrintingController.Master().CheckPayments().Bank_Account_Master().getCheckNo();
+//            
+//            
+//            if (lastCheckNoUse != null && lastCheckNoUse.matches("\\d+")) {
+//                startingCheckNo = Long.parseLong(lastCheckNoUse) + 1;
+//                checkNoLength = lastCheckNoUse.length();
+//                String formatted = String.format("%0" + checkNoLength + "d", startingCheckNo);
+//                tfCheckNo.setText(formatted);
+//                poCheckPrintingController.CheckPayments().getModel().setCheckNo(formatted);
+//                poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(formatted);
+//                
+//            } 
+//        } else {
+//            long currentCheckNo = startingCheckNo + currentTransactionIndex;
+//            String formatted = String.format("%0" + checkNoLength + "d", currentCheckNo);
+//            tfCheckNo.setText(formatted);
+//            poCheckPrintingController.CheckPayments().getModel().setCheckNo(formatted);            
+//            poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(formatted);
+//            
+//        }
+//
+//        dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+//                SQLUtil.dateFormat(poCheckPrintingController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+//
+//        tfCheckAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+//                poCheckPrintingController.Master().getTransactionTotal(), true));
+//
+//        taRemarks.setText(poCheckPrintingController.Master().getRemarks());
+//    }
 
     private void initAll() {
         initButtonsClickActions();
         initTextAreaFields();
+        initTextFields();
         initCheckBox();
         initDatePicker();
         clearFields();
-        pnEditMode = EditMode.UNKNOWN;
+        pnEditMode = poCheckPrintingController.getEditMode();
         initFields(pnEditMode);
         initButton(pnEditMode);
-    }
-
-    private void loadRecordMaster() {
-        tfDVNo.setText(poCheckPrintingController.Master().getTransactionNo() != null ? poCheckPrintingController.Master().getTransactionNo() : "");
-        tfCheckNo.setText(poCheckPrintingController.Master().getTransactionNo() != null ? poCheckPrintingController.Master().getTransactionNo() : "");
-
-        dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poCheckPrintingController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-        taRemarks.setText(poCheckPrintingController.Master().getTransactionNo() != null ? poCheckPrintingController.Master().getTransactionNo() : "");
     }
 
     private void initButtonsClickActions() {
@@ -122,97 +254,104 @@ public class CheckAssignmentController implements Initializable {
     }
 
     private void cmdButton_Click(ActionEvent event) {
-        poJSON = new JSONObject();
-        String lsButton = ((Button) event.getSource()).getId();
-        switch (lsButton) {
-            case "btnAssign":
-                break;
-            case "btnPrintCheck":
-                break;
-            case "btnClose":
-                if (ShowMessageFX.YesNo("Are you sure want to close this form?", pxeModuleName, null)) {
-                    CommonUtils.closeStage(btnClose);
-                } else {
-                    return;
-                }
-                break;
-            default:
-                ShowMessageFX.Warning("Please contact admin to assist about no button available", pxeModuleName, null);
-                break;
+        try {
+            poJSON = new JSONObject();
+            String lsButton = ((Button) event.getSource()).getId();
+            switch (lsButton) {
+                case "btnAssign":
+                    if (!isAutoProcessing) {
+                        isAutoProcessing = true;
+                        assignAndProceed();
+                    }
+                    break;
+                case "btnPrintCheck":
+                    break;
+                case "btnClose":
+                    if (ShowMessageFX.YesNo("Are you sure want to close this form?", pxeModuleName, null)) {
+                        CommonUtils.closeStage(btnClose);
+                    }
+                    break;
+                default:
+                    ShowMessageFX.Warning("Unknown button action.", pxeModuleName, null);
+                    break;
+            }
+            initFields(pnEditMode);
+            initButton(pnEditMode);
+        } catch (Exception ex) {
+            Logger.getLogger(CheckAssignmentController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        initFields(pnEditMode);
-        initButton(pnEditMode);
     }
 
     private void initTextAreaFields() {
-        //Initialise  TextArea Focus
         taRemarks.focusedProperty().addListener(txtArea_Focus);
-        //Initialise  TextArea KeyPressed
-        taRemarks.setOnKeyPressed(event -> txtArea_KeyPressed(event));
+        taRemarks.setOnKeyPressed(this::txtArea_KeyPressed);
     }
+
+    private void initTextFields() {
+        tfCheckNo.focusedProperty().addListener(txtField_Focus);
+    }
+
+     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsID = txtField.getId();
+        String lsValue = txtField.getText();
+
+        if (!nv && lsID.equals("tfCheckNo")) {
+            if (lsValue != null && lsValue.matches("\\d+")) {
+                startingCheckNo = Long.parseLong(lsValue) - currentTransactionIndex;
+                checkNoLength = lsValue.length();
+                poCheckPrintingController.CheckPayments().getModel().setCheckNo(lsValue);                
+                poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(lsValue);
+            } else {
+                ShowMessageFX.Warning(null, pxeModuleName, "Invalid check number format.");
+                tfCheckNo.requestFocus();
+            }
+        } else if (nv) {
+            txtField.selectAll();
+        }
+    };
 
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
         TextArea txtArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsID = (txtArea.getId());
+        String lsID = txtArea.getId();
         String lsValue = txtArea.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-        poJSON = new JSONObject();
-        if (!nv) {
-            switch (lsID) {
-                case "taDVRemarks":
-                    poCheckPrintingController.Master().setRemarks(lsValue);
-                    break;
-            }
-        } else {
+        if (!nv && lsID.equals("taDVRemarks")) {
+            poCheckPrintingController.Master().setRemarks(lsValue);
+        } else if (nv) {
             txtArea.selectAll();
         }
     };
 
     private void txtArea_KeyPressed(KeyEvent event) {
         TextArea txtArea = (TextArea) event.getSource();
-        String lsID = txtArea.getId();
-        if ("taRemarks".equals(lsID)) {
-            switch (event.getCode()) {
-                case TAB:
-                case ENTER:
-                case DOWN:
-                    CommonUtils.SetNextFocus(txtArea);
-                    event.consume();
-                    break;
-                case UP:
-                    CommonUtils.SetPreviousFocus(txtArea);
-                    event.consume();
-                    break;
-                default:
-                    break;
-            }
+        switch (event.getCode()) {
+            case TAB:
+            case ENTER:
+            case DOWN:
+                CommonUtils.SetNextFocus(txtArea);
+                event.consume();
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtArea);
+                event.consume();
+                break;
+            default:
+                break;
         }
     }
 
     private void initCheckBox() {
         chbkApplyToAll.setOnAction(event -> {
-            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
-                poCheckPrintingController.Master().setBankPrint(chbkApplyToAll.isSelected() == true ? "1" : "0");
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                poCheckPrintingController.Master().setBankPrint(chbkApplyToAll.isSelected() ? "1" : "0");
             }
         });
     }
 
     private void initDatePicker() {
         dpCheckDate.setOnAction(e -> {
-//            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-//                LocalDate selectedLocalDate = dpCheckDate.getValue();
-//                LocalDate checkDate = new java.sql.Date(poCheckPrintingController.CheckPayments().getModel().getCheckDate().getTime()).toLocalDate();
-//                String psOldDate = CustomCommonUtil.formatLocalDateToShortString(checkDate); // abang lang ito
-//                if (selectedLocalDate != null) {
-//                    poCheckPrintingController.Master().CheckPayments()..setCheckDate(SQLUtil.toDate(selectedLocalDate.toString(), SQLUtil.FORMAT_SHORT_DATE));
-//                }
-//            }
-//        }
-        }
-        );
+            // optional: add logic if needed
+        });
     }
 
     private void clearFields() {
@@ -224,21 +363,10 @@ public class CheckAssignmentController implements Initializable {
     private void initFields(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.UPDATE);
         JFXUtil.setDisabled(!lbShow, apMaster);
-
     }
 
     private void initButton(int fnEditMode) {
         boolean lbShow = (pnEditMode == EditMode.UPDATE);
-        JFXUtil.setButtonsVisibility(!lbShow, btnClose);
         JFXUtil.setButtonsVisibility(lbShow, btnAssign);
-        JFXUtil.setButtonsVisibility(false, btnPrintCheck);
-        if (fnEditMode == EditMode.READY) {
-            switch (poCheckPrintingController.Master().getTransactionStatus()) {
-                case DisbursementStatic.VERIFIED:
-                    JFXUtil.setButtonsVisibility(true, btnPrintCheck);
-                    break;
-            }
-        }
     }
-
 }

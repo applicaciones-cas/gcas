@@ -218,13 +218,28 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     }
 
                     int successCount = 0;
-                    String lsDVNO = "";
-                    List<ArrayList> listOfDVToAssign = new ArrayList<>();
+                    String firstBank = null;
+                    boolean allSameBank = true;
+                    List<String> listOfDVToAssign = new ArrayList<>();
                     for (ModelCheckPrinting item : selectedItems) {
-                        lsDVNO = item.getIndex03();
+                        String lsDVNO = item.getIndex03();
+                        String banks = item.getIndex07();
+
+                        if (firstBank == null) {
+                            firstBank = banks; // store the first encountered bank
+                        } else if (!firstBank.equals(banks)) {
+                            allSameBank = false;
+                            break; // no need to continue checking
+                        }
+
+                        listOfDVToAssign.add(lsDVNO);
                         successCount++;
+                    }   
+                    if (!allSameBank) {
+                        ShowMessageFX.Information(null, pxeModuleName, "Selected items must belong to the same bank.");
+                        break;
                     }
-                    loadAssignWindow(lsDVNO);
+                    loadAssignWindow(listOfDVToAssign);
                     break;
                 case "btnRetrieve":
                     loadTableMain();
@@ -338,7 +353,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                                             poCheckPrintingController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
                                             poCheckPrintingController.poDisbursementMaster(lnCntr).CheckPayments().Banks().getBankName(),
                                             poCheckPrintingController.poDisbursementMaster(lnCntr).CheckPayments().Bank_Account_Master().getAccountNo(),
-                                            "",
+                                            poCheckPrintingController.poDisbursementMaster(lnCntr).CheckPayments().getCheckNo(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingController.poDisbursementMaster(lnCntr).getNetTotal(), true)
                                     ));
                                 }
@@ -457,39 +472,42 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         });
     }
 
-    private void loadAssignWindow(String fsTransactionNo) throws SQLException {
-        try {
-            Stage stage = new Stage();
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/CheckAssignment.fxml"));
-            CheckAssignmentController loControl = new CheckAssignmentController();
-            loControl.setGRider(oApp);
-            loControl.setCheckPrinting(poCheckPrintingController);
-            loControl.setTransaction(fsTransactionNo);
-            fxmlLoader.setController(loControl);
-            //load the main interface
-            Parent parent = fxmlLoader.load();
-            parent.setOnMousePressed((MouseEvent event) -> {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            });
-            parent.setOnMouseDragged((MouseEvent event) -> {
-                stage.setX(event.getScreenX() - xOffset);
-                stage.setY(event.getScreenY() - yOffset);
-            });
-            //set the main interface as the scene
-            Scene scene = new Scene(parent);
-            stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            scene.setFill(Color.TRANSPARENT);
-            stage.setTitle("");
-            stage.showAndWait();
-        } catch (IOException e) {
-            ShowMessageFX.Warning(e.getMessage(), "Warning", null);
-            System.exit(1);
-        }
+    private void loadAssignWindow(List<String> fsTransactionNos) throws SQLException {
+    try {
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/CheckAssignment.fxml"));
+        
+        CheckAssignmentController loControl = new CheckAssignmentController();
+        loControl.setGRider(oApp);
+        loControl.setCheckPrinting(poCheckPrintingController);
+        loControl.setTransaction(fsTransactionNos);  // Pass the list here
+        fxmlLoader.setController(loControl);
+
+        Parent parent = fxmlLoader.load();
+        parent.setOnMousePressed((MouseEvent event) -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        parent.setOnMouseDragged((MouseEvent event) -> {
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        });
+
+        Scene scene = new Scene(parent);
+        stage.setScene(scene);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        scene.setFill(Color.TRANSPARENT);
+        stage.setTitle("");
+        stage.showAndWait();
+        
+        loadTableMain();
+    } catch (IOException e) {
+        ShowMessageFX.Warning(e.getMessage(), "Warning", null);
+        System.exit(1);
     }
+}
 
     private void loadDVWindow(String fsTransactionNo) throws SQLException {
         try {
