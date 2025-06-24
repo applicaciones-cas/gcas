@@ -515,6 +515,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     poPurchaseReceivingController.resetMaster();
                     poPurchaseReceivingController.resetOthers();
                     poPurchaseReceivingController.Detail().clear();
+                    poPurchaseReceivingController.resetJournal();
                     imageView.setImage(null);
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
@@ -779,7 +780,15 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.0000";
                     }
-                    poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setCreditAmount((Double.valueOf(lsValue.replace(",", ""))));
+                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount() > 0.0000) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
+                        poPurchaseReceivingController.Journal().Detail(pnJEDetail).setCreditAmount(0.0000);
+                        tfCreditAmt.setText("0.0000");
+                        tfCreditAmt.requestFocus();
+                        break;
+                    } else {
+                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setCreditAmount((Double.valueOf(lsValue.replace(",", ""))));
+                    }
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
@@ -788,7 +797,15 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.0000";
                     }
-                    poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setDebitAmount((Double.valueOf(lsValue.replace(",", ""))));
+                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0.0000) {
+                        ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
+                        poPurchaseReceivingController.Journal().Detail(pnJEDetail).setCreditAmount(0.0000);
+                        tfCreditAmt.setText("0.0000");
+                        tfCreditAmt.requestFocus();
+                        break;
+                    } else {
+                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setDebitAmount((Double.valueOf(lsValue.replace(",", ""))));
+                    }
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
@@ -1047,12 +1064,14 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
                     return;
                 }
-                selectedDate = ldtResult.selectedDate;
 
                 lsServerDate = sdfFormat.format(oApp.getServerDate());
                 lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
+                lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
                 lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
                 currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
@@ -1060,13 +1079,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     case "dpReferenceDate":
                         if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
                                 || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                            lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
-                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
-                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
-                            transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
                             if (selectedDate.isAfter(currentDate)) {
                                 poJSON.put("result", "error");
@@ -1087,10 +1099,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 }
                             }
-
-                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
-                            loadRecordMaster();
-                            pbSuccess = true; //Set to original value
                         }
                         break;
                     case "dpJETransactionDate":
@@ -1098,29 +1106,26 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     case "dpReportMonthYear":
                         if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
                                 || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+
                             if (selectedDate.isAfter(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
-                            }
-                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
-                                    || !lsServerDate.equals(lsSelectedDate))) {
-                                pbSuccess = false;
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
-                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
-                                        poJSON = ShowDialogFX.getUserApproval(oApp);
-                                        if (!"success".equals((String) poJSON.get("result"))) {
-                                            pbSuccess = false;
-                                        } else {
-                                            poPurchaseReceivingController.Journal().Detail(pnJEDetail).setForMonthOf((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                                        }
-                                    }
-                                } else {
-                                    pbSuccess = false;
-                                }
                             }
 
+                            if (pbSuccess && (selectedDate.isAfter(transactionDate))) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Date cannot be later than the receiving date.");
+                                pbSuccess = false;
+                            }
+
+                            if (pbSuccess) {
+                                poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                }
+                            }
                         }
                         break;
                     default:
@@ -1136,6 +1141,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                 if (JFXUtil.isObjectEqualTo(datePicker.getId(), "dpJETransactionDate", "dpReportMonthYear")) {
                     loadRecordJEMaster();
+                    loadRecordJEDetail();
                 } else {
                     loadRecordMaster();
                 }
@@ -1573,13 +1579,13 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         String lsAccDesc = "";
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
                             lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(lnCtr).getForMonthOf());
-                            if(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() != null){
+                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() != null) {
                                 lsAcctCode = poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode();
                             }
-                            if(poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription() != null){
+                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription() != null) {
                                 lsAccDesc = poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription();
                             }
-                            
+
                             JEdetails_data.add(
                                     new ModelJournalEntry_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
@@ -1588,8 +1594,10 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount(), true))) //identify total
                             );
-                            
-                            lsReportMonthYear = "";lsAcctCode = "";lsAccDesc = "";
+
+                            lsReportMonthYear = "";
+                            lsAcctCode = "";
+                            lsAccDesc = "";
                         }
                         if (pnJEDetail < 0 || pnJEDetail
                                 >= JEdetails_data.size()) {
