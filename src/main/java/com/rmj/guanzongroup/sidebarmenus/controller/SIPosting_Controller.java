@@ -813,15 +813,26 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         }
     }
 
+    public void moveNextJE() {
+        pnJEDetail = JFXUtil.moveToNextRow(tblViewJEDetails);
+        loadRecordJEDetail();
+        if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
+            tfJEAcctCode.requestFocus();
+        } else {
+            if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
+                tfCreditAmt.requestFocus();
+            } else {
+                tfDebitAmt.requestFocus();
+            }
+        }
+    }
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
             String lsID = (((TextField) event.getSource()).getId());
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
-            int lnRow = pnDetail;
-
-            TableView<?> currentTable = tblViewTransDetailList;
 
             switch (event.getCode()) {
                 case TAB:
@@ -843,11 +854,31 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                     && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
                                 tfCost.requestFocus();
                             } else {
-                                pnDetail = JFXUtil.moveToPreviousRow(currentTable);
+                                pnDetail = JFXUtil.moveToPreviousRow(tblViewTransDetailList);
                                 loadRecordDetail();
                                 tfCost.requestFocus();
                                 event.consume();
                             }
+                            break;
+                        case "tfJEAcctCode":
+                        case "tfCreditAmt":
+                        case "tfDebitAmt":
+                            //focus if either credit or debit
+                            // Debit is default to focus
+
+                            pnJEDetail = JFXUtil.moveToPreviousRow(tblViewJEDetails);
+                            loadRecordJEDetail();
+
+                            if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
+                                tfJEAcctCode.requestFocus();
+                            } else {
+                                if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
+                                    tfCreditAmt.requestFocus();
+                                } else {
+                                    tfDebitAmt.requestFocus();
+                                }
+                            }
+                            event.consume();
                             break;
                     }
                     break;
@@ -857,6 +888,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         case "tfDiscRateDetail":
                         case "tfAddlDiscAmtDetail":
                             moveNext();
+                            event.consume();
+                            break;
+                        case "tfJEAcctCode":
+                        case "tfCreditAmt":
+                        case "tfDebitAmt":
+                            moveNextJE();
                             event.consume();
                             break;
                         default:
@@ -1043,29 +1080,36 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     case "dpReportMonthYear":
                         if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
                                 || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+                            lsServerDate = sdfFormat.format(oApp.getServerDate());
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
                             if (selectedDate.isAfter(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
                             }
-                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
-                                    || !lsServerDate.equals(lsSelectedDate))) {
+
+                            if (pbSuccess && (selectedDate.isAfter(transactionDate))) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Reference date cannot be later than the receiving date.");
                                 pbSuccess = false;
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
-                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
-                                        poJSON = ShowDialogFX.getUserApproval(oApp);
-                                        if (!"success".equals((String) poJSON.get("result"))) {
-                                            pbSuccess = false;
-                                        } else {
-                                            poPurchaseReceivingController.Journal().Detail(pnJEDetail).setForMonthOf((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                                        }
-                                    }
-                                } else {
-                                    pbSuccess = false;
+                            }
+                            if (pbSuccess) {
+                                poPurchaseReceivingController.Journal().Detail(pnJEDetail).setForMonthOf((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 }
                             }
 
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordMaster();
+                            pbSuccess = true; //Set to original value
                         }
                         break;
                     default:
@@ -1794,6 +1838,15 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             if (selected != null) {
                 pnJEDetail = Integer.parseInt(selected.getIndex01()) - 1;
                 loadRecordJEDetail();
+                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
+                    tfJEAcctCode.requestFocus();
+                } else {
+                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
+                        tfCreditAmt.requestFocus();
+                    } else {
+                        tfDebitAmt.requestFocus();
+                    }
+                }
             }
         });
         tblAttachments.setOnMouseClicked(event -> {
@@ -2019,7 +2072,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     public void clearTextFields() {
         imageinfo_temp.clear();
-        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpExpiryDate);
+        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpReportMonthYear);
         psSupplierId = "";
         psBranchId = "";
         JFXUtil.clearTextFields(apMaster, apDetail, apJEDetail, apJEMaster, apAttachments);

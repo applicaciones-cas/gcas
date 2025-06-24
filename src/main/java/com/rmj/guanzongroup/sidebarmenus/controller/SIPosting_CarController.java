@@ -768,6 +768,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 case "tfJEAcctDescription":
                     if (lsValue.isEmpty()) {
 //                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).Account_Chart().setDescription(lsValue);
+                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setAccountCode(lsValue);
                     }
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -861,18 +862,17 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     }
 
     public void moveNextJE() {
-//        double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-//        apJEDetail.requestFocus();
-//        double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-//        if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-//                && poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode() != null
-//                && !"".equals(poPurchaseReceivingController.Journal().Detail(pnDetail).getAccountCode()))) {
-//            tfCreditAmt.requestFocus();
-//        } else {
-//            pnJEDetail = JFXUtil.moveToPreviousRow(tblViewJEDetails);
-//            loadRecordJEDetail();
-//            tfCreditAmt.requestFocus();
-//        }
+        pnJEDetail = JFXUtil.moveToNextRow(tblViewJEDetails);
+        loadRecordJEDetail();
+        if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
+            tfJEAcctCode.requestFocus();
+        } else {
+            if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
+                tfCreditAmt.requestFocus();
+            } else {
+                tfDebitAmt.requestFocus();
+            }
+        }
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -881,10 +881,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             String lsID = (((TextField) event.getSource()).getId());
             String lsValue = (txtField.getText() == null ? "" : txtField.getText());
             poJSON = new JSONObject();
-            int lnRow = pnDetail;
-
-            TableView<?> currentTable = tblViewTransDetailList;
-
             switch (event.getCode()) {
                 case TAB:
                 case ENTER:
@@ -905,7 +901,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                                     && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
                                 tfCost.requestFocus();
                             } else {
-                                pnDetail = JFXUtil.moveToPreviousRow(currentTable);
+                                pnDetail = JFXUtil.moveToPreviousRow(tblViewTransDetailList);
                                 loadRecordDetail();
                                 tfCost.requestFocus();
                                 event.consume();
@@ -914,19 +910,20 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         case "tfJEAcctCode":
                         case "tfCreditAmt":
                         case "tfDebitAmt":
-//                            double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-//                            apJEDetail.requestFocus();
-//                            double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-//                            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-//                                    && poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode() != null
-//                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(pnDetail).getAccountCode()))) {
-//                                tfCreditAmt.requestFocus();
-//                            } else {
-//                                pnJEDetail = JFXUtil.moveToPreviousRow(currentTable);
-//                                loadRecordJEDetail();
-//                                tfCreditAmt.requestFocus();
-//                                event.consume();
-//                            }
+                            //focus if either credit or debit
+                            // Debit is default to focus
+                            pnJEDetail = JFXUtil.moveToPreviousRow(tblViewJEDetails);
+                            loadRecordJEDetail();
+                            if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
+                                tfJEAcctCode.requestFocus();
+                            } else {
+                                if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
+                                    tfCreditAmt.requestFocus();
+                                } else {
+                                    tfDebitAmt.requestFocus();
+                                }
+                            }
+                            event.consume();
                             break;
                     }
                     break;
@@ -1553,7 +1550,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poPurchaseReceivingController.Journal().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() == null || poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode().equals("")) {
+
+                                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode(), null, "")) {
                                     poPurchaseReceivingController.Journal().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;
@@ -1571,7 +1569,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
 
-                            String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getForMonthOf());
+                            String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(lnCtr).getForMonthOf());
 //                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() != null
 //                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode())) {
                             JEdetails_data.add(
@@ -1784,7 +1782,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     tblAttachments.toFront();
                 }
                 loading.progressIndicator.setVisible(false);
-
             }
 
             @Override
@@ -1844,6 +1841,16 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             if (selected != null) {
                 pnJEDetail = Integer.parseInt(selected.getIndex01()) - 1;
                 loadRecordJEDetail();
+                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
+                    tfJEAcctCode.requestFocus();
+                } else {
+                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
+                        tfCreditAmt.requestFocus();
+                    } else {
+                        tfDebitAmt.requestFocus();
+                    }
+
+                }
             }
         });
         tblAttachments.setOnMouseClicked(event -> {
@@ -2068,7 +2075,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     public void clearTextFields() {
         imageinfo_temp.clear();
-        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate);
+        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear);
         psSupplierId = "";
         psBranchId = "";
 
