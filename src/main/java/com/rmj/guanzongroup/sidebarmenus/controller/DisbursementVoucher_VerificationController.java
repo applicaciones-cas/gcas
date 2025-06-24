@@ -95,6 +95,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     private String psCategoryId = "";
     private String psSupplierId = "";
     private String psTransactionNo = "";
+    private String psOldDate = "";
 
     private unloadForm poUnload = new unloadForm();
     private ObservableList<ModelDisbursementVoucher_Detail> detailsdv_data = FXCollections.observableArrayList();
@@ -1008,7 +1009,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
         //Initialise  TextField Focus
         JFXUtil.setFocusListener(txtMasterDV_Focus, tfSearchSupplier, tfSearchTransaction);
         JFXUtil.setFocusListener(txtDetailDV_Focus, tfPurchasedAmountDetail);
-        JFXUtil.setFocusListener(txtMasterCheck_Focus, tfPayeeName, tfBankNameCheck, tfBankAccountCheck);
+        JFXUtil.setFocusListener(txtMasterCheck_Focus, tfAuthorizedPerson);
         JFXUtil.setFocusListener(txtMasterBankTransfer_Focus, tfBankNameBTransfer, tfBankAccountBTransfer, tfSupplierBank, tfSupplierAccountNoBTransfer);
         JFXUtil.setFocusListener(txtMasterOnlinePayment_Focus, tfBankNameOnlinePayment, tfBankAccountOnlinePayment, tfSupplierServiceName, tfSupplierAccountNo);
 
@@ -1089,25 +1090,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
         if (!nv) {
             /*Lost Focus*/
             switch (lsTxtFieldID) {
-                case "tfBankNameCheck":
-                    if (lsValue.equals("")) {
-                        poDisbursementController.CheckPayments().getModel().setBankID("");
-                    }
-                    break;
-                case "tfBankAccountCheck":
-                    if (lsValue.equals("")) {
-                        poDisbursementController.CheckPayments().getModel().setBankAcountID("");
-                    }
-                    break;
-                case "tfPayeeName":
-                    if (lsValue.equals("")) {
-                        poDisbursementController.CheckPayments().getModel().setPayeeID("");
-                    }
-                    break;
                 case "tfAuthorizedPerson":
-                    if (lsValue.equals("")) {
-                        poDisbursementController.CheckPayments().getModel().setAuthorize("");
-                    }
+                    poDisbursementController.CheckPayments().getModel().setAuthorize(lsValue);
                     break;
             }
         }
@@ -1182,6 +1166,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                             case "tfTaxCodeDetail":
                             case "tfParticularsDetail":
                                 tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount(), true));
+                                pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
                                 moveNextDV();
                                 event.consume();
                                 break;
@@ -1231,8 +1216,14 @@ public class DisbursementVoucher_VerificationController implements Initializable
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfParticularsDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getDescription() != null ? poDisbursementController.Detail(pnDetailDV).Particular().getDescription() : "");
-                                moveNextDV();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
+                                        moveNextDV();
+                                    });
+                                    delay.play();
+                                });
                                 loadTableDetailDV();
                                 break;
                             case "tfAuthorizedPerson":
@@ -1243,15 +1234,26 @@ public class DisbursementVoucher_VerificationController implements Initializable
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                moveNextDV();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
+                                        moveNextDV();
+                                    });
+                                    delay.play();
+                                });
                                 loadTableDetailDV();
                                 break;
                         }
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
                         event.consume();
+                        break;
                     case UP:
                         switch (lsID) {
                             case "tfPurchasedAmountDetail":
                             case "tfTaxCodeDetail":
+                            case "tfParticularsDetail":
+                                pnDetailDV = JFXUtil.moveToPreviousRow(tblVwDetails);
                                 movePreviousDV();
                                 event.consume();
                                 break;
@@ -1262,10 +1264,13 @@ public class DisbursementVoucher_VerificationController implements Initializable
                         switch (lsID) {
                             case "tfPurchasedAmountDetail":
                             case "tfTaxCodeDetail":
+                            case "tfParticularsDetail":
+                                pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
                                 moveNextDV();
                                 event.consume();
                                 break;
                         }
+                        event.consume();
                         break;
                     default:
                         break;
@@ -1280,7 +1285,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
 
     private void movePreviousDV() {
         if (pnDetailDV >= 0) {
-            switch (poDisbursementController.Detail(pnDetailDV - 1).getSourceCode()) {
+            switch (poDisbursementController.Detail(pnDetailDV).getSourceCode()) {
                 case DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE:
                     initDetailTblVwKeyFocus(true, false);
                     break;
@@ -1290,13 +1295,17 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 case DisbursementStatic.SourceCode.CASH_PAYABLE:
                     initDetailTblVwKeyFocus(true, false);
                     break;
+                default:
+                    loadRecordDetailDV();
+                    initFields(pnEditMode);
+                    break;
             }
         }
     }
 
     private void moveNextDV() {
         if (pnDetailDV >= 0) {
-            switch (poDisbursementController.Detail(pnDetailDV + 1).getSourceCode()) {
+            switch (poDisbursementController.Detail(pnDetailDV).getSourceCode()) {
                 case DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE:
                     initDetailTblVwKeyFocus(true, true);
                     break;
@@ -1305,6 +1314,10 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     break;
                 case DisbursementStatic.SourceCode.CASH_PAYABLE:
                     initDetailTblVwKeyFocus(true, true);
+                    break;
+                default:
+                    loadRecordDetailDV();
+                    initFields(pnEditMode);
                     break;
             }
         }
@@ -1341,14 +1354,12 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void initDetailTblVwKeyFocus(boolean isSOACache, boolean isNextRow) {
-        apDVDetail.requestFocus();
-        pnDetailDV = isNextRow ? JFXUtil.moveToNextRow(tblVwDetails) : JFXUtil.moveToPreviousRow(tblVwDetails);
         loadRecordDetailDV();
+        initFields(pnEditMode);
         String lsSourceNo = poDisbursementController.Detail(pnDetailDV).getSourceNo();
         double amount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
         String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTAxCode();
         String lsParticular = poDisbursementController.Detail(pnDetailDV).getParticularID();
-        initFields(pnEditMode);
         if (lsSourceNo.isEmpty()) {
             return;
         }
@@ -1493,6 +1504,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     private void initTextAreaFields() {
         //Initialise  TextArea Focus
         taDVRemarks.focusedProperty().addListener(txtArea_Focus);
+
         taJournalRemarks.focusedProperty().addListener(txtArea_Focus);
         //Initialise  TextArea KeyPressed
         taDVRemarks.setOnKeyPressed(event -> txtArea_KeyPressed(event));
@@ -1555,7 +1567,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
         cmbOtherPaymentBTransfer.setItems(cOtherPaymentBTransfer);
 
         cmbPaymentMode.setOnAction(e -> {
-            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) && cmbPaymentMode.getSelectionModel().getSelectedIndex() >= 0) {
+            if ((pnEditMode == EditMode.UPDATE) && cmbPaymentMode.getSelectionModel().getSelectedIndex() >= 0) {
                 poDisbursementController.Master().setOldDisbursementType(poDisbursementController.Master().getDisbursementType());
                 poDisbursementController.Master().setDisbursementType(String.valueOf(cmbPaymentMode.getSelectionModel().getSelectedIndex()));
                 loadRecordMasterDV();
@@ -1564,33 +1576,36 @@ public class DisbursementVoucher_VerificationController implements Initializable
         });
 
         cmbPayeeType.setOnAction(event -> {
-            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) && cmbPayeeType.getSelectionModel().getSelectedIndex() >= 0) {
+            if ((pnEditMode == EditMode.UPDATE) && cmbPayeeType.getSelectionModel().getSelectedIndex() >= 0) {
                 poDisbursementController.CheckPayments().getModel().setPayeeType(String.valueOf(cmbPayeeType.getSelectionModel().getSelectedIndex()));
+                initFields(pnEditMode);
             }
         }
         );
         cmbDisbursementMode.setOnAction(event -> {
-            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) && cmbDisbursementMode.getSelectionModel().getSelectedIndex() >= 0) {
+            if ((pnEditMode == EditMode.UPDATE) && cmbDisbursementMode.getSelectionModel().getSelectedIndex() >= 0) {
                 poDisbursementController.CheckPayments().getModel().setDesbursementMode(String.valueOf(cmbDisbursementMode.getSelectionModel().getSelectedIndex()));
+                initFields(pnEditMode);
             }
         }
         );
         cmbClaimantType.setOnAction(event
                 -> {
-            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) && cmbClaimantType.getSelectionModel().getSelectedIndex() >= 0) {
+            if ((pnEditMode == EditMode.UPDATE) && cmbClaimantType.getSelectionModel().getSelectedIndex() >= 0) {
                 poDisbursementController.CheckPayments().getModel().setClaimant(String.valueOf(cmbClaimantType.getSelectionModel().getSelectedIndex()));
+                initFields(pnEditMode);
             }
         }
         );
         cmbOtherPayment.setOnAction(event
                 -> {
-            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) && cmbOtherPayment.getSelectionModel().getSelectedIndex() >= 0) {
+            if ((pnEditMode == EditMode.UPDATE) && cmbOtherPayment.getSelectionModel().getSelectedIndex() >= 0) {
             }
         }
         );
         cmbOtherPaymentBTransfer.setOnAction(event
                 -> {
-            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) && cmbOtherPaymentBTransfer.getSelectionModel().getSelectedIndex() >= 0) {
+            if ((pnEditMode == EditMode.UPDATE) && cmbOtherPaymentBTransfer.getSelectionModel().getSelectedIndex() >= 0) {
             }
         }
         );
@@ -1600,11 +1615,44 @@ public class DisbursementVoucher_VerificationController implements Initializable
         dpCheckDate.setOnAction(e -> {
             if (pnEditMode == EditMode.UPDATE) {
                 LocalDate selectedLocalDate = dpCheckDate.getValue();
-                LocalDate checkDate = new java.sql.Date(poDisbursementController.CheckPayments().getModel().getCheckDate().getTime()).toLocalDate();
-                String psOldDate = CustomCommonUtil.formatLocalDateToShortString(checkDate); // abang lang ito
-                if (selectedLocalDate != null) {
-                    poDisbursementController.CheckPayments().getModel().setCheckDate(SQLUtil.toDate(selectedLocalDate.toString(), SQLUtil.FORMAT_SHORT_DATE));
+                LocalDate transactionDate = new java.sql.Date(poDisbursementController.CheckPayments().getModel().getCheckDate().getTime()).toLocalDate();
+                if (selectedLocalDate == null) {
+                    return;
                 }
+
+                LocalDate dateNow = LocalDate.now();
+                psOldDate = CustomCommonUtil.formatLocalDateToShortString(transactionDate);
+                boolean approved = true;
+                if (pnEditMode == EditMode.UPDATE) {
+                    if (!DisbursementStatic.VERIFIED.equals(poDisbursementController.Master().getTransactionStatus())) {
+                        psOldDate = CustomCommonUtil.formatLocalDateToShortString(transactionDate);
+                        if (selectedLocalDate.isBefore(dateNow)) {
+                            ShowMessageFX.Warning("Invalid to back date.", pxeModuleName, null);
+                            approved = false;
+                        }
+                    }
+                }
+                if (pnEditMode == EditMode.ADDNEW) {
+                    if (selectedLocalDate.isBefore(dateNow)) {
+                        ShowMessageFX.Warning("Invalid to back date.", pxeModuleName, null);
+                        approved = false;
+                    }
+                }
+                if (approved) {
+                    poDisbursementController.CheckPayments().getModel().setCheckDate(
+                            SQLUtil.toDate(selectedLocalDate.toString(), SQLUtil.FORMAT_SHORT_DATE));
+                } else {
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        dpCheckDate.setValue(dateNow);
+                        poDisbursementController.CheckPayments().getModel().setCheckDate(
+                                SQLUtil.toDate(dateNow.toString(), SQLUtil.FORMAT_SHORT_DATE));
+                    } else if (pnEditMode == EditMode.UPDATE) {
+                        poDisbursementController.CheckPayments().getModel().setCheckDate(
+                                SQLUtil.toDate(psOldDate, SQLUtil.FORMAT_SHORT_DATE));
+                    }
+                }
+                dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+                        SQLUtil.dateFormat(poDisbursementController.CheckPayments().getModel().getCheckDate(), SQLUtil.FORMAT_SHORT_DATE)));
             }
         }
         );
@@ -1624,6 +1672,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
         chbkPrintByBank.setOnAction(event -> {
             if (pnEditMode == EditMode.UPDATE) {
                 poDisbursementController.Master().setBankPrint(chbkPrintByBank.isSelected() == true ? "1" : "0");
+                initFields(pnEditMode);
             }
         });
     }
@@ -1640,7 +1689,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     private void initFields(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.UPDATE);
         JFXUtil.setDisabled(!lbShow, apDVMaster1, apDVMaster2, apDVMaster3, apJournalMaster, apJournalDetails);
-        JFXUtil.setDisabled(true, apDVDetail, apMasterDVCheck, apMasterDVOp, apMasterDVBTransfer, tfParticularsDetail);
+        JFXUtil.setDisabled(true, apDVDetail, apMasterDVCheck, apMasterDVOp, apMasterDVBTransfer, tfParticularsDetail, tfAuthorizedPerson);
         tabJournal.setDisable(tfDVTransactionNo.getText().isEmpty());
         tabCheck.setDisable(true);
         tabOnlinePayment.setDisable(true);
@@ -1656,6 +1705,15 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 tabCheck.setDisable(!lbShow);
                 apMasterDVOp.setDisable(!lbShow);
                 CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
+
+                boolean isPrintByBank = chbkPrintByBank.isSelected();
+                boolean isDisbursementModeSelected = cmbDisbursementMode.getSelectionModel().getSelectedIndex() == 1;
+                boolean isClaimantTypeSelected = cmbClaimantType.getSelectionModel().getSelectedIndex() == 0;
+
+                if (isPrintByBank && isDisbursementModeSelected && isClaimantTypeSelected) {
+                    tfAuthorizedPerson.setDisable(!lbShow);
+                }
+
                 break;
             case DisbursementStatic.DisbursementType.WIRED:
                 tabBankTransfer.setDisable(!lbShow);
