@@ -1525,8 +1525,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
 
                             String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(lnCtr).getForMonthOf());
-//                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode()!= null 
-//                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode())) {
+
                             JEdetails_data.add(
                                     new ModelJournalEntry_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
@@ -1535,7 +1534,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount(), true)),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount(), true))) //identify total
                             );
-//                            }
                         }
                         if (pnJEDetail < 0 || pnJEDetail
                                 >= JEdetails_data.size()) {
@@ -1852,7 +1850,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
         //Unkown || Ready
         JFXUtil.setButtonsVisibility(lbShow4, btnClose);
-        JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apAttachments);
+        JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apAttachments, apJEMaster, apJEDetail);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
             case PurchaseOrderReceivingStatus.CONFIRMED:
@@ -2024,7 +2022,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpExpiryDate);
         psSupplierId = "";
         psBranchId = "";
-        JFXUtil.clearTextFields(apBrowse, apMaster, apDetail, apJEDetail, apJEMaster, apAttachments);
+        JFXUtil.clearTextFields(apMaster, apDetail, apJEDetail, apJEMaster, apAttachments);
         cbVatInclusive.setSelected(false);
         cbVatable.setSelected(false);
     }

@@ -1574,14 +1574,14 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                             String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getForMonthOf());
 //                            if (poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode() != null
 //                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode())) {
-                                JEdetails_data.add(
-                                        new ModelJournalEntry_Detail(String.valueOf(lnCtr + 1),
-                                                String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
-                                                String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode()),
-                                                String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription()),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount(), true)),
-                                                String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount(), true))) //identify total
-                                );
+                            JEdetails_data.add(
+                                    new ModelJournalEntry_Detail(String.valueOf(lnCtr + 1),
+                                            String.valueOf(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd")),
+                                            String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).getAccountCode()),
+                                            String.valueOf(poPurchaseReceivingController.Journal().Detail(lnCtr).Account_Chart().getDescription()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount(), true))) //identify total
+                            );
 //                            }
                         }
                         if (pnJEDetail < 0 || pnJEDetail
@@ -1899,7 +1899,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         JFXUtil.setButtonsVisibility(false, btnPost);
         //Unkown || Ready
         JFXUtil.setButtonsVisibility(lbShow4, btnClose);
-        JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apAttachments);
+        JFXUtil.setDisabled(!lbShow1, apMaster, apDetail, apJEDetail, apJEMaster, apAttachments);
 
         switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
             case PurchaseOrderReceivingStatus.CONFIRMED:
@@ -2072,7 +2072,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         psSupplierId = "";
         psBranchId = "";
 
-        JFXUtil.clearTextFields(apBrowse, apMaster, apDetail,
+        JFXUtil.clearTextFields(apMaster, apDetail,
                 apJEDetail, apJEMaster, apAttachments);
 
         cbVatInclusive.setSelected(false);
