@@ -19,7 +19,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="AnchorMain" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rmj.guanzongroup.sidebarmenus.views.CheckAssignmentController">
+<AnchorPane fx:id="AnchorMain" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <StackPane fx:id="StackPane" layoutX="107.0" layoutY="129.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -35,11 +35,6 @@
                                         <Button fx:id="btnAssign" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" minWidth="100.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Assign Check">
                                             <graphic>
                                                 <FontAwesomeIconView glyphName="EDIT" size="20" styleClass="FontIcon" />
-                                            </graphic>
-                                        </Button>
-                                        <Button fx:id="btnPrintDV" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Print DV">
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="PRINT" size="20" styleClass="FontIcon" />
                                             </graphic>
                                         </Button>
                                         <Button fx:id="btnPrintCheck" contentDisplay="TOP" graphicTextGap="3.0" maxHeight="70.0" minWidth="80.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Print Check">
@@ -71,7 +66,7 @@
                             <children>
                                 <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-border-color: FF8201;" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                                     <children>
-                                        <AnchorPane>
+                                        <AnchorPane fx:id="apMaster">
                                             <children>
                                                 <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                     <columnConstraints>
@@ -108,7 +103,7 @@
                                                             </font>
                                                         </Text>
                                                         <Text id="LabelDesc" strokeType="OUTSIDE" strokeWidth="0.0" text="Check No" GridPane.rowIndex="1" />
-                                                        <TextField fx:id="tfCheckNo" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                                        <TextField fx:id="tfCheckNo" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                                             <font>
                                                                 <Font size="14.0" />
                                                             </font>

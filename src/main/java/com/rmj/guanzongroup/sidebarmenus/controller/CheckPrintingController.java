@@ -57,6 +57,7 @@ import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
+import ph.com.guanzongroup.cas.cashflow.CheckPrinting;
 import ph.com.guanzongroup.cas.cashflow.Disbursement;
 import ph.com.guanzongroup.cas.cashflow.model.SelectedITems;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
@@ -73,6 +74,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     private JSONObject poJSON;
     private static final int ROWS_PER_PAGE = 50;
     private final String pxeModuleName = "Check Printing";
+    private CheckPrinting poCheckPrintingController;
     private Disbursement poDisbursementController;
     public int pnEditMode;
 
@@ -144,22 +146,22 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
-            poDisbursementController.setTransactionStatus(DisbursementStatic.VERIFIED);
+            poCheckPrintingController = new CashflowControllers(oApp, null).CheckPrinting();
+            poCheckPrintingController.setTransactionStatus(DisbursementStatic.AUTHORIZED);
             poJSON = new JSONObject();
-            poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
+            poJSON = poCheckPrintingController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
                 System.err.println((String) poJSON.get("message"));
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             }
             initAll();
             Platform.runLater(() -> {
-                poDisbursementController.Master().setIndustryID(psIndustryId);
-                poDisbursementController.Master().setCompanyID(psCompanyId);
+                poCheckPrintingController.Master().setIndustryID(psIndustryId);
+                poCheckPrintingController.Master().setCompanyID(psCompanyId);
                 loadRecordSearch();
             });
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DisbursementVoucher_CertificationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CheckPrintingController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -180,9 +182,9 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
 
     private void loadRecordSearch() {
         try {
-            lblSource.setText(poDisbursementController.Master().Company().getCompanyName() + " - " + poDisbursementController.Master().Industry().getDescription());
+            lblSource.setText(poCheckPrintingController.Master().Company().getCompanyName() + " - " + poCheckPrintingController.Master().Industry().getDescription());
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DisbursementVoucher_CertificationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(CheckPrintingController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -254,36 +256,31 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         poJSON = new JSONObject();
 
         if (null != event.getCode()) {
-            try {
-                switch (event.getCode()) {
-                    case TAB:
-                    case ENTER:
-                    case F3:
-                        switch (lsID) {
-                            case "tfSearchCompany":
-                                break;
-                            case "tfSearchDepartment":
-                                break;
-                            case "tfSearchBankName":
-                                poJSON = poDisbursementController.SearchBanks(lsValue, false);
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                                    return;
-                                }
-                                tfSearchBankName.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "");
-                                break;
-                            case "tfSearchBankAccount":
-                                break;
-                        }
-                        loadTableMain();
-                        event.consume();
-                    default:
-                        break;
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case F3:
+                    switch (lsID) {
+                        case "tfSearchCompany":
+                            break;
+                        case "tfSearchDepartment":
+                            break;
+                        case "tfSearchBankName":
+//                            poJSON = poCheckPrintingController.SearchBanks(lsValue, false);
+//                            if ("error".equals((String) poJSON.get("result"))) {
+//                                ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+//                                return;
+//                            }
+//                            tfSearchBankName.setText(poCheckPrintingController.CheckPayments().getModel().Banks().getBankName() != null ? poCheckPrintingController.CheckPayments().getModel().Banks().getBankName() : "");
+                            break;
+                        case "tfSearchBankAccount":
+                            break;
+                    }
+                    loadTableMain();
+                    event.consume();
+                default:
+                    break;
 
-                }
-
-            } catch (GuanzonException | SQLException ex) {
-                Logger.getLogger(DisbursementVoucher_CertificationController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -308,22 +305,22 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poDisbursementController.getDisbursement("", "", false);
+                        poJSON = poCheckPrintingController.getDisbursement("", "");
                         if ("success".equals(poJSON.get("result"))) {
-                            if (poDisbursementController.getDisbursementMasterCount() > 0) {
+                            if (poCheckPrintingController.getDisbursementMasterCount() > 0) {
                                 int checkIndex = 0;
                                 int otherIndex = 0;
-                                for (int lnCntr = 0; lnCntr < poDisbursementController.getDisbursementMasterCount(); lnCntr++) {
+                                for (int lnCntr = 0; lnCntr < poCheckPrintingController.getDisbursementMasterCount(); lnCntr++) {
                                     String lsPaymentForm = "";
                                     String lsBankName = "";
                                     String lsBankAccount = "";
-                                    String disbursementType = poDisbursementController.poDisbursementMaster(lnCntr).getDisbursementType();
+                                    String disbursementType = poCheckPrintingController.poDisbursementMaster(lnCntr).getDisbursementType();
                                     switch (disbursementType) {
                                         case DisbursementStatic.DisbursementType.CHECK:
                                             lsPaymentForm = "CHECK";
-//                                            if (checkIndex < poDisbursementController.CheckPayments().getCheckPaymentsCount()) {
-//                                                lsBankName = poDisbursementController.CheckPayments().poCheckPayments(checkIndex).Banks().getBankName();
-//                                                lsBankAccount = poDisbursementController.CheckPayments().poCheckPayments(checkIndex).getBankAcountID();
+//                                            if (checkIndex < poCheckPrintingController.CheckPayments().getCheckPaymentsCount()) {
+//                                                lsBankName = poCheckPrintingController.CheckPayments().poCheckPayments(checkIndex).Banks().getBankName();
+//                                                lsBankAccount = poCheckPrintingController.CheckPayments().poCheckPayments(checkIndex).getBankAcountID();
 //                                            }
                                             checkIndex++; // Move to next CHECK payment
                                             break;
@@ -335,14 +332,14 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                                     main_data.add(new ModelCheckPrinting(
                                             String.valueOf(lnCntr + 1),
                                             "",
-                                            poDisbursementController.poDisbursementMaster(lnCntr).getTransactionNo(),
-                                            CustomCommonUtil.formatDateToShortString(poDisbursementController.poDisbursementMaster(lnCntr).getTransactionDate()),
-                                            poDisbursementController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
-                                            poDisbursementController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
-                                            lsPaymentForm,
-                                            lsBankName,
-                                            lsBankAccount,
-                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.poDisbursementMaster(lnCntr).getNetTotal(), true)
+                                            poCheckPrintingController.poDisbursementMaster(lnCntr).getTransactionNo(),
+                                            CustomCommonUtil.formatDateToShortString(poCheckPrintingController.poDisbursementMaster(lnCntr).getTransactionDate()),
+                                            poCheckPrintingController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
+                                            poCheckPrintingController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
+                                            poCheckPrintingController.poDisbursementMaster(lnCntr).CheckPayments().Banks().getBankName(),
+                                            poCheckPrintingController.poDisbursementMaster(lnCntr).CheckPayments().Bank_Account_Master().getAccountNo(),
+                                            "",
+                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingController.poDisbursementMaster(lnCntr).getNetTotal(), true)
                                     ));
                                 }
                             }
@@ -358,7 +355,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                         }
                         JFXUtil.loadTab(pagination, main_data.size(), ROWS_PER_PAGE, tblVwMain, filteredMain_Data);
                     } catch (GuanzonException | SQLException ex) {
-                        Logger.getLogger(DisbursementVoucher_CertificationController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(CheckPrintingController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
                 return null;
@@ -451,9 +448,9 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                         ShowMessageFX.Warning("Invalid to view no transaction no.", pxeModuleName, null);
                         return;
                     }
-                    loadAssignWindow(selected.getIndex03());
+                    loadDVWindow(selected.getIndex03());
                 } catch (SQLException ex) {
-                    Logger.getLogger(DisbursementVoucher_CertificationController.class
+                    Logger.getLogger(CheckPrintingController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -466,9 +463,43 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/CheckAssignment.fxml"));
             CheckAssignmentController loControl = new CheckAssignmentController();
-//            loControl.setGRider(oApp);
-//            loControl.setDisbursement(poDisbursementController);
-//            loControl.setTransaction(fsTransactionNo);
+            loControl.setGRider(oApp);
+            loControl.setCheckPrinting(poCheckPrintingController);
+            loControl.setTransaction(fsTransactionNo);
+            fxmlLoader.setController(loControl);
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+            //set the main interface as the scene
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
+            stage.setTitle("");
+            stage.showAndWait();
+        } catch (IOException e) {
+            ShowMessageFX.Warning(e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
+    }
+
+    private void loadDVWindow(String fsTransactionNo) throws SQLException {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_View.fxml"));
+            DisbursementVoucher_ViewController loControl = new DisbursementVoucher_ViewController();
+            loControl.setGRider(oApp);
+            loControl.setDisbursement(poDisbursementController);
+            loControl.setTransaction(fsTransactionNo);
             fxmlLoader.setController(loControl);
             //load the main interface
             Parent parent = fxmlLoader.load();
@@ -495,49 +526,49 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     }
 
     private void initTextFieldsProperty() {
-        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    poDisbursementController.Master().setPayeeID("");
-                    tfSearchCompany.setText("");
-                    loadTableMain();
-                }
-            }
-        }
-        );
-        tfSearchDepartment.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    poDisbursementController.CheckPayments().getModel().setBankID("");
-                    tfSearchDepartment.setText("");
-                    loadTableMain();
-                }
-            }
-        }
-        );
-
-        tfSearchBankName.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            poDisbursementController.CheckPayments().getModel().setBankID("");
-                            tfSearchDepartment.setText("");
-                            loadTableMain();
-                        }
-                    }
-                }
-                );
-        tfSearchBankAccount.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            poDisbursementController.CheckPayments().getModel().setBankID("");
-                            tfSearchBankAccount.setText("");
-                            loadTableMain();
-                        }
-                    }
-                }
-                );
+//        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                if (newValue.isEmpty()) {
+//                    poCheckPrintingController.Master().setPayeeID("");
+//                    tfSearchCompany.setText("");
+//                    loadTableMain();
+//                }
+//            }
+//        }
+//        );
+//        tfSearchDepartment.textProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                if (newValue.isEmpty()) {
+//                    poCheckPrintingController.CheckPayments().getModel().setBankID("");
+//                    tfSearchDepartment.setText("");
+//                    loadTableMain();
+//                }
+//            }
+//        }
+//        );
+//
+//        tfSearchBankName.textProperty()
+//                .addListener((observable, oldValue, newValue) -> {
+//                    if (newValue != null) {
+//                        if (newValue.isEmpty()) {
+//                            poCheckPrintingController.CheckPayments().getModel().setBankID("");
+//                            tfSearchDepartment.setText("");
+//                            loadTableMain();
+//                        }
+//                    }
+//                }
+//                );
+//        tfSearchBankAccount.textProperty()
+//                .addListener((observable, oldValue, newValue) -> {
+//                    if (newValue != null) {
+//                        if (newValue.isEmpty()) {
+//                            poCheckPrintingController.CheckPayments().getModel().setBankID("");
+//                            tfSearchBankAccount.setText("");
+//                            loadTableMain();
+//                        }
+//                    }
+//                }
+//                );
     }
 
 }
