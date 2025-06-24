@@ -1675,6 +1675,13 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 initFields(pnEditMode);
             }
         });
+        chbkVatClassification.setOnAction(event -> {
+            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                if (pnDetailDV >= 0) {
+                    poDisbursementController.Detail(pnDetailDV).isWithVat(chbkVatClassification.isSelected() == true);
+                }
+            }
+        });
     }
 
     private void clearFields() {
