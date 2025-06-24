@@ -354,7 +354,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -684,9 +684,9 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     break;
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -776,7 +776,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -809,9 +809,9 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                     String.valueOf(poSOATaggingController.APPaymentMasterList(lnCtr).getTransactionNo())
                             ));
                         } catch (SQLException ex) {
-                            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         } catch (GuanzonException ex) {
-                            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
                         if (poSOATaggingController.APPaymentMasterList(lnCtr).getTransactionStatus().equals(SOATaggingStatus.CONFIRMED)) {
                             JFXUtil.highlightByKey(tblViewMainList, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
@@ -869,7 +869,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             tfSearchCompany.setText(psSearchCompanyId.equals("") ? "" : poSOATaggingController.Master().Company().getCompanyName());
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -904,9 +904,9 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getAppliedAmount(), true));
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -947,9 +947,9 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getNetTotal(), true));
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -975,7 +975,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                 loadTableDetail();
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1021,16 +1021,16 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                                 lnCtr--;
                             }
 
-//                            if ((poSOATaggingController.getDetailCount() - 1) >= 0) {
-//                                if (poSOATaggingController.Detail(poSOATaggingController.getDetailCount() - 1).getSourceNo() != null
-//                                        && !"".equals(poSOATaggingController.Detail(poSOATaggingController.getDetailCount() - 1).getSourceNo())) {
-//                                    poSOATaggingController.AddDetail();
-//                                }
-//                            }
-//
-//                            if ((poSOATaggingController.getDetailCount() - 1) < 0) {
-//                                poSOATaggingController.AddDetail();
-//                            }
+                            if ((poSOATaggingController.getDetailCount() - 1) >= 0) {
+                                if (poSOATaggingController.Detail(poSOATaggingController.getDetailCount() - 1).getSourceNo() != null
+                                        && !"".equals(poSOATaggingController.Detail(poSOATaggingController.getDetailCount() - 1).getSourceNo())) {
+                                    poSOATaggingController.AddDetail();
+                                }
+                            }
+
+                            if ((poSOATaggingController.getDetailCount() - 1) < 0) {
+                                poSOATaggingController.AddDetail();
+                            }
                         }
 
                         String lsReferenceNo = "";
@@ -1071,9 +1071,11 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                         }
                         loadRecordMaster();
                     } catch (SQLException ex) {
-                        Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(SOATagging_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                    } catch (CloneNotSupportedException ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                 });
 

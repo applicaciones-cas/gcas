@@ -198,7 +198,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -271,11 +271,11 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                     CommonUtils.SetPreviousFocus(txtField);
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -318,7 +318,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             tfSearchCompany.setText(psCompanyId.equals("") ? "" : poSOATaggingController.Master().Company().getCompanyName());
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -349,9 +349,9 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getAppliedAmount(), true));
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -393,9 +393,9 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getNetTotal(), true));
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -436,9 +436,9 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
                                     ));
                             lsReferenceNo = "";
                         } catch (SQLException ex) {
-                            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                         } catch (GuanzonException ex) {
-                            Logger.getLogger(SOATagging_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     if (pnDetail < 0 || pnDetail

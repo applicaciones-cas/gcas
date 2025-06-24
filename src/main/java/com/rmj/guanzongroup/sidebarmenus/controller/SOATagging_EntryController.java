@@ -342,7 +342,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -374,9 +374,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             }
             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, false);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -789,9 +789,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     break;
             }
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -893,7 +893,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -938,9 +938,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsTransNo
                             ));
                         } catch (SQLException ex) {
-                            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         } catch (GuanzonException ex) {
-                            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
                     }
 
@@ -991,7 +991,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         try {
             lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1025,9 +1025,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Detail(pnDetail).getAppliedAmount(), true));
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1074,9 +1074,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getNetTotal(), true));
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
 
     }
@@ -1117,7 +1117,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             }
 
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -1199,11 +1199,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                         }
                         loadRecordMaster();
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     } catch (SQLException ex) {
-                        Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(SOATagging_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                 });
 
