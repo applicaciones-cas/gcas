@@ -5,7 +5,6 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.SIPosting_Controller.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -84,8 +83,6 @@ import javafx.stage.Stage;
 import org.guanzon.appdriver.constant.DocumentType;
 import javafx.util.Pair;
 import javax.script.ScriptException;
-import org.guanzon.appdriver.agent.ShowDialogFX;
-import org.guanzon.appdriver.constant.UserRight;
 
 /**
  *
@@ -143,7 +140,10 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     @FXML
     private Button btnUpdate, btnSearch, btnSerials, btnSave, btnCancel, btnPost, btnHistory, btnRetrieve, btnClose, btnArrowLeft, btnArrowRight;
     @FXML
-    private TextField tfSearchSupplier, tfSearchReceiveBranch, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo, tfSINo, tfTerm, tfTransactionTotal, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatRate, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfTaxAmount, tfNetTotal, tfOrderNo, tfBrand, tfDescription, tfOrderQuantity, tfReceiveQuantity, tfSRPAmount, tfDiscRateDetail, tfAddlDiscAmtDetail, tfCost, tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt, tfTotalDebitAmt, tfAttachmentNo;
+    private TextField tfSearchSupplier, tfSearchReceiveBranch, tfSearchReferenceNo, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo,
+            tfSINo, tfTerm, tfTransactionTotal, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatRate, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales,
+            tfTaxAmount, tfNetTotal, tfOrderNo, tfBrand, tfDescription, tfOrderQuantity, tfReceiveQuantity, tfSRPAmount, tfDiscRateDetail, tfAddlDiscAmtDetail, tfCost,
+            tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt, tfTotalDebitAmt, tfAttachmentNo;
     @FXML
     private DatePicker dpTransactionDate, dpReferenceDate, dpReportMonthYear, dpJETransactionDate;
     @FXML
@@ -526,11 +526,23 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     loadRecordMaster();
                     loadTableDetail();
                     loadTableAttachment();
+
+                    Tab currentTab = tabPaneForm.getSelectionModel().getSelectedItem();
+                    if (currentTab.getId().equals("tabJE")) {
+                        poJSON = poPurchaseReceivingController.populateJournal();
+                        if (JFXUtil.isJSONSuccess(poJSON)) {
+                            loadTableJEDetail();
+                        } else {
+                        }
+                    }
+
                 }
                 initButton(pnEditMode);
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (ScriptException ex) {
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -780,7 +792,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.0000";
                     }
-                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount() > 0.0000) {
+                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount() > 0.0000 && Double.valueOf(lsValue.replace(",", "")) > 0) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
                         poPurchaseReceivingController.Journal().Detail(pnJEDetail).setCreditAmount(0.0000);
                         tfCreditAmt.setText("0.0000");
@@ -797,11 +809,11 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.0000";
                     }
-                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0.0000) {
+                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0.0000 && Double.valueOf(lsValue.replace(",", "")) > 0) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
-                        poPurchaseReceivingController.Journal().Detail(pnJEDetail).setCreditAmount(0.0000);
-                        tfCreditAmt.setText("0.0000");
-                        tfCreditAmt.requestFocus();
+                        poPurchaseReceivingController.Journal().Detail(pnJEDetail).setDebitAmount(0.0000);
+                        tfDebitAmt.setText("0.0000");
+                        tfDebitAmt.requestFocus();
                         break;
                     } else {
                         poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setDebitAmount((Double.valueOf(lsValue.replace(",", ""))));
@@ -1009,13 +1021,37 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                                 tfJEAcctCode.setText("");
                                 break;
                             }
+
+                            poJSON = poPurchaseReceivingController.checkExistAcctCode(pnJEDetail, poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode());
+                            if ("error".equals(poJSON.get("result"))) {
+                                int lnRow = (int) poJSON.get("row");
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnJEDetail != lnRow) {
+                                    pnJEDetail = lnRow;
+                                    loadTableJEDetail();
+                                    return;
+                                }
+                                break;
+                            }
                             loadTableJEDetail();
                             break;
                         case "tfJEAcctDescription":
-                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, false, psIndustryId, "");
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, false, psIndustryId, null);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfJEAcctDescription.setText("");
+                                tfJEAcctCode.setText("");
+                                break;
+                            }
+
+                            poJSON = poPurchaseReceivingController.checkExistAcctCode(pnJEDetail, poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode());
+                            if ("error".equals(poJSON.get("result"))) {
+                                int lnRow = (int) poJSON.get("row");
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                if (pnJEDetail != lnRow) {
+                                    pnJEDetail = lnRow;
+                                    loadTableJEDetail();
+                                    return;
+                                }
                                 break;
                             }
                             loadTableJEDetail();
@@ -1292,6 +1328,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     public void loadRecordJEDetail() {
         try {
+            //DISABLING
+            JFXUtil.setDisabled(pnEditMode == EditMode.UPDATE, tfJEAcctCode, tfJEAcctDescription);
+
             tfJEAcctCode.setText(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode());
             tfJEAcctDescription.setText(poPurchaseReceivingController.Journal().Detail(pnJEDetail).Account_Chart().getDescription());
             String lsReportMonthYear = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getForMonthOf());
