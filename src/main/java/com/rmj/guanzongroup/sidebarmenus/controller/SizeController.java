@@ -3,7 +3,10 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelResultSet;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -25,6 +28,8 @@ import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
@@ -32,7 +37,7 @@ import org.json.simple.JSONObject;
 
 public class SizeController implements Initializable, ScreenInterface {
 
-    private GRider oApp;
+    private GRiderCAS oApp;
     private final String pxeModuleName = "Size";
     private int pnEditMode;
     private ParamControllers oParameters;
@@ -69,8 +74,20 @@ public class SizeController implements Initializable, ScreenInterface {
     private CheckBox cbField01;
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 
     @Override
@@ -85,9 +102,13 @@ public class SizeController implements Initializable, ScreenInterface {
     }
 
     private void initializeObject() {
-        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-        oParameters = new ParamControllers(oApp, logwrapr);
-        oParameters.Size().setRecordStatus("0123");
+        try {
+            LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
+            oParameters = new ParamControllers(oApp, logwrapr);
+            oParameters.Size().setRecordStatus("0123");
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(SizeController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void ClickButton() {
@@ -104,98 +125,102 @@ public class SizeController implements Initializable, ScreenInterface {
         Object source = event.getSource();
 
         if (source instanceof Button) {
-            Button clickedButton = (Button) source;
-            unloadForm appUnload = new unloadForm();
-            switch (clickedButton.getId()) {
-                case "btnClose":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-                    }
-                    break;
-                case "btnNew":
-                    clearAllFields();
-                    txtField02.requestFocus();
-                    JSONObject poJSON = oParameters.Size().newRecord();
-                    pnEditMode = EditMode.READY;
-                    if ("success".equals((String) poJSON.get("result"))) {
-                        pnEditMode = EditMode.ADDNEW;
-                        initButton(pnEditMode);
-                        initTabAnchor();
+            try {
+                Button clickedButton = (Button) source;
+                unloadForm appUnload = new unloadForm();
+                switch (clickedButton.getId()) {
+                    case "btnClose":
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                            appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+                        }
+                        break;
+                    case "btnNew":
+                        clearAllFields();
+                        txtField02.requestFocus();
+                        JSONObject poJSON = oParameters.Size().newRecord();
+                        pnEditMode = EditMode.READY;
+                        if ("success".equals((String) poJSON.get("result"))) {
+                            pnEditMode = EditMode.ADDNEW;
+                            initButton(pnEditMode);
+                            initTabAnchor();
+                            loadRecord();
+                        } else {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            initTabAnchor();
+                        }
+                        break;
+                    case "btnBrowse":
+                        String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
+                        poJSON = oParameters.Size().searchRecord(lsValue, false);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            txtSeeks01.clear();
+                            break;
+                        }
+                        pnEditMode = EditMode.READY;
                         loadRecord();
-                    } else {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
                         initTabAnchor();
-                    }
-                    break;
-                case "btnBrowse":
-                    String lsValue = (txtSeeks01.getText() == null) ? "" : txtSeeks01.getText();
-                    poJSON = oParameters.Size().searchRecord(lsValue, false);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        txtSeeks01.clear();
                         break;
-                    }
-                    pnEditMode = EditMode.READY;
-                    loadRecord();
-                    initTabAnchor();
-                    break;
-                case "btnUpdate":
-                    poJSON = oParameters.Size().updateRecord();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        break;
-                    }
-                    pnEditMode = oParameters.Size().getEditMode();
-                    initButton(pnEditMode);
-                    initTabAnchor();
-                    break;
-                case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                        clearAllFields();
-                        initializeObject();
-                        pnEditMode = EditMode.UNKNOWN;
+                    case "btnUpdate":
+                        poJSON = oParameters.Size().updateRecord();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+                            break;
+                        }
+                        pnEditMode = oParameters.Size().getEditMode();
                         initButton(pnEditMode);
                         initTabAnchor();
-                    }
-                    break;
-                case "btnSave":
-                    oParameters.Size().getModel().setModifyingId(oApp.getUserID());
-                    oParameters.Size().getModel().setModifiedDate(oApp.getServerDate());
-                    JSONObject saveResult = oParameters.Size().saveRecord();
-                    if ("success".equals((String) saveResult.get("result"))) {
-                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                        pnEditMode = EditMode.UNKNOWN;
-                        initButton(pnEditMode);
-                        clearAllFields();
-                    } else {
-                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                    }
-                    break;
-                case "btnActivate":
-                    String Status = oParameters.Size().getModel().getRecordStatus();
-                    JSONObject poJsON;
+                        break;
+                    case "btnCancel":
+                        if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+                            clearAllFields();
+                            initializeObject();
+                            pnEditMode = EditMode.UNKNOWN;
+                            initButton(pnEditMode);
+                            initTabAnchor();
+                        }
+                        break;
+                    case "btnSave":
+                        oParameters.Size().getModel().setModifyingId(oApp.getUserID());
+                        oParameters.Size().getModel().setModifiedDate(oApp.getServerDate());
+                        JSONObject saveResult = oParameters.Size().saveRecord();
+                        if ("success".equals((String) saveResult.get("result"))) {
+                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                            pnEditMode = EditMode.UNKNOWN;
+                            initButton(pnEditMode);
+                            clearAllFields();
+                        } else {
+                            ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+                        }
+                        break;
+                    case "btnActivate":
+                        String Status = oParameters.Size().getModel().getRecordStatus();
+                        JSONObject poJsON;
 
-                    switch (Status) {
-                        case "0":
-                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-                                poJsON = oParameters.Size().activateRecord();
-                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
-                                loadRecord();
-                            }
-                            break;
-                        case "1":
-                            if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-                                poJsON = oParameters.Size().deactivateRecord();
-                                ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
-                                loadRecord();
-                            }
-                            break;
-                        default:
+                        switch (Status) {
+                            case "0":
+                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                    poJsON = oParameters.Size().activateRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    loadRecord();
+                                }
+                                break;
+                            case "1":
+                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                    poJsON = oParameters.Size().deactivateRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    loadRecord();
+                                }
+                                break;
+                            default:
 
-                            break;
+                                break;
 
-                    }
-                    break;
+                        }
+                        break;
+                }
+            } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+                Logger.getLogger(SizeController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -234,36 +259,40 @@ public class SizeController implements Initializable, ScreenInterface {
     }
 
     private void txtSeeks_KeyPressed(KeyEvent event) {
-        TextField txtField = (TextField) event.getSource();
-        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
-        JSONObject poJson;
-        poJson = new JSONObject();
-        switch (event.getCode()) {
-            case F3:
-                switch (lnIndex) {
-                    case 01:
-                        poJson = oParameters.Size().searchRecord(lsValue, false);
-                        if ("error".equals((String) poJson.get("result"))) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                            txtSeeks01.clear();
+        try {
+            TextField txtField = (TextField) event.getSource();
+            int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+            String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+            JSONObject poJson;
+            poJson = new JSONObject();
+            switch (event.getCode()) {
+                case F3:
+                    switch (lnIndex) {
+                        case 01:
+                            poJson = oParameters.Size().searchRecord(lsValue, false);
+                            if ("error".equals((String) poJson.get("result"))) {
+                                ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+                                txtSeeks01.clear();
+                                break;
+                            }
+                            txtSeeks01.setText((String) oParameters.Size().getModel().getSizeName());
+                            pnEditMode = EditMode.READY;
+                            loadRecord();
                             break;
-                        }
-                        txtSeeks01.setText((String) oParameters.Size().getModel().getSizeName());
-                        pnEditMode = EditMode.READY;
-                        loadRecord();
-                        break;
-                }
-            case ENTER:
-        }
-        switch (event.getCode()) {
-            case ENTER:
-                CommonUtils.SetNextFocus(txtField);
-            case DOWN:
-                CommonUtils.SetNextFocus(txtField);
-                break;
-            case UP:
-                CommonUtils.SetPreviousFocus(txtField);
+                    }
+                case ENTER:
+            }
+            switch (event.getCode()) {
+                case ENTER:
+                    CommonUtils.SetNextFocus(txtField);
+                case DOWN:
+                    CommonUtils.SetNextFocus(txtField);
+                    break;
+                case UP:
+                    CommonUtils.SetPreviousFocus(txtField);
+            }
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(SizeController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -302,31 +331,39 @@ public class SizeController implements Initializable, ScreenInterface {
     };
 
     private void loadRecord() {
-        boolean lbActive = oParameters.Size().getModel().getRecordStatus() == "1";
+        try {
+            boolean lbActive = oParameters.Size().getModel().getRecordStatus() == "1";
 
-        txtField01.setText(oParameters.Size().getModel().getSizeId());
-        txtField02.setText(oParameters.Size().getModel().getSizeName());
+            txtField01.setText(oParameters.Size().getModel().getSizeId());
+            txtField02.setText(oParameters.Size().getModel().getSizeName());
 
-        switch (oParameters.Size().getModel().getRecordStatus()) {
-            case "1":
-                btnActivate.setText("Deactivate");
-                faActivate.setGlyphName("CLOSE");
-                cbField01.setSelected(true);
-                break;
-            case "0":
-                btnActivate.setText("Activate");
-                faActivate.setGlyphName("CHECK");
-                cbField01.setSelected(false);
-                break;
+            switch (oParameters.Size().getModel().getRecordStatus()) {
+                case "1":
+                    btnActivate.setText("Deactivate");
+                    faActivate.setGlyphName("CLOSE");
+                    cbField01.setSelected(true);
+                    break;
+                case "0":
+                    btnActivate.setText("Activate");
+                    faActivate.setGlyphName("CHECK");
+                    cbField01.setSelected(false);
+                    break;
+            }
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(SizeController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     @FXML
     void cbField01_Clicked(MouseEvent event) {
-        if (cbField01.isSelected()) {
-            oParameters.Size().getModel().setRecordStatus("1");
-        } else {
-            oParameters.Size().getModel().setRecordStatus("0");
+        try {
+            if (cbField01.isSelected()) {
+                oParameters.Size().getModel().setRecordStatus("1");
+            } else {
+                oParameters.Size().getModel().setRecordStatus("0");
+            }
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(SizeController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
