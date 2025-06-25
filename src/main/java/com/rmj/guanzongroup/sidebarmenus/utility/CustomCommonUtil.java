@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.regex.Pattern;
 import javafx.beans.value.ChangeListener;
@@ -341,6 +342,81 @@ public class CustomCommonUtil {
         return "0.00";
     }
 
+    public static String setIntegerValueToDecimalFormat(double fnValue) {
+        DecimalFormat format = new DecimalFormat("#,##0.00");
+        try {
+            return format.format(Double.parseDouble(String.valueOf(fnValue)));
+        } catch (NumberFormatException e) {
+            System.err.println("Error: Invalid number format for input - " + fnValue);
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+        }
+        return "0.00";
+    }
+
+    /**
+     * Formats a given numeric object into a string using either a 2-decimal or
+     * 4-decimal format.
+     *
+     * <p>
+     * This method attempts to parse the given object to a {@code double} and
+     * format it using {@link java.text.DecimalFormat}. If the object is
+     * {@code null} or parsing fails, it returns a default formatted value
+     * ("0.00" or "0.0000" depending on the flag).</p>
+     *
+     * @param foObject the numeric object to be formatted (e.g., {@code Double},
+     * {@code Integer}, {@code String} that can be parsed as a number)
+     * @param fbIs4Decimal if {@code true}, formats using 4 decimal places
+     * ("#,##0.0000"); if {@code false}, formats using 2 decimal places
+     * ("#,##0.00")
+     * @return the formatted string representation of the number, or
+     * "0.0000"/"0.00" if input is null or invalid
+     */
+    public static String setIntegerValueToDecimalFormat(Object foObject, boolean fbIs4Decimal) {
+        String lsDecimalFormat = fbIs4Decimal ? "#,##0.0000" : "#,##0.00";
+        DecimalFormat format = new DecimalFormat(lsDecimalFormat);
+        try {
+            if (foObject != null) {
+                return format.format(Double.parseDouble(String.valueOf(foObject)));
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("Error: Invalid number format for input - " + foObject);
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+        }
+        return fbIs4Decimal ? "0.0000" : "0.00";
+    }
+
+    /**
+     * Formats a given numeric object into a string using either a 2-decimal or
+     * 4-decimal format.
+     *
+     * <p>
+     * This method attempts to parse the given object to a {@code double} and
+     * format it using {@link java.text.DecimalFormat}. If the object is
+     * {@code null} or parsing fails, it returns a default formatted value
+     * ("0.00" or "0.0000" depending on the flag).</p>
+     *
+     * @param fnValue
+     * @param fbIs4Decimal if {@code true}, formats using 4 decimal places
+     * ("#,##0.0000"); if {@code false}, formats using 2 decimal places
+     * ("#,##0.00")
+     * @return the formatted string representation of the number, or
+     * "0.0000"/"0.00" if input is null or invalid
+     */
+    public static String setIntegerValueToDecimalFormat(double fnValue, boolean fbIs4Decimal) {
+        String lsDecimalFormat = fbIs4Decimal ? "#,##0.0000" : "#,##0.00";
+        DecimalFormat format = new DecimalFormat(lsDecimalFormat);
+        try {
+            return format.format(Double.parseDouble(String.valueOf(fnValue)));
+        } catch (NumberFormatException e) {
+            System.err.println("Error: Invalid number format for input - " + fnValue);
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+        }
+        return fbIs4Decimal ? "0.0000" : "0.00";
+    }
+
     /* DATE FORMATTER UTILITY SECTION */
     /**
      * Converts a string representing a date in "yyyy-MM-dd" format to a
@@ -362,8 +438,16 @@ public class CustomCommonUtil {
      * }</pre>
      */
     public static LocalDate parseDateStringToLocalDate(String fsDateValue) {
+        if (fsDateValue == null || fsDateValue.trim().isEmpty()) {
+            return null;
+        }
+
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(fsDateValue, dateFormatter);
+        try {
+            return LocalDate.parse(fsDateValue.trim(), dateFormatter);
+        } catch (DateTimeParseException e) {
+            return null; // or log the error if needed
+        }
     }
 
     /**
