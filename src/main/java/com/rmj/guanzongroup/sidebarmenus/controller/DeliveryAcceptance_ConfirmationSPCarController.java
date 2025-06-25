@@ -1559,7 +1559,7 @@ public class DeliveryAcceptance_ConfirmationSPCarController implements Initializ
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
                 return;
             }
-            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null) && poPurchaseReceivingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             tfBarcode.setDisable(!lbFields);
             tfDescription.setDisable(!lbFields);
             if (lbFields) {

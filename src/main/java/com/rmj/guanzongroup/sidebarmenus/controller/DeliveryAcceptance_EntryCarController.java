@@ -1394,7 +1394,7 @@ public class DeliveryAcceptance_EntryCarController implements Initializable, Scr
                 return;
             }
 
-            boolean lbFields = ("".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo()) || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null) && poPurchaseReceivingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             poJSON = poPurchaseReceivingController.checkExistingSerialId(pnDetail + 1);
             if ("error".equals((String) poJSON.get("result"))) {
                 lbFields = false;

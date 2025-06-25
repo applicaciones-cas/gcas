@@ -1480,7 +1480,7 @@ public class DeliveryAcceptance_EntrySPMCController implements Initializable, Sc
 
     public void loadRecordDetail() {
         try {
-            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null) && poPurchaseReceivingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             tfBarcode.setDisable(!lbFields);
             tfDescription.setDisable(!lbFields);
             if (lbFields) {

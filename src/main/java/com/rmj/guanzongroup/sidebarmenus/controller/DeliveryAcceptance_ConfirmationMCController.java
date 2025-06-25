@@ -1623,7 +1623,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
                 return;
             }
-            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null) && poPurchaseReceivingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             poJSON = poPurchaseReceivingController.checkExistingSerialId(pnDetail + 1);
             if ("error".equals((String) poJSON.get("result"))) {
                 lbFields = false;
