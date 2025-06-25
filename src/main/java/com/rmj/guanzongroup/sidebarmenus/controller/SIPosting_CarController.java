@@ -1316,12 +1316,11 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     public void loadRecordJEDetail() {
         try {
-            //DISABLING
-            if (!JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
-                JFXUtil.setDisabled(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getEditMode() == EditMode.UPDATE, tfJEAcctCode, tfJEAcctDescription);
-            } else {
-                JFXUtil.setDisabled(false, tfJEAcctCode, tfJEAcctDescription);
-            }
+            //DISABLING 
+            
+            boolean lbFields = (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, ""))
+                    && poPurchaseReceivingController.Journal().Detail(pnJEDetail).getEditMode() == EditMode.ADDNEW;
+            JFXUtil.setDisabled(!lbFields, tfJEAcctCode, tfJEAcctDescription);
 
             tfJEAcctCode.setText(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode());
             tfJEAcctDescription.setText(poPurchaseReceivingController.Journal().Detail(pnJEDetail).Account_Chart().getDescription());
@@ -2126,7 +2125,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear);
         psSupplierId = "";
         psBranchId = "";
-        JFXUtil.clearTextFields(apMaster, apDetail,apJEDetail, apJEMaster, apAttachments);
+        JFXUtil.clearTextFields(apMaster, apDetail, apJEDetail, apJEMaster, apAttachments);
 
         cbVatInclusive.setSelected(false);
         cbVatable.setSelected(false);
