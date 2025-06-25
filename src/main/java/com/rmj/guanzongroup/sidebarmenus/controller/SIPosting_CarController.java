@@ -1143,18 +1143,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                         if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
                                 || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
 
-                            if (selectedDate.isAfter(currentDate)) {
-                                poJSON.put("result", "error");
-                                poJSON.put("message", "Future dates are not allowed.");
-                                pbSuccess = false;
-                            }
-
-                            if (pbSuccess && (selectedDate.isAfter(transactionDate))) {
-                                poJSON.put("result", "error");
-                                poJSON.put("message", "Date cannot be later than the receiving date.");
-                                pbSuccess = false;
-                            }
-
                             if (pbSuccess) {
                                 poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
