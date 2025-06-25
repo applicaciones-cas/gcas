@@ -1318,7 +1318,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         try {
             //DISABLING
             if (!JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
-                JFXUtil.setDisabled(pnEditMode == EditMode.UPDATE, tfJEAcctCode, tfJEAcctDescription);
+                JFXUtil.setDisabled(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getEditMode() == EditMode.UPDATE, tfJEAcctCode, tfJEAcctDescription);
             } else {
                 JFXUtil.setDisabled(false, tfJEAcctCode, tfJEAcctDescription);
             }
@@ -2126,9 +2126,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear);
         psSupplierId = "";
         psBranchId = "";
-
-        JFXUtil.clearTextFields(apMaster, apDetail,
-                apJEDetail, apJEMaster, apAttachments);
+        JFXUtil.clearTextFields(apMaster, apDetail,apJEDetail, apJEMaster, apAttachments);
 
         cbVatInclusive.setSelected(false);
         cbVatable.setSelected(false);

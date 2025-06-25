@@ -1298,8 +1298,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     public void loadRecordJEDetail() {
         try {
+            //DISABLING
             if (!JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
-                JFXUtil.setDisabled(pnEditMode == EditMode.UPDATE, tfJEAcctCode, tfJEAcctDescription);
+                JFXUtil.setDisabled(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getEditMode() == EditMode.UPDATE, tfJEAcctCode, tfJEAcctDescription);
             } else {
                 JFXUtil.setDisabled(false, tfJEAcctCode, tfJEAcctDescription);
             }
