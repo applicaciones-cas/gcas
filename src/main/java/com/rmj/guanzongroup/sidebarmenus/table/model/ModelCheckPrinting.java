@@ -5,14 +5,13 @@
 package com.rmj.guanzongroup.sidebarmenus.table.model;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.scene.control.CheckBox;
 
 /**
  *
  * @author User
  */
-public class ModelDeliveryAcceptance_Detail {
+public class ModelCheckPrinting {
 
     public SimpleStringProperty index01;
     public SimpleStringProperty index02;
@@ -24,21 +23,10 @@ public class ModelDeliveryAcceptance_Detail {
     public SimpleStringProperty index08;
     public SimpleStringProperty index09;
     public SimpleStringProperty index10;
+    private CheckBox select;
 
-    public ModelDeliveryAcceptance_Detail(String index01,
-            String index02,
-            String index03,
-            String index04,
-            String index05) {
-
-        this.index01 = new SimpleStringProperty(index01);
-        this.index02 = new SimpleStringProperty(index02);
-        this.index03 = new SimpleStringProperty(index03);
-        this.index04 = new SimpleStringProperty(index04);
-        this.index05 = new SimpleStringProperty(index05);
-    }
-
-    public ModelDeliveryAcceptance_Detail(String index01,
+    public ModelCheckPrinting(
+            String index01,
             String index02,
             String index03,
             String index04,
@@ -50,6 +38,7 @@ public class ModelDeliveryAcceptance_Detail {
             String index10) {
 
         this.index01 = new SimpleStringProperty(index01);
+        this.select = new CheckBox();
         this.index02 = new SimpleStringProperty(index02);
         this.index03 = new SimpleStringProperty(index03);
         this.index04 = new SimpleStringProperty(index04);
@@ -61,48 +50,42 @@ public class ModelDeliveryAcceptance_Detail {
         this.index10 = new SimpleStringProperty(index10);
     }
 
-    public ModelDeliveryAcceptance_Detail(
-            String index01,
+    public ModelCheckPrinting(String index01,
             String index02,
             String index03,
-            String index04,
-            String index05,
-            String index06,
-            String index07,
-            String index08
-    ) {
+            String index04) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
         this.index03 = new SimpleStringProperty(index03);
         this.index04 = new SimpleStringProperty(index04);
-        this.index05 = new SimpleStringProperty(index05);
-        this.index06 = new SimpleStringProperty(index06);
-        this.index07 = new SimpleStringProperty(index07);
-        this.index08 = new SimpleStringProperty(index08);
     }
 
-    public ModelDeliveryAcceptance_Detail(
-            String index01,
+    public ModelCheckPrinting(String index01,
             String index02,
             String index03,
             String index04,
             String index05,
             String index06,
             String index07,
-            String index08,
-            String index09
-    ) {
+            String index08) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
         this.index03 = new SimpleStringProperty(index03);
         this.index04 = new SimpleStringProperty(index04);
         this.index05 = new SimpleStringProperty(index05);
-        this.index06 = new SimpleStringProperty(index06);
-        this.index07 = new SimpleStringProperty(index07);
-        this.index08 = new SimpleStringProperty(index08);
-        this.index09 = new SimpleStringProperty(index09);
+        this.index03 = new SimpleStringProperty(index06);
+        this.index04 = new SimpleStringProperty(index07);
+        this.index05 = new SimpleStringProperty(index08);
+    }
+
+    public CheckBox getSelect() {
+        return select;
+    }
+
+    public void setSelect(CheckBox select) {
+        this.select = select;
     }
 
     public String getIndex01() {
@@ -176,4 +159,13 @@ public class ModelDeliveryAcceptance_Detail {
     public void setIndex09(String index09) {
         this.index09.set(index09);
     }
+
+    public String getIndex10() {
+        return index10.get();
+    }
+
+    public void setIndex10(String index10) {
+        this.index10.set(index10);
+    }
+
 }
