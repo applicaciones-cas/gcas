@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -41,7 +40,6 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -52,7 +50,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
-import javafx.util.Duration;
 import javafx.util.Pair;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -61,9 +58,7 @@ import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.appdriver.constant.Logical;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import ph.com.guanzongroup.cas.cashflow.CheckPayments;
 import ph.com.guanzongroup.cas.cashflow.Disbursement;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
@@ -322,7 +317,6 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
     }
 
     private void initTextFields() {
-
         //Initialise  TextField KeyPressed
         List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchBankName, tfSearchBankAccount, tfSearchCheckno);
         loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
@@ -344,6 +338,7 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                         switch (lsID) {
                             case "tfSearchCheckno":
                                 psSearchCheckNo = tfSearchCheckno.getText();
+                                loadTableMain();
                                 event.consume();
                                 break;
                         }
@@ -357,8 +352,9 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfSearchBankName.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? (poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "") : "");
+                                tfSearchBankName.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "");
                                 psSearchBankName = poDisbursementController.CheckPayments().getModel().getBankID();
+                                loadTableMain();
                                 break;
                             case "tfSearchBankAccount":
                                 poJSON = poDisbursementController.SearchBankAccount(lsValue, poDisbursementController.CheckPayments().getModel().getBankID(), false);
@@ -368,6 +364,7 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                                 }
                                 tfSearchBankAccount.setText(poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() != null ? poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() : "");
                                 psSearchBankAccount = poDisbursementController.CheckPayments().getModel().getBankAcountID();
+                                loadTableMain();
                                 break;
 
                         }
@@ -600,26 +597,14 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
                                 for (int lnCntr = 0; lnCntr <= poDisbursementController.getDisbursementMasterCount() - 1; lnCntr++) {
-                                    String lsPaymentForm = "";
-                                    switch (poDisbursementController.poDisbursementMaster(lnCntr).getDisbursementType()) {
-                                        case DisbursementStatic.DisbursementType.CHECK:
-                                            lsPaymentForm = "CHECK";
-                                            break;
-                                        case DisbursementStatic.DisbursementType.DIGITAL_PAYMENT:
-                                            lsPaymentForm = "ONLINE PAYMENT";
-                                            break;
-                                        case DisbursementStatic.DisbursementType.WIRED:
-                                            lsPaymentForm = "BANK TRANSFER";
-                                            break;
-                                    }
                                     main_data.add(new ModelDisbursementVoucher_Main(
                                             String.valueOf(lnCntr + 1),
-                                            poDisbursementController.poDisbursementMaster(lnCntr).Payee().getPayeeName(),
-                                            lsPaymentForm,
-                                            CustomCommonUtil.formatDateToShortString(poDisbursementController.poDisbursementMaster(lnCntr).getTransactionDate()),
+                                            poDisbursementController.poDisbursementMaster(lnCntr).CheckPayments().Banks().getBankName(),
+                                            poDisbursementController.poDisbursementMaster(lnCntr).CheckPayments().Bank_Account_Master().getAccountNo(),
+                                            poDisbursementController.poDisbursementMaster(lnCntr).CheckPayments().getCheckNo(),
                                             poDisbursementController.poDisbursementMaster(lnCntr).getTransactionNo()
                                     ));
-                                    if (poDisbursementController.poDisbursementMaster(lnCntr).getTransactionStatus().equals(DisbursementStatic.VERIFIED)) {
+                                    if (poDisbursementController.poDisbursementMaster(lnCntr).CheckPayments().getTransactionStatus().equals(CheckStatus.POSTED)) {
                                         plOrderNoPartial.add(new Pair<>(String.valueOf(lnCntr + 1), "1"));
                                     }
                                 }
@@ -815,11 +800,13 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
     }
 
     private void initTextFieldsProperty() {
-        tfBankName.textProperty().addListener((observable, oldValue, newValue) -> {
+        tfSearchBankName.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    tfBankName.setText("");
+                    tfSearchBankAccount.setText("");
                     psSearchBankName = "";
+                    tfSearchBankAccount.setText("");
+                    psSearchBankAccount = "";
                     loadTableMain();
                 }
             }
