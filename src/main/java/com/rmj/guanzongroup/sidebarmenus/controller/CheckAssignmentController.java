@@ -43,6 +43,7 @@ public class CheckAssignmentController implements Initializable {
     private boolean isAutoProcessing = false;
     private long startingCheckNo = -1;
     private int checkNoLength = 6;
+    private String originalCheckNo = "";
 
     @FXML
     private AnchorPane AnchorMain, apMaster;
@@ -83,9 +84,6 @@ public class CheckAssignmentController implements Initializable {
 
         if (transactionNos != null && !transactionNos.isEmpty()) {
             try {
-                if (transactionNos.size() > 1) {
-                    chbkApplyToAll.setSelected(true);
-                }
 
                 poCheckPrintingController = new CashflowControllers(oApp, null).CheckPrinting();
                 poJSON = poCheckPrintingController.InitTransaction();
@@ -124,7 +122,7 @@ public class CheckAssignmentController implements Initializable {
             if (poCheckPrintingController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK)) {
                 poCheckPrintingController.setCheckpayment();
                 poCheckPrintingController.setBankAccountCheckNo();
-                
+
             }
             initAll();
             loadRecordMaster();
@@ -136,105 +134,102 @@ public class CheckAssignmentController implements Initializable {
 
     private void assignAndProceed() {
         try {
-            if (startingCheckNo == -1 && currentTransactionIndex == 0) {
-                ShowMessageFX.Warning(null, pxeModuleName, "Please enter a valid starting check number.", null);
-                isAutoProcessing = false;
-                return;
+            String checkNoToCheck = tfCheckNo.getText();
+            String currentAssignedCheckNo = poCheckPrintingController.Master().CheckPayments().getCheckNo();
+
+            // Only check for duplicates if the check no has changed (doesn't match the current assigned)
+            if (!checkNoToCheck.equals(currentAssignedCheckNo)) {
+                poJSON = poCheckPrintingController.checkNoExists(checkNoToCheck);
+                if("error".equals((String)poJSON.get("result"))){
+                    ShowMessageFX.Warning(null, pxeModuleName,
+                        (String) poJSON.get("message"));
+                    return;
+                }
             }
 
+            /* ---------- 1. Save the CURRENT record ---------- */
             poJSON = poCheckPrintingController.SaveTransaction();
 
-            if (!"success".equals((String) poJSON.get("result"))) {
-                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+            if (!"success".equals(poJSON.get("result"))) {
+                ShowMessageFX.Warning(null, pxeModuleName,
+                        (String) poJSON.get("message"));
                 isAutoProcessing = false;
                 return;
             }
 
-            currentTransactionIndex++;
-            if (currentTransactionIndex < transactionNos.size()) {
-                loadTransaction(currentTransactionIndex);
-                assignAndProceed();
-            } else {
-                ShowMessageFX.Information(null, pxeModuleName, "All transactions have been assigned.");
+            /* ---------- 2. Decide whether to continue ---------- */
+            if (chbkApplyToAll.isSelected()) {          // UPDATE THEM ALL
+                currentTransactionIndex++;
+                if (currentTransactionIndex < transactionNos.size()) {
+                    loadTransaction(currentTransactionIndex);   // load next
+                    assignAndProceed();                         // recurse
+                } else {
+                    ShowMessageFX.Information(null, pxeModuleName,
+                            "All transactions have been assigned.");
+                    CommonUtils.closeStage(btnClose);
+                }
+            } else {                                       // ONLY THIS ONE
+                ShowMessageFX.Information(null, pxeModuleName,
+                        "Transaction has been assigned.");
                 CommonUtils.closeStage(btnClose);
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(CheckAssignmentController.class.getName()).log(Level.SEVERE, null, ex);
-            ShowMessageFX.Warning("Unexpected error during assignment.", pxeModuleName, null);
+            Logger.getLogger(CheckAssignmentController.class.getName())
+                    .log(Level.SEVERE, null, ex);
+            ShowMessageFX.Warning("Unexpected error during assignment.",
+                    pxeModuleName, null);
             isAutoProcessing = false;
         }
     }
-    
+
     private void loadRecordMaster() throws SQLException, GuanzonException {
-    tfDVNo.setText(poCheckPrintingController.Master().getTransactionNo());
+        String initialCheckNo = "";
+        boolean fromBankAccount = false;
 
-    // Always allow editing
-    tfCheckNo.setEditable(true);
+        tfDVNo.setText(poCheckPrintingController.Master().getTransactionNo());
+        if (transactionNos.size() > 1) {
+            chbkApplyToAll.setSelected(true);
+        }
+        if (poCheckPrintingController.Master().CheckPayments().getCheckNo().isEmpty()) {
+            initialCheckNo = poCheckPrintingController.BankAccountMaster().getModel().getCheckNo();
+            fromBankAccount = true;
+        } else {
+            initialCheckNo = poCheckPrintingController.Master().CheckPayments().getCheckNo();
+        }
 
-    // Populate initial check number from Bank Account Master
-    String initialCheckNo = poCheckPrintingController.BankAccountMaster().getModel().getCheckNo();
-    tfCheckNo.setText(initialCheckNo);
+        if (fromBankAccount && initialCheckNo.matches("\\d+")) {
+            long incremented = Long.parseLong(initialCheckNo) + 1;
+            initialCheckNo = String.format("%0" + initialCheckNo.length() + "d", incremented);
+        }
+        originalCheckNo = initialCheckNo;
+        tfCheckNo.setText(initialCheckNo);
+        String checkNoValue = tfCheckNo.getText();
+        if (currentTransactionIndex == 0 && startingCheckNo == -1 && checkNoValue != null && checkNoValue.matches("\\d+")) {
+            startingCheckNo = Long.parseLong(checkNoValue);
+            checkNoLength = checkNoValue.length();
+            poCheckPrintingController.CheckPayments().getModel().setCheckNo(checkNoValue);
+            poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(checkNoValue);
+        } else if (startingCheckNo != -1) {
+            long currentCheckNo = startingCheckNo + currentTransactionIndex;
+            String formatted = String.format("%0" + checkNoLength + "d", currentCheckNo);
+            tfCheckNo.setText(formatted);
+            poCheckPrintingController.CheckPayments().getModel().setCheckNo(formatted);
 
-    String checkNoValue = tfCheckNo.getText();
-    if (currentTransactionIndex == 0 && startingCheckNo == -1 && checkNoValue != null && checkNoValue.matches("\\d+")) {
-        startingCheckNo = Long.parseLong(checkNoValue);
-        checkNoLength = checkNoValue.length();
-        poCheckPrintingController.CheckPayments().getModel().setCheckNo(checkNoValue);
-        poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(checkNoValue);
-    } else if (startingCheckNo != -1) {
-        long currentCheckNo = startingCheckNo + currentTransactionIndex;
-        String formatted = String.format("%0" + checkNoLength + "d", currentCheckNo);
-        tfCheckNo.setText(formatted);
-        poCheckPrintingController.CheckPayments().getModel().setCheckNo(formatted);
-        poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(formatted);
+            poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(formatted);
+        }
+
+        dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+                SQLUtil.dateFormat(poCheckPrintingController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)
+        ));
+
+        tfCheckAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                poCheckPrintingController.Master().getTransactionTotal(), true
+        ));
+
+        taRemarks.setText(poCheckPrintingController.Master().getRemarks());
+
     }
-
-    dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
-        SQLUtil.dateFormat(poCheckPrintingController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)
-    ));
-
-    tfCheckAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
-        poCheckPrintingController.Master().getTransactionTotal(), true
-    ));
-
-    taRemarks.setText(poCheckPrintingController.Master().getRemarks());
-}
-
-
-//    private void loadRecordMaster() throws SQLException, GuanzonException {
-//        tfDVNo.setText(poCheckPrintingController.Master().getTransactionNo());
-//
-//        if (currentTransactionIndex == 0 && startingCheckNo == -1) {
-//            String lastCheckNoUse = poCheckPrintingController.Master().CheckPayments().Bank_Account_Master().getCheckNo();
-//            
-//            
-//            if (lastCheckNoUse != null && lastCheckNoUse.matches("\\d+")) {
-//                startingCheckNo = Long.parseLong(lastCheckNoUse) + 1;
-//                checkNoLength = lastCheckNoUse.length();
-//                String formatted = String.format("%0" + checkNoLength + "d", startingCheckNo);
-//                tfCheckNo.setText(formatted);
-//                poCheckPrintingController.CheckPayments().getModel().setCheckNo(formatted);
-//                poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(formatted);
-//                
-//            } 
-//        } else {
-//            long currentCheckNo = startingCheckNo + currentTransactionIndex;
-//            String formatted = String.format("%0" + checkNoLength + "d", currentCheckNo);
-//            tfCheckNo.setText(formatted);
-//            poCheckPrintingController.CheckPayments().getModel().setCheckNo(formatted);            
-//            poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(formatted);
-//            
-//        }
-//
-//        dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
-//                SQLUtil.dateFormat(poCheckPrintingController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-//
-//        tfCheckAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
-//                poCheckPrintingController.Master().getTransactionTotal(), true));
-//
-//        taRemarks.setText(poCheckPrintingController.Master().getRemarks());
-//    }
 
     private void initAll() {
         initButtonsClickActions();
@@ -291,24 +286,66 @@ public class CheckAssignmentController implements Initializable {
         tfCheckNo.focusedProperty().addListener(txtField_Focus);
     }
 
-     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsID = txtField.getId();
         String lsValue = txtField.getText();
+        try {
+            if (!nv && "tfCheckNo".equals(lsID)) {
+                if (lsValue != null && lsValue.matches("\\d+")) {
 
-        if (!nv && lsID.equals("tfCheckNo")) {
-            if (lsValue != null && lsValue.matches("\\d+")) {
-                startingCheckNo = Long.parseLong(lsValue) - currentTransactionIndex;
-                checkNoLength = lsValue.length();
-                poCheckPrintingController.CheckPayments().getModel().setCheckNo(lsValue);                
-                poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(lsValue);
-            } else {
-                ShowMessageFX.Warning(null, pxeModuleName, "Invalid check number format.");
-                tfCheckNo.requestFocus();
+                    /* 1. Check duplicates ­-- but skip if it’s the same number
+              that was already stored on this very transaction      */
+                    boolean exists = false;
+
+                    // Only bother calling the DB if the user actually changed the value
+                    if (!lsValue.equals(originalCheckNo)) {
+                        poJSON = poCheckPrintingController.checkNoExists(lsValue);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            return;
+                        }
+                    }
+
+                    /* 2. Parse and apply values (unchanged) */
+                    long inputCheckNo = Long.parseLong(lsValue);
+                    String masterVal = poCheckPrintingController.BankAccountMaster()
+                            .getModel()
+                            .getCheckNo();
+                    long masterCheckNo = (masterVal != null && masterVal.matches("\\d+"))
+                            ? Long.parseLong(masterVal) : 0;
+
+                    startingCheckNo = inputCheckNo - currentTransactionIndex;
+                    checkNoLength = lsValue.length();
+
+                    poCheckPrintingController.CheckPayments()
+                            .getModel()
+                            .setCheckNo(lsValue);
+
+                    /* 3. Update master only if higher or equal (unchanged) */
+                    if (inputCheckNo >= masterCheckNo) {
+                        poCheckPrintingController.BankAccountMaster()
+                                .getModel()
+                                .setCheckNo(lsValue);
+                    }
+
+                } else {
+                    ShowMessageFX.Warning(null, pxeModuleName,
+                            "Invalid check number format.");
+                    tfCheckNo.requestFocus();
+                }
+            } else if (nv) {
+                txtField.selectAll();
             }
-        } else if (nv) {
-            txtField.selectAll();
+
+        } catch (Exception ex) {
+            Logger.getLogger(CheckAssignmentController.class.getName())
+                    .log(Level.SEVERE, null, ex);
+            ShowMessageFX.Warning(null, pxeModuleName,
+                    "Error checking check number.");
+            return;
         }
+
     };
 
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
@@ -341,11 +378,11 @@ public class CheckAssignmentController implements Initializable {
     }
 
     private void initCheckBox() {
-        chbkApplyToAll.setOnAction(event -> {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                poCheckPrintingController.Master().setBankPrint(chbkApplyToAll.isSelected() ? "1" : "0");
-            }
-        });
+//        chbkApplyToAll.setOnAction(event -> {
+//            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//                poCheckPrintingController.Master().setBankPrint(chbkApplyToAll.isSelected() ? "1" : "0");
+//            }
+//        });
     }
 
     private void initDatePicker() {
@@ -369,4 +406,5 @@ public class CheckAssignmentController implements Initializable {
         boolean lbShow = (pnEditMode == EditMode.UPDATE);
         JFXUtil.setButtonsVisibility(lbShow, btnAssign);
     }
+
 }
