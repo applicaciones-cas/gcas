@@ -244,7 +244,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             if (tabJE.isSelected()) {
 //                if (pnEditMode == EditMode.READY) {
                 try {
-                    JFXUtil.clearTextFields(apJEMaster, apJEDetail);
+                    JFXUtil.setValueToNull(dpReportMonthYear, dpJETransactionDate);
+                    JFXUtil.clearTextFields(apJEDetail, apJEMaster);
                     lbSelectTabJE = true;
                     JSONObject pnJSON = new JSONObject();
                     pnJSON = poPurchaseReceivingController.populateJournal();
