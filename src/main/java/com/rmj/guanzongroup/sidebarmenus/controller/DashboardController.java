@@ -993,6 +993,9 @@ public class DashboardController implements Initializable {
                     psIndustryID = "04";
                     psCategoryID = "0009";
                     return "SI Posting MH";
+                //Update
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
+                    return "Check Status Update";
 
                 /* OTHERS/PARAMETERS/ADDRESS */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
@@ -1392,7 +1395,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryLP.fxml";
             case "AP Payment Adjustment Entry Monarch":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml";
-            //Confirmation    
+            //Confirmation
             case "AP Payment Adjustment Confirmation":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml";
             case "AP Payment Adjustment Confirmation Appliances":
@@ -1407,7 +1410,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationLP.fxml";
             case "AP Payment Adjustment Confirmation Monarch":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMonarch.fxml";
-            //History    
+            //History
             case "AP Payment Adjustment History":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml";
             case "AP Payment Adjustment History Appliances":
@@ -1438,7 +1441,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryLP.fxml";
             case "SOA Tagging Entry Monarch":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml";
-            //Confirmation    
+            //Confirmation
             case "SOA Tagging Confirmation":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml";
             case "SOA Tagging Confirmation Appliances":
@@ -1453,7 +1456,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationLP.fxml";
             case "SOA Tagging Confirmation Monarch":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMonarch.fxml";
-            //History    
+            //History
             case "SOA Tagging History":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_History.fxml";
             case "SOA Tagging History Appliances":
@@ -1501,7 +1504,9 @@ public class DashboardController implements Initializable {
             case "SI Posting MH":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml";
             /*END SI POSTING*/
-
+            //Update
+            case "Check Status Update":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml";
         }
 
         return "";
@@ -1919,6 +1924,10 @@ public class DashboardController implements Initializable {
                         }
                     };
 
+                //UPDATE
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
+                    return new CheckStatusUpdateController();
+
                 /* INVENTORY/INVENTORY/ */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
 //                    return new InventoryMaintenanceController();
@@ -2198,7 +2207,7 @@ public class DashboardController implements Initializable {
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryLP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml";
-            //Confirmation    
+            //Confirmation
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationAppliances.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationCar.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMC.fxml":
@@ -2206,7 +2215,7 @@ public class DashboardController implements Initializable {
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationLP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_ConfirmationMonarch.fxml":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml";
-            //History    
+            //History
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryAppliances.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryCar.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_HistoryMC.fxml":
@@ -2223,7 +2232,7 @@ public class DashboardController implements Initializable {
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryLP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_EntryMonarch.fxml":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Entry.fxml";
-            //Confirmation  
+            //Confirmation
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationAppliances.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationCar.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMC.fxml":
@@ -2231,7 +2240,7 @@ public class DashboardController implements Initializable {
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationLP.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_ConfirmationMonarch.fxml":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_Confirmation.fxml";
-            //History    
+            //History
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryAppliances.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryCar.fxml":
             case "/com/rmj/guanzongroup/sidebarmenus/views/SOATagging_HistoryMC.fxml":
@@ -3054,6 +3063,9 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml\",\"controller_path\":\"SIPosting_MonarchHospitality.controller\",\"menu_id\":\"075\",\"menu_parent\":\"067\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchFood.fxml\",\"controller_path\":\"SIPosting_MonarchFood.controller\",\"menu_id\":\"076\",\"menu_parent\":\"067\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_LP.fxml\",\"controller_path\":\"SIPosting_LP.controller\",\"menu_id\":\"077\",\"menu_parent\":\"067\"}"
+                //STATUS UPDATE
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Update\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"077\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml\",\"controller_path\":\"CheckStatusUpdateController\",\"menu_id\":\"078\",\"menu_parent\":\"077\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
