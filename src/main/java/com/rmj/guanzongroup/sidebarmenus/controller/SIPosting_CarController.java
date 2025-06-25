@@ -1329,7 +1329,11 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     public void loadRecordJEDetail() {
         try {
             //DISABLING
-            JFXUtil.setDisabled(pnEditMode == EditMode.UPDATE, tfJEAcctCode, tfJEAcctDescription);
+            if (!JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
+                JFXUtil.setDisabled(pnEditMode == EditMode.UPDATE, tfJEAcctCode, tfJEAcctDescription);
+            } else {
+                JFXUtil.setDisabled(false, tfJEAcctCode, tfJEAcctDescription);
+            }
 
             tfJEAcctCode.setText(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode());
             tfJEAcctDescription.setText(poPurchaseReceivingController.Journal().Detail(pnJEDetail).Account_Chart().getDescription());
