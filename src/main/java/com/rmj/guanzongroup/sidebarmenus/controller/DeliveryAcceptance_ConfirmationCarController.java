@@ -4,6 +4,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.DeliveryAcceptance_EntryMPController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -91,16 +92,15 @@ import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import javafx.scene.control.ScrollBar;
-import javafx.geometry.Orientation;
-import com.sun.javafx.scene.control.skin.TableViewSkin;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;
 import javafx.animation.PauseTransition;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
 import javafx.scene.Node;
 import javafx.util.Pair;
+import org.guanzon.appdriver.agent.ShowDialogFX;
+import org.guanzon.appdriver.constant.UserRight;
 
 /**
  * FXML Controller class
@@ -131,8 +131,6 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
     private FilteredList<ModelDeliveryAcceptance_Main> filteredData;
     private FilteredList<ModelDeliveryAcceptance_Detail> filteredDataDetail;
     Map<String, String> imageinfo_temp = new HashMap<>();
-    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
-    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
     private double mouseAnchorX;
     private double mouseAnchorY;
@@ -373,6 +371,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         break;
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                            disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                             break;
                         } else {
                             return;
@@ -387,7 +386,6 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         }
                         retrievePOR();
                         disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
-                        showRetainedHighlight(false);
                         break;
                     case "btnSave":
                         //Validator
@@ -397,6 +395,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 poPurchaseReceivingController.AddDetail();
+                                loadTableDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
@@ -448,8 +447,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
-                                showRetainedHighlight(true);
+                                highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -458,7 +456,12 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.VoidTransaction("");
+                            if (PurchaseOrderReceivingStatus.CONFIRMED.equals(poPurchaseReceivingController.Master().getTransactionStatus())) {
+                                poJSON = poPurchaseReceivingController.CancelTransaction("Cancel");
+                            } else {
+                                poJSON = poPurchaseReceivingController.VoidTransaction("Void");
+                            }
+
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
@@ -746,7 +749,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", "")) / 100.00));
+                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -844,11 +847,27 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         ShowMessageFX.Warning(null, pxeModuleName, "Invalid Cost Amount");
                         break;
                     }
+
+                    double ldblOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        break;
+                        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                        return;
+                    }
+
+                    try {
+                        poJSON = poPurchaseReceivingController.computeFields();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            poPurchaseReceivingController.Detail(pnDetail).setUnitPrce(ldblOldVal);
+                            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                            return;
+                        }
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
 
                     break;
@@ -856,7 +875,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
-
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
                             && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
                         if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
@@ -874,7 +893,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         break;
                     }
                     int lnNewVal = Integer.valueOf(lsValue);
-                    int lnOldVal = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                    int lnOldVal = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
 
                     poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -882,6 +901,20 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
+
+                    try {
+                        poJSON = poPurchaseReceivingController.computeFields();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            System.err.println((String) poJSON.get("message"));
+                            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            poPurchaseReceivingController.Detail(pnDetail).setQuantity(lnOldVal);
+                            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
+                            return;
+                        }
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+                    }
+
                     if (pbEntered) {
                         if (lnNewVal != lnOldVal) {
                             if ((Integer.valueOf(lsValue) > 0
@@ -941,9 +974,9 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        int lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        int lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -982,9 +1015,9 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     switch (lsID) {
                         case "tfBrand":
                         case "tfReceiveQuantity":
-                            int lnReceiveQty = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            int lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            int lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
                             if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                                     && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
@@ -1148,22 +1181,32 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         }
     }
 
-    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
+    boolean pbSuccess = true;
+
+    private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         poJSON.put("message", "success");
+
         try {
-            if (!newValue) { // Lost focus
-                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
-                String lsID = datePicker.getId();
+            Object source = event.getSource();
+            if (source instanceof DatePicker) {
+                DatePicker datePicker = (DatePicker) source;
                 String inputText = datePicker.getEditor().getText();
-                LocalDate currentDate = LocalDate.now();
+                SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+                LocalDate currentDate = null;
+                LocalDate transactionDate = null;
+                LocalDate referenceDate = null;
                 LocalDate selectedDate = null;
+                String lsServerDate = "";
+                String lsTransDate = "";
+                String lsRefDate = "";
+                String lsSelectedDate = "";
 
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE);
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
                         LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
@@ -1173,67 +1216,209 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                     } catch (DateTimeParseException ignored) {
                     }
                 }
-
                 // Check if the user typed something in the text field
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
                         selectedDate = LocalDate.parse(inputText, formatter);
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid date format. Please use yyyy-mm-dd format.");
                         loadRecordMaster();
-                        // datePicker.requestFocus();
                         return;
                     }
-                } else {
-                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
                 }
 
-                String formattedDate = selectedDate.toString();
+                System.out.println("input text : " + inputText);
 
-                switch (lsID) {
+                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                    return;
+                }
+
+                switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
-                        } else {
-                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+                            lsServerDate = sdfFormat.format(oApp.getServerDate());
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            referenceDate = LocalDate.parse(lsRefDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+                            if (selectedDate.isAfter(currentDate)) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Future dates are not allowed.");
+                                pbSuccess = false;
+                            }
+
+                            if (pbSuccess && (selectedDate.isBefore(referenceDate))) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Receiving date cannot be before reference date.");
+                                pbSuccess = false;
+                            }
+
+                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                                    || !lsServerDate.equals(lsSelectedDate))) {
+                                if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                            + "If YES, please seek approval to proceed with the new selected date.\n"
+                                            + "If NO, the previous transaction date will be retained.") == true) {
+                                        poJSON = ShowDialogFX.getUserApproval(oApp);
+                                        if (!"success".equals((String) poJSON.get("result"))) {
+                                            pbSuccess = false;
+                                        }
+                                    } else {
+                                        pbSuccess = false;
+                                    }
+                                }
+                            }
+
+                            if (pbSuccess) {
+                                poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+
+                                }
+                            }
+
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordMaster();
+                            pbSuccess = true; //Set to original value
                         }
                         break;
                     case "dpReferenceDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
-                        } else {
-                            poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
+                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+                            lsServerDate = sdfFormat.format(oApp.getServerDate());
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+                            if (selectedDate.isAfter(currentDate)) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Future dates are not allowed.");
+                                pbSuccess = false;
+                            }
+
+                            if (pbSuccess && (selectedDate.isAfter(transactionDate))) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Reference date cannot be later than the receiving date.");
+                                pbSuccess = false;
+                            }
+
+                            if (pbSuccess) {
+                                poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                }
+                            }
+
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordMaster();
+                            pbSuccess = true; //Set to original value
                         }
                         break;
                     default:
 
                         break;
                 }
-                datePicker.getEditor().setText(formattedDate);
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    // datePicker.requestFocus();
-                }
-                Platform.runLater(() -> {
-                    loadRecordMaster();
-                });
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    };
+    }
 
+//    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
+//        poJSON = new JSONObject();
+//        poJSON.put("result", "success");
+//        poJSON.put("message", "success");
+//        try {
+//            if (!newValue) { // Lost focus
+//                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
+//                String lsID = datePicker.getId();
+//                String inputText = datePicker.getEditor().getText();
+//                LocalDate currentDate = LocalDate.now();
+//                LocalDate selectedDate = null;
+//
+//                lastFocusedTextField = datePicker;
+//                previousSearchedTextField = null;
+//
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//                if (inputText != null && !inputText.trim().isEmpty()) {
+//                    try {
+//                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+//                        datePicker.setValue(parsedDate);
+//                        datePicker.getEditor().setText(formatter.format(parsedDate));
+//                        inputText = datePicker.getEditor().getText();
+//                    } catch (DateTimeParseException ignored) {
+//                    }
+//                }
+//
+//                // Check if the user typed something in the text field
+//                if (inputText != null && !inputText.trim().isEmpty()) {
+//                    try {
+//                        selectedDate = LocalDate.parse(inputText, formatter);
+//                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
+//                    } catch (Exception ex) {
+//                        poJSON.put("result", "error");
+//                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
+//                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                        loadRecordMaster();
+//                        // datePicker.requestFocus();
+//                        return;
+//                    }
+//                } else {
+//                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
+//                }
+//
+//                String formattedDate = selectedDate.toString();
+//
+//                switch (lsID) {
+//                    case "dpTransactionDate":
+//                        if (selectedDate == null) {
+//                            break;
+//                        }
+//                        if (selectedDate.isAfter(currentDate)) {
+//                            poJSON.put("result", "error");
+//                            poJSON.put("message", "Future dates are not allowed.");
+//                        } else {
+//                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+//                        }
+//                        break;
+//                    case "dpReferenceDate":
+//                        if (selectedDate == null) {
+//                            break;
+//                        }
+//                        if (selectedDate.isAfter(currentDate)) {
+//                            poJSON.put("result", "error");
+//                            poJSON.put("message", "Future dates are not allowed.");
+//                        } else {
+//                            poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
+//                        }
+//                        break;
+//                    default:
+//
+//                        break;
+//                }
+//                datePicker.getEditor().setText(formattedDate);
+//                if ("error".equals((String) poJSON.get("result"))) {
+//                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                    // datePicker.requestFocus();
+//                }
+//                Platform.runLater(() -> {
+//                    loadRecordMaster();
+//                });
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    };
     private void loadTab() {
         int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
         pgPagination.setPageCount(totalPage);
@@ -1262,23 +1447,6 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         }
     }
 
-    public void showRetainedHighlight(boolean isRetained) {
-        if (isRetained) {
-            for (Pair<String, String> pair : plOrderNoPartial) {
-                if (!"0".equals(pair.getValue())) {
-                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
-                }
-            }
-        }
-        disableAllHighlightByColor(tblViewPuchaseOrder, "#C1E1C1", highlightedRowsMain);
-        plOrderNoPartial.clear();
-        for (Pair<String, String> pair : plOrderNoFinal) {
-            if (!"0".equals(pair.getValue())) {
-                highlight(tblViewPuchaseOrder, Integer.parseInt(pair.getKey()), "#C1E1C1", highlightedRowsMain);
-            }
-        }
-    }
-
     public void loadTableMain() {
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -1301,6 +1469,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
+                    disableAllHighlight(tblViewPuchaseOrder, highlightedRowsMain);
                     String lsMainDate = "";
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
 
@@ -1342,12 +1511,11 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                             } catch (GuanzonException ex) {
                                 Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
-
                             if (poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.CONFIRMED)) {
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
+                                highlight(tblViewPuchaseOrder, lnCtr + 1, "#C1E1C1", highlightedRowsMain);
                             }
                         }
-                        showRetainedHighlight(true);
+
                     }
 
                     if (pnMain < 0 || pnMain
@@ -1474,7 +1642,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
                 return;
             }
-            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null) && poPurchaseReceivingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             poJSON = poPurchaseReceivingController.checkExistingSerialId(pnDetail + 1);
             if ("error".equals((String) poJSON.get("result"))) {
                 lbFields = false;
@@ -1493,6 +1661,16 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 tfModel.getStyleClass().add("DisabledTextField");
             }
 
+            if (oApp.getUserLevel() == UserRight.ENCODER) {
+                tfCost.getStyleClass().add("DisabledTextField");
+                tfCost.setDisable(true);
+            } else {
+                while (tfCost.getStyleClass().contains("DisabledTextField")) {
+                    tfCost.getStyleClass().remove("DisabledTextField");
+                }
+                tfCost.setDisable(false);
+            }
+
             if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
                 poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
             }
@@ -1505,9 +1683,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+//            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
+            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
 
             updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -1606,14 +1785,15 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
             Platform.runLater(() -> {
                 double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(String.format("%.2f", (poPurchaseReceivingController.Master().getDiscountRate().doubleValue()*100.00)));
-
+                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscountRate(), false));
                 } else {
-                    tfDiscountRate.setText(String.format("%.2f", 0.00));
+                    tfDiscountRate.setText("0.00");
                 }
             });
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getDiscount().doubleValue())));
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReceivingController.Master().getTransactionTotal().doubleValue())));
+
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
+
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_ConfirmationCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1811,6 +1991,8 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
                             if (poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null && !poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("")) {
                                 cbPreOwned.setSelected(poPurchaseReceivingController.Detail(lnCtr).PurchaseOrderMaster().getPreOwned());
+                            } else {
+                                cbPreOwned.setSelected(false);
                             }
                             try {
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
@@ -1834,10 +2016,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
                                             lsBrand,
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce())),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
                                             String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
+                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                     ));
                         }
 
@@ -2010,11 +2192,13 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         setDatePickerFormat(dpTransactionDate);
         setDatePickerFormat(dpReferenceDate);
 
-        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
-        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
+        dpTransactionDate.setOnAction(this::datepicker_Action);
+        dpReferenceDate.setOnAction(this::datepicker_Action);
 
-        addKeyEventFilter(dpTransactionDate);
-        addKeyEventFilter(dpReferenceDate);
+//        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
+//        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
+//        addKeyEventFilter(dpTransactionDate);
+//        addKeyEventFilter(dpReferenceDate);
     }
 
     public void initTextFields() {
@@ -2140,57 +2324,9 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 }
             }
         });
-
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        adjustLastColumnForScrollbar(tblViewOrderDetails); // need to use computed-size last column to work
-        adjustLastColumnForScrollbar(tblViewPuchaseOrder);
-        adjustLastColumnForScrollbar(tblAttachments);
-    }
-
-    public void adjustLastColumnForScrollbar(TableView<?> tableView) {
-        tableView.skinProperty().addListener((obs, oldSkin, newSkin) -> {
-            if (!(newSkin instanceof TableViewSkin<?>)) {
-                return;
-            }
-
-            TableViewSkin<?> skin = (TableViewSkin<?>) newSkin;
-            VirtualFlow<?> flow = skin.getChildren().stream()
-                    .filter(node -> node instanceof VirtualFlow<?>)
-                    .map(node -> (VirtualFlow<?>) node)
-                    .findFirst().orElse(null);
-
-            if (flow == null) {
-                return;
-            }
-
-            ScrollBar vScrollBar = flow.getChildrenUnmodifiable().stream()
-                    .filter(node -> node instanceof ScrollBar && ((ScrollBar) node).getOrientation() == Orientation.VERTICAL)
-                    .map(node -> (ScrollBar) node)
-                    .findFirst().orElse(null);
-
-            if (vScrollBar == null || tableView.getColumns().isEmpty()) {
-                return;
-            }
-
-            TableColumn<?, ?> lastColumn = (TableColumn<?, ?>) tableView.getColumns()
-                    .get(tableView.getColumns().size() - 1);
-
-            vScrollBar.visibleProperty().addListener((observable, oldValue, newValue) -> {
-                Platform.runLater(() -> {
-                    double scrollBarWidth = newValue ? vScrollBar.getWidth() : 0;
-                    double remainingWidth = tableView.getWidth() - scrollBarWidth;
-
-                    double totalFixedWidth = tableView.getColumns().stream()
-                            .filter(col -> col != lastColumn)
-                            .mapToDouble(col -> ((TableColumn<?, ?>) col).getWidth())
-                            .sum();
-
-                    double newWidth = Math.max(0, remainingWidth - totalFixedWidth);
-                    lastColumn.setPrefWidth(newWidth - 5);
-                });
-            });
-        });
+        JFXUtil.adjustColumnForScrollbar(tblViewOrderDetails, tblViewPuchaseOrder, tblAttachments);  // need to use computed-size as min-width on particular column to work
     }
 
     private int moveToNextRow(TableView table, TablePosition focusedCell) {
@@ -2599,6 +2735,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
         tfAttachmentNo.clear();
         cmbAttachmentType.setItems(documentType);
         cmbAttachmentType.getSelectionModel().select(0);
+        cbPreOwned.setSelected(false);
     }
 
     public void generateAttachment() {

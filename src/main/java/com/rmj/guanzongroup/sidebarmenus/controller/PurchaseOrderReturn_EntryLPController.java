@@ -10,8 +10,6 @@ import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,10 +56,12 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderReturnStatus;
 import org.json.simple.JSONObject;
 import javafx.animation.PauseTransition;
 import javafx.util.Duration;
-import java.util.Arrays;
-import java.util.List;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReturn;
 import org.json.simple.parser.ParseException;
+import org.guanzon.appdriver.agent.ShowDialogFX;
+import org.guanzon.appdriver.constant.UserRight;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 
 /**
  * FXML Controller class
@@ -426,9 +426,10 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     if (lsValue.isEmpty()) {
                         lsValue = "0";
                     }
+                    lsValue = JFXUtil.removeComma(lsValue);
                     if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
                             && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
-                        if (poPurchaseReturnController.getReceiveQty(pnDetail).intValue() < Integer.valueOf(lsValue)) {
+                        if (poPurchaseReturnController.getReceiveQty(pnDetail).doubleValue() < Double.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Return quantity cannot be greater than the receive quantity.");
                             poPurchaseReturnController.Detail(pnDetail).setQuantity(0);
                             tfReturnQuantity.requestFocus();
@@ -436,7 +437,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                         }
                     }
 
-                    poJSON = poPurchaseReturnController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
+                    poJSON = poPurchaseReturnController.Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -559,9 +560,9 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
     };
 
     public void moveNext() {
-        int lnReceiveQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        double lnReceiveQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
         apDetail.requestFocus();
-        int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
                 && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                 && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -598,9 +599,9 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            double lnQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
                             if (lnQty != lnNewvalue && (lnQty > 0
                                     && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
                                     && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
@@ -622,23 +623,8 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            int lnQty = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            apDetail.requestFocus();
-                            int lnNewvalue = Integer.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
-                            if (lnQty != lnNewvalue && (lnQty > 0
-                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
-                                tfReturnQuantity.requestFocus();
-                            } else {
-                                pnDetail = JFXUtil.moveToNextRow(currentTable);
-                                loadRecordDetail();
-                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
-                                    tfReturnQuantity.requestFocus();
-                                } else {
-                                    tfBarcode.requestFocus();
-                                }
-                                event.consume();
-                            }
+                            moveNext();
+                            event.consume();
                             break;
                         default:
                             break;
@@ -686,6 +672,8 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfReferenceNo.setText("");
+                            } else {
+                                JFXUtil.focusFirstTextField(apDetail);
                             }
                             loadRecordMaster();
                             break;
@@ -706,6 +694,8 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfPOReceivingNo.setText("");
+                            } else {
+                                JFXUtil.focusFirstTextField(apDetail);
                             }
                             loadRecordMaster();
                             break;
@@ -778,23 +768,30 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
 
-        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
-        CustomCommonUtil.inputDecimalOnly(tfCost);
+        CustomCommonUtil.inputDecimalOnly(tfCost, tfReceiveQuantity, tfReturnQuantity);
+
     }
 
-    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
+    boolean pbSuccess = true;
+
+    private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         poJSON.put("result", "success");
         poJSON.put("message", "success");
+
         try {
-
-            if (!newValue) { // Lost focus
-                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
-                String lsID = datePicker.getId();
+            Object source = event.getSource();
+            if (source instanceof DatePicker) {
+                DatePicker datePicker = (DatePicker) source;
                 String inputText = datePicker.getEditor().getText();
-                LocalDate currentDate = LocalDate.now();
+                SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
+                LocalDate currentDate = null;
                 LocalDate selectedDate = null;
-
+                String lsServerDate = "";
+                String lsTransDate = "";
+                String lsSelectedDate = "";
+                String lsReceivingDate = "";
+                LocalDate receivingDate = null;
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
@@ -805,46 +802,92 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     loadRecordMaster();
                     return;
                 }
+                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                    return;
+                }
                 selectedDate = ldtResult.selectedDate;
 
-                String formattedDate = selectedDate.toString();
-
-                switch (lsID) {
+                switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
+                        if (poPurchaseReturnController.getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReturnController.getEditMode() == EditMode.UPDATE) {
+                            lsServerDate = sdfFormat.format(oApp.getServerDate());
+                            lsTransDate = sdfFormat.format(poPurchaseReturnController.Master().getTransactionDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
-                        } else {
-                            poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+                            if (selectedDate.isAfter(currentDate)) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "Future dates are not allowed.");
+                                pbSuccess = false;
+                            }
+                            if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
+                                lsReceivingDate = sdfFormat.format(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getTransactionDate());
+                                receivingDate = LocalDate.parse(lsReceivingDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                                if (selectedDate.isBefore(receivingDate)) {
+                                    poJSON.put("result", "error");
+                                    poJSON.put("message", "Transaction date cannot be before the receiving date.");
+                                    pbSuccess = false;
+                                }
+                            } else {
+                                if (pbSuccess && !lsServerDate.equals(lsSelectedDate) && pnEditMode == EditMode.ADDNEW) {
+                                    poJSON.put("result", "error");
+                                    poJSON.put("message", "Select PO Receiving before changing the transaction date.");
+                                    pbSuccess = false;
+                                }
+                            }
+                            if (pbSuccess && ((poPurchaseReturnController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                                    || !lsServerDate.equals(lsSelectedDate))) {
+                                pbSuccess = false;
+                                if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                        + "If YES, please seek approval to proceed with the new selected date.\n"
+                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                        poJSON = ShowDialogFX.getUserApproval(oApp);
+                                        if (!"success".equals((String) poJSON.get("result"))) {
+                                            pbSuccess = false;
+                                        } else {
+                                            poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                        }
+                                    } else {
+                                        pbSuccess = false;
+                                    }
+                                } else {
+                                    poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                }
+                            }
+
+                            if (pbSuccess) {
+
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+
+                                }
+                            }
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordMaster();
+                            pbSuccess = true; //Set to original value
+
                         }
                         break;
                     default:
 
                         break;
                 }
-                datePicker.getEditor().setText(formattedDate);
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    // datePicker.requestFocus();
-                }
-                Platform.runLater(() -> {
-                    loadRecordMaster();
-                });
-
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(PurchaseOrderReturn_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(PurchaseOrderReturn_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    };
+    }
 
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate);
-        JFXUtil.setDatePickerNextFocusByEnter(dpTransactionDate);
-        JFXUtil.setFocusListener(datepicker_Focus, dpTransactionDate);
+
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate);
 
     }
 
@@ -888,13 +931,6 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
             }
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             JFXUtil.setDisabled(!lbDisable, tfBarcode, tfDescription);
-            if (lbDisable) {
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfBarcode, tfDescription)) {
-                    JFXUtil.AddStyleClass("DisabledTextField", tfBarcode, tfDescription);
-                }
-            } else {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfBarcode, tfDescription);
-            }
 
             tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());
@@ -904,9 +940,9 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
             tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail)));
-            tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity()));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce(), true));
+            tfReceiveQuantity.setText(String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(pnDetail))));
+            tfReturnQuantity.setText(String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getQuantity())));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -917,13 +953,6 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
 
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.ADDNEW;
-        if (!lbDisable) {
-            JFXUtil.AddStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
-        } else {
-            while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo)) {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfSupplier, tfReferenceNo, tfPOReceivingNo);
-            }
-        }
 
         JFXUtil.setDisabled(!lbDisable, tfSupplier, tfReferenceNo, tfPOReceivingNo);
 
@@ -977,7 +1006,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
             tfPOReceivingNo.setText(poPurchaseReturnController.Master().getSourceNo());
             taRemarks.setText(poPurchaseReturnController.Master().getRemarks());
 
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(Double.valueOf(poPurchaseReturnController.Master().getTransactionTotal().doubleValue())));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Master().getTransactionTotal().doubleValue(), true));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
@@ -1030,7 +1059,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
         });
 
         tblViewDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
-        JFXUtil.adjustColumnForScrollbar(tblViewDetails, 2); // need to use computed-size in min-width of the column to work
+        JFXUtil.adjustColumnForScrollbar(tblViewDetails); // need to use computed-size in min-width of the column to work
     }
 
     public void loadTableDetail() {
@@ -1080,7 +1109,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poPurchaseReturnController.getDetailCount(); lnCtr++) {
                             try {
-                                lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue();
+                                lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().doubleValue();
                             } catch (Exception e) {
                             }
 
@@ -1088,11 +1117,11 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
                                             String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce())),
-                                            String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr)),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal)) //identify total
-                                    ));
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(lnCtr))),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getQuantity())),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true))) //identify total
+                            );
                         }
 
                         if (pnDetail < 0 || pnDetail
