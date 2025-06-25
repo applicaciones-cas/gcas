@@ -5,6 +5,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.SIPosting_CarController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -18,6 +19,7 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +74,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.animation.PauseTransition;
 import javafx.scene.Scene;
@@ -250,7 +253,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             if (tabJE.isSelected()) {
 //                if (pnEditMode == EditMode.READY) {
                 try {
-                    JFXUtil.clearTextFields(apJEDetail,apJEMaster);
+                    JFXUtil.setValueToNull(dpJETransactionDate, dpReportMonthYear);
+                    JFXUtil.clearTextFields(apJEMaster, apJEDetail);
                     lbSelectTabJE = true;
                     JSONObject pnJSON = new JSONObject();
                     pnJSON = poPurchaseReceivingController.populateJournal();
@@ -1374,9 +1378,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
             String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
             lblJEStatus.setText(lsStat);
+
         });
         tfJETransactionNo.setText(poPurchaseReceivingController.Journal().Master().getTransactionNo());
-
         String lsJETransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Master().getTransactionDate());
         dpJETransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsJETransactionDate, "yyyy-MM-dd"));
 
