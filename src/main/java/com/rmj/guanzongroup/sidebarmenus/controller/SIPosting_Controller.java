@@ -5,7 +5,6 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.SIPosting_CarController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -251,6 +250,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             if (tabJE.isSelected()) {
 //                if (pnEditMode == EditMode.READY) {
                 try {
+                    JFXUtil.clearTextFields(apJEDetail,apJEMaster);
                     lbSelectTabJE = true;
                     JSONObject pnJSON = new JSONObject();
                     pnJSON = poPurchaseReceivingController.populateJournal();
@@ -1147,8 +1147,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 }
                 pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                 if (JFXUtil.isObjectEqualTo(datePicker.getId(), "dpJETransactionDate", "dpReportMonthYear")) {
-                    loadRecordJEMaster();
-                    loadRecordJEDetail();
+                    loadTableJEDetail();
                 } else {
                     loadRecordMaster();
                 }
@@ -1300,7 +1299,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         try {
             //DISABLING
             if (!JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
-                JFXUtil.setDisabled(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getEditMode() == EditMode.UPDATE, tfJEAcctCode, tfJEAcctDescription);
+                JFXUtil.setDisabled(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getEditMode() != EditMode.ADDNEW, tfJEAcctCode, tfJEAcctDescription);
             } else {
                 JFXUtil.setDisabled(false, tfJEAcctCode, tfJEAcctDescription);
             }
@@ -1376,7 +1375,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
             lblJEStatus.setText(lsStat);
         });
-
         tfJETransactionNo.setText(poPurchaseReceivingController.Journal().Master().getTransactionNo());
 
         String lsJETransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Master().getTransactionDate());
@@ -1392,6 +1390,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
         tfTotalCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalCredit, true));
         tfTotalDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalDebit, true));
+
     }
 
     public void loadRecordMaster() {
@@ -1590,10 +1589,12 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                 if (poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode() != null
                                         && !poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).getAccountCode().equals("")) {
                                     poPurchaseReceivingController.Journal().AddDetail();
+                                    poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).setForMonthOf(oApp.getServerDate());
                                 }
                             }
                             if ((poPurchaseReceivingController.Journal().getDetailCount() - 1) < 0) {
                                 poPurchaseReceivingController.Journal().AddDetail();
+                                poPurchaseReceivingController.Journal().Detail(poPurchaseReceivingController.Journal().getDetailCount() - 1).setForMonthOf(oApp.getServerDate());
                             }
                         }
                         String lsReportMonthYear = "";
@@ -2112,13 +2113,15 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     public void clearTextFields() {
-        imageinfo_temp.clear();
-        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpReportMonthYear);
-        psSupplierId = "";
-        psBranchId = "";
-        JFXUtil.clearTextFields(apMaster, apDetail, apJEDetail, apJEMaster, apAttachments);
-        cbVatInclusive.setSelected(false);
-        cbVatable.setSelected(false);
+        Platform.runLater(() -> {
+            imageinfo_temp.clear();
+            JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpReportMonthYear);
+            psSupplierId = "";
+            psBranchId = "";
+            JFXUtil.clearTextFields(apMaster, apDetail, apJEDetail, apJEMaster, apAttachments);
+            cbVatInclusive.setSelected(false);
+            cbVatable.setSelected(false);
+        });
     }
 
 }
