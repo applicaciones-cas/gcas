@@ -348,22 +348,22 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
     public void loadHighlightFromDetail() {
         try {
-            String lsReferenceNo = "";
+            String lsTransNoBasis = "";
             for (int lnCtr = 0; lnCtr < poSOATaggingController.getDetailCount(); lnCtr++) {
                 switch (poSOATaggingController.Detail(lnCtr).getSourceCode()) {
                     case SOATaggingStatic.PaymentRequest:
-                        lsReferenceNo = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
+                        lsTransNoBasis = poSOATaggingController.Detail(lnCtr).PaymentRequestMaster().getTransactionNo();
                         break;
                     case SOATaggingStatic.CachePayable: {
-                        lsReferenceNo = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getReferNo();
+                        lsTransNoBasis = poSOATaggingController.Detail(lnCtr).CachePayableMaster().getTransactionNo();
                     }
                     break;
                 }
                 if (!JFXUtil.isObjectEqualTo(poSOATaggingController.Detail(lnCtr).getAppliedAmount(), null, "")) {
                     if (poSOATaggingController.Detail(lnCtr).getAppliedAmount().doubleValue() > 0.0000) {
-                        plOrderNoPartial.add(new Pair<>(lsReferenceNo, "1"));
+                        plOrderNoPartial.add(new Pair<>(lsTransNoBasis, "1"));
                     } else {
-                        plOrderNoPartial.add(new Pair<>(lsReferenceNo, "0"));
+                        plOrderNoPartial.add(new Pair<>(lsTransNoBasis, "0"));
                     }
                 }
             }
@@ -916,6 +916,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     String lsPayeeName = "";
                     String lsTransNo = "";
                     String lsTransDate = "";
+                    String lsTransNoBasis = "";
                     //retreiving using column index
                     for (int lnCtr = 0; lnCtr <= poSOATaggingController.getPayablesCount() - 1; lnCtr++) {
                         try {
@@ -924,18 +925,21 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsPayeeName = poSOATaggingController.PaymentRequestList(lnCtr).Payee().getPayeeName();
                                     lsTransNo = poSOATaggingController.PaymentRequestList(lnCtr).getSeriesNo();
                                     lsTransDate = String.valueOf(poSOATaggingController.PaymentRequestList(lnCtr).getTransactionDate());
+                                    lsTransNoBasis = poSOATaggingController.PaymentRequestList(lnCtr).getTransactionNo();
                                     break;
                                 case SOATaggingStatic.CachePayable:
                                     lsPayeeName = poSOATaggingController.CachePayableList(lnCtr).Client().getCompanyName();
                                     lsTransNo = poSOATaggingController.CachePayableList(lnCtr).getReferNo();
                                     lsTransDate = String.valueOf(poSOATaggingController.CachePayableList(lnCtr).getTransactionDate());
+                                    lsTransNoBasis = poSOATaggingController.CachePayableList(lnCtr).getTransactionNo();
                                     break;
                             }
 
                             main_data.add(new ModelSOATagging_Main(String.valueOf(lnCtr + 1),
                                     lsPayeeName,
                                     lsTransDate,
-                                    lsTransNo
+                                    lsTransNo,
+                                    lsTransNoBasis
                             ));
                         } catch (SQLException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1277,7 +1281,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             }
         });
 
-        JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelSOATagging_Main) item).getIndex04(), highlightedRowsMain);
+        JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelSOATagging_Main) item).getIndex05(), highlightedRowsMain);
         tblViewTransDetailList.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetailList, tblViewMainList); // need to use computed-size in min-width of the column to work
     }
