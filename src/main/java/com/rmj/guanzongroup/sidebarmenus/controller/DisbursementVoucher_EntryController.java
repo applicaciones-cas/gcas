@@ -29,7 +29,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
-import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -60,7 +59,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import javafx.util.Pair;
-import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -69,7 +67,6 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.Logical;
-import org.guanzon.appdriver.constant.UserRight;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -1588,13 +1585,13 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 String selected = String.valueOf(cmbTransactionType.getValue());
                 switch (selected) {
                     case DisbursementStatic.SourceCode.PAYMENT_REQUEST: // "PRF"
-                        psTransactionType = "PRF";
+                        psTransactionType = DisbursementStatic.SourceCode.PAYMENT_REQUEST;
                         break;
                     case DisbursementStatic.SourceCode.CASH_PAYABLE: // "CP"
-                        psTransactionType = "CASH";
+                        psTransactionType = DisbursementStatic.SourceCode.CASH_PAYABLE;
                         break;
                     case DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE: // "SOA"
-                        psTransactionType = "SOA";
+                        psTransactionType = DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE;
                         break;
                     case DisbursementStatic.SourceCode.LOAD_ALL:
                         psTransactionType = DisbursementStatic.SourceCode.LOAD_ALL;
