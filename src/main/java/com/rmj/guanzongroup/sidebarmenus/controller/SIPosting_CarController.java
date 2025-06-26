@@ -242,7 +242,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     private void initTabSelection() {
         tabJE.setOnSelectionChanged(event -> {
             if (tabJE.isSelected()) {
-//                if (pnEditMode == EditMode.READY) {
                 try {
                     JFXUtil.setValueToNull(dpReportMonthYear, dpJETransactionDate);
                     JFXUtil.clearTextFields(apJEDetail, apJEMaster);
@@ -262,7 +261,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 } catch (ScriptException ex) {
                     Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
-//                }
             }
         });
     }
@@ -544,7 +542,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (ScriptException ex) {
-            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
