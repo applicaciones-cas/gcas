@@ -692,10 +692,30 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
+                    lsValue = JFXUtil.removeComma(lsValue);
+                    double lnNewVal = Double.valueOf(lsValue);
+                    double lnOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
+
+                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                        break;
+                    }
+
+                    if (pbEntered) {
+                        if (lnNewVal != lnOldVal) {
+                            if ((Double.valueOf(lsValue) > 0
+                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                                moveNext();
+                            } else {
+                                moveNext();
+                            }
+                        } else {
+                            moveNext();
+                        }
+                        pbEntered = false;
                     }
                     break;
                 case "tfDiscRateDetail":
@@ -745,34 +765,70 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
                     if (lsValue.isEmpty()) {
                         lsValue = "0.0000";
                     }
-                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount() > 0.0000 && Double.valueOf(lsValue.replace(",", "")) > 0) {
+                    lsValue = JFXUtil.removeComma(lsValue);
+                    lnNewVal = Double.valueOf(lsValue);
+                    lnOldVal = poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount();
+
+                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount() > 0.0000 && Double.valueOf(lsValue) > 0) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
                         poPurchaseReceivingController.Journal().Detail(pnJEDetail).setCreditAmount(0.0000);
                         tfCreditAmt.setText("0.0000");
                         tfCreditAmt.requestFocus();
                         break;
                     } else {
-                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setCreditAmount((Double.valueOf(lsValue.replace(",", ""))));
+                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setCreditAmount((Double.valueOf(lsValue)));
                     }
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    }
+
+                    if (pbEntered && lnNewVal > 0) { //unique
+                        if (lnNewVal != lnOldVal) {
+                            if ((Double.valueOf(lsValue) > 0
+                                    && poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode() != null
+                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode()))) {
+                                moveNextJE(false);
+                            } else {
+                                moveNextJE(false);
+                            }
+                        } else {
+                            moveNextJE(false);
+                        }
+                        pbEntered = false;
                     }
                     break;
                 case "tfDebitAmt":
                     if (lsValue.isEmpty()) {
                         lsValue = "0.0000";
                     }
-                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0.0000 && Double.valueOf(lsValue.replace(",", "")) > 0) {
+                    lsValue = JFXUtil.removeComma(lsValue);
+                    lnNewVal = Double.valueOf(lsValue);
+                    lnOldVal = poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount();
+                    if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0.0000 && Double.valueOf(lsValue) > 0) {
                         ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
                         poPurchaseReceivingController.Journal().Detail(pnJEDetail).setDebitAmount(0.0000);
                         tfDebitAmt.setText("0.0000");
                         tfDebitAmt.requestFocus();
                         break;
                     } else {
-                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setDebitAmount((Double.valueOf(lsValue.replace(",", ""))));
+                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setDebitAmount((Double.valueOf(lsValue)));
                     }
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    }
+                    if (pbEntered) {
+                        if (lnNewVal != lnOldVal) {
+                            if ((Double.valueOf(lsValue) > 0
+                                    && poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode() != null
+                                    && !"".equals(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode()))) {
+                                moveNextJE(false);
+                            } else {
+                                moveNextJE(false);
+                            }
+                        } else {
+                            moveNextJE(false);
+                        }
+                        pbEntered = false;
                     }
                     break;
             }
@@ -1099,10 +1155,6 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
 
                             if (pbSuccess) {
                                 poPurchaseReceivingController.Journal().Detail(pnJEDetail).setForMonthOf((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                            } else {
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
                             }
                         }
                         break;
@@ -1116,10 +1168,6 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
 
                             if (pbSuccess) {
                                 poPurchaseReceivingController.Journal().Detail(pnJEDetail).setForMonthOf((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                            } else {
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                }
                             }
 
                         }
