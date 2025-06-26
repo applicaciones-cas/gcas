@@ -795,6 +795,9 @@ public class DashboardController implements Initializable {
                     return "Disbursement Voucher Verification";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
                     return "Disbursement Voucher Certification";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_History.fxml":
+                    return "Disbursement Voucher History";
+
 
                 /*CHECK */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
@@ -1368,6 +1371,8 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml";
             case "Disbursement Voucher Certification":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml";
+            case "Disbursement Voucher History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_History.fxml";
 
             /*CHECK */
             case "Check Authorization":
@@ -1807,24 +1812,27 @@ public class DashboardController implements Initializable {
                     return new PaymentRequest_HistoryController();
 
                 /*DISBURSEMENT VOUCHER */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml":
-//                    return new DisbursementVoucher_EntryController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml":
-//                    return new DisbursementVoucher_VerificationController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
-//                    return new DisbursementVoucher_CertificationController();
-//
-//                /*CHECK */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
-//                    return new CheckAuthorizationController();
-//
-//                /*CHECK PRINT REQUEST */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml":
-//                    return new CheckPrintRequest_EntryController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml":
-//                    return new CheckPrintRequest_ConfirmationController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml":
-//                    return new CheckPrintingController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Entry.fxml":
+                    return new DisbursementVoucher_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Verification.fxml":
+                    return new DisbursementVoucher_VerificationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_Certification.fxml":
+                    return new DisbursementVoucher_CertificationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_History.fxml":
+                    return new DisbursementVoucher_HistoryController();
+
+
+                /*CHECK */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckAuthorization.fxml":
+                    return new CheckAuthorizationController();
+
+                /*CHECK PRINT REQUEST */
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml":
+                    return new CheckPrintRequest_EntryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml":
+                    return new CheckPrintRequest_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml":
+                    return new CheckPrintingController();
                 /* SI POSTING */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting.fxml":
                     return new SIPosting_Controller();
