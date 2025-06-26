@@ -244,30 +244,33 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
         psCategoryId = fsValue;
     }
 
+    private void populateJE() {
+        try {
+            JSONObject pnJSON = new JSONObject();
+            JFXUtil.setValueToNull(dpJETransactionDate, dpReportMonthYear);
+            JFXUtil.clearTextFields(apJEMaster, apJEDetail);
+            pnJSON = poPurchaseReceivingController.populateJournal();
+            if (JFXUtil.isJSONSuccess(pnJSON)) {
+                loadTableJEDetail();
+            } else {
+                JEdetails_data.clear();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+        } catch (ScriptException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     private void initTabSelection() {
         tabJE.setOnSelectionChanged(event -> {
             if (tabJE.isSelected()) {
-//                if (pnEditMode == EditMode.READY) {
-                try {
-                    JFXUtil.setValueToNull(dpJETransactionDate, dpReportMonthYear);
-                    JFXUtil.clearTextFields(apJEMaster, apJEDetail);
-                    lbSelectTabJE = true;
-                    JSONObject pnJSON = new JSONObject();
-                    pnJSON = poPurchaseReceivingController.populateJournal();
-                    if (JFXUtil.isJSONSuccess(pnJSON)) {
-                        loadTableJEDetail();
-                    } else {
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                } catch (GuanzonException ex) {
-                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                } catch (CloneNotSupportedException ex) {
-                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                } catch (ScriptException ex) {
-                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                }
-//                }
+                lbSelectTabJE = true;
+                populateJE();
             }
         });
     }
@@ -478,19 +481,13 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
 
                     Tab currentTab = tabPaneForm.getSelectionModel().getSelectedItem();
                     if (currentTab.getId().equals("tabJE")) {
-                        poJSON = poPurchaseReceivingController.populateJournal();
-                        if (JFXUtil.isJSONSuccess(poJSON)) {
-                            loadTableJEDetail();
-                        } else {
-                        }
+                        populateJE();
                     }
                 }
                 initButton(pnEditMode);
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (ScriptException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
