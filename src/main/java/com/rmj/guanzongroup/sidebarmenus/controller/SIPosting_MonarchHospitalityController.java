@@ -846,8 +846,9 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
         }
     }
 
-    public void moveNextJE() {
-        pnJEDetail = JFXUtil.moveToNextRow(tblViewJEDetails);
+    public void moveNextJE(boolean isUp) {
+        apJEDetail.requestFocus();
+        pnJEDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewJEDetails) : JFXUtil.moveToNextRow(tblViewJEDetails);
         loadRecordJEDetail();
         if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
             tfJEAcctCode.requestFocus();
@@ -898,19 +899,7 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
                         case "tfDebitAmt":
                             //focus if either credit or debit
                             // Debit is default to focus
-
-                            pnJEDetail = JFXUtil.moveToPreviousRow(tblViewJEDetails);
-                            loadRecordJEDetail();
-
-                            if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
-                                tfJEAcctCode.requestFocus();
-                            } else {
-                                if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
-                                    tfCreditAmt.requestFocus();
-                                } else {
-                                    tfDebitAmt.requestFocus();
-                                }
-                            }
+                            moveNextJE(true);
                             event.consume();
                             break;
                     }
@@ -926,7 +915,7 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
                         case "tfJEAcctCode":
                         case "tfCreditAmt":
                         case "tfDebitAmt":
-                            moveNextJE();
+                            moveNextJE(false);
                             event.consume();
                             break;
                         default:
@@ -1358,7 +1347,7 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
 
     public void loadRecordJEMaster() {
         Platform.runLater(() -> {
-            String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Journal().Master().getTransactionStatus();
+            String lsActive = poPurchaseReceivingController.Journal().Master().getEditMode() == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Journal().Master().getTransactionStatus();
             Map<String, String> statusMap = new HashMap<>();
             statusMap.put(PurchaseOrderReceivingStatus.POSTED, "POSTED");
             statusMap.put(PurchaseOrderReceivingStatus.PAID, "PAID");
@@ -1372,7 +1361,7 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
             lblJEStatus.setText(lsStat);
 
         });
-        if(poPurchaseReceivingController.Journal().Master().getTransactionNo() != null){
+        if (poPurchaseReceivingController.Journal().Master().getTransactionNo() != null) {
             tfJETransactionNo.setText(poPurchaseReceivingController.Journal().Master().getTransactionNo());
             String lsJETransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Master().getTransactionDate());
             dpJETransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsJETransactionDate, "yyyy-MM-dd"));

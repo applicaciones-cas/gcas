@@ -843,8 +843,9 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
         }
     }
 
-    public void moveNextJE() {
-        pnJEDetail = JFXUtil.moveToNextRow(tblViewJEDetails);
+    public void moveNextJE(boolean isUp) {
+        apJEDetail.requestFocus();
+        pnJEDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewJEDetails) : JFXUtil.moveToNextRow(tblViewJEDetails);
         loadRecordJEDetail();
         if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
             tfJEAcctCode.requestFocus();
@@ -895,19 +896,7 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
                         case "tfDebitAmt":
                             //focus if either credit or debit
                             // Debit is default to focus
-
-                            pnJEDetail = JFXUtil.moveToPreviousRow(tblViewJEDetails);
-                            loadRecordJEDetail();
-
-                            if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
-                                tfJEAcctCode.requestFocus();
-                            } else {
-                                if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
-                                    tfCreditAmt.requestFocus();
-                                } else {
-                                    tfDebitAmt.requestFocus();
-                                }
-                            }
+                            moveNextJE(true);
                             event.consume();
                             break;
                     }
@@ -923,7 +912,7 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
                         case "tfJEAcctCode":
                         case "tfCreditAmt":
                         case "tfDebitAmt":
-                            moveNextJE();
+                            moveNextJE(false);
                             event.consume();
                             break;
                         default:
@@ -1109,7 +1098,7 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
                             }
 
                             if (pbSuccess) {
-                                poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                poPurchaseReceivingController.Journal().Detail(pnJEDetail).setForMonthOf((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1364,7 +1353,7 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
 
     public void loadRecordJEMaster() {
         Platform.runLater(() -> {
-            String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Journal().Master().getTransactionStatus();
+            String lsActive = poPurchaseReceivingController.Journal().Master().getEditMode() == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Journal().Master().getTransactionStatus();
             Map<String, String> statusMap = new HashMap<>();
             statusMap.put(PurchaseOrderReceivingStatus.POSTED, "POSTED");
             statusMap.put(PurchaseOrderReceivingStatus.PAID, "PAID");
