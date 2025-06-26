@@ -591,7 +591,6 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                     JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
 
                     if (poAPPaymentAdjustmentController.getAPPaymentAdjustmentCount() > 0) {
-                        //pending
                         //retreiving using column index
                         for (int lnCtr = 0; lnCtr <= poAPPaymentAdjustmentController.getAPPaymentAdjustmentCount() - 1; lnCtr++) {
                             try {
@@ -680,6 +679,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             tfCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
             poAPPaymentAdjustmentController.computeFields();
+            JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
@@ -847,8 +847,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
                         break;
                 }
 
-                if (lsButton.equals("btnSave") || lsButton.equals("btnConfirm") || lsButton.equals("btnReturn")
-                        || lsButton.equals("btnVoid") || lsButton.equals("btnCancel")) {
+                if (JFXUtil.isObjectEqualTo(lsButton, "btnSave", "btnConfirm", "btnReturn", "btnVoid", "btnCancel")) {
                     poAPPaymentAdjustmentController.resetMaster();
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();

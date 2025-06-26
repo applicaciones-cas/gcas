@@ -462,6 +462,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             tfCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
 
             poAPPaymentAdjustmentController.computeFields();
+            JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {

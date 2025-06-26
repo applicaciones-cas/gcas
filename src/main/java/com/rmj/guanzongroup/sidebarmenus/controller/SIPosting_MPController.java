@@ -1331,6 +1331,7 @@ public class SIPosting_MPController implements Initializable, ScreenInterface {
                 dpReportMonthYear.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReportMonthYear, "yyyy-MM-dd"));
                 tfCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount(), true));
                 tfDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount(), true));
+                JFXUtil.updateCaretPositions(apJEDetail);
             } catch (SQLException ex) {
                 Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             } catch (GuanzonException ex) {
@@ -1406,6 +1407,7 @@ public class SIPosting_MPController implements Initializable, ScreenInterface {
 
             tfTotalCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalCredit, true));
             tfTotalDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalDebit, true));
+            JFXUtil.updateCaretPositions(apJEMaster);
         }
 
     }
