@@ -265,7 +265,7 @@
                                                             <TextField fx:id="tfOrderQuantity" promptText="0" GridPane.columnIndex="11" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QOH" GridPane.columnIndex="9" GridPane.rowIndex="1" />
                                                             <TextField fx:id="tfQOH" GridPane.columnIndex="11" GridPane.rowIndex="1" />
-                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inv Tpe" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inv Type" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                                             <TextField fx:id="tfInvType" GridPane.columnIndex="8" GridPane.rowIndex="1" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                             <TextField fx:id="tfROQ" GridPane.columnIndex="8" GridPane.rowIndex="2" />
@@ -299,7 +299,7 @@
                                              <children>
                                                 <AnchorPane minHeight="-Infinity" prefHeight="28.0" style="-fx-background-color: FF8201;">
                                                    <children>
-                                                      <Label alignment="CENTER" contentDisplay="CENTER" text="Recommended To Order" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                      <Label alignment="CENTER" contentDisplay="CENTER" text="Table List Information Section" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <font>
                                                             <Font name="System Bold" size="14.0" />
                                                          </font>
