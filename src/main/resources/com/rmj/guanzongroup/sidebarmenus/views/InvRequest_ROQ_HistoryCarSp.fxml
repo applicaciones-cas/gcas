@@ -86,22 +86,6 @@
                                                 <Blend />
                                             </effect>
                                         </Button>
-                                        <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Save">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="SAVE" size="20" />
-                                            </graphic>
-                                        </Button>
-                                        <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Search">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="SEARCH" size="20" />
-                                            </graphic>
-                                        </Button>
                               <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Browse">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
@@ -110,33 +94,9 @@
                                     <Blend />
                                  </effect>
                               </Button>
-                                        <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Cancel">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="TIMES" size="20" />
-                                            </graphic>
-                                        </Button>
-                              <Button fx:id="btnVoid" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="TIMES" size="20" />
-                                 </graphic>
-                                 <effect>
-                                    <Blend />
-                                 </effect>
-                              </Button>
                               <Button fx:id="btnRetrieve" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Retrieve">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="LIST_ALT" size="20" />
-                                 </graphic>
-                                 <effect>
-                                    <Blend />
-                                 </effect>
-                              </Button>
-                              <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Update">
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="EDIT" size="20" />
                                  </graphic>
                                  <effect>
                                     <Blend />
@@ -262,7 +222,7 @@
                                                                   <Font name="System Bold" size="12.0" />
                                                                </font>
                                                             </Text>
-                                                            <TextField fx:id="tfOrderQuantity" promptText="0" GridPane.columnIndex="11" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfOrderQuantity" GridPane.columnIndex="11" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QOH" GridPane.columnIndex="9" GridPane.rowIndex="1" />
                                                             <TextField fx:id="tfQOH" GridPane.columnIndex="11" GridPane.rowIndex="1" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inv Tpe" GridPane.columnIndex="6" GridPane.rowIndex="1" />
