@@ -185,7 +185,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
 
             tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
             tfSearchCompany.setText(psCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
-
+            JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }

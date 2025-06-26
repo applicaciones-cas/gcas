@@ -316,6 +316,7 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
 
             tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poSOATaggingController.Master().Supplier().getCompanyName());
             tfSearchCompany.setText(psCompanyId.equals("") ? "" : poSOATaggingController.Master().Company().getCompanyName());
+            JFXUtil.updateCaretPositions(apBrowse);
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);

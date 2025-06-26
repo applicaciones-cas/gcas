@@ -882,6 +882,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 
             tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poSOATaggingController.Master().Supplier().getCompanyName());
             tfSearchCompany.setText(psSearchCompanyId.equals("") ? "" : poSOATaggingController.Master().Company().getCompanyName());
+            JFXUtil.updateCaretPositions(apBrowse);
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);

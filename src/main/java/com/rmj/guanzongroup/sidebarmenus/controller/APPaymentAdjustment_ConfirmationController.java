@@ -299,7 +299,7 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
             lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
             tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
             tfSearchCompany.setText(psSearchCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
-
+            JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
