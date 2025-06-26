@@ -93,8 +93,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
-    private String psSupplierId = "";
-    private String psTransactionNo = "";
+    private String psSearchSupplierID = "";
+    private String psSearchTransactionNo = "";
     private String psOldDate = "";
 
     private unloadForm poUnload = new unloadForm();
@@ -455,7 +455,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     ShowMessageFX.Warning("Please contact admin to assist about no button available", pxeModuleName, null);
                     break;
             }
-            if (lsButton.equals("btnSave") || lsButton.equals("btnVerify") || lsButton.equals("btnVoid") || lsButton.equals("btnCancel") || lsButton.equals("btnDVCancel")) {
+            if (lsButton.equals("btnVerify") || lsButton.equals("btnVoid") || lsButton.equals("btnCancel") || lsButton.equals("btnDVCancel")) {
                 pnEditMode = EditMode.UNKNOWN;
                 clearFields();
                 loadRecordMasterDV();
@@ -583,12 +583,11 @@ public class DisbursementVoucher_VerificationController implements Initializable
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                Thread.sleep(100);
                 Platform.runLater(() -> {
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poDisbursementController.getDisbursement(psTransactionNo, psSupplierId, false);
+                        poJSON = poDisbursementController.getDisbursementForVerification(psSearchTransactionNo, psSearchSupplierID);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
                                 for (int lnCntr = 0; lnCntr <= poDisbursementController.getDisbursementMasterCount() - 1; lnCntr++) {
@@ -1007,7 +1006,6 @@ public class DisbursementVoucher_VerificationController implements Initializable
 
     private void initTextFieldsDV() {
         //Initialise  TextField Focus
-        JFXUtil.setFocusListener(txtMasterDV_Focus, tfSearchSupplier, tfSearchTransaction);
         JFXUtil.setFocusListener(txtDetailDV_Focus, tfPurchasedAmountDetail);
         JFXUtil.setFocusListener(txtMasterCheck_Focus, tfAuthorizedPerson);
         JFXUtil.setFocusListener(txtMasterBankTransfer_Focus, tfBankNameBTransfer, tfBankAccountBTransfer, tfSupplierBank, tfSupplierAccountNoBTransfer);
@@ -1043,35 +1041,6 @@ public class DisbursementVoucher_VerificationController implements Initializable
                         moveNextDV();
                         pbEnteredDV = false;
                     }
-                    break;
-            }
-        }
-    };
-    final ChangeListener<? super Boolean> txtMasterDV_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtMasterDV = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtMasterDV.getId());
-        String lsValue = (txtMasterDV.getText() == null ? "" : txtMasterDV.getText());
-
-        lastFocusedTextField = txtMasterDV;
-        previousSearchedTextField = null;
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfSearchSupplier":
-                    if (lsValue.equals("")) {
-                        psSupplierId = "";
-                    }
-                    loadTableMain();
-                    break;
-                case "tfSearchTransaction":
-                    if (lsValue.equals("")) {
-                        psTransactionNo = "";
-                    }
-                    loadTableMain();
                     break;
             }
         }
@@ -1162,13 +1131,16 @@ public class DisbursementVoucher_VerificationController implements Initializable
                         pbEnteredDV = true;
                         CommonUtils.SetNextFocus(txtField);
                         switch (lsID) {
+                            case "tfSearchTransaction":
+                                psSearchTransactionNo = tfSearchTransaction.getText();
+                                loadTableMain();
+                                break;
                             case "tfPurchasedAmountDetail":
                             case "tfTaxCodeDetail":
                             case "tfParticularsDetail":
                                 tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount(), true));
                                 pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
                                 moveNextDV();
-                                event.consume();
                                 break;
                         }
                         event.consume();
@@ -1181,7 +1153,8 @@ public class DisbursementVoucher_VerificationController implements Initializable
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfSearchSupplier.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? poDisbursementController.Master().Payee().getPayeeName() : "");
+                                tfSearchSupplier.setText(poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "");
+                                psSearchSupplierID = poDisbursementController.Master().getPayeeID();
                                 loadTableMain();
                                 break;
                             case "tfBankNameCheck":
@@ -1768,6 +1741,26 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void initTextFieldsProperty() {
+        tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.Master().setPayeeID("");
+                    tfSearchSupplier.setText("");
+                    psSearchSupplierID = "";
+                    loadTableMain();
+                }
+            }
+        }
+        );
+        tfSearchTransaction.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    psSearchTransactionNo = "";
+                    loadTableMain();
+                }
+            }
+        }
+        );
         tfTaxCodeDetail.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
