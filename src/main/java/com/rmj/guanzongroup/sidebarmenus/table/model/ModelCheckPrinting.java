@@ -23,6 +23,7 @@ public class ModelCheckPrinting {
     public SimpleStringProperty index08;
     public SimpleStringProperty index09;
     public SimpleStringProperty index10;
+    public SimpleStringProperty index11;
     private CheckBox select;
 
     public ModelCheckPrinting(
@@ -35,7 +36,8 @@ public class ModelCheckPrinting {
             String index07,
             String index08,
             String index09,
-            String index10) {
+            String index10,
+            String index11) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.select = new CheckBox();
@@ -48,6 +50,7 @@ public class ModelCheckPrinting {
         this.index08 = new SimpleStringProperty(index08);
         this.index09 = new SimpleStringProperty(index09);
         this.index10 = new SimpleStringProperty(index10);
+        this.index11 = new SimpleStringProperty(index11);
     }
 
     public ModelCheckPrinting(String index01,
@@ -166,6 +169,14 @@ public class ModelCheckPrinting {
 
     public void setIndex10(String index10) {
         this.index10.set(index10);
+    }
+
+    public String getIndex11() {
+        return index11.get();
+    }
+
+    public void setIndex11(String index11) {
+        this.index11.set(index11);
     }
 
 }
