@@ -955,7 +955,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_Appliances.fxml":
                     psIndustryID = "07";
                     psCategoryID = "0002";
-                    return "SI Posting Car";
+                    return "SI Posting Appliances";
                 //Car
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_Car.fxml":
                     psIndustryID = "03";
