@@ -936,7 +936,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand(lsValue, false, pnTblPODetailRow);
+                                loJSON = poPurchasingController.PurchaseOrder().SearchBrand("", false, pnTblPODetailRow);
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfBrand.setText("");

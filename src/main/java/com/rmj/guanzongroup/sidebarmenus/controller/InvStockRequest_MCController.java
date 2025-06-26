@@ -186,7 +186,7 @@ public class InvStockRequest_MCController implements Initializable, ScreenInterf
         TableView<?> currentTable = (TableView<?>) event.getSource();
         TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
 
-        if (focusedCell != null && "tblVwOrderDetails".equals(currentTable.getId())) {
+        if (focusedCell != null && "tblViewOrderDetails".equals(currentTable.getId())) {
             switch (event.getCode()) {
                 case TAB:
                 case DOWN:
@@ -237,13 +237,12 @@ public class InvStockRequest_MCController implements Initializable, ScreenInterf
             poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);
             
             lblTransactionStatus.setText(lsStatus);
-            
             lblTransactionStatus.setText(lsStatus);
             tfTransactionDate.setText(SQLUtil.dateFormat(invRequestController, SQLUtil.FORMAT_SHORT_DATE));
             tfReferenceNo.setText(invRequestController.StockRequest().Master().getReferenceNo());   
             taRemarks.setText(invRequestController.StockRequest().Master().getRemarks());
-            tfCurrentInv.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(invRequestController.StockRequest().Master().getCurrentInventory()));
-            tfEstimatedInv.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(invRequestController.StockRequest().Master().getEstimateInventory()));
+            tfCurrentInv.setText(String.valueOf(invRequestController.StockRequest().Master().getCurrentInventory()));
+            tfEstimatedInv.setText(String.valueOf(invRequestController.StockRequest().Master().getEstimateInventory()));
             
             
         } catch (SQLException | GuanzonException e) {
@@ -319,9 +318,9 @@ public class InvStockRequest_MCController implements Initializable, ScreenInterf
                             pnTblInvDetailRow = invRequestController.StockRequest().getDetailCount() - 1;
                         }
 
-                        poJSON = invRequestController.StockRequest().SearchBrand(lsValue, false, pnTblInvDetailRow);
-                        if ("error".equals(poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+//                        loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false, pnTblInvDetailRow, );
+                        if ("error".equals(loJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                             tfBrand.setText("");
                             if (poJSON.get("tableRow") != null) {
                                 pnTblInvDetailRow = (int) poJSON.get("tableRow");
@@ -653,8 +652,8 @@ public class InvStockRequest_MCController implements Initializable, ScreenInterf
         List<TextField> loTxtField = Arrays.asList(
                 tfBrand,tfQuantity
                 );
-
-        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+//
+//        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }  
     private void initButtonsClickActions() {
         List<Button> buttons = Arrays.asList( btnNew, btnSearch, btnSave, btnCancel,
@@ -662,93 +661,93 @@ public class InvStockRequest_MCController implements Initializable, ScreenInterf
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }    
-  private void txtField_KeyPressed(KeyEvent event) {
-    TextField sourceField = (TextField) event.getSource();
-    String fieldId = sourceField.getId();
-    String value = sourceField.getText() == null ? "" : sourceField.getText();
-
-    try {
-        if (event.getCode() == null) return;
-        String lsValue = sourceField.getText().trim();
-
-        switch (event.getCode()) {
-            case TAB:
-            case ENTER:
-                
-            case F3:
-                switch (fieldId) {
-                    case "tfModel":
-                        // Add logic if needed
-                        CommonUtils.SetNextFocus(sourceField);
-                        break;
-
-                    case "taRemarks":
-                        CommonUtils.SetNextFocus(sourceField);
-                        break;
-
-                    case "tfQuantity":
-                            setOrderQuantityToDetail(lsValue); 
-                            if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
-                                pnTblInvDetailRow++;
-                            }
-                            CommonUtils.SetNextFocus(sourceField);
-                            loadTablePODetailAndSelectedRow();
-                            break;
-
-                    case "tfBrand":
-                        poJSON = invRequestController.StockRequest().SearchBrand(lsValue, false, pnTblInvDetailRow);
-                        if ("error".equals(poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            tfBrand.setText("");
-                            if (poJSON.get("tableRow") != null) {
-                                pnTblInvDetailRow = (int) poJSON.get("tableRow");
-                            }
-                        }
-                        loadTableInvDetail();
-                        loadDetail();
-                        initDetailFocus();
-                        break;
-                }
-             
-                        event.consume();
-                        break;
-            case UP:
-                setOrderQuantityToDetail(lsValue);
-                if ("tfOrderQuantity".equals(fieldId)) {
-                    
-                    if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
-                        pnTblInvDetailRow--;
-                    }
-                    loadTablePODetailAndSelectedRow();
-                }
-
-                CommonUtils.SetPreviousFocus(sourceField);
-                event.consume();
-                break;
-
-            case DOWN:
-                 setOrderQuantityToDetail(lsValue);
-                if ("tfOrderQuantity".equals(fieldId)) {
-                   
-                    if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
-                        pnTblInvDetailRow++;
-                    }
-                    loadTablePODetailAndSelectedRow();
-                }
-
-                CommonUtils.SetNextFocus(sourceField);
-                event.consume();
-                break;
-
-            default:
-                break;
-        }
-
-    } catch (SQLException | GuanzonException e) {
-            ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
-            System.exit(1);
-        }
-}
+//  private void txtField_KeyPressed(KeyEvent event) {
+//    TextField sourceField = (TextField) event.getSource();
+//    String fieldId = sourceField.getId();
+//    String value = sourceField.getText() == null ? "" : sourceField.getText();
+//
+//    try {
+//        if (event.getCode() == null) return;
+//        String lsValue = sourceField.getText().trim();
+//
+//        switch (event.getCode()) {
+//            case TAB:
+//            case ENTER:
+//                
+//            case F3:
+//                switch (fieldId) {
+//                    case "tfModel":
+//                        // Add logic if needed
+//                        CommonUtils.SetNextFocus(sourceField);
+//                        break;
+//
+//                    case "taRemarks":
+//                        CommonUtils.SetNextFocus(sourceField);
+//                        break;
+//
+//                    case "tfQuantity":
+//                            setOrderQuantityToDetail(lsValue); 
+//                            if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
+//                                pnTblInvDetailRow++;
+//                            }
+//                            CommonUtils.SetNextFocus(sourceField);
+//                            loadTablePODetailAndSelectedRow();
+//                            break;
+//
+//                    case "tfBrand":
+////                        poJSON = invRequestController.StockRequest().SearchBrand(lsValue, false, pnTblInvDetailRow);
+//                        if ("error".equals(poJSON.get("result"))) {
+//                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+//                            tfBrand.setText("");
+//                            if (poJSON.get("tableRow") != null) {
+//                                pnTblInvDetailRow = (int) poJSON.get("tableRow");
+//                            }
+//                        }
+//                        loadTableInvDetail();
+//                        loadDetail();
+//                        initDetailFocus();
+//                        break;
+//                }
+//             
+//                        event.consume();
+//                        break;
+//            case UP:
+//                setOrderQuantityToDetail(lsValue);
+//                if ("tfOrderQuantity".equals(fieldId)) {
+//                    
+//                    if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
+//                        pnTblInvDetailRow--;
+//                    }
+//                    loadTablePODetailAndSelectedRow();
+//                }
+//
+//                CommonUtils.SetPreviousFocus(sourceField);
+//                event.consume();
+//                break;
+//
+//            case DOWN:
+//                 setOrderQuantityToDetail(lsValue);
+//                if ("tfOrderQuantity".equals(fieldId)) {
+//                   
+//                    if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
+//                        pnTblInvDetailRow++;
+//                    }
+//                    loadTablePODetailAndSelectedRow();
+//                }
+//
+//                CommonUtils.SetNextFocus(sourceField);
+//                event.consume();
+//                break;
+//
+//            default:
+//                break;
+//        }
+//
+//    } catch (SQLException | GuanzonException e) {
+//            ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
+//            System.exit(1);
+//        }
+//}
 
 
 
@@ -876,7 +875,7 @@ private void loadTablePODetailAndSelectedRow() {
         }
     }
     private void initTextFieldFocus() {
-    List<TextField> searchableFields = Arrays.asList(tfBrand, tfQuantity);
+    List<TextField> searchableFields = Arrays.asList(tfReferenceNo,tfBrand, tfQuantity,tfQuantity);
     searchableFields.forEach(tf -> {
         tf.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) activeField = tf;
