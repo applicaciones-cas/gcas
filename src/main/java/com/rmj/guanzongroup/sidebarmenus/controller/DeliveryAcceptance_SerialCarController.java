@@ -133,7 +133,6 @@ public class DeliveryAcceptance_SerialCarController implements Initializable {
         });
     }
 
-//    @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
