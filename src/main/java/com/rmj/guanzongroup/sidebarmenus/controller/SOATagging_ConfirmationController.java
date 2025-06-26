@@ -322,7 +322,22 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             return;
                         }
                         break;
-
+                    case "btnReturn":
+                        poJSON = new JSONObject();
+                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to return transaction?") == true) {
+                            poJSON = poSOATaggingController.ReturnTransaction("");
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                return;
+                            } else {
+                                ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
+                                JFXUtil.disableAllHighlightByColor(tblViewMainList, "#A7C7E7", highlightedRowsMain);
+                                JFXUtil.highlightByKey(tblViewMainList, String.valueOf(pnMain + 1), "#FAC898", highlightedRowsMain);
+                            }
+                        } else {
+                            return;
+                        }
+                        break;
                     default:
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
@@ -1120,7 +1135,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         JFXUtil.setFocusListener(txtDetail_Focus, tfSourceNo, tfSourceCode, tfReferenceNo, tfAppliedAmtDetail);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
-        JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales, tfVatExemptSales);
+        JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales, tfVatExemptSales, tfAppliedAmtDetail);
     }
 
     public void initTableOnClick() {
@@ -1132,7 +1147,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     if (poSOATaggingController.Detail(pnDetail).getSourceNo() != null && !poSOATaggingController.Detail(pnDetail).getSourceNo().equals("")) {
                         tfAppliedAmtDetail.requestFocus();
                     } else {
-                        tfSourceNo.requestFocus();
+                        tfReferenceNo.requestFocus();
                     }
                 }
             }

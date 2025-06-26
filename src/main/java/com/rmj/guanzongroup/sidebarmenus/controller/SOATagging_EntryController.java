@@ -1252,7 +1252,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         JFXUtil.setFocusListener(txtDetail_Focus, tfSourceNo, tfSourceCode, tfReferenceNo, tfAppliedAmtDetail);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
-        JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales, tfVatExemptSales);
+        JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales, tfVatExemptSales, tfAppliedAmtDetail);
     }
 
     public void initTableOnClick() {
@@ -1264,7 +1264,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     if (poSOATaggingController.Detail(pnDetail).getSourceNo() != null && !poSOATaggingController.Detail(pnDetail).getSourceNo().equals("")) {
                         tfAppliedAmtDetail.requestFocus();
                     } else {
-                        tfSourceNo.requestFocus();
+                        tfReferenceNo.requestFocus();
                     }
                 }
             }
