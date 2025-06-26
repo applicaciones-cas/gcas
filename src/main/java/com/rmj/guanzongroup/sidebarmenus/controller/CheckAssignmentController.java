@@ -260,6 +260,7 @@ public class CheckAssignmentController implements Initializable {
                     }
                     break;
                 case "btnPrintCheck":
+                    poCheckPrintingController.PrintCheck(transactionNos);
                     break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure want to close this form?", pxeModuleName, null)) {

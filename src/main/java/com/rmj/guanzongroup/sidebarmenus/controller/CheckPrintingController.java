@@ -354,6 +354,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                                             poCheckPrintingController.poDisbursementMaster(lnCntr).CheckPayments().Banks().getBankName(),
                                             poCheckPrintingController.poDisbursementMaster(lnCntr).CheckPayments().Bank_Account_Master().getAccountNo(),
                                             poCheckPrintingController.poDisbursementMaster(lnCntr).CheckPayments().getCheckNo(),
+                                            CustomCommonUtil.formatDateToShortString(poCheckPrintingController.poDisbursementMaster(lnCntr).getTransactionDate()),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingController.poDisbursementMaster(lnCntr).getNetTotal(), true)
                                     ));
                                 }
