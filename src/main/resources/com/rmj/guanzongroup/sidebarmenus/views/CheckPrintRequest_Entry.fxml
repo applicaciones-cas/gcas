@@ -41,10 +41,6 @@
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="230.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="230.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                 <ColumnConstraints halignment="RIGHT" minWidth="-Infinity" prefWidth="250.0" />
@@ -58,7 +54,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <Label fx:id="lblSource" alignment="CENTER_RIGHT" layoutX="367.0" layoutY="14.0" text="Industry" GridPane.columnIndex="16">
+                                                <Label fx:id="lblSource" alignment="CENTER_RIGHT" layoutX="367.0" layoutY="14.0" text="Industry" GridPane.columnIndex="12">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
@@ -69,24 +65,18 @@
                                                     </font>
                                                 </Label>
                                                 <TextField fx:id="tfSearchCompany" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Press F3: Search" GridPane.columnIndex="2" />
-                                                <Label text="Department" GridPane.columnIndex="4">
+                                                <Label text="Bank Name" GridPane.columnIndex="4">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
                                                 </Label>
-                                                <TextField fx:id="tfSearchDepartment" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Press F3: Search" GridPane.columnIndex="6" />
-                                                <Label text="Bank Name" GridPane.columnIndex="8">
+                                                <TextField fx:id="tfSearchBankName" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Press F3: Search" GridPane.columnIndex="7" />
+                                                <Label text="Bank Account" GridPane.columnIndex="9">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
                                                 </Label>
-                                                <TextField fx:id="tfSearchBankName" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Press F3: Search" GridPane.columnIndex="11" />
-                                                <Label text="Bank Account" GridPane.columnIndex="13">
-                                                    <font>
-                                                        <Font name="System Bold" size="14.0" />
-                                                    </font>
-                                                </Label>
-                                                <TextField fx:id="tfSearchBankAccount" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Press F3: Search" GridPane.columnIndex="14" />
+                                                <TextField fx:id="tfSearchBankAccount" maxHeight="25.0" maxWidth="-Infinity" prefWidth="272.0" promptText="Press F3: Search" GridPane.columnIndex="10" />
                                             </children>
                                         </GridPane>
                                     </children>

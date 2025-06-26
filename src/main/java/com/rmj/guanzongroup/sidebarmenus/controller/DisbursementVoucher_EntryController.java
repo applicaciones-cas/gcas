@@ -1807,13 +1807,13 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 
     private boolean isExchangingSupplier() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            boolean isHaveQuantityAndStockId = false;
+            boolean isHaveSourceNo = false;
             if (poDisbursementController.getDetailCount() >= 1) {
                 if (poDisbursementController.Detail(0).getSourceNo() != null && poDisbursementController.Detail(0).getAmount().doubleValue() != 0.0000) {
-                    isHaveQuantityAndStockId = true;
+                    isHaveSourceNo = true;
                 }
             }
-            if (isHaveQuantityAndStockId) {
+            if (isHaveSourceNo) {
                 if (ShowMessageFX.YesNo("DV Details have already items, are you sure you want to change supplier?", pxeModuleName, null)) {
                     int detailCount = poDisbursementController.getDetailCount();
                     for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
@@ -1844,7 +1844,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                             return false;
 
                         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
-                            Logger.getLogger(PurchaseOrder_EntryMPController.class
+                            Logger.getLogger(DisbursementVoucher_EntryController.class
                                     .getName()).log(Level.SEVERE, null, ex);
                         }
                     }
