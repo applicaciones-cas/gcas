@@ -287,6 +287,9 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml":
                     return "Inv Stock Request";  
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml":
+                    return "Inv Stock Request SP";
+                case "/com/rmj/gunazongroup/sidebarmenus/views/InvStockRequest_SP_ROQ.fxml":
+                    return "Inv Stock Request SP ROQ";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditation.fxml":
                     return "Accounts Accreditation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/AccountsAccreditationHistory.fxml":
@@ -835,7 +838,8 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml";
             case "Inv Stock Request MC":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml";
-            
+            case "Inv Stock Request SP ROQ":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_SP_ROQ.fxml";
 
         }
 
@@ -974,6 +978,8 @@ public class DashboardController implements Initializable {
                     return new InvStockRequest_MCController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml":
                     return new InvStockRequest_SPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_SP_ROQ.fxml":
+                    return new InvStockRequest_SP_ROQController();
                 /* PURCHASING/PURCHASING/ */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
                     return new SampleForm1Controller();
@@ -1721,23 +1727,166 @@ public class DashboardController implements Initializable {
      */
         private void inventoryMenuItems() {
         String jsonString = "["
-                + "  {\"access_level\": \"026 01 02 03 04 05 06\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Inventory\", \"controller_path\": \"sample.controller\", \"menu_id\": \"028\", \"menu_parent\": \"\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Inventory Maintenance\", \"fxml_path\": \"Inventory/Inventory Maintenance\", \"controller_path\": \"sample.controller\", \"menu_id\": \"45\", \"menu_parent\": \"028\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"029\", \"menu_parent\": \"028\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"030\", \"menu_parent\": \"029\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml\", \"controller_path\": \"InvStockRequest_MC.controller\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"033\", \"menu_parent\": \"029\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"034\", \"menu_parent\": \"033\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"Inventory/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"035\", \"menu_parent\": \"033\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"History\", \"fxml_path\": \"Inventory/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"036\", \"menu_parent\": \"028\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/History/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"037\", \"menu_parent\": \"036\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"038\", \"menu_parent\": \"037\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"039\", \"menu_parent\": \"038\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Spareparts \", \"fxml_path\": \"Inventory/History/Request/Regular Stocks/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"040\", \"menu_parent\": \"038\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/History/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"041\", \"menu_parent\": \"037\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Motorcycle \", \"fxml_path\": \"Inventory/History/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"042\", \"menu_parent\": \"041\"},"
-                + "  {\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Spareparts \", \"fxml_path\": \"Inventory/History/Request/System Recommend/Spareparts\", \"controller_path\": \"sample.controller\", \"menu_id\": \"043\", \"menu_parent\": \"041\"}"
+                + "  {\"access_level\": \"026 01 02 03 04 05 06 07\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Inventory\", \"controller_path\": \"sample.controller\", \"menu_id\": \"028\", \"menu_parent\": \"\"},"
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Inventory Maintenance\", \"fxml_path\": \"Inventory/Inventory Maintenance\", \"controller_path\": \"sample.controller\", \"menu_id\": \"45\", \"menu_parent\": \"028\"},"
+                //Entry
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"029\", \"menu_parent\": \"028\"},"
+                //
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"030\", \"menu_parent\": \"029\"},"
+                //mobile phones
+                + "  {\"access_level\": \"01\", \"menu_name\": \"Mobile Phones\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MP.fxml\", \"controller_path\": \"InvStockRequest_MP.controller\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvStockRequest_MPAppliances.controller\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\": \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPGeneral.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"033\", \"menu_parent\": \"030\"},"
+                
+                //motorcycles
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml\", \"controller_path\": \"InvStockRequest_MC.controller\", \"menu_id\": \"034\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"035\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"036\", \"menu_parent\": \"030\"},"
+                //vehicles
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"037\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"038\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_General.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"039\", \"menu_parent\": \"030\"},"
+                //hospitality
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchFood.controller\", \"menu_id\": \"040\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchGeneral.controller\", \"menu_id\": \"041\", \"menu_parent\": \"030\"},"
+                //food
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPFood.fxml\", \"controller_path\": \"InvStockRequest_LPFood.controller\", \"menu_id\": \"042\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPGeneral.fxml\", \"controller_path\": \"InvStockRequest_LPGeneral.controller\", \"menu_id\": \"043\", \"menu_parent\": \"030\"},"
+                
+                
+                
+                //System recommended
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"044\", \"menu_parent\": \"029\"},"
+                
+                + "  {\"access_level\": \"01\", \"menu_name\": \"Mobile Phones\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MP.fxml\", \"controller_path\": \"InvStockRequest_MP.controller\", \"menu_id\": \"045\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvStockRequest_MPAppliances.controller\", \"menu_id\": \"046\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPGeneral.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"047\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"048\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_SP_ROQ.fxml\", \"controller_path\": \"InvStockRequest_SP_ROQ.controller\", \"menu_id\": \"49\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_MCGeneral_ROQ.fxml\", \"controller_path\": \"InvStockRequest_MCGeneral_ROQ.controller\", \"menu_id\": \"050\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"051\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"052\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_General.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"053\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchFood.controller\", \"menu_id\": \"054\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchGeneral.controller\", \"menu_id\": \"055\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPFood.fxml\", \"controller_path\": \"InvStockRequest_LPFood.controller\", \"menu_id\": \"056\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPGeneral.fxml\", \"controller_path\": \"InvStockRequest_LPGeneral.controller\", \"menu_id\": \"057\", \"menu_parent\": \"044\"},"
+                //new tab: Confirmation
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Confirmation\", \"fxml_path\": \"Inventory/Confirmation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"058\", \"menu_parent\": \"028\"},"
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Confirmation/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"059\", \"menu_parent\": \"058\"},"
+                //mobile phones
+                + "  {\"access_level\": \"01\", \"menu_name\": \"Mobile Phones\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MP.fxml\", \"controller_path\": \"InvStockRequest_MP.controller\", \"menu_id\": \"060\", \"menu_parent\": \"059\"},"
+                + "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvStockRequest_MPAppliances.controller\", \"menu_id\": \"061\", \"menu_parent\": \"059\"},"
+                + "  {\"access_level\": \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPGeneral.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"062\", \"menu_parent\": \"059\"},"
+                
+                //motorcycles
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml\", \"controller_path\": \"InvStockRequest_MC.controller\", \"menu_id\": \"063\", \"menu_parent\": \"059\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"064\", \"menu_parent\": \"059\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"065\", \"menu_parent\": \"059\"},"
+                //vehicles
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"067\", \"menu_parent\": \"059\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"068\", \"menu_parent\": \"059\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_General.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"069\", \"menu_parent\": \"059\"},"
+                //hospitality
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchFood.controller\", \"menu_id\": \"070\", \"menu_parent\": \"059\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchGeneral.controller\", \"menu_id\": \"071\", \"menu_parent\": \"059\"},"
+                //food
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPFood.fxml\", \"controller_path\": \"InvStockRequest_LPFood.controller\", \"menu_id\": \"072\", \"menu_parent\": \"059\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPGeneral.fxml\", \"controller_path\": \"InvStockRequest_LPGeneral.controller\", \"menu_id\": \"073\", \"menu_parent\": \"059\"},"
+                
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"074\", \"menu_parent\": \"058\"},"
+                
+                + "  {\"access_level\": \"01\", \"menu_name\": \"Mobile Phones\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MP.fxml\", \"controller_path\": \"InvStockRequest_MP.controller\", \"menu_id\": \"075\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvStockRequest_MPAppliances.controller\", \"menu_id\": \"076\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPGeneral.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"077\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"078\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_SP_ROQ.fxml\", \"controller_path\": \"InvStockRequest_SP_ROQ.controller\", \"menu_id\": \"79\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_MCGeneral_ROQ.fxml\", \"controller_path\": \"InvStockRequest_MCGeneral_ROQ.controller\", \"menu_id\": \"080\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"081\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"082\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_General.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"083\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchFood.controller\", \"menu_id\": \"084\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchGeneral.controller\", \"menu_id\": \"085\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPFood.fxml\", \"controller_path\": \"InvStockRequest_LPFood.controller\", \"menu_id\": \"086\", \"menu_parent\": \"044\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPGeneral.fxml\", \"controller_path\": \"InvStockRequest_LPGeneral.controller\", \"menu_id\": \"087\", \"menu_parent\": \"074\"},"
+                //new tab: Update
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Update\", \"fxml_path\": \"Inventory/Update\", \"controller_path\": \"sample.controller\", \"menu_id\": \"088\", \"menu_parent\": \"028\"},"
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Update/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"089\", \"menu_parent\": \"088\"},"
+                //mobile phones
+                + "  {\"access_level\": \"01\", \"menu_name\": \"Mobile Phones\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MP.fxml\", \"controller_path\": \"InvStockRequest_MP.controller\", \"menu_id\": \"090\", \"menu_parent\": \"089\"},"
+                + "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvStockRequest_MPAppliances.controller\", \"menu_id\": \"091\", \"menu_parent\": \"089\"},"
+                + "  {\"access_level\": \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPGeneral.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"092\", \"menu_parent\": \"089\"},"
+                
+                //motorcycles
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml\", \"controller_path\": \"InvStockRequest_MC.controller\", \"menu_id\": \"093\", \"menu_parent\": \"089\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"094\", \"menu_parent\": \"089\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"095\", \"menu_parent\": \"089\"},"
+                //vehicles
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"096\", \"menu_parent\": \"089\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"097\", \"menu_parent\": \"089\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_General.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"098\", \"menu_parent\": \"089\"},"
+                //hospitality
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchFood.controller\", \"menu_id\": \"099\", \"menu_parent\": \"089\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchGeneral.controller\", \"menu_id\": \"0100\", \"menu_parent\": \"089\"},"
+                //food
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPFood.fxml\", \"controller_path\": \"InvStockRequest_LPFood.controller\", \"menu_id\": \"0101\", \"menu_parent\": \"089\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPGeneral.fxml\", \"controller_path\": \"InvStockRequest_LPGeneral.controller\", \"menu_id\": \"0102\", \"menu_parent\": \"089\"},"
+//              
+                //System recommended
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"0103\", \"menu_parent\": \"088\"},"
+                
+                + "  {\"access_level\": \"01\", \"menu_name\": \"Mobile Phones\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MP.fxml\", \"controller_path\": \"InvStockRequest_MP.controller\", \"menu_id\": \"0104\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvStockRequest_MPAppliances.controller\", \"menu_id\": \"0105\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPGeneral.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"0106\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"048\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_SP_ROQ.fxml\", \"controller_path\": \"InvStockRequest_SP_ROQ.controller\", \"menu_id\": \"107\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_MCGeneral_ROQ.fxml\", \"controller_path\": \"InvStockRequest_MCGeneral_ROQ.controller\", \"menu_id\": \"0108\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0109\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0110\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_General.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0111\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchFood.controller\", \"menu_id\": \"0112\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchGeneral.controller\", \"menu_id\": \"0113\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPFood.fxml\", \"controller_path\": \"InvStockRequest_LPFood.controller\", \"menu_id\": \"0114\", \"menu_parent\": \"0103\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPGeneral.fxml\", \"controller_path\": \"InvStockRequest_LPGeneral.controller\", \"menu_id\": \"0115\", \"menu_parent\": \"0103\"},"
+                //new tab: History
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"History\", \"fxml_path\": \"Inventory/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"0116\", \"menu_parent\": \"028\"},"
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/History/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"0117\", \"menu_parent\": \"0116\"},"
+                //mobile phones
+                + "  {\"access_level\": \"01\", \"menu_name\": \"Mobile Phones\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MP.fxml\", \"controller_path\": \"InvStockRequest_MP.controller\", \"menu_id\": \"0118\", \"menu_parent\": \"0117\"},"
+                + "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvStockRequest_MPAppliances.controller\", \"menu_id\": \"0118\", \"menu_parent\": \"0117\"},"
+                + "  {\"access_level\": \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPGeneral.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"0119\", \"menu_parent\": \"0117\"},"
+                
+                //motorcycles
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_RequestMC.fxml\", \"controller_path\": \"InvStockRequest_MC.controller\", \"menu_id\": \"0120\", \"menu_parent\": \"0117\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0121\", \"menu_parent\": \"0117\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0122\", \"menu_parent\": \"0117\"},"
+                //vehicles
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0123\", \"menu_parent\": \"0117\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0124\", \"menu_parent\": \"0117\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_General.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0125\", \"menu_parent\": \"0117\"},"
+                //hospitality
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchFood.controller\", \"menu_id\": \"0126\", \"menu_parent\": \"0117\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchGeneral.controller\", \"menu_id\": \"0127\", \"menu_parent\": \"0117\"},"
+                //food
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPFood.fxml\", \"controller_path\": \"InvStockRequest_LPFood.controller\", \"menu_id\": \"0128\", \"menu_parent\": \"0117\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPGeneral.fxml\", \"controller_path\": \"InvStockRequest_LPGeneral.controller\", \"menu_id\": \"0129\", \"menu_parent\": \"0117\"},"
+
+
+                
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/History/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"0130\", \"menu_parent\": \"0116\"},"
+                + "  {\"access_level\": \"01\", \"menu_name\": \"Mobile Phones\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MP.fxml\", \"controller_path\": \"InvStockRequest_MP.controller\", \"menu_id\": \"0131\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvStockRequest_MPAppliances.controller\", \"menu_id\": \"0132\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPGeneral.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"0133\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"Inventory/Request/System Recommend/Motorcycle\", \"controller_path\": \"sample.controller\", \"menu_id\": \"0134\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_SP_ROQ.fxml\", \"controller_path\": \"InvStockRequest_SP_ROQ.controller\", \"menu_id\": \"135\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_MCGeneral_ROQ.fxml\", \"controller_path\": \"InvStockRequest_MCGeneral_ROQ.controller\", \"menu_id\": \"0136\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0137\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_SP.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0138\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_General.fxml\", \"controller_path\": \"InvStockRequest_SP.controller\", \"menu_id\": \"0139\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchFood.controller\", \"menu_id\": \"0140\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchGeneral.controller\", \"menu_id\": \"0141\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPFood.fxml\", \"controller_path\": \"InvStockRequest_LPFood.controller\", \"menu_id\": \"0142\", \"menu_parent\": \"0130\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPGeneral.fxml\", \"controller_path\": \"InvStockRequest_LPGeneral.controller\", \"menu_id\": \"0143\", \"menu_parent\": \"0130\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
