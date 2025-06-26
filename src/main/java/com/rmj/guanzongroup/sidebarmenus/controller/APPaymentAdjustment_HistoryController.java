@@ -181,8 +181,11 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
-
+            if(poAPPaymentAdjustmentController.getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.getModel().Industry().getDescription())){
+                lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
+            } else {
+                lblSource.setText("General");
+            }
             tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
             tfSearchCompany.setText(psCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
             JFXUtil.updateCaretPositions(apBrowse);

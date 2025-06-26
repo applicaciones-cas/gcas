@@ -312,7 +312,12 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
+            
+            if(poSOATaggingController.Master().Industry().getDescription() != null && !"".equals(poSOATaggingController.Master().Industry().getDescription())){
+                lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
+            } else {
+                lblSource.setText("General");
+            }
 
             tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poSOATaggingController.Master().Supplier().getCompanyName());
             tfSearchCompany.setText(psCompanyId.equals("") ? "" : poSOATaggingController.Master().Company().getCompanyName());

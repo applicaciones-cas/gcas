@@ -878,7 +878,12 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
     public void loadRecordSearch() {
         try {
             poSOATaggingController.Master().setIndustryId(psIndustryId);
-            lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
+            
+            if(poSOATaggingController.Master().Industry().getDescription() != null && !"".equals(poSOATaggingController.Master().Industry().getDescription())){
+                lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
+            } else {
+                lblSource.setText("General");
+            }
 
             tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poSOATaggingController.Master().Supplier().getCompanyName());
             tfSearchCompany.setText(psSearchCompanyId.equals("") ? "" : poSOATaggingController.Master().Company().getCompanyName());

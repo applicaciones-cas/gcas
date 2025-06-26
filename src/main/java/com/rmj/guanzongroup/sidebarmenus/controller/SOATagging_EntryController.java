@@ -993,7 +993,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
+            if(poSOATaggingController.Master().Industry().getDescription() != null && !"".equals(poSOATaggingController.Master().Industry().getDescription())){
+                lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
+            } else {
+                lblSource.setText("General");
+            }
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }

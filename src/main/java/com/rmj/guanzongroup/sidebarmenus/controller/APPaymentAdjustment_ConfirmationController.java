@@ -296,7 +296,11 @@ public class APPaymentAdjustment_ConfirmationController implements Initializable
     public void loadRecordSearch() {
         try {
             poAPPaymentAdjustmentController.getModel().setIndustryId(psIndustryId);
-            lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
+            if(poAPPaymentAdjustmentController.getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.getModel().Industry().getDescription())){
+                lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
+            } else {
+                lblSource.setText("General");
+            }
             tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
             tfSearchCompany.setText(psSearchCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
             JFXUtil.updateCaretPositions(apBrowse);

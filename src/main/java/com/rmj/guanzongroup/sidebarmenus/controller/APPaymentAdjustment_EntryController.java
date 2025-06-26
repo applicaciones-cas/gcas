@@ -422,7 +422,11 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
+            if(poAPPaymentAdjustmentController.getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.getModel().Industry().getDescription())){
+                lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
+            } else {
+                lblSource.setText("General");
+            }
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryCarController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
