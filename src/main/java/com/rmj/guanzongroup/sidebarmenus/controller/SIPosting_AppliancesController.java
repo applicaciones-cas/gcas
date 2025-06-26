@@ -254,13 +254,13 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                     } else {
                     }
                 } catch (SQLException ex) {
-                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                 } catch (GuanzonException ex) {
-                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                 } catch (CloneNotSupportedException ex) {
-                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                 } catch (ScriptException ex) {
-                    Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                 }
 //                }
             }
@@ -1332,9 +1332,9 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                 tfCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount(), true));
                 tfDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getDebitAmount(), true));
             } catch (SQLException ex) {
-                Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             } catch (GuanzonException ex) {
-                Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             }
         });
     }
