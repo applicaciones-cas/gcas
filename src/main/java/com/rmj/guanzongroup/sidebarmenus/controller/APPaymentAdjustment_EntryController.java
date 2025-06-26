@@ -392,11 +392,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                             pbSuccess = true; //Set to original value
                         }
                         break;
-//                    case "dpTransactionDate": {
-//                        poJSON.put("TransactionDate", lsSelectedDate);
-//                        System.out.println("Transaction Date updated with value: " + lsSelectedDate);
-//                        break;
-//                    }
+
                 }
             }
         } catch (Exception e) {
