@@ -242,6 +242,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     private void initTabSelection() {
         tabJE.setOnSelectionChanged(event -> {
             if (tabJE.isSelected()) {
+//                if (pnEditMode == EditMode.READY) {
                 try {
                     JFXUtil.setValueToNull(dpReportMonthYear, dpJETransactionDate);
                     JFXUtil.clearTextFields(apJEDetail, apJEMaster);
@@ -261,6 +262,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 } catch (ScriptException ex) {
                     Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
+//                }
             }
         });
     }
@@ -542,7 +544,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (ScriptException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SIPosting_CarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1387,9 +1389,10 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
             String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN");
             lblJEStatus.setText(lsStat);
-
+        });
+        
+        if(poPurchaseReceivingController.Journal().Master().getTransactionNo() != null){
             tfJETransactionNo.setText(poPurchaseReceivingController.Journal().Master().getTransactionNo());
-
             String lsJETransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Journal().Master().getTransactionDate());
             dpJETransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsJETransactionDate, "yyyy-MM-dd"));
 
@@ -1397,13 +1400,14 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             double lnTotalDebit = 0;
             double lnTotalCredit = 0;
             for (int lnCtr = 0; lnCtr < poPurchaseReceivingController.Journal().getDetailCount(); lnCtr++) {
-                lnTotalCredit += poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount();
                 lnTotalDebit += poPurchaseReceivingController.Journal().Detail(lnCtr).getDebitAmount();
+                lnTotalCredit += poPurchaseReceivingController.Journal().Detail(lnCtr).getCreditAmount();
             }
 
             tfTotalCreditAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalCredit, true));
             tfTotalDebitAmt.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalDebit, true));
-        });
+        }
+
     }
 
     public void loadRecordMaster() {

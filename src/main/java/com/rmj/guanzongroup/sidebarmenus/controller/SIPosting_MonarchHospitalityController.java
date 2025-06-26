@@ -93,7 +93,7 @@ import org.guanzon.appdriver.constant.UserRight;
  *
  * @author Arsiela & Aldrich Team 2
  */
-public class SIPosting_Controller implements Initializable, ScreenInterface {
+public class SIPosting_MonarchHospitalityController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     static PurchaseOrderReceiving poPurchaseReceivingController;
@@ -147,11 +147,11 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     @FXML
     private TextField tfSearchSupplier, tfSearchReferenceNo, tfSearchReceiveBranch, tfTransactionNo, tfSupplier, tfBranch, tfTrucking, tfReferenceNo,
             tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount, tfFreightAmt, tfVatSales, tfVatAmount, tfZeroVatSales, tfVatExemptSales, tfNetTotal, tfTaxAmount, tfVatRate,
-            tfTransactionTotal, tfOrderNo, tfBarcode, tfDescription, tfSupersede, tfMeasure, tfOrderQuantity, tfReceiveQuantity, tfCost, tfDiscRateDetail,
+            tfTransactionTotal, tfOrderNo, tfBarcode, tfDescription, tfSupersede, tfOrderQuantity, tfReceiveQuantity, tfCost, tfDiscRateDetail,
             tfAddlDiscAmtDetail, tfSRPAmount, tfJETransactionNo, tfJEAcctCode, tfJEAcctDescription, tfCreditAmt, tfDebitAmt, tfTotalCreditAmt,
             tfTotalDebitAmt, tfAttachmentNo;
     @FXML
-    private DatePicker dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear;
+    private DatePicker dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear;
     @FXML
     private CheckBox cbVatInclusive, cbVatable;
     @FXML
@@ -196,7 +196,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         clearTextFields();
 
         Platform.runLater(() -> {
-            psIndustryId = "";
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
             poPurchaseReceivingController.setIndustryId(psIndustryId);
@@ -494,7 +493,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (ScriptException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SIPosting_MonarchHospitalityController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1121,10 +1120,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                             }
                         }
                         break;
-                    case "dpExpiryDate":
-                        break;
-                    case "dpJETransactionDate":
-                        break;
                     case "dpReportMonthYear":
                         if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
                                 || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
@@ -1327,14 +1322,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
                 return;
             }
-            // Expiry Date
-            String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Detail(pnDetail).getExpiryDate());
-            dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
-
             tfBarcode.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
             tfSupersede.setText(poPurchaseReceivingController.Detail(pnDetail).Supersede().getBarCode());
-            tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
             tfOrderNo.setText(poPurchaseReceivingController.Detail(pnDetail).getOrderNo());
             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
             Platform.runLater(() -> {
@@ -1845,8 +1835,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear);
+        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
     }
 
     public void initTextFields() {
@@ -2121,7 +2111,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     public void clearTextFields() {
         Platform.runLater(() -> {
             imageinfo_temp.clear();
-            JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpReportMonthYear);
+            JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear);
             psSupplierId = "";
             psBranchId = "";
             JFXUtil.clearTextFields(apMaster, apDetail, apJEDetail, apJEMaster, apAttachments);

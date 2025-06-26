@@ -93,7 +93,7 @@ import org.guanzon.appdriver.constant.UserRight;
  *
  * @author Arsiela & Aldrich Team 2
  */
-public class SIPosting_Controller implements Initializable, ScreenInterface {
+public class SIPosting_LPController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     static PurchaseOrderReceiving poPurchaseReceivingController;
@@ -196,7 +196,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         clearTextFields();
 
         Platform.runLater(() -> {
-            psIndustryId = "";
             poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
             poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
             poPurchaseReceivingController.setIndustryId(psIndustryId);
@@ -494,7 +493,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (ScriptException ex) {
-            Logger.getLogger(SIPosting_Controller.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SIPosting_LPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
