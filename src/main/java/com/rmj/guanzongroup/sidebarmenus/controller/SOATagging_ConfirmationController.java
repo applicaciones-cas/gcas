@@ -957,7 +957,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
             tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getVatAmount(), true));
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getDiscountAmount(), true));
             tfFreight.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getFreightAmount(), false));
-            tfNonVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(CustomCommonUtil.setIntegerValueToDecimalFormat("0.0000", true))); //TODO
+            tfNonVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getZeroRatedVat(),true)); //As per ma'am she
             tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getZeroRatedVat(), true));
             tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getVatExempt(), true));
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getNetTotal(), true));
@@ -1136,7 +1136,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
         JFXUtil.setFocusListener(txtDetail_Focus, tfSourceNo, tfSourceCode, tfReferenceNo, tfAppliedAmtDetail);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
-        JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales, tfVatExemptSales, tfAppliedAmtDetail);
+        JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales,tfNonVatSales , tfVatExemptSales, tfAppliedAmtDetail);
     }
 
     public void initTableOnClick() {
