@@ -593,7 +593,8 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poDisbursementController.getDisbursement(psSearchBankName, psSearchBankAccount, psSearchCheckNo);
+                        plOrderNoPartial.clear();
+                        poJSON = poDisbursementController.getDisbursementForCheckStatusUpdate(psSearchBankName, psSearchBankAccount, psSearchCheckNo);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
                                 for (int lnCntr = 0; lnCntr <= poDisbursementController.getDisbursementMasterCount() - 1; lnCntr++) {
@@ -608,16 +609,15 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                                         plOrderNoPartial.add(new Pair<>(String.valueOf(lnCntr + 1), "1"));
                                     }
                                 }
+                                showRetainedHighlight(true);
+                                if (main_data.isEmpty() && filteredMain_Data.isEmpty()) {
+                                    tblVwMain.setPlaceholder(placeholderLabel);
+                                }
+                                JFXUtil.loadTab(pagination, main_data.size(), ROWS_PER_PAGE, tblVwMain, filteredMain_Data);
                             }
-                            showRetainedHighlight(true);
-                            if (main_data.isEmpty()) {
-                                tblVwMain.setPlaceholder(placeholderLabel);
-                            }
-                            JFXUtil.loadTab(pagination, main_data.size(), ROWS_PER_PAGE, tblVwMain, filteredMain_Data);
-
                         }
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(DisbursementVoucher_VerificationController.class
+                        Logger.getLogger(CheckStatusUpdateController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -741,7 +741,7 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                 initButton(pnEditMode);
 
             } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                Logger.getLogger(DisbursementVoucher_VerificationController.class
+                Logger.getLogger(CheckStatusUpdateController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }

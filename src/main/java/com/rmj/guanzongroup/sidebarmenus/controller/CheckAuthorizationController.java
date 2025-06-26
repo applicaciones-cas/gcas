@@ -18,10 +18,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyBooleanPropertyBase;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -42,9 +39,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
-import static javafx.scene.input.KeyCode.TAB;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -53,13 +48,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import javafx.util.Pair;
 import org.guanzon.appdriver.agent.ShowMessageFX;
+import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
-import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import ph.com.guanzongroup.cas.cashflow.Disbursement;
@@ -84,11 +78,8 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
-    private String psSupplierId = "";
-    private String psDVNo = "";
-    private String psBankName = "";
-    private String psBankAccount = "";
-    private int pnRow = -1;
+    private String psSearchBankID = "";
+    private String psSearchBankAccountID = "";
     private double xOffset = 0;
     private double yOffset = 0;
 
@@ -96,9 +87,10 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
 
     private ObservableList<ModelDisbursementVoucher_Main> main_data = FXCollections.observableArrayList();
     private FilteredList<ModelDisbursementVoucher_Main> filteredMain_Data;
+
     ArrayList<SelectedITems> getSelectedItems = new ArrayList<>();
-    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
-    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
+//    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
+//    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
     @FXML
@@ -151,7 +143,6 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
             poJSON = new JSONObject();
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
-                System.err.println((String) poJSON.get("message"));
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             }
             initAll();
@@ -170,14 +161,8 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
         initTextFields();
         initTableMain();
         initTableOnClick();
+        initButtons();
         initTextFieldsProperty();
-        pnEditMode = EditMode.UNKNOWN;
-        if (main_data.isEmpty()) {
-            Label placeholderLabel = new Label("NO RECORD TO LOAD");
-            tblVwMain.setPlaceholder(placeholderLabel);
-            pagination.setManaged(false);
-            pagination.setVisible(false);
-        }
     }
 
     private void loadRecordSearch() {
@@ -240,8 +225,6 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
             if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to " + action + "?")) {
                 return;
             }
-            
-            
 
             int successCount = 0;
             for (ModelDisbursementVoucher_Main item : selectedItems) {
@@ -251,24 +234,27 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                 getSelectedItems.add(new SelectedITems(lsDVNO, Remarks));
                 successCount++;
             }
-           switch (action) {
+            switch (action) {
                 case "authorize":
                     poJSON = poDisbursementController.AuthorizeTransaction("Authorized", getSelectedItems);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                     }
+                    ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                     break;
                 case "return":
                     poJSON = poDisbursementController.ReturnTransaction("Returned", getSelectedItems);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                     }
+                    ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                     break;
                 case "dissapprove":
                     poJSON = poDisbursementController.DisapprovedTransaction("Disapproved", getSelectedItems);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                     }
+                    ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                     break;
                 default:
                     throw new AssertionError();
@@ -276,21 +262,16 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
             loadTableMain();
         } catch (ParseException | SQLException | GuanzonException | CloneNotSupportedException ex) {
             Logger.getLogger(CheckAuthorizationController.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        
-    }
+        }
 
-    private String capitalize(String text) {
-        return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
 
     private void initTextFields() {
-        //Initialise  TextField KeyPressed
         List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchBankName, tfSearchBankAccount);
-        loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtFieldDV_KeyPressed(event)));
+        loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
 
-    private void txtFieldDV_KeyPressed(KeyEvent event) {
+    private void txtField_KeyPressed(KeyEvent event) {
         TextField txtField = (TextField) event.getSource();
         String lsID = (((TextField) event.getSource()).getId());
         String lsValue = (txtField.getText() == null ? "" : txtField.getText());
@@ -298,8 +279,6 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
         if (null != event.getCode()) {
             try {
                 switch (event.getCode()) {
-                    case TAB:
-                    case ENTER:
                     case F3:
                         switch (lsID) {
                             case "tfSearchBankName":
@@ -309,10 +288,19 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                                     return;
                                 }
                                 tfSearchBankName.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "");
+                                psSearchBankID = poDisbursementController.CheckPayments().getModel().getBankID();
                                 break;
                             case "tfSearchBankAccount":
+                                poJSON = poDisbursementController.SearchBankAccount(lsValue, poDisbursementController.CheckPayments().getModel().getBankID(), false);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                    return;
+                                }
+                                tfSearchBankAccount.setText(poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() != null ? poDisbursementController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() : "");
+                                psSearchBankAccountID = poDisbursementController.CheckPayments().getModel().getBankAcountID();
                                 break;
                         }
+                        CommonUtils.SetNextFocus((TextField) event.getSource());
                         loadTableMain();
                         event.consume();
                     default:
@@ -344,15 +332,12 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                 Platform.runLater(() -> {
                     try {
                         main_data.clear();
-                        plOrderNoFinal.clear();
-                        poJSON = poDisbursementController.getDisbursement(psDVNo, psSupplierId,true);
+                        //                        plOrderNoFinal.clear();
+//                        plOrderNoPartial.clear();
+                        poJSON = poDisbursementController.getDisbursementForCheckAuthorization(psSearchBankID, psSearchBankAccountID);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
-                                int checkIndex = 0;
-                                int otherIndex = 0;
                                 for (int lnCntr = 0; lnCntr < poDisbursementController.getDisbursementMasterCount(); lnCntr++) {
-                                    String lsBankName = "";
-                                    String lsBankAccount = "";
                                     main_data.add(new ModelDisbursementVoucher_Main(
                                             String.valueOf(lnCntr + 1),
                                             "",
@@ -366,18 +351,17 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.poDisbursementMaster(lnCntr).getNetTotal(), true)
                                     ));
                                 }
+                            } else {
+                                main_data.clear();
+                                filteredMain_Data.clear();
                             }
-                        } else {
-                            main_data.clear();
-//                            }
                         }
-                        showRetainedHighlight(true);
-                        if (main_data.isEmpty()) {
+//                        showRetainedHighlight(true);
+                        if (main_data.isEmpty() && filteredMain_Data.isEmpty()) {
                             tblVwMain.setPlaceholder(placeholderLabel);
-                            ShowMessageFX.Warning(null, pxeModuleName, "No records found");
-                            chckSelectAll.setSelected(false);
                         }
                         JFXUtil.loadTab(pagination, main_data.size(), ROWS_PER_PAGE, tblVwMain, filteredMain_Data);
+                        initButtons();
                     } catch (GuanzonException | SQLException ex) {
                         Logger.getLogger(CheckAuthorizationController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -386,7 +370,6 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
             }
 
             @Override
-
             protected void succeeded() {
                 btnRetrieve.setDisable(false);
                 placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
@@ -445,24 +428,23 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
         tblVwMain.setItems(filteredMain_Data);
     }
 
-    private void showRetainedHighlight(boolean isRetained) {
-        if (isRetained) {
-            for (Pair<String, String> pair : plOrderNoPartial) {
-                if (!"0".equals(pair.getValue())) {
-
-                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
-                }
-            }
-        }
-        JFXUtil.disableAllHighlight(tblVwMain, highlightedRowsMain);
-        plOrderNoPartial.clear();
-        for (Pair<String, String> pair : plOrderNoFinal) {
-            if (!"0".equals(pair.getValue())) {
-                JFXUtil.highlightByKey(tblVwMain, pair.getKey(), "#A7C7E7", highlightedRowsMain);
-            }
-        }
-    }
-
+//    private void showRetainedHighlight(boolean isRetained) {
+//        if (isRetained) {
+//            for (Pair<String, String> pair : plOrderNoPartial) {
+//                if (!"0".equals(pair.getValue())) {
+//
+//                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
+//                }
+//            }
+//        }
+//        JFXUtil.disableAllHighlight(tblVwMain, highlightedRowsMain);
+//        plOrderNoPartial.clear();
+//        for (Pair<String, String> pair : plOrderNoFinal) {
+//            if (!"0".equals(pair.getValue())) {
+//                JFXUtil.highlightByKey(tblVwMain, pair.getKey(), "#A7C7E7", highlightedRowsMain);
+//            }
+//        }
+//    }
     private void initTableOnClick() {
         tblVwMain.setOnMouseClicked(event -> {
             if (tblVwMain.getSelectionModel().getSelectedIndex() >= 0 && event.getClickCount() == 2) {
@@ -520,11 +502,30 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
             if (newValue != null) {
                 if (newValue.isEmpty()) {
                     poDisbursementController.CheckPayments().getModel().setBankID("");
+                    poDisbursementController.CheckPayments().getModel().setBankAcountID("");
                     tfSearchBankName.setText("");
+                    tfSearchBankAccount.setText("");
+                    psSearchBankID = "";
+                    psSearchBankAccountID = "";
                     loadTableMain();
                 }
             }
         }
         );
+        tfSearchBankAccount.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.CheckPayments().getModel().setBankAcountID("");
+                    tfSearchBankAccount.setText("");
+                    psSearchBankAccountID = "";
+                    loadTableMain();
+                }
+            }
+        }
+        );
+    }
+
+    private void initButtons() {
+        JFXUtil.setButtonsVisibility(!main_data.isEmpty(), btnAuthorize, btnDisapproved, btnReturn);
     }
 }

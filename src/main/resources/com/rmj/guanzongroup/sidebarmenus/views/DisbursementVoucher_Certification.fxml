@@ -63,25 +63,25 @@
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
                                                 </Label>
-                                                <TextField fx:id="tfDVNo" maxWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                <TextField fx:id="tfSearchDVNo" maxWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                 <Label text="Supplier/Payee Name" GridPane.columnIndex="4" GridPane.rowIndex="1">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
                                                 </Label>
-                                                <TextField fx:id="tfSupPayeeName" maxWidth="1.7976931348623157E308" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                <TextField fx:id="tfSearchSupPayeeName" maxWidth="1.7976931348623157E308" promptText="Press F3: Search" GridPane.columnIndex="6" GridPane.rowIndex="1" />
                                                 <Label text="Bank Name" GridPane.columnIndex="7" GridPane.rowIndex="1">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
                                                 </Label>
-                                                <TextField fx:id="tfBankName" maxWidth="1.7976931348623157E308" promptText="Press F3: Search" GridPane.columnIndex="9" GridPane.rowIndex="1" />
+                                                <TextField fx:id="tfSearchBankName" maxWidth="1.7976931348623157E308" promptText="Press F3: Search" GridPane.columnIndex="9" GridPane.rowIndex="1" />
                                                 <Label text="Bank Account" GridPane.columnIndex="10" GridPane.rowIndex="1">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
                                                 </Label>
-                                                <TextField fx:id="tfBankAccount" maxWidth="1.7976931348623157E308" promptText="Press F3: Search" GridPane.columnIndex="11" GridPane.rowIndex="1" />
+                                                <TextField fx:id="tfSearchBankAccount" maxWidth="1.7976931348623157E308" promptText="Press F3: Search" GridPane.columnIndex="11" GridPane.rowIndex="1" />
                                             </children>
                                         </GridPane>
                                     </children>
@@ -175,7 +175,7 @@
                                                         <TableColumn fx:id="tblPaymentForm" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="Payment Form" />
                                                         <TableColumn fx:id="tblBankName" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" resizable="false" sortable="false" text="Bank Name" />
                                                         <TableColumn fx:id="tblBankAccount" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" resizable="false" sortable="false" text="Bank Account" />
-                                                        <TableColumn fx:id="tblTransAmount" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Total Transaction Amount" />
+                                                        <TableColumn fx:id="tblTransAmount" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Total Amount" />
                                                     </columns>
                                                     <GridPane.margin>
                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

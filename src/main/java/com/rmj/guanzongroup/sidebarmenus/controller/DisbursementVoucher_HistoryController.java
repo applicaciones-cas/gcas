@@ -81,13 +81,13 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
     private boolean lsIsSaved = false;
     private final String pxeModuleName = "Disbursement Voucher History";
     private Disbursement poDisbursementController;
-    public int pnEditMode;
 
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
-    private String psSupplierId = "";
-    private String psTransactionNo = "";
+    private String psSearchSupplierID = "";
+    private String psSearchRefNo = "";
+    public int pnEditMode;
 
     private unloadForm poUnload = new unloadForm();
     private ObservableList<ModelDisbursementVoucher_Detail> detailsdv_data = FXCollections.observableArrayList();
@@ -277,6 +277,7 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
         initTableDetailJournal();
         initTableOnClick();
         clearFields();
+        initTextFieldsProperty();
         pnEditMode = EditMode.UNKNOWN;
         initFields();
         initButton();
@@ -304,17 +305,14 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
                     ShowMessageFX.Warning("Button History is Underdevelopment.", pxeModuleName, null);
                     break;
                 case "btnBrowse":
-                    poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN);
-                    poJSON = poDisbursementController.SearchTransaction("");
+                    poJSON = poDisbursementController.SearchTransactionForDVHistory("", psSearchRefNo, psSearchSupplierID);
                     if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
                     }
                     clearFields();
                     pnEditMode = poDisbursementController.getEditMode();
-                    psSupplierId = poDisbursementController.Master().getPayeeID();
                     loadTableDetailDV();
-
                     break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this Tab?", "Close Tab", null)) {
@@ -339,6 +337,7 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
             tfDVTransactionNo.setText(poDisbursementController.Master().getTransactionNo() != null ? poDisbursementController.Master().getTransactionNo() : "");
             dpDVTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poDisbursementController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfVoucherNo.setText(poDisbursementController.Master().getVoucherNo());
+            tfSupplier.setText(poDisbursementController.Master().Payee().getPayeeName());
             lblDVTransactionStatus.setText(getStatus(poDisbursementController.Master().getTransactionStatus()));
             cmbPaymentMode.getSelectionModel().select(!poDisbursementController.Master().getDisbursementType().equals("") ? Integer.valueOf(poDisbursementController.Master().getDisbursementType()) : -1);
             switch (poDisbursementController.Master().getDisbursementType()) {
@@ -409,7 +408,7 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
         try {
             tfBankNameCheck.setText(poDisbursementController.CheckPayments().getModel().Banks().getBankName() != null ? poDisbursementController.CheckPayments().getModel().Banks().getBankName() : "");
             tfBankAccountCheck.setText(poDisbursementController.CheckPayments().getModel().getBankAcountID() != null ? poDisbursementController.CheckPayments().getModel().getBankAcountID() : "");
-            tfPayeeName.setText(poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "");
+            tfPayeeName.setText(poDisbursementController.CheckPayments().getModel().Payee().getPayeeName() != null ? poDisbursementController.CheckPayments().getModel().Payee().getPayeeName() : "");
             tfCheckNo.setText(poDisbursementController.CheckPayments().getModel().getCheckNo());
             dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poDisbursementController.CheckPayments().getModel().getCheckDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfCheckAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.CheckPayments().getModel().getAmount(), true));
@@ -475,14 +474,12 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
         progressIndicator.setVisible(true);
         Label placeholderLabel = new Label("NO RECORD TO LOAD");
         placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
-
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 Platform.runLater(() -> {
                     detailsdv_data.clear();
                     int lnCtr;
-
                     double lnNetTotal = 0.0000;
                     for (lnCtr = 0; lnCtr < poDisbursementController.getDetailCount(); lnCtr++) {
                         try {
@@ -597,39 +594,12 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
     }
 
     private void initTextFieldsDV() {
-        //Initialise  TextField Focus
-        JFXUtil.setFocusListener(txtMasterDV_Focus, tfSearchSupplier, tfSearchTransaction);
+
+        JFXUtil.setFocusListener(txtDetailDV_Focus, tfSearchTransaction);
         //Initialise  TextField KeyPressed
         List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchTransaction, tfSearchSupplier);
         loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtFieldDV_KeyPressed(event)));
     }
-    final ChangeListener<? super Boolean> txtMasterDV_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtMasterDV = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtMasterDV.getId());
-        String lsValue = (txtMasterDV.getText() == null ? "" : txtMasterDV.getText());
-
-        lastFocusedTextField = txtMasterDV;
-        previousSearchedTextField = null;
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfSearchSupplier":
-                    if (lsValue.equals("")) {
-                        psSupplierId = "";
-                    }
-                    break;
-                case "tfSearchTransaction":
-                    if (lsValue.equals("")) {
-                        psTransactionNo = "";
-                    }
-                    break;
-            }
-        }
-    };
 
     private void txtFieldDV_KeyPressed(KeyEvent event) {
         TextField txtField = (TextField) event.getSource();
@@ -643,6 +613,11 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
                     case ENTER:
                         pbEnteredDV = true;
                         CommonUtils.SetNextFocus(txtField);
+                        switch (lsID) {
+                            case "tfSearchTransaction":
+                                psSearchRefNo = tfSearchTransaction.getText();
+                                break;
+                        }
                         event.consume();
                         break;
                     case F3:
@@ -653,12 +628,11 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfSearchSupplier.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? poDisbursementController.Master().Payee().getPayeeName() : "");
-                                break;
-                            case "tfSearchTransaction":
-                                psTransactionNo = tfSearchTransaction.getText();
+                                tfSearchSupplier.setText(poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "");
+                                psSearchSupplierID = poDisbursementController.Master().getPayeeID();
                                 break;
                         }
+                        CommonUtils.SetNextFocus(txtField);
                         event.consume();
                     default:
                         break;
@@ -670,6 +644,27 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
+    final ChangeListener<? super Boolean> txtDetailDV_Focus = (o, ov, nv) -> {
+        poJSON = new JSONObject();
+        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        String lsTxtFieldID = (txtPersonalInfo.getId());
+        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
+
+        lastFocusedTextField = txtPersonalInfo;
+        previousSearchedTextField = null;
+
+        if (lsValue == null) {
+            return;
+        }
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lsTxtFieldID) {
+                case "tfSearchTransaction":
+                    psSearchRefNo = tfSearchTransaction.getText();
+                    break;
+            }
+        }
+    };
 
     private void movePreviousJournal() {
 //        double lnPurchaseAmount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
@@ -778,5 +773,26 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
         CustomCommonUtil.setManaged(true, btnBrowse, btnClose);
         btnHistory.setVisible(false);
         btnHistory.setManaged(false);
+    }
+
+    private void initTextFieldsProperty() {
+        tfSearchTransaction.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    psSearchRefNo = "";
+                }
+            }
+        }
+        );
+        tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.Master().setPayeeID("");
+                    tfSearchSupplier.setText("");
+                    psSearchSupplierID = "";
+                }
+            }
+        }
+        );
     }
 }
