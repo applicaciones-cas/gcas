@@ -318,6 +318,18 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         }
     }
 
+    public void setKeyEventSerial(Scene scene) {
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.F5) {
+                System.out.println("tested key press");
+
+                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.getEditMode(), EditMode.READY, EditMode.UPDATE)) {
+                    showAttachmentDialog();
+                }
+            }
+        });
+    }
+
     public void showSerialDialog() {
         try {
             poJSON = new JSONObject();
@@ -347,8 +359,17 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     loadTableDetail();
                 });
             });
-            stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"), controller, "Inventory Serial", true, true, false);
 
+            stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"), controller, "Inventory Serial", true, false, false);
+            if (stageSerial.getScene() != null) {
+                setKeyEventSerial(stageSerial.getScene());
+            } else {
+                stageSerial.getRoot().sceneProperty().addListener((obs, oldScene, newScene) -> {
+                    if (newScene != null) {
+                        setKeyEvent(newScene);
+                    }
+                });
+            }
         } catch (IOException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -1968,6 +1989,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewTransDetailList.getSelectionModel().getSelectedItem();
                     if (selected != null) {
+                        stageSerial.closeSerialDialog();
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
                         tfCost.requestFocus();
