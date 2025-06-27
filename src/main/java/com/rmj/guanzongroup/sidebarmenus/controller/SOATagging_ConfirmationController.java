@@ -322,7 +322,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             return;
                         }
                         break;
-//                    case "btnReturn":
+                    case "btnReturn":
 //                        poJSON = new JSONObject();
 //                        if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to return transaction?") == true) {
 //                            poJSON = poSOATaggingController.ReturnTransaction("");
@@ -337,7 +337,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
 //                        } else {
 //                            return;
 //                        }
-//                        break;
+                        return;
                     default:
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
