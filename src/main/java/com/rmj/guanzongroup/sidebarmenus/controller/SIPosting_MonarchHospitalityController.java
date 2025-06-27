@@ -539,6 +539,7 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
                     } else {
                         poJSON = poPurchaseReceivingController.Master().setSalesInvoice("");
                     }
+                    loadTableDetail();
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         tfSINo.setText("");
@@ -1725,6 +1726,14 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
                         double lnTotal = 0.00;
                         double lnDiscountAmt = 0.00;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
+
+                            if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Master().getSalesInvoice(), null, "")) {
+                                poPurchaseReceivingController.Detail(lnCtr).isVatable(false);
+                                JFXUtil.setDisabled(true, cbVatable);
+                            } else {
+                                JFXUtil.setDisabled(false, cbVatable);
+                            }
+
                             try {
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
                                 lnDiscountAmt = poPurchaseReceivingController.Detail(lnCtr).getDiscountAmount().doubleValue()

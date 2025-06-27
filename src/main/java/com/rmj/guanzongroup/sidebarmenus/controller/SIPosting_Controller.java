@@ -536,7 +536,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         poJSON = poPurchaseReceivingController.Master().setSalesInvoice(lsValue);
                     } else {
                         poJSON = poPurchaseReceivingController.Master().setSalesInvoice("");
+
                     }
+                    loadTableDetail();
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         tfSINo.setText("");
@@ -1019,7 +1021,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                 tfJEAcctCode.setText("");
                                 break;
                             }
-
                             poJSON = poPurchaseReceivingController.checkExistAcctCode(pnJEDetail, poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode());
                             if ("error".equals(poJSON.get("result"))) {
                                 int lnRow = (int) poJSON.get("row");
@@ -1032,6 +1033,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                                 break;
                             }
                             loadTableJEDetail();
+
                             break;
                         case "tfJEAcctDescription":
                             poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, false, null, null);
@@ -1386,6 +1388,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             tfSRPAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
+
             cbVatable.setSelected(poPurchaseReceivingController.Detail(pnDetail).isVatable());
 
             JFXUtil.updateCaretPositions(apDetail);
@@ -1510,6 +1513,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             }
 
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(ldblNetTotal, true));
+
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1732,6 +1736,14 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                         double lnTotal = 0.00;
                         double lnDiscountAmt = 0.00;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
+
+                            if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Master().getSalesInvoice(), null, "")) {
+                                poPurchaseReceivingController.Detail(lnCtr).isVatable(false);
+                                JFXUtil.setDisabled(true, cbVatable);
+                            } else {
+                                JFXUtil.setDisabled(false, cbVatable);
+                            }
+
                             try {
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
                                 lnDiscountAmt = poPurchaseReceivingController.Detail(lnCtr).getDiscountAmount().doubleValue()
