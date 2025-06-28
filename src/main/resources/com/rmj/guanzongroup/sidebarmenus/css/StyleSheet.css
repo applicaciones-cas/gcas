@@ -743,18 +743,19 @@
 }
 .check-box .box {
     -fx-background-color: white;
-    -fx-border-color:gray;
+    -fx-border-color:black;
     -fx-border-width:.5px;
     -fx-background-radius:2px;
     -fx-border-radius:3px;
 }
 .check-box .box:selected {
     -fx-background-color: white;
-    -fx-border-color:gray;
+    -fx-border-color:black;
     -fx-border-width:1px;
     -fx-background-radius:2px;
     -fx-border-radius:3px;
 }
+
 
 .button_process2 {
     -fx-background-color: #FF8201;
@@ -770,6 +771,7 @@
     -fx-border-color: gray;
     -fx-border-radius: 3;
     -fx-background-color: #f7f7f7;
+    -fx-padding: 0 7 0 7;
 }
 
 .check-box:disabled {
