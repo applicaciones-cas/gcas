@@ -88,8 +88,6 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
-    private String psSearchCompanyID = "";
-//    private String psSearchDepartmentID = "";
     private String psSearchBankID = "";
     private String psSearchBankAccountID = "";
 
@@ -120,7 +118,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
     @FXML
     private Label lblSource;
     @FXML
-    private TextField tfSearchCompany, tfSearchBankName, tfSearchBankAccount;
+    private TextField tfSearchBankName, tfSearchBankAccount;
     @FXML
     private AnchorPane apButton;
     @FXML
@@ -196,6 +194,9 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
         initAll();
         Platform.runLater(() -> {
             poCheckPrintingRequestController.Master().setIndustryID(psIndustryId);
+            poCheckPrintingRequestController.Master().setCompanyID(psCompanyId);
+            poCheckPrintingRequestController.setIndustryID(psIndustryId);
+            poCheckPrintingRequestController.setCompanyID(psCompanyId);
             loadRecordSearch();
             btnNew.fire();
         });
@@ -218,7 +219,11 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
     }
 
     private void loadRecordSearch() {
-//        lblSource.setText(poCheckPrintingRequestController.CheckPrintingRequest().Master().Company().getCompanyName() + " - " + poCheckPrintingRequestController.CheckPrintingRequest().Master().Industry().getDescription());
+        try {
+            lblSource.setText(poCheckPrintingRequestController.Master().Company().getCompanyName() + " - " + poCheckPrintingRequestController.Master().Industry().getDescription());
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(CheckPrintRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initButtonsClickActions() {
@@ -250,7 +255,6 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
                     }
-
                     loadTableDetail();
                     pnEditMode = poCheckPrintingRequestController.getEditMode();
                     break;
@@ -321,7 +325,27 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
     }
 
     private boolean isSavingValid() {
+        int detailCount = poCheckPrintingRequestController.getDetailCount();
+        boolean hasValidItem = false; // True if at least one valid item exists
 
+        if (detailCount == 0) {
+            ShowMessageFX.Warning("Your order is empty. Please add at least one item.", pxeModuleName, null);
+            return false;
+        }
+        for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
+            String lsSourceNo = (String) poCheckPrintingRequestController.Detail(lnCntr).getSourceNo();
+            if (detailCount == 1) {
+                if (lsSourceNo == null || lsSourceNo.trim().isEmpty()) {
+                    ShowMessageFX.Warning("Your check print reques must have at least one valid item with a Reference No.", pxeModuleName, null);
+                    return false;
+                }
+            }
+            hasValidItem = true;
+        }
+        if (!hasValidItem) {
+            ShowMessageFX.Warning("Invalid item in check print request detail. Ensure all items have a valid Source No", pxeModuleName, null);
+            return false;
+        }
         return true;
     }
 
@@ -363,7 +387,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poCheckPrintingRequestController.getDVwithAuthorizeCheckPayment(psSearchCompanyID, psSearchBankID, psSearchBankAccountID);
+                        poJSON = poCheckPrintingRequestController.getDVwithAuthorizeCheckPayment(psSearchBankID, psSearchBankAccountID);
                         if ("success".equals(poJSON.get("result"))) {
                             for (int lnCntr = 0; lnCntr <= poCheckPrintingRequestController.getCheckPaymentCount() - 1; lnCntr++) {
                                 main_data.add(new ModelDisbursementVoucher_Main(
@@ -728,7 +752,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
 
     private void initTextFields() {
         //Initialise  TextField KeyPressed
-        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchCompany, tfSearchBankName);
+        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchBankName, tfSearchBankAccount);
         loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtFieldDV_KeyPressed(event)));
     }
 
@@ -742,16 +766,6 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                 switch (event.getCode()) {
                     case F3:
                         switch (lsID) {
-                            case "tfSearchCompany":
-                                poJSON = poCheckPrintingRequestController.SearchCompany(lsValue, false);
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                                    return;
-                                }
-                                tfSearchCompany.setText(poCheckPrintingRequestController.Master().Company().getCompanyName() != null ? poCheckPrintingRequestController.Master().Company().getCompanyName() : "");
-                                psSearchCompanyID = poCheckPrintingRequestController.Master().getCompanyID();
-                                loadTableMain();
-                                break;
                             case "tfSearchBankName":
                                 if (!isExchangingBankName()) {
                                     return;
@@ -763,16 +777,18 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                                 }
                                 tfSearchBankName.setText(poCheckPrintingRequestController.Master().Banks().getBankName() != null ? poCheckPrintingRequestController.Master().Banks().getBankName() : "");
                                 psSearchBankID = poCheckPrintingRequestController.Master().getBankID();
+                                poCheckPrintingRequestController.Master().setBankAccountID("");
+                                psSearchBankAccountID = poCheckPrintingRequestController.Master().getBankAccountID();
                                 loadTableMain();
                                 break;
                             case "tfSearchBankAccount":
-                                poJSON = poCheckPrintingRequestController.SearchBanks(lsValue, false);
+                                poJSON = poCheckPrintingRequestController.SearhBankAccount(lsValue, poCheckPrintingRequestController.Master().getBankID(), false);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfSearchBankAccount.setText(poCheckPrintingRequestController.Master().Banks().getBankName() != null ? poCheckPrintingRequestController.Master().Banks().getBankName() : "");
-                                psSearchBankID = poCheckPrintingRequestController.Master().getBankID();
+                                tfSearchBankAccount.setText(poCheckPrintingRequestController.Master().Bank_Account_Master().getAccountNo() != null ? poCheckPrintingRequestController.Master().Bank_Account_Master().getAccountNo() : "");
+                                psSearchBankAccountID = poCheckPrintingRequestController.Master().getBankAccountID();
                                 loadTableMain();
                                 break;
                         }
@@ -946,17 +962,6 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
     }
 
     private void initTextFieldsProperty() {
-        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    poCheckPrintingRequestController.Master().setCompanyID("");
-                    tfSearchCompany.setText("");
-                    psSearchCompanyID = "";
-                    loadTableMain();
-                }
-            }
-        }
-        );
         tfSearchBankName.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
@@ -964,8 +969,11 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                         return;
                     }
                     poCheckPrintingRequestController.Master().setBankID("");
+                    poCheckPrintingRequestController.Master().setBankAccountID("");
                     tfSearchBankName.setText("");
+                    tfSearchBankAccount.setText("");
                     psSearchBankID = "";
+                    psSearchBankAccountID = "";
                     loadTableMain();
                 }
             }
@@ -974,6 +982,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
         tfSearchBankAccount.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
+                    poCheckPrintingRequestController.Master().setBankAccountID("");
                     tfSearchBankAccount.setText("");
                     psSearchBankAccountID = "";
                     loadTableMain();

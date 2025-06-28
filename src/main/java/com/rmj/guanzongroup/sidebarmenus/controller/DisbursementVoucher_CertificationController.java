@@ -74,8 +74,6 @@ public class DisbursementVoucher_CertificationController implements Initializabl
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
-    private String psSearchSupplierPayeeeId = "";
-    private String psSearchDVNo = "";
     private String psSearchBankID = "";
     private String psSearchBankAccountID = "";
     public int pnEditMode;
@@ -97,7 +95,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
     @FXML
     private Label lblSource;
     @FXML
-    private TextField tfSearchDVNo, tfSearchSupPayeeName, tfSearchBankName, tfSearchBankAccount;
+    private TextField tfSearchBankName, tfSearchBankAccount;
     @FXML
     private Button btnCertify, btnReturn, btnDisapproved, btnRetrieve, btnClose;
     @FXML
@@ -268,7 +266,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
 
     private void initTextFields() {
         //Initialise  TextField KeyPressed
-        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchDVNo, tfSearchSupPayeeName, tfSearchBankAccount, tfSearchBankName);
+        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchBankAccount, tfSearchBankName);
         loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
 
@@ -284,26 +282,10 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                     case TAB:
                     case ENTER:
                         CommonUtils.SetNextFocus(txtField);
-                        switch (lsID) {
-                            case "tfSearchDVNo":
-                                psSearchDVNo = tfSearchDVNo.getText();
-                                loadTableMain();
-                                event.consume();
-                                break;
-                        }
                         event.consume();
                         break;
                     case F3:
                         switch (lsID) {
-                            case "tfSearchSupPayeeName":
-                                poJSON = poDisbursementController.SearchPayee(lsValue, false);
-                                if ("error".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                                    return;
-                                }
-                                tfSearchSupPayeeName.setText(poDisbursementController.Master().Payee().getPayeeName() != null ? poDisbursementController.Master().Payee().getPayeeName() : "");
-                                psSearchSupplierPayeeeId = poDisbursementController.Master().getPayeeID();
-                                break;
                             case "tfSearchBankName":
                                 poJSON = poDisbursementController.SearchBanks(lsValue, false);
                                 if ("error".equals((String) poJSON.get("result"))) {
@@ -359,7 +341,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                         main_data.clear();
 //                        plOrderNoFinal.clear();
 //                        plOrderNoPartial.clear();
-                        poJSON = poDisbursementController.getDisbursementForCertification(psSearchDVNo, psSearchSupplierPayeeeId, psSearchBankID, psSearchBankAccountID);
+                        poJSON = poDisbursementController.getDisbursementForCertification(psSearchBankID, psSearchBankAccountID);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
                                 for (int lnCntr = 0; lnCntr < poDisbursementController.getDisbursementMasterCount(); lnCntr++) {
@@ -554,17 +536,6 @@ public class DisbursementVoucher_CertificationController implements Initializabl
     }
 
     private void initTextFieldsProperty() {
-        tfSearchSupPayeeName.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    poDisbursementController.Master().setPayeeID("");
-                    psSearchSupplierPayeeeId = "";
-                    tfSearchSupPayeeName.setText("");
-                    loadTableMain();
-                }
-            }
-        }
-        );
         tfSearchBankName.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
@@ -585,16 +556,6 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                     poDisbursementController.CheckPayments().getModel().setBankAcountID("");
                     tfSearchBankAccount.setText("");
                     psSearchBankAccountID = "";
-                    loadTableMain();
-                }
-            }
-        }
-        );
-        tfSearchDVNo.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    tfSearchDVNo.setText("");
-                    psSearchDVNo = "";
                     loadTableMain();
                 }
             }

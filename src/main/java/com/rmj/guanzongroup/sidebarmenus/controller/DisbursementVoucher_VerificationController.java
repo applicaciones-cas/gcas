@@ -1299,7 +1299,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     private void initDetailClickFocus(boolean isSOACache) {
         String lsSourceNo = poDisbursementController.Detail(pnDetailDV).getSourceNo();
         double amount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
-        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTAxCode();
+        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTaxCode();
         String lsParticular = poDisbursementController.Detail(pnDetailDV).getParticularID();
 
         loadRecordDetailDV();
@@ -1331,7 +1331,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
         initFields(pnEditMode);
         String lsSourceNo = poDisbursementController.Detail(pnDetailDV).getSourceNo();
         double amount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
-        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTAxCode();
+        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTaxCode();
         String lsParticular = poDisbursementController.Detail(pnDetailDV).getParticularID();
         if (lsSourceNo.isEmpty()) {
             return;
@@ -1428,7 +1428,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
 //            pnDetailDV = JFXUtil.moveToPreviousRow(tblVwDetails);
 //            loadRecordDetailDV();
 //            if (poDisbursementController.Detail(pnDetailDV).getSourceNo() != null && !poDisbursementController.Detail(pnDetailDV).getSourceNo().equals("")) {
-//                if (poDisbursementController.Detail(pnDetailDV).getTAxCode() != null) {
+//                if (poDisbursementController.Detail(pnDetailDV).getTaxCode() != null) {
 //                    tfPurchasedAmountDetail.requestFocus();
 //                } else {
 //                    tfTaxCodeDetail.requestFocus();
@@ -1451,7 +1451,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
 //            pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
 //            loadRecordDetailDV();
 //            if (poDisbursementController.Detail(pnDetailDV).getSourceNo() != null && !poDisbursementController.Detail(pnDetailDV).getSourceNo().equals("")) {
-//                if (poDisbursementController.Detail(pnDetailDV).getTAxCode() != null) {
+//                if (poDisbursementController.Detail(pnDetailDV).getTaxCode() != null) {
 //                    tfPurchasedAmountDetail.requestFocus();
 //                } else {
 //                    tfTaxCodeDetail.requestFocus();
@@ -1764,7 +1764,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
         tfTaxCodeDetail.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    poDisbursementController.Detail(pnDetailDV).setTAxCode("");
+                    poDisbursementController.Detail(pnDetailDV).setTaxCode("");
                     poDisbursementController.Detail(pnDetailDV).setTaxRates(0.00);
                     poDisbursementController.Detail(pnDetailDV).setTaxAmount(0.0000);
                     tfTaxCodeDetail.setText("");

@@ -470,14 +470,14 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             String lsSourceNo = (String) poDisbursementController.Detail(lnCntr).getSourceNo();
             if (detailCount == 1) {
                 if (lsSourceNo == null || lsSourceNo.trim().isEmpty()) {
-                    ShowMessageFX.Warning("Your order must have at least one valid item with a Reference No.", pxeModuleName, null);
+                    ShowMessageFX.Warning("Your disbursement detail must have at least one valid item with a Reference No.", pxeModuleName, null);
                     return false;
                 }
             }
             hasValidItem = true;
         }
         if (!hasValidItem) {
-            ShowMessageFX.Warning("Invalid item in disbursement detail. Ensure all items have a valid Source No and Amount greater than 0.0000", pxeModuleName, null);
+            ShowMessageFX.Warning("Invalid item in disbursement detail. Ensure all items have a valid Reference No and Amount greater than 0.0000", pxeModuleName, null);
             return false;
         }
 
@@ -1339,7 +1339,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     private void initDetailClickFocus(boolean isSOACache) {
         String lsSourceNo = poDisbursementController.Detail(pnDetailDV).getSourceNo();
         double amount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
-        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTAxCode();
+        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTaxCode();
         String lsParticular = poDisbursementController.Detail(pnDetailDV).getParticularID();
 
         loadRecordDetailDV();
@@ -1371,7 +1371,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         initFields(pnEditMode);
         String lsSourceNo = poDisbursementController.Detail(pnDetailDV).getSourceNo();
         double amount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
-        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTAxCode();
+        String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTaxCode();
         String lsParticular = poDisbursementController.Detail(pnDetailDV).getParticularID();
         if (lsSourceNo.isEmpty()) {
             return;
@@ -1468,7 +1468,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 //            pnDetailDV = JFXUtil.moveToPreviousRow(tblVwDetails);
 //            loadRecordDetailDV();
 //            if (poDisbursementController.Detail(pnDetailDV).getSourceNo() != null && !poDisbursementController.Detail(pnDetailDV).getSourceNo().equals("")) {
-//                if (poDisbursementController.Detail(pnDetailDV).getTAxCode() != null) {
+//                if (poDisbursementController.Detail(pnDetailDV).getTaxCode() != null) {
 //                    tfPurchasedAmountDetail.requestFocus();
 //                } else {
 //                    tfTaxCodeDetail.requestFocus();
@@ -1491,7 +1491,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 //            pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
 //            loadRecordDetailDV();
 //            if (poDisbursementController.Detail(pnDetailDV).getSourceNo() != null && !poDisbursementController.Detail(pnDetailDV).getSourceNo().equals("")) {
-//                if (poDisbursementController.Detail(pnDetailDV).getTAxCode() != null) {
+//                if (poDisbursementController.Detail(pnDetailDV).getTaxCode() != null) {
 //                    tfPurchasedAmountDetail.requestFocus();
 //                } else {
 //                    tfTaxCodeDetail.requestFocus();
@@ -1908,7 +1908,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             if (newValue != null) {
                 if (newValue.isEmpty()) {
                     if (pnDetailDV >= 0) {
-                        poDisbursementController.Detail(pnDetailDV).setTAxCode("");
+                        poDisbursementController.Detail(pnDetailDV).setTaxCode("");
                         poDisbursementController.Detail(pnDetailDV).setTaxRates(0.00);
                         poDisbursementController.Detail(pnDetailDV).setTaxAmount(0.0000);
                         tfTaxCodeDetail.setText("");

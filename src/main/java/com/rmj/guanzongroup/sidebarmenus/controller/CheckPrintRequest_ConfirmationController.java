@@ -6,7 +6,6 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDisbursementVoucher_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDisbursementVoucher_Main;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelJournalEntry_Detail;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.net.URL;
@@ -61,7 +60,6 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
-import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
@@ -92,7 +90,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
-    private String psTransactionNo = "";
+    private String psSearchReferNo = "";
     private String psTransactionType = "";
 
     private unloadForm poUnload = new unloadForm();
@@ -124,7 +122,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
     @FXML
     private Label lblSource;
     @FXML
-    private TextField tfSearchCompany, tfSearchDepartment, tfSearchReferNo;
+    private TextField tfSearchReferNo;
     @FXML
     private AnchorPane apButton;
     @FXML
@@ -201,6 +199,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
         initAll();
         Platform.runLater(() -> {
             poCheckPrintingRequestController.Master().setIndustryID(psIndustryId);
+            poCheckPrintingRequestController.Master().setCompanyID(psCompanyId);
             loadRecordSearch();
         });
     }
@@ -222,7 +221,11 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
     }
 
     private void loadRecordSearch() {
-//            lblSource.setText(poCheckPrintingRequestController.Master().Company().getCompanyName() + " - " + poCheckPrintingRequestController.Master().Industry().getDescription());
+        try {
+            lblSource.setText(poCheckPrintingRequestController.Master().Company().getCompanyName() + " - " + poCheckPrintingRequestController.Master().Industry().getDescription());
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(CheckPrintRequest_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
@@ -389,7 +392,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poCheckPrintingRequestController.getCheckPrintingRequest(psTransactionNo, psSupplierId);
+                        poJSON = poCheckPrintingRequestController.getCheckPrintingRequest(psSearchReferNo, psSupplierId);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poCheckPrintingRequestController.getPrintRequestMasterCount() > 0) {
                                 for (int lnCntr = 0; lnCntr <= poCheckPrintingRequestController.getPrintRequestMasterCount() - 1; lnCntr++) {
@@ -581,7 +584,6 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     }
                     for (lnCtr = 0; lnCtr < poCheckPrintingRequestController.getDetailCount(); lnCtr++) {
                         try {
-
                             details_data.add(
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poCheckPrintingRequestController.Detail(lnCtr).getSourceNo(),
@@ -722,11 +724,10 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
 
     private void initTextFields() {
         //Initialise  TextField KeyPressed
-        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchCompany, tfSearchDepartment, tfSearchReferNo);
-        loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtFieldDV_KeyPressed(event)));
+        tfSearchReferNo.setOnKeyPressed(event -> txtField_KeyPressed(event));
     }
 
-    private void txtFieldDV_KeyPressed(KeyEvent event) {
+    private void txtField_KeyPressed(KeyEvent event) {
         TextField txtField = (TextField) event.getSource();
         String lsID = (((TextField) event.getSource()).getId());
         String lsValue = (txtField.getText() == null ? "" : txtField.getText());
@@ -735,24 +736,9 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
             switch (event.getCode()) {
                 case F3:
                     switch (lsID) {
-                        case "tfSearchCompany":
-//                                poJSON = poCheckPrintingRequestController.SearchPayee(lsValue, false);
-//                                if ("error".equals((String) poJSON.get("result"))) {
-//                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-//                                    return;
-//                                }
-//                                tfSearchCompany.setText(poCheckPrintingRequestController.Master().Payee().getPayeeName() != null ? poCheckPrintingRequestController.Master().Payee().getPayeeName() : "");
-//                                loadTableMain();
-                            break;
-                        case "tfSearchDepartment":
-//                                poJSON = poCheckPrintingRequestController.SearchPayee(lsValue, false);
-//                                if ("error".equals((String) poJSON.get("result"))) {
-//                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-//                                    return;
-//                                }
-//
-//                                tfSearchDepartment.setText(poCheckPrintingRequestController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? poCheckPrintingRequestController.Master().Payee().getPayeeName() : "");
-//                                loadTableMain();
+                        case "tfSearchReferNo":
+                            psSearchReferNo = tfSearchReferNo.getText();
+                            loadTableMain();
                             break;
                     }
                     event.consume();
