@@ -58,6 +58,7 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
+import ph.com.guanzongroup.cas.cashflow.CheckPayments;
 import ph.com.guanzongroup.cas.cashflow.CheckPrinting;
 import ph.com.guanzongroup.cas.cashflow.Disbursement;
 import ph.com.guanzongroup.cas.cashflow.model.SelectedITems;
@@ -76,6 +77,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     private static final int ROWS_PER_PAGE = 50;
     private final String pxeModuleName = "Check Printing";
     private CheckPrinting poCheckPrintingController;
+    private CheckPayments poCheckPayments;
     private Disbursement poDisbursementController;
     public int pnEditMode;
 
@@ -177,12 +179,13 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         initTableMain();
         initTableOnClick();
         initTextFieldsProperty();
-        pnEditMode = EditMode.UNKNOWN;
+        initButtons();
         if (main_data.isEmpty()) {
             Label placeholderLabel = new Label("NO RECORD TO LOAD");
             tblVwMain.setPlaceholder(placeholderLabel);
             pagination.setManaged(false);
             pagination.setVisible(false);
+            listOfDVToAssign.clear();
         }
     }
 
@@ -307,7 +310,10 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     }
                     break;
                 case "btnPrintDV":
-                    loadTableMain();
+                    validateSelectedItem();
+                    if (!listOfDVToAssign.isEmpty()) {
+                        ShowMessageFX.Warning("Button PrintDV is Underdevelopment.", pxeModuleName, null);
+                    }
                     break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this Tab?", "Close Tab", null)) {
@@ -334,20 +340,20 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         String lsID = (((TextField) event.getSource()).getId());
         String lsValue = (txtField.getText() == null ? "" : txtField.getText());
         poJSON = new JSONObject();
-
         if (null != event.getCode()) {
             try {
                 switch (event.getCode()) {
                     case F3:
                         switch (lsID) {
                             case "tfSearchBankName":
-                                poJSON = poDisbursementController.SearchBanks(lsValue, false);
+                                poCheckPrintingController.setCheckpayment();
+                                poJSON = poCheckPrintingController.SearchBanks(lsValue, true);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfSearchBankName.setText(poDisbursementController.Master().CheckPayments().Banks().getBankName() != null ? poDisbursementController.Master().CheckPayments().Banks().getBankName() : "");
-                                psSearchBankID = poDisbursementController.Master().CheckPayments().getBankID();
+                                tfSearchBankName.setText(poCheckPrintingController.Master().CheckPayments().Banks().getBankName() != null ? poCheckPrintingController.Master().CheckPayments().Banks().getBankName() : "");
+                                psSearchBankID = poCheckPrintingController.Master().CheckPayments().getBankID();
                                 loadTableMain();
                                 break;
 
@@ -440,8 +446,10 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                             tblVwMain.setPlaceholder(placeholderLabel);
                             ShowMessageFX.Warning(null, pxeModuleName, "No records found");
                             chckSelectAll.setSelected(false);
+                            listOfDVToAssign.clear();
                         }
                         JFXUtil.loadTab(pagination, main_data.size(), ROWS_PER_PAGE, tblVwMain, filteredMain_Data);
+                        initButtons();
                     } catch (GuanzonException | SQLException ex) {
                         Logger.getLogger(CheckPrintingController.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -653,4 +661,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         );
     }
 
+    private void initButtons() {
+        JFXUtil.setButtonsVisibility(!main_data.isEmpty(), btnAssign, btnPrintCheck, btnPrintDV);
+    }
 }
