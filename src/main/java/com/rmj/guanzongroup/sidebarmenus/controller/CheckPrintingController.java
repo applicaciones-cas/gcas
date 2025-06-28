@@ -95,6 +95,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     ArrayList<SelectedITems> getSelectedItems = new ArrayList<>();
     List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
     List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
+    List<String> listOfDVToAssign = new ArrayList<>();
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
     @FXML
@@ -108,7 +109,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     @FXML
     private AnchorPane apButton;
     @FXML
-    private Button btnAssign, btnRetrieve, btnClose;
+    private Button btnAssign, btnRetrieve, btnClose,btnPrintCheck,btnPrintDV;
     @FXML
     private TableView<ModelCheckPrinting> tblVwMain;
     @FXML
@@ -146,6 +147,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
+            
             poCheckPrintingController = new CashflowControllers(oApp, null).CheckPrinting();
             poCheckPrintingController.setTransactionStatus(DisbursementStatic.AUTHORIZED);
             poJSON = new JSONObject();
@@ -189,19 +191,14 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     }
 
     private void initButtonsClickActions() {
-        List<Button> buttons = Arrays.asList(btnAssign, btnRetrieve, btnClose);
+        List<Button> buttons = Arrays.asList(btnAssign, btnRetrieve, btnClose,btnPrintCheck,btnPrintDV);
         buttons.forEach(button -> button.setOnAction(this::cmdButton_Click));
     }
+    
 
-    private void cmdButton_Click(ActionEvent event) {
-        try {
-            poJSON = new JSONObject();
-            String lsButton = ((Button) event.getSource()).getId();
-
-            switch (lsButton) {
-                case "btnAssign":
-                    ObservableList<ModelCheckPrinting> selectedItems = FXCollections.observableArrayList();
-
+    private void validateSelectedItem(){
+        ObservableList<ModelCheckPrinting> selectedItems = FXCollections.observableArrayList();
+        
                     for (ModelCheckPrinting item : tblVwMain.getItems()) {
                         if (item.getSelect().isSelected()) {
                             selectedItems.add(item);
@@ -213,14 +210,14 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                         return;
                     }
 
-                    if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to assign?")) {
-                        return;
-                    }
+//                    if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to assign?")) {
+//                        return;
+//                    }
 
                     int successCount = 0;
                     String firstBank = null;
                     boolean allSameBank = true;
-                    List<String> listOfDVToAssign = new ArrayList<>();
+
                     for (ModelCheckPrinting item : selectedItems) {
                         String lsDVNO = item.getIndex03();
                         String banks = item.getIndex07();
@@ -237,11 +234,33 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     }   
                     if (!allSameBank) {
                         ShowMessageFX.Information(null, pxeModuleName, "Selected items must belong to the same bank.");
-                        break;
+                        
                     }
-                    loadAssignWindow(listOfDVToAssign);
+    }
+    
+    private void cmdButton_Click(ActionEvent event) {
+        try {
+            poJSON = new JSONObject();
+            String lsButton = ((Button) event.getSource()).getId();
+            
+
+            switch (lsButton) {
+                case "btnAssign":
+                    validateSelectedItem();
+                    if (!listOfDVToAssign.isEmpty()) {
+                        loadAssignWindow(listOfDVToAssign);
+                    }
                     break;
                 case "btnRetrieve":
+                    loadTableMain();
+                    break;
+                case "btnPrintCheck":
+                    validateSelectedItem();  
+                    if (!listOfDVToAssign.isEmpty()){
+                        poCheckPrintingController.PrintCheck(listOfDVToAssign);
+                    }
+                    break;
+                case "btnPrintDV":
                     loadTableMain();
                     break;
                 case "btnClose":
@@ -253,7 +272,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     ShowMessageFX.Warning("Please contact admin to assist about no button available", pxeModuleName, null);
                     break;
             }
-        } catch (SQLException ex) {
+        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
             Logger.getLogger(CheckPrintingController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

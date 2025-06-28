@@ -41,6 +41,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONObject;
 
 /**
@@ -330,8 +331,8 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
     }
 
     private void initDetailsTableData() {
-        data.add(new ModelPurchaseOrder("1", "LP - General Warehouse", "2025-02-11", "M00125000000", "10"
-        ));
+//        data.add(new ModelPurchaseOrder("1", "LP - General Warehouse", "2025-02-11", "M00125000000", "10"
+//        ));
     }
 
     @Override
@@ -430,8 +431,28 @@ public class DeliveryAcceptance_ConfirmationController implements Initializable,
             resetImageBounds();
         }
     }
-    @Override
+//    @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
+    }
+
+    @Override
+    public void setGRider(GRiderCAS foValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setIndustryID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
