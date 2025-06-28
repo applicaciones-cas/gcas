@@ -39,7 +39,7 @@
                                             <columnConstraints>
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="230.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="150.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
@@ -448,7 +448,7 @@
                                                                                                 <TextField fx:id="tfParticularsDetail" disable="true" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                                                                                                 <Label text="Particulars" GridPane.rowIndex="4" />
                                                                                                 <Label text="Account Code" GridPane.rowIndex="3" />
-                                                                                                <TextField fx:id="tfAccountCodeDetail" alignment="CENTER_RIGHT" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                                                <TextField fx:id="tfAccountCodeDetail" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                                                                 <Label text="Amount" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                                                 <Label text="Vat Classification" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                                                                                 <Label text="Tax Code" GridPane.columnIndex="6" GridPane.rowIndex="4" />

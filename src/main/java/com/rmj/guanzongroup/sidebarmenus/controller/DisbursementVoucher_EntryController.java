@@ -798,7 +798,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             try {
                 tfRefNoDetail.setText(poDisbursementController.Detail(pnDetailDV).getSourceNo());
                 tfParticularsDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getDescription());
-                tfAccountCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).getAccountCode());
+                tfAccountCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).Particular().getAccountCode());
                 tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount(), true));
                 tfTaxCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).TaxCode().getTaxCode());
                 tfTaxRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxRates(), false));
@@ -885,7 +885,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                             detailsdv_data.add(
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
-                                            poDisbursementController.Detail(lnCtr).getAccountCode(),
+                                            poDisbursementController.Detail(lnCtr).Particular().getAccountCode(),
                                             poDisbursementController.Detail(lnCtr).getInvType(),
                                             poDisbursementController.Detail(lnCtr).Particular().getDescription(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getAmount(), true),

@@ -321,7 +321,7 @@ public class DisbursementVoucher_ViewController implements Initializable {
             try {
                 tfRefNoDetail.setText(poDisbursementController.Detail(pnDetail).getSourceNo());
                 tfParticularsDetail.setText(poDisbursementController.Detail(pnDetail).Particular().getDescription());
-                tfAccountCodeDetail.setText(poDisbursementController.Detail(pnDetail).getAccountCode());
+                tfAccountCodeDetail.setText(poDisbursementController.Detail(pnDetail).Particular().getAccountCode());
                 tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetail).getAmount(), true));
                 tfTaxCodeDetail.setText(poDisbursementController.Detail(pnDetail).TaxCode().getTaxCode());
                 tfTaxRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetail).getTaxRates(), false));
@@ -370,7 +370,7 @@ public class DisbursementVoucher_ViewController implements Initializable {
                             detailsdv_data.add(
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
-                                            poDisbursementController.Detail(lnCtr).getAccountCode(),
+                                            poDisbursementController.Detail(lnCtr).Particular().getAccountCode(),
                                             poDisbursementController.Detail(lnCtr).getInvType(),
                                             poDisbursementController.Detail(lnCtr).Particular().getDescription(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getAmount(), true),

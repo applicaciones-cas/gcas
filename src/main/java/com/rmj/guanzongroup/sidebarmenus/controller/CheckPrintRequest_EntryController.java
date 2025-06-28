@@ -255,6 +255,8 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
                     }
+                    poCheckPrintingRequestController.Master().setIndustryID(psIndustryId);
+                    poCheckPrintingRequestController.Master().setCompanyID(psCompanyId);
                     loadTableDetail();
                     pnEditMode = poCheckPrintingRequestController.getEditMode();
                     break;
@@ -780,7 +782,10 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                                 loadTableMain();
                                 break;
                             case "tfSearchBankAccount":
-                                poJSON = poCheckPrintingRequestController.SearhBankAccount(lsValue, poCheckPrintingRequestController.Master().getBankID(), false);
+                                if (!isExchangingBankAccount()) {
+                                    return;
+                                }
+                                poJSON = poCheckPrintingRequestController.SearhBankAccount(lsValue, psSearchBankID, false);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
@@ -980,6 +985,9 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
         tfSearchBankAccount.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
+                    if (!isExchangingBankAccount()) {
+                        return;
+                    }
                     poCheckPrintingRequestController.Master().setBankAccountID("");
                     tfSearchBankAccount.setText("");
                     psSearchBankAccountID = "";
@@ -1026,6 +1034,86 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                             tfSearchBankName.setText("");
                             return false;
 
+                        } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+                            Logger.getLogger(CheckPrintRequest_EntryController.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                }
+            }
+        }
+        if (pnEditMode == EditMode.READY) {
+            try {
+                if (!tfBankName.getText().isEmpty()
+                        && Double.parseDouble(tfTotalAmount.getText().replace(",", "")) != 0.0000) {
+                    if (ShowMessageFX.YesNo("You have an open transaction. Are you sure you want to change the bank name?", pxeModuleName, null)) {
+                        clearFields();
+                        details_data.clear();
+                        tblVwDetail.getItems().clear();
+                        pnEditMode = EditMode.UNKNOWN;
+                        tfSearchBankName.setText("");
+                        pnDetail = -1;
+                        tblVwMain.getItems().clear();
+                        tblVwMain.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                        initButton(pnEditMode);
+                        initFields(pnEditMode);
+                        return true;
+                    } else {
+                        poJSON = poCheckPrintingRequestController.SearchBanks(psSearchBankID, true);
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                            return false;
+                        }
+                        tfSearchBankName.setText("");
+                        return false;
+
+                    }
+                }
+            } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+                Logger.getLogger(DisbursementVoucher_EntryController.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isExchangingBankAccount() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            boolean isHaveSourceNo = false;
+            if (poCheckPrintingRequestController.getDetailCount() >= 1) {
+                if (poCheckPrintingRequestController.Detail(0).getSourceNo() != null && !poCheckPrintingRequestController.Detail(0).getSourceNo().isEmpty()) {
+                    isHaveSourceNo = true;
+                }
+            }
+            if (isHaveSourceNo) {
+                if (ShowMessageFX.YesNo("Check Printing Request Details have already items, are you sure you want to change bank account no?", pxeModuleName, null)) {
+                    int detailCount = poCheckPrintingRequestController.getDetailCount();
+                    for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
+                        if (poCheckPrintingRequestController.Detail(lnCtr).getSourceNo() == null) {
+                            continue; // Skip deleting this row
+                        }
+                        poCheckPrintingRequestController.Detail().remove(lnCtr);
+                    }
+                    pnDetail = -1;
+                    pnMain = -1;
+                    tblVwMain.getSelectionModel().clearSelection();
+                    JFXUtil.clearTextFields(apDetail);
+                    loadTableDetail();
+                } else {
+                    if (psSearchBankID.isEmpty()) {
+                        return false;
+                    } else {
+                        try {
+                            poJSON = new JSONObject();
+                            poJSON = poCheckPrintingRequestController.SearhBankAccount(psSearchBankAccountID, psSearchBankID, true);
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                return false;
+                            }
+                            tfSearchBankAccount.setText("");
+                            return false;
                         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
                             Logger.getLogger(CheckPrintRequest_EntryController.class
                                     .getName()).log(Level.SEVERE, null, ex);
