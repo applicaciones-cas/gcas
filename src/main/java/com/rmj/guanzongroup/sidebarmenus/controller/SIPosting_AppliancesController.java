@@ -130,6 +130,8 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
     JFXUtil.StageManager stageAttachment = new JFXUtil.StageManager();
     JFXUtil.StageManager stageSerial = new JFXUtil.StageManager();
+    AnchorPane root = null;
+    Scene scene = null;
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apJEMaster, apJEDetail, apAttachments;
@@ -197,17 +199,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
             poPurchaseReceivingController.initFields();
             loadRecordSearch();
 
-            AnchorPane root = (AnchorPane) apMainAnchor;
-            Scene scene = root.getScene();
-            if (scene != null) {
-                setKeyEvent(scene);
-            } else {
-                root.sceneProperty().addListener((obs, oldScene, newScene) -> {
-                    if (newScene != null) {
-                        setKeyEvent(newScene);
-                    }
-                });
-            }
+            TriggerWindowEvent();
         });
 
         initAttachmentPreviewPane();
@@ -237,6 +229,27 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
     @Override
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
+    }
+    ChangeListener<Scene> WindowKeyEvent = (obs, oldScene, newScene) -> {
+        if (newScene != null) {
+            setKeyEvent(newScene);
+        }
+    };
+
+    public void TriggerWindowEvent() {
+        root = (AnchorPane) apMainAnchor;
+        scene = root.getScene();
+        if (scene != null) {
+            setKeyEvent(scene);
+        } else {
+            root.sceneProperty().addListener(WindowKeyEvent);
+        }
+    }
+
+    public void RemoveWindowEvent() {
+        root.sceneProperty().removeListener(WindowKeyEvent);
+        scene.setOnKeyPressed(null);
+        stageAttachment.closeSerialDialog();
     }
 
     private void populateJE() {

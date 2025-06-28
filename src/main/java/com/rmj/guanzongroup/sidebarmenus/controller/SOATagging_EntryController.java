@@ -506,7 +506,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     if (!pbKeyPressed) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                                 JFXUtil.formatForMessageBox("Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?", 75)) == true) {
                                             poSOATaggingController.removeDetails();
                                             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                                             loadTableDetail();
@@ -528,7 +528,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     if (!pbKeyPressed) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                                JFXUtil.formatForMessageBox("Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?", 75)) == true) {
                                             poSOATaggingController.removeDetails();
                                             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                                             loadTableDetail();
@@ -550,7 +550,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     if (!pbKeyPressed) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the payee name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                                JFXUtil.formatForMessageBox("Are you sure you want to change the payee name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?", 80)) == true) {
                                             poSOATaggingController.removeDetails();
                                             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                                             loadTableDetail();

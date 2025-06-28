@@ -132,6 +132,8 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private Stage dialogStage = null;
     private final JFXUtil.ImageViewer imageviewerutil = new JFXUtil.ImageViewer();
     JFXUtil.StageManager stageAttachment = new JFXUtil.StageManager();
+    AnchorPane root = null;
+    Scene scene = null;
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail, apJEMaster, apJEDetail, apAttachments;
@@ -203,17 +205,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             poPurchaseReceivingController.initFields();
             loadRecordSearch();
 
-            AnchorPane root = (AnchorPane) apMainAnchor;
-            Scene scene = root.getScene();
-            if (scene != null) {
-                setKeyEvent(scene);
-            } else {
-                root.sceneProperty().addListener((obs, oldScene, newScene) -> {
-                    if (newScene != null) {
-                        setKeyEvent(newScene);
-                    }
-                });
-            }
+            TriggerWindowEvent();
         });
 
         initAttachmentPreviewPane();
@@ -243,6 +235,27 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     @Override
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
+    }
+    ChangeListener<Scene> WindowKeyEvent = (obs, oldScene, newScene) -> {
+        if (newScene != null) {
+            setKeyEvent(newScene);
+        }
+    };
+
+    public void TriggerWindowEvent() {
+        root = (AnchorPane) apMainAnchor;
+        scene = root.getScene();
+        if (scene != null) {
+            setKeyEvent(scene);
+        } else {
+            root.sceneProperty().addListener(WindowKeyEvent);
+        }
+    }
+
+    public void RemoveWindowEvent() {
+        root.sceneProperty().removeListener(WindowKeyEvent);
+        scene.setOnKeyPressed(null);
+        stageAttachment.closeSerialDialog();
     }
 
     private void populateJE() {
@@ -279,7 +292,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private void setKeyEvent(Scene scene) {
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.F5) {
-                System.out.println("tested key press");
                 if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
                     showAttachmentlDialog();
                 }

@@ -1196,17 +1196,17 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                 if (poSOATaggingController.Master().isProcessed()) {
                     JFXUtil.setButtonsVisibility(false, btnUpdate, btnVoid);
                 } else {
-                    JFXUtil.setButtonsVisibility(lbShow3, btnReturn);
+//                    JFXUtil.setButtonsVisibility(lbShow3, btnReturn);
                 }
                 break;
 //            case SOATaggingStatus.POSTED:
             case SOATaggingStatus.PAID:
             case SOATaggingStatus.RETURNED:
-                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate, btnReturn, btnVoid);
+                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate , btnVoid); // btnReturn
                 break;
             case SOATaggingStatus.VOID:
             case SOATaggingStatus.CANCELLED:
-                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate, btnReturn, btnVoid);
+                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate, btnVoid); // btnReturn
                 break;
         }
     }
