@@ -28,6 +28,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.cashflow.CheckPrinting;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
+import ph.com.guanzongroup.cas.cashflow.status.CheckStatus;
 import ph.com.guanzongroup.cas.cashflow.status.DisbursementStatic;
 
 public class CheckAssignmentController implements Initializable {
@@ -260,7 +261,21 @@ public class CheckAssignmentController implements Initializable {
                     }
                     break;
                 case "btnPrintCheck":
+//                    System.out.println("EDIT MODE SA BTN PRINT : " + poCheckPrintingController.Master().CheckPayments().getEditMode());
+//                    poCheckPrintingController.Master().CheckPayments().setPrint("1");
+//                    poCheckPrintingController.Master().CheckPayments().setDatePrint(oApp.getServerDate());
+                    
                     poCheckPrintingController.PrintCheck(transactionNos);
+                    if (!isAutoProcessing) {
+                        isAutoProcessing = true;
+                        assignAndProceed();
+                    }
+                    CommonUtils.closeStage(btnClose);
+//                    poJSON = poCheckPrintingController.SaveTransaction();
+//                    if("error".equals(poJSON.get("result"))) {
+//                        System.out.println("Message : " + poJSON.get("message"));
+//                        break;
+//                    }
                     break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure want to close this form?", pxeModuleName, null)) {
