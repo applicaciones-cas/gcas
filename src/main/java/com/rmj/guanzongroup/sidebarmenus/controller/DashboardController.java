@@ -1865,8 +1865,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_EntryMonarch.fxml":
                     return new APPaymentAdjustment_EntryController() {
                         {
-                            boolean isGeneral = JFXUtil.isGeneralFXML(fsValue) ? true : false;
-                            setTabTitle(JFXUtil.getFormattedFXMLTitle(fsValue), isGeneral);
+                            setTabTitle(JFXUtil.getFormattedFXMLTitle(fsValue), JFXUtil.isGeneralFXML(fsValue));
                         }
                     };
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Confirmation.fxml":
@@ -2194,6 +2193,10 @@ public class DashboardController implements Initializable {
                     if (tab.getText().equals(newTab.getText())) {
                         tabName.remove(newTab.getText());
                         tabName.add(newTab.getText());
+
+                        //applied for specific use//
+                        SIPostingWindowKeyEvent(newTab, fxObj, true);
+                        SIPostingWindowKeyEvent(newTab, fxObj, false);
                         break;
                     }
                 }
@@ -2203,6 +2206,82 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void SIPostingWindowKeyEvent(Tab newTab, ScreenInterface fxObj, boolean isRemove) {
+        if (newTab.getText().equals("SI Posting")) {
+            SIPosting_Controller localController = (SIPosting_Controller) fxObj;
+            if (isRemove) {
+                localController.RemoveWindowEvent();
+            } else {
+                localController.TriggerWindowEvent();
+            }
+        } else if (newTab.getText().equals("SI Posting Car")) {
+            SIPosting_CarController localController = (SIPosting_CarController) fxObj;
+            if (isRemove) {
+                localController.RemoveWindowEvent();
+            } else {
+                localController.TriggerWindowEvent();
+            }
+        } else if (newTab.getText().equals("SI Posting Appliances")) {
+            SIPosting_AppliancesController localController = (SIPosting_AppliancesController) fxObj;
+            if (isRemove) {
+                localController.RemoveWindowEvent();
+            } else {
+                localController.TriggerWindowEvent();
+            }
+        } else if (newTab.getText().equals("SI Posting LP")) {
+            SIPosting_LPController localController = (SIPosting_LPController) fxObj;
+            if (isRemove) {
+                localController.RemoveWindowEvent();
+            } else {
+                localController.TriggerWindowEvent();
+            }
+        } else if (newTab.getText().equals("SI Posting MP")) {
+            SIPosting_MPController localController = (SIPosting_MPController) fxObj;
+            if (isRemove) {
+                localController.RemoveWindowEvent();
+            } else {
+                localController.TriggerWindowEvent();
+            }
+        } else if (newTab.getText().equals("SI Posting MC")) {
+            SIPosting_MCController localController = (SIPosting_MCController) fxObj;
+            if (isRemove) {
+                localController.RemoveWindowEvent();
+            } else {
+                localController.TriggerWindowEvent();
+            }
+        } else if (newTab.getText().equals("SI Posting SPMC")) {
+            SIPosting_SPMCController localController = (SIPosting_SPMCController) fxObj;
+            if (isRemove) {
+                localController.RemoveWindowEvent();
+            } else {
+                localController.TriggerWindowEvent();
+            }
+        } else if (newTab.getText().equals("SI Posting SPCar")) {
+            SIPosting_SPCarController localController = (SIPosting_SPCarController) fxObj;
+            if (isRemove) {
+                localController.RemoveWindowEvent();
+            } else {
+                localController.TriggerWindowEvent();
+            }
+        } else if (newTab.getText().equals("SI Posting MF")) {
+            SIPosting_MonarchFoodController localController = (SIPosting_MonarchFoodController) fxObj;
+            if (isRemove) {
+                localController.RemoveWindowEvent();
+            } else {
+                localController.TriggerWindowEvent();
+            }
+        } else if (newTab.getText().equals("SI Posting MH")) {
+            SIPosting_MonarchHospitalityController localController = (SIPosting_MonarchHospitalityController) fxObj;
+            if (isRemove) {
+                localController.RemoveWindowEvent();
+            } else {
+                localController.TriggerWindowEvent();
+            }
+        } else {
+
+        }
     }
 
     private String updateFxmlName(String fsFormName) {
