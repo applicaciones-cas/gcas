@@ -777,8 +777,6 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                                 }
                                 tfSearchBankName.setText(poCheckPrintingRequestController.Master().Banks().getBankName() != null ? poCheckPrintingRequestController.Master().Banks().getBankName() : "");
                                 psSearchBankID = poCheckPrintingRequestController.Master().getBankID();
-                                poCheckPrintingRequestController.Master().setBankAccountID("");
-                                psSearchBankAccountID = poCheckPrintingRequestController.Master().getBankAccountID();
                                 loadTableMain();
                                 break;
                             case "tfSearchBankAccount":

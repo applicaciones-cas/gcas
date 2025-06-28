@@ -609,13 +609,16 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                                         plOrderNoPartial.add(new Pair<>(String.valueOf(lnCntr + 1), "1"));
                                     }
                                 }
-                                showRetainedHighlight(true);
-                                if (main_data.isEmpty() && filteredMain_Data.isEmpty()) {
-                                    tblVwMain.setPlaceholder(placeholderLabel);
-                                }
-                                JFXUtil.loadTab(pagination, main_data.size(), ROWS_PER_PAGE, tblVwMain, filteredMain_Data);
+                            } else {
+                                main_data.clear();
+                                filteredMain_Data.clear();
                             }
                         }
+                        showRetainedHighlight(true);
+                        if (main_data.isEmpty() && filteredMain_Data.isEmpty()) {
+                            tblVwMain.setPlaceholder(placeholderLabel);
+                        }
+                        JFXUtil.loadTab(pagination, main_data.size(), ROWS_PER_PAGE, tblVwMain, filteredMain_Data);
                     } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(CheckStatusUpdateController.class
                                 .getName()).log(Level.SEVERE, null, ex);

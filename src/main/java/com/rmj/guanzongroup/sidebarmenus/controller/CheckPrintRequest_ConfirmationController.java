@@ -200,6 +200,8 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
         Platform.runLater(() -> {
             poCheckPrintingRequestController.Master().setIndustryID(psIndustryId);
             poCheckPrintingRequestController.Master().setCompanyID(psCompanyId);
+            poCheckPrintingRequestController.setIndustryID(psIndustryId);
+            poCheckPrintingRequestController.setCompanyID(psCompanyId);
             loadRecordSearch();
         });
     }
@@ -209,11 +211,11 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
         initTextAreaFields();
         initTextFields();
         initComboBox();
-        initDatePicker();
         initTableDetail();
         initTableMain();
         initTableOnClick();
         clearFields();
+        initTextFieldsProperty();
         pnEditMode = EditMode.UNKNOWN;
         initFields(pnEditMode);
         initButton(pnEditMode);
@@ -337,6 +339,9 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     break;
             }
             if (lsButton.equals("btnSave") || lsButton.equals("btnConfirm") || lsButton.equals("btnVoid") || lsButton.equals("btnCancel")) {
+                poCheckPrintingRequestController.resetMaster();
+                poCheckPrintingRequestController.resetOthers();
+                poCheckPrintingRequestController.Detail().clear();
                 pnEditMode = EditMode.UNKNOWN;
                 clearFields();
                 loadRecordMaster();
@@ -392,7 +397,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poCheckPrintingRequestController.getCheckPrintingRequest(psSearchReferNo, psSupplierId);
+                        poJSON = poCheckPrintingRequestController.getCheckPrintingRequest(psSearchReferNo);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poCheckPrintingRequestController.getPrintRequestMasterCount() > 0) {
                                 for (int lnCntr = 0; lnCntr <= poCheckPrintingRequestController.getPrintRequestMasterCount() - 1; lnCntr++) {
@@ -734,7 +739,8 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
         poJSON = new JSONObject();
         if (null != event.getCode()) {
             switch (event.getCode()) {
-                case F3:
+                case TAB:
+                case ENTER:
                     switch (lsID) {
                         case "tfSearchReferNo":
                             psSearchReferNo = tfSearchReferNo.getText();
@@ -852,24 +858,6 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
 
     }
 
-    private void initDatePicker() {
-        dpCheckDate.setOnAction(e -> {
-            if (pnEditMode == EditMode.UPDATE) {
-                try {
-                    LocalDate selectedLocalDate = dpCheckDate.getValue();
-                    LocalDate checkDate = new java.sql.Date(poCheckPrintingRequestController.Detail(pnDetail).DisbursementMaster().CheckPayments().getCheckDate().getTime()).toLocalDate();
-                    String psOldDate = CustomCommonUtil.formatLocalDateToShortString(checkDate); // abang lang ito
-                    if (selectedLocalDate != null) {
-                        poCheckPrintingRequestController.Detail(pnDetail).DisbursementMaster().CheckPayments().setCheckDate(SQLUtil.toDate(selectedLocalDate.toString(), SQLUtil.FORMAT_SHORT_DATE));
-                    }
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(CheckPrintRequest_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-        );
-    }
-
     private void clearFields() {
         previousSearchedTextField = null;
         lastFocusedTextField = null;
@@ -914,4 +902,15 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
         }
     }
 
+    private void initTextFieldsProperty() {
+        tfSearchReferNo.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    psSearchReferNo = "";
+                    loadTableMain();
+                }
+            }
+        }
+        );
+    }
 }

@@ -422,8 +422,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         poDisbursementController.resetMaster();
                         poDisbursementController.resetOthers();
                         poDisbursementController.Detail().clear();
-                        poDisbursementController.Master().setIndustryID(psIndustryId);
-                        poDisbursementController.Master().setCompanyID(psCompanyId);
                         poDisbursementController.Master().setPayeeID(psSupplierId);
                         clearFields();
                         loadTableDetailDV();
