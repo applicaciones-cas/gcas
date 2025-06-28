@@ -352,19 +352,19 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfSearchBankName.setText(poCheckPrintingController.Master().CheckPayments().Banks().getBankName() != null ? poCheckPrintingController.Master().CheckPayments().Banks().getBankName() : "");
-                                psSearchBankID = poCheckPrintingController.Master().CheckPayments().getBankID();
+                                tfSearchBankName.setText(poCheckPrintingController.CheckPayments().getModel().Banks().getBankName() != null ? poCheckPrintingController.CheckPayments().getModel().Banks().getBankName() : "");
+                                psSearchBankID = poCheckPrintingController.CheckPayments().getModel().getBankID();
                                 loadTableMain();
                                 break;
 
                             case "tfSearchBankAccount":
-                                poJSON = poDisbursementController.SearhBankAccountForCheckPrinting(lsValue, psSearchBankID, false);
+                                poJSON = poCheckPrintingController.SearhBankAccountForCheckPrinting(lsValue, psSearchBankID, false);
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
                                 }
-                                tfSearchBankAccount.setText(poDisbursementController.Master().CheckPayments().Bank_Account_Master().getAccountNo() != null ? poDisbursementController.Master().CheckPayments().Bank_Account_Master().getAccountNo() : "");
-                                psSearchBankAccountID = poDisbursementController.Master().CheckPayments().getBankAcountID();
+                                tfSearchBankAccount.setText(poCheckPrintingController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() != null ? poCheckPrintingController.CheckPayments().getModel().Bank_Account_Master().getAccountNo() : "");
+                                psSearchBankAccountID = poCheckPrintingController.CheckPayments().getModel().getBankAcountID();
                                 loadTableMain();
                                 break;
                         }
@@ -628,17 +628,13 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         tfSearchBankName.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    try {
-                        poDisbursementController.Master().CheckPayments().setBankID("");
-                        poDisbursementController.Master().CheckPayments().setBankAcountID("");
-                        tfSearchBankName.setText("");
-                        tfSearchBankAccount.setText("");
-                        psSearchBankID = "";
-                        psSearchBankAccountID = "";
-                        loadTableMain();
-                    } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(CheckPrintingController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    poDisbursementController.CheckPayments().getModel().setBankID("");
+                    poCheckPrintingController.CheckPayments().getModel().setBankAcountID("");
+                    tfSearchBankName.setText("");
+                    tfSearchBankAccount.setText("");
+                    psSearchBankID = "";
+                    psSearchBankAccountID = "";
+                    loadTableMain();
                 }
             }
         }
@@ -646,15 +642,10 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         tfSearchBankAccount.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    try {
-                        poDisbursementController.Master().CheckPayments().setBankAcountID("");
-                        tfSearchBankAccount.setText("");
-                        tfSearchBankAccount.setText("");
-                        psSearchBankAccountID = "";
-                        loadTableMain();
-                    } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(CheckPrintingController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    poCheckPrintingController.CheckPayments().getModel().setBankAcountID("");
+                    tfSearchBankAccount.setText("");
+                    psSearchBankAccountID = "";
+                    loadTableMain();
                 }
             }
         }
