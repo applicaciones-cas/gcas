@@ -238,14 +238,14 @@
                                                                             <children>
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" GridPane.rowIndex="1" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.rowIndex="2" />
-                                                            <TextField fx:id="tfBrand" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                            <TextField fx:id="tfModel" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                            <TextField fx:id="tfBrand" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                            <TextField fx:id="tfModel" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Variant" GridPane.rowIndex="3" />
                                                             <TextField fx:id="tfVariant" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Reservation Qty" GridPane.columnIndex="7" GridPane.rowIndex="3" />
                                                             <TextField fx:id="tfColor" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                                                            <TextField fx:id="tfReservationQTY" promptText="0" GridPane.columnIndex="9" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfReservationQTY" GridPane.columnIndex="9" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Order Quantity" GridPane.columnIndex="10" GridPane.rowIndex="3">
                                                                <font>
                                                                   <Font name="System Bold" size="12.0" />
@@ -253,7 +253,7 @@
                                                             </Text>
                                                             <TextField fx:id="tfOrderQuantity" promptText="0" GridPane.columnIndex="12" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QOH" GridPane.columnIndex="7" GridPane.rowIndex="2" />
-                                                            <TextField fx:id="tfQOH" promptText="0" GridPane.columnIndex="9" GridPane.rowIndex="2" />
+                                                            <TextField fx:id="tfQOH" GridPane.columnIndex="9" GridPane.rowIndex="2" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inv Tpe" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                                                             <TextField fx:id="tfInvType" GridPane.columnIndex="5" GridPane.rowIndex="2" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="3" GridPane.rowIndex="3" />
