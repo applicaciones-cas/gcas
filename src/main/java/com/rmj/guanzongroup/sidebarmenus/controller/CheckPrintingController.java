@@ -10,6 +10,7 @@ import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
@@ -39,9 +41,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
-import static javafx.scene.input.KeyCode.TAB;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -55,6 +55,7 @@ import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
+import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.cashflow.CheckPrinting;
@@ -81,8 +82,10 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
-    private String psBankName = "";
-    private String psBankAccount = "";
+    private String psSearchBankID = "";
+    private String psSearchBankAccountID = "";
+    private String psSearchDVDateFrom = "";
+    private String psSearchDVDateTo = "";
     private int pnRow = -1;
     private double xOffset = 0;
     private double yOffset = 0;
@@ -103,13 +106,15 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     @FXML
     private AnchorPane apBrowse;
     @FXML
+    private DatePicker dpDVDateFrom, dpDVDateTo;
+    @FXML
     private Label lblSource;
     @FXML
-    private TextField tfSearchCompany, tfSearchDepartment, tfSearchBankName, tfSearchBankAccount;
+    private TextField tfSearchBankName, tfSearchBankAccount;
     @FXML
     private AnchorPane apButton;
     @FXML
-    private Button btnAssign, btnRetrieve, btnClose,btnPrintCheck,btnPrintDV;
+    private Button btnAssign, btnRetrieve, btnClose, btnPrintCheck, btnPrintDV;
     @FXML
     private TableView<ModelCheckPrinting> tblVwMain;
     @FXML
@@ -147,19 +152,14 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            
             poCheckPrintingController = new CashflowControllers(oApp, null).CheckPrinting();
-            poCheckPrintingController.setTransactionStatus(DisbursementStatic.AUTHORIZED);
             poJSON = new JSONObject();
             poJSON = poCheckPrintingController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
-                System.err.println((String) poJSON.get("message"));
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
             }
             initAll();
             Platform.runLater(() -> {
-                poCheckPrintingController.Master().setIndustryID(psIndustryId);
-                poCheckPrintingController.Master().setCompanyID(psCompanyId);
                 loadRecordSearch();
             });
         } catch (SQLException | GuanzonException ex) {
@@ -168,6 +168,10 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     }
 
     private void initAll() {
+        poCheckPrintingController.Master().setIndustryID(psIndustryId);
+        poCheckPrintingController.Master().setCompanyID(psCompanyId);
+        loadDate();
+        initDatePicker();
         initButtonsClickActions();
         initTextFields();
         initTableMain();
@@ -190,59 +194,98 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         }
     }
 
+    private void initDatePicker() {
+        LocalDate dateNow = LocalDate.now();
+        dpDVDateFrom.setOnAction(e -> {
+            LocalDate selectedFromDate = dpDVDateFrom.getValue();
+            LocalDate toDate = dpDVDateTo.getValue();
+
+            if (toDate != null && selectedFromDate.isAfter(toDate)) {
+                ShowMessageFX.Warning("Invalid Date, The 'From' date cannot be after the 'To' date.", pxeModuleName, null);
+                dpDVDateFrom.setValue(CustomCommonUtil.parseDateStringToLocalDate(dateNow.toString()));
+                psSearchDVDateFrom = CustomCommonUtil.formatLocalDateToShortString(dateNow);
+                return;
+            }
+
+            psSearchDVDateFrom = CustomCommonUtil.formatLocalDateToShortString(selectedFromDate);
+            loadTableMain();
+        });
+
+        dpDVDateTo.setOnAction(e -> {
+            LocalDate selectedToDate = dpDVDateTo.getValue();
+            LocalDate fromDate = dpDVDateFrom.getValue();
+
+            if (fromDate != null && selectedToDate.isBefore(fromDate)) {
+                ShowMessageFX.Warning("Invalid Date, The 'To' date cannot be before the 'From' date.", pxeModuleName, null);
+                dpDVDateTo.setValue(CustomCommonUtil.parseDateStringToLocalDate(dateNow.toString()));
+                psSearchDVDateTo = CustomCommonUtil.formatLocalDateToShortString(dateNow);
+                return;
+            }
+
+            psSearchDVDateTo = CustomCommonUtil.formatLocalDateToShortString(selectedToDate);
+            loadTableMain();
+        });
+    }
+
+    private void loadDate() {
+        LocalDate dateNow = LocalDate.now();
+        dpDVDateFrom.setValue(CustomCommonUtil.parseDateStringToLocalDate(dateNow.toString()));
+        dpDVDateTo.setValue(CustomCommonUtil.parseDateStringToLocalDate(dateNow.toString()));
+        psSearchDVDateFrom = CustomCommonUtil.formatLocalDateToShortString(dateNow);
+        psSearchDVDateTo = CustomCommonUtil.formatLocalDateToShortString(dateNow);
+        loadTableMain();
+    }
+
     private void initButtonsClickActions() {
-        List<Button> buttons = Arrays.asList(btnAssign, btnRetrieve, btnClose,btnPrintCheck,btnPrintDV);
+        List<Button> buttons = Arrays.asList(btnAssign, btnRetrieve, btnClose, btnPrintCheck, btnPrintDV);
         buttons.forEach(button -> button.setOnAction(this::cmdButton_Click));
     }
-    
 
-    private void validateSelectedItem(){
+    private void validateSelectedItem() {
         ObservableList<ModelCheckPrinting> selectedItems = FXCollections.observableArrayList();
-        
-                    for (ModelCheckPrinting item : tblVwMain.getItems()) {
-                        if (item.getSelect().isSelected()) {
-                            selectedItems.add(item);
-                        }
-                    }
 
-                    if (selectedItems.isEmpty()) {
-                        ShowMessageFX.Information(null, pxeModuleName, "No items selected to assign.");
-                        return;
-                    }
+        for (ModelCheckPrinting item : tblVwMain.getItems()) {
+            if (item.getSelect().isSelected()) {
+                selectedItems.add(item);
+            }
+        }
+
+        if (selectedItems.isEmpty()) {
+            ShowMessageFX.Information(null, pxeModuleName, "No items selected to assign.");
+            return;
+        }
 
 //                    if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to assign?")) {
 //                        return;
 //                    }
+        int successCount = 0;
+        String firstBank = null;
+        boolean allSameBank = true;
 
-                    int successCount = 0;
-                    String firstBank = null;
-                    boolean allSameBank = true;
+        for (ModelCheckPrinting item : selectedItems) {
+            String lsDVNO = item.getIndex03();
+            String banks = item.getIndex07();
 
-                    for (ModelCheckPrinting item : selectedItems) {
-                        String lsDVNO = item.getIndex03();
-                        String banks = item.getIndex07();
+            if (firstBank == null) {
+                firstBank = banks; // store the first encountered bank
+            } else if (!firstBank.equals(banks)) {
+                allSameBank = false;
+                break; // no need to continue checking
+            }
 
-                        if (firstBank == null) {
-                            firstBank = banks; // store the first encountered bank
-                        } else if (!firstBank.equals(banks)) {
-                            allSameBank = false;
-                            break; // no need to continue checking
-                        }
+            listOfDVToAssign.add(lsDVNO);
+            successCount++;
+        }
+        if (!allSameBank) {
+            ShowMessageFX.Information(null, pxeModuleName, "Selected items must belong to the same bank.");
 
-                        listOfDVToAssign.add(lsDVNO);
-                        successCount++;
-                    }   
-                    if (!allSameBank) {
-                        ShowMessageFX.Information(null, pxeModuleName, "Selected items must belong to the same bank.");
-                        
-                    }
+        }
     }
-    
+
     private void cmdButton_Click(ActionEvent event) {
         try {
             poJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId();
-            
 
             switch (lsButton) {
                 case "btnAssign":
@@ -255,9 +298,12 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     loadTableMain();
                     break;
                 case "btnPrintCheck":
-                    validateSelectedItem();  
-                    if (!listOfDVToAssign.isEmpty()){
-                        poCheckPrintingController.PrintCheck(listOfDVToAssign);
+                    validateSelectedItem();
+                    if (!listOfDVToAssign.isEmpty()) {
+                        poJSON = poCheckPrintingController.PrintCheck(listOfDVToAssign);
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        }
                     }
                     break;
                 case "btnPrintDV":
@@ -279,44 +325,51 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
 
     private void initTextFields() {
         //Initialise  TextField KeyPressed
-        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchCompany, tfSearchDepartment, tfSearchBankName, tfSearchBankAccount);
-        loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtFieldDV_KeyPressed(event)));
+        List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSearchBankName, tfSearchBankAccount);
+        loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
 
-    private void txtFieldDV_KeyPressed(KeyEvent event) {
+    private void txtField_KeyPressed(KeyEvent event) {
         TextField txtField = (TextField) event.getSource();
         String lsID = (((TextField) event.getSource()).getId());
         String lsValue = (txtField.getText() == null ? "" : txtField.getText());
         poJSON = new JSONObject();
 
         if (null != event.getCode()) {
-            switch (event.getCode()) {
-                case TAB:
-                case ENTER:
-                case F3:
-                    switch (lsID) {
-                        case "tfSearchCompany":
-                            break;
-                        case "tfSearchDepartment":
-                            break;
-                        case "tfSearchBankName":
-//                            poJSON = poCheckPrintingController.SearchBanks(lsValue, false);
-//                            if ("error".equals((String) poJSON.get("result"))) {
-//                                ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-//                                return;
-//                            }
-//                            tfSearchBankName.setText(poCheckPrintingController.CheckPayments().getModel().Banks().getBankName() != null ? poCheckPrintingController.CheckPayments().getModel().Banks().getBankName() : "");
-                            break;
-                        case "tfSearchBankAccount":
-                            break;
-                    }
-                    loadTableMain();
-                    event.consume();
-                default:
-                    break;
+            try {
+                switch (event.getCode()) {
+                    case F3:
+                        switch (lsID) {
+                            case "tfSearchBankName":
+                                poJSON = poDisbursementController.SearchBanks(lsValue, false);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                    return;
+                                }
+                                tfSearchBankName.setText(poDisbursementController.Master().CheckPayments().Banks().getBankName() != null ? poDisbursementController.Master().CheckPayments().Banks().getBankName() : "");
+                                psSearchBankID = poDisbursementController.Master().CheckPayments().getBankID();
+                                loadTableMain();
+                                break;
 
+                            case "tfSearchBankAccount":
+                                poJSON = poDisbursementController.SearhBankAccountForCheckPrinting(lsValue, psSearchBankID, false);
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                    return;
+                                }
+                                tfSearchBankAccount.setText(poDisbursementController.Master().CheckPayments().Bank_Account_Master().getAccountNo() != null ? poDisbursementController.Master().CheckPayments().Bank_Account_Master().getAccountNo() : "");
+                                psSearchBankAccountID = poDisbursementController.Master().CheckPayments().getBankAcountID();
+                                loadTableMain();
+                                break;
+                        }
+                        event.consume();
+                    default:
+                        break;
+                }
+
+            } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+                Logger.getLogger(CheckPrintingController.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
     }
 
@@ -339,7 +392,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     try {
                         main_data.clear();
                         plOrderNoFinal.clear();
-                        poJSON = poCheckPrintingController.getDisbursement("", "");
+                        poJSON = poCheckPrintingController.getDisbursementForCheckPrinting(psSearchBankID, psSearchBankAccountID, psSearchDVDateFrom, psSearchDVDateTo);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poCheckPrintingController.getDisbursementMasterCount() > 0) {
                                 int checkIndex = 0;
@@ -493,41 +546,41 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     }
 
     private void loadAssignWindow(List<String> fsTransactionNos) throws SQLException {
-    try {
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/CheckAssignment.fxml"));
-        
-        CheckAssignmentController loControl = new CheckAssignmentController();
-        loControl.setGRider(oApp);
-        loControl.setCheckPrinting(poCheckPrintingController);
-        loControl.setTransaction(fsTransactionNos);  // Pass the list here
-        fxmlLoader.setController(loControl);
+        try {
+            Stage stage = new Stage();
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/CheckAssignment.fxml"));
 
-        Parent parent = fxmlLoader.load();
-        parent.setOnMousePressed((MouseEvent event) -> {
-            xOffset = event.getSceneX();
-            yOffset = event.getSceneY();
-        });
-        parent.setOnMouseDragged((MouseEvent event) -> {
-            stage.setX(event.getScreenX() - xOffset);
-            stage.setY(event.getScreenY() - yOffset);
-        });
+            CheckAssignmentController loControl = new CheckAssignmentController();
+            loControl.setGRider(oApp);
+            loControl.setCheckPrinting(poCheckPrintingController);
+            loControl.setTransaction(fsTransactionNos);  // Pass the list here
+            fxmlLoader.setController(loControl);
 
-        Scene scene = new Scene(parent);
-        stage.setScene(scene);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        scene.setFill(Color.TRANSPARENT);
-        stage.setTitle("");
-        stage.showAndWait();
-        
-        loadTableMain();
-    } catch (IOException e) {
-        ShowMessageFX.Warning(e.getMessage(), "Warning", null);
-        System.exit(1);
+            Parent parent = fxmlLoader.load();
+            parent.setOnMousePressed((MouseEvent event) -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+            parent.setOnMouseDragged((MouseEvent event) -> {
+                stage.setX(event.getScreenX() - xOffset);
+                stage.setY(event.getScreenY() - yOffset);
+            });
+
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            scene.setFill(Color.TRANSPARENT);
+            stage.setTitle("");
+            stage.showAndWait();
+
+            loadTableMain();
+        } catch (IOException e) {
+            ShowMessageFX.Warning(e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
     }
-}
 
     private void loadDVWindow(String fsTransactionNo) throws SQLException {
         try {
@@ -564,49 +617,40 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
     }
 
     private void initTextFieldsProperty() {
-//        tfSearchCompany.textProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                if (newValue.isEmpty()) {
-//                    poCheckPrintingController.Master().setPayeeID("");
-//                    tfSearchCompany.setText("");
-//                    loadTableMain();
-//                }
-//            }
-//        }
-//        );
-//        tfSearchDepartment.textProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                if (newValue.isEmpty()) {
-//                    poCheckPrintingController.CheckPayments().getModel().setBankID("");
-//                    tfSearchDepartment.setText("");
-//                    loadTableMain();
-//                }
-//            }
-//        }
-//        );
-//
-//        tfSearchBankName.textProperty()
-//                .addListener((observable, oldValue, newValue) -> {
-//                    if (newValue != null) {
-//                        if (newValue.isEmpty()) {
-//                            poCheckPrintingController.CheckPayments().getModel().setBankID("");
-//                            tfSearchDepartment.setText("");
-//                            loadTableMain();
-//                        }
-//                    }
-//                }
-//                );
-//        tfSearchBankAccount.textProperty()
-//                .addListener((observable, oldValue, newValue) -> {
-//                    if (newValue != null) {
-//                        if (newValue.isEmpty()) {
-//                            poCheckPrintingController.CheckPayments().getModel().setBankID("");
-//                            tfSearchBankAccount.setText("");
-//                            loadTableMain();
-//                        }
-//                    }
-//                }
-//                );
+        tfSearchBankName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    try {
+                        poDisbursementController.Master().CheckPayments().setBankID("");
+                        poDisbursementController.Master().CheckPayments().setBankAcountID("");
+                        tfSearchBankName.setText("");
+                        tfSearchBankAccount.setText("");
+                        psSearchBankID = "";
+                        psSearchBankAccountID = "";
+                        loadTableMain();
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(CheckPrintingController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        );
+        tfSearchBankAccount.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    try {
+                        poDisbursementController.Master().CheckPayments().setBankAcountID("");
+                        tfSearchBankAccount.setText("");
+                        tfSearchBankAccount.setText("");
+                        psSearchBankAccountID = "";
+                        loadTableMain();
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(CheckPrintingController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        );
     }
 
 }
