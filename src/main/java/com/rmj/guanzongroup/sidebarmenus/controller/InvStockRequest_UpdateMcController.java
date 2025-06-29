@@ -67,7 +67,7 @@
      *
      * @author PC
      */
-    public class InvStockRequest_EntryMcController implements Initializable, ScreenInterface{
+    public class InvStockRequest_UpdateMcController implements Initializable, ScreenInterface{
         private InvWarehouseControllers invRequestController;
         private GRiderCAS poApp;
         private String psIndustryID = "";
@@ -265,9 +265,9 @@
                 poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
 //                poJSON =invRequestController.StockRequest().SearchIndustry(lsStatus, true); 
 //                poJSON =invRequestController.StockRequest().SearchCategory(lsStatus, true); 
-                  System.out.println("ID CATEG 1 -"+invRequestController.StockRequest().Master().getCategoryId());
+//              
+                
                 invRequestController.StockRequest().Master().setCategoryId("1");
-                System.out.println("ID CATEG 2"+invRequestController.StockRequest().Master().getCategoryId());
                 lblTransactionStatus.setText(lsStatus);
                 dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                         SQLUtil.dateFormat(invRequestController.StockRequest().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
@@ -848,8 +848,8 @@
                                           clearDetailFields();    
                                           break;
                                       }
-                                     
-                                      poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,"1",psIndustryID);
+                                     String categoryID = invRequestController.StockRequest().Master().getCategoryId();
+                                      poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,categoryID,psIndustryID);
 
                                       if ("error".equals(poJSON.get("result"))) {
                                           ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);

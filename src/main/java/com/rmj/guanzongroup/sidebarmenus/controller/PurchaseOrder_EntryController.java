@@ -1463,7 +1463,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 }
             }
         }
-        );
+      );
     }
 
     private boolean isExchangingSupplier() {
