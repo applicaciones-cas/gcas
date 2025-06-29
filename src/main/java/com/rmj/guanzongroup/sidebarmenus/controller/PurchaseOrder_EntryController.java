@@ -329,6 +329,7 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                 tfInventoryType.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().InventoryType().getDescription());
                 tfMeasure.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).Inventory().Measure().getDescription());
                 tfClass.setText(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getInventoryClassification());
+                
                 tfAMC.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InventoryMaster().getAverageCost()));
                 tfROQ.setText("0");
                 tfRO.setText(String.valueOf(poPurchasingController.PurchaseOrder().Detail(pnTblPODetailRow).InvStockRequestDetail().getReceived()));
@@ -971,8 +972,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
 
                 }
             }
-        } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException | NullPointerException ex) {
-            Logger.getLogger(PurchaseOrder_EntryController.class
+            } catch (ExceptionInInitializerError | SQLException | CloneNotSupportedException | GuanzonException | NullPointerException ex) {
+                Logger.getLogger(PurchaseOrder_EntryController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -4,13 +4,11 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -114,11 +112,11 @@
                                     <children>
                                         <HBox prefHeight="244.0" prefWidth="1042.0" spacing="5.0">
                                             <children>
-                                                <AnchorPane>
+                                                <AnchorPane prefHeight="300.0" prefWidth="832.0">
                                                     <children>
                                                         <VBox prefHeight="339.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <children>
-                                                                <AnchorPane style="-fx-border-color: orange;">
+                                                                <AnchorPane prefHeight="148.0" prefWidth="808.0" style="-fx-border-color: orange;">
                                                                     <children>
                                                                         <GridPane layoutX="21.0" layoutY="16.0">
                                                                             <columnConstraints>
@@ -168,10 +166,14 @@
                                                                                 <Label text="Date" GridPane.rowIndex="4" />
                                                                                 <Label text="Refer No." GridPane.rowIndex="5" />
                                                                                 <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                                                <TextField fx:id="tfCurrentInv" maxHeight="25.0" prefWidth="89.0" GridPane.columnIndex="12" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                                                                                 <TextField fx:id="tfReferenceNo" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                                                <TextField fx:id="tfEstimatedInv" maxHeight="25.0" prefWidth="88.0" GridPane.columnIndex="12" GridPane.rowIndex="5" />
+                                                                                <Label text="Current Inv." GridPane.columnIndex="10" GridPane.rowIndex="4" />
+                                                                                <Label text="Estimated Inv." GridPane.columnIndex="10" GridPane.rowIndex="5" />
                                                                                 <Label text="Remarks" GridPane.rowIndex="6" />
-                                                                                <TextArea fx:id="taRemarks" prefHeight="27.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" GridPane.rowSpan="2147483647" />
-                                                                                <DatePicker fx:id="tfTransactionDate" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                                                                <TextArea fx:id="taRemarks" prefHeight="37.0" prefWidth="724.0" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" GridPane.rowSpan="2147483647" />
+                                                                                <TextField fx:id="tfTransactionDate" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                                             </children>
                                                                         </GridPane>
                                                                     </children>
@@ -182,46 +184,76 @@
                                                                             <columnConstraints>
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="65.0" />
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="116.0" minWidth="-Infinity" prefWidth="116.0" />
-                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="20.0" />
-                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="89.5" minWidth="-Infinity" prefWidth="89.5" />
-                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="47.0" minWidth="-Infinity" prefWidth="8.5" />
-                                                                                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="132.0" minWidth="-Infinity" prefWidth="132.0" />
-                                                                                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="17.5" minWidth="-Infinity" prefWidth="0.0" />
-                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="115.5" minWidth="-Infinity" prefWidth="115.5" />
-                                                                                <ColumnConstraints hgrow="NEVER" maxWidth="74.5" minWidth="10.0" prefWidth="20.0" />
-                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="132.0" minWidth="-Infinity" prefWidth="86.0" />
-                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="91.0" prefWidth="132.0" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="116.0" minWidth="-Infinity" prefWidth="78.0" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="103.33334350585938" minWidth="-Infinity" prefWidth="35.0" />
+                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="183.33334350585938" minWidth="-Infinity" prefWidth="53.66667175292969" />
+                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="173.3333282470703" minWidth="-Infinity" prefWidth="8.333328247070312" />
+                                                                                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="257.6666717529297" minWidth="-Infinity" prefWidth="83.66665649414062" />
+                                                                                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="321.33331298828125" minWidth="-Infinity" prefWidth="21.333343505859375" />
+                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="352.0" minWidth="-Infinity" prefWidth="48.333343505859375" />
+                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="352.0" minWidth="-Infinity" prefWidth="0.0" />
+                                                                                <ColumnConstraints hgrow="NEVER" maxWidth="375.0" minWidth="0.0" prefWidth="16.0" />
+                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="477.6666564941406" minWidth="-Infinity" prefWidth="80.66668701171875" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="5.66668701171875" prefWidth="35.33331298828125" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.6666259765625" prefWidth="50.66668701171875" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.6666259765625" prefWidth="14.6666259765625" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.6666259765625" prefWidth="75.33331298828125" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="15.66668701171875" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="4.66668701171875" prefWidth="10.33331298828125" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="4.66668701171875" prefWidth="30.0" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="0.0" prefWidth="15.33331298828125" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.6666259765625" prefWidth="109.66668701171875" />
                                                                             </columnConstraints>
                                                                             <rowConstraints>
                                                                                 <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                                 <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                                 <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                                 <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                                <RowConstraints minHeight="27.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                                             </rowConstraints>
                                                                             <children>
-                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Barcode" GridPane.rowIndex="2" />
-                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" GridPane.rowIndex="1" />
+                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="No." GridPane.rowIndex="1" />
+                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Bar Code" GridPane.rowIndex="4" />
                                                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description" GridPane.rowIndex="3" />
 
-                                                                                <TextField fx:id="tfBarcode" prefHeight="55.0" prefWidth="116.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                                <TextField fx:id="tfBrand" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                                <TextField fx:id="tfDescription" prefHeight="35.0" prefWidth="69.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                                <TextField fx:id="tfNo" prefHeight="25.0" prefWidth="67.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                <TextField fx:id="tfDescription" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                                                <TextField fx:id="tfBarcode" prefHeight="35.0" prefWidth="69.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="4" />
 
-                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Supplier" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Order" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Hand" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                                                <TextField fx:id="tfSupplier" GridPane.columnIndex="6" GridPane.rowIndex="1" />
-                                                                                <TextField fx:id="tfCustomerOrder" GridPane.columnIndex="6" GridPane.rowIndex="2" />
-                                                                                <TextField fx:id="tfOnHand" GridPane.columnIndex="6" GridPane.rowIndex="3" />
-
-                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Order" GridPane.columnIndex="8" GridPane.rowIndex="3">
+                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" GridPane.rowIndex="2" />
+                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Class" GridPane.columnIndex="8" GridPane.rowIndex="2" />
+                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="On Transit" GridPane.columnIndex="8" GridPane.rowIndex="4" />
+                                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Size" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                                                                                <TextField fx:id="tfBrand" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                                                <TextField fx:id="tfClass" prefHeight="25.0" prefWidth="151.0" GridPane.columnIndex="11" GridPane.rowIndex="2" />
+                                                                                <TextField fx:id="tfMaxLevel" GridPane.columnIndex="11" GridPane.rowIndex="1" />
+                                                                                <TextField fx:id="tfSize" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                                                                                <TextField fx:id="tfMeasurement" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                                                <TextField fx:id="tfReserve" layoutX="239.0" layoutY="65.0" GridPane.columnIndex="15" GridPane.rowIndex="1" />
+                                                                                <TextField fx:id="tfOnTransit" layoutX="239.0" layoutY="92.0" GridPane.columnIndex="11" GridPane.rowIndex="4" />
+                                                                                <Text layoutX="198.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QOH" GridPane.columnIndex="8" GridPane.rowIndex="3" />
+                                                                                <Text layoutX="199.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Reserve" GridPane.columnIndex="13" GridPane.rowIndex="1" />
+                                                                                <Text layoutX="359.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Measurement" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                                                                                <TextField fx:id="tfCategory" layoutX="420.0" layoutY="65.0" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                                                                                <TextField fx:id="tfMinLevel" layoutX="420.0" layoutY="92.0" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                                                                                <Text layoutX="338.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                                                                                <Text layoutX="363.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Min Level" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                                                                                <Text layoutX="360.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Max Level" GridPane.columnIndex="8" GridPane.rowIndex="1" />
+                                                                                <Text layoutX="556.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Back Order" GridPane.columnIndex="13" GridPane.rowIndex="2" />
+                                                                                <Text layoutX="556.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="AMC" GridPane.columnIndex="13" GridPane.rowIndex="3" />
+                                                                                <TextField fx:id="tfQOH" layoutX="424.0" layoutY="38.0" GridPane.columnIndex="11" GridPane.rowIndex="3" />
+                                                            
+                                                                                <TextField fx:id="tfBackOrder" layoutX="620.0" layoutY="65.0" GridPane.columnIndex="15" GridPane.rowIndex="2" />
+                                                                                <TextField fx:id="tfAMC" layoutX="620.0" layoutY="92.0" GridPane.columnIndex="15" GridPane.rowIndex="3" />
+                                                                                <Text layoutX="504.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="13" GridPane.rowIndex="4" />
+                                                                                <Text layoutX="504.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Order" GridPane.columnIndex="18" GridPane.rowIndex="1">
                                                                                     <font>
                                                                                         <Font name="System Bold" size="12.0" />
                                                                                     </font>
                                                                                 </Text>
-                                                                                <TextField fx:id="tfOrderQuantity" GridPane.columnIndex="10" GridPane.rowIndex="3" />                                                       
+                                                                                <TextField fx:id="tfROQ" layoutX="600.0" layoutY="119.0" GridPane.columnIndex="15" GridPane.rowIndex="4" />
+                                                                                <TextField fx:id="tfOrder" layoutX="743.0" layoutY="38.0" GridPane.columnIndex="20" GridPane.rowIndex="1" />                                                       
                                                                             </children>
                                                                         </GridPane>
                                                                     </children>
@@ -256,12 +288,17 @@
                                                                         <Insets left="5.0" right="5.0" top="5.0" />
                                                                     </GridPane.margin>
                                                                 </AnchorPane>
-                                                                <TableView fx:id="tblViewStock_Request" minWidth="-Infinity" GridPane.rowIndex="1">
+                                                                <TableView fx:id="tblViewStockRequest" minWidth="-Infinity" GridPane.rowIndex="1">
                                                                     <columns>
-                                                                        <TableColumn fx:id="tblBarcodeVSR" maxWidth="104.0" minWidth="30.0" prefWidth="103.0" resizable="false" sortable="false" text="Barcode" />
-                                                                        <TableColumn fx:id="tblDescriptionVSR" maxWidth="236.0" minWidth="98.0" prefWidth="133.0" resizable="false" sortable="false" text="Description" />
-                                                                        <TableColumn fx:id="tblBrandVSR" maxWidth="239.6666259765625" minWidth="90.0" prefWidth="169.0" resizable="false" sortable="false" text="Brand" />
-                                                                        <TableColumn fx:id="tblOnhandVSR" maxWidth="106.0" minWidth="58.0" prefWidth="68.0" resizable="false" sortable="false" text="On Hand" />
+                                                                        <TableColumn fx:id="tblNoOI" maxWidth="104.0" minWidth="30.0" prefWidth="52.3333740234375" resizable="false" sortable="false" text="No." />
+                                                                        <TableColumn fx:id="tblBarcodeOI" maxWidth="236.0" minWidth="85.333251953125" prefWidth="85.333251953125" resizable="false" sortable="false" text="Bar Code" />
+                                                                        <TableColumn fx:id="tblDescriptionOI" maxWidth="267.666748046875" minWidth="38.0" prefWidth="84.0" resizable="false" sortable="false" text="Description" />
+                                                                        <TableColumn fx:id="tblBrandOI" maxWidth="298.0" minWidth="58.0" prefWidth="64.0" resizable="false" sortable="false" text="Brand" />
+                                                                        <TableColumn fx:id="tblClassOI" maxWidth="298.0" minWidth="58.0" prefWidth="64.0" resizable="false" sortable="false" text="Class" />
+                                                                        <TableColumn fx:id="tblQOHOI" maxWidth="298.0" minWidth="58.0" prefWidth="64.0" resizable="false" sortable="false" text="QOH" />
+                                                                        <TableColumn fx:id="tblAMCOI" maxWidth="298.0" minWidth="58.0" prefWidth="64.0" resizable="false" sortable="false" text="AMC" />
+                                                                        <TableColumn fx:id="tblROQOI" maxWidth="298.0" minWidth="58.0" prefWidth="64.0" resizable="false" sortable="false" text="ROQ" />
+                                                                        <TableColumn fx:id="tblOrderOI" maxWidth="298.0" minWidth="58.0" prefWidth="64.0" resizable="false" sortable="false" text="Order" />
                                                                     </columns>
                                                                     <GridPane.margin>
                                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -287,15 +324,24 @@
                                                         <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                                                     </rowConstraints>
                                                     <children>
-                                                        <TableView fx:id="tblViewOrderDetails" prefHeight="200.0" prefWidth="200.0">
+                                                        <TableView fx:id="tblViewModelInformation" prefHeight="200.0" prefWidth="200.0">
                                                             <columns>
-                                                                <TableColumn fx:id="tblBarcodeDetail" maxWidth="201.0" minWidth="120.0" prefWidth="160.0" resizable="false" text="Barcode" />
-                                                                <TableColumn fx:id="tblBrandDetail" maxWidth="299.66668701171875" minWidth="98.0" prefWidth="265.3333435058594" resizable="false" text="Brand" />
-                                                                <TableColumn fx:id="tblDescription" maxWidth="237.0" minWidth="43.0" prefWidth="120.33331298828125" resizable="false" text="Description" />
-                                                                <TableColumn fx:id="tblSupplier" maxWidth="184.33334350585938" minWidth="25.33331298828125" prefWidth="146.0" resizable="false" text="Supplier" />
-                                                                <TableColumn fx:id="tblCustomerOrderDetail" maxWidth="230.6666259765625" minWidth="33.6666259765625" prefWidth="199.0" resizable="false" text="Customer Order" />
-                                                                <TableColumn fx:id="tblOnHandDetail" maxWidth="237.0" minWidth="43.0" prefWidth="113.0" resizable="false" text="On Hand" />
-                                                                <TableColumn fx:id="tblOrderQuantity" maxWidth="237.0" minWidth="43.0" prefWidth="113.0" resizable="false" text="Quantity" />
+                                                                <TableColumn fx:id="tblBrandDetail" maxWidth="201.0" minWidth="85.0" prefWidth="85.0" resizable="false" text="Brand" />
+                                                                <TableColumn fx:id="tblBarcodeDetail" maxWidth="303.3333282470703" minWidth="98.0" prefWidth="116.0" resizable="false" text="Bar Code" />
+                                                                <TableColumn fx:id="tblDescription" maxWidth="325.0" minWidth="43.0" prefWidth="109.0" resizable="false" text="Description" />
+                                                                <TableColumn fx:id="tblSize" maxWidth="326.0000305175781" minWidth="25.33331298828125" prefWidth="86.0" resizable="false" text="Size" />
+                                                                <TableColumn fx:id="tblMeasurement" maxWidth="395.0000305175781" minWidth="33.6666259765625" prefWidth="101.0" resizable="false" text="Measurement" />
+                                                                <TableColumn fx:id="tblCategory" maxWidth="329.0" minWidth="43.0" prefWidth="99.0" resizable="false" text="Category" />
+                                                                <TableColumn fx:id="tblMinLevel" maxWidth="342.0" minWidth="24.0" prefWidth="89.0" resizable="false" text="Min Level" />
+                                                                <TableColumn fx:id="tblMaxLevel" maxWidth="322.3333740234375" minWidth="43.0" prefWidth="86.0" resizable="false" text="Max Level" />
+                                                                <TableColumn fx:id="tblClass" maxWidth="322.3333740234375" minWidth="43.0" prefWidth="70.0" resizable="false" text="Class" />
+                                                                <TableColumn fx:id="tblQOH" maxWidth="322.3333740234375" minWidth="43.0" prefWidth="93.0" resizable="false" text="QOH" />
+                                                                <TableColumn fx:id="tblOnTransit" maxWidth="322.3333740234375" minWidth="43.0" prefWidth="120.0" resizable="false" text="On Transit" />
+                                                                <TableColumn fx:id="tblReserve" maxWidth="322.3333740234375" minWidth="18.0" prefWidth="102.0" resizable="false" text="Reserve" />
+                                                                <TableColumn fx:id="tblBackOrder" maxWidth="493.0" minWidth="43.0" prefWidth="99.0" resizable="false" text="Back Order" />
+                                                                <TableColumn fx:id="tblAMC" maxWidth="665.0" minWidth="43.0" prefWidth="91.0" resizable="false" text="AMC" />
+                                                                <TableColumn fx:id="tblROQ" maxWidth="665.0" minWidth="43.0" prefWidth="69.0" resizable="false" text="ROQ" />
+                                                                <TableColumn fx:id="tblOrder" maxWidth="665.0" minWidth="43.0" prefWidth="71.0" resizable="false" text="Order" />
                                                             </columns>
                                                             
                                                         </TableView>
