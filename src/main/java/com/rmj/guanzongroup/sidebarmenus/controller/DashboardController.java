@@ -2189,6 +2189,7 @@ public class DashboardController implements Initializable {
             newTab.setOnCloseRequest(event -> {
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
                     tabName.remove(newTab.getText());
+                    SIPostingWindowKeyEvent(newTab, fxObj, true);
                     Tabclose();
                 } else {
                     event.consume();
@@ -2204,8 +2205,11 @@ public class DashboardController implements Initializable {
                         tabName.add(newTab.getText());
 
                         //applied for specific use//
-                        SIPostingWindowKeyEvent(newTab, fxObj, true);
-                        SIPostingWindowKeyEvent(newTab, fxObj, false);
+                        if (newTab.isSelected()) {
+                            SIPostingWindowKeyEvent(newTab, fxObj, false);
+                        } else {
+                            SIPostingWindowKeyEvent(newTab, fxObj, true);
+                        }
                         break;
                     }
                 }
