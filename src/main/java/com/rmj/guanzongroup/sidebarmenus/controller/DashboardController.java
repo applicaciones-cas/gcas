@@ -74,6 +74,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 
 public class DashboardController implements Initializable {
 
@@ -2189,11 +2191,16 @@ public class DashboardController implements Initializable {
             newTab.setOnCloseRequest(event -> {
                 if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure, do you want to close tab?")) {
                     tabName.remove(newTab.getText());
+                    SIPostingWindowKeyEvent(newTab, fxObj, true);
                     Tabclose();
                 } else {
                     event.consume();
                 }
 
+            });
+
+            newTab.setOnClosed(event -> {
+                SIPostingWindowKeyEvent(newTab, fxObj, true);
             });
 
             newTab.setOnSelectionChanged(event -> {
@@ -2204,8 +2211,11 @@ public class DashboardController implements Initializable {
                         tabName.add(newTab.getText());
 
                         //applied for specific use//
-                        SIPostingWindowKeyEvent(newTab, fxObj, true);
-                        SIPostingWindowKeyEvent(newTab, fxObj, false);
+                        if (newTab.isSelected()) {
+                            SIPostingWindowKeyEvent(newTab, fxObj, false);
+                        } else {
+                            SIPostingWindowKeyEvent(newTab, fxObj, true);
+                        }
                         break;
                     }
                 }
@@ -2455,7 +2465,18 @@ public class DashboardController implements Initializable {
                 System.out.println("tabName is null");
             }
 
-            tabPane.getTabs().clear();
+            while (!tabPane.getTabs().isEmpty()) {
+                int tabCount = tabPane.getTabs().size(); // count tabs before removing
+
+                for (int i = 0; i < tabCount; i++) {
+                    Tab tab = tabPane.getTabs().remove(0);
+
+                    EventHandler<Event> onClosed = tab.getOnClosed();
+                    if (onClosed != null) {
+                        onClosed.handle(new Event(Event.ANY));
+                    }
+                }
+            }
 
             unloadForm unload = new unloadForm();
 
@@ -2707,7 +2728,18 @@ public class DashboardController implements Initializable {
             System.out.println("tabName is null");
         }
 
-        tabPane.getTabs().clear();
+        while (!tabPane.getTabs().isEmpty()) {
+            int tabCount = tabPane.getTabs().size(); // count tabs before removing
+
+            for (int i = 0; i < tabCount; i++) {
+                Tab tab = tabPane.getTabs().remove(0);
+
+                EventHandler<Event> onClosed = tab.getOnClosed();
+                if (onClosed != null) {
+                    onClosed.handle(new Event(Event.ANY));
+                }
+            }
+        }
 
         unloadForm unload = new unloadForm();
 
@@ -3160,11 +3192,11 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"05\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchFood.fxml\",\"controller_path\":\"SIPosting_MonarchFood.controller\",\"menu_id\":\"076\",\"menu_parent\":\"067\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_LP.fxml\",\"controller_path\":\"SIPosting_LP.controller\",\"menu_id\":\"077\",\"menu_parent\":\"067\"}"
                 //STATUS UPDATE
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Update\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"077\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Status Update\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml\",\"controller_path\":\"CheckStatusUpdateController\",\"menu_id\":\"078\",\"menu_parent\":\"077\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Update\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"078\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Status Update\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml\",\"controller_path\":\"CheckStatusUpdateController\",\"menu_id\":\"079\",\"menu_parent\":\"078\"},"
                 //IMPORTING
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Import\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"079\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Importing\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml\",\"controller_path\":\"CheckImportingController\",\"menu_id\":\"080\",\"menu_parent\":\"079\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Import\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"080\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Importing\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml\",\"controller_path\":\"CheckImportingController\",\"menu_id\":\"081\",\"menu_parent\":\"080\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
