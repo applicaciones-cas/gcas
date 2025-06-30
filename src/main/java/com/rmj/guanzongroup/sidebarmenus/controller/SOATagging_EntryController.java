@@ -387,7 +387,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             poJSON = poSOATaggingController.loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(), tfReferenceNo.getText());
         } else {
             //general
-            poJSON = poSOATaggingController.loadPayables("", "", "", "");
+            poJSON = poSOATaggingController.loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(),  "");
         }
 
         if (!"success".equals((String) poJSON.get("result"))) {
@@ -506,7 +506,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     if (!pbKeyPressed) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                JFXUtil.formatForMessageBox("Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?", 75)) == true) {
+                                                "Are you sure you want to change the company name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
                                             poSOATaggingController.removeDetails();
                                             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                                             loadTableDetail();
@@ -514,6 +514,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                             loadRecordMaster();
                                             return;
                                         }
+                                    } else {
+                                        loadRecordMaster();
+                                        return;
                                     }
                                 }
                             }
@@ -528,7 +531,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     if (!pbKeyPressed) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                JFXUtil.formatForMessageBox("Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?", 75)) == true) {
+                                                "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
                                             poSOATaggingController.removeDetails();
                                             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                                             loadTableDetail();
@@ -536,6 +539,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                             loadRecordMaster();
                                             return;
                                         }
+                                    } else {
+                                        loadRecordMaster();
+                                        return;
                                     }
                                 }
                             }
@@ -550,7 +556,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     if (!pbKeyPressed) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                JFXUtil.formatForMessageBox("Are you sure you want to change the payee name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?", 75)) == true) {
+                                                "Are you sure you want to change the payee name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
                                             poSOATaggingController.removeDetails();
                                             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                                             loadTableDetail();
@@ -558,6 +564,9 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                             loadRecordMaster();
                                             return;
                                         }
+                                    } else {
+                                        loadRecordMaster();
+                                        return;
                                     }
                                 }
                             }
@@ -600,6 +609,10 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     }
                     break;
             }
+            
+            System.out.println("Company : " + poSOATaggingController.Master().getCompanyId());
+            System.out.println("Supplier : " + poSOATaggingController.Master().getClientId());
+            System.out.println("Payee : " + poSOATaggingController.Master().getIssuedTo());
             loadRecordMaster();
         }
     };
@@ -691,11 +704,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            JFXUtil.formatForMessageBox("Are you sure you want to change the supplier name? Please note that doing so will delete all SOA details. Do you wish to proceed?", 75)) == true) {
+                                            "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
                                         poSOATaggingController.removeDetails();
                                         loadTableDetail();
                                     } else {
-                                        pbKeyPressed = false;
+                                        loadRecordMaster();
                                         return;
                                     }
                                     pbKeyPressed = false;
@@ -724,12 +737,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            JFXUtil.formatForMessageBox("Are you sure you want to change the company name? Please note that doing so will delete all SOA details. Do you wish to proceed?", 75)) == true) {
+                                            "Are you sure you want to change the company name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
                                         poSOATaggingController.removeDetails();
                                         loadTableDetail();
-                                        pbKeyPressed = false;
                                     } else {
-                                        pbKeyPressed = false;
+                                        loadRecordMaster();
                                         return;
                                     }
                                     pbKeyPressed = false;
@@ -759,11 +771,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            JFXUtil.formatForMessageBox("Are you sure you want to change the payee name? Please note that doing so will delete all SOA details. Do you wish to proceed?", 75)) == true) {
+                                            "Are you sure you want to change the payee name?\nPlease note that doing so will delete all SOA details.\n\nDo you wish to proceed?") == true) {
                                         poSOATaggingController.removeDetails();
                                         loadTableDetail();
                                     } else {
-                                        pbKeyPressed = false;
+                                        loadRecordMaster();
                                         return;
                                     }
                                     pbKeyPressed = false;
