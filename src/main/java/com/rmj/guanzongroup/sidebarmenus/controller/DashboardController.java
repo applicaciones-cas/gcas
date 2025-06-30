@@ -999,7 +999,9 @@ public class DashboardController implements Initializable {
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
                     return "Check Status Update";
-
+                //Importing
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml":
+                    return "Check Importing";
                 /* OTHERS/PARAMETERS/ADDRESS */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
                     return "Barangay";
@@ -1512,6 +1514,9 @@ public class DashboardController implements Initializable {
             //Update
             case "Check Status Update":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml";
+            //Importing
+            case "Check Importing":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml";
         }
 
         return "";
@@ -1934,6 +1939,10 @@ public class DashboardController implements Initializable {
                 //UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
                     return new CheckStatusUpdateController();
+
+                //IMPORTING
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml":
+                    return new CheckImportingController();
 
                 /* INVENTORY/INVENTORY/ */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
@@ -3153,6 +3162,9 @@ public class DashboardController implements Initializable {
                 //STATUS UPDATE
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Update\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"077\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Status Update\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml\",\"controller_path\":\"CheckStatusUpdateController\",\"menu_id\":\"078\",\"menu_parent\":\"077\"},"
+                //IMPORTING
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Import\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"079\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Importing\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml\",\"controller_path\":\"CheckImportingController\",\"menu_id\":\"080\",\"menu_parent\":\"079\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
