@@ -2196,7 +2196,7 @@ public class DashboardController implements Initializable {
                 }
 
             });
-            
+
             newTab.setOnClosed(event -> {
                 SIPostingWindowKeyEvent(newTab, fxObj, true);
             });
@@ -2726,7 +2726,18 @@ public class DashboardController implements Initializable {
             System.out.println("tabName is null");
         }
 
-        tabPane.getTabs().clear();
+        while (!tabPane.getTabs().isEmpty()) {
+            int tabCount = tabPane.getTabs().size(); // count tabs before removing
+
+            for (int i = 0; i < tabCount; i++) {
+                Tab tab = tabPane.getTabs().remove(0);
+
+                EventHandler<Event> onClosed = tab.getOnClosed();
+                if (onClosed != null) {
+                    onClosed.handle(new Event(Event.ANY));
+                }
+            }
+        }
 
         unloadForm unload = new unloadForm();
 
