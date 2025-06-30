@@ -100,8 +100,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 
     private FilteredList<ModelPurchaseOrderReturn_Main> filteredData;
     private FilteredList<ModelPurchaseOrderReturn_Detail> filteredDataDetail;
-    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
-    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
     private int pnAttachment;
 
@@ -356,8 +354,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#A7C7E7", highlightedRowsMain);
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
-                                showRetainedHighlight(true);
+                                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(pnMain + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         } else {
                             return;
@@ -366,7 +363,11 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            poJSON = poPurchaseReturnController.VoidTransaction("");
+                            if (PurchaseOrderReturnStatus.CONFIRMED.equals(poPurchaseReturnController.Master().getTransactionStatus())) {
+                                poJSON = poPurchaseReturnController.CancelTransaction("Cancel");
+                            } else {
+                                poJSON = poPurchaseReturnController.VoidTransaction("Void");
+                            }
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
@@ -442,7 +443,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
         } else {
             loadTableMain();
         }
-        JFXUtil.disableAllHighlight(tblViewPuchaseOrderReturn, highlightedRowsMain);
     }
 
     final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
@@ -796,20 +796,21 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                             if (pbSuccess && ((poPurchaseReturnController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 pbSuccess = false;
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
-                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                            + "If YES, please seek approval to proceed with the new selected date.\n"
+                                            + "If NO, the previous transaction date will be retained.") == true) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
                                             poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-
                                         }
+                                    } else {
+                                        pbSuccess = false;
                                     }
                                 } else {
-                                    pbSuccess = false;
+                                    poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                                 }
                             }
 
@@ -839,23 +840,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
         }
     }
 
-    public void showRetainedHighlight(boolean isRetained) {
-        if (isRetained) {
-            for (Pair<String, String> pair : plOrderNoPartial) {
-                if (!"0".equals(pair.getValue())) {
-                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
-                }
-            }
-        }
-        JFXUtil.disableAllHighlightByColor(tblViewPuchaseOrderReturn, "#C1E1C1", highlightedRowsMain);
-        plOrderNoPartial.clear();
-        for (Pair<String, String> pair : plOrderNoFinal) {
-            if (!"0".equals(pair.getValue())) {
-                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, pair.getKey(), "#C1E1C1", highlightedRowsMain);
-            }
-        }
-    }
-
     public void loadTableMain() {
         // Setting data to table detail
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -878,7 +862,7 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                 // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
-                    plOrderNoFinal.clear();
+                    JFXUtil.disableAllHighlight(tblViewPuchaseOrderReturn, highlightedRowsMain);
                     if (poPurchaseReturnController.getPurchaseOrderReturnCount() > 0) {
                         //pending
                         //retreiving using column index
@@ -896,11 +880,10 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
                             }
 
                             if (poPurchaseReturnController.PurchaseOrderReturnList(lnCtr).getTransactionStatus().equals(PurchaseOrderReturnStatus.CONFIRMED)) {
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(lnCtr + 1), "1"));
+                                JFXUtil.highlightByKey(tblViewPuchaseOrderReturn, String.valueOf(lnCtr + 1), "#C1E1C1", highlightedRowsMain);
                             }
                         }
                     }
-                    showRetainedHighlight(true);
 
                     if (pnMain < 0 || pnMain
                             >= main_data.size()) {
@@ -982,13 +965,6 @@ public class PurchaseOrderReturn_ConfirmationController implements Initializable
 
             boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             JFXUtil.setDisabled(!lbDisable, tfBarcode, tfDescription);
-            if (lbDisable) {
-                while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfBarcode, tfDescription)) {
-                    JFXUtil.AddStyleClass("DisabledTextField", tfBarcode, tfDescription);
-                }
-            } else {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfBarcode, tfDescription);
-            }
 
             tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());

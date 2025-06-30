@@ -5,6 +5,7 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_SerialMC;
+import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
@@ -73,6 +74,7 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
     private final String pxeModuleName = "Purchase Order Receiving Serial MC";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
+    public boolean pbIsFinancing = false;
 
     private ObservableList<ModelDeliveryAcceptance_SerialMC> details_data = FXCollections.observableArrayList();
     private final Map<Integer, String> originalValues = new HashMap<>();
@@ -122,12 +124,19 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
                 }
             });
             delay.play();
+            
+            JFXUtil.setButtonsVisibility(!pbIsFinancing, btnOkay);
+            JFXUtil.setDisabled(pbIsFinancing,  apDetail);
+            cbApplyToAll.setVisible(!pbIsFinancing);
         });
     }
 
-//    @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+    
+    public void isFinancing(boolean fbValue) {
+        pbIsFinancing = fbValue;
     }
 
     @FXML

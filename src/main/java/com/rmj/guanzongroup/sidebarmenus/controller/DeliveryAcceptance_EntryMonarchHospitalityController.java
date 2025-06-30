@@ -104,6 +104,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
     private String psSupplierId = "";
     boolean lbresetpredicate = false;
     boolean pbEntered = false;
+    boolean pbKeyPressed = false;
 
     private ObservableList<ModelDeliveryAcceptance_Detail> details_data = FXCollections.observableArrayList();
     private ObservableList<ModelDeliveryAcceptance_Main> main_data = FXCollections.observableArrayList();
@@ -656,11 +657,16 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             if (poPurchaseReceivingController.Master().getSupplierId() != null && !"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
                                 if (poPurchaseReceivingController.getDetailCount() > 1) {
-                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
-                                        poPurchaseReceivingController.removePORDetails();
-                                        showRetainedHighlight(false);
-                                        loadTableDetail();
+                                    if(!pbKeyPressed){
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
+                                            poPurchaseReceivingController.removePORDetails();
+                                            showRetainedHighlight(false);
+                                            loadTableDetail();
+                                        } else {
+                                            loadRecordMaster();
+                                            return;
+                                        }
                                     } else {
                                         loadRecordMaster();
                                         return;
@@ -875,13 +881,15 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poPurchaseReceivingController.getDetailCount() > 1) {
+                                    pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                            "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
                                         poPurchaseReceivingController.removePORDetails();
                                         loadTableDetail();
                                     } else {
                                         return;
                                     }
+                                    pbKeyPressed = false;
                                 }
                             }
 
@@ -1168,17 +1176,17 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
 
                             if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
+                                if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
                                         + "If YES, please seek approval to proceed with the new selected date.\n"
                                         + "If NO, the previous transaction date will be retained.") == true) {
-                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         }
+                                    } else {
+                                        pbSuccess = false;
                                     }
-                                } else {
-                                    pbSuccess = false;
                                 }
                             }
 
@@ -1488,7 +1496,7 @@ public class DeliveryAcceptance_EntryMonarchHospitalityController implements Ini
             if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
                 return;
             }
-            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null);
+            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null) && poPurchaseReceivingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             tfBarcode.setDisable(!lbFields);
             tfDescription.setDisable(!lbFields);
             if (lbFields) {
