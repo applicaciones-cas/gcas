@@ -214,7 +214,6 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
-        JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField);
     }
 
     @Override
@@ -292,14 +291,26 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     private void setKeyEvent(Scene scene) {
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.F5) {
-                if (poPurchaseReceivingController.getEditMode() == EditMode.READY || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                    showAttachmentlDialog();
+                System.out.println("tested key press");
+
+                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.getEditMode(), EditMode.READY, EditMode.UPDATE)) {
+                    showAttachmentDialog();
+                }
+            }
+        }
+        );
+        scene.focusOwnerProperty().addListener((obs, oldNode, newNode) -> {
+            if (newNode != null) {
+                if (newNode instanceof Button) {
+                } else {
+                    lastFocusedTextField.set(newNode);
+                    previousSearchedTextField.set(null);
                 }
             }
         });
     }
 
-    public void showAttachmentlDialog() {
+    public void showAttachmentDialog() {
         poJSON = new JSONObject();
         stageAttachment.closeSerialDialog();
         openedAttachment = "";
