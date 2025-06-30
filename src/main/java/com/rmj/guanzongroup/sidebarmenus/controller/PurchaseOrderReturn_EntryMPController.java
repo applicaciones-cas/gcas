@@ -477,7 +477,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                                 if (poPurchaseReturnController.Master().getSupplierId() != null && !"".equals(poPurchaseReturnController.Master().getSupplierId())) {
                                     if (poPurchaseReturnController.getDetailCount() > 1) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the supplier name? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
+                                                "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
                                             poPurchaseReturnController.removeDetails();
                                             loadTableDetail();
                                         } else {
@@ -499,7 +499,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                                 if (poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo() != null && !"".equals(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo())) {
                                     if (poPurchaseReturnController.getDetailCount() > 1) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the reference no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
+                                                "Are you sure you want to change the reference no?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
                                             poPurchaseReturnController.removeDetails();
                                             loadTableDetail();
                                         } else {
@@ -527,7 +527,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                                 if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
                                     if (poPurchaseReturnController.getDetailCount() > 1) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the reference no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
+                                                "Are you sure you want to change the reference no?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
                                             poPurchaseReturnController.removeDetails();
                                             loadTableDetail();
                                         } else {
@@ -635,7 +635,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poPurchaseReturnController.getDetailCount() > 1) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
+                                            "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
                                         poPurchaseReturnController.removeDetails();
                                         loadTableDetail();
                                     } else {
@@ -658,7 +658,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poPurchaseReturnController.getDetailCount() > 1) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the reference no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
+                                            "Are you sure you want to change the reference no?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
                                         poPurchaseReturnController.removeDetails();
                                         loadTableDetail();
                                     } else {
@@ -680,7 +680,7 @@ public class PurchaseOrderReturn_EntryMPController implements Initializable, Scr
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                                 if (poPurchaseReturnController.getDetailCount() > 1) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the po receiving no? Please note that doing so will delete all transaction details. Do you wish to proceed?") == true) {
+                                            "Are you sure you want to change the po receiving no?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
                                         poPurchaseReturnController.removeDetails();
                                         loadTableDetail();
                                     } else {
