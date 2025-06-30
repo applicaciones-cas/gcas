@@ -796,7 +796,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                                 if (poPurchaseReceivingController.getDetailCount() > 1) {
                                     if(!pbKeyPressed){
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                                "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
                                             poPurchaseReceivingController.removePORDetails();
                                             showRetainedHighlight(false);
                                             loadTableDetail();
@@ -804,6 +804,9 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                                             loadRecordMaster();
                                             return;
                                         }
+                                    } else {
+                                        loadRecordMaster();
+                                        return;
                                     }
                                 }
                             }
@@ -976,7 +979,7 @@ public class DeliveryAcceptance_EntryMPController implements Initializable, Scre
                                 if (poPurchaseReceivingController.getDetailCount() > 1) {
                                     pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
+                                            "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
                                         poPurchaseReceivingController.removePORDetails();
                                         loadTableDetail();
                                     } else {
