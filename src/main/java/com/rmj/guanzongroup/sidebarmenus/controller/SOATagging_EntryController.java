@@ -1317,7 +1317,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         JFXUtil.setButtonsVisibility(lbShow2, btnUpdate, btnHistory);
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
-        JFXUtil.setDisabled(!lbShow, taRemarks, apMaster);
+        JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail);
 
         switch (poSOATaggingController.Master().getTransactionStatus()) {
             case SOATaggingStatus.PAID:
