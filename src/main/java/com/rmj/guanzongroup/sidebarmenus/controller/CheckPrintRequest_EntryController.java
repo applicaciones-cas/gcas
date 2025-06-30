@@ -485,7 +485,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                 lsStatus = "VOID";
                 break;
             default:
-                lsStatus = "STATUS";
+                lsStatus = "UNKNOWN";
                 break;
         }
         return lsStatus;

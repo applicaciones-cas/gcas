@@ -737,7 +737,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 lsStatus = "RETURNED";
                 break;
             default:
-                lsStatus = "STATUS";
+                lsStatus = "UNKNOWN";
                 break;
         }
         return lsStatus;

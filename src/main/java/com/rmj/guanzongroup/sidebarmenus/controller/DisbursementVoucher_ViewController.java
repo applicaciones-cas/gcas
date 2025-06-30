@@ -268,7 +268,7 @@ public class DisbursementVoucher_ViewController implements Initializable {
                 lsStatus = "RETURNED";
                 break;
             default:
-                lsStatus = "STATUS";
+                lsStatus = "UNKNOWN";
                 break;
         }
         return lsStatus;

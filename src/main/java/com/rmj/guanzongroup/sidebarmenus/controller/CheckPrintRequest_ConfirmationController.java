@@ -495,7 +495,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                 lsStatus = "VOID";
                 break;
             default:
-                lsStatus = "STATUS";
+                lsStatus = "UNKNOWN";
                 break;
         }
         return lsStatus;

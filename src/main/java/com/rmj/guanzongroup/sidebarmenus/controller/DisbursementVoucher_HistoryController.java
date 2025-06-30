@@ -396,7 +396,7 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
                 lsStatus = "RETURNED";
                 break;
             default:
-                lsStatus = "STATUS";
+                lsStatus = "UNKNOWN";
                 break;
         }
         return lsStatus;
