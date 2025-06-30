@@ -35,6 +35,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -178,7 +179,7 @@ public class CheckImportingController implements Initializable, ScreenInterface 
 
                     if (selectedFile != null) {
                         psImportingFilePath = selectedFile.getAbsolutePath();
-                        System.out.print("Imported File: " + psImportingFilePath);
+                        System.out.println("Imported File: " + psImportingFilePath);
                         poJSON = poDisbursementController.UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -187,6 +188,7 @@ public class CheckImportingController implements Initializable, ScreenInterface 
                         pnEditMode = poDisbursementController.getEditMode();
                     } else {
                         ShowMessageFX.Warning("No file selected.", pxeModuleName, null);
+                        psImportingFilePath = "";
                     }
 
                     break;
@@ -203,6 +205,8 @@ public class CheckImportingController implements Initializable, ScreenInterface 
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
                     }
+                    psImportingFilePath = "";
+                    pnEditMode = poDisbursementController.getEditMode();
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                     break;
                 case "btnCancel":
@@ -299,23 +303,8 @@ public class CheckImportingController implements Initializable, ScreenInterface 
 //                                int checkIndex = 0;
 //                                int otherIndex = 0;
 //                                for (int lnCntr = 0; lnCntr < poCheckImportingController.getDisbursementMasterCount(); lnCntr++) {
-//                                    String lsPaymentForm = "";
-//                                    String lsBankName = "";
-//                                    String lsBankAccount = "";
-//                                    String disbursementType = poCheckImportingController.poDisbursementMaster(lnCntr).getDisbursementType();
-//                                    switch (disbursementType) {
-//                                        case DisbursementStatic.DisbursementType.CHECK:
-//                                            lsPaymentForm = "CHECK";
-////                                            if (checkIndex < poCheckImportingController.CheckPayments().getCheckPaymentsCount()) {
-////                                                lsBankName = poCheckImportingController.CheckPayments().poCheckPayments(checkIndex).Banks().getBankName();
-////                                                lsBankAccount = poCheckImportingController.CheckPayments().poCheckPayments(checkIndex).getBankAcountID();
-////                                            }
-//                                            checkIndex++; // Move to next CHECK payment
-//                                            break;
-//                                        default:
-//                                            lsPaymentForm = "";
-//                                            break;
-//                                    }
+//
+//
 //
 //                                    main_data.add(new ModelCheckPrinting(
 //                                            String.valueOf(lnCntr + 1),
@@ -396,12 +385,8 @@ public class CheckImportingController implements Initializable, ScreenInterface 
     }
 
     private void initButtons(int fnEditMode) {
-        JFXUtil.setButtonsVisibility(false, btnSave, btnCancel);
-        JFXUtil.setButtonsVisibility(fnEditMode != EditMode.UPDATE, btnClose);
-        if (!psImportingFilePath.isEmpty()) {
-            JFXUtil.setButtonsVisibility(fnEditMode == EditMode.UPDATE, btnSave, btnCancel);
-            JFXUtil.setButtonsVisibility(false, btnImportFile);
-        }
+        JFXUtil.setButtonsVisibility(fnEditMode != EditMode.UPDATE, btnClose, btnImportFile);
+        JFXUtil.setButtonsVisibility(!psImportingFilePath.isEmpty() && fnEditMode == EditMode.UPDATE, btnSave, btnCancel);
     }
 
     private void initTextFieldsProperty() {
@@ -420,6 +405,23 @@ public class CheckImportingController implements Initializable, ScreenInterface 
             }
         }
         );
+    }
+
+    private void showRetainedHighlight(boolean isRetained) {
+//        if (isRetained) {
+//            for (Pair<String, String> pair : plOrderNoPartial) {
+//                if (!"0".equals(pair.getValue())) {
+//                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
+//                }
+//            }
+//        }
+//        JFXUtil.disableAllHighlightByColor(tblVwList, "#A7C7E7", highlightedRowsMain);
+//        plOrderNoPartial.clear();
+//        for (Pair<String, String> pair : plOrderNoFinal) {
+//            if (!"0".equals(pair.getValue())) {
+//                JFXUtil.highlightByKey(tblVwList, pair.getKey(), "#A7C7E7", highlightedRowsMain);
+//            }
+//        }
     }
 
     private boolean isExchangingBankName() {
