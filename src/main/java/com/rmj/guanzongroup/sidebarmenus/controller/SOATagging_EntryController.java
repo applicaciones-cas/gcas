@@ -506,7 +506,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     if (!pbKeyPressed) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                 JFXUtil.formatForMessageBox("Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?", 75)) == true) {
+                                                JFXUtil.formatForMessageBox("Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?", 75)) == true) {
                                             poSOATaggingController.removeDetails();
                                             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                                             loadTableDetail();
@@ -550,7 +550,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     if (!pbKeyPressed) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                JFXUtil.formatForMessageBox("Are you sure you want to change the payee name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?", 80)) == true) {
+                                                JFXUtil.formatForMessageBox("Are you sure you want to change the payee name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?", 75)) == true) {
                                             poSOATaggingController.removeDetails();
                                             JFXUtil.showRetainedHighlight(false, tblViewMainList, "#A7C7E7", plOrderNoPartial, plOrderNoFinal, highlightedRowsMain, true);
                                             loadTableDetail();
@@ -691,10 +691,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the supplier name? Please note that doing so will delete all SOA details. Do you wish to proceed?") == true) {
+                                            JFXUtil.formatForMessageBox("Are you sure you want to change the supplier name? Please note that doing so will delete all SOA details. Do you wish to proceed?", 75)) == true) {
                                         poSOATaggingController.removeDetails();
                                         loadTableDetail();
                                     } else {
+                                        pbKeyPressed = false;
                                         return;
                                     }
                                     pbKeyPressed = false;
@@ -723,10 +724,12 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the company name? Please note that doing so will delete all SOA details. Do you wish to proceed?") == true) {
+                                            JFXUtil.formatForMessageBox("Are you sure you want to change the company name? Please note that doing so will delete all SOA details. Do you wish to proceed?", 75)) == true) {
                                         poSOATaggingController.removeDetails();
                                         loadTableDetail();
+                                        pbKeyPressed = false;
                                     } else {
+                                        pbKeyPressed = false;
                                         return;
                                     }
                                     pbKeyPressed = false;
@@ -756,10 +759,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 if (poSOATaggingController.getDetailCount() > 1) {
                                     pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                            "Are you sure you want to change the payee name? Please note that doing so will delete all SOA details. Do you wish to proceed?") == true) {
+                                            JFXUtil.formatForMessageBox("Are you sure you want to change the payee name? Please note that doing so will delete all SOA details. Do you wish to proceed?", 75)) == true) {
                                         poSOATaggingController.removeDetails();
                                         loadTableDetail();
                                     } else {
+                                        pbKeyPressed = false;
                                         return;
                                     }
                                     pbKeyPressed = false;
@@ -993,7 +997,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
     public void loadRecordSearch() {
         try {
-            if(poSOATaggingController.Master().Industry().getDescription() != null && !"".equals(poSOATaggingController.Master().Industry().getDescription())){
+            if (poSOATaggingController.Master().Industry().getDescription() != null && !"".equals(poSOATaggingController.Master().Industry().getDescription())) {
                 lblSource.setText(poSOATaggingController.Master().Industry().getDescription());
             } else {
                 lblSource.setText("General");
@@ -1076,7 +1080,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             tfVatAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getVatAmount(), true));
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getDiscountAmount(), true));
             tfFreight.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getFreightAmount(), false));
-            tfNonVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getZeroRatedVat(),true)); //As per ma'am she
+            tfNonVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getZeroRatedVat(), true)); //As per ma'am she
             tfZeroVatSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getZeroRatedVat(), true));
             tfVatExemptSales.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getVatExempt(), true));
             tfNetTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.Master().getNetTotal(), true));
@@ -1256,7 +1260,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         JFXUtil.setFocusListener(txtDetail_Focus, tfSourceNo, tfSourceCode, tfReferenceNo, tfAppliedAmtDetail);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
-        JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales,tfNonVatSales ,tfVatExemptSales, tfAppliedAmtDetail);
+        JFXUtil.setCommaFormatter(tfVatAmount, tfDiscountAmount, tfZeroVatSales, tfNonVatSales, tfVatExemptSales, tfAppliedAmtDetail);
     }
 
     public void initTableOnClick() {
