@@ -3190,11 +3190,11 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"05\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchFood.fxml\",\"controller_path\":\"SIPosting_MonarchFood.controller\",\"menu_id\":\"076\",\"menu_parent\":\"067\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_LP.fxml\",\"controller_path\":\"SIPosting_LP.controller\",\"menu_id\":\"077\",\"menu_parent\":\"067\"}"
                 //STATUS UPDATE
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Update\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"077\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Status Update\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml\",\"controller_path\":\"CheckStatusUpdateController\",\"menu_id\":\"078\",\"menu_parent\":\"077\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Update\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"078\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Status Update\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml\",\"controller_path\":\"CheckStatusUpdateController\",\"menu_id\":\"079\",\"menu_parent\":\"078\"},"
                 //IMPORTING
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Import\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"079\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Importing\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml\",\"controller_path\":\"CheckImportingController\",\"menu_id\":\"080\",\"menu_parent\":\"079\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Import\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"080\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Importing\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml\",\"controller_path\":\"CheckImportingController\",\"menu_id\":\"081\",\"menu_parent\":\"080\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
