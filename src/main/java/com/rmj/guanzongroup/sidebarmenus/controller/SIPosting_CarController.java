@@ -1095,7 +1095,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                             loadRecordMaster();
                             break;
                         case "tfJEAcctCode":
-                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, true, null, null);
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, true, poPurchaseReceivingController.Master().getIndustryId(), PurchaseOrderReceivingStatus.GLCODE);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfJEAcctCode.setText("");
@@ -1116,7 +1116,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                             loadTableJEDetail();
                             break;
                         case "tfJEAcctDescription":
-                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, false, psIndustryId, null);
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, false, poPurchaseReceivingController.Master().getIndustryId(), PurchaseOrderReceivingStatus.GLCODE);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfJEAcctCode.setText("");
