@@ -347,7 +347,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                 return;
             }
-            DeliveryAcceptance_SerialMPController controller = new DeliveryAcceptance_SerialMPController();
+            DeliveryAcceptance_SerialAppliancesController controller = new DeliveryAcceptance_SerialAppliancesController();
             if (controller != null) {
                 controller.setGRider(oApp);
                 controller.setObject(poPurchaseReceivingController);
@@ -360,7 +360,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                     loadTableDetail();
                 });
             });
-            stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"), controller, "Inventory Serial", true, true, false);
+            stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialAppliances.fxml"), controller, "Inventory Serial", true, true, false);
 
         } catch (IOException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
