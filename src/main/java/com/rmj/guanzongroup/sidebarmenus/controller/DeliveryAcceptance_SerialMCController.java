@@ -87,6 +87,8 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
     @FXML
     private TextField tfEngineNo, tfFrameNo, tfLocation;
     @FXML
+    private Label lblApplyToAll;
+    @FXML
     private CheckBox cbApplyToAll;
     @FXML
     private TableView<ModelDeliveryAcceptance_SerialMC> tblViewDetail;
@@ -128,6 +130,7 @@ public class DeliveryAcceptance_SerialMCController implements Initializable {
             JFXUtil.setButtonsVisibility(!pbIsFinancing, btnOkay);
             JFXUtil.setDisabled(pbIsFinancing,  apDetail);
             cbApplyToAll.setVisible(!pbIsFinancing);
+            lblApplyToAll.setVisible(!pbIsFinancing);
         });
     }
 

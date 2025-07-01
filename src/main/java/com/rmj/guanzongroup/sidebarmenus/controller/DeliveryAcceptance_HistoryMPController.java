@@ -337,8 +337,11 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     public void showSerialDialog() {
         poJSON = new JSONObject();
         try {
+            if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
+                return;
+            }
+
             if (poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue() == 0) {
-                ShowMessageFX.Warning(null, pxeModuleName, "Received quantity cannot be empty.");
                 return;
             }
 

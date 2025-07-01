@@ -136,7 +136,7 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
     @FXML
     private HBox hbButtons, hboxid;
     @FXML
-    private Button btnPrint, btnHistory, btnClose;
+    private Button btnPrint, btnHistory, btnClose, btnSerials;
     @FXML
     private Label lblStatus, lblSource;
     @FXML
@@ -266,6 +266,10 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
                         }
                         break;
                     case "btnSerials":
+                        if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Selected item is not serialized.");
+                            return;
+                        }
                         showSerialDialog();
                         return;
                     case "btnUpdate":
@@ -314,12 +318,14 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
     public void showSerialDialog() {
         poJSON = new JSONObject();
         try {
-            if (poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue() == 0) {
-                ShowMessageFX.Warning(null, pxeModuleName, "Received quantity cannot be empty.");
+            if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
                 return;
             }
 
-            //Populate Purchase Order Receiving Detail
+            if (poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue() == 0) {
+                return;
+            }
+            
             poJSON = poPurchaseReceivingController.getPurchaseOrderReceivingSerial(pnDetail + 1);
             if ("error".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -335,13 +341,14 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMC.fxml"));
-            DeliveryAcceptance_SerialCarController controller = new DeliveryAcceptance_SerialCarController();
+            DeliveryAcceptance_SerialMCController controller = new DeliveryAcceptance_SerialMCController();
             loader.setController(controller);
 
             if (controller != null) {
                 controller.setGRider(oApp);
                 controller.setObject(poPurchaseReceivingController);
                 controller.setEntryNo(pnDetail + 1);
+                controller.isFinancing(true);
             }
 
             Parent root = loader.load();
@@ -1253,6 +1260,8 @@ public class DeliveryAcceptance_HistoryMCController implements Initializable, Sc
         //Ready
         btnPrint.setVisible(lbShow3);
         btnPrint.setManaged(lbShow3);
+        btnSerials.setVisible(lbShow3);
+        btnSerials.setManaged(lbShow3);
 
         btnHistory.setVisible(lbShow3);
         btnHistory.setManaged(lbShow3);
