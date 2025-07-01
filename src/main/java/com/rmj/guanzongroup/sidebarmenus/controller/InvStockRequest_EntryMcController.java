@@ -1,4 +1,4 @@
-/*
+    /*
      * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
      * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
      */
@@ -79,7 +79,7 @@
         private int pnEditMode;
         private TextField activeField;
         private JSONObject poJSON;
-        private String psFormName = "Inv Stock Request Entry Mc";
+        private String psFormName = "Inventory Request";
         private  String brandID; 
         private String brandDesc;
                              
@@ -182,7 +182,7 @@
         }
         private void loadRecordSearch() {
             try {
-              
+                //pero hindi ko po ma get dito
                 lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
 
             } catch (GuanzonException | SQLException ex) {
@@ -374,7 +374,7 @@
             switch (lsButton) {
 
                         case "btnBrowse":
-                            //loJSON = invRequestController.StockRequest().searchTransaction();
+                            loJSON = invRequestController.StockRequest().searchTransaction();
                            
 
                             if (!"error".equals((String) loJSON.get("result"))) {

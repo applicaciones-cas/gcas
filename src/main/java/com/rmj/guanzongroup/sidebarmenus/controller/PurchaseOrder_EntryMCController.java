@@ -430,7 +430,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Search Information", null);
                     }
-                    break;
+                    break;                    
                 case "btnNew":
                     clearDetailFields();
                     clearMasterFields();
@@ -985,6 +985,7 @@ public class PurchaseOrder_EntryMCController implements Initializable, ScreenInt
                             case "tfDiscountRate":
                             case "tfDiscountAmount":
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
+                    
                                 break;
                             case "tfOrderQuantity":
                                 setOrderQuantityToDetail(tfOrderQuantity.getText());

@@ -1,4 +1,4 @@
- /*
+                              /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -68,9 +68,8 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class InvStockRequest_EntryMcSpController implements Initializable, ScreenInterface {
-    private String psFormName = "Inv Stock Request Entry Mc Sp";
-   
+public class InvStockRequest_EntrySpController implements Initializable, ScreenInterface {
+
     private GRiderCAS poApp;
     private InvWarehouseControllers invRequestController;
     private TextField activeField;
@@ -91,7 +90,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
     //FXML elements
     @FXML
     private TextArea taRemarks;
-    @FXML
+   @FXML
         private Button btnNew,btnClose,btnSave,btnSearch,btnCancel,btnVoid,btnBrowse;
     @FXML
     private TableView<ModelInvOrderDetail> tblViewOrderDetails;
@@ -107,7 +106,9 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
         
     @FXML
     private Label lblTransactionStatus, lblSource; //check this
-  
+    @FXML
+    private String psFormName = "Inv Stock Request MC";
+    
     @FXML
     private AnchorPane AnchorMain;
     @Override
@@ -148,19 +149,8 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
        
         Platform.runLater((() -> {
-              try {
-                        //set edit mode to new transaction temporily to assign industry and company
-                        invRequestController.StockRequest().NewTransaction();
-                        
-                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
-                        invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
-                        loadRecordSearch();
-                        
-                        //reset the transaction
-                        invRequestController.StockRequest().InitTransaction();
-                    } catch (CloneNotSupportedException e) {
-                        ShowMessageFX.Warning((String) e.getMessage(), "Search Information", null);
-                    }
+            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+//            invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
 
         }));
         

@@ -286,6 +286,7 @@ public class DashboardController implements Initializable {
                 /*Inventory Stock Request*/
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
                     return "Inventory Maintenance";
+
                 //with roq
                 //mc
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcSp.fxml":
@@ -968,7 +969,7 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryMonarchHospitality.fxml";
 
             /*END PURCHASE ORDER RECEIVING*/
-                
+        
             /*Inventory Stock Request*/
             //without ROQ
             //motorcycles
@@ -990,8 +991,6 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMc.fxml";
             case "Inv Stock Request History Mc Sp":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMcSp.fxml";
-            
-            
             //car
             case "Inv Stock Request Entry Car":
                 return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_EntryCar.fxml";
@@ -2103,6 +2102,7 @@ public class DashboardController implements Initializable {
      */
         private void inventoryMenuItems() {
         String jsonString = "["
+
                 + "  {\"access_level\": \"026 01 02 03 04 05 06 07\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Inventory\", \"controller_path\": \"sample.controller\", \"menu_id\": \"028\", \"menu_parent\": \"\"},"
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Inventory Maintenance\", \"fxml_path\": \"Inventory/Inventory Maintenance\", \"controller_path\": \"sample.controller\", \"menu_id\": \"45\", \"menu_parent\": \"028\"},"
                 //Entry
@@ -2263,6 +2263,7 @@ public class DashboardController implements Initializable {
 //                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_Monarch.fxml\", \"controller_path\": \"InvStockRequest_MonarchGeneral.controller\", \"menu_id\": \"0141\", \"menu_parent\": \"0130\"},"
                 + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryLpFood.fxml\", \"controller_path\": \"InvRequest_Roq_HistoryLPFood.controller\", \"menu_id\": \"0142\", \"menu_parent\": \"0130\"},"
 //                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_LPGeneral.fxml\", \"controller_path\": \"InvStockRequest_LPGeneral.controller\", \"menu_id\": \"0143\", \"menu_parent\": \"0130\"},"
+
                 + "]";
         JSONParser parser = new JSONParser();
         try {

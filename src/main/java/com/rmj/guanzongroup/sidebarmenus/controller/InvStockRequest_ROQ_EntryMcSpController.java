@@ -5,8 +5,8 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvOrderDetail;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvOrderInformation;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvStockRequest;
+//import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvOrderInformation;
+//import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvStockRequest;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrder;
 import org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Detail;
 import java.net.URL;
@@ -54,14 +54,14 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
     private AnchorPane AnchorMain; //used for getStage
     @FXML
     private String psFormName = "Inv Stock Request ROQ Entry Mc Sp";
-    @FXML
-    private TableView <ModelInvOrderInformation> tblViewModelInformation;
-    private TableColumn <ModelInvOrderInformation, String> tblBrandDetail, tblBarcodeDetail, 
-            tblDescription, tblSize, tblMeasurement, tblCategory, tblMinLevel, tblMaxLevel, tblClass, tblQOH, tblOnTransit, tblReserve, tblBackOrder, tblAMC, tblROQ, tblOrder;       
-    private TableView <ModelInvStockRequest> tblViewStockRequest;
-    private TableColumn <ModelInvOrderInformation, String> tblNoOI, tblBarcodeOI, tblDescriptionOI, 
-            tblBrandOI, tblClassOI, tblQOHOI, tblAMCOI,tblROQOI, tblOrderOI;
-    
+//    @FXML
+//    private TableView <ModelInvOrderInformation> tblViewModelInformation;
+//    private TableColumn <ModelInvOrderInformation, String> tblBrandDetail, tblBarcodeDetail, 
+//            tblDescription, tblSize, tblMeasurement, tblCategory, tblMinLevel, tblMaxLevel, tblClass, tblQOH, tblOnTransit, tblReserve, tblBackOrder, tblAMC, tblROQ, tblOrder;       
+//    private TableView <ModelInvStockRequest> tblViewStockRequest;
+//    private TableColumn <ModelInvOrderInformation, String> tblNoOI, tblBarcodeOI, tblDescriptionOI, 
+//            tblBrandOI, tblClassOI, tblQOHOI, tblAMCOI,tblROQOI, tblOrderOI;
+//    
     @Override
     public void setGRider(GRiderCAS foValue) {
         poApp = foValue;

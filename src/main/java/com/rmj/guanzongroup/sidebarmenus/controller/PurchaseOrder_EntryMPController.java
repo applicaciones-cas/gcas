@@ -904,7 +904,7 @@ public class PurchaseOrder_EntryMPController implements Initializable, ScreenInt
                                 }
                                 prevSupplier = poPurchasingController.PurchaseOrder().Master().getSupplierID();
 
-                                tfSupplier.setText(poPurchasingController.PurchaseOrder().Master().Supplier().getCompanyName());
+                               
                                 if (!tfSupplier.getText().isEmpty()) {
                                     loadTableStockRequest();
                                 }
