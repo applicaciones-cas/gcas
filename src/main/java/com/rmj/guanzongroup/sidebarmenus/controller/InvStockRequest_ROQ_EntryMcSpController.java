@@ -39,7 +39,7 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InvStockRequest_SP_ROQController implements Initializable, ScreenInterface{
+public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, ScreenInterface{
     private GRiderCAS poApp;
     private String psIndustryID = "";
     private String psCompanyID = "";
@@ -53,7 +53,7 @@ public class InvStockRequest_SP_ROQController implements Initializable, ScreenIn
     @FXML
     private AnchorPane AnchorMain; //used for getStage
     @FXML
-    private String psFormName = "Inv Stock Request SP ROQ";
+    private String psFormName = "Inv Stock Request ROQ Entry Mc Sp";
     @FXML
     private TableView <ModelInvOrderInformation> tblViewModelInformation;
     private TableColumn <ModelInvOrderInformation, String> tblBrandDetail, tblBarcodeDetail, 
@@ -90,29 +90,29 @@ public class InvStockRequest_SP_ROQController implements Initializable, ScreenIn
         invRequestController = new InvWarehouseControllers(poApp, logWrapper);
         JSONObject loJSON = new JSONObject();
         loJSON = invRequestController.StockRequest().InitTransaction();
-        inventoryClassification();
-        initTableStockRequest();
+//        inventoryClassification();
+//        initTableStockRequest();
     }
-    
-    //init functions
-    private void initTableStockRequest(){
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            tblViewStockRequest.setEditable(true);
-        } else {
-            tblViewStockRequest.setEditable(false);
-        }
-        
-        
-    }
+//    
+//    //init functions
+//    private void initTableStockRequest(){
+//        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+//            tblViewStockRequest.setEditable(true);
+//        } else {
+//            tblViewStockRequest.setEditable(false);
+//        }
+//        
+//        
+//    }
     //functions
-    private void inventoryClassification(){
-        try {
-            System.out.print( invRequestController.StockRequest().Detail(pnTblInvDetailRow).InvMaster().getInventoryClassification());
-            System.out.print("classification: "+invRequestController.StockRequest().Detail(pnTblInvDetailRow).getClassification());
-            //invRequestController.StockRequest().Detail(pnTblInvDetailRow).InvMaster().
-        } catch (Exception e) {
-        }
-    }
+//    private void inventoryClassification(){
+//        try {
+//            System.out.print( invRequestController.StockRequest().Detail(pnTblInvDetailRow).InvMaster().getInventoryClassification());
+//            System.out.print("classification: "+invRequestController.StockRequest().Detail(pnTblInvDetailRow).getClassification());
+//            //invRequestController.StockRequest().Detail(pnTblInvDetailRow).InvMaster().
+//        } catch (Exception e) {
+//        }
+//    }
     
 }
 
