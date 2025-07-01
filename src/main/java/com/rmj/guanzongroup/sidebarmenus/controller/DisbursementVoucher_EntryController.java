@@ -368,7 +368,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
                     CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
                     loadTableDetailDV();
-                    loadTableDetailJE();
                     pnEditMode = poDisbursementController.getEditMode();
                     break;
                 case "btnUpdate":
@@ -474,10 +473,10 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 pnDetailDV = -1;
                 pnDetailJE = -1;
                 clearFields();
+                detailsdv_data.clear();
                 CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
                 CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
                 pnEditMode = EditMode.UNKNOWN;
-                loadTableDetailJE();
             }
             initFields(pnEditMode);
             initButton(pnEditMode);
@@ -708,6 +707,11 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     loadRecordMasterBankTransfer();
                     break;
                 case DisbursementStatic.DisbursementType.DIGITAL_PAYMENT:
+                    poJSON = poDisbursementController.setCheckpayment();
+                    if ("error".equals((String) poJSON.get("message"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        break;
+                    }
                     loadRecordMasterOnlinePayment();
                     break;
             }
@@ -1999,11 +2003,13 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             }
         }
 
-        if (tabJournal.isSelected() && pnDetailJE >= 0) {
+        if (tabJournal.isSelected()
+                && pnDetailJE >= 0) {
             JFXUtil.setDisabled(!lbShow, apJournalDetails);
         }
 
-        tfSupplier.setDisable(fnEditMode == EditMode.UPDATE);
+        tfSupplier.setDisable(fnEditMode
+                == EditMode.UPDATE);
     }
 
     private void initButton(int fnEditMode) {
@@ -2197,24 +2203,10 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                             poDisbursementController.Journal().Detail(pnDetailDV).setAccountCode("");
                             tfAccountCode.setText("");
                             loadTableDetailJE();
+
                         } catch (SQLException | GuanzonException ex) {
-                            Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-            }
-        }
-        );
-        tfAccountDescription.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    if (pnDetailDV >= 0) {
-                        try {
-                            poDisbursementController.Journal().Detail(pnDetailDV).setAccountCode("");
-                            tfAccountDescription.setText("");
-                            loadTableDetailJE();
-                        } catch (SQLException | GuanzonException ex) {
-                            Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DisbursementVoucher_EntryController.class
+                                    .getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }
