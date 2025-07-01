@@ -37,15 +37,14 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.util.StringConverter;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRider;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.client.Client;
-import org.guanzon.cas.client.account.Account_Accreditation;
+import org.guanzon.cas.clients.account.Account_Accreditation;
 import org.guanzon.cas.parameter.services.ParamControllers;
 import org.json.simple.JSONObject;
 
@@ -57,7 +56,7 @@ import org.json.simple.JSONObject;
 public class AccountsAccreditationController implements Initializable, ScreenInterface {
 
     private final String pxeModuleName = "Accounts Accreditation";
-    private GRider oApp;
+    private GRiderCAS oApp;
     private Account_Accreditation oTrans;
     private ParamControllers oParameters;
     private String oTransnox = "";
@@ -140,9 +139,20 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
     }
 
     @Override
-    public void setGRider(GRider foValue) {
+    public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
 
+    @Override
+    public void setIndustryID(String fsValue) {
+    }
+
+    @Override
+    public void setCompanyID(String fsValue) {
+    }
+
+    @Override
+    public void setCategoryID(String fsValue) {
     }
 
     /**
@@ -174,143 +184,142 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 
     private void initializeObject() {
 
-        System.out.println("category == " + category);
-        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
-        oTrans = new Account_Accreditation();
-        oTrans.setApplicationDriver(oApp);
-        oTrans.setWithParentClass(false);
-        oTrans.setLogWrapper(logwrapr);
-        oTrans.initialize();
-        oParameters = new ParamControllers(oApp, logwrapr);
-
+//        System.out.println("category == " + category);
+//        LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
+//        oTrans = new Account_Accreditation();
+//        oTrans.setApplicationDriver(oApp);
+//        oTrans.setWithParentClass(false);
+//        oTrans.setLogWrapper(logwrapr);
+//        oTrans.initialize();
+//        oParameters = new ParamControllers(oApp, logwrapr);
     }
 
 //    /*Handle button click*/
     private void ClickButton() {
         Button[] buttons = {btnUpload,
-                            btnCancel,
-                            btnNew,
-                            btnSave,
-                            btnUpdate,
-                            btnClose,
-                            btnBrowse,
-                            btnApproved,
-                            btnDisapproved};
+            btnCancel,
+            btnNew,
+            btnSave,
+            btnUpdate,
+            btnClose,
+            btnBrowse,
+            btnApproved,
+            btnDisapproved};
         for (Button button : buttons) {
             button.setOnAction(this::handleButtonAction);
         }
     }
 
     private void handleButtonAction(ActionEvent event) {
-        Object source = event.getSource();
-
-        if (source instanceof Button) {
-            Button clickedButton = (Button) source;
-            unloadForm appUnload = new unloadForm();
-            switch (clickedButton.getId()) {
-                case "btnClose":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                        clearAllFields();
-                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
-                    }
-                    break;
-                case "btnNew":
-                    clearAllFields();
-                    txtField02.requestFocus();
-                    JSONObject poJSON;
-                    poJSON = oTrans.newRecord();
-                    pnEditMode = EditMode.READY;
-                    if ("success".equals((String) poJSON.get("result"))) {
-                        pnEditMode = EditMode.ADDNEW;
-                        initButton(pnEditMode);
-                        RetreiveDetails();
-                        initTabAnchor();
-                    } else {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        System.out.println((String) poJSON.get("message"));
-                        initTabAnchor();
-
-                    }
-
-                    break;
-                case "btnBrowse":
-                    clearAllFields();
-                    String lsValue = (txtSeek01.getText() == null) ? "" : txtSeek01.getText();
-                    poJSON = oTrans.searchRecord(lsValue, false, true);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        txtSeeks01.clear();
-                        break;
-                    }
-                    pnEditMode = EditMode.READY;
-//                    data.clear();
-                    RetreiveDetails();
-                    break;
-                case "btnUpdate":
-                    poJSON = oTrans.updateRecord();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-                        break;
-                    } else {
-                        pnEditMode = oTrans.getEditMode();
-                        System.out.println("EDITMODE sa update= " + pnEditMode);
-                        initButton(pnEditMode);
-                        initTabAnchor();
-                        break;
-                    }
-                case "btnCancel":
-                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
-                        clearAllFields();
-                        initializeObject();
-                        pnEditMode = EditMode.UNKNOWN;
-                        initButton(pnEditMode);
-                        initTabAnchor();
-                    }
-                    System.out.println("EDITMODE sa cancel= " + pnEditMode);
-                    break;
-                case "btnSave":
-                    oTrans.getModel().setModifyingId(oApp.getUserID());
-                    oTrans.getModel().setModifiedDate(oApp.getServerDate());
-                    JSONObject saveResult = oTrans.saveRecord();
-                    if ("success".equals((String) saveResult.get("result"))) {
-                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                        pnEditMode = EditMode.UNKNOWN;
-                        initButton(pnEditMode);
-                        clearAllFields();
-                        System.out.println("Record saved successfully.");
-                    } else {
-                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
-                        System.out.println("Record not saved successfully.");
-                        System.out.println((String) saveResult.get("message"));
-                    }
-
-                    break;
-                case "btnApproved":
-                case "btnDisapproved":
-                    if (oTrans.getModel().getTransactionNo() != null) {
-                        String buttonId = ((Button) event.getSource()).getId();
-                        boolean isApproved = "btnApproved".equals(buttonId);
-                        poJSON = isApproved ? oTrans.postTransaction() : oTrans.voidTransaction();
-                        String result = (String) poJSON.get("result");
-                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//                        ShowMessageFX.Information("success".equals(result)
-//                                ? (String) poJSON.get("message") + (isApproved ? "approved." : "disapproved.")
-//                                : "Unable to " + (isApproved ? "approve" : "disapprove") + " the transaction.",
-//                                "Computerized Accounting System",
-//                                pxeModuleName);
-                        
-                        if ("success".equals(result)) {
-                            clearAllFields();
-                        }
-                    }else{
-                        ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
-                    }
-                    break;
-                case "btnUpload":
-                    ShowMessageFX.Information("This feature is currently in development!", "Computerized Acounting System", pxeModuleName);
-                    break;
-            }
-        }
+//        Object source = event.getSource();
+//
+//        if (source instanceof Button) {
+//            Button clickedButton = (Button) source;
+//            unloadForm appUnload = new unloadForm();
+//            switch (clickedButton.getId()) {
+//                case "btnClose":
+//                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+//                        clearAllFields();
+//                        appUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
+//                    }
+//                    break;
+//                case "btnNew":
+//                    clearAllFields();
+//                    txtField02.requestFocus();
+//                    JSONObject poJSON;
+//                    poJSON = oTrans.newRecord();
+//                    pnEditMode = EditMode.READY;
+//                    if ("success".equals((String) poJSON.get("result"))) {
+//                        pnEditMode = EditMode.ADDNEW;
+//                        initButton(pnEditMode);
+//                        RetreiveDetails();
+//                        initTabAnchor();
+//                    } else {
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        System.out.println((String) poJSON.get("message"));
+//                        initTabAnchor();
+//
+//                    }
+//
+//                    break;
+//                case "btnBrowse":
+//                    clearAllFields();
+//                    String lsValue = (txtSeek01.getText() == null) ? "" : txtSeek01.getText();
+//                    poJSON = oTrans.searchRecord(lsValue, false, true);
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+////                        txtSeeks01.clear();
+//                        break;
+//                    }
+//                    pnEditMode = EditMode.READY;
+////                    data.clear();
+//                    RetreiveDetails();
+//                    break;
+//                case "btnUpdate":
+//                    poJSON = oTrans.updateRecord();
+//                    if ("error".equals((String) poJSON.get("result"))) {
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        break;
+//                    } else {
+//                        pnEditMode = oTrans.getEditMode();
+//                        System.out.println("EDITMODE sa update= " + pnEditMode);
+//                        initButton(pnEditMode);
+//                        initTabAnchor();
+//                        break;
+//                    }
+//                case "btnCancel":
+//                    if (ShowMessageFX.YesNo("Do you really want to cancel this record? \nAny data collected will not be kept.", "Computerized Acounting System", pxeModuleName)) {
+//                        clearAllFields();
+//                        initializeObject();
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        initButton(pnEditMode);
+//                        initTabAnchor();
+//                    }
+//                    System.out.println("EDITMODE sa cancel= " + pnEditMode);
+//                    break;
+//                case "btnSave":
+//                    oTrans.getModel().setModifyingId(oApp.getUserID());
+//                    oTrans.getModel().setModifiedDate(oApp.getServerDate());
+//                    JSONObject saveResult = oTrans.saveRecord();
+//                    if ("success".equals((String) saveResult.get("result"))) {
+//                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        pnEditMode = EditMode.UNKNOWN;
+//                        initButton(pnEditMode);
+//                        clearAllFields();
+//                        System.out.println("Record saved successfully.");
+//                    } else {
+//                        ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        System.out.println("Record not saved successfully.");
+//                        System.out.println((String) saveResult.get("message"));
+//                    }
+//
+//                    break;
+//                case "btnApproved":
+//                case "btnDisapproved":
+//                    if (oTrans.getModel().getTransactionNo() != null) {
+//                        String buttonId = ((Button) event.getSource()).getId();
+//                        boolean isApproved = "btnApproved".equals(buttonId);
+//                        poJSON = isApproved ? oTrans.postTransaction() : oTrans.voidTransaction();
+//                        String result = (String) poJSON.get("result");
+//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+////                        ShowMessageFX.Information("success".equals(result)
+////                                ? (String) poJSON.get("message") + (isApproved ? "approved." : "disapproved.")
+////                                : "Unable to " + (isApproved ? "approve" : "disapprove") + " the transaction.",
+////                                "Computerized Accounting System",
+////                                pxeModuleName);
+//
+//                        if ("success".equals(result)) {
+//                            clearAllFields();
+//                        }
+//                    } else {
+//                        ShowMessageFX.Information("No Record Found!", "Computerized Acounting System", pxeModuleName);
+//                    }
+//                    break;
+//                case "btnUpload":
+//                    ShowMessageFX.Information("This feature is currently in development!", "Computerized Acounting System", pxeModuleName);
+//                    break;
+//            }
+//        }
     }
 
     private void initButton(int fnValue) {
@@ -323,11 +332,11 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
-        
+
         btnApproved.setVisible(!lbShow);
         btnUpload.setVisible(!lbShow);
         btnDisapproved.setVisible(!lbShow);
-        
+
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
 
@@ -339,18 +348,18 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
             btnApproved.setVisible(lbShow);
             btnDisapproved.setVisible(lbShow);
             btnUpload.setVisible(lbShow);
-            
-            btnUpdate.setVisible(!lbShow); 
+
+            btnUpdate.setVisible(!lbShow);
             btnBrowse.setVisible(!lbShow);
             btnNew.setVisible(!lbShow);
             btnBrowse.setManaged(false);
             btnNew.setManaged(false);
             btnUpdate.setManaged(false);
-            
+
             btnUpload.setManaged(false);
             btnApproved.setManaged(false);
             btnDisapproved.setManaged(false);
-            
+
             btnClose.setManaged(false);
         } else {
         }
@@ -396,21 +405,21 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
         if (!nv) { // Lost focus
             try {
                 switch (lnIndex) {
-                    case 1: // 
-                        oTrans.getModel().setTransactionNo(lsValue);
-                        break;
-                    case 2: // 
-                        oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
-                        break;
-                    case 3: //     
-                        oTrans.getModel().setClientId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
-                        break;
-                    case 4: // 
-                        oTrans.getModel().setRemarks(lsValue);
-                        break;
-                    case 5: // Description
-                        oTrans.getModel().setCategoryCode(category);
-                        break;
+//                    case 1: //
+//                        oTrans.getModel().setTransactionNo(lsValue);
+//                        break;
+//                    case 2: //
+//                        oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
+//                        break;
+//                    case 3: //
+//                        oTrans.getModel().setClientId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
+//                        break;
+//                    case 4: //
+//                        oTrans.getModel().setRemarks(lsValue);
+//                        break;
+//                    case 5: // Description
+//                        oTrans.getModel().setCategoryCode(category);
+//                        break;
                     default:
                         // Other cases can be handled here if needed.
                         break;
@@ -425,58 +434,58 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 
     /*Text Field with search*/
     private void txtField_KeyPressed(KeyEvent event) {
-        TextField txtField = (TextField) event.getSource();
-        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
-        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
-        JSONObject poJson;
-        poJson = new JSONObject();
-        switch (event.getCode()) {
-            case F3:
-                switch (lnIndex) {
-                    case 05:
-                        poJson = oParameters.Category().searchRecord(lsValue, false);
-                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
-                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                        }
-                        oTrans.getModel().setCategoryCode(oParameters.Category().getModel().getCategoryId());
-                        txtField05.setText((String) oParameters.Category().getModel().getDescription());
-
-                        break;
-                    case 02:
-                        poJson = oTrans.Client().Master().searchRecord(lsValue, false);
-                        if ("success".equals(poJson.get("result"))) {
-                            poJson = oTrans.searchRecordbyClient(oTrans.Client().Master().getModel().getClientId(), false);
-                            if ("success".equals(poJson.get("result"))) {
-                                ShowMessageFX.Information("The company is already accredited or has already gained entry.!", "Computerized Acounting System", pxeModuleName);
-                                break;
-                            }
-                                txtField02.setText(oTrans.Client().Master().getModel().getCompanyName());
-                                oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
-                                
-                                poJson = oTrans.Client().ClientInstitutionContact().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
-                                if ("success".equals(poJson.get("result"))) {
-                                    txtField03.setText(oTrans.Client().ClientInstitutionContact().getModel().getContactPersonName());
-                                    oTrans.getModel().setContactId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
-                                } 
-                        }
-                        poJson = oTrans.Client().ClientAddress().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
-                                if ("success".equals(poJson.get("result"))) {
-                                    oTrans.getModel().setAddressId(oTrans.Client().ClientAddress().getModel().getClientId());
-                                }
-                        break;
-                    
-                }
-            case ENTER:
-        }
-        switch (event.getCode()) {
-            case ENTER:
-                CommonUtils.SetNextFocus(txtField);
-            case DOWN:
-                CommonUtils.SetNextFocus(txtField);
-                break;
-            case UP:
-                CommonUtils.SetPreviousFocus(txtField);
-        }
+//        TextField txtField = (TextField) event.getSource();
+//        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
+//        String lsValue = (txtField.getText() == null ? "" : txtField.getText());
+//        JSONObject poJson;
+//        poJson = new JSONObject();
+//        switch (event.getCode()) {
+//            case F3:
+//                switch (lnIndex) {
+//                    case 05:
+//                        poJson = oParameters.Category().searchRecord(lsValue, false);
+//                        if ("error".equalsIgnoreCase(poJson.get("result").toString())) {
+//                            ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                        }
+//                        oTrans.getModel().setCategoryCode(oParameters.Category().getModel().getCategoryId());
+//                        txtField05.setText((String) oParameters.Category().getModel().getDescription());
+//
+//                        break;
+//                    case 02:
+//                        poJson = oTrans.Client().Master().searchRecord(lsValue, false);
+//                        if ("success".equals(poJson.get("result"))) {
+//                            poJson = oTrans.searchRecordbyClient(oTrans.Client().Master().getModel().getClientId(), false);
+//                            if ("success".equals(poJson.get("result"))) {
+//                                ShowMessageFX.Information("The company is already accredited or has already gained entry.!", "Computerized Acounting System", pxeModuleName);
+//                                break;
+//                            }
+//                            txtField02.setText(oTrans.Client().Master().getModel().getCompanyName());
+//                            oTrans.getModel().setClientId(oTrans.Client().Master().getModel().getClientId());
+//
+//                            poJson = oTrans.Client().ClientInstitutionContact().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
+//                            if ("success".equals(poJson.get("result"))) {
+//                                txtField03.setText(oTrans.Client().ClientInstitutionContact().getModel().getContactPersonName());
+//                                oTrans.getModel().setContactId(oTrans.Client().ClientInstitutionContact().getModel().getClientId());
+//                            }
+//                        }
+//                        poJson = oTrans.Client().ClientAddress().searchRecordbyclient(oTrans.Client().Master().getModel().getClientId(), false);
+//                        if ("success".equals(poJson.get("result"))) {
+//                            oTrans.getModel().setAddressId(oTrans.Client().ClientAddress().getModel().getClientId());
+//                        }
+//                        break;
+//
+//                }
+//            case ENTER:
+//        }
+//        switch (event.getCode()) {
+//            case ENTER:
+//                CommonUtils.SetNextFocus(txtField);
+//            case DOWN:
+//                CommonUtils.SetNextFocus(txtField);
+//                break;
+//            case UP:
+//                CommonUtils.SetPreviousFocus(txtField);
+//        }
     }
 //    private void txtSeeks_KeyPressed(KeyEvent event) {
 //        TextField txtSeeks = (TextField) event.getSource();
@@ -498,8 +507,8 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 //                        txtSeeks02.setText(oTrans.getModel().getDescription());
 //                        pnEditMode = oTrans.getEditMode();
 //                        loadInventory();
-//                        
-//                        
+//
+//
 //                        break;
 //                    case 2:
 //                        poJSON = oTrans.searchRecord(lsValue, false);
@@ -531,24 +540,24 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
 
     private void initComboBoxes() {
 
-        // Set the items of the ComboBox to the list of genders
-        cmbField02.setItems(AccountType);
-        cmbField02.getSelectionModel().select(0);
-        cmbField02.setOnAction(event -> {
-            oTrans.getModel().setAccountType(String.valueOf(cmbField02.getSelectionModel().getSelectedIndex()));
-            System.out.print("\ncAcctType = " + cmbField02.getSelectionModel().getSelectedIndex());
-        });
-
-        cmbField03.setItems(Accreditation);
-        cmbField03.getSelectionModel().select(0);
-        cmbField03.setOnAction(event -> {
-            oTrans.getModel().setTransactionType(String.valueOf(cmbField03.getSelectionModel().getSelectedIndex()));
-        });
-
-        cpField02.setOnAction(event -> {
-            // Get the selected date
-            oTrans.getModel().setDateTransact(SQLUtil.toDate(cpField02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-        });
+//        // Set the items of the ComboBox to the list of genders
+//        cmbField02.setItems(AccountType);
+//        cmbField02.getSelectionModel().select(0);
+//        cmbField02.setOnAction(event -> {
+//            oTrans.getModel().setAccountType(String.valueOf(cmbField02.getSelectionModel().getSelectedIndex()));
+//            System.out.print("\ncAcctType = " + cmbField02.getSelectionModel().getSelectedIndex());
+//        });
+//
+//        cmbField03.setItems(Accreditation);
+//        cmbField03.getSelectionModel().select(0);
+//        cmbField03.setOnAction(event -> {
+//            oTrans.getModel().setTransactionType(String.valueOf(cmbField03.getSelectionModel().getSelectedIndex()));
+//        });
+//
+//        cpField02.setOnAction(event -> {
+//            // Get the selected date
+//            oTrans.getModel().setDateTransact(SQLUtil.toDate(cpField02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+//        });
     }
 
     private void clearAllFields() {
@@ -569,98 +578,100 @@ public class AccountsAccreditationController implements Initializable, ScreenInt
     }
 
     private void RetreiveDetails() {
-        JSONObject poJson;
-        poJson = new JSONObject();
-        if (pnEditMode == EditMode.READY
-                || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW) {
+//        JSONObject poJson;
+//        poJson = new JSONObject();
+//        if (pnEditMode == EditMode.READY
+//                || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW) {
+//
+//            String lsValue = oTrans.getModel().getRecordStatus();
+//            System.out.println(lsValue + " lblstat");
+//            // Use a Map to store the status mappings
+//            Map<String, String> statusMap = new HashMap<>();
+//            statusMap.put("0", "OPEN");
+//            statusMap.put("1", "APPROVED");
+//            statusMap.put("3", "DISAPPROVED");
+//
+//            // Set the label text based on the status
+//            lblStat.setText(statusMap.getOrDefault(lsValue, "UNKNOWN"));
+//
+//            txtField01.setText(oTrans.getModel().getTransactionNo() == null ? "" : oTrans.getModel().getTransactionNo());
+//            txtField02.setText(oTrans.getModel().ClientMaster().getCompanyName() == null ? "" : oTrans.getModel().ClientMaster().getCompanyName());
+//            txtField03.setText(oTrans.getModel().ClientInstitutionContact().getContactPersonName() == null ? "" : oTrans.getModel().ClientInstitutionContact().getContactPersonName());
+//            txtField04.setText(oTrans.getModel().getRemarks() == null ? "" : oTrans.getModel().getRemarks());
+//
+//            cmbField02.setItems(AccountType);
+//            cmbField02.setValue(AccountType.get(
+//                    (oTrans.getModel().getAccountType() == null || oTrans.getModel().getAccountType().trim().isEmpty())
+//                    ? 0
+//                    : Integer.parseInt(oTrans.getModel().getAccountType())
+//            ));
+//
+//            cmbField03.setItems(Accreditation);
+//            cmbField03.setValue(Accreditation.get(
+//                    (oTrans.getModel().getTransactionType() == null || oTrans.getModel().getTransactionType().trim().isEmpty())
+//                    ? 0
+//                    : Integer.parseInt(oTrans.getModel().getTransactionType())
+//            ));
+//            if (pnEditMode == 0) {
+//
+//                oTrans.getModel().setDateTransact(SQLUtil.toDate(cpField02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
+//                poJson = oParameters.Category().searchRecord(category, true);
+//                if ("success".equals((String) poJson.get("result"))) {
+//                    txtField05.setText(oParameters.Category().getModel().getDescription());
+//                }
+//            } else if (oTrans.getModel().getDateTransact() != null && !oTrans.getModel().getDateTransact().toString().isEmpty()) {
+//                cpField02.setValue(strToDate(SQLUtil.dateFormat(oTrans.getModel().getDateTransact(), SQLUtil.FORMAT_SHORT_DATE)));
+//                txtField05.setText((String) oTrans.getModel().Category().getDescription());
+//            }
+//
+//            oTrans.getModel().setAccountType(String.valueOf(cmbField02.getSelectionModel().getSelectedIndex()));
+//            oTrans.getModel().setTransactionType(String.valueOf(cmbField03.getSelectionModel().getSelectedIndex()));
+//
+//            poJson = oParameters.Category().searchRecord(category, true);
+//            if ("success".equals(poJson.get("result") == null ? "" : poJson.get("result"))) {
+//                txtField05.setText(oParameters.Category().getModel().getDescription() == null ? "" : oParameters.Category().getModel().getDescription());
+//                oTrans.getModel().setCategoryCode(oParameters.Category().getModel().getCategoryId());
+//            }
+//        }
 
-            String lsValue = oTrans.getModel().getRecordStatus();
-            System.out.println(lsValue + " lblstat");
-            // Use a Map to store the status mappings
-            Map<String, String> statusMap = new HashMap<>();
-            statusMap.put("0", "OPEN");
-            statusMap.put("1", "APPROVED");
-            statusMap.put("3", "DISAPPROVED");
-
-            // Set the label text based on the status
-            lblStat.setText(statusMap.getOrDefault(lsValue, "UNKNOWN"));
-
-            txtField01.setText(oTrans.getModel().getTransactionNo() == null ? "" : oTrans.getModel().getTransactionNo());
-            txtField02.setText(oTrans.getModel().ClientMaster().getCompanyName() == null ? "" : oTrans.getModel().ClientMaster().getCompanyName());
-            txtField03.setText(oTrans.getModel().ClientInstitutionContact().getContactPersonName() == null ? "" : oTrans.getModel().ClientInstitutionContact().getContactPersonName());
-            txtField04.setText(oTrans.getModel().getRemarks() == null ? "" : oTrans.getModel().getRemarks());
-
-            cmbField02.setItems(AccountType);
-            cmbField02.setValue(AccountType.get(
-                    (oTrans.getModel().getAccountType() == null || oTrans.getModel().getAccountType().trim().isEmpty())
-                    ? 0
-                    : Integer.parseInt(oTrans.getModel().getAccountType())
-            ));
-
-            cmbField03.setItems(Accreditation);
-            cmbField03.setValue(Accreditation.get(
-                    (oTrans.getModel().getTransactionType() == null || oTrans.getModel().getTransactionType().trim().isEmpty())
-                    ? 0
-                    : Integer.parseInt(oTrans.getModel().getTransactionType())
-            ));
-            if (pnEditMode == 0) {
-
-                oTrans.getModel().setDateTransact(SQLUtil.toDate(cpField02.getValue().toString(), SQLUtil.FORMAT_SHORT_DATE));
-                poJson = oParameters.Category().searchRecord(category, true);
-                if ("success".equals((String) poJson.get("result"))) {
-                    txtField05.setText(oParameters.Category().getModel().getDescription());
-                }
-            } else if (oTrans.getModel().getDateTransact() != null && !oTrans.getModel().getDateTransact().toString().isEmpty()) {
-                cpField02.setValue(strToDate(SQLUtil.dateFormat(oTrans.getModel().getDateTransact(), SQLUtil.FORMAT_SHORT_DATE)));
-                txtField05.setText((String) oTrans.getModel().Category().getDescription());
-            }
-
-            oTrans.getModel().setAccountType(String.valueOf(cmbField02.getSelectionModel().getSelectedIndex()));
-            oTrans.getModel().setTransactionType(String.valueOf(cmbField03.getSelectionModel().getSelectedIndex()));
-
-            poJson = oParameters.Category().searchRecord(category, true);
-            if ("success".equals(poJson.get("result") == null ? "" : poJson.get("result"))) {
-                txtField05.setText(oParameters.Category().getModel().getDescription() == null ? "" : oParameters.Category().getModel().getDescription());
-                oTrans.getModel().setCategoryCode(oParameters.Category().getModel().getCategoryId());
-            }
-        }
-        
     }
 
     public static LocalDate strToDate(String val) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(val, dateFormatter);
     }
-    private void insertApprove(){
-        JSONObject poJson;
-        poJson = new JSONObject();
-        String AcctType = oTrans.getModel().getAccountType();
-        
-        switch (AcctType) {
-            case "1":
-                System.out.println("Account Type is 1");
-                oTrans.ARClient().ARClientMaster().getModel().setClientId(oTrans.getModel().ClientMaster().getClientId());
-                // Add logic for AcctType = 1
-                break;
-            case "0":
-                System.out.println("Account Type is 0");
-                 oTrans.APClient().APClientMaster().getModel().setClientId(oTrans.getModel().ClientMaster().getClientId());
-                 poJson = oTrans.APClient().APClientMaster().saveRecord();
-     
-                    if ("success".equals((String) poJson.get("result"))) {
-                           ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                           pnEditMode = EditMode.UNKNOWN;
-                    }else{
-                        ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
-                    }
-                // Add logic for AcctType = 0
-                break;
-            default:
-                System.out.println("Unknown Account Type: " + AcctType);
-            // Handle unexpected values
-        }
-        
-    
+
+    private void insertApprove() {
+//        JSONObject poJson;
+//        poJson = new JSONObject();
+//        String AcctType = oTrans.getModel().getAccountType();
+//
+//        switch (AcctType) {
+//            case "1":
+//                System.out.println("Account Type is 1");
+//                oTrans.ARClient().ARClientMaster().getModel().setClientId(oTrans.getModel().ClientMaster().getClientId());
+//                // Add logic for AcctType = 1
+//                break;
+//            case "0":
+//                System.out.println("Account Type is 0");
+//                oTrans.APClient().APClientMaster().getModel().setClientId(oTrans.getModel().ClientMaster().getClientId());
+//                poJson = oTrans.APClient().APClientMaster().saveRecord();
+//
+//                if ("success".equals((String) poJson.get("result"))) {
+//                    ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                    pnEditMode = EditMode.UNKNOWN;
+//                } else {
+//                    ShowMessageFX.Information((String) poJson.get("message"), "Computerized Acounting System", pxeModuleName);
+//                }
+//                // Add logic for AcctType = 0
+//                break;
+
+//default :
+//                System.out.println("Unknown Account Type: " + AcctType);
+//            // Handle unexpected values
+//        }
+//
+//    }
     }
 
 }
