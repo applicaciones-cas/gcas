@@ -21,6 +21,10 @@ public class ModelInvOrderDetail {
     public StringProperty index07;
     public StringProperty index08;
     public StringProperty index09;
+    public StringProperty index10;
+    public StringProperty index11;
+    public StringProperty index12;
+ 
 
     
     
@@ -32,7 +36,11 @@ public class ModelInvOrderDetail {
             String index06,
             String index07,
             String index08,
-            String index09) {
+            String index09,
+            String index10,
+            String index11,
+            String index12
+            ) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
@@ -43,6 +51,9 @@ public class ModelInvOrderDetail {
         this.index07 = new SimpleStringProperty(index07);
         this.index08 = new SimpleStringProperty(index08);
         this.index09 = new SimpleStringProperty(index09);
+        this.index10 = new SimpleStringProperty(index10);
+        this.index11 = new SimpleStringProperty(index11);
+        this.index12 = new SimpleStringProperty(index12);
        
         
         
@@ -120,6 +131,27 @@ public class ModelInvOrderDetail {
     public void setIndex09(String index09) {
         this.index09.set(index09);
     }
+    
+    public String getIndex10() {
+        return index10.get();
+    }
 
+    public void setIndex10(String index09) {
+        this.index10.set(index09);
+    }
+    public String getIndex11() {
+        return index11.get();
+    }
+
+    public void setIndex11(String index09) {
+        this.index11.set(index09);
+    }
+     public String getIndex12() {
+        return index12.get();
+    }
+
+    public void setIndex12(String index09) {
+        this.index12.set(index09);
+    }
 
 }

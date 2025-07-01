@@ -148,8 +148,19 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
         tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
        
         Platform.runLater((() -> {
-            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
-//            invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+              try {
+                        //set edit mode to new transaction temporily to assign industry and company
+                        invRequestController.StockRequest().NewTransaction();
+                        
+                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                        invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                        loadRecordSearch();
+                        
+                        //reset the transaction
+                        invRequestController.StockRequest().InitTransaction();
+                    } catch (CloneNotSupportedException e) {
+                        ShowMessageFX.Warning((String) e.getMessage(), "Search Information", null);
+                    }
 
         }));
         

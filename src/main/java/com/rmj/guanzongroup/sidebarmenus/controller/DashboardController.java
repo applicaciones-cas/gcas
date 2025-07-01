@@ -406,13 +406,13 @@ public class DashboardController implements Initializable {
                     return "Inv Stock Request ROQ History MP";
                 
                 //food
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLPFood.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpFood.fxml":
                     return "Inv Stock Request Entry LP Food"; 
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationLPFood.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationLpFood.fxml":
                     return "Inv Stock Request Confirmation LP Food";    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateLPFood.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateLpFood.fxml":
                     return "Inv Stock Request Update LP Food";    
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryLPFood.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryLpFood.fxml":
                     return "Inv Stock Request History LP Food";
                 
                 //hospitality    

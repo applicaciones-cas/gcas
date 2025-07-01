@@ -182,7 +182,7 @@
         }
         private void loadRecordSearch() {
             try {
-                //pero hindi ko po ma get dito
+              
                 lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
 
             } catch (GuanzonException | SQLException ex) {
