@@ -395,6 +395,8 @@ public class JFXUtil {
         private Stage dialog;
         private EventHandler<WindowEvent> onHiddenHandler; // Store handler
         private final xyOffset xyOffset = new xyOffset();
+        Scene scene = null;
+        Parent root = null;
 
         public void showDialog(Stage parentStage, URL fxmlurl,
                 Object controller,
@@ -407,7 +409,7 @@ public class JFXUtil {
             FXMLLoader loader = new FXMLLoader(fxmlurl);
             loader.setController(controller);
 
-            Parent root = loader.load();
+            root = loader.load();
 
             root.setOnMousePressed(event -> {
                 xyOffset.x = event.getSceneX();
@@ -424,7 +426,6 @@ public class JFXUtil {
 
             dialog = new Stage();
             dialog.initStyle(StageStyle.UNDECORATED);
-
             if (enableblock) {
                 dialog.initModality(Modality.WINDOW_MODAL);
                 if (parentStage != null) {
@@ -436,8 +437,10 @@ public class JFXUtil {
                 dialog.setAlwaysOnTop(true);
             }
 
+            scene = new Scene(root);
+
             dialog.setTitle(lsDialogTitle);
-            dialog.setScene(new Scene(root));
+            dialog.setScene(scene);
 
             // Attach stored onHiddenHandler if available
             if (onHiddenHandler != null) {
@@ -446,10 +449,19 @@ public class JFXUtil {
             }
 
             dialog.show();
+            dialog.toFront();
         }
 
         public void setOnHidden(EventHandler<WindowEvent> handler) {
             onHiddenHandler = handler;
+        }
+
+        public Scene getScene() {
+            return scene;
+        }
+
+        public Parent getRoot() {
+            return root;
         }
 
         public void closeSerialDialog() {
@@ -715,14 +727,14 @@ public class JFXUtil {
     }
 
     public static boolean isObjectEqualTo(Object source, Object... others) {
-//        if (source == null && others != null) {
-//            for (Object other : others) {
-//                if (other == null) {
-//                    return true;
-//                }
-//            }
-//            return false;
-//        }
+        if (source == null && others != null) {
+            for (Object other : others) {
+                if (other == null) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         for (Object other : others) {
             if (source != null && source.equals(other)) {
@@ -903,6 +915,30 @@ public class JFXUtil {
 
         System.out.println(className.trim());
         return className.trim();
+    }
+
+    public static String getFormattedFXMLTitle(String fxmlPath) {
+        // Extract the FXML file name without extension
+        String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
+
+        // Remove common suffixes like "Controller" or "_EntryMonarch" if desired
+        if (fileName.endsWith("Controller")) {
+            fileName = fileName.substring(0, fileName.length() - "Controller".length());
+        }
+
+        // Handle specific company renaming
+        fileName = fileName.replace("MonarchFood", "MF");
+        fileName = fileName.replace("MonarchHospitality", "MH");
+
+        // Replace underscores with space
+        fileName = fileName.replace("_", " ");
+
+        // Add space before capital letters, keeping acronyms intact
+        fileName = fileName.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " "); // Handles "SOAAdjustment" => "SOA Adjustment"
+        fileName = fileName.replaceAll("(?<=[a-z])(?=[A-Z])", " ");     // Handles "EntryForm" => "Entry Form"
+
+        System.out.println(fileName.trim());
+        return fileName.trim();
     }
 
     //JFXUtil.getFormattedClassTitle(this.getClass());
@@ -1406,5 +1442,51 @@ public class JFXUtil {
                 applyToCheckBoxes((Parent) node); // recursively check inner containers
             }
         }
+    }
+
+    public static boolean isGeneralFXML(String fxmlPath) {
+        String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
+
+        int underscoreIndex = fileName.indexOf('_');
+
+        if (underscoreIndex == -1) {
+            return true;
+        }
+
+        String suffix = fileName.substring(underscoreIndex + 1);
+
+        String[] generalSuffixes = {
+            "Entry", "Confirmation", "History"
+        };
+        for (String general : generalSuffixes) {
+            if (suffix.equals(general)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String formatForMessageBox(String message, int maxLinewidth) {
+        if (message == null || message.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder result = new StringBuilder();
+        String[] words = message.split(" ");
+        StringBuilder line = new StringBuilder();
+
+        for (String word : words) {
+            if (line.length() + word.length() + 1 > maxLinewidth) {
+                result.append(line.toString().trim()).append("\n");
+                line.setLength(0);
+            }
+            line.append(word).append(" ");
+        }
+
+        if (line.length() > 0) {
+            result.append(line.toString().trim());
+        }
+
+        return result.toString();
     }
 }
