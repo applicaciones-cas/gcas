@@ -90,14 +90,13 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
         private int pnEditMode;
         private TextField activeField;
         private JSONObject poJSON;
-        private  String brandID; 
         private String brandDesc;
         
         private ObservableList<ModelInvOrderDetail> invOrderDetail_data = FXCollections.observableArrayList();
         
         @FXML
         private TextField tfTransactionNo,tfBrand,tfInvType
-                ,tfROQ,tfClassification,tfQOH,tfReferenceNo,tfReservationQTY,tfOrderQuantity,tfBarCode,tfDescription;
+                ,tfROQ,tfClassification,tfQOH,tfReferenceNo,tfReservationQTY,tfOrderQuantity,tfBarCode,tfDescription,tfMeasure;
         
 
         @FXML
@@ -328,6 +327,12 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                     }
                     tfInvType.setText(lsInvType);
                     
+                    String lsMeasure = "";
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Measure().getDescription() != null) {
+                        lsMeasure = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Measure().getDescription();
+                    }
+                    tfMeasure.setText(lsMeasure);
+                    
                     String lsROQ = "0";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).getRecommendedOrder() != 0) {
                         lsROQ = String.valueOf(invRequestController.StockRequest().Detail(pnTblInvDetailRow).getRecommendedOrder());
@@ -413,19 +418,20 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                             String loTextFieldId = activeField.getId();
                             String lsValue = activeField.getText().trim();
                         switch (loTextFieldId) {                    
-                               case "tfBarCode":
-                                if (pnTblInvDetailRow < 0) {
+                              case "tfBarCode":
+                             if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
                                     break;
                                 }
-                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,null,psIndustryID
+                                
+                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,null,psIndustryID
                                 );
                                 
-                                if ("error".equals(poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                if ("error".equals(loJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfBarCode.setText("");
-                                    if (poJSON.get("tableRow") != null) {
+                                    if (loJSON.get("tableRow") != null) {
                                         pnTblInvDetailRow = (int) loJSON.get("tableRow");
                                     } else {
                                         break;
@@ -451,10 +457,11 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                 loadTableInvDetail();
                                 loadDetail();
                                 initDetailFocus();
-                               
+                                //selectTheExistedDetailFromStockRequest();
                                 break;
-                         case "tfDescription":
-                                if (pnTblInvDetailRow < 0) {
+
+                        case "tfDescription":
+                           if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
                                     break;
@@ -756,7 +763,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                      tfBarCode,tfDescription, tfOrderQuantity);
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfBarCode,tfDescription,tfReservationQTY,
-                    tfQOH,tfROQ,tfClassification);
+                    tfQOH,tfROQ,tfClassification,tfBrand);
             if (!tfReferenceNo.getText().isEmpty()) {
                 dpTransactionDate.setDisable(!lbShow);
             }
@@ -787,7 +794,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
 
         private void initTextFieldKeyPressed() {
             List<TextField> loTxtField = Arrays.asList(
-                    tfBrand,tfOrderQuantity,tfDescription,tfBarCode
+                    tfOrderQuantity,tfDescription,tfBarCode
                     );
 
             loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
@@ -825,7 +832,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                             CommonUtils.SetNextFocus(sourceField);
                             loadTableInvDetailAndSelectedRow();
                             break;
-                        case "tfBarCode":
+                         case "tfBarCode":
                              if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
@@ -856,7 +863,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
 
                                           int newQty = currentQty + 1;
 
-
+                                          System.out.println(newQty);
                                           tfOrderQuantity.setText(String.valueOf(newQty));
                                           invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
                                       }
@@ -896,7 +903,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
 
                                           int newQty = currentQty + 1;
 
-
+                                          System.out.println(newQty);
                                           tfOrderQuantity.setText(String.valueOf(newQty));
                                           invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
                                       }
@@ -904,36 +911,22 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                 loadDetail();
                                 initDetailFocus();
                                 break;
-                        case "tfBrand":
-                           if (pnTblInvDetailRow < 0) {
-                                      ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                      clearDetailFields();
-                                      break;
-                                  }
-                            loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false,psIndustryID);
-                            
-                            if ("error".equals(loJSON.get("result"))) {
-                                          ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                          tfBrand.setText("");
-                                          tfBrand.requestFocus();
-                                          break;
-                                      }
-                            
-                            brandID  = (String) loJSON.get("brandID");
-                         
-                            brandDesc = (String) loJSON.get("brandDesc");
-                            tfBrand.setText(brandDesc);
-                            
-                            if (!tfBarCode.getText().isEmpty()||!tfDescription.getText().isEmpty()) {
-                                tfOrderQuantity.requestFocus();
-                            }else{
-                                tfDescription.requestFocus();
-                            }
-                            loadTableInvDetail();
-                            break;
+                        
                     }
-                    event.consume();
-                    break;
+                    switch (fieldId) {
+                                     case "tfOrderQuantity":
+                                         setOrderQuantityToDetail(tfOrderQuantity.getText());
+                                          if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
+                                              pnTblInvDetailRow++;
+                                          }//step 9W
+
+                                          CommonUtils.SetNextFocus(sourceField);
+                                          loadTableInvDetailAndSelectedRow();
+                                          break;
+                                  }
+                              event.consume();
+                              break;
+                    
                 case UP:
                     setOrderQuantityToDetail(lsValue);
                     if ("tfOrderQuantity".equals(fieldId)) {
@@ -1028,7 +1021,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
             tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
             tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
             tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index9"));
+            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
             tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
             // Prevent column reordering
             tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {

@@ -460,7 +460,7 @@
                                     }
 
                                     if ("success".equals(poJSON.get("result"))) {
-                                        // Get current quantity
+                                       
                                         int currentQty = 0;
                                         try {
                                             currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
@@ -1007,7 +1007,7 @@
             tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
             tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
             tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index9"));
+            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
             tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
             // Prevent column reordering
             tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
