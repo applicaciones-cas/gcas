@@ -5,27 +5,26 @@
 package com.rmj.guanzongroup.sidebarmenus.table.model;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.StringProperty;
 
 /**
  *
  * @author User
  */
-public class ModelDeliveryAcceptance_Detail {
+public class ModelTableDetail {
 
-    public SimpleStringProperty index01;
-    public SimpleStringProperty index02;
-    public SimpleStringProperty index03;
-    public SimpleStringProperty index04;
-    public SimpleStringProperty index05;
-    public SimpleStringProperty index06;
-    public SimpleStringProperty index07;
-    public SimpleStringProperty index08;
-    public SimpleStringProperty index09;
-    public SimpleStringProperty index10;
+    public StringProperty index01;
+    public StringProperty index02;
+    public StringProperty index03;
+    public StringProperty index04;
+    public StringProperty index05;
+    public StringProperty index06;
+    public StringProperty index07;
+    public StringProperty index08;
+    public StringProperty index09;
+    public StringProperty index10;
 
-    public ModelDeliveryAcceptance_Detail(String index01,
+    public ModelTableDetail(String index01,
             String index02,
             String index03,
             String index04,
@@ -46,50 +45,6 @@ public class ModelDeliveryAcceptance_Detail {
         this.index08 = new SimpleStringProperty(index08);
         this.index09 = new SimpleStringProperty(index09);
         this.index10 = new SimpleStringProperty(index10);
-    }
-
-    public ModelDeliveryAcceptance_Detail(
-            String index01,
-            String index02,
-            String index03,
-            String index04,
-            String index05,
-            String index06,
-            String index07,
-            String index08
-    ) {
-
-        this.index01 = new SimpleStringProperty(index01);
-        this.index02 = new SimpleStringProperty(index02);
-        this.index03 = new SimpleStringProperty(index03);
-        this.index04 = new SimpleStringProperty(index04);
-        this.index05 = new SimpleStringProperty(index05);
-        this.index06 = new SimpleStringProperty(index06);
-        this.index07 = new SimpleStringProperty(index07);
-        this.index08 = new SimpleStringProperty(index08);
-    }
-    
-    public ModelDeliveryAcceptance_Detail(
-            String index01,
-            String index02,
-            String index03,
-            String index04,
-            String index05,
-            String index06,
-            String index07,
-            String index08,
-            String index09
-    ) {
-
-        this.index01 = new SimpleStringProperty(index01);
-        this.index02 = new SimpleStringProperty(index02);
-        this.index03 = new SimpleStringProperty(index03);
-        this.index04 = new SimpleStringProperty(index04);
-        this.index05 = new SimpleStringProperty(index05);
-        this.index06 = new SimpleStringProperty(index06);
-        this.index07 = new SimpleStringProperty(index07);
-        this.index08 = new SimpleStringProperty(index08);
-        this.index09 = new SimpleStringProperty(index09);
     }
 
     public String getIndex01() {
@@ -155,7 +110,7 @@ public class ModelDeliveryAcceptance_Detail {
     public void setIndex08(String index08) {
         this.index08.set(index08);
     }
-    
+
     public String getIndex09() {
         return index09.get();
     }
@@ -164,4 +119,11 @@ public class ModelDeliveryAcceptance_Detail {
         this.index09.set(index09);
     }
 
+    public String getIndex10() {
+        return index10.get();
+    }
+
+    public void setIndex10(String index10) {
+        this.index10.set(index10);
+    }
 }

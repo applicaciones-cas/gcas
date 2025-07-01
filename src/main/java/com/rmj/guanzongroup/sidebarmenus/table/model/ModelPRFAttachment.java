@@ -13,7 +13,7 @@ import javafx.collections.ObservableList;
  *
  * @author User
  */
-public class ModelDeliveryAcceptance_Attachment {
+public class ModelPRFAttachment {
 
     public StringProperty index01;
     public StringProperty index02;
@@ -35,9 +35,9 @@ public class ModelDeliveryAcceptance_Attachment {
     public StringProperty index18;
     public StringProperty index19;
     public StringProperty index20;
-    public static ObservableList<String> documentType = FXCollections.observableArrayList("Other", "Delivery Receipt", "Sales Invoice", "Official Receipt");
+    public static ObservableList<String> documentType = FXCollections.observableArrayList("Other", "Billing Statement", "Delivery Receipt", "Sales Invoice", "Official Receipt");
 
-    public ModelDeliveryAcceptance_Attachment(String index01,
+    public ModelPRFAttachment(String index01,
             String index02,
             String index03,
             String index04,
@@ -80,20 +80,11 @@ public class ModelDeliveryAcceptance_Attachment {
         this.index20 = new SimpleStringProperty(index20);
     }
 
-    public ModelDeliveryAcceptance_Attachment(String index01,
+    public ModelPRFAttachment(String index01,
             String index02) {
 
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
-
-    }
-
-    public ModelDeliveryAcceptance_Attachment(String index01,
-            String index02, String index03) {
-
-        this.index01 = new SimpleStringProperty(index01);
-        this.index02 = new SimpleStringProperty(index02);
-        this.index03 = new SimpleStringProperty(index03);
 
     }
 
@@ -111,14 +102,6 @@ public class ModelDeliveryAcceptance_Attachment {
 
     public void setIndex02(String index02) {
         this.index02.set(index02);
-    }
-
-    public String getIndex03() {
-        return index03.get();
-    }
-
-    public void setIndex03(String index03) {
-        this.index03.set(index03);
     }
 
 }
