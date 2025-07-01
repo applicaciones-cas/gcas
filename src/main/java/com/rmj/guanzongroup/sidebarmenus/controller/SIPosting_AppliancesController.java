@@ -814,7 +814,6 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                     break;
                 case "tfJEAcctDescription":
                     if (lsValue.isEmpty()) {
-//                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).Account_Chart().setDescription(lsValue);
                         poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setAccountCode(lsValue);
                     }
                     if ("error".equals((String) poJSON.get("result"))) {

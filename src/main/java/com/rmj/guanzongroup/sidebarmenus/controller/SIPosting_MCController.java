@@ -813,7 +813,6 @@ public class SIPosting_MCController implements Initializable, ScreenInterface {
                     break;
                 case "tfJEAcctDescription":
                     if (lsValue.isEmpty()) {
-//                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).Account_Chart().setDescription(lsValue);
                         poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setAccountCode(lsValue);
                     }
                     if ("error".equals((String) poJSON.get("result"))) {
