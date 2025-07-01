@@ -1912,7 +1912,7 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks, taJERemarks);
         JFXUtil.setFocusListener(txtMaster_Focus, tfReferenceNo, tfSINo, tfTerm, tfDiscountRate, tfDiscountAmount, tfTaxAmount, tfVatRate, tfFreightAmt,
                 tfVatSales, tfZeroVatSales, tfVatAmount, tfVatExemptSales, tfTotalCreditAmt, tfTotalDebitAmt);
-        JFXUtil.setFocusListener(txtDetail_Focus, tfCost, tfDiscRateDetail, tfAddlDiscAmtDetail, tfSRPAmount,
+        JFXUtil.setFocusListener(txtDetail_Focus, tfCost, tfDiscRateDetail, tfSRPAmount,
                 tfJEAcctCode, tfJEAcctDescription, tfCreditAmt, tfDebitAmt);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apJEDetail, apBrowse);
