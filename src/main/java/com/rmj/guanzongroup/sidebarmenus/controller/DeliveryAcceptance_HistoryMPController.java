@@ -85,6 +85,7 @@ import org.json.simple.JSONObject;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
+
 /**
  * FXML Controller class
  *
@@ -136,7 +137,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     @FXML
     private HBox hbButtons, hboxid;
     @FXML
-    private Button btnPrint, btnHistory, btnClose;
+    private Button btnPrint, btnHistory, btnClose, btnSerials;
     @FXML
     private Label lblStatus, lblSource;
     @FXML
@@ -265,6 +266,10 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
                         }
                         break;
                     case "btnSerials":
+                        if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
+                            ShowMessageFX.Warning(null, pxeModuleName, "Selected item is not serialized.");
+                            return;
+                        }
                         showSerialDialog();
                         return;
                     case "btnUpdate":
@@ -329,7 +334,6 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
 //            ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
 //        }
 //    }
-
     public void showSerialDialog() {
         poJSON = new JSONObject();
         try {
@@ -354,13 +358,14 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
             }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"));
-            DeliveryAcceptance_SerialCarController controller = new DeliveryAcceptance_SerialCarController();
+            DeliveryAcceptance_SerialMPController controller = new DeliveryAcceptance_SerialMPController();
             loader.setController(controller);
 
             if (controller != null) {
                 controller.setGRider(oApp);
                 controller.setObject(poPurchaseReceivingController);
                 controller.setEntryNo(pnDetail + 1);
+                controller.isFinancing(true);
             }
 
             Parent root = loader.load();
@@ -629,7 +634,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, 
+                            poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId,
                                     tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -777,7 +782,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
             tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
 
-             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
 
@@ -798,7 +803,6 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         } else {
             btnPrint.setText("Print");
         }
-
         try {
             Platform.runLater(() -> {
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
@@ -872,10 +876,10 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
                     tfDiscountRate.setText("0.00");
                 }
             });
-            
+
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryMPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
@@ -960,6 +964,7 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
 
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
+
                             try {
                                 lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
 
@@ -1207,7 +1212,6 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
         tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewOrderDetails, tblAttachments);  // need to use computed-size as min-width on particular column to work
 
-        
     }
 
     private int moveToNextRow(TableView table, TablePosition focusedCell) {
@@ -1280,6 +1284,9 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
 
         btnHistory.setVisible(lbShow3);
         btnHistory.setManaged(lbShow3);
+
+        btnSerials.setVisible(lbShow3);
+        btnSerials.setManaged(lbShow3);
 
         //Unkown || Ready
         btnClose.setVisible(lbShow4);

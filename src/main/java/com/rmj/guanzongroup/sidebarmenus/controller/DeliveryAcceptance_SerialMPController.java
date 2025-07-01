@@ -71,7 +71,6 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
     public boolean pbIsFinancing = false;
-
     private ObservableList<ModelDeliveryAcceptance_SerialMP> details_data = FXCollections.observableArrayList();
 
     @FXML
@@ -101,6 +100,8 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
         return (Stage) btnClose.getScene().getWindow();
     }
 
+
+
     /**
      * Initializes the controller class.
      */
@@ -121,17 +122,17 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
                 }
             });
             delay.play();
-            
+
             JFXUtil.setButtonsVisibility(!pbIsFinancing, btnOkay);
-            JFXUtil.setDisabled(pbIsFinancing,  apDetail);
+            JFXUtil.setDisabled(pbIsFinancing, apDetail);
             cbApplyToAll.setVisible(!pbIsFinancing);
         });
     }
-    
+
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
     }
-    
+
     public void isFinancing(boolean fbValue) {
         pbIsFinancing = fbValue;
     }

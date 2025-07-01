@@ -70,10 +70,9 @@ public class DeliveryAcceptance_SerialAppliancesController implements Initializa
     private final String pxeModuleName = "Purchase Order Receiving Serial Appliances";
     static PurchaseOrderReceiving poPurchaseReceivingController;
     public int pnEditMode;
-    public boolean pbIsFinancing = false;
-
+    public boolean isViewing = false;
     private ObservableList<ModelDeliveryAcceptance_SerialMP> details_data = FXCollections.observableArrayList();
-
+    public boolean pbIsFinancing = false;
     @FXML
     private AnchorPane apBrowse, apButton, apDetail;
     @FXML
@@ -100,10 +99,6 @@ public class DeliveryAcceptance_SerialAppliancesController implements Initializa
     private Stage getStage() {
         return (Stage) btnClose.getScene().getWindow();
     }
-    
-    public void isFinancing(boolean fbValue) {
-        pbIsFinancing = fbValue;
-    }
 
     /**
      * Initializes the controller class.
@@ -125,9 +120,9 @@ public class DeliveryAcceptance_SerialAppliancesController implements Initializa
                 }
             });
             delay.play();
-            
+
             JFXUtil.setButtonsVisibility(!pbIsFinancing, btnOkay);
-            JFXUtil.setDisabled(pbIsFinancing,  apDetail);
+            JFXUtil.setDisabled(pbIsFinancing, apDetail);
             cbApplyToAll.setVisible(!pbIsFinancing);
         });
     }
@@ -135,6 +130,10 @@ public class DeliveryAcceptance_SerialAppliancesController implements Initializa
 //    @Override
     public void setGRider(GRiderCAS foValue) {
         oApp = foValue;
+    }
+
+    public void isFinancing(boolean fbValue) {
+        pbIsFinancing = fbValue;
     }
 
     @FXML
