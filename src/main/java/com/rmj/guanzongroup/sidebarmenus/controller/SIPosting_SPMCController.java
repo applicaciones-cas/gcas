@@ -96,7 +96,7 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
     static PurchaseOrderReceiving poPurchaseReceivingController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private final String pxeModuleName = "SI Posting SPMC";
+    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
     private static final int ROWS_PER_PAGE = 50;
     int pnJEDetail = 0;
     int pnDetail = 0;
