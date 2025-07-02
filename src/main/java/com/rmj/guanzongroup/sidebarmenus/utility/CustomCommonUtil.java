@@ -417,6 +417,19 @@ public class CustomCommonUtil {
         return fbIs4Decimal ? "0.0000" : "0.00";
     }
 
+    public static String setDecimalValueToIntegerFormat(double fnValue) {
+        DecimalFormat format = new DecimalFormat("#,##0");
+        try {
+            return format.format(Math.round(fnValue)); // You can use Math.round() if you want to round the number
+            // return format.format((int) fnValue); // Use this if you want to just drop decimals without rounding
+        } catch (NumberFormatException e) {
+            System.err.println("Error: Invalid number format for input - " + fnValue);
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+        }
+        return "0";
+    }
+
     /* DATE FORMATTER UTILITY SECTION */
     /**
      * Converts a string representing a date in "yyyy-MM-dd" format to a
