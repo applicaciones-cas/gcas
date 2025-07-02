@@ -969,9 +969,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 case "tfSearchReferenceNo":
                     break;
             }
-            if (JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfSearchSupplier", "tfSearchReceiveBranch", "tfSearchReferenceNo")) {
-                loadRecordSearch();
-            }
+//            if (JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfSearchSupplier", "tfSearchReceiveBranch", "tfSearchReferenceNo")) {
+//                loadRecordSearch();
+//            }
         }
     };
 

@@ -903,9 +903,9 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                 case "tfSearchReferenceNo":
                     break;
             }
-            if (JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfSearchSupplier", "tfSearchReceiveBranch", "tfSearchReferenceNo")) {
-                loadRecordSearch();
-            }
+//            if (JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfSearchSupplier", "tfSearchReceiveBranch", "tfSearchReferenceNo")) {
+//                loadRecordSearch();
+//            }
         }
     };
 
