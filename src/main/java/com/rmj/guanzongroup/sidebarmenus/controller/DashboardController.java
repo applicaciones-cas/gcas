@@ -5,6 +5,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -1925,7 +1926,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml":
                     return new SIPosting_MonarchHospitalityController();
                 //SI POSTING HISTORY
-                    
+
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_History.fxml":
                     return new SIPosting_HistoryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryAppliances.fxml":
@@ -2242,6 +2243,8 @@ public class DashboardController implements Initializable {
      * @param fsFormName
      * @return
      */
+    boolean lbproceed = false;
+
     public TabPane loadAnimate(String fsFormName) {
         //set fxml controller class
         if (tabpane.getTabs().isEmpty()) {
@@ -2285,7 +2288,10 @@ public class DashboardController implements Initializable {
             });
 
             newTab.setOnClosed(event -> {
-                SIPostingWindowKeyEvent(newTab, fxObj, true);
+                if (lbproceed) {
+                    SIPostingWindowKeyEvent(newTab, fxObj, true);
+                    lbproceed = false;
+                }
             });
 
             newTab.setOnSelectionChanged(event -> {
@@ -2312,250 +2318,54 @@ public class DashboardController implements Initializable {
         return null;
     }
 
-    private void SIPostingWindowKeyEvent(Tab newTab, ScreenInterface fxObj, boolean isRemove) {
-        switch (newTab.getText()) {
-            case "SI Posting":
-                // No action needed
-                break;
-            case "SI Posting Car":
-                SIPosting_CarController carCtrl = (SIPosting_CarController) fxObj;
-                if (isRemove) {
-                    carCtrl.RemoveWindowEvent();
-                } else {
-                    carCtrl.TriggerWindowEvent();
-                }
-                break;
+    public class ControllerBinding {
 
-            case "SI Posting Appliances":
-                SIPosting_AppliancesController appCtrl = (SIPosting_AppliancesController) fxObj;
-                if (isRemove) {
-                    appCtrl.RemoveWindowEvent();
-                } else {
-                    appCtrl.TriggerWindowEvent();
-                }
-                break;
+        public final String tabName;
+        public final Class<? extends ScreenInterface> controllerClass;
 
-            case "SI Posting LP":
-                SIPosting_LPController lpCtrl = (SIPosting_LPController) fxObj;
-                if (isRemove) {
-                    lpCtrl.RemoveWindowEvent();
-                } else {
-                    lpCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting MP":
-                SIPosting_MPController mpCtrl = (SIPosting_MPController) fxObj;
-                if (isRemove) {
-                    mpCtrl.RemoveWindowEvent();
-                } else {
-                    mpCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting MC":
-                SIPosting_MCController mcCtrl = (SIPosting_MCController) fxObj;
-                if (isRemove) {
-                    mcCtrl.RemoveWindowEvent();
-                } else {
-                    mcCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting SPMC":
-                SIPosting_SPMCController spmcCtrl = (SIPosting_SPMCController) fxObj;
-                if (isRemove) {
-                    spmcCtrl.RemoveWindowEvent();
-                } else {
-                    spmcCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting SPCar":
-                SIPosting_SPCarController spcarCtrl = (SIPosting_SPCarController) fxObj;
-                if (isRemove) {
-                    spcarCtrl.RemoveWindowEvent();
-                } else {
-                    spcarCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting MF":
-                SIPosting_MonarchFoodController mfCtrl = (SIPosting_MonarchFoodController) fxObj;
-                if (isRemove) {
-                    mfCtrl.RemoveWindowEvent();
-                } else {
-                    mfCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting MH":
-                SIPosting_MonarchHospitalityController mhCtrl = (SIPosting_MonarchHospitalityController) fxObj;
-                if (isRemove) {
-                    mhCtrl.RemoveWindowEvent();
-                } else {
-                    mhCtrl.TriggerWindowEvent();
-                }
-                break;
-                
-            //SI POSTING HISTORY
-            case "SI Posting History":
-                // No action needed
-                break;
-
-            case "SI Posting History Appliances":
-                SIPosting_HistoryAppliancesController appHCtrl = (SIPosting_HistoryAppliancesController) fxObj;
-                if (isRemove) {
-                    appHCtrl.RemoveWindowEvent();
-                } else {
-                    appHCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting History Car":
-                SIPosting_HistoryCarController carHCtrl = (SIPosting_HistoryCarController) fxObj;
-                if (isRemove) {
-                    carHCtrl.RemoveWindowEvent();
-                } else {
-                    carHCtrl.TriggerWindowEvent();
-                }
-                break;
-                
-            case "SI Posting History LP":
-                SIPosting_HistoryLPController lpHCtrl = (SIPosting_HistoryLPController) fxObj;
-                if (isRemove) {
-                    lpHCtrl.RemoveWindowEvent();
-                } else {
-                    lpHCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting History MP":
-                SIPosting_HistoryMPController mpHCtrl = (SIPosting_HistoryMPController) fxObj;
-                if (isRemove) {
-                    mpHCtrl.RemoveWindowEvent();
-                } else {
-                    mpHCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting History MC":
-                SIPosting_HistoryMCController mcHCtrl = (SIPosting_HistoryMCController) fxObj;
-                if (isRemove) {
-                    mcHCtrl.RemoveWindowEvent();
-                } else {
-                    mcHCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting History SPMC":
-                SIPosting_HistorySPMCController spmcHCtrl = (SIPosting_HistorySPMCController) fxObj;
-                if (isRemove) {
-                    spmcHCtrl.RemoveWindowEvent();
-                } else {
-                    spmcHCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting History SPCar":
-                SIPosting_HistorySPCarController spcarHCtrl = (SIPosting_HistorySPCarController) fxObj;
-                if (isRemove) {
-                    spcarHCtrl.RemoveWindowEvent();
-                } else {
-                    spcarHCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting History MF":
-                SIPosting_HistoryMonarchFoodController mfHCtrl = (SIPosting_HistoryMonarchFoodController) fxObj;
-                if (isRemove) {
-                    mfHCtrl.RemoveWindowEvent();
-                } else {
-                    mfHCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            case "SI Posting History MH":
-                SIPosting_HistoryMonarchHospitalityController mhHCtrl = (SIPosting_HistoryMonarchHospitalityController) fxObj;
-                if (isRemove) {
-                    mhHCtrl.RemoveWindowEvent();
-                } else {
-                    mhHCtrl.TriggerWindowEvent();
-                }
-                break;
-
-            default:
-                // Handle unexpected tab names
-                break;
+        public ControllerBinding(String tabName, Class<? extends ScreenInterface> controllerClass) {
+            this.tabName = tabName;
+            this.controllerClass = controllerClass;
         }
+    }
 
-//        if (newTab.getText().equals("SI Posting")) {
-//        } else if (newTab.getText().equals("SI Posting Car")) {
-//            SIPosting_CarController localController = (SIPosting_CarController) fxObj;
-//            if (isRemove) {
-//                localController.RemoveWindowEvent();
-//            } else {
-//                localController.TriggerWindowEvent();
-//            }
-//        } else if (newTab.getText().equals("SI Posting Appliances")) {
-//            SIPosting_AppliancesController localController = (SIPosting_AppliancesController) fxObj;
-//            if (isRemove) {
-//                localController.RemoveWindowEvent();
-//            } else {
-//                localController.TriggerWindowEvent();
-//            }
-//        } else if (newTab.getText().equals("SI Posting LP")) {
-//            SIPosting_LPController localController = (SIPosting_LPController) fxObj;
-//            if (isRemove) {
-//                localController.RemoveWindowEvent();
-//            } else {
-//                localController.TriggerWindowEvent();
-//            }
-//        } else if (newTab.getText().equals("SI Posting MP")) {
-//            SIPosting_MPController localController = (SIPosting_MPController) fxObj;
-//            if (isRemove) {
-//                localController.RemoveWindowEvent();
-//            } else {
-//                localController.TriggerWindowEvent();
-//            }
-//        } else if (newTab.getText().equals("SI Posting MC")) {
-//            SIPosting_MCController localController = (SIPosting_MCController) fxObj;
-//            if (isRemove) {
-//                localController.RemoveWindowEvent();
-//            } else {
-//                localController.TriggerWindowEvent();
-//            }
-//        } else if (newTab.getText().equals("SI Posting SPMC")) {
-//            SIPosting_SPMCController localController = (SIPosting_SPMCController) fxObj;
-//            if (isRemove) {
-//                localController.RemoveWindowEvent();
-//            } else {
-//                localController.TriggerWindowEvent();
-//            }
-//        } else if (newTab.getText().equals("SI Posting SPCar")) {
-//            SIPosting_SPCarController localController = (SIPosting_SPCarController) fxObj;
-//            if (isRemove) {
-//                localController.RemoveWindowEvent();
-//            } else {
-//                localController.TriggerWindowEvent();
-//            }
-//        } else if (newTab.getText().equals("SI Posting MF")) {
-//            SIPosting_MonarchFoodController localController = (SIPosting_MonarchFoodController) fxObj;
-//            if (isRemove) {
-//                localController.RemoveWindowEvent();
-//            } else {
-//                localController.TriggerWindowEvent();
-//            }
-//        } else if (newTab.getText().equals("SI Posting MH")) {
-//            SIPosting_MonarchHospitalityController localController = (SIPosting_MonarchHospitalityController) fxObj;
-//            if (isRemove) {
-//                localController.RemoveWindowEvent();
-//            } else {
-//                localController.TriggerWindowEvent();
-//            }
-//        } else {
-//
-//        }
+    ControllerBinding[] controllerArray = new ControllerBinding[]{
+        new ControllerBinding("SI Posting", SIPosting_Controller.class),
+        new ControllerBinding("SI Posting Car", SIPosting_CarController.class),
+        new ControllerBinding("SI Posting Appliances", SIPosting_AppliancesController.class),
+        new ControllerBinding("SI Posting LP", SIPosting_LPController.class),
+        new ControllerBinding("SI Posting MP", SIPosting_MPController.class),
+        new ControllerBinding("SI Posting MC", SIPosting_MCController.class),
+        new ControllerBinding("SI Posting SPMC", SIPosting_SPMCController.class),
+        new ControllerBinding("SI Posting SPCar", SIPosting_SPCarController.class),
+        new ControllerBinding("SI Posting MF", SIPosting_MonarchFoodController.class),
+        new ControllerBinding("SI Posting MH", SIPosting_MonarchHospitalityController.class),
+        
+        new ControllerBinding("SI Posting History", SIPosting_HistoryController.class),
+        new ControllerBinding("SI Posting History Appliances", SIPosting_HistoryAppliancesController.class),
+        new ControllerBinding("SI Posting History Car", SIPosting_HistoryCarController.class),
+        new ControllerBinding("SI Posting History LP", SIPosting_HistoryLPController.class),
+        new ControllerBinding("SI Posting History MP", SIPosting_HistoryMPController.class),
+        new ControllerBinding("SI Posting History MC", SIPosting_HistoryMCController.class),
+        new ControllerBinding("SI Posting History SPMC", SIPosting_HistorySPMCController.class),
+        new ControllerBinding("SI Posting History SPCar", SIPosting_HistorySPCarController.class),
+        new ControllerBinding("SI Posting History MF", SIPosting_HistoryMonarchFoodController.class),
+        new ControllerBinding("SI Posting History MH", SIPosting_HistoryMonarchHospitalityController.class)
+    };
+
+    private void SIPostingWindowKeyEvent(Tab newTab, ScreenInterface fxObj, boolean isRemove) {
+        for (ControllerBinding cb : controllerArray) {
+            if (cb.tabName.equals(newTab.getText())) {
+                try {
+                    Object casted = cb.controllerClass.cast(fxObj);
+                    Method method = isRemove ? cb.controllerClass.getMethod("RemoveWindowEvent") : cb.controllerClass.getMethod("TriggerWindowEvent");
+                    method.invoke(casted);
+                } catch (Exception e) {
+                    e.printStackTrace(); // Or log nicely
+                }
+                break;
+            }
+        }
     }
 
     private String updateFxmlName(String fsFormName) {
@@ -2728,6 +2538,7 @@ public class DashboardController implements Initializable {
 
                     EventHandler<Event> onClosed = tab.getOnClosed();
                     if (onClosed != null) {
+                        lbproceed = true;
                         onClosed.handle(new Event(Event.ANY));
                     }
                 }
@@ -2991,6 +2802,7 @@ public class DashboardController implements Initializable {
 
                 EventHandler<Event> onClosed = tab.getOnClosed();
                 if (onClosed != null) {
+                    lbproceed = true;
                     onClosed.handle(new Event(Event.ANY));
                 }
             }
@@ -3464,7 +3276,6 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchHospitality.fxml\",\"controller_path\":\"SIPosting_HistoryMonarchHospitality.controller\",\"menu_id\":\"090\",\"menu_parent\":\"082\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml\",\"controller_path\":\"SIPosting_HistoryMonarchFood.controller\",\"menu_id\":\"091\",\"menu_parent\":\"082\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml\",\"controller_path\":\"SIPosting_HistoryLP.controller\",\"menu_id\":\"092\",\"menu_parent\":\"082\"}"
-                
                 + "]";
         JSONParser parser = new JSONParser();
         try {
