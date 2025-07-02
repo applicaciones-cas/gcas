@@ -503,7 +503,11 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                     lsStatus = "VOID";
                     break;
             }
-            
+              poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
+                poJSON =invRequestController.StockRequest().SearchIndustry(lsStatus, true); 
+                poJSON =invRequestController.StockRequest().SearchCategory(lsStatus, true); 
+                
+                System.out.println("Categ id sa inv" + invRequestController.StockRequest().Master().getCategoryId());
             lblTransactionStatus.setText(lsStatus); //step 15-16
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(invRequestController.StockRequest().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
