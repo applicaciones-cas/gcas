@@ -106,6 +106,8 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
     private String psCategoryId = "";
     private String psSupplierId = "";
     private String psBranchId = "";
+    private String psSearchSupplierId = "";
+    private String psSearchBranchId = "";
     private String openedAttachment = "";
     private boolean pbEntered = false;
 
@@ -517,7 +519,7 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
 
     public void retrievePOR() {
         poJSON = new JSONObject();
-        poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("siposting", psCompanyId, psSupplierId, psBranchId, tfSearchReferenceNo.getText());
+        poJSON = poPurchaseReceivingController.loadUnPostPurchaseOrderReceiving( tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(), tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
@@ -888,12 +890,12 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
             switch (lsTxtFieldID) {
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
-                        psSupplierId = "";
+                        psSearchSupplierId = "";
                     }
                     break;
                 case "tfSearchReceiveBranch":
                     if (lsValue.equals("")) {
-                        psBranchId = "";
+                        psSearchBranchId = "";
                     }
                     break;
                 case "tfSearchReferenceNo":
@@ -1006,25 +1008,25 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                psSupplierId = "";
+                                psSearchSupplierId = "";
                                 break;
                             } else {
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                psSearchSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                             }
-                            retrievePOR();
                             loadRecordSearch();
+                            retrievePOR();
                             return;
                         case "tfSearchReceiveBranch":
                             poJSON = poPurchaseReceivingController.SearchBranch(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                psBranchId = "";
+                                psSearchBranchId = "";
                                 break;
                             } else {
-                                psBranchId = poPurchaseReceivingController.Master().getBranchCode();
+                                psSearchBranchId = poPurchaseReceivingController.Master().getBranchCode();
                             }
-                            retrievePOR();
                             loadRecordSearch();
+                            retrievePOR();
                             return;
                         case "tfSearchReferenceNo":
                             poPurchaseReceivingController.Master().setTransactionNo(lsValue);
@@ -1302,8 +1304,8 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
     public void loadRecordSearch() {
         try {
             lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
-            tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poPurchaseReceivingController.Master().Supplier().getCompanyName());
-            tfSearchReceiveBranch.setText(psBranchId.equals("") ? "" : poPurchaseReceivingController.Master().Branch().getBranchName());
+            tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poPurchaseReceivingController.Master().Supplier().getCompanyName());
+            tfSearchReceiveBranch.setText(psSearchBranchId.equals("") ? "" : poPurchaseReceivingController.Master().Branch().getBranchName());
             JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1462,6 +1464,8 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
     public void loadRecordMaster() {
         try {
 
+            poPurchaseReceivingController.Master().setSupplierId(psSupplierId);
+            poPurchaseReceivingController.Master().setBranchCode(psBranchId);
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
@@ -1592,6 +1596,9 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
                 }
                 goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                 lbSelectTabJE = false;
+                                                                                
+                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                psBranchId = poPurchaseReceivingController.Master().getBranchCode();
             }
 
             poPurchaseReceivingController.loadAttachments();
@@ -2192,6 +2199,8 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
 
             imageinfo_temp.clear();
             JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear);
+            psSearchSupplierId = "";
+            psSearchBranchId = "";
             psSupplierId = "";
             psBranchId = "";
             JFXUtil.clearTextFields(apMaster, apDetail, apJEDetail, apJEMaster, apAttachments);
