@@ -998,6 +998,57 @@ public class DashboardController implements Initializable {
                     psIndustryID = "04";
                     psCategoryID = "0009";
                     return "SI Posting MH";
+                //SI POSTING HISTORY
+                //General
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_History.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
+                    return "SI Posting History";
+                //Appliances
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "SI Posting History Appliances";
+                //Car
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+                    return "SI Posting History Car";
+                //MC
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "SI Posting History MC";
+                //Mobile Phone
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+                    return "SI Posting History MP";
+                //Los Pedritos
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "SI Posting History LP";
+                //Spare Parts Car
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "SI Posting History SPCar";
+                //Spare Parts Motorcycle
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "SI Posting History SPMC";
+                //Monarch Food
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0008";
+                    return "SI Posting History MF";
+                //Monarch Hospitality
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchHospitality.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "SI Posting History MH";
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
                     return "Check Status Update";
@@ -1512,6 +1563,37 @@ public class DashboardController implements Initializable {
             // Monarch Hospitality
             case "SI Posting MH":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml";
+            //SI POSTING HISTORY
+            // General
+            case "SI Posting History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_History.fxml";
+            // Appliances
+            case "SI Posting History Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryAppliances.fxml";
+            // Car
+            case "SI Posting History Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryCar.fxml";
+            // Motorcycle
+            case "SI Posting History MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMC.fxml";
+            // Mobile Phone
+            case "SI Posting History MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMP.fxml";
+            // Los Pedritos
+            case "SI Posting History LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml";
+            // Spare Parts Car
+            case "SI Posting History SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPCar.fxml";
+            // Spare Parts Motorcycle
+            case "SI Posting History SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPMC.fxml";
+            // Monarch Food
+            case "SI Posting History MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml";
+            // Monarch Hospitality
+            case "SI Posting History MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchHospitality.fxml";
             /*END SI POSTING*/
             //Update
             case "Check Status Update":
@@ -1703,25 +1785,6 @@ public class DashboardController implements Initializable {
                     return new DeliveryAcceptance_ConfirmationMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchHospitality.fxml":
                     return new DeliveryAcceptance_ConfirmationMonarchHospitalityController();
-                // APPROVAL
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml":
-//                    return new DeliveryAcceptance_ApprovalController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalCar.fxml":
-//                    return new DeliveryAcceptance_ApprovalCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMC.fxml":
-//                    return new DeliveryAcceptance_ApprovalMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMP.fxml":
-//                    return new DeliveryAcceptance_ApprovalMPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalLP.fxml":
-//                    return new DeliveryAcceptance_ApprovalLPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPCar.fxml":
-//                    return new DeliveryAcceptance_ApprovalSPCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPMC.fxml":
-//                    return new DeliveryAcceptance_ApprovalSPMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchFood.fxml":
-//                    return new DeliveryAcceptance_ApprovalMonarchFoodController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchHospitality.fxml":
-//                    return new DeliveryAcceptance_ApprovalMonarchHospitalityController();
                 // HISTORY
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryAppliances.fxml":
                     return new DeliveryAcceptance_HistoryAppliancesController();
@@ -1861,6 +1924,28 @@ public class DashboardController implements Initializable {
                     return new SIPosting_MonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml":
                     return new SIPosting_MonarchHospitalityController();
+                //SI POSTING HISTORY
+                    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_History.fxml":
+                    return new SIPosting_HistoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryAppliances.fxml":
+                    return new SIPosting_HistoryAppliancesController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryCar.fxml":
+                    return new SIPosting_HistoryCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMC.fxml":
+                    return new SIPosting_HistoryMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMP.fxml":
+                    return new SIPosting_HistoryMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml":
+                    return new SIPosting_HistoryLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPCar.fxml":
+                    return new SIPosting_HistorySPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPMC.fxml":
+                    return new SIPosting_HistorySPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml":
+                    return new SIPosting_HistoryMonarchFoodController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchHospitality.fxml":
+                    return new SIPosting_HistoryMonarchHospitalityController();
 
                 /* AP PAYMENT ADJUSTMENT */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml":
@@ -1938,7 +2023,7 @@ public class DashboardController implements Initializable {
                         }
                     };
 
-                //UPDATE
+//                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
                     return new CheckStatusUpdateController();
 
@@ -2228,79 +2313,249 @@ public class DashboardController implements Initializable {
     }
 
     private void SIPostingWindowKeyEvent(Tab newTab, ScreenInterface fxObj, boolean isRemove) {
-        if (newTab.getText().equals("SI Posting")) {
-            SIPosting_Controller localController = (SIPosting_Controller) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting Car")) {
-            SIPosting_CarController localController = (SIPosting_CarController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting Appliances")) {
-            SIPosting_AppliancesController localController = (SIPosting_AppliancesController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting LP")) {
-            SIPosting_LPController localController = (SIPosting_LPController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting MP")) {
-            SIPosting_MPController localController = (SIPosting_MPController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting MC")) {
-            SIPosting_MCController localController = (SIPosting_MCController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting SPMC")) {
-            SIPosting_SPMCController localController = (SIPosting_SPMCController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting SPCar")) {
-            SIPosting_SPCarController localController = (SIPosting_SPCarController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting MF")) {
-            SIPosting_MonarchFoodController localController = (SIPosting_MonarchFoodController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting MH")) {
-            SIPosting_MonarchHospitalityController localController = (SIPosting_MonarchHospitalityController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else {
+        switch (newTab.getText()) {
+            case "SI Posting":
+                // No action needed
+                break;
+            case "SI Posting Car":
+                SIPosting_CarController carCtrl = (SIPosting_CarController) fxObj;
+                if (isRemove) {
+                    carCtrl.RemoveWindowEvent();
+                } else {
+                    carCtrl.TriggerWindowEvent();
+                }
+                break;
 
+            case "SI Posting Appliances":
+                SIPosting_AppliancesController appCtrl = (SIPosting_AppliancesController) fxObj;
+                if (isRemove) {
+                    appCtrl.RemoveWindowEvent();
+                } else {
+                    appCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting LP":
+                SIPosting_LPController lpCtrl = (SIPosting_LPController) fxObj;
+                if (isRemove) {
+                    lpCtrl.RemoveWindowEvent();
+                } else {
+                    lpCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting MP":
+                SIPosting_MPController mpCtrl = (SIPosting_MPController) fxObj;
+                if (isRemove) {
+                    mpCtrl.RemoveWindowEvent();
+                } else {
+                    mpCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting MC":
+                SIPosting_MCController mcCtrl = (SIPosting_MCController) fxObj;
+                if (isRemove) {
+                    mcCtrl.RemoveWindowEvent();
+                } else {
+                    mcCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting SPMC":
+                SIPosting_SPMCController spmcCtrl = (SIPosting_SPMCController) fxObj;
+                if (isRemove) {
+                    spmcCtrl.RemoveWindowEvent();
+                } else {
+                    spmcCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting SPCar":
+                SIPosting_SPCarController spcarCtrl = (SIPosting_SPCarController) fxObj;
+                if (isRemove) {
+                    spcarCtrl.RemoveWindowEvent();
+                } else {
+                    spcarCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting MF":
+                SIPosting_MonarchFoodController mfCtrl = (SIPosting_MonarchFoodController) fxObj;
+                if (isRemove) {
+                    mfCtrl.RemoveWindowEvent();
+                } else {
+                    mfCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting MH":
+                SIPosting_MonarchHospitalityController mhCtrl = (SIPosting_MonarchHospitalityController) fxObj;
+                if (isRemove) {
+                    mhCtrl.RemoveWindowEvent();
+                } else {
+                    mhCtrl.TriggerWindowEvent();
+                }
+                break;
+                
+            //SI POSTING HISTORY
+            case "SI Posting History":
+                // No action needed
+                break;
+
+            case "SI Posting History Appliances":
+                SIPosting_HistoryAppliancesController appHCtrl = (SIPosting_HistoryAppliancesController) fxObj;
+                if (isRemove) {
+                    appHCtrl.RemoveWindowEvent();
+                } else {
+                    appHCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting History Car":
+                SIPosting_HistoryCarController carHCtrl = (SIPosting_HistoryCarController) fxObj;
+                if (isRemove) {
+                    carHCtrl.RemoveWindowEvent();
+                } else {
+                    carHCtrl.TriggerWindowEvent();
+                }
+                break;
+                
+            case "SI Posting History LP":
+                SIPosting_HistoryLPController lpHCtrl = (SIPosting_HistoryLPController) fxObj;
+                if (isRemove) {
+                    lpHCtrl.RemoveWindowEvent();
+                } else {
+                    lpHCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting History MP":
+                SIPosting_HistoryMPController mpHCtrl = (SIPosting_HistoryMPController) fxObj;
+                if (isRemove) {
+                    mpHCtrl.RemoveWindowEvent();
+                } else {
+                    mpHCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting History MC":
+                SIPosting_HistoryMCController mcHCtrl = (SIPosting_HistoryMCController) fxObj;
+                if (isRemove) {
+                    mcHCtrl.RemoveWindowEvent();
+                } else {
+                    mcHCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting History SPMC":
+                SIPosting_HistorySPMCController spmcHCtrl = (SIPosting_HistorySPMCController) fxObj;
+                if (isRemove) {
+                    spmcHCtrl.RemoveWindowEvent();
+                } else {
+                    spmcHCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting History SPCar":
+                SIPosting_HistorySPCarController spcarHCtrl = (SIPosting_HistorySPCarController) fxObj;
+                if (isRemove) {
+                    spcarHCtrl.RemoveWindowEvent();
+                } else {
+                    spcarHCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting History MF":
+                SIPosting_HistoryMonarchFoodController mfHCtrl = (SIPosting_HistoryMonarchFoodController) fxObj;
+                if (isRemove) {
+                    mfHCtrl.RemoveWindowEvent();
+                } else {
+                    mfHCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            case "SI Posting History MH":
+                SIPosting_HistoryMonarchHospitalityController mhHCtrl = (SIPosting_HistoryMonarchHospitalityController) fxObj;
+                if (isRemove) {
+                    mhHCtrl.RemoveWindowEvent();
+                } else {
+                    mhHCtrl.TriggerWindowEvent();
+                }
+                break;
+
+            default:
+                // Handle unexpected tab names
+                break;
         }
+
+//        if (newTab.getText().equals("SI Posting")) {
+//        } else if (newTab.getText().equals("SI Posting Car")) {
+//            SIPosting_CarController localController = (SIPosting_CarController) fxObj;
+//            if (isRemove) {
+//                localController.RemoveWindowEvent();
+//            } else {
+//                localController.TriggerWindowEvent();
+//            }
+//        } else if (newTab.getText().equals("SI Posting Appliances")) {
+//            SIPosting_AppliancesController localController = (SIPosting_AppliancesController) fxObj;
+//            if (isRemove) {
+//                localController.RemoveWindowEvent();
+//            } else {
+//                localController.TriggerWindowEvent();
+//            }
+//        } else if (newTab.getText().equals("SI Posting LP")) {
+//            SIPosting_LPController localController = (SIPosting_LPController) fxObj;
+//            if (isRemove) {
+//                localController.RemoveWindowEvent();
+//            } else {
+//                localController.TriggerWindowEvent();
+//            }
+//        } else if (newTab.getText().equals("SI Posting MP")) {
+//            SIPosting_MPController localController = (SIPosting_MPController) fxObj;
+//            if (isRemove) {
+//                localController.RemoveWindowEvent();
+//            } else {
+//                localController.TriggerWindowEvent();
+//            }
+//        } else if (newTab.getText().equals("SI Posting MC")) {
+//            SIPosting_MCController localController = (SIPosting_MCController) fxObj;
+//            if (isRemove) {
+//                localController.RemoveWindowEvent();
+//            } else {
+//                localController.TriggerWindowEvent();
+//            }
+//        } else if (newTab.getText().equals("SI Posting SPMC")) {
+//            SIPosting_SPMCController localController = (SIPosting_SPMCController) fxObj;
+//            if (isRemove) {
+//                localController.RemoveWindowEvent();
+//            } else {
+//                localController.TriggerWindowEvent();
+//            }
+//        } else if (newTab.getText().equals("SI Posting SPCar")) {
+//            SIPosting_SPCarController localController = (SIPosting_SPCarController) fxObj;
+//            if (isRemove) {
+//                localController.RemoveWindowEvent();
+//            } else {
+//                localController.TriggerWindowEvent();
+//            }
+//        } else if (newTab.getText().equals("SI Posting MF")) {
+//            SIPosting_MonarchFoodController localController = (SIPosting_MonarchFoodController) fxObj;
+//            if (isRemove) {
+//                localController.RemoveWindowEvent();
+//            } else {
+//                localController.TriggerWindowEvent();
+//            }
+//        } else if (newTab.getText().equals("SI Posting MH")) {
+//            SIPosting_MonarchHospitalityController localController = (SIPosting_MonarchHospitalityController) fxObj;
+//            if (isRemove) {
+//                localController.RemoveWindowEvent();
+//            } else {
+//                localController.TriggerWindowEvent();
+//            }
+//        } else {
+//
+//        }
     }
 
     private String updateFxmlName(String fsFormName) {
@@ -3190,13 +3445,26 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MP.fxml\",\"controller_path\":\"SIPosting_MP.controller\",\"menu_id\":\"074\",\"menu_parent\":\"067\"},"
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml\",\"controller_path\":\"SIPosting_MonarchHospitality.controller\",\"menu_id\":\"075\",\"menu_parent\":\"067\"},"
                 + "{\"access_level\":\"05\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchFood.fxml\",\"controller_path\":\"SIPosting_MonarchFood.controller\",\"menu_id\":\"076\",\"menu_parent\":\"067\"},"
-                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_LP.fxml\",\"controller_path\":\"SIPosting_LP.controller\",\"menu_id\":\"077\",\"menu_parent\":\"067\"}"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_LP.fxml\",\"controller_path\":\"SIPosting_LP.controller\",\"menu_id\":\"077\",\"menu_parent\":\"067\"},"
                 //STATUS UPDATE
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Update\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"078\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Status Update\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml\",\"controller_path\":\"CheckStatusUpdateController\",\"menu_id\":\"079\",\"menu_parent\":\"078\"},"
                 //IMPORTING
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Import\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"080\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Importing\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml\",\"controller_path\":\"CheckImportingController\",\"menu_id\":\"081\",\"menu_parent\":\"080\"},"
+                //SI POSTING HISTORY
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"SI Posting\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"082\",\"menu_parent\":\"007\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryAppliances.fxml\",\"controller_path\":\"SIPosting_HistoryAppliances.controller\",\"menu_id\":\"083\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_History.fxml\",\"controller_path\":\"SIPosting_History.controller\",\"menu_id\":\"084\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryCar.fxml\",\"controller_path\":\"SIPosting_HistoryCar.controller\",\"menu_id\":\"085\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"SPCar\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPCar.fxml\",\"controller_path\":\"SIPosting_HistorySPCar.controller\",\"menu_id\":\"086\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMC.fxml\",\"controller_path\":\"SIPosting_HistoryMC.controller\",\"menu_id\":\"087\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"SPMC\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPMC.fxml\",\"controller_path\":\"SIPosting_HistorySPMC.controller\",\"menu_id\":\"088\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMP.fxml\",\"controller_path\":\"SIPosting_HistoryMP.controller\",\"menu_id\":\"089\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchHospitality.fxml\",\"controller_path\":\"SIPosting_HistoryMonarchHospitality.controller\",\"menu_id\":\"090\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml\",\"controller_path\":\"SIPosting_HistoryMonarchFood.controller\",\"menu_id\":\"091\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml\",\"controller_path\":\"SIPosting_HistoryLP.controller\",\"menu_id\":\"092\",\"menu_parent\":\"082\"}"
+                
                 + "]";
         JSONParser parser = new JSONParser();
         try {
