@@ -5,6 +5,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.SIPosting_MCController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -360,8 +361,17 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                     loadTableDetail();
                 });
             });
-            stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialAppliances.fxml"), controller, "Inventory Serial", true, true, false);
-
+            
+            stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialAppliances.fxml"), controller, "Inventory Serial", true, false, false);
+            if (stageSerial.getScene() != null) {
+                setKeyEventSerial(stageSerial.getScene());
+            } else {
+                stageSerial.getRoot().sceneProperty().addListener((obs, oldScene, newScene) -> {
+                    if (newScene != null) {
+                        setKeyEvent(newScene);
+                    }
+                });
+            }
         } catch (IOException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -369,6 +379,18 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
         } catch (GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void setKeyEventSerial(Scene scene) {
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.F5) {
+                System.out.println("tested key press");
+
+                if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.getEditMode(), EditMode.READY, EditMode.UPDATE)) {
+                    showAttachmentDialog();
+                }
+            }
+        });
     }
 
     @FXML
@@ -408,6 +430,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            closeDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -555,6 +578,15 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+    }
+    
+    private void closeDialog(){
+        if(stageAttachment != null){
+            stageAttachment.closeSerialDialog();
+        }
+        if(stageSerial != null){
+            stageSerial.closeSerialDialog();
         }
     }
 
@@ -944,18 +976,20 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
     };
 
     public void moveNext() {
-        double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-        apDetail.requestFocus();
-        double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-        if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
-                && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
-            tfCost.requestFocus();
-        } else {
-            pnDetail = JFXUtil.moveToNextRow(tblViewTransDetailList);
-            loadRecordDetail();
-            tfOrderNo.setText("");
-            tfCost.requestFocus();
+        if(poPurchaseReceivingController.getDetailCount() > 0){
+            double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
+            apDetail.requestFocus();
+            double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
+            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                tfCost.requestFocus();
+            } else {
+                pnDetail = JFXUtil.moveToNextRow(tblViewTransDetailList);
+                loadRecordDetail();
+                tfOrderNo.setText("");
+                tfCost.requestFocus();
+            }
         }
     }
 
@@ -1595,15 +1629,15 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                 goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                 lbSelectTabJE = false;
             }
-
+            closeDialog();
             poPurchaseReceivingController.loadAttachments();
-            if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
-                if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
-                    stageAttachment.closeSerialDialog();
-                }
-            } else {
-                stageAttachment.closeSerialDialog();
-            }
+//            if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
+//                if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
+//                    stageAttachment.closeSerialDialog();
+//                }
+//            } else {
+//                stageAttachment.closeSerialDialog();
+//            }
 
             Platform.runLater(() -> {
                 loadTableDetail();
@@ -2196,6 +2230,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
 
             cbVatInclusive.setSelected(false);
             cbVatable.setSelected(false);
+            closeDialog();
         });
     }
 }

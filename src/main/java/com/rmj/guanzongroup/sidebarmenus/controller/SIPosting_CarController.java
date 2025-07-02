@@ -5,6 +5,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.SIPosting_MCController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -428,6 +429,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            closeDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -575,6 +577,15 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        }
+    }
+    
+    private void closeDialog(){
+        if(stageAttachment != null){
+            stageAttachment.closeSerialDialog();
+        }
+        if(stageSerial != null){
+            stageSerial.closeSerialDialog();
         }
     }
 
@@ -964,18 +975,20 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     };
 
     public void moveNext() {
-        double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-        apDetail.requestFocus();
-        double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-        if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
-                && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
-            tfCost.requestFocus();
-        } else {
-            pnDetail = JFXUtil.moveToNextRow(tblViewTransDetailList);
-            loadRecordDetail();
-            tfOrderNo.setText("");
-            tfCost.requestFocus();
+        if(poPurchaseReceivingController.getDetailCount() > 0){
+            double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
+            apDetail.requestFocus();
+            double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
+            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                tfCost.requestFocus();
+            } else {
+                pnDetail = JFXUtil.moveToNextRow(tblViewTransDetailList);
+                loadRecordDetail();
+                tfOrderNo.setText("");
+                tfCost.requestFocus();
+            }
         }
     }
 
@@ -1615,15 +1628,15 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                 lbSelectTabJE = false;
             }
-
+            closeDialog();
             poPurchaseReceivingController.loadAttachments();
-            if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
-                if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
-                    stageAttachment.closeSerialDialog();
-                }
-            } else {
-                stageAttachment.closeSerialDialog();
-            }
+//            if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
+//                if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
+//                    stageAttachment.closeSerialDialog();
+//                }
+//            } else {
+//                stageAttachment.closeSerialDialog();
+//            }
 
             Platform.runLater(() -> {
                 loadTableDetail();
@@ -2217,6 +2230,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
             cbVatInclusive.setSelected(false);
             cbVatable.setSelected(false);
+            closeDialog();
         });
     }
 }
