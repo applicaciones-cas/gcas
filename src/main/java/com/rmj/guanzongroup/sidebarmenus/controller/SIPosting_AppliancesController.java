@@ -5,7 +5,6 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import static com.rmj.guanzongroup.sidebarmenus.controller.SIPosting_MCController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -357,9 +356,6 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
             }
             stageSerial.setOnHidden(event -> {
                 moveNext();
-                Platform.runLater(() -> {
-                    loadTableDetail();
-                });
             });
             
             stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialAppliances.fxml"), controller, "Inventory Serial", true, false, false);
@@ -2014,6 +2010,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewTransDetailList.getSelectionModel().getSelectedItem();
                     if (selected != null) {
+                        stageSerial.closeSerialDialog();
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
                         tfCost.requestFocus();

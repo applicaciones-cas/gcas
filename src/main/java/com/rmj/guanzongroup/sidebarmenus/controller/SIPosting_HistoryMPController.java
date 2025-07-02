@@ -16,8 +16,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +37,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -49,7 +46,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
-import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
@@ -60,20 +56,15 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
-import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
-import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.purchasing.controller.PurchaseOrderReceiving;
 import org.guanzon.cas.purchasing.services.PurchaseOrderReceivingControllers;
 import org.guanzon.cas.purchasing.status.PurchaseOrderReceivingStatus;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
-import javafx.animation.PauseTransition;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -351,11 +342,8 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
             }
             stageSerial.setOnHidden(event -> {
                 moveNext();
-                Platform.runLater(() -> {
-                    loadTableDetail();
-                });
             });
-            
+
             stageSerial.showDialog((Stage) btnBrowse.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialMP.fxml"), controller, "Inventory Serial", true, false, false);
             if (stageSerial.getScene() != null) {
                 setKeyEventSerial(stageSerial.getScene());
@@ -386,7 +374,7 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
             }
         });
     }
-    
+
     @FXML
     private void cmdCheckBox_Click(ActionEvent event) {
         poJSON = new JSONObject();
@@ -415,7 +403,7 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(),tfSearchReferenceNo.getText());
+                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
@@ -452,18 +440,18 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
                     case "btnArrowLeft":
                         slideImage(-1);
                         break;
-                        
+
                     default:
                         ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                         break;
                 }
-                
+
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnArrowRight", "btnArrowLeft")) {
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
                     loadTableAttachment();
-                    
+
                     Tab currentTab = tabPaneForm.getSelectionModel().getSelectedItem();
                     if (currentTab.getId().equals("tabJE")) {
                         populateJE();
@@ -482,16 +470,16 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
             }
         }
     }
-    
-    private void closeDialog(){
-        if(stageAttachment != null){
+
+    private void closeDialog() {
+        if (stageAttachment != null) {
             stageAttachment.closeSerialDialog();
         }
-        if(stageSerial != null){
+        if (stageSerial != null) {
             stageSerial.closeSerialDialog();
         }
     }
-     
+
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -523,7 +511,7 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
     };
 
     public void moveNext() {
-        if(poPurchaseReceivingController.getDetailCount() > 0){
+        if (poPurchaseReceivingController.getDetailCount() > 0) {
             double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
             apDetail.requestFocus();
             double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
@@ -588,7 +576,7 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
                             return;
                         case "tfSearchReferenceNo":
                             poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId,
-                                    tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(),tfSearchReferenceNo.getText());
+                                    tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
@@ -1229,6 +1217,7 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewTransDetailList.getSelectionModel().getSelectedItem();
                     if (selected != null) {
+                        stageSerial.closeSerialDialog();
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
                         tfCost.requestFocus();

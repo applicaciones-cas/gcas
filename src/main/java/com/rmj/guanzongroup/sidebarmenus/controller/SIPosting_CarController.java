@@ -179,7 +179,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
+        
 
+        
         initTextFields();
         initDatePickers();
         initMainGrid();
@@ -368,9 +370,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             }
             stageSerial.setOnHidden(event -> {
                 moveNext();
-                Platform.runLater(() -> {
-                    loadTableDetail();
-                });
             });
 
             stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"), controller, "Inventory Serial", true, false, false);
@@ -579,12 +578,12 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-    
-    private void closeDialog(){
-        if(stageAttachment != null){
+
+    private void closeDialog() {
+        if (stageAttachment != null) {
             stageAttachment.closeSerialDialog();
         }
-        if(stageSerial != null){
+        if (stageSerial != null) {
             stageSerial.closeSerialDialog();
         }
     }
@@ -975,7 +974,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     };
 
     public void moveNext() {
-        if(poPurchaseReceivingController.getDetailCount() > 0){
+        if (poPurchaseReceivingController.getDetailCount() > 0) {
             double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
             apDetail.requestFocus();
             double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
