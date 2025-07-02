@@ -199,7 +199,6 @@ public class SIPosting_HistoryMonarchHospitalityController implements Initializa
 
         initAttachmentPreviewPane();
 
-
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }
@@ -339,7 +338,7 @@ public class SIPosting_HistoryMonarchHospitalityController implements Initializa
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                        poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
@@ -432,7 +431,6 @@ public class SIPosting_HistoryMonarchHospitalityController implements Initializa
         }
     };
 
-
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -473,7 +471,8 @@ public class SIPosting_HistoryMonarchHospitalityController implements Initializa
                             return;
                         case "tfSearchReferenceNo":
                             stageAttachment.closeSerialDialog();
-                            poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                            poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId,
+                                    tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
