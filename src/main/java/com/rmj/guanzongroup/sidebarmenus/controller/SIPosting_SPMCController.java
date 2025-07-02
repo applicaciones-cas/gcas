@@ -96,7 +96,7 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
     static PurchaseOrderReceiving poPurchaseReceivingController;
     private JSONObject poJSON;
     public int pnEditMode;
-    private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
+    private final String pxeModuleName = "SI Posting SPMC";
     private static final int ROWS_PER_PAGE = 50;
     int pnJEDetail = 0;
     int pnDetail = 0;
@@ -363,8 +363,10 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnClose":
+
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            stageAttachment.closeSerialDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -904,6 +906,9 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
     };
 
     public void moveNext() {
+        if (poPurchaseReceivingController.getDetailCount() <= 0) {
+            return;
+        }
         double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
         apDetail.requestFocus();
         double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
@@ -2183,6 +2188,8 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
 
     public void clearTextFields() {
         Platform.runLater(() -> {
+            stageAttachment.closeSerialDialog();
+
             imageinfo_temp.clear();
             JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear);
             psSupplierId = "";

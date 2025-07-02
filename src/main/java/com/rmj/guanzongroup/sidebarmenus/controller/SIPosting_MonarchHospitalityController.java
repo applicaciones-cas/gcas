@@ -368,6 +368,7 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            stageAttachment.closeSerialDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -907,6 +908,9 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
     };
 
     public void moveNext() {
+        if (poPurchaseReceivingController.getDetailCount() <= 0) {
+            return;
+        }
         double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
         apDetail.requestFocus();
         double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
@@ -2178,6 +2182,8 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
 
     public void clearTextFields() {
         Platform.runLater(() -> {
+            stageAttachment.closeSerialDialog();
+
             imageinfo_temp.clear();
             JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear);
             psSupplierId = "";
