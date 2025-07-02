@@ -3,8 +3,8 @@ com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryMonarchFoodCon
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalLPController$4.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_EntryMPGeneralController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryController$2.class
-com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_EntryCarController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\CompanyController.class
+com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_UpdateMcController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\AffiliatedCompanyController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMPController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationSPCarController$2.class
@@ -91,6 +91,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_UpdateMcGeneralControlle
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalMPController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMCController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalSPMCController$3.class
+com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_EntrySpController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_HistoryMonarchFoodController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationSPCarController$4.class
 com\rmj\guanzongroup\sidebarmenus\controller\DashboardController$2.class
@@ -103,6 +104,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalMPController$
 com\rmj\guanzongroup\sidebarmenus\controller\TermController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelListParameter.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryLPController$2.class
+com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_EntrySpController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalSPCarController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntrySPCarController$3.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalSPMCController$2.class
@@ -133,7 +135,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationMonarchHo
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_EntryMcGeneralController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationMonarchFoodController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMPController$2.class
-com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvOrderInformation.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_HistoryCarController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelLog_In_Company.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_HistoryMcSpController.class
@@ -201,6 +202,7 @@ com\rmj\guanzongroup\sidebarmenus\table\model\ModelLog_In_Industry.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_EntryCarController.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_ConfirmationMcController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalMonarchHospitalityController.class
+com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_UpdateMcController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMCController$3.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationMPController$3.class
 com\rmj\guanzongroup\sidebarmenus\controller\InventoryTypeController.class
@@ -221,6 +223,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\InventoryMaintenanceController.clas
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationMPController$1.class
 com\rmj\guanzongroup\sidebarmenus\table\model\SharedModel.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_EntryMPController.class
+com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_UpdateMcController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryLPController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryMonarchHospitalityController$1.class
 com\rmj\guanzongroup\sidebarmenus\GriderGui.class
@@ -258,7 +261,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryMCController$1
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel2Controller.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryController$1.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelResultSet.class
-com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvStockRequest.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryMonarchFoodController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalLPController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistorySPCarController$1.class
@@ -273,7 +275,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationSPMCController$3.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_UpdateCarController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelSocialMedia.class
-com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_EntryMcSpController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\LaborController.class
 com\rmj\guanzongroup\sidebarmenus\table\model\ModelAPClientLedger.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalSPMCController.class
@@ -296,7 +297,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMonarchHospitali
 com\rmj\guanzongroup\sidebarmenus\controller\CategoryLevel3Controller.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_UpdateMPGeneralController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryController.class
-com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_EntryCarSpController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryCarController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_EntryMPGeneralController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMonarchHospitalityController$2.class
@@ -310,7 +310,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryMPController$1
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_EntryCarGeneralController.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_UpdateCarSpController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationSPMCController$2.class
-com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_EntryCarSpController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMonarchHospitalityController$3.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryMPController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMonarchFoodController$4.class
@@ -335,11 +334,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\LoginControllerHolder.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalCarController$4.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryLPController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\SelectIndustryCompany$Company.class
-com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_EntryCarController$1.class
-com\rmj\guanzongroup\sidebarmenus\App.class
-com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationSPMCController$4.class
-com\rmj\guanzongroup\sidebarmenus\controller\DashboardController$2$1.class
-com\rmj\guanzongroup\sidebarmenus\table\model\ModelPurchaseOrderDetail.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalCarController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryMPController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalLPController.class
@@ -348,10 +342,10 @@ com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvLedger.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalMonarchHospitalityController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryLPController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_ConfirmationCarSpController.class
-com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_EntryMcSpController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalLPController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalMonarchHospitalityController$3.class
+com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_EntrySpController.class
 com\rmj\guanzongroup\sidebarmenus\controller\FXMLDocumentController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\RegionController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMonarchFoodController$3.class

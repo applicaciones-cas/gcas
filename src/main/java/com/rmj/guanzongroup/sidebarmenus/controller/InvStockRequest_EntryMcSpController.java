@@ -242,7 +242,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                             loadTableInvDetail();
                             break;
 
-                        case "tfBarcode":
+                        case "tfBarCode":
                                 if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
@@ -503,7 +503,11 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                     lsStatus = "VOID";
                     break;
             }
-            
+              poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
+                poJSON =invRequestController.StockRequest().SearchIndustry(lsStatus, true); 
+                poJSON =invRequestController.StockRequest().SearchCategory(lsStatus, true); 
+                
+                System.out.println("Categ id sa inv" + invRequestController.StockRequest().Master().getCategoryId());
             lblTransactionStatus.setText(lsStatus); //step 15-16
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(invRequestController.StockRequest().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
@@ -555,7 +559,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                 detail.Inventory().Model().getDescription(),
                                 detail.Inventory().Variant().getDescription(),
                                 detail.Inventory().Color().getDescription(),
-                                detail.Inventory().getInventoryTypeId(),
+                                detail.Inventory().InventoryType().getDescription(),
                                 String.valueOf(detail.getRecommendedOrder()),
                                 detail.getClassification(),
                                 String.valueOf(detail.getQuantityOnHand()),
@@ -735,7 +739,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                             CommonUtils.SetNextFocus(sourceField);
                             loadTableInvDetailAndSelectedRow();
                             break;
-                        case "tfBarcode":
+                        case "tfBarCode":
                              if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
@@ -837,7 +841,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                             if (!tfBarCode.getText().isEmpty()||!tfDescription.getText().isEmpty()) {
                                 tfOrderQuantity.requestFocus();
                             }else{
-                                tfDescription.requestFocus();
+                                tfBarCode.requestFocus();
                             }
                             loadTableInvDetail();
                             break;

@@ -68,6 +68,7 @@
      * @author PC
      */
     public class InvStockRequest_EntryMcController implements Initializable, ScreenInterface{
+        private String psFormName = "Inventory Request";
         private InvWarehouseControllers invRequestController;
         private GRiderCAS poApp;
         private String psIndustryID = "";
@@ -79,8 +80,8 @@
         private int pnEditMode;
         private TextField activeField;
         private JSONObject poJSON;
-        private String psFormName = "Inventory Request";
-        private  String brandID; 
+        
+        private  String brandID,categID; 
         private String brandDesc;
                              
         private ObservableList<ModelInvOrderDetail> invOrderDetail_data = FXCollections.observableArrayList();
@@ -155,6 +156,7 @@
                         
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                        
                         loadRecordSearch();
                         
                         //reset the transaction
@@ -174,15 +176,16 @@
                 tblViewOrderDetails.setOnMouseClicked(this::tblViewOrderDetails_Clicked);
                 initButtons(EditMode.UNKNOWN);
                 initFields(EditMode.UNKNOWN);
-                System.out.println("industry -"+psIndustryID +"\nCompanyy id- "+ psCompanyID+"\nbranch -"+psBranchCode + "\ncategory id -"+psCategoryID);
-            }catch(ExceptionInInitializerError ex) {
+                
+                        
+                }catch(ExceptionInInitializerError ex) {
                 Logger.getLogger(InvStockRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
 
             }
         }
         private void loadRecordSearch() {
             try {
-                //pero hindi ko po ma get dito
+              
                 lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
 
             } catch (GuanzonException | SQLException ex) {
@@ -264,11 +267,11 @@
                         break;   
                 }
                 poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
-//                poJSON =invRequestController.StockRequest().SearchIndustry(lsStatus, true); 
-//                poJSON =invRequestController.StockRequest().SearchCategory(lsStatus, true); 
-                  System.out.println("ID CATEG 1 -"+invRequestController.StockRequest().Master().getCategoryId());
-                invRequestController.StockRequest().Master().setCategoryId("1");
-                System.out.println("ID CATEG 2"+invRequestController.StockRequest().Master().getCategoryId());
+                poJSON =invRequestController.StockRequest().SearchIndustry(lsStatus, true); 
+                poJSON =invRequestController.StockRequest().SearchCategory(lsStatus, true); 
+                categID = (String) poJSON.get("categID");  
+                System.out.println("Category id"+categID);
+                System.out.println("Categ id sa inv" + invRequestController.StockRequest().Master().getCategoryId());
                 lblTransactionStatus.setText(lsStatus);
                 dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                         SQLUtil.dateFormat(invRequestController.StockRequest().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
@@ -374,6 +377,7 @@
             switch (lsButton) {
 
                         case "btnBrowse":
+                            invRequestController.StockRequest().setTransactionStatus("102");
                             loJSON = invRequestController.StockRequest().searchTransaction();
                            
 
@@ -446,8 +450,8 @@
                                         clearDetailFields();
                                         break;
                                     }
-                                    String categoryID = invRequestController.StockRequest().Master().getCategoryId();
-                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,categoryID,psIndustryID);
+                                   
+                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID);
 
                                     if ("error".equals(poJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -460,7 +464,7 @@
                                     }
 
                                     if ("success".equals(poJSON.get("result"))) {
-                                        // Get current quantity
+                                       
                                         int currentQty = 0;
                                         try {
                                             currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
@@ -751,6 +755,7 @@
             if (!tfReferenceNo.getText().isEmpty()) {
                 dpTransactionDate.setDisable(!lbShow);
             }
+            
         } 
 
         private void initTextAreaFocus() {
@@ -850,7 +855,8 @@
                                           break;
                                       }
                                      
-                                      poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,"1",psIndustryID);
+                                    
+                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID);
 
                                       if ("error".equals(poJSON.get("result"))) {
                                           ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -1007,7 +1013,7 @@
             tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
             tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
             tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index9"));
+            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
             tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
             // Prevent column reordering
             tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {

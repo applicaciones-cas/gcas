@@ -6,7 +6,7 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderDetail;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
-import javafx.scene.control.skin.TableHeaderRow;
+//import javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -547,12 +547,12 @@ public class PurchaseOrder_HistoryMCController implements Initializable, ScreenI
         tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
         tblTotalAmountDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
 
-        tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
+//        tblVwOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+//            TableHeaderRow header = (TableHeaderRow) tblVwOrderDetails.lookup("TableHeaderRow");
+//            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+//                header.setReordering(false);
+//            });
+//        });
     }
 
     private void tblVwOrderDetails_Clicked(MouseEvent event) {
