@@ -431,36 +431,6 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
         }
     };
 
-    public void moveNext() {
-        double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-        apDetail.requestFocus();
-        double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-        if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
-                && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
-            tfCost.requestFocus();
-        } else {
-            pnDetail = JFXUtil.moveToNextRow(tblViewTransDetailList);
-            loadRecordDetail();
-            tfOrderNo.setText("");
-            tfCost.requestFocus();
-        }
-    }
-
-    public void moveNextJE(boolean isUp) {
-        apJEDetail.requestFocus();
-        pnJEDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewJEDetails) : JFXUtil.moveToNextRow(tblViewJEDetails);
-        loadRecordJEDetail();
-        if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.Journal().Detail(pnJEDetail).getAccountCode(), null, "")) {
-            tfJEAcctCode.requestFocus();
-        } else {
-            if (poPurchaseReceivingController.Journal().Detail(pnJEDetail).getCreditAmount() > 0) {
-                tfCreditAmt.requestFocus();
-            } else {
-                tfDebitAmt.requestFocus();
-            }
-        }
-    }
 
     private void txtField_KeyPressed(KeyEvent event) {
         try {
