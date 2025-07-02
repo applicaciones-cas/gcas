@@ -185,7 +185,7 @@
                 lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
 
             } catch (GuanzonException | SQLException ex) {
-                Logger.getLogger(PurchaseOrder_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(InvStockRequest_UpdateMcController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -446,7 +446,7 @@
                                         break;
                                     }
                                     String categoryID = invRequestController.StockRequest().Master().getCategoryId();
-                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,categoryID,psIndustryID);
+                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID);
 
                                     if ("error".equals(poJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -849,7 +849,7 @@
                                           break;
                                       }
                                      String categoryID = invRequestController.StockRequest().Master().getCategoryId();
-                                      poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,categoryID,psIndustryID);
+                                      poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID);
 
                                       if ("error".equals(poJSON.get("result"))) {
                                           ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);

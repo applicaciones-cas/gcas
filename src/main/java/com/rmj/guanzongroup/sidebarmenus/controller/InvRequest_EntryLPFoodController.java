@@ -193,7 +193,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                 lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
 
             } catch (GuanzonException | SQLException ex) {
-                Logger.getLogger(PurchaseOrder_EntryMPController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(InvRequest_EntryLPFoodController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
