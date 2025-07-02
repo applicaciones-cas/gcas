@@ -326,8 +326,8 @@ public class DisbursementVoucher_ViewController implements Initializable {
                 tfTaxCodeDetail.setText(poDisbursementController.Detail(pnDetail).TaxCode().getTaxCode());
                 tfTaxRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetail).getTaxRates(), false));
                 tfTaxAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetail).getTaxAmount(), true));
-                tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetail).getAmount().doubleValue()
-                        - poDisbursementController.Detail(pnDetail).getTaxAmount().doubleValue(), true));
+                tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetail).getAmount()
+                        - poDisbursementController.Detail(pnDetail).getTaxAmount(), true));
                 chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetail).isWithVat());
             } catch (SQLException | GuanzonException ex) {
                 Logger.getLogger(DisbursementVoucher_ViewController.class
@@ -366,7 +366,7 @@ public class DisbursementVoucher_ViewController implements Initializable {
                     double lnNetTotal = 0.0000;
                     for (lnCtr = 0; lnCtr < poDisbursementController.getDetailCount(); lnCtr++) {
                         try {
-                            lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount().doubleValue() - poDisbursementController.Detail(lnCtr).getTaxAmount().doubleValue();
+                            lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount() - poDisbursementController.Detail(lnCtr).getTaxAmount();
                             detailsdv_data.add(
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
@@ -466,7 +466,7 @@ public class DisbursementVoucher_ViewController implements Initializable {
                 if (event.getClickCount() == 1) {
                     pnDetail = tblVwDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetailDV();
-                    if (poDisbursementController.Detail(pnDetail).getAmount().doubleValue() != 0.0000) {
+                    if (poDisbursementController.Detail(pnDetail).getAmount() != 0.0000) {
                         tfTaxCodeDetail.requestFocus();
                     } else {
                         tfPurchasedAmountDetail.requestFocus();

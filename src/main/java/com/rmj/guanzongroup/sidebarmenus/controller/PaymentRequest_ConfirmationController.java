@@ -362,9 +362,9 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                 tfParticular.setText(lsParticular);
 
                 tfAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
-                        poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAmount().doubleValue(), true));
-                tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getDiscount().doubleValue())); // rate
-                tfDiscAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAddDiscount().doubleValue(), true)); // amount
+                        poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAmount(), true));
+                tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getDiscount())); // rate
+                tfDiscAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAddDiscount(), true)); // amount
 
                 if (poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getVatable().equals("1")) {
                     chkbVatable.setSelected(true);
@@ -1314,7 +1314,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                 boolean isSameParticular = poGLControllers.PaymentRequest().Detail(lnCtr).getParticularID()
                         .equals(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getParticularID());
 
-                boolean isSameAmount = poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue() == amount;
+                boolean isSameAmount = poGLControllers.PaymentRequest().Detail(lnCtr).getAmount() == amount;
 
                 if (isSameParticular && isSameAmount) {
                     // Duplicate found
@@ -1693,12 +1693,12 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                                 String.valueOf(lnCtr + 1),
                                 poGLControllers.PaymentRequest().Detail(lnCtr).getParticularID(),
                                 poGLControllers.PaymentRequest().Detail(lnCtr).Particular().getDescription(),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue(), true),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getDiscount().doubleValue()),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAddDiscount().doubleValue(), true),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount(), true),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getDiscount()),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAddDiscount(), true),
                                 lsIsVatable,
                                 "0.00",
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue(), true),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount(), true),
                                 ""
                         ));
                     }

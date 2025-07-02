@@ -287,7 +287,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                         return;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
-                    poJSON = poCheckPrintingRequestController.OpenTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
+//                    poJSON = poCheckPrintingRequestController.OpenTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
                     Platform.runLater(() -> btnNew.fire());
                     break;
                 case "btnCancel":
@@ -463,6 +463,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
     private void loadRecordMaster() {
         try {
             lblTransactionStatus.setText(getStatus(poCheckPrintingRequestController.Master().getTransactionStatus()));
+            dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poCheckPrintingRequestController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfTransactionNo.setText(poCheckPrintingRequestController.Master().getTransactionNo() != null ? poCheckPrintingRequestController.Master().getTransactionNo() : "");
             tfBankName.setText(poCheckPrintingRequestController.Master().Banks().getBankName() != null ? poCheckPrintingRequestController.Master().Banks().getBankName() : "");
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Master().getTotalAmount(), true));

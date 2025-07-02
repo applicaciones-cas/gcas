@@ -65,6 +65,7 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.Logical;
+import org.guanzon.appdriver.constant.UserRight;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -174,7 +175,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     @FXML
     private Label lblDVTransactionStatus;
     @FXML
-    private TextField tfVatableSales, tfReportMonthYear, tfVatRate, tfVatAmountMaster, tfVatZeroRatedSales, tfVatExemptSales, tfTotalAmount, tfLessWHTax, tfTotalNetAmount;
+    private TextField tfVatableSales, tfVatRate, tfVatAmountMaster, tfVatZeroRatedSales, tfVatExemptSales, tfTotalAmount, tfLessWHTax, tfTotalNetAmount;
     @FXML
     private TextArea taDVRemarks;
 
@@ -362,12 +363,14 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
                     }
+                    populateJE();
                     poDisbursementController.Master().setVoucherNo(poDisbursementController.getVoucherNo());
                     poDisbursementController.Master().setDisbursementType(DisbursementStatic.DisbursementType.CHECK);
                     poDisbursementController.Master().setPayeeID(psSupplierId);
                     CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
                     CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
                     loadTableDetailDV();
+                    loadRecordDetailJE();
                     pnEditMode = poDisbursementController.getEditMode();
                     break;
                 case "btnUpdate":
@@ -379,6 +382,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     pnEditMode = poDisbursementController.getEditMode();
                     CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
                     loadTableDetailDV();
+                    loadRecordDetailJE();
                     break;
                 case "btnSearch":
                     String lsMessage = "Focus a searchable textfield to search";
@@ -409,10 +413,15 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     }
                     break;
                 case "btnSave":
-//                    if (!isCheckedJournalTab) {
-//                        ShowMessageFX.Warning("Please see the journal entry, before save", pxeModuleName, null);
-//                        return;
-//                    }
+                    if (oApp.getUserLevel() >= UserRight.ENCODER) {
+                        if (!isCheckedJournalTab) {
+                            ShowMessageFX.Warning("Please see the journal entry, before save", pxeModuleName, null);
+                            return;
+                        }
+                    } else {
+                        populateJE();
+                    }
+
                     if (!ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to save the transaction?")) {
                         return;
                     }
@@ -816,8 +825,8 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 tfTaxCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).TaxCode().getTaxCode());
                 tfTaxRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxRates(), false));
                 tfTaxAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
-                tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue()
-                        - poDisbursementController.Detail(pnDetailDV).getTaxAmount().doubleValue(), true));
+                tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount()
+                        - poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
                 chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
 
             } catch (SQLException | GuanzonException ex) {
@@ -888,7 +897,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     double lnNetTotal = 0.0000;
                     for (lnCtr = 0; lnCtr < poDisbursementController.getDetailCount(); lnCtr++) {
                         try {
-                            lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount().doubleValue() - poDisbursementController.Detail(lnCtr).getTaxAmount().doubleValue();
+                            lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount() - poDisbursementController.Detail(lnCtr).getTaxAmount();
                             detailsdv_data.add(
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
@@ -1030,7 +1039,17 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             if (tabJournal.isSelected()) {
                 if (pnEditMode == EditMode.READY || pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                     isCheckedJournalTab = true;
+                    pnDetailDV = -1;
+                    pnDetailJE = -1;
                     populateJE();
+                }
+            }
+        }
+        );
+        tabDetails.setOnSelectionChanged(event -> {
+            if (tabDetails.isSelected()) {
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    pnDetailJE = -1;
                 }
             }
         }
@@ -1084,12 +1103,12 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 
     private void initTextFields() {
         //Initialise  TextField Focus
-        JFXUtil.setFocusListener(txtDetailDV_Focus, tfPurchasedAmountDetail);
+        JFXUtil.setFocusListener(txtDetailDV_Focus, tfParticularsDetail, tfTaxCodeDetail, tfPurchasedAmountDetail);
         JFXUtil.setFocusListener(txtMasterCheck_Focus, tfAuthorizedPerson);
         JFXUtil.setFocusListener(txtMasterBankTransfer_Focus, tfBankNameBTransfer, tfBankAccountBTransfer, tfSupplierBank, tfSupplierAccountNoBTransfer);
         JFXUtil.setFocusListener(txtMasterOnlinePayment_Focus, tfBankNameOnlinePayment, tfBankAccountOnlinePayment, tfSupplierServiceName, tfSupplierAccountNo);
 
-        JFXUtil.setFocusListener(txtDetailJE_Focus, tfReportMonthYear, tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount);
+        JFXUtil.setFocusListener(txtDetailJE_Focus, tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount);
 
         //Initialise  TextField KeyPressed
         List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSupplier, tfPayeeName, tfBankNameCheck, tfBankAccountCheck, tfPurchasedAmountDetail, tfTaxCodeDetail, tfParticularsDetail, tfAuthorizedPerson,
@@ -1210,36 +1229,58 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         if (!nv) {
             try {
                 switch (lsTxtFieldID) {
-                    case "tfAccountCode":
-                        break;
-                    case "tfAccountDescription":
-                        break;
                     case "tfCreditAmount":
                         if (lsValue.isEmpty()) {
                             lsValue = "0.0000";
                         }
-                        lsValue = JFXUtil.removeComma(lsValue);
-                        poDisbursementController.Journal().Detail(pnDetailJE).setCreditAmount((Double.parseDouble(lsValue)));
+                        if (pnDetailJE >= 0) {
+                            lsValue = JFXUtil.removeComma(lsValue);
+                            if (poDisbursementController.Journal().Detail(pnDetailJE).getDebitAmount() > 0.0000 && Double.parseDouble(lsValue) > 0) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
+                                poDisbursementController.Journal().Detail(pnDetailJE).setDebitAmount(0.0000);
+                                tfCheckAmount.setText("0.0000");
+                                tfCheckAmount.requestFocus();
+                                break;
+                            } else {
+                                poJSON = poDisbursementController.Journal().Detail(pnDetailJE).setCreditAmount((Double.parseDouble(lsValue)));
+                            }
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            }
+                            if (pbEnteredDV) {
+                                initDetailFocusJE();
+                                pbEnteredDV = false;
+                            }
+                        }
                         break;
                     case "tfDebitAmount":
                         if (lsValue.isEmpty()) {
                             lsValue = "0.0000";
                         }
-                        lsValue = JFXUtil.removeComma(lsValue);
-                        poDisbursementController.Journal().Detail(pnDetailJE).setDebitAmount((Double.parseDouble(lsValue)));
+                        if (pnDetailJE >= 0) {
+                            if (poDisbursementController.Journal().Detail(pnDetailJE).getCreditAmount() > 0.0000 && Double.parseDouble(lsValue) > 0) {
+                                ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
+                                poDisbursementController.Journal().Detail(pnDetailJE).setCreditAmount(0.0000);
+                                tfDebitAmount.setText("0.0000");
+                                tfDebitAmount.requestFocus();
+                                break;
+                            } else {
+                                poJSON = poDisbursementController.Journal().Detail(pnDetailJE).setDebitAmount((Double.parseDouble(lsValue)));
+                            }
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                            }
+                            if (pbEnteredDV) {
+                                initDetailFocusJE();
+                                pbEnteredDV = false;
+                            }
+                        }
                         break;
 
                 }
             } catch (SQLException | GuanzonException ex) {
-
+                Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Platform.runLater(() -> {
-                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                delay.setOnFinished(event -> {
-                    loadTableDetailJE();
-                });
-                delay.play();
-            });
         }
 
     };
@@ -1268,6 +1309,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         }
                         switch (lsID) {
                             case "tfAccountCode":
+                            case "tfAccountDescription":
                             case "tfDebitAmount":
                             case "tfCreditAmount":
                                 pnDetailJE = JFXUtil.moveToNextRow(tblVwJournalDetails);
@@ -1379,7 +1421,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     delay.play();
                                 });
                                 loadTableDetailJE();
-                                event.consume();
                                 break;
                             case "tfAccountDescription":
                                 poJSON = poDisbursementController.Journal().SearchAccountCode(pnDetailJE, lsValue, false, null, null);
@@ -1388,7 +1429,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     tfAccountCode.setText("");
                                     break;
                                 }
-
                                 poJSON = poDisbursementController.checkExistAcctCode(pnDetailJE, poDisbursementController.Journal().Detail(pnDetailJE).getAccountCode());
                                 if ("error".equals(poJSON.get("result"))) {
                                     int lnRow = (int) poJSON.get("row");
@@ -1409,7 +1449,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     delay.play();
                                 });
                                 loadTableDetailJE();
-                                event.consume();
                                 break;
                         }
                         CommonUtils.SetNextFocus((TextField) event.getSource());
@@ -1427,6 +1466,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         }
                         switch (lsID) {
                             case "tfAccountCode":
+                            case "tfAccountDescription":
                             case "tfDebitAmount":
                             case "tfCreditAmount":
                                 pnDetailJE = JFXUtil.moveToPreviousRow(tblVwJournalDetails);
@@ -1448,6 +1488,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         }
                         switch (lsID) {
                             case "tfAccountCode":
+                            case "tfAccountDescription":
                             case "tfDebitAmount":
                             case "tfCreditAmount":
                                 pnDetailJE = JFXUtil.moveToNextRow(tblVwJournalDetails);
@@ -1509,10 +1550,11 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     }
 
     private void initDetailFocusDV(boolean isSOACache) {
+        apDVDetail.requestFocus();
         loadRecordDetailDV();
         initFields(pnEditMode);
         String lsSourceNo = poDisbursementController.Detail(pnDetailDV).getSourceNo();
-        double amount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
+        double amount = poDisbursementController.Detail(pnDetailDV).getAmount();
         String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTaxCode();
         String lsParticular = poDisbursementController.Detail(pnDetailDV).getParticularID();
 
@@ -1680,21 +1722,17 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     }
 
     private void initDetailFocusJE() {
-        try {
-            loadRecordDetailJE();
-            initFields(pnEditMode);
-            if (poDisbursementController.Journal().Detail(pnDetailJE).getAccountCode() == null) {
-                tfAccountCode.requestFocus();
-            } else {
-                if (poDisbursementController.Journal().Detail(pnDetailJE).getCreditAmount() > 0.0000) {
-                    tfDebitAmount.requestFocus();
-                } else {
-                    tfCreditAmount.requestFocus();
-                }
-            }
-        } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DisbursementVoucher_EntryController.class
-                    .getName()).log(Level.SEVERE, null, ex);
+        apJournalDetails.requestFocus();
+        loadRecordDetailJE();
+        initFields(pnEditMode);
+        if (tfAccountCode.getText() == null) {
+            tfAccountCode.requestFocus();
+        } else if (tfAccountDescription.getText() == null) {
+            tfAccountDescription.requestFocus();
+        } else if (Double.parseDouble(tfCreditAmount.getText().replace(",", "")) > 0.0000) {
+            tfDebitAmount.requestFocus();
+        } else {
+            tfCreditAmount.requestFocus();
         }
     }
 
@@ -1731,16 +1769,24 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         }
         poJSON = new JSONObject();
         if (!nv) {
-            switch (lsID) {
-                case "taDVRemarks":
-                    poDisbursementController.Master().setRemarks(lsValue);
-                    break;
-                case "taJournalRemarks":
-                    break;
+            try {
+                switch (lsID) {
+                    case "taDVRemarks":
+                        poDisbursementController.Master().setRemarks(lsValue);
+                        break;
+                    case "taJournalRemarks":
+                        poDisbursementController.Journal().Master().setRemarks(lsValue);
+                        break;
+
+                }
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(DisbursementVoucher_EntryController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             txtArea.selectAll();
         }
+
     };
 
     private void txtArea_KeyPressed(KeyEvent event) {
@@ -2003,13 +2049,11 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             }
         }
 
-        if (tabJournal.isSelected()
-                && pnDetailJE >= 0) {
+        if (tabJournal.isSelected() && pnDetailJE >= 0) {
             JFXUtil.setDisabled(!lbShow, apJournalDetails);
         }
 
-        tfSupplier.setDisable(fnEditMode
-                == EditMode.UPDATE);
+        tfSupplier.setDisable(fnEditMode == EditMode.UPDATE);
     }
 
     private void initButton(int fnEditMode) {
@@ -2032,26 +2076,42 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             boolean isHaveSourceNo = false;
             if (poDisbursementController.getDetailCount() >= 1) {
-                if (poDisbursementController.Detail(0).getSourceNo() != null && poDisbursementController.Detail(0).getAmount().doubleValue() != 0.0000) {
+                if (poDisbursementController.Detail(0).getSourceNo() != null && poDisbursementController.Detail(0).getAmount() != 0.0000) {
                     isHaveSourceNo = true;
                 }
             }
             if (isHaveSourceNo) {
                 if (ShowMessageFX.YesNo("DV Details have already items, are you sure you want to change supplier?", pxeModuleName, null)) {
-                    int detailCount = poDisbursementController.getDetailCount();
-                    for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
-                        if (poDisbursementController.Detail(lnCtr).getSourceNo().isEmpty()
-                                && poDisbursementController.Detail(lnCtr).getAmount().doubleValue() == 0.0000) {
-                            continue; // Skip deleting this row
+                    try {
+                        int detailCountDV = poDisbursementController.getDetailCount();
+                        for (int lnCtr = detailCountDV - 1; lnCtr >= 0; lnCtr--) {
+                            if (poDisbursementController.Detail(lnCtr).getSourceNo().isEmpty()
+                                    && poDisbursementController.Detail(lnCtr).getAmount() == 0.0000) {
+                                continue; // Skip deleting this row
+                            }
+                            poDisbursementController.Detail().remove(lnCtr);
                         }
-                        poDisbursementController.Detail().remove(lnCtr);
+                        pnDetailDV = -1;
+                        pnMain = -1;
+                        tblVwList.getSelectionModel().clearSelection();
+                        JFXUtil.clearTextFields(apDVDetail);
+                        chbkVatClassification.setSelected(false);
+                        loadTableDetailDV();
+                        int detailCountJE = poDisbursementController.Journal().getDetailCount();
+                        if (poDisbursementController.Journal().Master().getTransactionNo() != null) {
+                            for (int lnCtr = detailCountJE - 1; lnCtr >= 0; lnCtr--) {
+                                if (poDisbursementController.Journal().Detail(lnCtr).getAccountCode() == null) {
+                                    continue;
+                                }
+                                poDisbursementController.Journal().Detail().remove(lnCtr);
+                            }
+                            pnDetailJE = -1;
+                            JFXUtil.clearTextFields(apJournalDetails);
+                            loadTableDetailJE();
+                        }
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    pnDetailDV = -1;
-                    pnMain = -1;
-                    tblVwList.getSelectionModel().clearSelection();
-                    JFXUtil.clearTextFields(apDVDetail);
-                    chbkVatClassification.setSelected(false);
-                    loadTableDetailDV();
                 } else {
                     if (psSupplierId.isEmpty()) {
                         return false;
@@ -2082,12 +2142,15 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     if (ShowMessageFX.YesNo("You have an open transaction. Are you sure you want to change the supplier?", pxeModuleName, null)) {
                         clearFields();
                         detailsdv_data.clear();
+                        journal_data.clear();
+                        tblVwJournalDetails.getItems().clear();
                         tblVwDetails.getItems().clear();
-                        pnEditMode = EditMode.UNKNOWN;
                         tfSupplier.setText("");
                         pnDetailDV = -1;
+                        pnDetailJE = -1;
                         tblVwList.getItems().clear();
                         tblVwList.setPlaceholder(new Label("NO RECORD TO LOAD"));
+                        pnEditMode = EditMode.UNKNOWN;
                         initButton(pnEditMode);
                         initFields(pnEditMode);
                         return true;
@@ -2198,16 +2261,15 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         tfAccountCode.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    if (pnDetailDV >= 0) {
-                        try {
-                            poDisbursementController.Journal().Detail(pnDetailDV).setAccountCode("");
+                    try {
+                        if (pnDetailJE >= 0) {
+                            poDisbursementController.Journal().Detail(pnDetailJE).setAccountCode("");
                             tfAccountCode.setText("");
                             loadTableDetailJE();
-
-                        } catch (SQLException | GuanzonException ex) {
-                            Logger.getLogger(DisbursementVoucher_EntryController.class
-                                    .getName()).log(Level.SEVERE, null, ex);
                         }
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DisbursementVoucher_EntryController.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
