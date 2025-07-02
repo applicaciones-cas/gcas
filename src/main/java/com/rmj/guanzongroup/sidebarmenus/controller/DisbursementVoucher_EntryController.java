@@ -175,7 +175,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
     @FXML
     private Label lblDVTransactionStatus;
     @FXML
-    private TextField tfVatableSales, tfReportMonthYear, tfVatRate, tfVatAmountMaster, tfVatZeroRatedSales, tfVatExemptSales, tfTotalAmount, tfLessWHTax, tfTotalNetAmount;
+    private TextField tfVatableSales, tfVatRate, tfVatAmountMaster, tfVatZeroRatedSales, tfVatExemptSales, tfTotalAmount, tfLessWHTax, tfTotalNetAmount;
     @FXML
     private TextArea taDVRemarks;
 
@@ -825,8 +825,8 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 tfTaxCodeDetail.setText(poDisbursementController.Detail(pnDetailDV).TaxCode().getTaxCode());
                 tfTaxRateDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxRates(), false));
                 tfTaxAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
-                tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue()
-                        - poDisbursementController.Detail(pnDetailDV).getTaxAmount().doubleValue(), true));
+                tfNetAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount()
+                        - poDisbursementController.Detail(pnDetailDV).getTaxAmount(), true));
                 chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
 
             } catch (SQLException | GuanzonException ex) {
@@ -897,7 +897,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     double lnNetTotal = 0.0000;
                     for (lnCtr = 0; lnCtr < poDisbursementController.getDetailCount(); lnCtr++) {
                         try {
-                            lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount().doubleValue() - poDisbursementController.Detail(lnCtr).getTaxAmount().doubleValue();
+                            lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount() - poDisbursementController.Detail(lnCtr).getTaxAmount();
                             detailsdv_data.add(
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
@@ -1108,7 +1108,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         JFXUtil.setFocusListener(txtMasterBankTransfer_Focus, tfBankNameBTransfer, tfBankAccountBTransfer, tfSupplierBank, tfSupplierAccountNoBTransfer);
         JFXUtil.setFocusListener(txtMasterOnlinePayment_Focus, tfBankNameOnlinePayment, tfBankAccountOnlinePayment, tfSupplierServiceName, tfSupplierAccountNo);
 
-        JFXUtil.setFocusListener(txtDetailJE_Focus, tfReportMonthYear, tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount);
+        JFXUtil.setFocusListener(txtDetailJE_Focus, tfAccountCode, tfAccountDescription, tfDebitAmount, tfCreditAmount);
 
         //Initialise  TextField KeyPressed
         List<TextField> loTxtFieldKeyPressed = Arrays.asList(tfSupplier, tfPayeeName, tfBankNameCheck, tfBankAccountCheck, tfPurchasedAmountDetail, tfTaxCodeDetail, tfParticularsDetail, tfAuthorizedPerson,
@@ -1554,7 +1554,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         loadRecordDetailDV();
         initFields(pnEditMode);
         String lsSourceNo = poDisbursementController.Detail(pnDetailDV).getSourceNo();
-        double amount = poDisbursementController.Detail(pnDetailDV).getAmount().doubleValue();
+        double amount = poDisbursementController.Detail(pnDetailDV).getAmount();
         String lsTaxCode = poDisbursementController.Detail(pnDetailDV).getTaxCode();
         String lsParticular = poDisbursementController.Detail(pnDetailDV).getParticularID();
 
@@ -2076,7 +2076,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             boolean isHaveSourceNo = false;
             if (poDisbursementController.getDetailCount() >= 1) {
-                if (poDisbursementController.Detail(0).getSourceNo() != null && poDisbursementController.Detail(0).getAmount().doubleValue() != 0.0000) {
+                if (poDisbursementController.Detail(0).getSourceNo() != null && poDisbursementController.Detail(0).getAmount() != 0.0000) {
                     isHaveSourceNo = true;
                 }
             }
@@ -2086,7 +2086,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         int detailCountDV = poDisbursementController.getDetailCount();
                         for (int lnCtr = detailCountDV - 1; lnCtr >= 0; lnCtr--) {
                             if (poDisbursementController.Detail(lnCtr).getSourceNo().isEmpty()
-                                    && poDisbursementController.Detail(lnCtr).getAmount().doubleValue() == 0.0000) {
+                                    && poDisbursementController.Detail(lnCtr).getAmount() == 0.0000) {
                                 continue; // Skip deleting this row
                             }
                             poDisbursementController.Detail().remove(lnCtr);

@@ -359,9 +359,9 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                 tfParticular.setText(lsParticular);
 
                 tfAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
-                        poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAmount().doubleValue(), true));
-                tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getDiscount().doubleValue())); // rate
-                tfDiscAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAddDiscount().doubleValue(), true)); // amount
+                        poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAmount(), true));
+                tfDiscRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getDiscount())); // rate
+                tfDiscAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getAddDiscount(), true)); // amount
 
                 if (poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getVatable().equals("1")) {
                     chkbVatable.setSelected(true);
@@ -536,10 +536,10 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                         return;
                     }
                     for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
-                        double lnAmount = poGLControllers.PaymentRequest().Detail(lnCntr).getAmount().doubleValue();
+                        double lnAmount = poGLControllers.PaymentRequest().Detail(lnCntr).getAmount();
                         String lsParticular = (String) poGLControllers.PaymentRequest().Detail(lnCntr).Particular().getDescription();
                         if (detailCount == 1) {
-                            if (lsParticular == null || lsParticular.trim().isEmpty() || lnAmount <= 0.0) {
+                            if (lsParticular == null || lsParticular.trim().isEmpty() || lnAmount <= 0.0000) {
                                 ShowMessageFX.Warning("Invalid item in payment request detail. Ensure all items have a valid Particular and Amount greater than 0.0000", psFormName, null);
                                 return;
                             }
@@ -1368,7 +1368,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                 boolean isSameParticular = poGLControllers.PaymentRequest().Detail(lnCtr).getParticularID()
                         .equals(poGLControllers.PaymentRequest().Detail(pnTblDetailRow).getParticularID());
 
-                boolean isSameAmount = poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue() == amount;
+                boolean isSameAmount = poGLControllers.PaymentRequest().Detail(lnCtr).getAmount() == amount;
 
                 if (isSameParticular && isSameAmount) {
                     // Duplicate found
@@ -1828,12 +1828,12 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                                 String.valueOf(lnCtr + 1),
                                 poGLControllers.PaymentRequest().Detail(lnCtr).getParticularID(),
                                 poGLControllers.PaymentRequest().Detail(lnCtr).Particular().getDescription(),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue(), true),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getDiscount().doubleValue(), true),
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAddDiscount().doubleValue(), true),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount(), true),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getDiscount(), true),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAddDiscount(), true),
                                 lsIsVatable,
                                 "0.00",
-                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue(), true),
+                                CustomCommonUtil.setIntegerValueToDecimalFormat(poGLControllers.PaymentRequest().Detail(lnCtr).getAmount(), true),
                                 ""
                         ));
                     }
@@ -1976,9 +1976,9 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
             try {
                 boolean isHaveAmountAndStockId = false;
                 if (poGLControllers.PaymentRequest().getDetailCount() >= 1) {
-                    if (poGLControllers.PaymentRequest().Detail(0).getParticularID() != null && poGLControllers.PaymentRequest().Detail(0).getAmount() != null) {
+                    if (poGLControllers.PaymentRequest().Detail(0).getParticularID() != null && poGLControllers.PaymentRequest().Detail(0).getAmount() != 0.0000) {
                         if (!poGLControllers.PaymentRequest().Detail(0).getParticularID().isEmpty()
-                                || poGLControllers.PaymentRequest().Detail(0).getAmount().doubleValue() != 0.00) {
+                                || poGLControllers.PaymentRequest().Detail(0).getAmount() != 0.0000) {
                             isHaveAmountAndStockId = true;
                         }
                     }
@@ -1988,7 +1988,7 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                         int detailCount = poGLControllers.PaymentRequest().getDetailCount();
                         for (int lnCtr = detailCount - 1; lnCtr >= 0; lnCtr--) {
                             if (poGLControllers.PaymentRequest().Detail(lnCtr).getParticularID().isEmpty()
-                                    || poGLControllers.PaymentRequest().Detail(lnCtr).getAmount().doubleValue() == 0.0000) {
+                                    || poGLControllers.PaymentRequest().Detail(lnCtr).getAmount() == 0.0000) {
                                 continue; // Skip deleting this row
                             }
                             poGLControllers.PaymentRequest().Detail().remove(lnCtr);
