@@ -16,7 +16,7 @@ public class LetMeIn extends Application {
     public static void main(String[] args) throws GuanzonException, SQLException {
         String path;
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            path = "D:/GGC_Maven_Systems";
+            path = "C:/GGC_Maven_Systems";
         } else {
             path = "/srv/GGC_Maven_Systems";
         }
@@ -53,9 +53,6 @@ public class LetMeIn extends Application {
         try {
             Properties po_props = new Properties();
             po_props.load(new FileInputStream(System.getProperty("sys.default.path.config") + "/config/cas.properties"));
-
-            System.setProperty("store.branch.code", po_props.getProperty("store.branch.code"));
-            System.setProperty("store.inventory.industry", po_props.getProperty("store.inventory.category"));
 
             return true;
         } catch (FileNotFoundException ex) {

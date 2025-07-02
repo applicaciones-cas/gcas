@@ -334,10 +334,6 @@ com\rmj\guanzongroup\sidebarmenus\controller\LoginControllerHolder.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalCarController$4.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryLPController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\SelectIndustryCompany$Company.class
-com\rmj\guanzongroup\sidebarmenus\App.class
-com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ConfirmationSPMCController$4.class
-com\rmj\guanzongroup\sidebarmenus\controller\DashboardController$2$1.class
-com\rmj\guanzongroup\sidebarmenus\table\model\ModelPurchaseOrderDetail.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalCarController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryMPController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_ApprovalLPController.class
