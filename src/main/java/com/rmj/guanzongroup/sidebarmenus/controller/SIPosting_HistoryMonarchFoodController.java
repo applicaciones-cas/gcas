@@ -344,10 +344,13 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
                             return;
                         }
 
+                        stageAttachment.closeSerialDialog();
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                        poPurchaseReceivingController.populateJournal();
                         poPurchaseReceivingController.loadAttachments();
+
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -397,6 +400,8 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (ScriptException ex) {
+            Logger.getLogger(SIPosting_HistoryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -477,11 +482,18 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
                                 tfSearchReferenceNo.setText("");
                                 break;
                             } else {
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                stageAttachment.closeSerialDialog();
                                 pnEditMode = poPurchaseReceivingController.getEditMode();
+                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                poPurchaseReceivingController.populateJournal();
+                                poPurchaseReceivingController.loadAttachments();
                                 loadRecordMaster();
                                 loadTableDetail();
+                                loadTableJEDetail();
+                                loadTableAttachment();
                                 initButton(pnEditMode);
+
                             }
                             loadRecordSearch();
                             return;
@@ -504,6 +516,8 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(SIPosting_HistoryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ScriptException ex) {
             Logger.getLogger(SIPosting_HistoryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -343,10 +343,11 @@ public class SIPosting_HistoryController implements Initializable, ScreenInterfa
                             tfTransactionNo.requestFocus();
                             return;
                         }
-
+                        stageAttachment.closeSerialDialog();
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                        poPurchaseReceivingController.populateJournal();
                         poPurchaseReceivingController.loadAttachments();
                         break;
                     case "btnClose":
@@ -396,6 +397,8 @@ public class SIPosting_HistoryController implements Initializable, ScreenInterfa
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
+        } catch (ScriptException ex) {
+            Logger.getLogger(SIPosting_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -477,11 +480,16 @@ public class SIPosting_HistoryController implements Initializable, ScreenInterfa
                                 tfSearchReferenceNo.setText("");
                                 break;
                             } else {
-
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                stageAttachment.closeSerialDialog();
                                 pnEditMode = poPurchaseReceivingController.getEditMode();
+                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                poPurchaseReceivingController.populateJournal();
+                                poPurchaseReceivingController.loadAttachments();
                                 loadRecordMaster();
                                 loadTableDetail();
+                                loadTableJEDetail();
+                                loadTableAttachment();
                                 initButton(pnEditMode);
                             }
                             loadRecordSearch();
@@ -505,6 +513,8 @@ public class SIPosting_HistoryController implements Initializable, ScreenInterfa
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(SIPosting_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ScriptException ex) {
             Logger.getLogger(SIPosting_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
