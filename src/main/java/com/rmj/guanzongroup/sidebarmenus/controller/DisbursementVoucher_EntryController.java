@@ -1103,7 +1103,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 
     private void initTextFields() {
         //Initialise  TextField Focus
-        JFXUtil.setFocusListener(txtDetailDV_Focus, tfParticularsDetail, tfTaxCodeDetail, tfPurchasedAmountDetail);
         JFXUtil.setFocusListener(txtMasterCheck_Focus, tfAuthorizedPerson);
         JFXUtil.setFocusListener(txtMasterBankTransfer_Focus, tfBankNameBTransfer, tfBankAccountBTransfer, tfSupplierBank, tfSupplierAccountNoBTransfer);
         JFXUtil.setFocusListener(txtMasterOnlinePayment_Focus, tfBankNameOnlinePayment, tfBankAccountOnlinePayment, tfSupplierServiceName, tfSupplierAccountNo);
@@ -1116,36 +1115,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         loTxtFieldKeyPressed.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
 
     }
-
-    final ChangeListener<? super Boolean> txtDetailDV_Focus = (o, ov, nv) -> {
-        poJSON = new JSONObject();
-        TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTxtFieldID = (txtPersonalInfo.getId());
-        String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
-
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTxtFieldID) {
-                case "tfPurchasedAmountDetail":
-                    if (lsValue.isEmpty()) {
-                        lsValue = "0.0000";
-                    }
-                    lsValue = JFXUtil.removeComma(lsValue);
-                    poDisbursementController.Detail(pnDetailDV).setAmount(Double.valueOf(lsValue));
-                    if (pbEnteredDV) {
-                        moveNextFocusDV();
-                        pbEnteredDV = false;
-                    }
-                    break;
-            }
-        }
-    };
     final ChangeListener<? super Boolean> txtMasterCheck_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtMasterCheck = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -1301,7 +1270,12 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                             case "tfPurchasedAmountDetail":
                             case "tfTaxCodeDetail":
                             case "tfParticularsDetail":
-                                tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount(), true));
+                                poDisbursementController.Detail(pnDetailDV).setAmount(Double.parseDouble(JFXUtil.removeComma(tfPurchasedAmountDetail.getText())));
+                                poJSON = poDisbursementController.computeFields();
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                    return;
+                                }
                                 Platform.runLater(() -> {
                                     PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
