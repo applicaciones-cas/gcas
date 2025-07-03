@@ -490,7 +490,7 @@ public class SIPosting_HistorySPMCController implements Initializable, ScreenInt
                                 poPurchaseReceivingController.loadAttachments();
                                 loadRecordMaster();
                                 loadTableDetail();
-                                loadTableJEDetail();
+                                populateJE();
                                 loadTableAttachment();
                                 initButton(pnEditMode);
 

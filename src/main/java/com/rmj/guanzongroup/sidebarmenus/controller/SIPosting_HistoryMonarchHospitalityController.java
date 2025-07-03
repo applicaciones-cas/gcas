@@ -490,7 +490,7 @@ public class SIPosting_HistoryMonarchHospitalityController implements Initializa
                                 poPurchaseReceivingController.loadAttachments();
                                 loadRecordMaster();
                                 loadTableDetail();
-                                loadTableJEDetail();
+                                populateJE();
                                 loadTableAttachment();
                                 initButton(pnEditMode);
 

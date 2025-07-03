@@ -602,6 +602,7 @@ public class SIPosting_HistoryAppliancesController implements Initializable, Scr
                                 poPurchaseReceivingController.loadAttachments();
                                 loadRecordMaster();
                                 loadTableDetail();
+                                populateJE();
                                 loadTableAttachment();
                                 initButton(pnEditMode);
                             }

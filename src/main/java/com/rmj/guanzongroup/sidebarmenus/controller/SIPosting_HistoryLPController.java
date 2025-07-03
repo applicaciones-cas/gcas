@@ -490,7 +490,7 @@ public class SIPosting_HistoryLPController implements Initializable, ScreenInter
                                 poPurchaseReceivingController.loadAttachments();
                                 loadRecordMaster();
                                 loadTableDetail();
-                                loadTableJEDetail();
+                                populateJE();
                                 loadTableAttachment();
                                 initButton(pnEditMode);
 

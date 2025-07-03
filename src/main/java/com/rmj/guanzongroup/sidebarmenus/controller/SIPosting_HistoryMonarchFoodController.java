@@ -490,7 +490,7 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
                                 poPurchaseReceivingController.loadAttachments();
                                 loadRecordMaster();
                                 loadTableDetail();
-                                loadTableJEDetail();
+                                populateJE();
                                 loadTableAttachment();
                                 initButton(pnEditMode);
 

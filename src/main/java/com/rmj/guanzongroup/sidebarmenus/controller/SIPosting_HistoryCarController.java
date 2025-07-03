@@ -608,6 +608,7 @@ public class SIPosting_HistoryCarController implements Initializable, ScreenInte
                                 poPurchaseReceivingController.loadAttachments();
                                 loadRecordMaster();
                                 loadTableDetail();
+                                populateJE();
                                 loadTableAttachment();
                                 initButton(pnEditMode);
                             }
