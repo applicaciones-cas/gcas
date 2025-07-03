@@ -48,7 +48,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Pair;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -89,10 +88,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
     private FilteredList<ModelDisbursementVoucher_Main> filteredMain_Data;
 
     ArrayList<SelectedITems> getSelectedItems = new ArrayList<>();
-//    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
-//    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
-    private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
     @FXML
     private AnchorPane AnchorMain, apBrowse, apButton;
     @FXML
@@ -332,8 +328,6 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                 Platform.runLater(() -> {
                     try {
                         main_data.clear();
-                        //                        plOrderNoFinal.clear();
-//                        plOrderNoPartial.clear();
                         poJSON = poDisbursementController.getDisbursementForCheckAuthorization(psSearchBankID, psSearchBankAccountID);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
@@ -428,23 +422,6 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
         tblVwMain.setItems(filteredMain_Data);
     }
 
-//    private void showRetainedHighlight(boolean isRetained) {
-//        if (isRetained) {
-//            for (Pair<String, String> pair : plOrderNoPartial) {
-//                if (!"0".equals(pair.getValue())) {
-//
-//                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
-//                }
-//            }
-//        }
-//        JFXUtil.disableAllHighlight(tblVwMain, highlightedRowsMain);
-//        plOrderNoPartial.clear();
-//        for (Pair<String, String> pair : plOrderNoFinal) {
-//            if (!"0".equals(pair.getValue())) {
-//                JFXUtil.highlightByKey(tblVwMain, pair.getKey(), "#A7C7E7", highlightedRowsMain);
-//            }
-//        }
-//    }
     private void initTableOnClick() {
         tblVwMain.setOnMouseClicked(event -> {
             if (tblVwMain.getSelectionModel().getSelectedIndex() >= 0 && event.getClickCount() == 2) {

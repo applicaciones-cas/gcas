@@ -1994,6 +1994,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                 if (pnDetailDV >= 0) {
                     poDisbursementController.Detail(pnDetailDV).isWithVat(chbkVatClassification.isSelected() == true);
+                    loadTableDetailDV();
                 }
             }
         });
