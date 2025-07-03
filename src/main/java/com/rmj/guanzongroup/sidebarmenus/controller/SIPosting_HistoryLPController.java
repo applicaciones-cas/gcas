@@ -316,7 +316,7 @@ public class SIPosting_HistoryLPController implements Initializable, ScreenInter
         AttachmentDialogController controller = new AttachmentDialogController();
         controller.addData(data);
         try {
-            stageAttachment.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
+            stageAttachment.showDialog((Stage) apMaster.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/AttachmentDialog.fxml"), controller, "Attachment Dialog", false, false, true);
         } catch (IOException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
