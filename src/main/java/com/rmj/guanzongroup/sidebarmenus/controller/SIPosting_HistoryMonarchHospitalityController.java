@@ -1117,7 +1117,7 @@ public class SIPosting_HistoryMonarchHospitalityController implements Initializa
     private void initButton(int fnValue) {
         boolean lbShow = fnValue == EditMode.READY;
 
-        JFXUtil.setDisabled(true, apMaster, apDetail);
+        JFXUtil.setDisabled(true, apMaster, apDetail, apJEMaster, apJEDetail);
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(lbShow, btnHistory);
 
