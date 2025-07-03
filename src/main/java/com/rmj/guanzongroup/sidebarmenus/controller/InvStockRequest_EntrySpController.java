@@ -252,7 +252,7 @@ public class InvStockRequest_EntrySpController implements Initializable, ScreenI
                                 }
                                 if ("success".equals(poJSON.get("result"))) {
                                           // Get current quantity
-                                          int currentQty = 0;
+                                          double currentQty = 0;
                                           try {
                                               currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
                                           } catch (Exception e) {
@@ -260,7 +260,7 @@ public class InvStockRequest_EntrySpController implements Initializable, ScreenI
                                           }
 
 
-                                          int newQty = currentQty + 1;
+                                          double newQty = currentQty + 1;
 
 
                                           tfOrderQuantity.setText(String.valueOf(newQty));
@@ -292,7 +292,7 @@ public class InvStockRequest_EntrySpController implements Initializable, ScreenI
                                 }
                                 if ("success".equals(poJSON.get("result"))) {
                                           // Get current quantity
-                                          int currentQty = 0;
+                                          double currentQty = 0;
                                           try {
                                               currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
                                           } catch (Exception e) {
@@ -300,7 +300,7 @@ public class InvStockRequest_EntrySpController implements Initializable, ScreenI
                                           }
 
 
-                                          int newQty = currentQty + 1;
+                                          double newQty = currentQty + 1;
 
 
                                           tfOrderQuantity.setText(String.valueOf(newQty));
@@ -746,7 +746,7 @@ public class InvStockRequest_EntrySpController implements Initializable, ScreenI
                                 }
                                 if ("success".equals(poJSON.get("result"))) {
                                           // Get current quantity
-                                          int currentQty = 0;
+                                          double currentQty = 0;
                                           try {
                                               currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
                                           } catch (Exception e) {
@@ -754,7 +754,7 @@ public class InvStockRequest_EntrySpController implements Initializable, ScreenI
                                           }
 
 
-                                          int newQty = currentQty + 1;
+                                          double newQty = currentQty + 1;
 
 
                                           tfOrderQuantity.setText(String.valueOf(newQty));
@@ -786,7 +786,7 @@ public class InvStockRequest_EntrySpController implements Initializable, ScreenI
                                 }
                                 if ("success".equals(poJSON.get("result"))) {
                                           // Get current quantity
-                                          int currentQty = 0;
+                                          double currentQty = 0;
                                           try {
                                               currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
                                           } catch (Exception e) {
@@ -794,7 +794,7 @@ public class InvStockRequest_EntrySpController implements Initializable, ScreenI
                                           }
 
 
-                                          int newQty = currentQty + 1;
+                                          double newQty = currentQty + 1;
 
 
                                           tfOrderQuantity.setText(String.valueOf(newQty));

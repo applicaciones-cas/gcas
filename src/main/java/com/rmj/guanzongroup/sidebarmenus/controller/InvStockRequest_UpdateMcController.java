@@ -460,7 +460,7 @@
 
                                     if ("success".equals(poJSON.get("result"))) {
                                         // Get current quantity
-                                        int currentQty = 0;
+                                        double currentQty = 0;
                                         try {
                                             currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
                                         } catch (Exception e) {
@@ -468,7 +468,7 @@
                                         }
 
 
-                                        int newQty = currentQty + 1;
+                                        double newQty = currentQty + 1;
 
 
                                         tfOrderQuantity.setText(String.valueOf(newQty));
@@ -862,7 +862,7 @@
                                       }
                                     if ("success".equals(poJSON.get("result"))) {
                                           // Get current quantity
-                                          int currentQty = 0;
+                                          double currentQty = 0;
                                           try {
                                               currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
                                           } catch (Exception e) {
@@ -870,7 +870,7 @@
                                           }
 
 
-                                          int newQty = currentQty + 1;
+                                          double newQty = currentQty + 1;
 
 
                                           tfOrderQuantity.setText(String.valueOf(newQty));

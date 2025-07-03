@@ -39,8 +39,8 @@
 
 .table-view .table-cell{
     -fx-text-fill: black;
-    -fx-font-size: 11px;
-    -fx-font-weight: 300;
+    -fx-font-size: 9pt;
+    /*-fx-font-weight: 300;*/
     -fx-font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
 }
 
@@ -51,12 +51,6 @@
     -fx-max-height: 25px; /* Sets maximum height */
 }
 
-.table-view .table-cell{
-    -fx-text-fill: black;
-    -fx-font-size: 11px;
-    -fx-font-weight: 300;
-    -fx-font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
-}
 
 .table-row-cell{
     -fx-background-color: -fx-table-cell-border-color, #D0D3D4;

@@ -67,7 +67,7 @@
      *
      * @author PC
      */
-    public class InvStockRequest_EntryMcController implements Initializable, ScreenInterface{
+    public class InvStockRequest_EntryCarController implements Initializable, ScreenInterface{
         private InvWarehouseControllers invRequestController;
         private GRiderCAS poApp;
         private String psIndustryID = "";
@@ -447,7 +447,7 @@
                                         break;
                                     }
                                     String categoryID = invRequestController.StockRequest().Master().getCategoryId();
-                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,categoryID,psIndustryID);
+                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID);
 
                                     if ("error".equals(poJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -461,7 +461,7 @@
 
                                     if ("success".equals(poJSON.get("result"))) {
                                         // Get current quantity
-                                        int currentQty = 0;
+                                        double currentQty = 0;
                                         try {
                                             currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
                                         } catch (Exception e) {
@@ -469,7 +469,7 @@
                                         }
 
 
-                                        int newQty = currentQty + 1;
+                                        double newQty = currentQty + 1;
 
 
                                         tfOrderQuantity.setText(String.valueOf(newQty));
@@ -850,7 +850,7 @@
                                           break;
                                       }
                                      
-                                      poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,"1",psIndustryID);
+                                      poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID);
 
                                       if ("error".equals(poJSON.get("result"))) {
                                           ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -863,7 +863,7 @@
                                       }
                                     if ("success".equals(poJSON.get("result"))) {
                                           // Get current quantity
-                                          int currentQty = 0;
+                                          double currentQty = 0;
                                           try {
                                               currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
                                           } catch (Exception e) {
@@ -871,7 +871,7 @@
                                           }
 
 
-                                          int newQty = currentQty + 1;
+                                          double newQty = currentQty + 1;
 
 
                                           tfOrderQuantity.setText(String.valueOf(newQty));
