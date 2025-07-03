@@ -125,7 +125,6 @@ public class DeliveryAcceptance_SerialMPController implements Initializable {
 
             JFXUtil.setButtonsVisibility(!pbIsFinancing, btnOkay);
             JFXUtil.setDisabled(pbIsFinancing, apDetail);
-            cbApplyToAll.setVisible(!pbIsFinancing);
         });
     }
 

@@ -123,7 +123,6 @@ public class DeliveryAcceptance_SerialAppliancesController implements Initializa
 
             JFXUtil.setButtonsVisibility(!pbIsFinancing, btnOkay);
             JFXUtil.setDisabled(pbIsFinancing, apDetail);
-            cbApplyToAll.setVisible(!pbIsFinancing);
         });
     }
 
