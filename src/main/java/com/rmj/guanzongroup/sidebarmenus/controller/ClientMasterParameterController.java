@@ -529,9 +529,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                         }
                         break;
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(ClientMasterParameterController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (GuanzonException ex) {
+            } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(ClientMasterParameterController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
