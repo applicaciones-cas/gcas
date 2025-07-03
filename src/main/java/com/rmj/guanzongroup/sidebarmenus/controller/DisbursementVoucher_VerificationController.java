@@ -737,7 +737,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
             tfLessWHTax.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getWithTaxTotal(), true));
             tfTotalNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getNetTotal(), true));
         } catch (GuanzonException | SQLException ex) {
-            Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DisbursementVoucher_VerificationController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -793,7 +793,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
             chbkIsCrossCheck.setSelected(poDisbursementController.CheckPayments().getModel().isCross());
             chbkIsPersonOnly.setSelected(poDisbursementController.CheckPayments().getModel().isPayee());
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DisbursementVoucher_EntryController.class
+            Logger.getLogger(DisbursementVoucher_VerificationController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -833,7 +833,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 chbkVatClassification.setSelected(poDisbursementController.Detail(pnDetailDV).isWithVat());
 
             } catch (SQLException | GuanzonException ex) {
-                Logger.getLogger(DisbursementVoucher_EntryController.class
+                Logger.getLogger(DisbursementVoucher_VerificationController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -896,7 +896,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                                     ));
 
                         } catch (SQLException | GuanzonException ex) {
-                            Logger.getLogger(DisbursementVoucher_EntryController.class
+                            Logger.getLogger(DisbursementVoucher_VerificationController.class
                                     .getName()).log(Level.SEVERE, null, ex);
                         }
                     }
@@ -1262,7 +1262,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
 
                 }
             } catch (SQLException | GuanzonException ex) {
-                Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DisbursementVoucher_VerificationController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -1289,8 +1289,15 @@ public class DisbursementVoucher_VerificationController implements Initializable
                             case "tfTaxCodeDetail":
                             case "tfParticularsDetail":
                                 tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount(), true));
-                                pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
-                                moveNextFocusDV();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
+                                        moveNextFocusDV();
+                                    });
+                                    delay.play();
+                                });
+                                loadTableDetailDV();
                                 event.consume();
                                 break;
                         }
@@ -1299,8 +1306,15 @@ public class DisbursementVoucher_VerificationController implements Initializable
                             case "tfAccountDescription":
                             case "tfDebitAmount":
                             case "tfCreditAmount":
-                                pnDetailJE = JFXUtil.moveToNextRow(tblVwJournalDetails);
-                                initDetailFocusJE();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        pnDetailJE = JFXUtil.moveToNextRow(tblVwJournalDetails);
+                                        initDetailFocusJE();
+                                    });
+                                    delay.play();
+                                });
+                                loadTableDetailJE();
                                 event.consume();
                                 break;
                         }
@@ -1488,7 +1502,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 }
             }
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DisbursementVoucher_EntryController.class
+            Logger.getLogger(DisbursementVoucher_VerificationController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -1661,7 +1675,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
             );
 
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DisbursementVoucher_EntryController.class
+            Logger.getLogger(DisbursementVoucher_VerificationController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -1764,7 +1778,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
 
                 }
             } catch (SQLException | GuanzonException ex) {
-                Logger.getLogger(DisbursementVoucher_EntryController.class
+                Logger.getLogger(DisbursementVoucher_VerificationController.class
                         .getName()).log(Level.SEVERE, null, ex);
             }
         } else {
@@ -1912,7 +1926,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                         loadTableDetailJE();
 
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(DisbursementVoucher_EntryController.class
+                        Logger.getLogger(DisbursementVoucher_VerificationController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -2114,7 +2128,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                             loadTableDetailJE();
                         }
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(DisbursementVoucher_EntryController.class
+                        Logger.getLogger(DisbursementVoucher_VerificationController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                     }
                 }

@@ -86,8 +86,6 @@ public class DisbursementVoucher_CertificationController implements Initializabl
     private FilteredList<ModelDisbursementVoucher_Main> filteredMain_Data;
 
     ArrayList<SelectedITems> getSelectedItems = new ArrayList<>();
-//    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
-//    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
     @FXML
@@ -466,23 +464,6 @@ public class DisbursementVoucher_CertificationController implements Initializabl
         tblVwMain.setItems(filteredMain_Data);
     }
 
-//    private void showRetainedHighlight(boolean isRetained) {
-//        if (isRetained) {
-//            for (Pair<String, String> pair : plOrderNoPartial) {
-//                if (!"0".equals(pair.getValue())) {
-//
-//                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
-//                }
-//            }
-//        }
-//        JFXUtil.disableAllHighlight(tblVwMain, highlightedRowsMain);
-//        plOrderNoPartial.clear();
-//        for (Pair<String, String> pair : plOrderNoFinal) {
-//            if (!"0".equals(pair.getValue())) {
-//                JFXUtil.highlightByKey(tblVwMain, pair.getKey(), "#A7C7E7", highlightedRowsMain);
-//            }
-//        }
-//    }
     private void initTableOnClick() {
         tblVwMain.setOnMouseClicked(event -> {
             if (tblVwMain.getSelectionModel().getSelectedIndex() >= 0 && event.getClickCount() == 2) {

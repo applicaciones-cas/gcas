@@ -1302,8 +1302,15 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                             case "tfTaxCodeDetail":
                             case "tfParticularsDetail":
                                 tfPurchasedAmountDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(pnDetailDV).getAmount(), true));
-                                pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
-                                moveNextFocusDV();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        pnDetailDV = JFXUtil.moveToNextRow(tblVwDetails);
+                                        moveNextFocusDV();
+                                    });
+                                    delay.play();
+                                });
+                                loadTableDetailDV();
                                 event.consume();
                                 break;
                         }
@@ -1312,8 +1319,15 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                             case "tfAccountDescription":
                             case "tfDebitAmount":
                             case "tfCreditAmount":
-                                pnDetailJE = JFXUtil.moveToNextRow(tblVwJournalDetails);
-                                initDetailFocusJE();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        pnDetailJE = JFXUtil.moveToNextRow(tblVwJournalDetails);
+                                        initDetailFocusJE();
+                                    });
+                                    delay.play();
+                                });
+                                loadTableDetailJE();
                                 event.consume();
                                 break;
                         }
