@@ -332,7 +332,13 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     }
                     break;
                 case "btnExport":
-                    ShowMessageFX.Warning("Button btnExport is Underdevelopment.", pxeModuleName, null);
+//                    ShowMessageFX.Warning("Button btnExport is Underdevelopment.", pxeModuleName, null);
+                    poJSON = poCheckPrintingRequestController.ExportTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
+                    if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                            return;
+                    }
+                            ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                     break;
                 default:
                     ShowMessageFX.Warning("Please contact admin to assist about no button available", pxeModuleName, null);
