@@ -118,6 +118,7 @@ public class CheckAssignmentController implements Initializable {
         }
 
         poJSON = poCheckPrintingController.UpdateTransaction();
+        
 
         if (!"error".equals((String) poJSON.get("result"))) {
             if (poCheckPrintingController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK)) {
@@ -148,6 +149,8 @@ public class CheckAssignmentController implements Initializable {
                 }
             }
 
+            
+            poCheckPrintingController.Master().CheckPayments().setModifiedDate(oApp.getServerDate());
             /* ---------- 1. Save the CURRENT record ---------- */
             poJSON = poCheckPrintingController.SaveTransaction();
 
