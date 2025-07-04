@@ -188,7 +188,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                 handleDisbursementAction("dissapprove");
                 break;
             case "btnRetrieve":
-                loadTableMain();
+                loadTableMainAndClearSelectedItems();
                 break;
             case "btnClose":
                 if (ShowMessageFX.YesNo("Are you sure you want to close this Tab?", "Close Tab", null)) {
@@ -199,6 +199,12 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                 ShowMessageFX.Warning("Please contact admin to assist about no button available", pxeModuleName, null);
                 break;
         }
+    }
+
+    private void loadTableMainAndClearSelectedItems() {
+        chckSelectAll.setSelected(false);
+        getSelectedItems.clear();
+        loadTableMain();
     }
 
     private void handleDisbursementAction(String action) {
@@ -236,6 +242,8 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                         break;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                    chckSelectAll.setSelected(false);
+                    getSelectedItems.clear();
                     break;
                 case "return":
                     poJSON = poDisbursementController.ReturnTransaction("Returned", getSelectedItems);
@@ -244,6 +252,8 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                         break;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                    chckSelectAll.setSelected(false);
+                    getSelectedItems.clear();
                     break;
                 case "dissapprove":
                     poJSON = poDisbursementController.DisapprovedTransaction("Disapproved", getSelectedItems);
@@ -252,6 +262,8 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                         break;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                    chckSelectAll.setSelected(false);
+                    getSelectedItems.clear();
                     break;
                 default:
                     throw new AssertionError();
@@ -304,7 +316,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                                 break;
                         }
                         CommonUtils.SetNextFocus((TextField) event.getSource());
-                        loadTableMain();
+                        loadTableMainAndClearSelectedItems();
                         event.consume();
                     default:
                         break;
@@ -526,7 +538,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                     tfSearchBankAccount.setText("");
                     psSearchBankID = "";
                     psSearchBankAccountID = "";
-                    loadTableMain();
+                    loadTableMainAndClearSelectedItems();
                 }
             }
         }
@@ -537,7 +549,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                     poDisbursementController.CheckPayments().getModel().setBankAcountID("");
                     tfSearchBankAccount.setText("");
                     psSearchBankAccountID = "";
-                    loadTableMain();
+                    loadTableMainAndClearSelectedItems();
                 }
             }
         }
