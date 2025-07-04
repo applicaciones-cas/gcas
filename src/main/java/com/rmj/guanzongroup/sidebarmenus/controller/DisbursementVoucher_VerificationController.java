@@ -30,6 +30,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -68,6 +69,7 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.Logical;
+import org.guanzon.appdriver.constant.UserRight;
 import ph.com.guanzongroup.cas.cashflow.Disbursement;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -133,6 +135,9 @@ public class DisbursementVoucher_VerificationController implements Initializable
     ObservableList<String> cClaimantType = FXCollections.observableArrayList("AUTHORIZED REPRESENTATIVE", "PAYEE");
     ObservableList<String> cOtherPayment = FXCollections.observableArrayList("FLOATING");
     ObservableList<String> cOtherPaymentBTransfer = FXCollections.observableArrayList("FLOATING");
+
+    private EventHandler<ActionEvent> disbursementModeHandler;
+    private EventHandler<ActionEvent> claimantTypeHandler;
     /* DV  & Journal */
     @FXML
     private TextField tfSearchTransaction, tfSearchSupplier;
@@ -382,6 +387,14 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     if (!isSavingValid()) {
                         return;
                     }
+                    if (oApp.getUserLevel() >= UserRight.ENCODER) {
+                        if (pnEditMode == EditMode.UPDATE) {
+                            if (!isCheckedJournalTab) {
+                                ShowMessageFX.Warning("Please see the Journal Entry, before save", pxeModuleName, null);
+                                return;
+                            }
+                        }
+                    }
                     if (pnEditMode == EditMode.UPDATE) {
                         poDisbursementController.Master().setModifiedDate(oApp.getServerDate());
                         poDisbursementController.Master().setModifyingId(oApp.getUserID());
@@ -477,10 +490,18 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     break;
             }
             if (lsButton.equals("btnVerify") || lsButton.equals("btnVoid") || lsButton.equals("btnCancel") || lsButton.equals("btnDVCancel")) {
-                pnEditMode = EditMode.UNKNOWN;
+                isCheckedJournalTab = false;
+                poDisbursementController.resetMaster();
+                poDisbursementController.resetOthers();
+                poDisbursementController.Detail().clear();
+                poDisbursementController.resetJournal();
+                pnDetailDV = -1;
+                pnDetailJE = -1;
                 clearFields();
-                loadRecordMasterDV();
-                loadRecordDetailDV();
+                detailsdv_data.clear();
+                CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
+                CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
+                pnEditMode = EditMode.UNKNOWN;
             }
             initFields(pnEditMode);
             initButton(pnEditMode);
@@ -1021,10 +1042,15 @@ public class DisbursementVoucher_VerificationController implements Initializable
         tabJournal.setOnSelectionChanged(event -> {
             if (tabJournal.isSelected()) {
                 if (pnEditMode == EditMode.READY || pnEditMode == EditMode.UPDATE) {
-                    isCheckedJournalTab = true;
-                    pnDetailDV = -1;
-                    pnDetailJE = -1;
-                    populateJE();
+                    if (poDisbursementController.Detail(0).getSourceNo() != null && !poDisbursementController.Detail(0).getSourceNo().isEmpty()) {
+                        isCheckedJournalTab = true;
+                        pnDetailDV = -1;
+                        pnDetailJE = -1;
+                        populateJE();
+                    } else {
+                        CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
+                        ShowMessageFX.Warning("You need atleast valid disbursement detail before proceed.", pxeModuleName, null);
+                    }
                 }
             }
         }
@@ -1803,21 +1829,78 @@ public class DisbursementVoucher_VerificationController implements Initializable
             }
         }
         );
-        cmbDisbursementMode.setOnAction(event -> {
-            if ((pnEditMode == EditMode.UPDATE) && cmbDisbursementMode.getSelectionModel().getSelectedIndex() >= 0) {
+        disbursementModeHandler = event -> {
+            if (pnEditMode == EditMode.UPDATE && cmbDisbursementMode.getSelectionModel().getSelectedIndex() >= 0) {
+                if (poDisbursementController.CheckPayments().getModel().getDesbursementMode().equals("1")
+                        && poDisbursementController.CheckPayments().getModel().getClaimant().equals("0")
+                        && !tfAuthorizedPerson.getText().isEmpty()) {
+                    if (ShowMessageFX.YesNo("You have Claimant Type & Authorized Person are not empty, \n"
+                            + "Are you sure you want to change Disbursement Type?", pxeModuleName, null)) {
+                        poDisbursementController.CheckPayments().getModel().setClaimant("");
+                        poDisbursementController.CheckPayments().getModel().setAuthorize("");
+                        cmbClaimantType.setValue(null);
+                        tfAuthorizedPerson.setText("");
+                    } else {
+                        // Temporarily remove the listener
+                        cmbDisbursementMode.setOnAction(null);
+                        Platform.runLater(() -> {
+                            cmbDisbursementMode.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getDesbursementMode().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getDesbursementMode()) : -1);
+                            cmbClaimantType.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getClaimant().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getClaimant()) : -1);
+                            tfAuthorizedPerson.setText(poDisbursementController.CheckPayments().getModel().getAuthorize());
+                            cmbDisbursementMode.setOnAction(disbursementModeHandler);
+                        });
+                        return;
+                    }
+                } else if (poDisbursementController.CheckPayments().getModel().getDesbursementMode().equals("1")
+                        && poDisbursementController.CheckPayments().getModel().getClaimant().equals("0")) {
+                    if (ShowMessageFX.YesNo("You have Claimant Type is not empty, \n"
+                            + "Are you sure you want to change Disbursement Type?", pxeModuleName, null)) {
+                        poDisbursementController.CheckPayments().getModel().setClaimant("");
+                        cmbClaimantType.setValue(null);
+                    } else {
+                        cmbClaimantType.setOnAction(null);
+                        Platform.runLater(() -> {
+                            cmbDisbursementMode.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getDesbursementMode().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getDesbursementMode()) : -1);
+                            cmbClaimantType.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getClaimant().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getClaimant()) : -1);
+                            cmbDisbursementMode.setOnAction(disbursementModeHandler);
+                        });
+                        return;
+                    }
+
+                }
+
                 poDisbursementController.CheckPayments().getModel().setDesbursementMode(String.valueOf(cmbDisbursementMode.getSelectionModel().getSelectedIndex()));
                 initFields(pnEditMode);
             }
-        }
-        );
-        cmbClaimantType.setOnAction(event
-                -> {
-            if ((pnEditMode == EditMode.UPDATE) && cmbClaimantType.getSelectionModel().getSelectedIndex() >= 0) {
+        };
+
+        cmbDisbursementMode.setOnAction(disbursementModeHandler);
+        claimantTypeHandler = event -> {
+            if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) && cmbClaimantType.getSelectionModel().getSelectedIndex() >= 0) {
+                if (poDisbursementController.CheckPayments().getModel().getClaimant().equals("0") && !tfAuthorizedPerson.getText().isEmpty()) {
+                    if (ShowMessageFX.YesNo("You have Authorized Person is not Empty, \n"
+                            + "Are you sure you want to change Claimant Type?", pxeModuleName, null)) {
+
+                        poDisbursementController.CheckPayments().getModel().setAuthorize("");
+                        tfAuthorizedPerson.setText("");
+                    } else {
+                        // Temporarily remove the listener
+                        cmbClaimantType.setOnAction(null);
+                        Platform.runLater(() -> {
+                            cmbClaimantType.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getClaimant().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getClaimant()) : -1);
+                            tfAuthorizedPerson.setText(poDisbursementController.CheckPayments().getModel().getAuthorize());
+                            cmbClaimantType.setOnAction(claimantTypeHandler);
+                        });
+                        return;
+                    }
+                }
+
                 poDisbursementController.CheckPayments().getModel().setClaimant(String.valueOf(cmbClaimantType.getSelectionModel().getSelectedIndex()));
                 initFields(pnEditMode);
             }
-        }
-        );
+        };
+
+        cmbClaimantType.setOnAction(claimantTypeHandler);
         cmbOtherPayment.setOnAction(event
                 -> {
             if ((pnEditMode == EditMode.UPDATE) && cmbOtherPayment.getSelectionModel().getSelectedIndex() >= 0) {
@@ -1830,6 +1913,18 @@ public class DisbursementVoucher_VerificationController implements Initializable
             }
         }
         );
+    }
+
+    private int safeParseIndex(String indexStr, int maxSize) {
+        try {
+            int index = Integer.parseInt(indexStr);
+            if (index >= 0 && index < maxSize) {
+                return index;
+            }
+        } catch (NumberFormatException e) {
+            // Ignore parsing error
+        }
+        return -1; // Invalid index
     }
 
     private void initDatePicker() {
@@ -1939,14 +2034,16 @@ public class DisbursementVoucher_VerificationController implements Initializable
         JFXUtil.setValueToNull(null, dpDVTransactionDate, dpJournalTransactionDate, dpCheckDate);
         JFXUtil.setValueToNull(null, cmbPaymentMode, cmbPayeeType, cmbDisbursementMode, cmbClaimantType, cmbOtherPayment, cmbOtherPaymentBTransfer);
         JFXUtil.clearTextFields(apDVDetail, apDVMaster2, apDVMaster3, apMasterDVCheck, apMasterDVBTransfer, apMasterDVOp, apJournalMaster, apJournalDetails);
-        CustomCommonUtil.setSelected(false, chbkIsCrossCheck, chbkPrintByBank, chbkVatClassification);
+        CustomCommonUtil.setSelected(false, chbkIsCrossCheck, chbkPrintByBank, chbkVatClassification, chbkIsPersonOnly);
     }
 
     private void initFields(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.UPDATE);
         JFXUtil.setDisabled(!lbShow, apDVMaster1, apDVMaster2, apDVMaster3, apJournalMaster, apJournalDetails);
         JFXUtil.setDisabled(true, apDVDetail, apMasterDVCheck, apMasterDVOp, apMasterDVBTransfer, tfParticularsDetail, tfAuthorizedPerson);
-        tabJournal.setDisable(tfDVTransactionNo.getText().isEmpty());
+        if (!detailsdv_data.isEmpty()) {
+            tabJournal.setDisable(fnEditMode == EditMode.UNKNOWN || fnEditMode == EditMode.ADDNEW);
+        }
         tabCheck.setDisable(true);
         tabOnlinePayment.setDisable(true);
         tabBankTransfer.setDisable(true);
@@ -1962,11 +2059,10 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 apMasterDVOp.setDisable(!lbShow);
                 CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
 
-                boolean isPrintByBank = chbkPrintByBank.isSelected();
-                boolean isDisbursementModeSelected = cmbDisbursementMode.getSelectionModel().getSelectedIndex() == 1;
+                boolean isDisbursementModeSelected = cmbDisbursementMode.getSelectionModel().getSelectedIndex() >= 0;
                 boolean isClaimantTypeSelected = cmbClaimantType.getSelectionModel().getSelectedIndex() == 0;
 
-                if (isPrintByBank && isDisbursementModeSelected && isClaimantTypeSelected) {
+                if (isDisbursementModeSelected && isClaimantTypeSelected) {
                     tfAuthorizedPerson.setDisable(!lbShow);
                 }
 
@@ -2020,6 +2116,30 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void initTextFieldsProperty() {
+        tfSearchSupplier.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    if (pnDetailDV >= 0) {
+                        poDisbursementController.Master().setPayeeID("");
+                        tfSearchSupplier.setText("");
+                        psSearchSupplierID = "";
+                        loadTableMain();
+                    }
+                }
+            }
+        }
+        );
+        tfSearchTransaction.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    if (pnDetailDV >= 0) {
+                        psSearchTransactionNo = "";
+                        loadTableMain();
+                    }
+                }
+            }
+        }
+        );
         tfTaxCodeDetail.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
