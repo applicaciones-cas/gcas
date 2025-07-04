@@ -197,6 +197,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
             poCheckPrintingRequestController.Master().setCompanyID(psCompanyId);
             poCheckPrintingRequestController.setIndustryID(psIndustryId);
             poCheckPrintingRequestController.setCompanyID(psCompanyId);
+            poCheckPrintingRequestController.Master().setBranchCode(oApp.getBranchCode());
             loadRecordSearch();
             btnNew.fire();
         });
@@ -257,6 +258,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                     }
                     poCheckPrintingRequestController.Master().setIndustryID(psIndustryId);
                     poCheckPrintingRequestController.Master().setCompanyID(psCompanyId);
+                    poCheckPrintingRequestController.Master().setBranchCode(oApp.getBranchCode());
                     loadTableDetail();
                     pnEditMode = poCheckPrintingRequestController.getEditMode();
                     break;
@@ -602,7 +604,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                                         && !poCheckPrintingRequestController.Detail(lnCtr).getSourceNo().equals("")) {
                                     try {
                                         poCheckPrintingRequestController.AddDetail();
-                                        
+
                                     } catch (CloneNotSupportedException ex) {
                                         Logger.getLogger(CheckPrintRequest_EntryController.class
                                                 .getName()).log(Level.SEVERE, null, ex);
@@ -612,7 +614,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                         }
                         for (lnCtr = 0; lnCtr < poCheckPrintingRequestController.getDetailCount(); lnCtr++) {
                             try {
-                                
+
                                 details_data.add(
                                         new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                                 poCheckPrintingRequestController.Detail(lnCtr).getSourceNo(),
@@ -621,12 +623,12 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().getNetTotal(), true),
                                                 poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckNo(),
                                                 poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckDate() != null
-                                                        ? CustomCommonUtil.formatDateToShortString(
-                                                                poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckDate())
-                                                        : "",
+                                                ? CustomCommonUtil.formatDateToShortString(
+                                                        poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckDate())
+                                                : "",
                                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getAmount(), true)
                                         ));
-                                
+
                             } catch (SQLException | GuanzonException ex) {
                                 Logger.getLogger(CheckPrintRequest_EntryController.class
                                         .getName()).log(Level.SEVERE, null, ex);
