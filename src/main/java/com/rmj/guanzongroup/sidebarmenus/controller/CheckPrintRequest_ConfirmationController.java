@@ -335,10 +335,10 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
 //                    ShowMessageFX.Warning("Button btnExport is Underdevelopment.", pxeModuleName, null);
                     poJSON = poCheckPrintingRequestController.ExportTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
                     if ("error".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                            return;
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        return;
                     }
-                            ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                    ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                     break;
                 default:
                     ShowMessageFX.Warning("Please contact admin to assist about no button available", pxeModuleName, null);
@@ -348,10 +348,9 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                 poCheckPrintingRequestController.resetMaster();
                 poCheckPrintingRequestController.resetOthers();
                 poCheckPrintingRequestController.Detail().clear();
-                pnEditMode = EditMode.UNKNOWN;
                 clearFields();
-                loadRecordMaster();
-                loadRecordDetail();
+                details_data.clear();
+                pnEditMode = EditMode.UNKNOWN;
             }
             initFields(pnEditMode);
             initButton(pnEditMode);
@@ -511,7 +510,6 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
     private void loadRecordDetail() {
         if (pnDetail >= 0) {
             try {
-
                 tfReferNo.setText(poCheckPrintingRequestController.Detail(pnDetail).getSourceNo());
                 tfCheckNo.setText(poCheckPrintingRequestController.Detail(pnDetail).DisbursementMaster().CheckPayments().getCheckNo());
                 tfCheckAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Master().getTotalAmount(), true));

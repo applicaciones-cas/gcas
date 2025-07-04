@@ -425,7 +425,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     if (oApp.getUserLevel() >= UserRight.ENCODER) {
                         if (pnEditMode == EditMode.UPDATE) {
                             if (!isCheckedJournalTab) {
-                                ShowMessageFX.Warning("Please see the journal entry, before save", pxeModuleName, null);
+                                ShowMessageFX.Warning("Please see the Journal Entry, before save", pxeModuleName, null);
                                 return;
                             }
                         }
@@ -447,7 +447,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                             ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                         }
                     }
-                    System.out.println("EditMode: " + poDisbursementController.getEditMode());
                     Platform.runLater(() -> btnNew.fire());
                     break;
                 case "btnCancel":
@@ -497,6 +496,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 pnDetailJE = -1;
                 clearFields();
                 detailsdv_data.clear();
+                journal_data.clear();
                 CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
                 CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
                 pnEditMode = EditMode.UNKNOWN;
@@ -710,7 +710,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             tfDVTransactionNo.setText(poDisbursementController.Master().getTransactionNo() != null ? poDisbursementController.Master().getTransactionNo() : "");
             dpDVTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poDisbursementController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
             tfVoucherNo.setText(poDisbursementController.Master().getVoucherNo());
-            lblDVTransactionStatus.setText(getStatus(poDisbursementController.Master().getTransactionStatus()));
             cmbPaymentMode.getSelectionModel().select(!poDisbursementController.Master().getDisbursementType().equals("") ? Integer.valueOf(poDisbursementController.Master().getDisbursementType()) : -1);
             switch (poDisbursementController.Master().getDisbursementType()) {
                 case DisbursementStatic.DisbursementType.CHECK:
@@ -747,6 +746,10 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getTransactionTotal(), true));
             tfLessWHTax.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getWithTaxTotal(), true));
             tfTotalNetAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Master().getNetTotal(), true));
+            Platform.runLater(() -> {
+                lblDVTransactionStatus.setText(getStatus(poDisbursementController.Master().getTransactionStatus()));
+            });
+
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1601,7 +1604,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     journal_data.clear();
                     int lnCtr;
                     try {
-                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (pnEditMode == EditMode.UPDATE) {
                             if ((poDisbursementController.Journal().getDetailCount() - 1) >= 0) {
                                 if (poDisbursementController.Journal().Detail(poDisbursementController.Journal().getDetailCount() - 1).getAccountCode() != null
                                         && !poDisbursementController.Journal().Detail(poDisbursementController.Journal().getDetailCount() - 1).getAccountCode().equals("")) {
@@ -1669,7 +1672,6 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 
     private void loadRecordMasterJE() {
         try {
-            lblJournalTransactionStatus.setText(getStatusJE(poDisbursementController.Journal().Master().getTransactionStatus()));
             tfJournalTransactionNo.setText(poDisbursementController.Journal().Master().getTransactionNo());
             dpJournalTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poDisbursementController.Journal().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
             double lnTotalDebit = 0;
@@ -1682,7 +1684,13 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             tfTotalCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotalCredit, true));
             taJournalRemarks.setText(poDisbursementController.Journal().Master().getRemarks()
             );
-
+            Platform.runLater(() -> {
+                try {
+                    lblJournalTransactionStatus.setText(getStatusJE(poDisbursementController.Journal().Master().getTransactionStatus()));
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DisbursementVoucher_EntryController.class
                     .getName()).log(Level.SEVERE, null, ex);

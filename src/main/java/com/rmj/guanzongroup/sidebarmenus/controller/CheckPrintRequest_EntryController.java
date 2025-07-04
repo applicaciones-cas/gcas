@@ -321,6 +321,14 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                     ShowMessageFX.Warning("Please contact admin to assist about no button available", pxeModuleName, null);
                     break;
             }
+            if (lsButton.equals("btnSave") || lsButton.equals("btnVoid") || lsButton.equals("btnCancel")) {
+                poCheckPrintingRequestController.resetMaster();
+                poCheckPrintingRequestController.resetOthers();
+                poCheckPrintingRequestController.Detail().clear();
+                clearFields();
+                details_data.clear();
+                pnEditMode = EditMode.UNKNOWN;
+            }
             initFields(pnEditMode);
             initButton(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {

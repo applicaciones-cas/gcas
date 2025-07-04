@@ -499,6 +499,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 pnDetailJE = -1;
                 clearFields();
                 detailsdv_data.clear();
+                journal_data.clear();
                 CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
                 CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
                 pnEditMode = EditMode.UNKNOWN;
