@@ -354,6 +354,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     pnEditMode = poDisbursementController.getEditMode();
                     CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
                     loadTableDetailDV();
+                    pagination.toFront();
                     break;
                 case "btnSearch":
                     String lsMessage = "Focus a searchable textfield to search";
@@ -1040,9 +1041,11 @@ public class DisbursementVoucher_VerificationController implements Initializable
         });
 
         tblVwDisbursementVoucher.setOnMouseClicked(event -> {
-            pnMain = tblVwDisbursementVoucher.getSelectionModel().getSelectedIndex();
-            if (pnMain >= 0 && event.getClickCount() == 2) {
-                loadTableRecordFromMain();
+            if (pnEditMode != EditMode.UPDATE) {
+                pnMain = tblVwDisbursementVoucher.getSelectionModel().getSelectedIndex();
+                if (pnMain >= 0 && event.getClickCount() == 2) {
+                    loadTableRecordFromMain();
+                }
             }
         });
 

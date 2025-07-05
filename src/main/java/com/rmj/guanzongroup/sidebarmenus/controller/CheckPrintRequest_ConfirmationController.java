@@ -249,6 +249,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     }
                     loadRecordDetail();
                     pnEditMode = poCheckPrintingRequestController.getEditMode();
+                    pagination.toFront();
                     break;
                 case "btnSave":
                     if (!ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to save the transaction?")) {
@@ -673,10 +674,12 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
         });
 
         tblVwMain.setOnMouseClicked(event -> {
-            pnMain = tblVwMain.getSelectionModel().getSelectedIndex();
-            if (pnMain >= 0) {
-                if (event.getClickCount() == 2) {
-                    loadTableRecordFromMain();
+            if (pnEditMode != EditMode.UPDATE) {
+                pnMain = tblVwMain.getSelectionModel().getSelectedIndex();
+                if (pnMain >= 0) {
+                    if (event.getClickCount() == 2) {
+                        loadTableRecordFromMain();
+                    }
                 }
             }
         });

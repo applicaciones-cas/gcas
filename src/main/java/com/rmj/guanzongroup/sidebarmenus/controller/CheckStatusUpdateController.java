@@ -236,6 +236,7 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                         return;
                     }
                     pnEditMode = poDisbursementController.getEditMode();
+                    pagination.toFront();
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to disregard changes?") == true) {
@@ -690,10 +691,12 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
 
     private void initTableOnClick() {
         tblVwMain.setOnMouseClicked(event -> {
-            pnMain = tblVwMain.getSelectionModel().getSelectedIndex();
-            if (pnMain >= 0) {
-                if (event.getClickCount() == 2) {
-                    loadTableRecordFromMain();
+            if (pnEditMode != EditMode.UPDATE) {
+                pnMain = tblVwMain.getSelectionModel().getSelectedIndex();
+                if (pnMain >= 0) {
+                    if (event.getClickCount() == 2) {
+                        loadTableRecordFromMain();
+                    }
                 }
             }
         });
@@ -794,6 +797,7 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
 
         if (fnEditMode == EditMode.READY) {
             switch (poDisbursementController.CheckPayments().getModel().getTransactionStatus()) {
+                case CheckStatus.FLOAT:
                 case CheckStatus.OPEN:
                 case CheckStatus.STOP_PAYMENT:
                     JFXUtil.setButtonsVisibility(true, btnUpdate);
