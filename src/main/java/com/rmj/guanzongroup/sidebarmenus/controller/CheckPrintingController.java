@@ -283,6 +283,12 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
 
         }
     }
+    private void loadTableMainAndClearSelectedItems() {
+        chckSelectAll.setSelected(false);
+        getSelectedItems.clear();
+        listOfDVToAssign.clear();
+        loadTableMain();
+    }
 
     private void cmdButton_Click(ActionEvent event) {
         try {
@@ -294,10 +300,13 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     validateSelectedItem();
                     if (!listOfDVToAssign.isEmpty()) {
                         loadAssignWindow(listOfDVToAssign);
+                        chckSelectAll.setSelected(false);
+                        getSelectedItems.clear();
+                        listOfDVToAssign.clear();
                     }
                     break;
                 case "btnRetrieve":
-                    loadTableMain();
+                    loadTableMainAndClearSelectedItems() ;
                     break;
                 case "btnPrintCheck":
                     validateSelectedItem();
@@ -306,6 +315,9 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         }
+                        chckSelectAll.setSelected(false);
+                        getSelectedItems.clear();
+                        listOfDVToAssign.clear();
                     }
                     break;
                 case "btnPrintDV":
@@ -315,6 +327,9 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         }
+                        chckSelectAll.setSelected(false);
+                        getSelectedItems.clear();
+                        listOfDVToAssign.clear();
                     }
                     break;
                 case "btnClose":

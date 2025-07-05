@@ -374,6 +374,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     CustomCommonUtil.switchToTab(tabCheck, tabPanePaymentMode);
                     loadTableDetailDV();
                     pnEditMode = poDisbursementController.getEditMode();
+                    System.out.println("EDIT MODE ON NEW TRANS " + pnEditMode);
                     break;
                 case "btnUpdate":
                     poJSON = poDisbursementController.UpdateTransaction();
@@ -415,6 +416,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     }
                     break;
                 case "btnSave":
+                     System.out.println("EDIT MODE before notif onsave" + poDisbursementController.getEditMode());
                     if (!ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to save the transaction?")) {
                         return;
                     }
@@ -439,15 +441,29 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
                     }
+                    
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
-                    poJSON = poDisbursementController.OpenTransaction(poDisbursementController.Master().getTransactionNo());
-                    if ("success".equals(poJSON.get("result")) && poDisbursementController.Master().getTransactionStatus().equals(DisbursementStatic.OPEN)
-                            && ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to verify this transaction?")) {
-                        if ("success".equals((poJSON = poDisbursementController.VerifyTransaction("Verified")).get("result"))) {
+                    if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to verify this transaction?")){
+                      poJSON = poDisbursementController.OpenTransaction(poDisbursementController.Master().getTransactionNo());
+                      if("success".equals(poJSON.get("result"))){
+                          poJSON = poDisbursementController.VerifyTransaction("Verified");
+                          if("error".equals(poJSON.get("result"))){
                             ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
-                        }
+                          }
+                      }
+                      ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                     }
+                    
+                    System.out.println("EDIT MODE AFTER SAVE AND BEFORE BTNNEW FIRE " + poDisbursementController.getEditMode());
+//                    poJSON = poDisbursementController.OpenTransaction(poDisbursementController.Master().getTransactionNo());
+//                    if ("success".equals(poJSON.get("result")) && poDisbursementController.Master().getTransactionStatus().equals(DisbursementStatic.OPEN)
+//                            && ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to verify this transaction?")) {
+//                        if ("success".equals((poJSON = poDisbursementController.VerifyTransaction("Verified")).get("result"))) {
+//                            ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+//                        }
+//                    }
                     Platform.runLater(() -> btnNew.fire());
+                    System.out.println("EDIT MODE AFTER BTNNEW FIRE " + poDisbursementController.getEditMode());
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.YesNo("Do you want to disregard changes?", pxeModuleName, null)) {
@@ -1609,6 +1625,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                 if (poDisbursementController.Journal().Detail(poDisbursementController.Journal().getDetailCount() - 1).getAccountCode() != null
                                         && !poDisbursementController.Journal().Detail(poDisbursementController.Journal().getDetailCount() - 1).getAccountCode().equals("")) {
                                     poDisbursementController.Journal().AddDetail();
+                                    poDisbursementController.Journal().Detail(poDisbursementController.Journal().getDetailCount() - 1).setForMonthOf(oApp.getServerDate()).equals("");
                                 }
                             }
                         }
