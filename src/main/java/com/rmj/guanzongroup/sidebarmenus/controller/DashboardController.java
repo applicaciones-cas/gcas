@@ -395,8 +395,8 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0003";
                     return "Inv Stock Request Entry Mc";  
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcGeneral.fxml":
-                    psIndustryID = "02";
-                     psCategoryID = "0007";
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request Entry Mc General";  
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcSp.fxml":
                     psIndustryID = "02";
@@ -427,8 +427,8 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0005";
                     return "Inv Stock Request Entry Car";   
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCarGeneral.fxml":
-                    psIndustryID = "03";
-                    psCategoryID = "0005";
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request Entry Car General";   
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCarSp.fxml":
                     psIndustryID = "03";
@@ -456,7 +456,12 @@ public class DashboardController implements Initializable {
                 //phones 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMp.fxml":
                     psIndustryID = "01";
+                    psCategoryID = "0001";
                     return "Inv Stock Request Entry MP";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMPGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0001";
+                    return "Inv Stock Request Entry MP General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMp.fxml":
                     return "Inv Stock Request Confirmation MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateMp.fxml":
@@ -467,9 +472,11 @@ public class DashboardController implements Initializable {
                 //food
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpFood.fxml":
                     psIndustryID = "05";
+                    psCategoryID = "0008";
                     return "Inv Stock Request Entry LP Food"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpGeneral.fxml":
-                    psIndustryID = "05";
+                   psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request Entry LP General"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationLpFood.fxml":
                     return "Inv Stock Request Confirmation LP Food";    
@@ -491,8 +498,8 @@ public class DashboardController implements Initializable {
                      psCategoryID = "0021";
                     return "Inv Stock Request Entry Monarch Food";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMonarchGeneral.fxml":
-                    psIndustryID = "04";
-                     psCategoryID = "0007";
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request Entry Monarch General";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMonarchFood.fxml":
                     return "Inv Stock Request Confirmation Monarch Food";    
@@ -1808,6 +1815,8 @@ public class DashboardController implements Initializable {
             //phones
             case "Inv Stock Request Entry MP":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMp.fxml";
+            case "Inv Stock Request Entry MP General":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMPGeneral.fxml";
             case "Inv Stock Request Confirmation MP":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMp.fxml";
             case "Inv Stock Request Update MP":
@@ -1819,7 +1828,7 @@ public class DashboardController implements Initializable {
             case "Inv Stock Request Entry LP Food":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpFood.fxml";
             case "Inv Stock Request Entry LP General":
-                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpGseneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpGeneral.fxml";
             case "Inv Stock Request Confirmation LP Food":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationLpFood.fxml";
             case "Inv Stock Request Confirmation LP General":
@@ -2406,6 +2415,8 @@ public class DashboardController implements Initializable {
                     return new InvStockRequest_ROQ_EntryMcSpController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMp.fxml":
                     return new InvRequest_EntryMPController();
+                    case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMPGeneral.fxml":
+                    return new InvRequest_EntryMPGeneralController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCar.fxml":
                     return new InvStockRequest_EntryCarController();    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCarSp.fxml":
@@ -3478,8 +3489,8 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"030\", \"menu_parent\": \"029\"},"
                 //mobile phones
                 + "  {\"access_level\": \"01\", \"menu_name\": \"Mobile Phones\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMp.fxml\", \"controller_path\": \"InvRequest_EntryMP.controller\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},"
-                + "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvStockRequest_MPAppliances.controller\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},"
-                + "  {\"access_level\":  \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_Entry.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"033\", \"menu_parent\": \"030\"},"
+                //+ "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvRequest_EntryMPGeneralController.controller\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\":  \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMPGeneral.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"033\", \"menu_parent\": \"030\"},"
 //                
 //              //motorcycles
                 + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMc.fxml\", \"controller_path\": \"InvStockRequest_EntryMc.controller\", \"menu_id\": \"034\", \"menu_parent\": \"030\"},"
@@ -3494,7 +3505,7 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMonarchGeneral.fxml\", \"controller_path\": \"InvRequest_EntryMonarchGeneral.controller\", \"menu_id\": \"041\", \"menu_parent\": \"030\"},"
 //                //food
                 + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpFood.fxml\", \"controller_path\": \"InvRequest_EntryLPFood.controller\", \"menu_id\": \"042\", \"menu_parent\": \"030\"},"
-                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLPGeneral.fxml\", \"controller_path\": \"InvRequest_EntryLPGeneral.controller\", \"menu_id\": \"043\", \"menu_parent\": \"030\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpGeneral.fxml\", \"controller_path\": \"InvRequest_EntryLPGeneral.controller\", \"menu_id\": \"043\", \"menu_parent\": \"030\"},"
 //                
 //                
 //                
