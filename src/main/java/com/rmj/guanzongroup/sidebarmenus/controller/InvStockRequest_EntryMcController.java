@@ -68,7 +68,7 @@
      * @author PC
      */
     public class InvStockRequest_EntryMcController implements Initializable, ScreenInterface{
-        private String psFormName = "Inventory Request";
+        private String psFormName = "Inv Stock Request Entry Mc";
         private InvWarehouseControllers invRequestController;
         private GRiderCAS poApp;
         private String psIndustryID = "";
@@ -1032,6 +1032,7 @@
                 ModelInvOrderDetail selectedItem = tblViewOrderDetails.getSelectionModel().getSelectedItem();
 
                 if (event.getClickCount() == 1) {
+                    System.out.print("Row clicked");
                     clearDetailFields();
                     if (selectedItem != null) {
                         if (pnTblInvDetailRow >= 0) {

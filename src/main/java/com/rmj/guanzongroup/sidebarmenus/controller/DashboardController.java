@@ -2244,7 +2244,10 @@ public class DashboardController implements Initializable {
                 /* INVENTORY/INVENTORY/ */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
 //                    return new InventoryMaintenanceController();
-
+                  case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMc.fxml": 
+                      return new InvStockRequest_EntryMcController();
+                  case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcSp.fxml": 
+                      return new InvStockRequest_ROQ_EntryMcSpController();
                 /* PURCHASING/PURCHASING/ */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
 //                    return new SampleForm1Controller();
