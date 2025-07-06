@@ -395,15 +395,13 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0003";
                     return "Inv Stock Request Entry Mc";  
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcGeneral.fxml":
+                    psIndustryID = "02";
+                     psCategoryID = "0007";
                     return "Inv Stock Request Entry Mc General";  
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcSp.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0004";
                     return "Inv Stock Request Entry Mc Sp";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcGeneral.fxml":
-                    psIndustryID = "02";
-                     psCategoryID = "0007";
-                    return "Inv Stock Request Entry General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMc.fxml":
                     return "Inv Stock Request Confirmation Mc";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMcGeneral.fxml":
@@ -429,10 +427,12 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0005";
                     return "Inv Stock Request Entry Car";   
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCarGeneral.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
                     return "Inv Stock Request Entry Car General";   
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCarSp.fxml":
                     psIndustryID = "03";
-                    psCategoryID = "0005";
+                    psCategoryID = "0006";
                     return "Inv Stock Request Entry Car Sp"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationCar.fxml":
                     return "Inv Stock Request Confirmation Car"; 
@@ -455,18 +455,21 @@ public class DashboardController implements Initializable {
                 
                 //phones 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMp.fxml":
-                    return "Inv Stock Request ROQ Entry MP";
+                    psIndustryID = "01";
+                    return "Inv Stock Request Entry MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMp.fxml":
-                    return "Inv Stock Request ROQ Confirmation MP";
+                    return "Inv Stock Request Confirmation MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateMp.fxml":
-                    return "Inv Stock Request ROQ Update MP";    
+                    return "Inv Stock Request Update MP";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMp.fxml":
-                    return "Inv Stock Request ROQ History MP";
+                    return "Inv Stock Request History MP";
                 
                 //food
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpFood.fxml":
+                    psIndustryID = "05";
                     return "Inv Stock Request Entry LP Food"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpGeneral.fxml":
+                    psIndustryID = "05";
                     return "Inv Stock Request Entry LP General"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationLpFood.fxml":
                     return "Inv Stock Request Confirmation LP Food";    
@@ -484,8 +487,12 @@ public class DashboardController implements Initializable {
                 
                 //hospitality    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMonarchFood.fxml":
+                    psIndustryID = "04";
+                     psCategoryID = "0021";
                     return "Inv Stock Request Entry Monarch Food";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMonarchGeneral.fxml":
+                    psIndustryID = "04";
+                     psCategoryID = "0007";
                     return "Inv Stock Request Entry Monarch General";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMonarchFood.fxml":
                     return "Inv Stock Request Confirmation Monarch Food";    
@@ -1750,8 +1757,6 @@ public class DashboardController implements Initializable {
             /*Inventory Stock Request*/
             //without ROQ
             //motorcycles
-            case "Inv Stock Request Entry":
-                return "/com/rmj/guanzongroup/sidebarmenus/views/InvStockRequest_Entry.fxml";
             case "Inv Stock Request Entry Mc Sp":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcSp.fxml";
             case "Inv Stock Request Entry Mc":
