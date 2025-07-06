@@ -1126,6 +1126,7 @@
                 ModelInvOrderDetail selectedItem = tblViewOrderDetails.getSelectionModel().getSelectedItem();
 
                 if (event.getClickCount() == 1) {
+                    System.out.print("Row clicked");
                     clearDetailFields();
                     if (selectedItem != null) {
                         if (pnTblInvDetailRow >= 0) {

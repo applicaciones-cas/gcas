@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
@@ -18,9 +19,12 @@ import org.json.simple.JSONObject;
  *
  * @author User
  */
-public class InvRequest_ConfirmationLPFoodController  implements Initializable, ScreenInterface {
+public class InvRequest_ConfirmationLPFoodController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request Confirmation LP Food";
+    @FXML
+    private AnchorPane AnchorMain;
+    
     private GRiderCAS poApp;
     private String psIndustryID = "";
     private String psCompanyID = "";
@@ -48,9 +52,9 @@ public class InvRequest_ConfirmationLPFoodController  implements Initializable, 
         psCategoryID = fsValue;
     }
     
-//    public Stage getStage() {
-//        return (Stage) AnchorMain.getScene().getWindow();        
-//    }
+    public Stage getStage() {
+        return (Stage) AnchorMain.getScene().getWindow();        
+    }
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
