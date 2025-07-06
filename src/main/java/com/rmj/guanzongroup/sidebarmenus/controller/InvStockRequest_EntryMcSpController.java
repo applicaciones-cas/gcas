@@ -191,7 +191,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                 case "btnBrowse":
                            
                             invRequestController.StockRequest().setTransactionStatus("102");
-                            poJSON = invRequestController.StockRequest().searchTransaction(psIndustryID);
+                            poJSON = invRequestController.StockRequest().searchTransaction();
                             if (!"error".equals((String) poJSON.get("result"))) {
 
                                 pnTblInvDetailRow = -1;
@@ -243,7 +243,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                       clearDetailFields();
                                       break;
                                   }
-                            loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false,psIndustryID);
+                            loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false);
                             
                             if ("error".equals(loJSON.get("result"))) {
                                           ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -271,7 +271,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                     clearDetailFields();
                                     break;
                                 }
-                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID,psIndustryID
+                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID
                                 );
                                 
                                 if ("error".equals(poJSON.get("result"))) {
@@ -306,7 +306,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,brandID
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -525,9 +525,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                     break;
             }
               poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
-                poJSON =invRequestController.StockRequest().SearchIndustry(lsStatus, true); 
-                poJSON =invRequestController.StockRequest().SearchCategory(lsStatus, true); 
-                
+               
                
             lblTransactionStatus.setText(lsStatus); //step 15-16
             dpTransactionDate.setOnAction(null);  
@@ -770,7 +768,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                     break;
                                 }
                                 
-                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID,psIndustryID
+                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID
                                 );
                                 
                                 if ("error".equals(loJSON.get("result"))) {
@@ -804,7 +802,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,brandID
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -834,7 +832,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                       clearDetailFields();
                                       break;
                                   }
-                            loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false,psIndustryID);
+                            loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false);
                             
                             if ("error".equals(loJSON.get("result"))) {
                                           ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);

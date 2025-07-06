@@ -159,7 +159,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                     try {
                         //set edit mode to new transaction temporily to assign industry and company
                         invRequestController.StockRequest().NewTransaction();
-                        
+                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         loadRecordSearch();
@@ -271,15 +271,14 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                         break;   
                 }
                 poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
-//                poJSON =invRequestController.StockRequest().SearchIndustry(lsStatus, true); 
-//                poJSON =invRequestController.StockRequest().SearchCategory(lsStatus, true); 
-                  System.out.println("ID CATEG 1 -"+invRequestController.StockRequest().Master().getCategoryId());
-                invRequestController.StockRequest().Master().setCategoryId("1");
-                System.out.println("ID CATEG 2"+invRequestController.StockRequest().Master().getCategoryId());
-                lblTransactionStatus.setText(lsStatus);
-                dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
-                        SQLUtil.dateFormat(invRequestController.StockRequest().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
                
+                lblTransactionStatus.setText(lsStatus);
+                dpTransactionDate.setOnAction(null);  
+                dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+                    SQLUtil.dateFormat(invRequestController.StockRequest().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)
+                ));
+
+                initDatePickerActions();
                 tfReferenceNo.setText(invRequestController.StockRequest().Master().getReferenceNo());   
 
                 taRemarks.setText(invRequestController.StockRequest().Master().getRemarks());
@@ -378,21 +377,20 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
             String lsButton = ((Button) event.getSource()).getId(); 
             switch (lsButton) {
 
-                        case "btnBrowse":
-                            loJSON = invRequestController.StockRequest().searchTransaction();
-                           
+                      case "btnBrowse":
+                            invRequestController.StockRequest().setTransactionStatus("102");
+                            poJSON = invRequestController.StockRequest().searchTransaction();
+                            if (!"error".equals((String) poJSON.get("result"))) {
 
-                            if (!"error".equals((String) loJSON.get("result"))) {
-                                tblViewOrderDetails.getSelectionModel().clearSelection(pnTblInvDetailRow);
                                 pnTblInvDetailRow = -1;
                                 loadMaster();
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
-                                loadTableInvDetail();
                                 loadDetail();
-                                
-                                
+                                loadTableInvDetail();
+
+
                             } else {
-                                ShowMessageFX.Warning((String) loJSON.get("message"), "Browse", null);
+                                ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
                             }
                             break;
 
@@ -406,6 +404,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                 invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setBranchCode(psBranchCode); 
+                                invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
                                 loadMaster();
                                 pnTblInvDetailRow = -1;
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
@@ -425,7 +424,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                     break;
                                 }
                                 
-                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,null,psIndustryID
+                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,null
                                 );
                                 
                                 if ("error".equals(loJSON.get("result"))) {
@@ -466,7 +465,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,null
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,null
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -504,7 +503,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                         }
                         break;
                     case "btnSave":
-                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
+                   if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
                     }
                     int detailCount = invRequestController.StockRequest().getDetailCount();
@@ -515,7 +514,8 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                             return;
                         }
                     for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
-                            int quantity = (int) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity");
+                           double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
+
                             String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
                             // If any stock ID is empty OR quantity is 0, show an error and prevent saving
@@ -610,19 +610,23 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
 
                         break;   
                 case "btnVoid":
-                    loJSON = invRequestController.StockRequest().VoidTransaction("Voided");
-                    if (!"success".equals((String) loJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                        break;
-                    }
-                    ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                    clearMasterFields();
-                    clearDetailFields();
-                    invOrderDetail_data.clear();
-                    pnEditMode = EditMode.UNKNOWN;
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
+                        poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        clearMasterFields();
+                        clearDetailFields();
+                        invOrderDetail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
 
-                    
-                    break;
+                       
+                    } else {
+                        return;
+                    }
+                    break;    
                     
             }
             initButtons(pnEditMode);
@@ -839,7 +843,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                     break;
                                 }
                                 
-                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,null,psIndustryID
+                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,null
                                 );
                                 
                                 if ("error".equals(loJSON.get("result"))) {
@@ -880,7 +884,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,null
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,null
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -960,7 +964,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
             }
 
         } catch (Exception ex) {
-            Logger.getLogger(InvStockRequest_EntrySpController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(InvRequest_EntryLPFoodController.class.getName()).log(Level.SEVERE, null, ex);
         }
 }
 

@@ -273,8 +273,7 @@ import org.guanzon.appdriver.constant.UserRight;
                         break;   
                 }
                 poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
-                poJSON =invRequestController.StockRequest().SearchIndustry(lsStatus, true); 
-                poJSON =invRequestController.StockRequest().SearchCategory(lsStatus, true); 
+               
                 lblTransactionStatus.setText(lsStatus);
                 
                 dpTransactionDate.setOnAction(null);  
@@ -474,7 +473,7 @@ import org.guanzon.appdriver.constant.UserRight;
                          case "btnBrowse":
                            
                             invRequestController.StockRequest().setTransactionStatus("102");
-                            poJSON = invRequestController.StockRequest().searchTransaction(psIndustryID);
+                            poJSON = invRequestController.StockRequest().searchTransaction();
                             if (!"error".equals((String) poJSON.get("result"))) {
 
                                 pnTblInvDetailRow = -1;
@@ -516,7 +515,7 @@ import org.guanzon.appdriver.constant.UserRight;
                                         break;
                                     }
 
-                                        loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false,psIndustryID);
+                                        loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false);
 
                                         if ("error".equals(loJSON.get("result"))) {
                                             ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -543,7 +542,7 @@ import org.guanzon.appdriver.constant.UserRight;
                                         break;
                                     }
                                    
-                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID);
+                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow);
 
                                     if ("error".equals(poJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -919,7 +918,7 @@ import org.guanzon.appdriver.constant.UserRight;
                                       }
 
 
-                                          loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false,psIndustryID);
+                                          loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false);
 
                                           if ("error".equals(loJSON.get("result"))) {
                                               ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -950,7 +949,7 @@ import org.guanzon.appdriver.constant.UserRight;
                                       }
                                      
                                     
-                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID);
+                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow);
 
                                       if ("error".equals(poJSON.get("result"))) {
                                           ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);

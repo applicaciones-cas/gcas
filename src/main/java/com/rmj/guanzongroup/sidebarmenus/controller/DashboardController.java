@@ -294,6 +294,8 @@ public class DashboardController implements Initializable {
                 //with roq
                 //mc
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcSp.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
                     return "Inv Stock Request ROQ Entry Mc Sp";
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_Entry.fxml":
                     return "Inv Stock Request ROQ Entry General";
@@ -363,12 +365,16 @@ public class DashboardController implements Initializable {
                 //without roq
                 //mc
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMc.fxml":
+                    psIndustryID = "02";
                     psCategoryID = "0003";
                     return "Inv Stock Request Entry Mc";  
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcSp.fxml":
+                    psIndustryID = "02";
                     psCategoryID = "0004";
                     return "Inv Stock Request Entry Mc Sp";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcGeneral.fxml":
+                    psIndustryID = "02";
+                     psCategoryID = "0007";
                     return "Inv Stock Request Entry General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMc.fxml":
                     return "Inv Stock Request Confirmation Mc";
@@ -385,8 +391,12 @@ public class DashboardController implements Initializable {
                     
                 //car    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
                     return "Inv Stock Request Entry Car";   
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCarSp.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
                     return "Inv Stock Request Entry Car Sp"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationCar.fxml":
                     return "Inv Stock Request Confirmation Car"; 
