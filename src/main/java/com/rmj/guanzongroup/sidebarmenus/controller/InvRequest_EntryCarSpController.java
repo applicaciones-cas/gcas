@@ -71,8 +71,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_EntryCarSpController implements Initializable, ScreenInterface{
     
     private String psFormName = "Inv Stock Request Entry Car Sp";
-    @FXML
-    private AnchorPane AnchorMain;
+    
     private GRiderCAS poApp;
     private InvWarehouseControllers invRequestController;
     private TextField activeField;
@@ -109,8 +108,10 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                 tfVariant,tfColor,tfROQ,tfClassification,tfQOH,tfReferenceNo,tfReservationQTY,tfOrderQuantity,tfDescription,tfBarCode;
         
     @FXML
-    private Label lblTransactionStatus, lblSource; 
+    private Label lblTransactionStatus, lblSource; //check this
   
+    @FXML
+    private AnchorPane AnchorMain;
     @Override
     public void setGRider(GRiderCAS foValue) {
         poApp = foValue;
@@ -154,6 +155,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                         
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                         loadRecordSearch();
                         
                         //reset the transaction
@@ -187,7 +189,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                 case "btnBrowse":
                            
                             invRequestController.StockRequest().setTransactionStatus("102");
-                            poJSON = invRequestController.StockRequest().searchTransaction(psIndustryID,"0006");
+                            poJSON = invRequestController.StockRequest().searchTransaction(psIndustryID);
                             if (!"error".equals((String) poJSON.get("result"))) {
 
                                 pnTblInvDetailRow = -1;
@@ -210,6 +212,9 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setBranchCode(psBranchCode); 
+                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
+                        System.out.println("Category asdasd+ "+ invRequestController.StockRequest().Master().getCategoryId());
+                                
                         loadMaster();
                         pnTblInvDetailRow = -1;
                         pnEditMode = invRequestController.StockRequest().getEditMode();
@@ -264,7 +269,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID,psIndustryID,"0006"
+                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID,psIndustryID
                                 );
                                 
                                 if ("error".equals(poJSON.get("result"))) {
@@ -299,7 +304,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,brandID,"0006"
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -332,7 +337,24 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                                 break;
                          }
                     break;
-                    
+                case "btnVoid":
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
+                        poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        clearMasterFields();
+                        clearDetailFields();
+                        invOrderDetail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
+
+                       
+                    } else {
+                        return;
+                    }
+                    break;    
                case "btnSave":
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
@@ -746,7 +768,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                                     break;
                                 }
                                 
-                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID,psIndustryID,"0006"
+                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID,psIndustryID
                                 );
                                 
                                 if ("error".equals(loJSON.get("result"))) {
@@ -780,7 +802,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,brandID,"0006"
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
