@@ -157,6 +157,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                         
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                         loadRecordSearch();
                         
                         //reset the transaction
@@ -190,7 +191,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                 case "btnBrowse":
                            
                             invRequestController.StockRequest().setTransactionStatus("102");
-                            poJSON = invRequestController.StockRequest().searchTransaction(psIndustryID,"0004");
+                            poJSON = invRequestController.StockRequest().searchTransaction(psIndustryID);
                             if (!"error".equals((String) poJSON.get("result"))) {
 
                                 pnTblInvDetailRow = -1;
@@ -213,6 +214,9 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setBranchCode(psBranchCode); 
+                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
+                        System.out.println("Category asdasd+ "+ invRequestController.StockRequest().Master().getCategoryId());
+                                
                         loadMaster();
                         pnTblInvDetailRow = -1;
                         pnEditMode = invRequestController.StockRequest().getEditMode();
@@ -267,7 +271,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                     clearDetailFields();
                                     break;
                                 }
-                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID,psIndustryID,"0004"
+                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID,psIndustryID
                                 );
                                 
                                 if ("error".equals(poJSON.get("result"))) {
@@ -302,7 +306,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,brandID,"0004"
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -335,7 +339,24 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                 break;
                          }
                     break;
-                    
+                case "btnVoid":
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
+                        poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            break;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        clearMasterFields();
+                        clearDetailFields();
+                        invOrderDetail_data.clear();
+                        pnEditMode = EditMode.UNKNOWN;
+
+                       
+                    } else {
+                        return;
+                    }
+                    break;    
                case "btnSave":
                     if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
@@ -749,7 +770,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                     break;
                                 }
                                 
-                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID,psIndustryID,"0004"
+                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID,psIndustryID
                                 );
                                 
                                 if ("error".equals(loJSON.get("result"))) {
@@ -783,7 +804,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,brandID,"0004"
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,psIndustryID,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);

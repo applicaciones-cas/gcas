@@ -389,13 +389,15 @@ public class DashboardController implements Initializable {
                 //without roq
                 //mc
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMc.fxml":
+                    psCategoryID = "0003";
                     return "Inv Stock Request Entry Mc";  
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcGeneral.fxml":
                     return "Inv Stock Request Entry Mc General";  
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcSp.fxml":
+                    psCategoryID = "0004";
                     return "Inv Stock Request Entry Mc Sp";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_Entry.fxml":
-                    return "Inv Stock Request Entry";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMcGeneral.fxml":
+                    return "Inv Stock Request Entry General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMc.fxml":
                     return "Inv Stock Request Confirmation Mc";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMcGeneral.fxml":
@@ -2759,8 +2761,8 @@ public class DashboardController implements Initializable {
 
         setTabPane();
         setPane();
-
-        ScreenInterface fxObj = getController(fsFormName);
+        
+        ScreenInterface fxObj = getController(fsFormName);    
         fxObj.setGRider(oApp);
         fxObj.setIndustryID(psIndustryID);
         fxObj.setCompanyID(psCompanyID);
@@ -3450,13 +3452,13 @@ public class DashboardController implements Initializable {
      * **************** MENU ITEMS SECTIONS *********************************
      */
 
-        private void inventoryMenuItems() {
+         private void inventoryMenuItems() {
         String jsonString = "["
 
-                + "  {\"access_level\": \"026 01 02 03 04 05 06 07\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Inventory\", \"controller_path\": \"sample.controller\", \"menu_id\": \"028\", \"menu_parent\": \"\"},"
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Inventory\", \"controller_path\": \"sample.controller\", \"menu_id\": \"028\", \"menu_parent\": \"\"},"
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Inventory Maintenance\", \"fxml_path\": \"Inventory/Inventory Maintenance\", \"controller_path\": \"sample.controller\", \"menu_id\": \"45\", \"menu_parent\": \"028\"},"
                 //Entry
-                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"029\", \"menu_parent\": \"028\"},"
+                    + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Request\", \"fxml_path\": \"Inventory/Request\", \"controller_path\": \"sample.controller\", \"menu_id\": \"029\", \"menu_parent\": \"028\"},"
                 //withoutroq
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Request/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"030\", \"menu_parent\": \"029\"},"
                 //mobile phones
@@ -3483,7 +3485,7 @@ public class DashboardController implements Initializable {
 //                
 //                //System recommended
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"044\", \"menu_parent\": \"029\"},"
-//                
+//                                                                                                      
                 + "  {\"access_level\": \"01\", \"menu_name\": \"Mobile Phones\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMp.fxml\", \"controller_path\": \"InvRequest_ROQ_EntryMP.controller\", \"menu_id\": \"045\", \"menu_parent\": \"044\"},"
 //                + "  {\"access_level\": \"07\", \"menu_name\": \"Appliances\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPAppliances.fxml\", \"controller_path\": \"InvStockRequest_MPAppliances.controller\", \"menu_id\": \"046\", \"menu_parent\": \"044\"},"
 //                + "  {\"access_level\": \"01\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Inv_Stock_Request_MPGeneral.fxml\", \"controller_path\": \"InvStockRequest_MPGeneral.controller\", \"menu_id\": \"047\", \"menu_parent\": \"044\"},"
@@ -3629,7 +3631,6 @@ public class DashboardController implements Initializable {
             e.printStackTrace();
         }
     }
-
     private void purchasingMenuItems() {
         String jsonString = "[{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Purchasing\",\"fxml_path\":\"Purchasing\",\"controller_path\":\"purchasing.controller\",\"menu_id\":\"001\",\"menu_parent\":\"\"},"
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Entry\",\"fxml_path\":\"Entry\",\"controller_path\":\"entry.controller\",\"menu_id\":\"002\",\"menu_parent\":\"001\"},"

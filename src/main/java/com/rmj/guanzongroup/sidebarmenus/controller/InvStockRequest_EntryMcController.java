@@ -160,6 +160,7 @@
                         
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                         
                         loadRecordSearch();
                         
@@ -473,7 +474,7 @@
                          case "btnBrowse":
                            
                             invRequestController.StockRequest().setTransactionStatus("102");
-                            poJSON = invRequestController.StockRequest().searchTransaction(psIndustryID,"0003");
+                            poJSON = invRequestController.StockRequest().searchTransaction(psIndustryID);
                             if (!"error".equals((String) poJSON.get("result"))) {
 
                                 pnTblInvDetailRow = -1;
@@ -494,6 +495,8 @@
                                 invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setBranchCode(psBranchCode); 
+                                invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
+                                System.out.println("Category asdasd+ "+ invRequestController.StockRequest().Master().getCategoryId());
                                 loadMaster();
                                 pnTblInvDetailRow = -1;
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
@@ -540,7 +543,7 @@
                                         break;
                                     }
                                    
-                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID,"0003");
+                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID);
 
                                     if ("error".equals(poJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -947,7 +950,7 @@
                                       }
                                      
                                     
-                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID,"0003");
+                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow,psIndustryID);
 
                                       if ("error".equals(poJSON.get("result"))) {
                                           ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
