@@ -283,7 +283,6 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                     break;
             }
             if (lsButton.equals("btnSave") || lsButton.equals("btnCancel")) {
-                poCheckStatusUpdateController.CheckPayments().getModel().setTransactionStatus("0");
                 clearFields();
                 pnEditMode = EditMode.UNKNOWN;
             }
@@ -729,7 +728,6 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                 loadRecordMaster();
                 initFields(pnEditMode);
                 initButton(pnEditMode);
-
             } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(CheckStatusUpdateController.class
                         .getName()).log(Level.SEVERE, null, ex);
@@ -747,8 +745,6 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
     private void initFields(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.UPDATE);
         JFXUtil.setDisabled(!lbShow, apMaster);
-        CustomCommonUtil.setVisible(false, dpClearDate, lblClearingDate, lblHoldUntil, dpHoldUntil, lblRemarks, taRemarks);
-        CustomCommonUtil.setManaged(false, dpClearDate, lblClearingDate, lblHoldUntil, dpHoldUntil, lblRemarks, taRemarks);
         switch (poCheckStatusUpdateController.CheckPayments().getModel().getTransactionStatus()) {
             case CheckStatus.POSTED:
                 row09.setPrefHeight(30);
@@ -768,6 +764,10 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                 row09.setPrefHeight(30);
                 CustomCommonUtil.setVisible(true, dpHoldUntil, lblHoldUntil, taRemarks, lblRemarks);
                 CustomCommonUtil.setManaged(true, dpHoldUntil, lblHoldUntil, taRemarks, lblRemarks);
+                break;
+            default:
+                CustomCommonUtil.setVisible(false, dpClearDate, lblClearingDate, lblHoldUntil, dpHoldUntil, lblRemarks, taRemarks);
+                CustomCommonUtil.setManaged(false, dpClearDate, lblClearingDate, lblHoldUntil, dpHoldUntil, lblRemarks, taRemarks);
                 break;
         }
     }
