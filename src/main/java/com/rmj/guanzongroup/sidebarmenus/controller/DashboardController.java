@@ -403,10 +403,16 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0004";
                     return "Inv Stock Request Entry Mc Sp";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMc.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
                     return "Inv Stock Request Confirmation Mc";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMcGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request Confirmation Mc General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMcSp.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
                     return "Inv Stock Request Confirmation Mc Sp";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateMc.fxml":
                     return "Inv Stock Request Update Mc";      
