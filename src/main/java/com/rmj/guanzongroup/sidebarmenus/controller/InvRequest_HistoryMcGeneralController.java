@@ -6,13 +6,17 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.cas.inv.warehouse.services.InvWarehouseControllers;
+import org.guanzon.cas.inv.warehouse.status.StockRequestStatus;
 import org.json.simple.JSONObject;
 
 /**
@@ -30,9 +34,11 @@ public class InvRequest_HistoryMcGeneralController implements Initializable, Scr
     private String psIndustryID = "";
     private String psCompanyID = "";
     private String psCategoryID = "";
+    private String psReferID = "";
+    private String psTransID = "";
     private InvWarehouseControllers invRequestController;
     private LogWrapper logWrapper;
-    
+    private JSONObject poJSON;
     @Override
     public void setGRider(GRiderCAS foValue) {
         poApp = foValue;
@@ -59,9 +65,41 @@ public class InvRequest_HistoryMcGeneralController implements Initializable, Scr
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        invRequestController = new InvWarehouseControllers(poApp, logWrapper);
+        
         JSONObject loJSON = new JSONObject();
-        loJSON = invRequestController.StockRequest().InitTransaction();
+        
+        try {
+            invRequestController = new InvWarehouseControllers(poApp, logWrapper);
+            invRequestController.StockRequest().setTransactionStatus(
+                    StockRequestStatus.OPEN
+                  + StockRequestStatus.CANCELLED
+                  + StockRequestStatus.CONFIRMED
+                  + StockRequestStatus.PROCESSED
+                  + StockRequestStatus.VOID
+            );
+            loJSON = invRequestController.StockRequest().InitTransaction();
+            
+            
+            Platform.runLater((() -> {
+                invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                //invRequestController.StockRequest().Detail().setCategoryCode(psCategoryID);
+                //loadRecordSearch();
+            }));
+        } catch (Exception e) {
+        }
        
+    }
+    
+    private void handleButtonAction(ActionEvent event){
+        try {
+            poJSON = new JSONObject();
+            String lsButton = ((Button) event.getSource()).getId();
+            switch(lsButton){
+                case "btnRetrieve":
+                    poJSON = invRequestController.StockRequest().SaveTransaction("", );
+            }
+        } catch (Exception e) {
+        }
     }
 }
