@@ -59,6 +59,8 @@ public class InvRequest_HistoryMcGeneralController implements Initializable, Scr
         psCategoryID = fsValue;
     }
     
+    
+    
     public Stage getStage() {
         return (Stage) AnchorMain.getScene().getWindow();        
     }
@@ -97,7 +99,7 @@ public class InvRequest_HistoryMcGeneralController implements Initializable, Scr
             String lsButton = ((Button) event.getSource()).getId();
             switch(lsButton){
                 case "btnRetrieve":
-                    poJSON = invRequestController.StockRequest().SaveTransaction("", );
+                    //poJSON = invRequestController.StockRequest().SearchTransaction("", psTransID, psReferID);
             }
         } catch (Exception e) {
         }
