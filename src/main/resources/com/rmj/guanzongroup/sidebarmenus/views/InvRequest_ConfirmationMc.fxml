@@ -324,22 +324,22 @@
                                                     <rowConstraints>
                                                         <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                                                     </rowConstraints>
-                                                    <children>
-                                                        <TableView fx:id="tblViewOrderDetails" prefHeight="200.0" prefWidth="200.0">
-                                                            <columns>
-                                                <TableColumn fx:id="tblBrandDetail" maxWidth="299.66668701171875" minWidth="98.0" prefWidth="147.0" resizable="false" text="Brand" />
-                                                <TableColumn fx:id="tblModelDetail" maxWidth="326.0" minWidth="98.0" prefWidth="162.0" resizable="false" text="Model" />
-                                                <TableColumn fx:id="tblVariantDetail" maxWidth="363.0" minWidth="8.0" prefWidth="170.0" resizable="false" text="Variant" />
-                                                <TableColumn fx:id="tblColorDetail" maxWidth="321.0" minWidth="8.0" prefWidth="160.0" resizable="false" text="Color" />
-                                                <TableColumn fx:id="tblInvTypeDetail" maxWidth="287.0" minWidth="8.0" prefWidth="162.0" resizable="false" text="Inv Type" />
-                                                <TableColumn fx:id="tblROQDetail" maxWidth="287.0" minWidth="8.0" prefWidth="110.0" resizable="false" text="ROQ" />
-                                                <TableColumn fx:id="tblClassificationDetail" maxWidth="287.0" minWidth="8.0" prefWidth="110.0" resizable="false" text="Classification" />
-                                                                <TableColumn fx:id="tblQOHDetail" maxWidth="311.0" minWidth="8.0" prefWidth="139.0" resizable="false" text="QOH" />
-                                                <TableColumn fx:id="tblReservationQtyDetail" maxWidth="341.0" minWidth="8.0" prefWidth="133.0" resizable="false" text="Reservation Qty" />
-                                                <TableColumn fx:id="tblOrderQuantityDetail" maxWidth="479.0" minWidth="8.0" prefWidth="145.0" resizable="false" text="Order Quantity" />
-                                                            </columns>
-                                                        </TableView>
-                                                    </children>
+                                       <children>
+                                          <TableView fx:id="tblViewOrderDetails" prefHeight="200.0" prefWidth="200.0">
+                                             <columns>
+                                                <TableColumn fx:id="tblBrandDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Brand" />
+                                                <TableColumn fx:id="tblModelDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Model" />
+                                                <TableColumn fx:id="tblVariantDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Variant" />
+                                                <TableColumn fx:id="tblColorDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Color" />
+                                                <TableColumn fx:id="tblInvTypeDetail" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" text="Inv Type" />
+                                                <TableColumn fx:id="tblROQDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="ROQ" />
+                                                <TableColumn fx:id="tblClassificationDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Class" />
+                                                <TableColumn fx:id="tblQOHDetail" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="QOH" />
+                                                <TableColumn fx:id="tblReservationQtyDetail" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Reservation Qty" />
+                                                <TableColumn fx:id="tblOrderQuantityDetail" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" resizable="false" text="Order Quantity" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
                                                 </GridPane>
                                             </children>
                                         </AnchorPane>
