@@ -211,7 +211,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                     if ("success".equals((String) loJSON.get("result"))) {
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
-                        invRequestController.StockRequest().Master().setBranchCode(psBranchCode); 
+                        invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
                         System.out.println("Category asdasd+ "+ invRequestController.StockRequest().Master().getCategoryId());
                                 
@@ -522,8 +522,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                     lsStatus = "VOID";
                     break;
             }
-              poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
-               
+              
                
             lblTransactionStatus.setText(lsStatus); //step 15-16
             dpTransactionDate.setOnAction(null);  

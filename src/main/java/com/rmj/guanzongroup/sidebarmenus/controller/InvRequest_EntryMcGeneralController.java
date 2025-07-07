@@ -140,6 +140,7 @@ public class InvRequest_EntryMcGeneralController implements Initializable, Scree
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         invRequestController = new InvWarehouseControllers(poApp, logWrapper);
+      
         JSONObject loJSON = new JSONObject();
         loJSON = invRequestController.StockRequest().InitTransaction(); 
         if (!"success".equals(loJSON.get("result"))) {
@@ -210,7 +211,7 @@ public class InvRequest_EntryMcGeneralController implements Initializable, Scree
                     if ("success".equals((String) loJSON.get("result"))) {
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
-                        invRequestController.StockRequest().Master().setBranchCode(psBranchCode); 
+                        invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
                         System.out.println("Category asdasd+ "+ invRequestController.StockRequest().Master().getCategoryId());
                                 
@@ -522,7 +523,6 @@ public class InvRequest_EntryMcGeneralController implements Initializable, Scree
                     lsStatus = "VOID";
                     break;
             }
-              poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
               
                
             lblTransactionStatus.setText(lsStatus); 

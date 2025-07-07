@@ -73,11 +73,11 @@ import org.json.simple.parser.ParseException;
  * @author User
  */
 public class InvRequest_ConfirmationMcController implements Initializable, ScreenInterface{
-    @FXML
-    private AnchorPane AnchorMain,AnchorDetailMaster;
+    
     @FXML
     private String psFormName = "Inv Stock Request Confirmation Mc";
-    
+    @FXML
+    private AnchorPane AnchorMain,AnchorDetailMaster;
     unloadForm poUnload = new unloadForm();
     private InvWarehouseControllers invRequestController;
         private GRiderCAS poApp;
@@ -529,6 +529,7 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                         case "btnUpdate":
                             poJSON = invRequestController.StockRequest().UpdateTransaction();
                             pnEditMode = invRequestController.StockRequest().getEditMode();
+                            
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), "Warning", null);
                             }
@@ -774,7 +775,8 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                  @Override
             protected List<ModelInvOrderDetail> call() throws Exception {
                 try {
-                   int detailCount = invRequestController.StockRequest().getDetailCount();      
+                   int detailCount = invRequestController.StockRequest().getDetailCount();   
+                    
                         if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
                             Model_Inv_Stock_Request_Detail lastDetail = invRequestController.StockRequest().Detail(detailCount - 1);
                             if (lastDetail.getStockId() != null && !lastDetail.getStockId().isEmpty()) {
@@ -809,6 +811,7 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                         invOrderDetail_data.setAll(detailsList); // ObservableList<ModelInvOrderDetail>
                         tblViewOrderDetails.setItems(invOrderDetail_data);
                         reselectLastRow();
+                        System.out.println("edit "+ pnEditMode);
                         initFields(pnEditMode);
                     });
 
@@ -850,8 +853,8 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                 case "tfOrderQuantity":
                     break;
                 case "tfSearchReferenceNo":
-//                    psReferID = tfSearchReferenceNo.getText();
-//                    loadTableMain();
+                     psReferID = tfSearchReferenceNo.getText();
+                    loadTableList();
                     break;
             }
         } else {
@@ -869,14 +872,10 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
             CustomCommonUtil.setDisable(!lbShow,
                     dpTransactionDate, taRemarks,tfReferenceNo);
 
-            CustomCommonUtil.setDisable(true, 
-                     tfBrand, tfModel,tfOrderQuantity);
-
+           
+            CustomCommonUtil.setDisable(true,
+                    tfInvType,tfVariant,tfColor,tfReservationQTY,tfBrand,tfModel,tfQOH,tfROQ,tfClassification);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
-
-            if (!tfReferenceNo.getText().isEmpty()) {
-                dpTransactionDate.setDisable(!lbShow);
-            }
             
         } else {
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
@@ -1149,11 +1148,11 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
         
         if (fnEditMode == EditMode.READY) {
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
-                case PurchaseOrderStatus.OPEN:
+                case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true, btnSave, btnVoid, btnUpdate);
                     CustomCommonUtil.setManaged(true, btnSave, btnVoid, btnUpdate);
                     break;
-                case PurchaseOrderStatus.CONFIRMED:
+                case StockRequestStatus.CONFIRMED:
                     CustomCommonUtil.setVisible(true, btnVoid, btnUpdate);
                     CustomCommonUtil.setManaged(true, btnVoid, btnUpdate);
                     break;

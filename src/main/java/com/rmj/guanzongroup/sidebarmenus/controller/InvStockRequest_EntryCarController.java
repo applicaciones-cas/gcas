@@ -250,47 +250,33 @@ import org.guanzon.appdriver.constant.UserRight;
         }
 
         private void loadMaster() {
-            try {
-                
-                tfTransactionNo.setText(invRequestController.StockRequest().Master().getTransactionNo());
-
-                String lsStatus = "";
-                switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
-                    case StockRequestStatus.OPEN:
-                        lsStatus = "OPEN";
-                        break;
-                    case StockRequestStatus.CONFIRMED:
-                        lsStatus = "CONFIRMED";
-                        break;
-                    case StockRequestStatus.PROCESSED:
-                        lsStatus = "PROCESSED";
-                        break;
-                    case StockRequestStatus.CANCELLED:
-                        lsStatus = "CANCELLED";
-                        break;
-                    case StockRequestStatus.VOID:
-                        lsStatus = "VOID";
-                        break;   
-                }
-                poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
-               
-                lblTransactionStatus.setText(lsStatus);
-                
-                dpTransactionDate.setOnAction(null);  
-                dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
-                    SQLUtil.dateFormat(invRequestController.StockRequest().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)
-                ));
-
-                initDatePickerActions();
-
-                tfReferenceNo.setText(invRequestController.StockRequest().Master().getReferenceNo());   
-
-                taRemarks.setText(invRequestController.StockRequest().Master().getRemarks());
-
-            } catch (SQLException | GuanzonException e) {
-                ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
-                System.exit(1);
+            tfTransactionNo.setText(invRequestController.StockRequest().Master().getTransactionNo());
+            String lsStatus = "";
+            switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
+                case StockRequestStatus.OPEN:
+                    lsStatus = "OPEN";
+                    break;
+                case StockRequestStatus.CONFIRMED:
+                    lsStatus = "CONFIRMED";
+                    break;
+                case StockRequestStatus.PROCESSED:
+                    lsStatus = "PROCESSED";
+                    break;
+                case StockRequestStatus.CANCELLED:
+                    lsStatus = "CANCELLED";
+                    break;
+                case StockRequestStatus.VOID:
+                    lsStatus = "VOID";
+                    break;
             }
+            lblTransactionStatus.setText(lsStatus);
+            dpTransactionDate.setOnAction(null);
+            dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+                    SQLUtil.dateFormat(invRequestController.StockRequest().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)
+            ));
+            initDatePickerActions();
+            tfReferenceNo.setText(invRequestController.StockRequest().Master().getReferenceNo());
+            taRemarks.setText(invRequestController.StockRequest().Master().getRemarks());
          }
            private void initDatePickerActions() {
                 
@@ -493,7 +479,7 @@ import org.guanzon.appdriver.constant.UserRight;
                             if ("success".equals((String) loJSON.get("result"))) {    
                                 invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
-                                invRequestController.StockRequest().Master().setBranchCode(psBranchCode); 
+                                invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
                                 System.out.println("Category asdasd+ "+ invRequestController.StockRequest().Master().getCategoryId());
                                 loadMaster();
