@@ -140,7 +140,6 @@ public class InvRequest_EntryMcGeneralController implements Initializable, Scree
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         invRequestController = new InvWarehouseControllers(poApp, logWrapper);
-      
         JSONObject loJSON = new JSONObject();
         loJSON = invRequestController.StockRequest().InitTransaction(); 
         if (!"success".equals(loJSON.get("result"))) {
@@ -526,7 +525,8 @@ public class InvRequest_EntryMcGeneralController implements Initializable, Scree
               poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);   
               
                
-            lblTransactionStatus.setText(lsStatus); //step 15-16
+            lblTransactionStatus.setText(lsStatus); 
+            
             dpTransactionDate.setOnAction(null);  
                 dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                     SQLUtil.dateFormat(invRequestController.StockRequest().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)
