@@ -150,7 +150,7 @@
                                                                             <columnConstraints>
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="65.0" />
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
-                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="162.0" minWidth="-Infinity" prefWidth="113.0" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="-Infinity" prefWidth="140.0" />
                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="108.0" minWidth="-Infinity" prefWidth="52.0" />
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="135.0" minWidth="-Infinity" prefWidth="95.0" />
                                                                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
@@ -195,8 +195,8 @@
                                                                                 </Label>
                                                                                 <Label text="Date" GridPane.rowIndex="4" />
                                                                                 <Label text="Refer No." GridPane.rowIndex="5" />
-                                                                                <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                                                <TextField fx:id="tfReferenceNo" maxHeight="26.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                                                                                <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" style="-fx-font-weight: bold;" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                                                <TextField fx:id="tfReferenceNo" maxHeight="26.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="140.0" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                                                             <Label text="Remarks" GridPane.rowIndex="7" />
                                                             <TextArea fx:id="taRemarks" prefHeight="27.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" GridPane.rowSpan="2147483647" />
                                                             <DatePicker fx:id="dpTransactionDate" GridPane.columnIndex="2" GridPane.rowIndex="4" />
@@ -213,13 +213,13 @@
                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="-Infinity" prefWidth="175.0" />
                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="50.0" minWidth="-Infinity" prefWidth="50.0" />
-                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="100.0" />
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="-Infinity" prefWidth="0.0" />
                                                                                 <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="175.0" minWidth="-Infinity" prefWidth="175.0" />
                                                             <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="80.0" minWidth="-Infinity" prefWidth="80.0" />
                                                             <ColumnConstraints hgrow="NEVER" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="70.0" minWidth="-Infinity" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="70.0" minWidth="10.0" prefWidth="100.0" />
                                                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="145.0" minWidth="145.0" prefWidth="145.0" />
                                                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
                                                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" />
@@ -240,7 +240,7 @@
                                                             <TextField fx:id="tfVariant" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="4" GridPane.rowIndex="4" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Reservation Qty" GridPane.columnIndex="12" GridPane.rowIndex="3" />
-                                                            <TextField fx:id="tfColor" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+                                                            <TextField fx:id="tfColor" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                                             <TextField fx:id="tfReservationQTY" GridPane.columnIndex="14" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Order Quantity" GridPane.columnIndex="12" GridPane.rowIndex="4">
                                                                <font>
@@ -248,17 +248,17 @@
                                                                </font>
                                                             </Text>
                                                             <TextField fx:id="tfOrderQuantity" promptText="0" GridPane.columnIndex="14" GridPane.rowIndex="4" />
-                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QOH" GridPane.columnIndex="9" GridPane.rowIndex="4" />
-                                                            <TextField fx:id="tfQOH" GridPane.columnIndex="11" GridPane.rowIndex="4" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QOH" GridPane.columnIndex="8" GridPane.rowIndex="4" />
+                                                            <TextField fx:id="tfQOH" GridPane.columnIndex="10" GridPane.rowIndex="4" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inv Type" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-                                                            <TextField fx:id="tfInvType" GridPane.columnIndex="7" GridPane.rowIndex="3" />
-                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="9" GridPane.rowIndex="2" />
-                                                            <TextField fx:id="tfROQ" GridPane.columnIndex="11" GridPane.rowIndex="2" />
-                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Class" GridPane.columnIndex="9" GridPane.rowIndex="3" />
-                                                            <TextField fx:id="tfClassification" GridPane.columnIndex="11" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfInvType" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="8" GridPane.rowIndex="2" />
+                                                            <TextField fx:id="tfROQ" GridPane.columnIndex="10" GridPane.rowIndex="2" />
+                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Class" GridPane.columnIndex="8" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="tfClassification" GridPane.columnIndex="10" GridPane.rowIndex="3" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Bar Code" GridPane.rowIndex="1" />
                                                             <TextField fx:id="tfBarCode" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                            <TextField fx:id="tfDescription" prefWidth="408.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="2" />
+                                                            <TextField fx:id="tfDescription" prefWidth="408.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="5" GridPane.rowIndex="2" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description" GridPane.rowIndex="2" />
                                                                             </children>
                                                                         </GridPane>
@@ -296,9 +296,9 @@
                                                 </AnchorPane>
                                                 <TableView fx:id="tblViewStock_Request" minWidth="-Infinity" GridPane.rowIndex="1">
                                                    <columns>
-                                                      <TableColumn fx:id="tblTransactionDate" maxWidth="104.0" minWidth="30.0" prefWidth="103.0" resizable="false" sortable="false" text="Transaction Date" />
                                                       <TableColumn fx:id="tblTransactionNo" maxWidth="236.0" minWidth="98.0" prefWidth="133.0" resizable="false" sortable="false" text="Transaction No" />
-                                                      <TableColumn fx:id="tblIndustryCode" maxWidth="239.6666259765625" minWidth="90.0" prefWidth="169.0" resizable="false" sortable="false" text="Industry Code" />
+                                                      <TableColumn fx:id="tblReferenceNo" maxWidth="239.6666259765625" minWidth="90.0" prefWidth="169.0" resizable="false" sortable="false" text="Reference No" />
+                                                      <TableColumn fx:id="tblTransactionDate" maxWidth="104.0" minWidth="30.0" prefWidth="103.0" resizable="false" sortable="false" text="Transaction Date" />
                                                    </columns>
                                                    <GridPane.margin>
                                                       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
