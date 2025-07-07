@@ -134,6 +134,9 @@ public class DisbursementVoucher_VerificationController implements Initializable
     ObservableList<String> cDisbursementMode = FXCollections.observableArrayList("DELIVER", "PICK-UP");
     ObservableList<String> cPayeeType = FXCollections.observableArrayList("INDIVIDUAL", "CORPORATION");
     ObservableList<String> cClaimantType = FXCollections.observableArrayList("AUTHORIZED REPRESENTATIVE", "PAYEE");
+    ObservableList<String> cCheckStatus = FXCollections.observableArrayList("FLOATING", "OPEN",
+            "CLEARED  / POSTED", "CANCELLED", "STALED", "HOLD / STOP PAYMENT",
+            "BOUNCED / DISCHONORED", "VOID");
     ObservableList<String> cOtherPayment = FXCollections.observableArrayList("FLOATING");
     ObservableList<String> cOtherPaymentBTransfer = FXCollections.observableArrayList("FLOATING");
 
@@ -196,7 +199,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     @FXML
     private CheckBox chbkPrintByBank;
     @FXML
-    private ComboBox<String> cmbPayeeType, cmbDisbursementMode, cmbClaimantType;
+    private ComboBox<String> cmbPayeeType, cmbDisbursementMode, cmbClaimantType, cmbCheckStatus;
     @FXML
     private TextField tfAuthorizedPerson;
     @FXML
@@ -644,21 +647,13 @@ public class DisbursementVoucher_VerificationController implements Initializable
     }
 
     private void loadTableMain() {
-        ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setMaxHeight(50);
-        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
-        StackPane loadingPane = new StackPane(progressIndicator);
-        loadingPane.setAlignment(Pos.CENTER);
-        tblVwDisbursementVoucher.setPlaceholder(loadingPane);
-        progressIndicator.setVisible(true);
-
-        poJSON = new JSONObject();
-        Label placeholderLabel = new Label("NO RECORD TO LOAD");
-        placeholderLabel.setStyle("-fx-font-size: 10px;");
-
+        JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
+        tblVwDisbursementVoucher.setPlaceholder(loading.loadingPane);
+        loading.progressIndicator.setVisible(true);
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
+                Thread.sleep(100);
                 Platform.runLater(() -> {
                     try {
                         main_data.clear();
@@ -693,7 +688,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                             }
                             showRetainedHighlight(true);
                             if (main_data.isEmpty()) {
-                                tblVwDisbursementVoucher.setPlaceholder(placeholderLabel);
+                                tblVwDisbursementVoucher.setPlaceholder(loading.placeholderLabel);
                             }
                             JFXUtil.loadTab(pagination, main_data.size(), ROWS_PER_PAGE, tblVwDisbursementVoucher, filteredMain_Data);
 
@@ -710,32 +705,22 @@ public class DisbursementVoucher_VerificationController implements Initializable
             @Override
             protected void succeeded() {
                 btnRetrieve.setDisable(false);
-                placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
                 if (main_data == null || main_data.isEmpty()) {
-                    tblVwDisbursementVoucher.setPlaceholder(placeholderLabel);
-                    pagination.setManaged(false);
-                    pagination.setVisible(false);
+                    tblVwDisbursementVoucher.setPlaceholder(loading.placeholderLabel);
                 } else {
-                    pagination.setPageCount(0);
-                    pagination.setVisible(true);
-                    pagination.setManaged(true);
-                    progressIndicator.setVisible(false);
-                    progressIndicator.setManaged(false);
                     tblVwDisbursementVoucher.toFront();
                 }
+                loading.progressIndicator.setVisible(false);
             }
 
             @Override
             protected void failed() {
                 if (main_data == null || main_data.isEmpty()) {
-                    tblVwDisbursementVoucher.setPlaceholder(placeholderLabel);
-                    pagination.setManaged(false);
-                    pagination.setVisible(false);
+                    tblVwDisbursementVoucher.setPlaceholder(loading.placeholderLabel);
                 }
+                loading.progressIndicator.setVisible(false);
                 btnRetrieve.setDisable(false);
-                progressIndicator.setVisible(false);
-                progressIndicator.setManaged(false);
-                tblVwDisbursementVoucher.toFront();
+
             }
         };
         new Thread(task).start(); // Run task in background
@@ -850,7 +835,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
             tfAuthorizedPerson.setText(poDisbursementController.CheckPayments().getModel().getAuthorize() != null ? poDisbursementController.CheckPayments().getModel().getAuthorize() : "");
             chbkIsCrossCheck.setSelected(poDisbursementController.CheckPayments().getModel().isCross());
             chbkIsPersonOnly.setSelected(poDisbursementController.CheckPayments().getModel().isPayee());
-
+            cmbCheckStatus.getSelectionModel().select(!poDisbursementController.CheckPayments().getModel().getTransactionStatus().equals("") ? Integer.valueOf(poDisbursementController.CheckPayments().getModel().getTransactionStatus()) : -1);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DisbursementVoucher_VerificationController.class
                     .getName()).log(Level.SEVERE, null, ex);
@@ -1855,6 +1840,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
         cmbPayeeType.setItems(cPayeeType);
         cmbDisbursementMode.setItems(cDisbursementMode);
         cmbClaimantType.setItems(cClaimantType);
+        cmbCheckStatus.setItems(cCheckStatus);
         cmbOtherPayment.setItems(cOtherPayment);
         cmbOtherPaymentBTransfer.setItems(cOtherPaymentBTransfer);
 
@@ -2077,7 +2063,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
         lastFocusedTextField = null;
         CustomCommonUtil.setText("", tfDVTransactionNo, tfVoucherNo);
         JFXUtil.setValueToNull(null, dpDVTransactionDate, dpJournalTransactionDate, dpCheckDate);
-        JFXUtil.setValueToNull(null, cmbPaymentMode, cmbPayeeType, cmbDisbursementMode, cmbClaimantType, cmbOtherPayment, cmbOtherPaymentBTransfer);
+        JFXUtil.setValueToNull(null, cmbPaymentMode, cmbPayeeType, cmbDisbursementMode, cmbClaimantType, cmbOtherPayment, cmbOtherPaymentBTransfer, cmbCheckStatus);
         JFXUtil.clearTextFields(apDVDetail, apDVMaster2, apDVMaster3, apMasterDVCheck, apMasterDVBTransfer, apMasterDVOp, apJournalMaster, apJournalDetails);
         CustomCommonUtil.setSelected(false, chbkIsCrossCheck, chbkPrintByBank, chbkVatClassification, chbkIsPersonOnly);
     }
