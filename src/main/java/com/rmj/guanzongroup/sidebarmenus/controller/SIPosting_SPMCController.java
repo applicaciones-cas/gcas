@@ -1303,7 +1303,7 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
             tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfSearchReceiveBranch.setText(psSearchBranchId.equals("") ? "" : poPurchaseReceivingController.Master().Branch().getBranchName());
             JFXUtil.updateCaretPositions(apBrowse);

@@ -524,7 +524,7 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
             tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poPurchaseReceivingController.Master().Supplier().getCompanyName());
             tfSearchReceiveBranch.setText(psBranchId.equals("") ? "" : poPurchaseReceivingController.Master().Branch().getBranchName());
             JFXUtil.updateCaretPositions(apBrowse);
