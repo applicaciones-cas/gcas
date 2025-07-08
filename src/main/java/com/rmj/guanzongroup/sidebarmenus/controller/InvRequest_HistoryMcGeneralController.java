@@ -99,7 +99,7 @@ public class InvRequest_HistoryMcGeneralController implements Initializable, Scr
             String lsButton = ((Button) event.getSource()).getId();
             switch(lsButton){
                 case "btnRetrieve":
-                    //poJSON = invRequestController.StockRequest().SearchTransaction("", psTransID, psReferID);
+                    poJSON = invRequestController.StockRequest().searchTransaction();
             }
         } catch (Exception e) {
         }
