@@ -71,6 +71,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_EntryAppliancesController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request Entry Appliances";
+        
     private GRiderCAS poApp;
     private InvWarehouseControllers invRequestController;
     private TextField activeField;
@@ -212,7 +213,7 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
-                                System.out.println("ind "+psIndustryID+"comp"+psCompanyID+"branc"+poApp.getBranchCode()+"cate"+psCategoryID);
+                                
                                 loadMaster();
                                 pnTblInvDetailRow = 0;
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
