@@ -611,7 +611,7 @@ public class DashboardController implements Initializable {
                      psCategoryID = "0021";
                     return "Inv Stock Request History Monarch Food";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMonarchGeneral.fxml":
-                      psIndustryID = "";
+                      psIndustryID = "04";
                     psCategoryID = "0007";
                     return "Inv Stock Request History Monarch General";    
                 
