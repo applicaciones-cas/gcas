@@ -123,6 +123,7 @@ public class CheckAssignmentController implements Initializable {
         if (!"error".equals((String) poJSON.get("result"))) {
             if (poCheckPrintingController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK)) {
                 poCheckPrintingController.setCheckpayment();
+//                poCheckPrintingController.setBankAccountLedger();
                 poCheckPrintingController.setBankAccountCheckNo();
 
             }
@@ -149,10 +150,14 @@ public class CheckAssignmentController implements Initializable {
                 }
             }
 
-            
+           
             poCheckPrintingController.Master().CheckPayments().setModifiedDate(oApp.getServerDate());
+            poCheckPrintingController.Master().setModifiedDate(oApp.getServerDate());
             /* ---------- 1. Save the CURRENT record ---------- */
+             poCheckPrintingController.Master().setModifiedDate(oApp.getServerDate());
+            
             poJSON = poCheckPrintingController.SaveTransaction();
+            
 
             if (!"success".equals(poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName,
@@ -214,13 +219,17 @@ public class CheckAssignmentController implements Initializable {
             checkNoLength = checkNoValue.length();
             poCheckPrintingController.CheckPayments().getModel().setCheckNo(checkNoValue);
             poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(checkNoValue);
+//             poCheckPrintingController.BankAccountLedger().getModel().setSourceNo(checkNoValue);
+            poCheckPrintingController.CheckPayments().getModel().setTransactionStatus(CheckStatus.OPEN);
         } else if (startingCheckNo != -1) {
             long currentCheckNo = startingCheckNo + currentTransactionIndex;
             String formatted = String.format("%0" + checkNoLength + "d", currentCheckNo);
             tfCheckNo.setText(formatted);
             poCheckPrintingController.CheckPayments().getModel().setCheckNo(formatted);
-
+            poCheckPrintingController.CheckPayments().getModel().setTransactionStatus(CheckStatus.OPEN);
             poCheckPrintingController.BankAccountMaster().getModel().setCheckNo(formatted);
+//            poCheckPrintingController.BankAccountLedger().getModel().setSourceNo(formatted);
+            
         }
 
         dpCheckDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
@@ -346,8 +355,10 @@ public class CheckAssignmentController implements Initializable {
                         poCheckPrintingController.BankAccountMaster()
                                 .getModel()
                                 .setCheckNo(lsValue);
-                    }
+                        
 
+                    }
+                    poCheckPrintingController.CheckPayments().getModel().setTransactionStatus(CheckStatus.OPEN);
                 } else {
                     ShowMessageFX.Warning(null, pxeModuleName,
                             "Invalid check number format.");

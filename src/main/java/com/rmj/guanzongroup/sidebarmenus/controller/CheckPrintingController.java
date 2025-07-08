@@ -570,7 +570,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         });
     }
 
-    private void loadAssignWindow(List<String> fsTransactionNos) throws SQLException {
+    private void loadAssignWindow(List<String> fsTransactionNos) throws SQLException, GuanzonException {
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -601,6 +601,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
             stage.showAndWait();
 
             loadTableMain();
+//            poCheckPrintingController.resetOthers();
         } catch (IOException e) {
             ShowMessageFX.Warning(e.getMessage(), "Warning", null);
             System.exit(1);
