@@ -542,7 +542,7 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0001";
                     return "Inv Stock Request History MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMpGeneral.fxml":
-                    psIndustryID = "";
+                    psIndustryID = "01";
                     psCategoryID = "0007";
                     return "Inv Stock Request History MP General";
                 
@@ -552,7 +552,7 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0008";
                     return "Inv Stock Request Entry LP Food"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpGeneral.fxml":
-                   psIndustryID = "";
+                   psIndustryID = "05";
                     psCategoryID = "0007";
                     return "Inv Stock Request Entry LP General"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationLpFood.fxml":
@@ -572,11 +572,11 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0007";
                     return "Inv Stock Request Update LP General";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryLpFood.fxml":
-                     psIndustryID = "05";
+                    psIndustryID = "05";
                     psCategoryID = "0008";
                     return "Inv Stock Request History LP Food";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryLpGeneral.fxml":
-                     psIndustryID = "";
+                     psIndustryID = "05";
                     psCategoryID = "0007";
                     return "Inv Stock Request History LP General";
                 
