@@ -836,8 +836,8 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
             CustomCommonUtil.setDisable(!lbShow,
                      tfBarCode,tfDescription, tfOrderQuantity);
             CustomCommonUtil.setDisable(true,
-                    tfInvType,tfBarCode,tfDescription,tfReservationQTY,
-                    tfQOH,tfROQ,tfClassification,tfBrand);
+                    tfInvType,tfReservationQTY,
+                    tfQOH,tfROQ,tfClassification,tfBrand,tfMeasure);
             if (!tfReferenceNo.getText().isEmpty()) {
                 dpTransactionDate.setDisable(!lbShow);
             }
@@ -984,17 +984,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                 break;
                         
                     }
-                    switch (fieldId) {
-                                     case "tfOrderQuantity":
-                                         setOrderQuantityToDetail(tfOrderQuantity.getText());
-                                          if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
-                                              pnTblInvDetailRow++;
-                                          }//step 9W
-
-                                          CommonUtils.SetNextFocus(sourceField);
-                                          loadTableInvDetailAndSelectedRow();
-                                          break;
-                                  }
+                    
                               event.consume();
                               break;
                     
@@ -1164,11 +1154,14 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
     }
   
            private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(tfReferenceNo, tfOrderQuantity);
-        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
-         tfBarCode.setOnMouseClicked(e -> activeField = tfBarCode);
-         tfDescription.setOnMouseClicked(e -> activeField = tfDescription);
-    }  
+    List<TextField> searchableFields = Arrays.asList(tfBarCode, tfDescription);
+    searchableFields.forEach(tf -> {
+        tf.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) activeField = tf;
+        });
+        tf.focusedProperty().addListener(txtField_Focus);
+    });
+    }
 
 
 

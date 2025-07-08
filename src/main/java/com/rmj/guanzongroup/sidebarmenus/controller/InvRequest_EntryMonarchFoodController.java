@@ -72,6 +72,7 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
     @FXML
     private String psFormName = "Inv Stock Request Entry Monarch Food";
      
+    
     @FXML
     private AnchorPane AnchorMain;
    
@@ -374,7 +375,7 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
             try {
                 if (pnTblInvDetailRow >= 0) {
                     
-                     String lsDescription = "";
+                   String lsDescription = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
                         lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
                     }
@@ -385,6 +386,7 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                         lsBarCode = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode();
                     }
                     tfBarCode.setText(lsBarCode);
+
                     
                     String lsBrand = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
@@ -478,7 +480,7 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                                 invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
                                 loadMaster();
-                                pnTblInvDetailRow = 0;
+                               pnTblInvDetailRow = 0;
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
                                 loadTableInvDetail();
                                 loadTableInvDetailAndSelectedRow();
@@ -834,8 +836,8 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
             CustomCommonUtil.setDisable(!lbShow,
                      tfBarCode,tfDescription, tfOrderQuantity);
             CustomCommonUtil.setDisable(true,
-                    tfInvType,tfBarCode,tfDescription,tfReservationQTY,
-                    tfQOH,tfROQ,tfClassification,tfBrand);
+                    tfInvType,tfReservationQTY,
+                    tfQOH,tfROQ,tfClassification,tfBrand,tfMeasure);
             if (!tfReferenceNo.getText().isEmpty()) {
                 dpTransactionDate.setDisable(!lbShow);
             }
@@ -1161,13 +1163,15 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
         }
     }
   
-
            private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(tfReferenceNo, tfOrderQuantity);
-        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
-         tfBarCode.setOnMouseClicked(e -> activeField = tfBarCode);
-         tfDescription.setOnMouseClicked(e -> activeField = tfDescription);
-    }  
+    List<TextField> searchableFields = Arrays.asList(tfBarCode, tfDescription);
+    searchableFields.forEach(tf -> {
+        tf.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) activeField = tf;
+        });
+        tf.focusedProperty().addListener(txtField_Focus);
+    });
+    }
 
 
 

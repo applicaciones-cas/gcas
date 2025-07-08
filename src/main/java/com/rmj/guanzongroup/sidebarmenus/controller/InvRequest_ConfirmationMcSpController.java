@@ -957,7 +957,7 @@ public class InvRequest_ConfirmationMcSpController implements Initializable, Scr
 
         private void initTextFieldKeyPressed() {
             List<TextField> loTxtField = Arrays.asList(
-                    tfOrderQuantity,tfSearchTransNo
+                    tfOrderQuantity,tfSearchTransNo,tfSearchReferenceNo
                     );
 
             loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
