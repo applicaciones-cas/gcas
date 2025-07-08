@@ -48,6 +48,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.util.Pair;
+import javax.script.ScriptException;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -56,6 +57,8 @@ import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
+import org.junit.Assert;
 import ph.com.guanzongroup.cas.cashflow.CheckStatusUpdate;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 import ph.com.guanzongroup.cas.cashflow.status.CheckStatus;
@@ -257,13 +260,25 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                         poCheckStatusUpdateController.Master().setModifiedDate(oApp.getServerDate());
                         poCheckStatusUpdateController.Master().setModifyingId(oApp.getUserID());
                     }
-                    poJSON = poCheckStatusUpdateController.SaveTransaction();
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                        return;
+                    switch (poCheckStatusUpdateController.CheckPayments().getModel().getTransactionStatus()) {
+                        case CheckStatus.CANCELLED:
+                        case CheckStatus.STALED:
+                        case CheckStatus.BOUNCED:
+                            poJSON = poCheckStatusUpdateController.ReturnTransaction("Return");
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                return;
+                            }
+                            break;
+                        default:
+                            poJSON = poCheckStatusUpdateController.SaveTransaction();
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                return;
+                            }
+                            break;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
-                    System.out.println("Status Disbursement :" + poCheckStatusUpdateController.Master().getTransactionStatus());
                     pnEditMode = EditMode.UNKNOWN;
                     JFXUtil.disableAllHighlightByColor(tblVwMain, "#A7C7E7", highlightedRowsMain);
                     pagination.toBack();
@@ -289,6 +304,10 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
             initFields(pnEditMode);
             initButton(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+            Logger.getLogger(CheckStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(CheckStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ScriptException ex) {
             Logger.getLogger(CheckStatusUpdateController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
