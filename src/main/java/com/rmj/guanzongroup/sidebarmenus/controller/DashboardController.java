@@ -426,7 +426,7 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0007";
                     return "Inv Stock Request Confirmation Mc General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMcSp.fxml":
-                    psIndustryID = "02";
+                    psIndustryID = "";
                     psCategoryID = "0004";
                     return "Inv Stock Request Confirmation Mc Sp";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateMc.fxml":
@@ -436,6 +436,8 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateMcSp.fxml":
                     return "Inv Stock Request Update Mc Sp";  
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMc.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
                     return "Inv Stock Request History Mc";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMcGeneral.fxml":
                     return "Inv Stock Request History Mc General";    
