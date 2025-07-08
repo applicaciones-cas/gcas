@@ -491,10 +491,10 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
                                 System.out.println("branch"+psBranchCode);
                                 System.out.println("brnh"+invRequestController.StockRequest().Master().getBranchCode());
                                 loadMaster();
-                                pnTblInvDetailRow = -1;
+                                pnTblInvDetailRow = 0;
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
-
                                 loadTableInvDetail();
+                                loadTableInvDetailAndSelectedRow();
                             }
                             break;
                         case "btnSearch":

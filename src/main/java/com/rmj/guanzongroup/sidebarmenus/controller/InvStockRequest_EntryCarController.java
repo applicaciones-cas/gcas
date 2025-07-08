@@ -483,8 +483,10 @@ import org.guanzon.appdriver.constant.UserRight;
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
                                 System.out.println("Category asdasd+ "+ invRequestController.StockRequest().Master().getCategoryId());
                                 loadMaster();
-                                pnTblInvDetailRow = -1;
+                                pnTblInvDetailRow = 0;
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
+                                loadTableInvDetail();
+                                loadTableInvDetailAndSelectedRow();
 
                                 loadTableInvDetail();
                             }

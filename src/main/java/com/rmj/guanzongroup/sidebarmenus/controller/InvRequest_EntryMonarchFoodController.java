@@ -375,17 +375,16 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                 if (pnTblInvDetailRow >= 0) {
                     
                      String lsDescription = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
                         lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
                     }
                     tfDescription.setText(lsDescription);
                     
                     String lsBarCode = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode() != null) {
                         lsBarCode = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode();
                     }
                     tfBarCode.setText(lsBarCode);
-
                     
                     String lsBrand = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
@@ -479,10 +478,10 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                                 invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
                                 loadMaster();
-                                pnTblInvDetailRow = -1;
+                                pnTblInvDetailRow = 0;
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
-
                                 loadTableInvDetail();
+                                loadTableInvDetailAndSelectedRow();
                             }
                             break;
                         case "btnSearch":
@@ -1059,16 +1058,14 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                 fsValue = "0";
 
             }
-            if (tfOrderQuantity.isFocused()) {
-                if (tfBrand.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
-                    fsValue = "0";
-                }
-                if (!tfDescription.getText().isEmpty() && tfBarCode.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
-                    fsValue = "0";
-                }
-            }
+                        if (tfOrderQuantity.isFocused()) {
+                            if (tfBarCode.getText().isEmpty()) {
+                                ShowMessageFX.Warning("Invalid action, Please enter barcode first. ", psFormName, null);
+                                tfBarCode.requestFocus();
+                                fsValue = "0";
+                            }
+                        }
+
             if (pnTblInvDetailRow < 0) {
                 fsValue = "0";
                 ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
@@ -1145,24 +1142,25 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
         }
 
       private void initDetailFocus() {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                if (pnTblInvDetailRow >= 0) {
-                    boolean isSourceNotEmpty = !invRequestController.StockRequest().Master().getSourceNo().isEmpty();
-                    tfBarCode.setDisable(isSourceNotEmpty);
-                    tfDescription.setDisable(isSourceNotEmpty);
-                    if (isSourceNotEmpty && !tfBarCode.getText().isEmpty()) {
-                        tfOrderQuantity.requestFocus();
-                    } else {
-                        if (!tfBarCode.getText().isEmpty() && (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW)) {
-                            tfOrderQuantity.requestFocus();
-                        } else {
-                            tfBarCode.requestFocus();
-                        }
-                    }
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (pnTblInvDetailRow >= 0) {
+                boolean isSourceNotEmpty = !invRequestController.StockRequest().Master().getSourceNo().isEmpty();
+                tfBrand.setDisable(isSourceNotEmpty);
+                tfBarCode.setDisable(isSourceNotEmpty);
+                tfDescription.setDisable(isSourceNotEmpty);
+                if (!tfBarCode.getText().isEmpty()) {
+                   
+                    tfOrderQuantity.requestFocus();
+                }else {
+                        tfBarCode.requestFocus();
+                }if(isSourceNotEmpty && tfBrand.getText().isEmpty()){
+                 tfBarCode.requestFocus();
                 }
-
             }
+
         }
+    }
+  
 
            private void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(tfReferenceNo, tfOrderQuantity);

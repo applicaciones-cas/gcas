@@ -216,9 +216,10 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                         System.out.println("Category asdasd+ "+ invRequestController.StockRequest().Master().getCategoryId());
                                 
                         loadMaster();
-                        pnTblInvDetailRow = -1;
+                        pnTblInvDetailRow = 0;
                         pnEditMode = invRequestController.StockRequest().getEditMode();
                         loadTableInvDetail();
+                        loadTableInvDetailAndSelectedRow();
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -645,13 +646,13 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                     tfBrand.setText(lsBrand);
                     
                     String lsDescription = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
                         lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
                     }
                     tfDescription.setText(lsDescription);
                     
                     String lsBarCode = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode() != null) {
                         lsBarCode = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode();
                     }
                     tfBarCode.setText(lsBarCode);
@@ -963,16 +964,14 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                 fsValue = "0";
 
             }
-            if (tfOrderQuantity.isFocused()) {
-                if (tfBrand.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
-                    fsValue = "0";
-                }
-                if (!tfBrand.getText().isEmpty() && tfModel.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
-                    fsValue = "0";
-                }
-            }
+                        if (tfOrderQuantity.isFocused()) {
+                            if (tfBarCode.getText().isEmpty()) {
+                                ShowMessageFX.Warning("Invalid action, Please enter barcode first. ", psFormName, null);
+                                tfBarCode.requestFocus();
+                                fsValue = "0";
+                            }
+                        }
+
             if (pnTblInvDetailRow < 0) {
                 fsValue = "0";
                 ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
@@ -1211,18 +1210,18 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
         }
         }
     
-    private void initDetailFocus() {
+   private void initDetailFocus() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (pnTblInvDetailRow >= 0) {
                 boolean isSourceNotEmpty = !invRequestController.StockRequest().Master().getSourceNo().isEmpty();
                 tfBrand.setDisable(isSourceNotEmpty);
                 tfBarCode.setDisable(isSourceNotEmpty);
                 tfDescription.setDisable(isSourceNotEmpty);
-                if (isSourceNotEmpty && tfBrand.getText().isEmpty()) {
+                if (!tfBarCode.getText().isEmpty()) {
                    
                     tfOrderQuantity.requestFocus();
                 }else {
-                        tfBrand.requestFocus();
+                        tfBarCode.requestFocus();
                 }if(isSourceNotEmpty && tfBrand.getText().isEmpty()){
                  tfBarCode.requestFocus();
                 }

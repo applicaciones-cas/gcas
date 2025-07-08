@@ -216,9 +216,10 @@ public class InvRequest_EntryMPGeneralController implements Initializable, Scree
                         System.out.println("Category asdasd+ "+ invRequestController.StockRequest().Master().getCategoryId());
                                 
                         loadMaster();
-                        pnTblInvDetailRow = -1;
+                        pnTblInvDetailRow = 0;
                         pnEditMode = invRequestController.StockRequest().getEditMode();
                         loadTableInvDetail();
+                        loadTableInvDetailAndSelectedRow();
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -647,15 +648,16 @@ public class InvRequest_EntryMPGeneralController implements Initializable, Scree
                     tfBrand.setText(lsBrand);
                     
                     String lsDescription = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
                         lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
                     }
                     tfDescription.setText(lsDescription);
                     
                     String lsBarCode = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode() != null) {
                         lsBarCode = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode();
                     }
+                    tfBarCode.setText(lsBarCode);
                     tfBarCode.setText(lsBarCode);
 
                     
@@ -965,16 +967,14 @@ public class InvRequest_EntryMPGeneralController implements Initializable, Scree
                 fsValue = "0";
 
             }
-            if (tfOrderQuantity.isFocused()) {
-                if (tfBrand.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
-                    fsValue = "0";
-                }
-                if (!tfBrand.getText().isEmpty() && tfModel.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
-                    fsValue = "0";
-                }
-            }
+                        if (tfOrderQuantity.isFocused()) {
+                            if (tfBarCode.getText().isEmpty()) {
+                                ShowMessageFX.Warning("Invalid action, Please enter barcode first. ", psFormName, null);
+                                tfBarCode.requestFocus();
+                                fsValue = "0";
+                            }
+                        }
+
             if (pnTblInvDetailRow < 0) {
                 fsValue = "0";
                 ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
@@ -1220,13 +1220,13 @@ public class InvRequest_EntryMPGeneralController implements Initializable, Scree
                 tfBrand.setDisable(isSourceNotEmpty);
                 tfBarCode.setDisable(isSourceNotEmpty);
                 tfDescription.setDisable(isSourceNotEmpty);
-                if (isSourceNotEmpty && tfBrand.getText().isEmpty()) {
+                if (!tfBrand.getText().isEmpty()) {
                    
                     tfOrderQuantity.requestFocus();
                 }else {
                         tfBrand.requestFocus();
                 }if(isSourceNotEmpty && tfBrand.getText().isEmpty()){
-                 tfBarCode.requestFocus();
+                 tfBrand.requestFocus();
                 }
             }
 
