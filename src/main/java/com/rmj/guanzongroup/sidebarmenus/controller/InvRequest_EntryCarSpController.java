@@ -1214,7 +1214,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (pnTblInvDetailRow >= 0) {
                 boolean isSourceNotEmpty = !invRequestController.StockRequest().Master().getSourceNo().isEmpty();
-                tfBrand.setDisable(isSourceNotEmpty);
+               
                 tfBarCode.setDisable(isSourceNotEmpty);
                 tfDescription.setDisable(isSourceNotEmpty);
                 if (!tfBarCode.getText().isEmpty()) {

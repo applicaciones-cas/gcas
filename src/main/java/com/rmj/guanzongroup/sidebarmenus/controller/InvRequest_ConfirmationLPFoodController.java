@@ -960,7 +960,7 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
                   case ENTER:
                   case F3:
                       switch (fieldId) {
-                                case "tfSearchTransNo":
+                               case "tfSearchTransNo":
                                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
