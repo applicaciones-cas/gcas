@@ -497,11 +497,26 @@ public class DisbursementVoucher_HistoryController implements Initializable, Scr
                     for (lnCtr = 0; lnCtr < poDisbursementController.getDetailCount(); lnCtr++) {
                         try {
                             lnNetTotal = poDisbursementController.Detail(lnCtr).getAmount() - poDisbursementController.Detail(lnCtr).getTaxAmount();
+                            String lsTransactionType;
+                            switch (poDisbursementController.Detail(lnCtr).getSourceCode()) {
+                                case DisbursementStatic.SourceCode.PAYMENT_REQUEST:
+                                    lsTransactionType = DisbursementStatic.SourceCode.PAYMENT_REQUEST;
+                                    break;
+                                case DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE:
+                                    lsTransactionType = DisbursementStatic.SourceCode.ACCOUNTS_PAYABLE;
+                                    break;
+                                case DisbursementStatic.SourceCode.CASH_PAYABLE:
+                                    lsTransactionType = DisbursementStatic.SourceCode.CASH_PAYABLE;
+                                    break;
+                                default:
+                                    lsTransactionType = "";
+                                    break;
+                            }
                             detailsdv_data.add(
                                     new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
                                             poDisbursementController.Detail(lnCtr).getSourceNo(),
                                             poDisbursementController.Detail(lnCtr).Particular().getAccountCode(),
-                                            poDisbursementController.Detail(lnCtr).getInvType(),
+                                            lsTransactionType,
                                             poDisbursementController.Detail(lnCtr).Particular().getDescription(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poDisbursementController.Detail(lnCtr).getAmount(), true),
                                             poDisbursementController.Detail(lnCtr).TaxCode().getTaxCode(),
