@@ -600,6 +600,7 @@ public class InvRequest_HistoryCarSpController implements Initializable, ScreenI
 
         new Thread(task).start();
     }
+
     private void loadDetail() {
             try {
                 if (pnTblInvDetailRow >= 0) {
@@ -610,14 +611,14 @@ public class InvRequest_HistoryCarSpController implements Initializable, ScreenI
                     }
                     tfBrand.setText(lsBrand);
                     
-                    String lsDescription = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                   String lsDescription = "";
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
                         lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
                     }
                     tfDescription.setText(lsDescription);
                     
                     String lsBarCode = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode() != null) {
                         lsBarCode = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode();
                     }
                     tfBarCode.setText(lsBarCode);
