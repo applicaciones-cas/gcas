@@ -204,7 +204,7 @@ public class InvRequest_ConfirmationCarController implements Initializable, Scre
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableMain();
+                    loadTableList();
                 }
 
             }
@@ -214,7 +214,7 @@ public class InvRequest_ConfirmationCarController implements Initializable, Scre
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    //loadTableMain();
+                    loadTableList();
                 }
             }
         });
@@ -726,8 +726,9 @@ public class InvRequest_ConfirmationCarController implements Initializable, Scre
                             for (int lnCntr = 0; lnCntr <= invRequestController.StockRequest().getINVMasterCount() - 1; lnCntr++) {
                                 tableListInformation_data.add(new ModelInvTableListInformation(
                                         invRequestController.StockRequest().INVMaster(lnCntr).getTransactionNo(),
-                                        SQLUtil.dateFormat(invRequestController.StockRequest().INVMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
                                         invRequestController.StockRequest().INVMaster(lnCntr).getReferenceNo(),
+                                        SQLUtil.dateFormat(invRequestController.StockRequest().INVMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
+                                        
                                         ""));
                             }
                         } else {
