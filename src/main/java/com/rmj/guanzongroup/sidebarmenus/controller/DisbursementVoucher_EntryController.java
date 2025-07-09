@@ -2264,7 +2264,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             boolean isHaveSourceNo = false;
             if (poDisbursementController.getDetailCount() >= 1) {
-                if (poDisbursementController.Detail(0).getSourceNo() != null && poDisbursementController.Detail(0).getAmount() != 0.0000) {
+                if (poDisbursementController.Detail(0).getSourceNo() != null) {
                     isHaveSourceNo = true;
                 }
             }
@@ -2371,7 +2371,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             boolean isHaveSourceNo = false;
             if (poDisbursementController.getDetailCount() >= 1) {
-                if (poDisbursementController.Detail(0).getSourceNo() != null && poDisbursementController.Detail(0).getAmount() != 0.0000) {
+                if (poDisbursementController.Detail(0).getSourceNo() != null) {
                     isHaveSourceNo = true;
                 }
             }
