@@ -365,7 +365,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     pbIsCheckedJournalTab = false;
                     CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
                     pnEditMode = poDisbursementController.getEditMode();
-                    psSupplierPayeeId = poDisbursementController.Master().getSupplierClientID();
+                    psSupplierPayeeId = poDisbursementController.Master().Payee().getClientID();
                     loadTableDetailDV();
                     break;
                 case "btnNew":
@@ -1065,17 +1065,18 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
 //                        return;
 //                    }
                     loadTableDetailFromMain();
-//                    Platform.runLater(() -> {
-//                        try {
-//                            poDisbursementController.Master().getPayeeID();
-//                            psSupplierPayeeId = poDisbursementController.Master().getPayeeID();
-//                            tfSupplier.setText(poDisbursementController.Master().Payee().getPayeeName());
-//                            tfPayeeName.setText(poDisbursementController.Master().Payee().getPayeeName());
-//                            loadTableMain();
-//                        } catch (GuanzonException | SQLException ex) {
-//                            Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-//                        }
-//                    });
+                    Platform.runLater(() -> {
+                        try {
+                            poDisbursementController.Master().getPayeeID();
+                            poDisbursementController.Master().Payee().getClientID();
+                            psSupplierPayeeId = poDisbursementController.Master().getSupplierClientID();
+                            tfSupplier.setText(poDisbursementController.Master().Payee().Client().getCompanyName());
+                            tfPayeeName.setText(poDisbursementController.Master().Payee().getPayeeName());
+                            loadTableMain();
+                        } catch (GuanzonException | SQLException ex) {
+                            Logger.getLogger(DisbursementVoucher_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    });
                 }
             }
         }
@@ -1437,7 +1438,9 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                     return;
                                 }
 
-                                tfPayeeName.setText(poDisbursementController.Master().getDisbursementType().equals(DisbursementStatic.DisbursementType.CHECK) ? poDisbursementController.Master().Payee().getPayeeName() : "");
+                                tfSupplier.setText(poDisbursementController.Master().Payee().Client().getCompanyName());
+                                tfPayeeName.setText(poDisbursementController.Master().Payee().getPayeeName());
+                                loadTableMain();
                                 break;
                             case "tfParticularsDetail":
                                 poJSON = poDisbursementController.SearchParticular(lsValue, pnDetailDV, false);
@@ -2312,6 +2315,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                             }
                             tfSupplier.setText(poDisbursementController.Master().Payee().Client().getCompanyName());
                             tfPayeeName.setText(poDisbursementController.CheckPayments().getModel().Payee().getPayeeName());
+                            loadTableMain();
                             return false;
 
                         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
@@ -2347,7 +2351,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                             return false;
-                        }  
+                        }
                         tfSupplier.setText(poDisbursementController.Master().Payee().Client().getCompanyName());
                         tfPayeeName.setText(poDisbursementController.CheckPayments().getModel().Payee().getPayeeName());
                         return false;
@@ -2360,6 +2364,75 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             }
         }
 
+        return true;
+    }
+
+    private boolean isExchangingPayeeName() {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            boolean isHaveSourceNo = false;
+            if (poDisbursementController.getDetailCount() >= 1) {
+                if (poDisbursementController.Detail(0).getSourceNo() != null && poDisbursementController.Detail(0).getAmount() != 0.0000) {
+                    isHaveSourceNo = true;
+                }
+            }
+            if (isHaveSourceNo) {
+                if (ShowMessageFX.YesNo("DV Details have already items, are you sure you want to change payee name?", pxeModuleName, null)) {
+                    try {
+                        int detailCountDV = poDisbursementController.getDetailCount();
+                        for (int lnCtr = detailCountDV - 1; lnCtr >= 0; lnCtr--) {
+                            if (poDisbursementController.Detail(lnCtr).getSourceNo().isEmpty()
+                                    && poDisbursementController.Detail(lnCtr).getAmount() == 0.0000) {
+                                continue; // Skip deleting this row
+                            }
+                            poDisbursementController.Detail().remove(lnCtr);
+                        }
+                        pnDetailDV = -1;
+                        pnMain = -1;
+                        tblVwList.getSelectionModel().clearSelection();
+                        JFXUtil.clearTextFields(apDVDetail);
+                        chbkVatClassification.setSelected(false);
+                        loadTableDetailDV();
+                        int detailCountJE = poDisbursementController.Journal().getDetailCount();
+                        if (poDisbursementController.Journal().Master().getTransactionNo() != null) {
+                            for (int lnCtr = detailCountJE - 1; lnCtr >= 0; lnCtr--) {
+                                if (poDisbursementController.Journal().Detail(lnCtr).getAccountCode() == null) {
+                                    continue;
+                                }
+                                poDisbursementController.Journal().Detail().remove(lnCtr);
+                            }
+                            pnDetailJE = -1;
+                            JFXUtil.clearTextFields(apJournalDetails);
+                            loadTableDetailJE();
+                        }
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(DisbursementVoucher_EntryController.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    if (psSupplierPayeeId.isEmpty()) {
+                        return false;
+                    } else {
+                        try {
+                            poJSON = new JSONObject();
+                            poJSON = poDisbursementController.SearchPayee(psSupplierPayeeId, true);
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                                return false;
+                            }
+                            tfSupplier.setText(poDisbursementController.Master().Payee().Client().getCompanyName());
+                            tfPayeeName.setText(poDisbursementController.CheckPayments().getModel().Payee().getPayeeName());
+                            loadTableMain();
+                            return false;
+
+                        } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
+                            Logger.getLogger(DisbursementVoucher_EntryController.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                }
+            }
+        }
         return true;
     }
 
@@ -2420,26 +2493,32 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             }
         }
         );
-        tfBankAccountCheck.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            poDisbursementController.CheckPayments().getModel().setBankAcountID("");
-                            tfBankAccountCheck.setText("");
-                        }
-                    }
+        tfBankAccountCheck.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    poDisbursementController.CheckPayments().getModel().setBankAcountID("");
+                    tfBankAccountCheck.setText("");
                 }
-                );
-        tfPayeeName.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    if (newValue != null) {
-                        if (newValue.isEmpty()) {
-                            poDisbursementController.CheckPayments().getModel().setPayeeID("");
-                            tfPayeeName.setText("");
-                        }
+            }
+        }
+        );
+        tfPayeeName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    if (!isExchangingPayeeName()) {
+                        return;
                     }
+                    poDisbursementController.Master().setSupplierClientID("");
+                    poDisbursementController.Master().setPayeeID("");
+                    poDisbursementController.CheckPayments().getModel().setPayeeID("");
+                    tfPayeeName.setText("");
+                    tfSupplier.setText("");
+                    psSupplierPayeeId = "";
+                    loadTableMain();
                 }
-                );
+            }
+        }
+        );
         tfAuthorizedPerson.textProperty()
                 .addListener((observable, oldValue, newValue) -> {
                     if (newValue != null) {

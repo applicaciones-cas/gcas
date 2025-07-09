@@ -269,6 +269,8 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                                 ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                 return;
                             }
+                            JFXUtil.disableAllHighlightByColor(tblVwMain, "#A7C7E7", highlightedRowsMain);
+                            JFXUtil.highlightByKey(tblVwMain, String.valueOf(pnMain + 1), "#FAA0A0", highlightedRowsMain);
                             break;
                         default:
                             poJSON = poCheckStatusUpdateController.SaveTransaction();
