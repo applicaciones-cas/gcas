@@ -293,51 +293,51 @@ public class DashboardController implements Initializable {
 
                 //with roq
                 //with roq mc
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcSp.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcSp.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0004";
                     return "Inv Stock Request ROQ Entry Mc Sp";
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcGeneral.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcGeneral.fxml":
                     psIndustryID = "";
                     psCategoryID = "0007";
                     return "Inv Stock Request ROQ Entry Mc General";
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryMc.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMc.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
                     return "Inv Stock Request ROQ Entry Mc";
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMc.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMc.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
                     return "Inv Stock Request ROQ Confirmation Mc";
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcGeneral.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcGeneral.fxml":
                     psIndustryID = "";
                     psCategoryID = "0007";
                     return "Inv Stock Request ROQ Confirmation Mc General";
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcSp.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcSp.fxml":
                      psIndustryID = "02";
                     psCategoryID = "0004";
                     return "Inv Stock Request ROQ Confirmation Mc Sp";
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMc.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMc.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
                     return "Inv Stock Request ROQ Update Mc";
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcGeneral.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcGeneral.fxml":
                     psIndustryID = "";
                     psCategoryID = "0007";
                     return "Inv Stock Request ROQ Update Mc General";
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcSp.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcSp.fxml":
                      psIndustryID = "02";
                     psCategoryID = "0004";
                     return "Inv Stock Request ROQ Update Mc Sp";    
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMc.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMc.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
                     return "Inv Stock Request ROQ History Mc";    
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcGeneral.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcGeneral.fxml":
                     psIndustryID = "";
                     psCategoryID = "0007";
                     return "Inv Stock Request ROQ History Mc General";    
-                case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcSp.fxml":
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcSp.fxml":
                      psIndustryID = "02";
                     psCategoryID = "0004";
                     return "Inv Stock Request ROQ History Mc Sp";  
@@ -2023,27 +2023,27 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMcSp.fxml";
             //car
             case "Inv Stock Request Entry Car":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_EntryCar.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCar.fxml";
             case "Inv Stock Request Entry Car General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_EntryCarGeneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCarGeneral.fxml";
             case "Inv Stock Request Entry Car Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_EntryCarSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCarSp.fxml";
             case "Inv Stock Request Confirmation Car":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ConfirmationCar.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationCar.fxml";
             case "Inv Stock Request Confirmation Car General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ConfirmationCarGeneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationCarGeneral.fxml";
             case "Inv Stock Request Confirmation Car Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ConfirmationCarSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationCarSp.fxml";
             case "Inv Stock Request Update Car":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_UpdateCar.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateCar.fxml";
             case "Inv Stock Request Update Car General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_UpdateCargeneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateCargeneral.fxml";
             case "Inv Stock Request Update Car Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_UpdateCarSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateCarSp.fxml";
             case "Inv Stock Request History Car":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_HistoryCar.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryCar.fxml";
             case "Inv Stock Request History Car Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_HistoryCarSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryCarSp.fxml";
                 
             //phones
             case "Inv Stock Request Entry MP":
@@ -2125,51 +2125,51 @@ public class DashboardController implements Initializable {
             case "Inv Stock Request ROQ Entry Mc General":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcGeneral.fxml";
             case "Inv Stock Request ROQ Entry General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_Entry.fxml";        
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_Entry.fxml";        
             case "Inv Stock Request ROQ Confirmation Mc":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMc.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMc.fxml";
             case "Inv Stock Request ROQ Confirmation Mc General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcGeneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcGeneral.fxml";
             case "Inv Stock Request ROQ Confirmation Mc Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcSp.fxml";
             case "Inv Stock Request ROQ Update Mc":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMc.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMc.fxml";
             case "Inv Stock Request ROQ Update Mc General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcGeneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcGeneral.fxml";
             case "Inv Stock Request ROQ Update Mc Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcSp.fxml";
             case "Inv Stock Request ROQ History Mc":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMc.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMc.fxml";
             case "Inv Stock Request ROQ History Mc General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcGeneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcGeneral.fxml";
             case "Inv Stock Request ROQ History Mc Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcSp.fxml";
                 
             //cars
             case "Inv Stock Request ROQ Entry Car":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryCar.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryCar.fxml";
             case "Inv Stock Request ROQ Entry Car General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryCarGeneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryCarGeneral.fxml";
             case "Inv Stock Request ROQ Entry Car Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryCarSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryCarSp.fxml";
             case "Inv Stock Request ROQ Confirmation Car":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCar.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCar.fxml";
             case "Inv Stock Request ROQ Confirmation Car General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCarGeneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCarGeneral.fxml";
             case "Inv Stock Request ROQ Confirmation Car Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCarSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCarSp.fxml";
             case "Inv Stock Request ROQ Update Car":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateCar.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateCar.fxml";
             case "Inv Stock Request ROQ Update Car General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateCarGeneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateCarGeneral.fxml";
             case "Inv Stock Request ROQ Update Car Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateCarSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateCarSp.fxml";
             case "Inv Stock Request ROQ History Car":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCar.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCar.fxml";
             case "Inv Stock Request ROQ History Car General":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCarGeneral.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCarGeneral.fxml";
             case "Inv Stock Request ROQ History Car Sp":
-                return "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCarSp.fxml";
+                return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCarSp.fxml";
             
             //phones
             case "Inv Stock Request ROQ Entry MP":
