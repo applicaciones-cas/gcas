@@ -288,131 +288,233 @@ public class DashboardController implements Initializable {
         if (menuaction.contains(".fxml")) {
             switch (menuaction) {
                 /*Inventory Stock Request*/
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
-                    return "Inventory Maintenance";
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryMaintenance.fxml":
+//                    return "Inventory Maintenance";
 
                 //with roq
-                //mc
+                //with roq mc
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcSp.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0004";
                     return "Inv Stock Request ROQ Entry Mc Sp";
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Entry Mc General";
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_EntryMc.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
                     return "Inv Stock Request ROQ Entry Mc";
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMc.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
                     return "Inv Stock Request ROQ Confirmation Mc";
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Confirmation Mc General";
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcSp.fxml":
+                     psIndustryID = "02";
+                    psCategoryID = "0004";
                     return "Inv Stock Request ROQ Confirmation Mc Sp";
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMc.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
                     return "Inv Stock Request ROQ Update Mc";
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Update Mc General";
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcSp.fxml":
+                     psIndustryID = "02";
+                    psCategoryID = "0004";
                     return "Inv Stock Request ROQ Update Mc Sp";    
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMc.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
                     return "Inv Stock Request ROQ History Mc";    
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ History Mc General";    
                 case "/com/rmj/gunazongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcSp.fxml":
+                     psIndustryID = "02";
+                    psCategoryID = "0004";
                     return "Inv Stock Request ROQ History Mc Sp";  
                     
-                //car    
+                //with roq car    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
                     return "Inv Stock Request ROQ Entry Car";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryCarGeneral.fxml":
+                     psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Entry Car General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryCarSp.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
                     return "Inv Stock Request ROQ Entry Car Sp";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
                     return "Inv Stock Request ROQ Confirmation Car"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCarGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Confirmation Car General"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCarSp.fxml":
                     return "Inv Stock Request ROQ Confirmation Car Sp"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateCar.fxml":
+                     psIndustryID = "03";
+                    psCategoryID = "0005";
                     return "Inv Stock Request ROQ Update Car"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateCarSp.fxml":
+                     psIndustryID = "03";
+                    psCategoryID = "0006";
                     return "Inv Stock Request ROQ Update Car Sp";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCar.fxml":
+                     psIndustryID = "03";
+                    psCategoryID = "0005";
                     return "Inv Stock Request ROQ History Car";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCarSp.fxml":
+                     psIndustryID = "03";
+                    psCategoryID = "0006";
                     return "Inv Stock Request ROQ History Car Sp";
                     
-                //phones
+                //with roq phones
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMp.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
                     return "Inv Stock Request ROQ Entry MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMpGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Entry MP General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMp.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
                     return "Inv Stock Request ROQ Confirmation MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMpGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Confirmation MP General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMp.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
                     return "Inv Stock Request ROQ Update MP";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMpGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Update MP General";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMp.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
                     return "Inv Stock Request ROQ History MP";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMpGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ History MP General";    
                 
-                //food
+                //with roq food
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryLpFood.fxml":
+                     psIndustryID = "05";
+                    psCategoryID = "0008";
                     return "Inv Stock Request ROQ Entry LP Food"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryLpGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Entry LP General"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationLpFood.fxml":
+                     psIndustryID = "05";
+                    psCategoryID = "0008";
                     return "Inv Stock Request ROQ Confirmation LP Food";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationLpGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Confirmation LP General";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateLpFood.fxml":
+                     psIndustryID = "05";
+                    psCategoryID = "0008";
                     return "Inv Stock Request ROQ Update LP Food";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateLpGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Update LP General";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryLpFood.fxml":
+                     psIndustryID = "05";
+                    psCategoryID = "0008";
                     return "Inv Stock Request ROQ History LP Food";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryLpGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ History LP General";    
                 
-                //hospitality    
+                //with roq shospitality    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMonarchFood.fxml":
+                     psIndustryID = "04";
+                     psCategoryID = "0021";
                     return "Inv Stock Request ROQ Entry Monarch Food";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMonarchGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Entry Monarch General";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMonarchFood.fxml":
+                     psIndustryID = "04";
+                     psCategoryID = "0021";
                     return "Inv Stock Request ROQ Confirmation Monarch Food";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMonarchGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Confirmation Monarch General";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMonarchFood.fxml":
+                     psIndustryID = "04";
+                     psCategoryID = "0021";
                     return "Inv Stock Request ROQ Update Monarch Food";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMonarchGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Update Monarch General";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMonarchFood.fxml":
+                     psIndustryID = "04";
+                     psCategoryID = "0021";
                     return "Inv Stock Request ROQ History Monarch Food";    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMonarchGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ History Monarch General";    
                 
-                //appliances
+                //with roq appliances
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryAppliances.fxml":
+                     psIndustryID = "07";
+                    psCategoryID = "0002";
                     return "Inv Stock Request ROQ Entry Appliances";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationAppliances.fxml":
+                     psIndustryID = "07";
+                    psCategoryID = "0002";
                     return "Inv Stock Request ROQ Confirmation Appliances";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateAppliances.fxml":
+                     psIndustryID = "07";
+                    psCategoryID = "0002";
                     return "Inv Stock Request ROQ Update Appliances";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryAppliances.fxml":
+                     psIndustryID = "07";
+                    psCategoryID = "0002";
                     return "Inv Stock Request ROQ History Appliances";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryAppliancesGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Entry Appliances General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationAppliancesGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ Confirmation Appliances General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryAppliancesGeneral.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
                     return "Inv Stock Request ROQ History Appliances General";
                 //without roq
-                //mc
+                //without roq mc
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMc.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
@@ -462,7 +564,7 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0004";
                     return "Inv Stock Request History Mc Sp";     
                     
-                //car    
+                //without roq car    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCar.fxml":
                     psIndustryID = "03";
                     psCategoryID = "0005";
@@ -512,7 +614,7 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0006";
                     return "Inv Stock Request History Car Sp";
                 
-                //phones 
+                //without roq phones 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMp.fxml":
                     psIndustryID = "01";
                     psCategoryID = "0001";
@@ -546,7 +648,7 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0007";
                     return "Inv Stock Request History MP General";
                 
-                //food
+                //without roq food
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpFood.fxml":
                     psIndustryID = "05";
                     psCategoryID = "0008";
@@ -581,7 +683,7 @@ public class DashboardController implements Initializable {
                     return "Inv Stock Request History LP General";
                 
                 
-                //hospitality    
+                //without roq hospitality    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMonarchFood.fxml":
                     psIndustryID = "04";
                      psCategoryID = "0021";
@@ -616,7 +718,7 @@ public class DashboardController implements Initializable {
                     return "Inv Stock Request History Monarch General";    
                 
                     
-                 //appliances
+                 //without roq appliances
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryAppliances.fxml":
                     psIndustryID = "07";
                     psCategoryID = "0002";
