@@ -3827,7 +3827,7 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCarGeneral.fxml\", \"controller_path\": \"InvRequest_Roq_HistoryCarGeneral.controller\", \"menu_id\": \"0139\", \"menu_parent\": \"0130\"},"
                 //With ROQ Los Pedritos
                 + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryLpFood.fxml\", \"controller_path\": \"InvRequest_Roq_EntryLPFood.controller\", \"menu_id\": \"056\", \"menu_parent\": \"044\"},"
-                + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationLpFood.fxml\", \"controller_path\": \"InvRequest_ConfirmationLpFood.controller\", \"menu_id\": \"086\", \"menu_parent\": \"074\"},"
+                + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationLpFood.fxml\", \"controller_path\": \"InvRequest_Roq_ConfirmationLpFood.controller\", \"menu_id\": \"086\", \"menu_parent\": \"074\"},"
                 + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateLpFood.fxml\", \"controller_path\": \"InvRequest_Roq_UpdateLPFood.controller\", \"menu_id\": \"0114\", \"menu_parent\": \"0103\"},"
                 + "  {\"access_level\": \"05\", \"menu_name\": \"LP Food\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryLpFood.fxml\", \"controller_path\": \"InvRequest_Roq_HistoryLPFood.controller\", \"menu_id\": \"0142\", \"menu_parent\": \"0130\"},"
                 + "  {\"access_level\": \"05\", \"menu_name\": \"LP General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryLpGeneral.fxml\", \"controller_path\": \"InvRequest_Roq_EntryLPGeneral.controller\", \"menu_id\": \"057\", \"menu_parent\": \"044\"},"
@@ -3842,149 +3842,25 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMonarchGeneral.fxml\", \"controller_path\": \"InvRequest_Roq_EntryMonarchGeneral.controller\", \"menu_id\": \"055\", \"menu_parent\": \"044\"},"
                 + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMonarchGeneral.fxml\", \"controller_path\": \"InvRequest_Roq_ConfirmationMonarchGeneral.controller\", \"menu_id\": \"085\", \"menu_parent\": \"074\"},"
                 + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMonarchGeneral.fxml\", \"controller_path\": \"InvRequest_Roq_UpdateMonarchGeneral.controller\", \"menu_id\": \"0113\", \"menu_parent\": \"0103\"},"
-                 + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMonarchGeneral.fxml\", \"controller_path\": \"InvRequest_Roq_HistoryMonarchGeneral.controller\", \"menu_id\": \"0141\", \"menu_parent\": \"0130\"},"
-//                //food
-                
-                
-//                
-//                
-//                
-//                //System recommended
-                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"044\", \"menu_parent\": \"029\"},"
-//                                                                                                      
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-//                //new tab: Confirmation
+                + "  {\"access_level\": \"04\", \"menu_name\": \"Monarch General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMonarchGeneral.fxml\", \"controller_path\": \"InvRequest_Roq_HistoryMonarchGeneral.controller\", \"menu_id\": \"0141\", \"menu_parent\": \"0130\"},"      
+               //System recommended
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"044\", \"menu_parent\": \"029\"},"   
+               //new tab: Confirmation
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Confirmation\", \"fxml_path\": \"Inventory/Confirmation\", \"controller_path\": \"sample.controller\", \"menu_id\": \"058\", \"menu_parent\": \"028\"},"
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Confirmation/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"059\", \"menu_parent\": \"058\"},"
-                //mobile phones
-               
-                
-                
-//                
-                //motorcycles
-                
-                
-                
-//                //vehicles
-                
-                
-                
-//                //hospitality
-                
-                
-//                //food
-                
-                
-//                
-                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"074\", \"menu_parent\": \"058\"},"
-//                //system reco
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-//                //new tab: Update
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"074\", \"menu_parent\": \"058\"},"              
+                //new tab: Update
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Update\", \"fxml_path\": \"Inventory/Update\", \"controller_path\": \"sample.controller\", \"menu_id\": \"088\", \"menu_parent\": \"028\"},"
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/Update/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"089\", \"menu_parent\": \"088\"},"
-//                //mobile phones
-               
-                
-                
-//                
-//                //motorcycles
-                
-                
-                
-//                //vehicles
-                
-                
-                
-//                //hospitality
-                
-                
-//                //food
-                
-                
-////              
                 //System recommended
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"0103\", \"menu_parent\": \"088\"},"
-//                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-//                //new tab: History
+                //new tab: History
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"History\", \"fxml_path\": \"Inventory/History\", \"controller_path\": \"sample.controller\", \"menu_id\": \"0116\", \"menu_parent\": \"028\"},"
                 + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"Regular Stocks\", \"fxml_path\": \"Inventory/History/Regular Stocks\", \"controller_path\": \"sample.controller\", \"menu_id\": \"0117\", \"menu_parent\": \"0116\"},"
-//                //mobile phones
-               
-                
-                
-//                
-//                //motorcycles
-                
-                
-                
-//                //vehicles
-                
-                
-                
-//                //hospitality
-                
-                
-//                //food
-                
-                
-//
-//
-//                
-                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/History/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"0130\", \"menu_parent\": \"0116\"},"
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-               
-                
-                
-                
-               
-                
+                + "  {\"access_level\": \"01 02 03 04 05 06 07\", \"menu_name\": \"System Recommend\", \"fxml_path\": \"Inventory/History/Request/System Recommend\", \"controller_path\": \"sample.controller\", \"menu_id\": \"0130\", \"menu_parent\": \"0116\"},"    
                 + "]";
+        
+        
         JSONParser parser = new JSONParser();
         try {
             try {
