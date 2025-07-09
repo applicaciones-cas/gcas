@@ -67,6 +67,7 @@ import org.json.simple.parser.ParseException;
 import ph.com.guanzongroup.cas.cashflow.CheckPrintingRequest;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 import ph.com.guanzongroup.cas.cashflow.status.CheckPrintRequestStatus;
+import ph.com.guanzongroup.cas.cashflow.status.CheckStatus;
 import ph.com.guanzongroup.cas.cashflow.status.DisbursementStatic;
 
 /**
@@ -190,7 +191,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         poCheckPrintingRequestController = new CashflowControllers(oApp, null).CheckPrintingRequest();
-        poCheckPrintingRequestController.setTransactionStatus(DisbursementStatic.OPEN + DisbursementStatic.VERIFIED);
+        poCheckPrintingRequestController.setTransactionStatus(CheckPrintRequestStatus.OPEN + CheckPrintRequestStatus.CONFIRMED);
         poJSON = new JSONObject();
         poJSON = poCheckPrintingRequestController.InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
@@ -310,7 +311,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     }
                     break;
                 case "btnVoid":
-                    if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
+                    if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?")) {
                         poJSON = poCheckPrintingRequestController.VoidTransaction("Voided");
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -333,13 +334,16 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     }
                     break;
                 case "btnExport":
-//                    ShowMessageFX.Warning("Button btnExport is Underdevelopment.", pxeModuleName, null);
-                    poJSON = poCheckPrintingRequestController.ExportTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                    if (ShowMessageFX.YesNo("Are you sure you want to export this transaction?", "Exporting", null)) {
+                        poJSON = poCheckPrintingRequestController.ExportTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                            return;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                    } else {
                         return;
                     }
-                    ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                     break;
                 default:
                     ShowMessageFX.Warning("Please contact admin to assist about no button available", pxeModuleName, null);
@@ -414,7 +418,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                                             poCheckPrintingRequestController.poCheckPrinting(lnCntr).getTransactionNo(),
                                             CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.poCheckPrinting(lnCntr).getTotalAmount(), true)
                                     ));
-                                    if (poCheckPrintingRequestController.Master().getTransactionStatus().equals(DisbursementStatic.VERIFIED)) {
+                                    if (poCheckPrintingRequestController.Master().getTransactionStatus().equals(CheckPrintRequestStatus.CONFIRMED)) {
                                         plOrderNoPartial.add(new Pair<>(String.valueOf(lnCntr + 1), "1"));
                                     }
                                 }
@@ -904,7 +908,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     JFXUtil.setButtonsVisibility(true, btnUpdate, btnVoid, btnConfirm);
                     break;
                 case CheckPrintRequestStatus.CONFIRMED:
-                    JFXUtil.setButtonsVisibility(true, btnUpdate, btnExport);
+                    JFXUtil.setButtonsVisibility(true, btnExport);
                     break;
             }
         }
