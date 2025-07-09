@@ -310,6 +310,18 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                 case "btnRetrieve":
                     loadTableMain();
                     break;
+                case "btnExport":
+                if (ShowMessageFX.YesNo("Are you sure you want to export this transaction?", "Exporting", null)) {
+                    poJSON = poCheckPrintingRequestController.ExportTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        return;
+                    }
+                    ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                } else {
+                    return;
+                }
+                break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this Tab?", "Close Tab", null)) {
                         poUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
@@ -978,7 +990,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                     JFXUtil.setButtonsVisibility(true, btnUpdate);
                     break;
                 case CheckPrintRequestStatus.CONFIRMED:
-                    JFXUtil.setButtonsVisibility(true, btnUpdate, btnExport);
+                    JFXUtil.setButtonsVisibility(true, btnExport);
                     break;
             }
         }
