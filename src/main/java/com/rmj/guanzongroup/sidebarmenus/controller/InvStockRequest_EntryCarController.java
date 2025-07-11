@@ -1222,9 +1222,7 @@ import org.guanzon.appdriver.constant.UserRight;
          tfBrand.setOnMouseClicked(e -> activeField = tfBrand);
          tfModel.setOnMouseClicked(e -> activeField = tfModel);
     }  
-            private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+          
 
 
     }

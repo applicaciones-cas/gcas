@@ -831,8 +831,8 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
             tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
             tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
             tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-            tblMeasureDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+            tblMeasureDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
             tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
             tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
             tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));

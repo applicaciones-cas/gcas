@@ -1221,9 +1221,7 @@
          tfBrand.setOnMouseClicked(e -> activeField = tfBrand);
          tfModel.setOnMouseClicked(e -> activeField = tfModel);
     }  
-            private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+      
 
 
     }

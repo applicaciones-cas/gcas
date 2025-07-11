@@ -1292,7 +1292,5 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
 
         }
     }
-    private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+   
   }

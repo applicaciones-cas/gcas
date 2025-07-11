@@ -1292,7 +1292,5 @@ public class InvRequest_EntryMonarchGeneralController implements Initializable, 
 
         }
     }
-    private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+    
   }

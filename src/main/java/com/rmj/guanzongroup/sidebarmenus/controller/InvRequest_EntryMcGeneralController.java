@@ -1292,7 +1292,5 @@ public class InvRequest_EntryMcGeneralController implements Initializable, Scree
 
         }
     }
-    private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+    
   }

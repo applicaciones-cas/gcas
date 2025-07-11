@@ -1292,7 +1292,5 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
 
         }
     }
-    private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+    
   }

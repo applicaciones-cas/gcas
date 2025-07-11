@@ -568,7 +568,6 @@ public class InvRequest_HistoryMonarchFoodController implements Initializable, S
                                 String.valueOf(detail.getQuantity()),
                                 "",
                                 ""
-
                         ));
                     }
 

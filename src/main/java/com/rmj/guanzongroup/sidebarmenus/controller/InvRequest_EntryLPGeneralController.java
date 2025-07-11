@@ -1292,7 +1292,5 @@ public class InvRequest_EntryLPGeneralController implements Initializable, Scree
 
         }
     }
-    private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+    
   }

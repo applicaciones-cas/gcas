@@ -1293,7 +1293,5 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
 
         }
     }
-    private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+   
   }
