@@ -908,20 +908,27 @@ public class JFXUtil {
         className = className.replace("MonarchFood", "MF");
         className = className.replace("MonarchHospitality", "MH");
 
-        // Add space before capital letters, but keep acronyms like SOA, SI intact
+        // Replace underscores with space
         className = className.replace("_", " ");
-        className = className.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " "); // Break after acronyms like SOA
-        className = className.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
 
-        System.out.println(className.trim());
-        return className.trim();
+        // Add space before capital letters, but preserve acronyms
+        className = className.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+        className = className.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " ");
+
+        className = className.trim();
+
+        // Special replacements after spacing
+        className = className.replace("SP Car", "SPCar");
+        className = className.replace("SP MC", "SPMC");
+
+        return className;
     }
 
     public static String getFormattedFXMLTitle(String fxmlPath) {
         // Extract the FXML file name without extension
         String fileName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
 
-        // Remove common suffixes like "Controller" or "_EntryMonarch" if desired
+        // Remove common suffixes like "Controller"
         if (fileName.endsWith("Controller")) {
             fileName = fileName.substring(0, fileName.length() - "Controller".length());
         }
@@ -934,11 +941,15 @@ public class JFXUtil {
         fileName = fileName.replace("_", " ");
 
         // Add space before capital letters, keeping acronyms intact
-        fileName = fileName.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " "); // Handles "SOAAdjustment" => "SOA Adjustment"
-        fileName = fileName.replaceAll("(?<=[a-z])(?=[A-Z])", " ");     // Handles "EntryForm" => "Entry Form"
+        fileName = fileName.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+        fileName = fileName.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " ");
 
-        System.out.println(fileName.trim());
-        return fileName.trim();
+        // Trim and apply custom replacements
+        fileName = fileName.trim();
+        fileName = fileName.replace("SP Car", "SPCar");
+        fileName = fileName.replace("SP MC", "SPMC");
+
+        return fileName;
     }
 
     //JFXUtil.getFormattedClassTitle(this.getClass());
@@ -1353,7 +1364,7 @@ public class JFXUtil {
     }
 
     public static String removeComma(String numberStr) {
-        if (numberStr == null) {
+        if (numberStr == null || numberStr.equals("")) {
             return "0";
         }
         String result = numberStr.replace(",", "");
