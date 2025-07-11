@@ -290,6 +290,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 loadRecordSearch();
                 cmbTransactionType.getSelectionModel().select(DisbursementStatic.SourceCode.LOAD_ALL);
                 psTransactionType = DisbursementStatic.SourceCode.LOAD_ALL;
+              
                 btnNew.fire();
             });
         } catch (SQLException | GuanzonException ex) {
@@ -377,6 +378,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         return;
                     }
                     poDisbursementController.Master().setVoucherNo(poDisbursementController.getVoucherNo());
+                    tfVoucherNo.setText(poDisbursementController.Master().getVoucherNo());
                     poDisbursementController.Master().setDisbursementType(DisbursementStatic.DisbursementType.CHECK);
                     poDisbursementController.Master().setSupplierClientID(psSupplierPayeeId);
                     CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
@@ -564,7 +566,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         switch (poDisbursementController.Master().getDisbursementType()) {
             case DisbursementStatic.DisbursementType.CHECK:
                 if (tfBankNameCheck.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Please enter Bank Name.", pxeModuleName, null);
+                       ShowMessageFX.Warning("Please enter Bank Name.", pxeModuleName, null);
                     return false;
                 }
                 if (tfBankAccountCheck.getText().isEmpty()) {

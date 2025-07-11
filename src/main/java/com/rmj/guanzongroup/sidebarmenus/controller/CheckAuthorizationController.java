@@ -157,6 +157,10 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
         initTableOnClick();
         initButtons();
         initTextFieldsProperty();
+        if(main_data.isEmpty()){
+           pagination.setManaged(false);
+           pagination.setVisible(false);
+        }
     }
 
     private void loadRecordSearch() {

@@ -158,6 +158,11 @@ public class DisbursementVoucher_CertificationController implements Initializabl
         initTableOnClick();
         initButtons();
         initTextFieldsProperty();
+        if(main_data.isEmpty()){
+           pagination.setManaged(false);
+           pagination.setVisible(false);
+        }
+        
     }
 
     private void loadRecordSearch() {

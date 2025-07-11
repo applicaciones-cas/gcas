@@ -243,7 +243,8 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         buttons.forEach(button -> button.setOnAction(this::cmdButton_Click));
     }
 
-    private void validateSelectedItem() {
+    private JSONObject validateSelectedItem() {
+        poJSON = new JSONObject();
         ObservableList<ModelCheckPrinting> selectedItems = FXCollections.observableArrayList();
 
         for (ModelCheckPrinting item : tblVwMain.getItems()) {
@@ -253,13 +254,11 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         }
 
         if (selectedItems.isEmpty()) {
-            ShowMessageFX.Information(null, pxeModuleName, "No items selected to assign.");
-            return;
+            poJSON.put("message", "No items selected to assign.");
+            poJSON.put("result", "error");
+            return poJSON;
         }
-
-//                    if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to assign?")) {
-//                        return;
-//                    }
+        
         int successCount = 0;
         String firstBank = null;
         boolean allSameBank = true;
@@ -279,9 +278,14 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
             successCount++;
         }
         if (!allSameBank) {
-            ShowMessageFX.Information(null, pxeModuleName, "Selected items must belong to the same bank.");
-
+            
+            poJSON.put("message", "Selected items must belong to the same bank.");
+            poJSON.put("result", "error");
+            return poJSON;
         }
+        
+        poJSON.put("result", "success");
+        return poJSON;
     }
     private void loadTableMainAndClearSelectedItems() {
         chckSelectAll.setSelected(false);
@@ -297,7 +301,10 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
 
             switch (lsButton) {
                 case "btnAssign":
-                    validateSelectedItem();
+                     if ("error".equals(poJSON.get("result"))){
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                         break;
+                   }
                     if (!listOfDVToAssign.isEmpty()) {
                         loadAssignWindow(listOfDVToAssign);
                         chckSelectAll.setSelected(false);
@@ -309,11 +316,16 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     loadTableMainAndClearSelectedItems() ;
                     break;
                 case "btnPrintCheck":
-                    validateSelectedItem();
+                   poJSON =  validateSelectedItem();
+                   if ("error".equals(poJSON.get("result"))){
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                         break;
+                   }
                     if (!listOfDVToAssign.isEmpty()) {
                         poJSON = poCheckPrintingController.PrintCheck(listOfDVToAssign);
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                             break;
                         }
                         chckSelectAll.setSelected(false);
                         getSelectedItems.clear();
@@ -321,7 +333,10 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     }
                     break;
                 case "btnPrintDV":
-                    validateSelectedItem();
+                     if ("error".equals(poJSON.get("result"))){
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                         break;
+                   }
                     if (!listOfDVToAssign.isEmpty()) {
                         poJSON = poCheckPrintingController.printTransaction(listOfDVToAssign);
                         if (!"success".equals((String) poJSON.get("result"))) {
