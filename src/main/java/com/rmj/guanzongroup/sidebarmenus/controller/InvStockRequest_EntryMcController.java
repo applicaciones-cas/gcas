@@ -587,7 +587,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
                             ShowMessageFX.Warning("Your order is empty. Please add at least one item.", psFormName, null);
                             return;
                         }
-                    for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
+                    for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) { //i think here it iterates through the row values, then checks the quantity, that's what i should be doing because at the moment, it only gets the selected textfield and row but we want to check overall
                             double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
                             String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
