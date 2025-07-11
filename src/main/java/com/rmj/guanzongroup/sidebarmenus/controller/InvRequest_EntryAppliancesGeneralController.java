@@ -71,7 +71,8 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_EntryAppliancesGeneralController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request Entry Appliances General";
-   private GRiderCAS poApp;
+    
+    private GRiderCAS poApp;
     private InvWarehouseControllers invRequestController;
     private TextField activeField;
     private int pnTblInvDetailRow = -1;
@@ -165,6 +166,7 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
 
         }));
         Platform.runLater(() -> btnNew.fire());
+        initTextFieldPattern();
         initButtonsClickActions();
         initTextFieldFocus();
         initTextAreaFocus();
@@ -213,8 +215,7 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
-                        System.out.println("Category asdasd+ "+ invRequestController.StockRequest().Master().getCategoryId());
-                                
+                        
                         loadMaster();
                         pnTblInvDetailRow = 0;
                         pnEditMode = invRequestController.StockRequest().getEditMode();
@@ -270,7 +271,6 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                                     clearDetailFields();
                                     break;
                                 }
-                               
                                     poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID
                                 );
                                 
@@ -284,11 +284,11 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                                     }
                                 }
                                 
-                                          double currentQty = 0;
+                                          double currentQty = 0.0;
                                           try {
                                               currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
                                           } catch (Exception e) {
-                                              currentQty = 0;
+                                              currentQty = 0.0;
                                           }
                                           double newQty = currentQty + 1;
                                           tfOrderQuantity.setText(String.valueOf(newQty));
@@ -340,25 +340,38 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                          }
                     break;
                 case "btnVoid":
-                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
-                        poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
-                        if (!"success".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            break;
-                        }
-                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                        clearMasterFields();
-                        clearDetailFields();
-                        invOrderDetail_data.clear();
-                        pnEditMode = EditMode.UNKNOWN;
+                    String status = invRequestController.StockRequest().Master().getTransactionStatus();
 
-                       
-                    } else {
+                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return this transaction?")) {
                         return;
                     }
-                    break;    
+
+                    if (StockRequestStatus.CONFIRMED.equals(status) || StockRequestStatus.PROCESSED.equals(status)) {
+                        // Require user approval
+                        JSONObject approvalResult = ShowDialogFX.getUserApproval(poApp);
+                        if (!"success".equals(approvalResult.get("result"))) {
+                            ShowMessageFX.Warning((String) approvalResult.get("message"), psFormName, null);
+                            return;
+                        }
+                    }
+
+                    // Proceed to void the transaction
+                    poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
+
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                        break;
+                    }
+
+                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                    clearMasterFields();
+                    clearDetailFields();
+                    invOrderDetail_data.clear();
+                    pnEditMode = EditMode.UNKNOWN;
+
+                    break;
                case "btnSave":
-                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
+                         if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
                     }
                     int detailCount = invRequestController.StockRequest().getDetailCount();
@@ -369,8 +382,7 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                             return;
                         }
                     for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
-                           double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
-
+                            double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
                             String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
                             // If any stock ID is empty OR quantity is 0, show an error and prevent saving
@@ -412,26 +424,46 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                             return;
                             }
                         }
-                        //save transact is error
-                          loJSON = invRequestController.StockRequest().SaveTransaction();
-                            if (!"success".equals((String)loJSON.get("result"))) {
+                       // Save the transaction
+                            loJSON = invRequestController.StockRequest().SaveTransaction();
+                            if (!"success".equals((String) loJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                 loadTableInvDetail();
-
                                 return;
                             }
-                        
-                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                        loJSON = invRequestController.StockRequest().OpenTransaction(invRequestController.StockRequest().Master().getTransactionNo());
 
-                        if ("success".equals(loJSON.get("result")) && invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)
-                                && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                            if ("success".equals((loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed")).get("result"))) {
-                                ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+
+                            loJSON = invRequestController.StockRequest().OpenTransaction(invRequestController.StockRequest().Master().getTransactionNo());
+
+                            if ("success".equals(loJSON.get("result")) &&
+                                invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)) {
+
+                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                                    try {
+                                        loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed");
+
+                                        if (!"success".equals((String) loJSON.get("result"))) {
+                                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                            return;
+                                        }
+
+                                        loJSON = ShowDialogFX.getUserApproval(poApp);
+                                        if (!"success".equals((String) loJSON.get("result"))) {
+                                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                            return;
+                                        }
+
+                                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                                    } catch (ParseException ex) {
+                                        Logger.getLogger(InvRequest_Roq_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
                             }
-                        }
-                        Platform.runLater(() -> btnNew.fire());
-                        break;
+
+                            Platform.runLater(() -> btnNew.fire());
+                            break;
+
 
                 case "btnCancel": //step 14
 
@@ -525,7 +557,7 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                     break;
             }
              
-              
+               
                
             lblTransactionStatus.setText(lsStatus); //step 15-16
             dpTransactionDate.setOnAction(null);  
@@ -647,7 +679,7 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                     }
                     tfBrand.setText(lsBrand);
                     
-                    String lsDescription = "";
+                   String lsDescription = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
                         lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
                     }
@@ -657,7 +689,6 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode() != null) {
                         lsBarCode = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode();
                     }
-                    tfBarCode.setText(lsBarCode);
                     tfBarCode.setText(lsBarCode);
 
                     
@@ -858,32 +889,49 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                     event.consume();
                     break;
                 case UP:
-                    setOrderQuantityToDetail(lsValue);
-                    if ("tfOrderQuantity".equals(fieldId)) {
+                        setOrderQuantityToDetail(tfOrderQuantity.getText());
 
-                        if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
-                            pnTblInvDetailRow--;
+                         if (fieldId.equals("tfOrderQuantity")) {
+                            if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
+                                pnTblInvDetailRow--;
+                            }
                         }
-                        loadTableInvDetailAndSelectedRow();
-                    }
 
-                    CommonUtils.SetPreviousFocus(sourceField);
-                    event.consume();
-                    break;
-
-                case DOWN:
-                     setOrderQuantityToDetail(lsValue);
-                    if ("tfOrderQuantity".equals(fieldId)) {
-
-                        if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
-                            pnTblInvDetailRow++; //step 10, move to next row
+                       
+                        switch (fieldId) {
+                            case "tfBarCode":
+                                tfBrand.requestFocus();
+                                break;
+                            case "tfDescription":
+                                tfBarCode.requestFocus();
+                                break;
+                            default:
+                                CommonUtils.SetPreviousFocus((TextField) event.getSource());
                         }
-                        loadTableInvDetailAndSelectedRow();
-                    }
 
-                    CommonUtils.SetNextFocus(sourceField);
-                    event.consume();
-                    break;
+                        loadTableInvDetailAndSelectedRow();
+                        event.consume();
+                        break;
+
+
+                    case DOWN:
+                        setOrderQuantityToDetail(lsValue);
+                        if ("tfBrand".equals(fieldId)) {
+                            tfBarCode.requestFocus();
+                        } else if ("tfBarCode".equals(fieldId)) {
+                            tfDescription.requestFocus();
+                        } else if ("tfDescription".equals(fieldId)) {
+                            tfOrderQuantity.requestFocus();
+                        }else if("tfOrderQuantity".equals(fieldId)) {
+                            if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
+                                pnTblInvDetailRow++;
+                            }
+                            CommonUtils.SetNextFocus(sourceField);
+                        loadTableInvDetailAndSelectedRow();
+                        }
+                        
+                        event.consume();
+                        break;
 
                 default:
                     break;
@@ -965,19 +1013,21 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
-            if (Integer.parseInt(fsValue) < 0) {
+            if (Double.parseDouble(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 
             }
-                        if (tfOrderQuantity.isFocused()) {
-                            if (tfBarCode.getText().isEmpty()) {
-                                ShowMessageFX.Warning("Invalid action, Please enter barcode first. ", psFormName, null);
-                                tfBarCode.requestFocus();
-                                fsValue = "0";
-                            }
-                        }
-
+            if (tfOrderQuantity.isFocused()) {
+                if (tfBrand.getText().isEmpty()) {
+                    ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
+                    fsValue = "0";
+                }
+                if (!tfBrand.getText().isEmpty() && tfModel.getText().isEmpty()) {
+                    ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
+                    fsValue = "0";
+                }
+            }
             if (pnTblInvDetailRow < 0) {
                 fsValue = "0";
                 ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
@@ -986,7 +1036,7 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                 pnTblInvDetailRow = detailCount > 0 ? detailCount - 1 : 0;
             }
             tfOrderQuantity.setText(fsValue);
-            invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Integer.valueOf(fsValue));
+            invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Double.valueOf(fsValue));
 
         }
     private void initTextFieldFocus() {
@@ -1207,11 +1257,18 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
 
             if (fnEditMode == EditMode.READY) {
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
-                case StockRequestStatus.CONFIRMED:
+               case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true, btnVoid);
                     CustomCommonUtil.setManaged(true, btnVoid);
                     break;
-                
+                case StockRequestStatus.CONFIRMED:
+                    CustomCommonUtil.setVisible(true, btnVoid );
+                    CustomCommonUtil.setManaged(true, btnVoid);
+                    break;
+                case StockRequestStatus.PROCESSED:
+                    CustomCommonUtil.setVisible(true, btnVoid );
+                    CustomCommonUtil.setManaged(true, btnVoid);
+                    break;
             }
         }
         }
@@ -1223,7 +1280,7 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
                 tfBrand.setDisable(isSourceNotEmpty);
                 tfBarCode.setDisable(isSourceNotEmpty);
                 tfDescription.setDisable(isSourceNotEmpty);
-                if (!tfBrand.getText().isEmpty()) {
+                if (!tfBarCode.getText().isEmpty()) {
                    
                     tfOrderQuantity.requestFocus();
                 }else {
@@ -1235,4 +1292,7 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
 
         }
     }
+    private void initTextFieldPattern() {
+    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
   }
