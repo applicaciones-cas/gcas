@@ -53,7 +53,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <Label text="Supplier" GridPane.columnIndex="4">
+                                                <Label text="Supplier/Payee" GridPane.columnIndex="4">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
@@ -233,6 +233,8 @@
                                                                                                                                                         <TextField fx:id="tfBankNameCheck" disable="true" editable="false" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" />
                                                                                                                                                         <Label text="Bank Account" GridPane.rowIndex="1" />
                                                                                                                                                         <TextField fx:id="tfBankAccountCheck" disable="true" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                                                                                                                        <ComboBox fx:id="cmbCheckStatus" disable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="6" />
+                                                                                                                                                        <Label text="Check Status" GridPane.columnIndex="4" GridPane.rowIndex="6" />
                                                                                                                                                     </children>
                                                                                                                                                 </GridPane>
                                                                                                                                             </children>
@@ -395,7 +397,7 @@
                                                                                                     <children>
                                                                                                         <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                                                             <columnConstraints>
-                                                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+                                                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                                                                             </columnConstraints>
