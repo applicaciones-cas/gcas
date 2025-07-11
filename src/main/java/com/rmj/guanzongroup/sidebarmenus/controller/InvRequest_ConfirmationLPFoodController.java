@@ -183,6 +183,7 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
                 }));
                 tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
                 initButtonsClickActions();
+                initTextFieldPattern();
                 initTextFieldFocus();
                 initTextAreaFocus();
                 initTextFieldKeyPressed();
@@ -220,6 +221,9 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
             }
         });
     }
+         private void initTextFieldPattern() {
+    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
         private void loadRecordSearch() {
             try {
               
@@ -1041,7 +1045,7 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
-            if (Integer.parseInt(fsValue) <= 0) {
+            if (Integer.parseInt(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 

@@ -184,6 +184,7 @@ public class InvRequest_ConfirmationMcGeneralController implements Initializable
                 tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
                 initButtonsClickActions();
                 initTextFieldFocus();
+                initTextFieldPattern();
                 initTextAreaFocus();
                 initTextFieldKeyPressed();
                 initDatePickerActions();
@@ -229,6 +230,9 @@ public class InvRequest_ConfirmationMcGeneralController implements Initializable
                 Logger.getLogger(InvStockRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
+        }
+        private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
         }
 
         private int moveToNextRow(TableView<?> table, TablePosition<?, ?> focusedCell) {

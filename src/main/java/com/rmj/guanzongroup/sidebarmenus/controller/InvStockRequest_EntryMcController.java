@@ -178,6 +178,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
                 initButtonsClickActions();
                 initTextFieldFocus();
                 initTextAreaFocus();
+                initTextFieldPattern();
                 initTextFieldKeyPressed();
                 initDatePickerActions();          
                 initTableInvDetail();
@@ -1059,11 +1060,14 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
                 initDetailFocus();
             }
         }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
      private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
-            if (Integer.parseInt(fsValue) <= 0) {
+            if (Integer.parseInt(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 

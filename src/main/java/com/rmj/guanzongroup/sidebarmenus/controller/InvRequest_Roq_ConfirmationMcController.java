@@ -182,6 +182,7 @@ public class InvRequest_Roq_ConfirmationMcController implements Initializable, S
                 tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
                 initButtonsClickActions();
                 initTextFieldFocus();
+                initTextFieldPattern();
                 initTextAreaFocus();
                 initTextFieldKeyPressed();
                 initDatePickerActions();
@@ -1043,11 +1044,14 @@ public class InvRequest_Roq_ConfirmationMcController implements Initializable, S
                 initDetailFocus();
             }
         }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
      private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
-            if (Integer.parseInt(fsValue) <= 0) {
+            if (Integer.parseInt(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 

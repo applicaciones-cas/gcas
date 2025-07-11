@@ -186,6 +186,7 @@ public class InvRequest_ConfirmationCarSpController implements Initializable, Sc
                 initButtonsClickActions();
                 initTextFieldFocus();
                 initTextAreaFocus();
+                initTextFieldPattern();
                 initTextFieldKeyPressed();
                 initDatePickerActions();
                 initTableList();
@@ -221,6 +222,9 @@ public class InvRequest_ConfirmationCarSpController implements Initializable, Sc
             }
         });
     }
+         private void initTextFieldPattern() {
+    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
         private void loadRecordSearch() {
             try {
               
@@ -1063,7 +1067,7 @@ public class InvRequest_ConfirmationCarSpController implements Initializable, Sc
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
-            if (Integer.parseInt(fsValue) <= 0) {
+            if (Integer.parseInt(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 

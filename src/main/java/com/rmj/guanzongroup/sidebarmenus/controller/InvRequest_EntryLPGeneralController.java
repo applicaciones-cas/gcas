@@ -167,6 +167,7 @@ public class InvRequest_EntryLPGeneralController implements Initializable, Scree
         }));
         Platform.runLater(() -> btnNew.fire());
         initButtonsClickActions();
+        initTextFieldPattern();
         initTextFieldFocus();
         initTextAreaFocus();
         initTextFieldKeyPressed();
@@ -957,11 +958,14 @@ public class InvRequest_EntryLPGeneralController implements Initializable, Scree
         table.getSelectionModel().select(previousRow);
         return previousRow;
     }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
     private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
-            if (Integer.parseInt(fsValue) <= 0) {
+            if (Integer.parseInt(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 
