@@ -150,7 +150,7 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
 
                 invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
-                //loadRecordSearch();
+                loadRecordSearch();
 
                 //reset the transaction
                 invRequestController.StockRequest().InitTransaction();
@@ -172,27 +172,7 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
         tblViewOrderDetails.setOnMouseClicked(this::tblViewOrderDetails_Clicked);
 
     }
-//    
-//    //init functions
-//    private void initTableStockRequest(){
-//        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-//            tblViewStockRequest.setEditable(true);
-//        } else {
-//            tblViewStockRequest.setEditable(false);
-//        }
-//        
-//        
-//    }
     //functions
-//    private void inventoryClassification(){
-//        try {
-//            System.out.print( invRequestController.StockRequest().Detail(pnTblInvDetailRow).InvMaster().getInventoryClassification());
-//            System.out.print("classification: "+invRequestController.StockRequest().Detail(pnTblInvDetailRow).getClassification());
-//            //invRequestController.StockRequest().Detail(pnTblInvDetailRow).InvMaster().
-//        } catch (Exception e) {
-//        }
-//    }
-
     private void initTableInvDetail() {
 
         tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
@@ -355,7 +335,16 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
             dpTransactionDate.setDisable(!lbShow);
         }
     }
+    private void loadRecordSearch() {
+            try {
+              
+                lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
 
+            } catch (GuanzonException | SQLException ex) {
+                Logger.getLogger(InvStockRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     private void clearDetailFields() { //clears detail fields
         /* Detail Fields*/
         CustomCommonUtil.setText("", tfBrand, tfModel,
@@ -393,10 +382,12 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode());
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
+                        invRequestController.StockRequest().getROQItems();
                         loadMaster();
+                        loadTableInvDetail();
                         pnTblInvDetailRow = -1;
                         pnEditMode = invRequestController.StockRequest().getEditMode();
-                        loadTableInvDetail();
+                        
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -584,9 +575,7 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
                 lsStatus = "VOID";
                 break;
         }
-        //poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);
-        //poJSON =invRequestController.StockRequest().SearchIndustry(lsStatus, true);
-        //poJSON =invRequestController.StockRequest().SearchCategory(lsStatus, true);
+        
         lblTransactionStatus.setText(lsStatus);
         dpTransactionDate.setOnAction(null);
         dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
@@ -692,6 +681,8 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
     }
 
     private void loadTableInvDetail() {
+        invOrderDetail_data.clear();
+        tblViewOrderDetails.getItems().clear();
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxSize(50, 50);
         progressIndicator.setStyle("-fx-accent: #FF8201;");
@@ -707,14 +698,14 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
             @Override
             protected List<ModelInvOrderDetail> call() throws Exception {
                 try {
-                    invRequestController.StockRequest().getROQItems();
+                    
                     int detailCount = invRequestController.StockRequest().getDetailCount();
                     
                     List<ModelInvOrderDetail> detailsList = new ArrayList<>();
                     
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_Inv_Stock_Request_Detail detail = invRequestController.StockRequest().Detail(lnCtr);
-                            
+                        System.out.print(detail.Inventory().Brand().getDescription());
                         detailsList.add(new ModelInvOrderDetail(
                                 detail.Inventory().Brand().getDescription(), 
                                 detail.Inventory().getDescription(), 
@@ -759,20 +750,6 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
 
         new Thread(task).start();
     }
-//    private void validateQuantityAgainstROQ(String fsValue) {
-//        try {
-//             ModelInvOrderDetail selectedItem = tblViewOrderDetails.getSelectionModel().getSelectedItem();
-//            int orderQty = Integer.parseInt(tfOrderQuantity.getText());
-//            int roq = Integer.parseInt(selectedItem.getIndex08());
-//            System.out.print("Your roq: " + roq);
-//
-//            if (orderQty > roq) {
-//                ShowMessageFX.Warning("Ask approval", psFormName, null);
-//            }
-//        } catch (NumberFormatException e) {
-//            tfOrderQuantity.setText("0"); // Reset if invalid number
-//        }
-//    }
       private void initTextFieldPattern() {
     CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
         }
@@ -855,7 +832,7 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
                 });
                 delay.play();
             });
-//                loadDetail();
+                loadDetail();
             //initDetailFocus();
         }
     }
