@@ -672,15 +672,40 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
 
     private ObservableList<ModelInvOrderDetail> loadItemsWithROQ() {
         ObservableList<ModelInvOrderDetail> loItems = FXCollections.observableArrayList();
+        try {
+            JSONObject loResult = invRequestController.StockRequest().getItemsWithROQ(
+                    psIndustryID,
+                    psCategoryID
+            );
 
-        // Dummy test data
-        loItems.add(new ModelInvOrderDetail("Yamaha", "Sniper 150", "123456789", "2024", "Standard", "Red", "Motorcycle", "5", "MC", "12", "3", "0"));
-        loItems.add(new ModelInvOrderDetail("Honda", "Click 125i", "987654321", "2023", "Deluxe", "Black", "Motorcycle", "8", "MC", "20", "2", "0"));
-        loItems.add(new ModelInvOrderDetail("Suzuki", "Raider 150", "456789123", "2022", "FI", "Blue", "Motorcycle", "10", "MC", "15", "1", "0"));
+            if ("success".equals(loResult.get("result"))) {
+                JSONArray laItems = (JSONArray) loResult.get("items");
+
+                // Convert JSON to ModelInvOrderDetail objects
+                for (Object item : laItems) {
+                    JSONObject loItem = (JSONObject) item;
+                    loItems.add(new ModelInvOrderDetail(
+                            loItem.get("brand").toString(),
+                            loItem.get("description").toString(),
+                            loItem.get("barcode").toString(),
+                            loItem.get("model").toString(),
+                            loItem.get("variant").toString(),
+                            loItem.get("color").toString(),
+                            loItem.get("inv_type").toString(),
+                            loItem.get("roq").toString(), // ROQ value
+                            loItem.get("classification").toString(),
+                            loItem.get("qoh").toString(),
+                            loItem.get("reserved_qty").toString(),
+                            "0" // Default order quantity
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            ShowMessageFX.Error(e.getMessage(), "Error", null);
+        }
 
         return loItems;
     }
-
     private void tblViewOrderDetails_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
             pnTblInvDetailRow = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
