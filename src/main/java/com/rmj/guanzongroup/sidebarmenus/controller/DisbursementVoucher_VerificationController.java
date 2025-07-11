@@ -900,7 +900,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
                 pbIsCheckedJournalTab = false;
                 JFXUtil.disableAllHighlightByColor(tblVwDisbursementVoucher, "#A7C7E7", highlightedRowsMain);
-                JFXUtil.highlightByKey(tblVwDisbursementVoucher, String.valueOf(pnRowMain + 1), "#A7C7E7", highlightedRowsMain);
+                JFXUtil.highlightByKey(tblVwDisbursementVoucher, lsTransactionNo, "#A7C7E7", highlightedRowsMain);
                 pnEditMode = poDisbursementController.getEditMode();
                 loadTableDetailDV();
                 initFields(pnEditMode);

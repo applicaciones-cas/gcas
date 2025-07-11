@@ -769,13 +769,13 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
         switch (poCheckStatusUpdateController.CheckPayments().getModel().getTransactionStatus()) {
             case CheckStatus.POSTED:
                 row09.setPrefHeight(30);
+                row09.setMaxHeight(30);
                 CustomCommonUtil.setVisible(true, dpClearDate, lblClearingDate);
                 CustomCommonUtil.setManaged(true, dpClearDate, lblClearingDate);
                 CustomCommonUtil.setDisable(!lbShow, dpClearDate);
                 break;
             case CheckStatus.CANCELLED:
             case CheckStatus.BOUNCED:
-                CustomCommonUtil.setVisible(true, taRemarks, lblRemarks);
                 row09.setPrefHeight(0);
                 row09.setMaxHeight(0);
                 CustomCommonUtil.setVisible(true, taRemarks, lblRemarks);
@@ -783,10 +783,13 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                 break;
             case CheckStatus.STOP_PAYMENT:
                 row09.setPrefHeight(30);
+                row09.setMaxHeight(30);
                 CustomCommonUtil.setVisible(true, dpHoldUntil, lblHoldUntil, taRemarks, lblRemarks);
                 CustomCommonUtil.setManaged(true, dpHoldUntil, lblHoldUntil, taRemarks, lblRemarks);
                 break;
             default:
+                row09.setPrefHeight(30);
+                row09.setMaxHeight(30);
                 CustomCommonUtil.setVisible(false, dpClearDate, lblClearingDate, lblHoldUntil, dpHoldUntil, lblRemarks, taRemarks);
                 CustomCommonUtil.setManaged(false, dpClearDate, lblClearingDate, lblHoldUntil, dpHoldUntil, lblRemarks, taRemarks);
                 break;
