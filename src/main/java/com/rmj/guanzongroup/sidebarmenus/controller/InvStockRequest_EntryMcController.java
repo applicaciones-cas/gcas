@@ -12,8 +12,6 @@
     import org.guanzon.cas.inv.warehouse.services.InvWarehouseControllers;
     import org.guanzon.cas.inv.warehouse.status.StockRequestStatus;
     import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvOrderDetail;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrder;
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderDetail;
     import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
     import com.sun.javafx.scene.control.skin.TableHeaderRow;
     import java.util.ArrayList;
@@ -51,7 +49,6 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.ModelPurchaseOrderDetail;
     import javafx.animation.PauseTransition;
     import javafx.beans.value.ObservableValue;
     import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableRow;
     import javafx.scene.control.cell.PropertyValueFactory;
     import static javafx.scene.input.KeyCode.DOWN;
     import static javafx.scene.input.KeyCode.ENTER;
@@ -67,7 +64,6 @@ import javafx.scene.control.TableRow;
     import javafx.scene.layout.AnchorPane;
     import org.guanzon.appdriver.constant.UserRight;
     import org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Detail;
-import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 
     /**
      *
@@ -175,6 +171,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
                     }
                 }));
                 Platform.runLater(() -> btnNew.fire());
+                initTextFieldPattern();
                 initButtonsClickActions();
                 initTextFieldFocus();
                 initTextAreaFocus();
@@ -576,8 +573,8 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
                             }
                         }
                         break;
-                    case "btnSave":
-                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
+                   case "btnSave":
+                         if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
                     }
                     int detailCount = invRequestController.StockRequest().getDetailCount();
@@ -587,7 +584,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
                             ShowMessageFX.Warning("Your order is empty. Please add at least one item.", psFormName, null);
                             return;
                         }
-                    for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) { //i think here it iterates through the row values, then checks the quantity, that's what i should be doing because at the moment, it only gets the selected textfield and row but we want to check overall
+                    for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
                             double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
                             String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
@@ -630,26 +627,45 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
                             return;
                             }
                         }
-                        //save transact is error
-                          loJSON = invRequestController.StockRequest().SaveTransaction();
-                            if (!"success".equals((String)loJSON.get("result"))) {
+                       // Save the transaction
+                            loJSON = invRequestController.StockRequest().SaveTransaction();
+                            if (!"success".equals((String) loJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                 loadTableInvDetail();
-
                                 return;
                             }
-                        
-                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
-                        loJSON = invRequestController.StockRequest().OpenTransaction(invRequestController.StockRequest().Master().getTransactionNo());
 
-                        if ("success".equals(loJSON.get("result")) && invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)
-                                && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                            if ("success".equals((loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed")).get("result"))) {
-                                ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                            ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+
+                            loJSON = invRequestController.StockRequest().OpenTransaction(invRequestController.StockRequest().Master().getTransactionNo());
+
+                            if ("success".equals(loJSON.get("result")) &&
+                                invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)) {
+
+                                if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                                    try {
+                                        loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed");
+
+                                        if (!"success".equals((String) loJSON.get("result"))) {
+                                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                            return;
+                                        }
+
+                                        loJSON = ShowDialogFX.getUserApproval(poApp);
+                                        if (!"success".equals((String) loJSON.get("result"))) {
+                                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                            return;
+                                        }
+
+                                        ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
+                                    } catch (ParseException ex) {
+                                        Logger.getLogger(InvRequest_Roq_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
                             }
-                        }
-                        Platform.runLater(() -> btnNew.fire());
-                        break;
+
+                            Platform.runLater(() -> btnNew.fire());
+                            break;
 
                 
                 case "btnCancel":
@@ -683,23 +699,37 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 
                         break;   
                 case "btnVoid":
-                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
-                        poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
-                        if (!"success".equals((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            break;
-                        }
-                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                        clearMasterFields();
-                        clearDetailFields();
-                        invOrderDetail_data.clear();
-                        pnEditMode = EditMode.UNKNOWN;
+                    String status = invRequestController.StockRequest().Master().getTransactionStatus();
 
-                       
-                    } else {
+                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return this transaction?")) {
                         return;
                     }
+
+                    if (StockRequestStatus.CONFIRMED.equals(status) || StockRequestStatus.PROCESSED.equals(status)) {
+                        // Require user approval
+                        JSONObject approvalResult = ShowDialogFX.getUserApproval(poApp);
+                        if (!"success".equals(approvalResult.get("result"))) {
+                            ShowMessageFX.Warning((String) approvalResult.get("message"), psFormName, null);
+                            return;
+                        }
+                    }
+
+                    // Proceed to void the transaction
+                    poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
+
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                        break;
+                    }
+
+                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                    clearMasterFields();
+                    clearDetailFields();
+                    invOrderDetail_data.clear();
+                    pnEditMode = EditMode.UNKNOWN;
+
                     break;
+
                     
             }
             initButtons(pnEditMode);
@@ -896,8 +926,6 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 
                   case F3:
                       switch (fieldId) {
-
-
                           case "taRemarks":
                               CommonUtils.SetNextFocus(sourceField);
                               break;
@@ -1001,7 +1029,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
                             }
                         }
 
-                        // Controlled focus logic
+                       
                         switch (fieldId) {
                             case "tfModel":
                                 tfBrand.requestFocus();
@@ -1019,19 +1047,21 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 
 
                     case DOWN:
-                       setOrderQuantityToDetail(lsValue);
-                            if ("tfOrderQuantity".equals(fieldId)) {
-
-                                if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
-                                    pnTblInvDetailRow++;
-                                }
-                                loadTableInvDetailAndSelectedRow();
+                        setOrderQuantityToDetail(lsValue);
+                        if ("tfBrand".equals(fieldId)) {
+                            tfModel.requestFocus();
+                        } else if ("tfModel".equals(fieldId)) {
+                            tfOrderQuantity.requestFocus();
+                        } else if ("tfOrderQuantity".equals(fieldId)) {
+                            if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
+                                pnTblInvDetailRow++;
                             }
-
                             CommonUtils.SetNextFocus(sourceField);
-                            event.consume();
-                            break;
-
+                        loadTableInvDetailAndSelectedRow();
+                        }
+                        
+                        event.consume();
+                        break;
                   default:
                       break;
               }
@@ -1063,7 +1093,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
-            if (Integer.parseInt(fsValue) <= 0) {
+            if (Double.parseDouble(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 
@@ -1086,7 +1116,7 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
                 pnTblInvDetailRow = detailCount > 0 ? detailCount - 1 : 0;
             }
             tfOrderQuantity.setText(fsValue);
-            invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Integer.valueOf(fsValue));
+            invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Double.valueOf(fsValue));
 
         }
 
@@ -1145,11 +1175,18 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 
             if (fnEditMode == EditMode.READY) {
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
-                case StockRequestStatus.CONFIRMED:
+               case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true, btnVoid);
                     CustomCommonUtil.setManaged(true, btnVoid);
                     break;
-                
+                case StockRequestStatus.CONFIRMED:
+                    CustomCommonUtil.setVisible(true, btnVoid );
+                    CustomCommonUtil.setManaged(true, btnVoid);
+                    break;
+                case StockRequestStatus.PROCESSED:
+                    CustomCommonUtil.setVisible(true, btnVoid );
+                    CustomCommonUtil.setManaged(true, btnVoid);
+                    break;
             }
         }
         }
@@ -1180,7 +1217,9 @@ import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
          tfBrand.setOnMouseClicked(e -> activeField = tfBrand);
          tfModel.setOnMouseClicked(e -> activeField = tfModel);
     }  
-
+            private void initTextFieldPattern() {
+    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
 
 
     }

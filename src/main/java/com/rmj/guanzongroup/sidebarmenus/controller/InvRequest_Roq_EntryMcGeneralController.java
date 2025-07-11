@@ -20,7 +20,7 @@ import org.json.simple.JSONObject;
  * @author User
  */
 public class InvRequest_Roq_EntryMcGeneralController implements Initializable, ScreenInterface{
-    @FXML
+    
     private String psFormName = "Inv Stock Request ROQ Entry Mc General";
     @FXML
     private AnchorPane AnchorMain;
