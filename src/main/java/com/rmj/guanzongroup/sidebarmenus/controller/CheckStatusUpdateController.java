@@ -776,8 +776,8 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                 break;
             case CheckStatus.CANCELLED:
             case CheckStatus.BOUNCED:
-                row09.setPrefHeight(0);
-                row09.setMaxHeight(0);
+                row09.setPrefHeight(30);
+                row09.setMaxHeight(30);
                 CustomCommonUtil.setVisible(true, taRemarks, lblRemarks);
                 CustomCommonUtil.setManaged(true, taRemarks, lblRemarks);
                 break;
