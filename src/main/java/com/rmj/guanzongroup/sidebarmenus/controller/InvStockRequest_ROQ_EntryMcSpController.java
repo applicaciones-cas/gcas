@@ -751,8 +751,8 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
         new Thread(task).start();
     }
       private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+      }
     private void setOrderQuantityToDetail(String fsValue) {
 
         if (fsValue.isEmpty()) {
