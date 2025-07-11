@@ -766,6 +766,8 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
     private void initFields(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.UPDATE);
         JFXUtil.setDisabled(!lbShow, apMaster);
+        CustomCommonUtil.setVisible(false, dpClearDate, lblClearingDate, lblHoldUntil, dpHoldUntil, lblRemarks, taRemarks);
+        CustomCommonUtil.setManaged(false, dpClearDate, lblClearingDate, lblHoldUntil, dpHoldUntil, lblRemarks, taRemarks);
         switch (poCheckStatusUpdateController.CheckPayments().getModel().getTransactionStatus()) {
             case CheckStatus.POSTED:
                 row09.setPrefHeight(30);
@@ -776,8 +778,8 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                 break;
             case CheckStatus.CANCELLED:
             case CheckStatus.BOUNCED:
-                row09.setPrefHeight(30);
-                row09.setMaxHeight(30);
+                row09.setPrefHeight(5);
+                row09.setMaxHeight(5);
                 CustomCommonUtil.setVisible(true, taRemarks, lblRemarks);
                 CustomCommonUtil.setManaged(true, taRemarks, lblRemarks);
                 break;
