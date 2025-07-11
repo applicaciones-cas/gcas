@@ -45,7 +45,7 @@
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                 <ColumnConstraints halignment="RIGHT" minWidth="-Infinity" prefWidth="250.0" />
-                                                <ColumnConstraints halignment="RIGHT" minWidth="1020.0" prefWidth="1020.0" />
+                                                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                             </columnConstraints>
                                             <rowConstraints>
