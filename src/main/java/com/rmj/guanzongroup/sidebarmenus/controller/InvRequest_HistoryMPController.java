@@ -795,7 +795,7 @@ public class InvRequest_HistoryMPController implements Initializable, ScreenInte
                 tfOrderQuantity);
         CustomCommonUtil.setDisable(true,
                 tfInvType, tfVariant, tfColor, tfReservationQTY,
-                tfQOH, tfROQ, tfClassification, tfModel, tfBrand);
+                tfQOH, tfROQ, tfClassification, tfModel, tfBrand, tfDescription, tfBarCode);
         if (!tfReferenceNo.getText().isEmpty()) {
             dpTransactionDate.setDisable(!lbShow);
         }

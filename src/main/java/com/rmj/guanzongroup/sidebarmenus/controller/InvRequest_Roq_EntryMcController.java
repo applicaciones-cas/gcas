@@ -649,11 +649,42 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
                         }
                     }
                     break;
+                case "btnVoid":
+                    String status = invRequestController.StockRequest().Master().getTransactionStatus();
+
+                    if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return this transaction?")) {
+                        return;
+                    }
+
+                    if (StockRequestStatus.CONFIRMED.equals(status) || StockRequestStatus.PROCESSED.equals(status)) {
+                        // Require user approval
+                        JSONObject approvalResult = ShowDialogFX.getUserApproval(poApp);
+                        if (!"success".equals(approvalResult.get("result"))) {
+                            ShowMessageFX.Warning((String) approvalResult.get("message"), psFormName, null);
+                            return;
+                        }
+                    }
+
+                    // Proceed to void the transaction
+                    poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
+
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                        break;
+                    }
+
+                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                    clearMasterFields();
+                    clearDetailFields();
+                    invOrderDetail_data.clear();
+                    pnEditMode = EditMode.UNKNOWN;
+
+                    break;
                 
             }
             initButtons(pnEditMode);
             initFields(pnEditMode);
-            }catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | NullPointerException e) {
+            }catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | ParseException| GuanzonException | NullPointerException e) {
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
                 System.exit(1);
             }
@@ -986,13 +1017,13 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
             }
         }
        
-        private void initButtons(int fnEditMode) {
+         private void initButtons(int fnEditMode) {
             boolean lbShow = (fnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
             CustomCommonUtil.setVisible(!lbShow ,btnClose, btnNew);
             CustomCommonUtil.setManaged(!lbShow ,btnClose, btnNew);
 
-            CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
-            CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
+            CustomCommonUtil.setVisible(lbShow,  btnSave, btnCancel);
+            CustomCommonUtil.setManaged(lbShow,  btnSave, btnCancel);
 
             CustomCommonUtil.setVisible(false, btnVoid);
             CustomCommonUtil.setManaged(false, btnVoid);
@@ -1000,11 +1031,18 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
 
             if (fnEditMode == EditMode.READY) {
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
-                case StockRequestStatus.CONFIRMED:
+               case StockRequestStatus.OPEN:
                     CustomCommonUtil.setVisible(true, btnVoid);
                     CustomCommonUtil.setManaged(true, btnVoid);
                     break;
-                
+                case StockRequestStatus.CONFIRMED:
+                    CustomCommonUtil.setVisible(true, btnVoid );
+                    CustomCommonUtil.setManaged(true, btnVoid);
+                    break;
+                case StockRequestStatus.PROCESSED:
+                    CustomCommonUtil.setVisible(true, btnVoid );
+                    CustomCommonUtil.setManaged(true, btnVoid);
+                    break;
             }
         }
         }

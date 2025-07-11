@@ -799,7 +799,7 @@ public class InvRequest_HistoryMonarchFoodController implements Initializable, S
                 tfOrderQuantity);
         CustomCommonUtil.setDisable(true,
                 tfInvType, tfVariant, tfColor, tfReservationQTY,
-                tfQOH, tfROQ, tfClassification, tfModel, tfBrand);
+                tfQOH, tfROQ, tfClassification, tfModel, tfBrand,tfDescription, tfBarCode);
         if (!tfReferenceNo.getText().isEmpty()) {
             dpTransactionDate.setDisable(!lbShow);
         }
