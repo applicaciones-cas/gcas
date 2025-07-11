@@ -334,6 +334,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
                     }
                     break;
                 case "btnPrintDV":
+                    poJSON =  validateSelectedItem();
                      if ("error".equals(poJSON.get("result"))){
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                          break;
