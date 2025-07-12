@@ -71,6 +71,7 @@
      */
     public class InvStockRequest_EntryMcController implements Initializable, ScreenInterface{
         private String psFormName = "Inv Stock Request Entry Mc";
+        unloadForm poUnload = new unloadForm();
         private InvWarehouseControllers invRequestController;
         private GRiderCAS poApp;
         private String psIndustryID = "";
@@ -271,9 +272,6 @@
                     lsStatus = "VOID";
                     break;
             }
-            //poJSON =invRequestController.StockRequest().SearchBranch(lsStatus, true);
-            //poJSON =invRequestController.StockRequest().SearchIndustry(lsStatus, true);
-            //poJSON =invRequestController.StockRequest().SearchCategory(lsStatus, true);
             lblTransactionStatus.setText(lsStatus);
             dpTransactionDate.setOnAction(null);
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(
@@ -554,16 +552,10 @@
                                         } catch (Exception e) {
                                             currentQty = 0;
                                         }
-
-
                                         double newQty = currentQty + 1;
-
-
                                         tfOrderQuantity.setText(String.valueOf(newQty));
                                         invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
                                     }
-
-
                                     loadTableInvDetail();
                                     loadDetail();
                                     initDetailFocus();
@@ -574,6 +566,15 @@
                             }
                         }
                         break;
+                          case "btnClose":
+                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                        if (poUnload != null) {
+                            poUnload.unloadForm(AnchorMain, poApp, psFormName);
+                        } else {
+                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                        }
+                    }
+                    break;
                    case "btnSave":
                          if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                         return;
