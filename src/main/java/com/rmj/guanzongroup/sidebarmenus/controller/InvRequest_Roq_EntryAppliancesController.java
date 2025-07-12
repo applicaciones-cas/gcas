@@ -84,8 +84,8 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
     private JSONObject poJSON;
     private int pnEditMode;
     private LogWrapper logWrapper;
-     private String psOldDate = "";
-
+    private String psOldDate = "";
+    unloadForm poUnload = new unloadForm();
     String brandID;
     String brandDesc;
     private ObservableList<ModelInvOrderDetail> invOrderDetail_data = FXCollections.observableArrayList();
@@ -189,6 +189,15 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
             
             
             switch (lsButton) {
+                case "btnClose":
+                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                        if (poUnload != null) {
+                            poUnload.unloadForm(AnchorMain, poApp, psFormName);
+                        } else {
+                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                        }
+                    }
+                    break;
                 case "btnBrowse":
                            
                             invRequestController.StockRequest().setTransactionStatus("102");
@@ -1277,23 +1286,12 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
         }
     
     private void initDetailFocus() {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-            if (pnTblInvDetailRow >= 0) {
-                boolean isSourceNotEmpty = !invRequestController.StockRequest().Master().getSourceNo().isEmpty();
-                tfBrand.setDisable(isSourceNotEmpty);
-                tfBarCode.setDisable(isSourceNotEmpty);
-                tfDescription.setDisable(isSourceNotEmpty);
-                if (!tfBarCode.getText().isEmpty()) {
-                   
-                    tfOrderQuantity.requestFocus();
-                }else {
-                        tfBrand.requestFocus();
-                }if(isSourceNotEmpty && tfBrand.getText().isEmpty()){
-                 tfBrand.requestFocus();
-                }
-            }
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                
+                            tfOrderQuantity.requestFocus();
+                       
 
+            }
         }
-    }
     
   }

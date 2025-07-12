@@ -88,7 +88,7 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
     String brandID;
     String brandDesc;
     private ObservableList<ModelInvOrderDetail> invOrderDetail_data = FXCollections.observableArrayList();
-    
+    unloadForm poUnload = new unloadForm();
 
     //FXML elements
     @FXML
@@ -535,6 +535,15 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                     break;
 
                 case "btnTransHistory":
+                    break;
+                case "btnClose":
+                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                        if (poUnload != null) {
+                            poUnload.unloadForm(AnchorMain, poApp, psFormName);
+                        } else {
+                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                        }
+                    }
                     break;
                 
 

@@ -90,7 +90,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
         private TextField activeField;
         private JSONObject poJSON;
         private String brandDesc;
-        
+         unloadForm poUnload = new unloadForm();
         private ObservableList<ModelInvOrderDetail> invOrderDetail_data = FXCollections.observableArrayList();
         
         @FXML
@@ -452,7 +452,15 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
             JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId(); 
             switch (lsButton) {
-
+                    case "btnClose":
+                        if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                            if (poUnload != null) {
+                                poUnload.unloadForm(AnchorMain, poApp, psFormName);
+                            } else {
+                                ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                            }
+                        }
+                        break;
                       case "btnBrowse":
                             invRequestController.StockRequest().setTransactionStatus("102");
                             poJSON = invRequestController.StockRequest().searchTransaction();
@@ -799,8 +807,8 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                 detail.Inventory().getBarCode(),
                                 detail.Inventory().getDescription(),
                                 detail.Inventory().Brand().getDescription(),
-                                detail.Inventory().Measure().getDescription(),
                                 detail.Inventory().InventoryType().getDescription(),
+                                detail.Inventory().Measure().getDescription(),
                                 String.valueOf(detail.getRecommendedOrder()),
                                 detail.getClassification(),
                                 String.valueOf(detail.getQuantityOnHand()),

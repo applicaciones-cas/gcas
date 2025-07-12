@@ -84,6 +84,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
     private int pnEditMode;
     private LogWrapper logWrapper;
      private String psOldDate = "";
+     unloadForm poUnload = new unloadForm();
 
     String brandID;
     String brandDesc;
@@ -188,6 +189,15 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
             
             
             switch (lsButton) {
+                case "btnClose":
+                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                        if (poUnload != null) {
+                            poUnload.unloadForm(AnchorMain, poApp, psFormName);
+                        } else {
+                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                        }
+                    }
+                    break;
                 case "btnBrowse":
                            
                             invRequestController.StockRequest().setTransactionStatus("102");
@@ -271,7 +281,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                                     clearDetailFields();
                                     break;
                                 }
-                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID
+                                    poJSON = invRequestController.StockRequest().SearchBarcodeGeneral(lsValue, true, pnTblInvDetailRow,brandID
                                 );
                                 
                                 if ("error".equals(poJSON.get("result"))) {
@@ -306,7 +316,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,brandID
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescriptionGeneral(lsValue, false, pnTblInvDetailRow,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -800,7 +810,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                                     break;
                                 }
                                 
-                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID
+                                    loJSON = invRequestController.StockRequest().SearchBarcodeGeneral(lsValue, true, pnTblInvDetailRow,brandID
                                 );
                                 
                                 if ("error".equals(loJSON.get("result"))) {
@@ -834,7 +844,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,brandID
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescriptionGeneral(lsValue, false, pnTblInvDetailRow,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);

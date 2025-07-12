@@ -83,7 +83,8 @@ import org.guanzon.appdriver.constant.UserRight;
         private String psOldDate = "";
         private int pnEditMode;
         private TextField activeField;
-       
+         unloadForm poUnload = new unloadForm();
+
         private JSONObject poJSON;
         
         private  String brandID = null; 
@@ -462,6 +463,15 @@ import org.guanzon.appdriver.constant.UserRight;
             JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId(); 
             switch (lsButton) {
+                        case "btnClose":
+                            if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                                if (poUnload != null) {
+                                    poUnload.unloadForm(AnchorMain, poApp, psFormName);
+                                } else {
+                                    ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                                }
+                            }
+                            break;
                          case "btnBrowse":
                            
                             invRequestController.StockRequest().setTransactionStatus("102");
