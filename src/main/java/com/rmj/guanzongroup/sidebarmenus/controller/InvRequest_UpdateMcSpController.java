@@ -8,7 +8,7 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvOrderDetail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvTableListInformation;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import javafx.fxml.FXML;import java.net.URL;
+import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,7 +35,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -1087,30 +1086,31 @@ public class InvRequest_UpdateMcSpController implements Initializable, ScreenInt
                                 );
                                 
                                 if ("error".equals(poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                    tfBarCode.setText("");
-                                    if (poJSON.get("tableRow") != null) {
-                                        pnTblInvDetailRow = (int) loJSON.get("tableRow");
-                                    } else {
-                                        break;
-                                    }
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                tfBarCode.setText("");
+                                if (poJSON.get("tableRow") != null) {
+                                    pnTblInvDetailRow = (int) poJSON.get("tableRow");
                                 }
-                                
-                                          double currentQty = 0.0;
-                                          try {
-                                              currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                          } catch (Exception e) {
-                                              currentQty = 0.0;
-                                          }
-                                          double newQty = currentQty + 1;
-                                          tfOrderQuantity.setText(String.valueOf(newQty));
-                                          invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                      
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
-                               
                                 break;
+                            }
+
+                            if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
+
+
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                         
                          case "tfDescription":
                                 if (pnTblInvDetailRow < 0) {
@@ -1120,35 +1120,32 @@ public class InvRequest_UpdateMcSpController implements Initializable, ScreenInt
                                 }
                                 poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,brandID
                                 );
-                                if ("error".equals(poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                    tfDescription.setText("");
-                                    if (poJSON.get("tableRow") != null) {
-                                        pnTblInvDetailRow = (int) poJSON.get("tableRow");
-                                    } else {
-                                        break;
-                                    }
+                                 if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                tfDescription.setText("");
+                                if (poJSON.get("tableRow") != null) {
+                                    pnTblInvDetailRow = (int) poJSON.get("tableRow");
                                 }
-                               
-                                          // Get current quantity
-                                           currentQty = 0;
-                                          try {
-                                              currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                          } catch (Exception e) {
-                                              currentQty = 0;
-                                          }
-
-
-                                           newQty = currentQty + 1;
-
-
-                                          tfOrderQuantity.setText(String.valueOf(newQty));
-                                          invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                      
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
                                 break;
+                            }
+
+                            if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
+
+
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                          
                                 }
                               event.consume();
