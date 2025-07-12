@@ -169,6 +169,7 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
         initTextFieldPattern();
         initButtonsClickActions();
         initTextFieldFocus();
+        initTextFieldPattern();
         initTextAreaFocus();
         initTextFieldKeyPressed();
         initDatePickerActions();          
@@ -1090,6 +1091,9 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
         table.getSelectionModel().select(previousRow);
         return previousRow;
     }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
     private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
@@ -1370,7 +1374,5 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
 
         }
     }
-     private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+     
   }

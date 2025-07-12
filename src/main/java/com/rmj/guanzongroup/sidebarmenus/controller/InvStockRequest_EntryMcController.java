@@ -175,6 +175,7 @@
                 initButtonsClickActions();
                 initTextFieldFocus();
                 initTextAreaFocus();
+                initTextFieldPattern();
                 initTextFieldKeyPressed();
                 initDatePickerActions();          
                 initTableInvDetail();
@@ -1089,6 +1090,9 @@
                 initDetailFocus();
             }
         }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
      private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
@@ -1217,9 +1221,7 @@
          tfBrand.setOnMouseClicked(e -> activeField = tfBrand);
          tfModel.setOnMouseClicked(e -> activeField = tfModel);
     }  
-            private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+      
 
 
     }

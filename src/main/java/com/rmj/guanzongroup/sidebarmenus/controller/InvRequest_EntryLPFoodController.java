@@ -173,6 +173,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                 initTextFieldPattern();
                 initButtonsClickActions();
                 initTextFieldFocus();
+                initTextFieldPattern();
                 initTextAreaFocus();
                 initTextFieldKeyPressed();
                 initDatePickerActions();          
@@ -798,8 +799,8 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                                 detail.Inventory().getBarCode(),
                                 detail.Inventory().getDescription(),
                                 detail.Inventory().Brand().getDescription(),
-                                detail.Inventory().InventoryType().getDescription(),
                                 detail.Inventory().Measure().getDescription(),
+                                detail.Inventory().InventoryType().getDescription(),
                                 String.valueOf(detail.getRecommendedOrder()),
                                 detail.getClassification(),
                                 String.valueOf(detail.getQuantityOnHand()),

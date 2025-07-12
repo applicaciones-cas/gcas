@@ -170,6 +170,7 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
         initButtonsClickActions();
         initTextFieldFocus();
         initTextAreaFocus();
+        initTextFieldPattern();
         initTextFieldKeyPressed();
         initDatePickerActions();          
         initTableInvDetail();
@@ -1005,6 +1006,9 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
         table.getSelectionModel().select(previousRow);
         return previousRow;
     }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
     private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
@@ -1288,7 +1292,5 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
 
         }
     }
-    private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+    
   }

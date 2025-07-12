@@ -186,6 +186,7 @@ public class InvRequest_ConfirmationMPController implements Initializable, Scree
                 initButtonsClickActions();
                 initTextFieldFocus();
                 initTextAreaFocus();
+                initTextFieldPattern();
                 initTextFieldKeyPressed();
                 initDatePickerActions();
                 initTableList();
@@ -239,6 +240,9 @@ public class InvRequest_ConfirmationMPController implements Initializable, Scree
             int nextRow = (focusedCell.getRow() + 1) % table.getItems().size();
             table.getSelectionModel().select(nextRow);
             return nextRow;
+        }
+        private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
         }
 
         private int moveToPreviousRow(TableView<?> table, TablePosition<?, ?> focusedCell) {
@@ -1062,7 +1066,7 @@ public class InvRequest_ConfirmationMPController implements Initializable, Scree
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
-            if (Integer.parseInt(fsValue) <= 0) {
+            if (Integer.parseInt(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 

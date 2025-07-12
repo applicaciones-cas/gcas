@@ -186,6 +186,7 @@ public class InvRequest_Roq_ConfirmationMonarchFoodController implements Initial
                 initButtonsClickActions();
                 initTextFieldFocus();
                 initTextAreaFocus();
+                initTextFieldPattern();
                 initTextFieldKeyPressed();
                 initDatePickerActions();
                 initTableList();
@@ -1038,11 +1039,14 @@ public class InvRequest_Roq_ConfirmationMonarchFoodController implements Initial
                 initDetailFocus();
             }
         }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
      private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
-            if (Integer.parseInt(fsValue) <= 0) {
+            if (Integer.parseInt(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 

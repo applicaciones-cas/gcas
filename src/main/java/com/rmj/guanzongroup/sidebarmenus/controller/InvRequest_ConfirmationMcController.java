@@ -182,7 +182,9 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                 }));
                 tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
                 initButtonsClickActions();
+                initTextFieldPattern();
                 initTextFieldFocus();
+                initTextFieldPattern();
                 initTextAreaFocus();
                 initTextFieldKeyPressed();
                 initDatePickerActions();
@@ -199,6 +201,9 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                 Logger.getLogger(InvStockRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
 
             }
+        }
+        private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
         }
         private void initTextFieldsProperty() {
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -1048,7 +1053,7 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
-            if (Integer.parseInt(fsValue) <= 0) {
+            if (Integer.parseInt(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 

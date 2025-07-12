@@ -187,6 +187,7 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                 initTextFieldFocus();
                 initTextAreaFocus();
                 initTextFieldKeyPressed();
+                initTextFieldPattern();
                 initDatePickerActions();
                 initTableList();
                 initTextFieldsProperty();
@@ -993,6 +994,7 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                   case F3:
                       switch (fieldId) {
                                 case "tfSearchTransNo":
+                                    System.out.print("Company ID" + psCompanyID);
                                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
@@ -1162,6 +1164,9 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                 loadDetail();
                 initDetailFocus();
             }
+        }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
         }
      private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {

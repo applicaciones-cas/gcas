@@ -175,6 +175,7 @@ import org.guanzon.appdriver.constant.UserRight;
                 initTextFieldPattern();
                 initButtonsClickActions();
                 initTextFieldFocus();
+                initTextFieldPattern();
                 initTextAreaFocus();
                 initTextFieldKeyPressed();
                 initDatePickerActions();          
@@ -1090,6 +1091,9 @@ import org.guanzon.appdriver.constant.UserRight;
                 initDetailFocus();
             }
         }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
      private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
@@ -1218,9 +1222,7 @@ import org.guanzon.appdriver.constant.UserRight;
          tfBrand.setOnMouseClicked(e -> activeField = tfBrand);
          tfModel.setOnMouseClicked(e -> activeField = tfModel);
     }  
-            private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+          
 
 
     }

@@ -168,6 +168,7 @@ public class InvRequest_EntryLPGeneralController implements Initializable, Scree
         Platform.runLater(() -> btnNew.fire());
         initTextFieldPattern();
         initButtonsClickActions();
+        initTextFieldPattern();
         initTextFieldFocus();
         initTextAreaFocus();
         initTextFieldKeyPressed();
@@ -1005,6 +1006,9 @@ public class InvRequest_EntryLPGeneralController implements Initializable, Scree
         table.getSelectionModel().select(previousRow);
         return previousRow;
     }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
     private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
@@ -1288,7 +1292,5 @@ public class InvRequest_EntryLPGeneralController implements Initializable, Scree
 
         }
     }
-    private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+    
   }

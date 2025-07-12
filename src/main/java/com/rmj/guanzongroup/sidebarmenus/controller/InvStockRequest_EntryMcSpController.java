@@ -170,6 +170,7 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
         initTextFieldPattern();
         initButtonsClickActions();
         initTextFieldFocus();
+        initTextFieldPattern();
         initTextAreaFocus();
         initTextFieldKeyPressed();
         initDatePickerActions();          
@@ -1004,6 +1005,9 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
         table.getSelectionModel().select(previousRow);
         return previousRow;
     }
+      private void initTextFieldPattern() {
+    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
     private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
@@ -1286,7 +1290,5 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
 
         }
     }
-    private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+   
   }

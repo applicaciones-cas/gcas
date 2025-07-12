@@ -174,6 +174,7 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                 initButtonsClickActions();
                 initTextFieldFocus();
                 initTextAreaFocus();
+                initTextFieldPattern();
                 initTextFieldKeyPressed();
                 initDatePickerActions();          
                 initTableInvDetail();

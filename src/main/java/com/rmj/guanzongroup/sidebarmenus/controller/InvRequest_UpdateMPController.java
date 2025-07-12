@@ -188,6 +188,7 @@ public class InvRequest_UpdateMPController implements Initializable, ScreenInter
                 initTextFieldPattern();
                 initButtonsClickActions();
                 initTextFieldFocus();
+                initTextFieldPattern();
                 initTextAreaFocus();
                 initTextFieldKeyPressed();
                 initDatePickerActions();
@@ -1252,6 +1253,9 @@ public class InvRequest_UpdateMPController implements Initializable, ScreenInter
                 loadDetail();
                 initDetailFocus();
             }
+        }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
         }
      private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {

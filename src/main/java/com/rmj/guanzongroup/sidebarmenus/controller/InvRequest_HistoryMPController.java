@@ -68,7 +68,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_HistoryMPController implements Initializable, ScreenInterface {
 
     
-    private String psFormName = "Inv Stock Request History Car Sp";
+    private String psFormName = "Inv Stock Request History MP";
     unloadForm poUnload = new unloadForm();
     @FXML
     private AnchorPane AnchorMain;
@@ -795,7 +795,7 @@ public class InvRequest_HistoryMPController implements Initializable, ScreenInte
                 tfOrderQuantity);
         CustomCommonUtil.setDisable(true,
                 tfInvType, tfVariant, tfColor, tfReservationQTY,
-                tfQOH, tfROQ, tfClassification, tfModel, tfBrand);
+                tfQOH, tfROQ, tfClassification, tfModel, tfBrand, tfDescription, tfBarCode);
         if (!tfReferenceNo.getText().isEmpty()) {
             dpTransactionDate.setDisable(!lbShow);
         }

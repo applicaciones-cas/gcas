@@ -171,6 +171,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
         initTextFieldFocus();
         initTextAreaFocus();
         initTextFieldKeyPressed();
+        initTextFieldPattern();
         initDatePickerActions();          
         initTableInvDetail();
         tblViewOrderDetails.setOnMouseClicked(this::tblViewOrderDetails_Clicked);
@@ -1005,6 +1006,9 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
         table.getSelectionModel().select(previousRow);
         return previousRow;
     }
+    private void initTextFieldPattern() {
+            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+        }
     private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
@@ -1288,7 +1292,5 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
 
         }
     }
-    private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+   
   }
