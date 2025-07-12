@@ -822,7 +822,7 @@ public class InvRequest_Roq_EntryCarGeneralController implements Initializable, 
 
            
             CustomCommonUtil.setDisable(true, tfBrand, tfModel,
-                    tfInvType,tfVariant,tfColor,tfReservationQTY,tfQOH,tfROQ,tfClassification);
+                    tfInvType,tfVariant,tfColor,tfReservationQTY,tfQOH,tfROQ,tfClassification, tfBarCode, tfDescription);
            CustomCommonUtil.setDisable(!lbShow,tfOrderQuantity);
             
         } else {
