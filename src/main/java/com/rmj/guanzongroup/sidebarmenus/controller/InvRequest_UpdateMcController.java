@@ -72,12 +72,13 @@ import org.json.simple.parser.ParseException;
  */
 public class InvRequest_UpdateMcController implements Initializable, ScreenInterface{
     
-    @FXML
-    private String psFormName = "Inv Stock Request Update Mc";
-      @FXML
-    private AnchorPane AnchorMain,AnchorDetailMaster;
-    unloadForm poUnload = new unloadForm();
-    private InvWarehouseControllers invRequestController;
+        @FXML
+        private String psFormName = "Inv Stock Request Update Mc";
+        
+        @FXML
+        private AnchorPane AnchorMain,AnchorDetailMaster;
+        unloadForm poUnload = new unloadForm();
+        private InvWarehouseControllers invRequestController;
         private GRiderCAS poApp;
         private String psIndustryID = "";
         private String psCompanyID = "";
