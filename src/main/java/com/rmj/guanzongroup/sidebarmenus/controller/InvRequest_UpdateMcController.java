@@ -1401,5 +1401,8 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
         tableListInformation.refresh();
     });
 }
-       
+       private void initTextFieldPattern() {
+        
+        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+    }
 }
