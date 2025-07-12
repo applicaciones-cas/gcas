@@ -824,7 +824,7 @@ public class InvRequest_Roq_EntryCarSpController implements Initializable, Scree
 
            
             CustomCommonUtil.setDisable(true, tfBrand, tfModel,
-                    tfInvType,tfVariant,tfColor,tfReservationQTY,tfQOH,tfROQ,tfClassification);
+                    tfInvType,tfVariant,tfColor,tfReservationQTY,tfQOH,tfROQ,tfClassification,tfBarCode, tfDescription);
            CustomCommonUtil.setDisable(!lbShow,tfOrderQuantity);
             
         } else {

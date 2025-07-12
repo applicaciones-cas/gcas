@@ -919,7 +919,7 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
                         
                         break;
                 }
-            } catch (Exception e) {
+            } catch (Exception e) {     
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error", psFormName);
             }
         }

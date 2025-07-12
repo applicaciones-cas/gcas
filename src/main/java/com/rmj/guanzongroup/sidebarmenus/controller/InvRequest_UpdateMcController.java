@@ -155,7 +155,7 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
         @Override
         public void initialize(URL url, ResourceBundle rb) {
             try{
-                
+                System.out.print("The company ID: " + psCompanyID);
             invRequestController = new InvWarehouseControllers(poApp,logWrapper);
             invRequestController.StockRequest().setTransactionStatus(StockRequestStatus.OPEN);
             
@@ -225,7 +225,7 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
     }
         private void loadRecordSearch() {
             try {
-              
+                System.out.print("LBL SOURCE: "+invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
                 lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
 
             } catch (GuanzonException | SQLException ex) {

@@ -849,35 +849,30 @@ public class InvRequest_UpdateMcSpController implements Initializable, ScreenInt
 
 
      private void loadTableInvDetail() {
-        ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setMaxSize(50, 50);
-        progressIndicator.setStyle("-fx-accent: #FF8201;");
+            ProgressIndicator progressIndicator = new ProgressIndicator();
+            progressIndicator.setMaxSize(50, 50);
+            progressIndicator.setStyle("-fx-accent: #FF8201;");
 
-        StackPane loadingPane = new StackPane(progressIndicator);
-        loadingPane.setAlignment(Pos.CENTER);
-        loadingPane.setStyle("-fx-background-color: transparent;");
+            StackPane loadingPane = new StackPane(progressIndicator);
+            loadingPane.setAlignment(Pos.CENTER);
+            loadingPane.setStyle("-fx-background-color: transparent;");
 
-        tblViewOrderDetails.setPlaceholder(loadingPane);
-        progressIndicator.setVisible(true);
+            tblViewOrderDetails.setPlaceholder(loadingPane);
+            tblViewOrderDetails.setEditable(false);
+            progressIndicator.setVisible(true);
 
-        Task<List<ModelInvOrderDetail>> task = new Task<List<ModelInvOrderDetail>>() {
-            @Override
+            Task<List<ModelInvOrderDetail>> task = new Task<List<ModelInvOrderDetail>>() {
+                 @Override
             protected List<ModelInvOrderDetail> call() throws Exception {
                 try {
-                   int detailCount = invRequestController.StockRequest().getDetailCount();      
-                    if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
-                        Model_Inv_Stock_Request_Detail lastDetail = invRequestController.StockRequest().Detail(detailCount - 1);
-                        if (lastDetail.getStockId() != null && !lastDetail.getStockId().isEmpty()) {
-                            invRequestController.StockRequest().AddDetail();
-                            detailCount++;
-                        }
-                    }   
-                   
+                    
+                     int detailCount = invRequestController.StockRequest().getDetailCount();   
+                    
                     List<ModelInvOrderDetail> detailsList = new ArrayList<>();
                     
-                    for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
-                        Model_Inv_Stock_Request_Detail detail = invRequestController.StockRequest().Detail(lnCtr);
-                            
+                    for (int i = 0; i < detailCount; i++) {
+                        Model_Inv_Stock_Request_Detail detail = invRequestController.StockRequest().Detail(i);
+                       
                         detailsList.add(new ModelInvOrderDetail(
                                 detail.Inventory().Brand().getDescription(), 
                                 detail.Inventory().getDescription(), 
@@ -891,21 +886,22 @@ public class InvRequest_UpdateMcSpController implements Initializable, ScreenInt
                                 String.valueOf(detail.getQuantityOnHand()),
                                 String.valueOf(detail.getReservedOrder()),
                                 String.valueOf(detail.getQuantity())
-                                
+
                         ));
                     }
-                    
+
                     Platform.runLater(() -> {
-                    invOrderDetail_data.setAll(detailsList); // ObservableList<ModelInvOrderDetail>
-                    tblViewOrderDetails.setItems(invOrderDetail_data);
-                    reselectLastRow();
-                    initFields(pnEditMode);
-                });
+                        invOrderDetail_data.setAll(detailsList); // ObservableList<ModelInvOrderDetail>
+                        tblViewOrderDetails.setItems(invOrderDetail_data);
+                        reselectLastRow();
+                        System.out.println("edit "+ pnEditMode);
+                        initFields(pnEditMode);
+                    });
 
                     return detailsList;
 
-                } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(InvStockRequest_EntryMcSpController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(InvStockRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
                     return null;
                 }
             }
