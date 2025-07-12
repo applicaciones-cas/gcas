@@ -800,10 +800,8 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                                     clearDetailFields();
                                     break;
                                 }
-                                
                                     loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID
                                 );
-                                
                                 if ("error".equals(loJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
                                     tfBarCode.setText("");
@@ -1282,7 +1280,6 @@ public class InvStockRequest_EntryMcSpController implements Initializable, Scree
                 tfBarCode.setDisable(isSourceNotEmpty);
                 tfDescription.setDisable(isSourceNotEmpty);
                 if (!tfBarCode.getText().isEmpty()) {
-                   
                     tfOrderQuantity.requestFocus();
                 }else {
                         tfBrand.requestFocus();
