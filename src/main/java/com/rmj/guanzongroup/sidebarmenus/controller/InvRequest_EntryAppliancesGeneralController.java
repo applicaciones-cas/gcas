@@ -84,7 +84,7 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
     private int pnEditMode;
     private LogWrapper logWrapper;
      private String psOldDate = "";
-
+       unloadForm poUnload = new unloadForm();
     String brandID;
     String brandDesc;
     private ObservableList<ModelInvOrderDetail> invOrderDetail_data = FXCollections.observableArrayList();
@@ -188,6 +188,15 @@ public class InvRequest_EntryAppliancesGeneralController implements Initializabl
             
             
             switch (lsButton) {
+                case "btnClose":
+                    if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
+                        if (poUnload != null) {
+                            poUnload.unloadForm(AnchorMain, poApp, psFormName);
+                        } else {
+                            ShowMessageFX.Warning("Please notify the system administrator to configure the null value at the close button.", "Warning", null);
+                        }
+                    }
+                    break;
                 case "btnBrowse":
                            
                             invRequestController.StockRequest().setTransactionStatus("102");

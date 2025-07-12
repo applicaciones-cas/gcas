@@ -468,7 +468,7 @@ public class InvRequest_Roq_EntryAppliancesGeneralController implements Initiali
             JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId(); 
             switch (lsButton) {
-
+                        
                         case "btnBrowse":
                             invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
