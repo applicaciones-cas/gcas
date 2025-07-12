@@ -1420,7 +1420,5 @@ private void initTableHighlithers() {
         tableListInformation.refresh();
     });
 }
-        private void initTextFieldPattern() {
-    CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+       
 }
