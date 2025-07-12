@@ -46,6 +46,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javax.script.ScriptException;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -157,9 +158,9 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
         initTableOnClick();
         initButtons();
         initTextFieldsProperty();
-        if(main_data.isEmpty()){
-           pagination.setManaged(false);
-           pagination.setVisible(false);
+        if (main_data.isEmpty()) {
+            pagination.setManaged(false);
+            pagination.setVisible(false);
         }
     }
 
@@ -271,6 +272,8 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
             }
             loadTableMain();
         } catch (ParseException | SQLException | GuanzonException | CloneNotSupportedException ex) {
+            Logger.getLogger(CheckAuthorizationController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ScriptException ex) {
             Logger.getLogger(CheckAuthorizationController.class.getName()).log(Level.SEVERE, null, ex);
         }
 

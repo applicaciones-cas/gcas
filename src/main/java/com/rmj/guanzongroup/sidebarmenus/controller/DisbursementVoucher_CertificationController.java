@@ -51,6 +51,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
+import javax.script.ScriptException;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.json.simple.parser.ParseException;
 import ph.com.guanzongroup.cas.cashflow.Disbursement;
@@ -158,11 +159,11 @@ public class DisbursementVoucher_CertificationController implements Initializabl
         initTableOnClick();
         initButtons();
         initTextFieldsProperty();
-        if(main_data.isEmpty()){
-           pagination.setManaged(false);
-           pagination.setVisible(false);
+        if (main_data.isEmpty()) {
+            pagination.setManaged(false);
+            pagination.setVisible(false);
         }
-        
+
     }
 
     private void loadRecordSearch() {
@@ -275,6 +276,8 @@ public class DisbursementVoucher_CertificationController implements Initializabl
             }
             loadTableMain();
         } catch (ParseException | SQLException | GuanzonException | CloneNotSupportedException ex) {
+            Logger.getLogger(DisbursementVoucher_CertificationController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ScriptException ex) {
             Logger.getLogger(DisbursementVoucher_CertificationController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
