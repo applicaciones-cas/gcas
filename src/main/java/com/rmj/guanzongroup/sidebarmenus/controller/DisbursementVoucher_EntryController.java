@@ -288,6 +288,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 poDisbursementController.Master().setCompanyID(psCompanyId);
                 poDisbursementController.setIndustryID(psIndustryId);
                 poDisbursementController.setCompanyID(psCompanyId);
+                poDisbursementController.setCategoryCd(psCategoryId);
                 poDisbursementController.Master().setBranchCode(oApp.getBranchCode());
                 loadRecordSearch();
                 cmbTransactionType.getSelectionModel().select(DisbursementStatic.SourceCode.LOAD_ALL);
@@ -295,6 +296,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                 if (oApp.getUserLevel() > UserRight.ENCODER) {
                     pbIsVerifier = true;
                 }
+                poDisbursementController.setCategoryCd(psCategoryId);
                 btnNew.fire();
             });
         } catch (SQLException | GuanzonException ex) {
@@ -360,7 +362,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                     poDisbursementController.Master().setIndustryID(psIndustryId);
                     poDisbursementController.Master().setCompanyID(psCompanyId);
                     poDisbursementController.Master().setBranchCode(oApp.getBranchCode());
-                    poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN + DisbursementStatic.VERIFIED + DisbursementStatic.RETURNED);
+                    poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN + DisbursementStatic.VERIFIED);
                     poJSON = poDisbursementController.SearchTransaction("");
                     if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));

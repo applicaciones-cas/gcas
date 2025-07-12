@@ -58,7 +58,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import javax.script.ScriptException;
-import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -273,7 +272,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
-            poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN + DisbursementStatic.VERIFIED);
+            poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN + DisbursementStatic.VERIFIED + DisbursementStatic.RETURNED);
             poJSON = new JSONObject();
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
@@ -283,6 +282,9 @@ public class DisbursementVoucher_VerificationController implements Initializable
             Platform.runLater(() -> {
                 poDisbursementController.Master().setIndustryID(psIndustryId);
                 poDisbursementController.Master().setCompanyID(psCompanyId);
+                poDisbursementController.setCategoryCd(psCategoryId);
+                poDisbursementController.setIndustryID(psIndustryId);
+                poDisbursementController.setCompanyID(psCompanyId);
                 loadRecordSearch();
             });
         } catch (SQLException | GuanzonException ex) {
@@ -415,7 +417,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                             } else {
                                 ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                                 JFXUtil.disableAllHighlightByColor(tblVwDisbursementVoucher, "#A7C7E7", highlightedRowsMain);
-                                plOrderNoPartial.add(new Pair<>(String.valueOf(pnMain + 1), "1"));
+                                plOrderNoPartial.add(new Pair<>(poDisbursementController.Master().getTransactionNo(), "1"));
                                 showRetainedHighlight(true);
                             }
                         }
@@ -423,6 +425,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     pnEditMode = poDisbursementController.getEditMode();
                     loadTableDetailDV();
                     loadRecordDetailDV();
+                    loadTableMain();
                     pagination.toBack();
                     break;
                 case "btnCancel":
@@ -626,16 +629,22 @@ public class DisbursementVoucher_VerificationController implements Initializable
         if (isRetained) {
             for (Pair<String, String> pair : plOrderNoPartial) {
                 if (!"0".equals(pair.getValue())) {
-
                     plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
                 }
             }
         }
         JFXUtil.disableAllHighlightByColor(tblVwDisbursementVoucher, "#C1E1C1", highlightedRowsMain);
+        JFXUtil.disableAllHighlightByColor(tblVwDisbursementVoucher, "#FAC898", highlightedRowsMain);
         plOrderNoPartial.clear();
         for (Pair<String, String> pair : plOrderNoFinal) {
-            if (!"0".equals(pair.getValue())) {
+            if ("1".equals(pair.getValue())) {
                 JFXUtil.highlightByKey(tblVwDisbursementVoucher, pair.getKey(), "#C1E1C1", highlightedRowsMain);
+            }
+            if ("7".equals(pair.getValue())) {
+                JFXUtil.highlightByKey(tblVwDisbursementVoucher, pair.getKey(), "#FAC898", highlightedRowsMain);
+            }
+            if ("0".equals(pair.getValue())) {
+                JFXUtil.highlightByKey(tblVwDisbursementVoucher, pair.getKey(), "", highlightedRowsMain);
             }
         }
     }
@@ -2157,6 +2166,9 @@ public class DisbursementVoucher_VerificationController implements Initializable
             switch (poDisbursementController.Master().getTransactionStatus()) {
                 case DisbursementStatic.OPEN:
                     JFXUtil.setButtonsVisibility(true, btnUpdate, btnVoid, btnVerify);
+                    break;
+                case DisbursementStatic.RETURNED:
+                    JFXUtil.setButtonsVisibility(true, btnUpdate);
                     break;
                 case DisbursementStatic.VERIFIED:
                     JFXUtil.setButtonsVisibility(true, btnUpdate, btnDVCancel);
