@@ -670,42 +670,42 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
         }
     }
 
-    private ObservableList<ModelInvOrderDetail> loadItemsWithROQ() {
-        ObservableList<ModelInvOrderDetail> loItems = FXCollections.observableArrayList();
-        try {
-            JSONObject loResult = invRequestController.StockRequest().getItemsWithROQ(
-                    psIndustryID,
-                    psCategoryID
-            );
-
-            if ("success".equals(loResult.get("result"))) {
-                JSONArray laItems = (JSONArray) loResult.get("items");
-
-                // Convert JSON to ModelInvOrderDetail objects
-                for (Object item : laItems) {
-                    JSONObject loItem = (JSONObject) item;
-                    loItems.add(new ModelInvOrderDetail(
-                            loItem.get("brand").toString(),
-                            loItem.get("description").toString(),
-                            loItem.get("barcode").toString(),
-                            loItem.get("model").toString(),
-                            loItem.get("variant").toString(),
-                            loItem.get("color").toString(),
-                            loItem.get("inv_type").toString(),
-                            loItem.get("roq").toString(), // ROQ value
-                            loItem.get("classification").toString(),
-                            loItem.get("qoh").toString(),
-                            loItem.get("reserved_qty").toString(),
-                            "0" // Default order quantity
-                    ));
-                }
-            }
-        } catch (Exception e) {
-            ShowMessageFX.Error(e.getMessage(), "Error", null);
-        }
-
-        return loItems;
-    }
+//    private ObservableList<ModelInvOrderDetail> loadItemsWithROQ() {
+////        ObservableList<ModelInvOrderDetail> loItems = FXCollections.observableArrayList();
+////        try {
+////            JSONObject loResult = invRequestController.StockRequest().getItemsWithROQ(
+////                    psIndustryID,
+////                    psCategoryID
+////            );
+////
+////            if ("success".equals(loResult.get("result"))) {
+////                JSONArray laItems = (JSONArray) loResult.get("items");
+////
+////                // Convert JSON to ModelInvOrderDetail objects
+////                for (Object item : laItems) {
+////                    JSONObject loItem = (JSONObject) item;
+////                    loItems.add(new ModelInvOrderDetail(
+////                            loItem.get("brand").toString(),
+////                            loItem.get("description").toString(),
+////                            loItem.get("barcode").toString(),
+////                            loItem.get("model").toString(),
+////                            loItem.get("variant").toString(),
+////                            loItem.get("color").toString(),
+////                            loItem.get("inv_type").toString(),
+////                            loItem.get("roq").toString(), // ROQ value
+////                            loItem.get("classification").toString(),
+////                            loItem.get("qoh").toString(),
+////                            loItem.get("reserved_qty").toString(),
+////                            "0" // Default order quantity
+////                    ));
+////                }
+////            }
+////        } catch (Exception e) {
+////            ShowMessageFX.Error(e.getMessage(), "Error", null);
+////        }
+////
+//        return loItems;
+//    }
     private void tblViewOrderDetails_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
             pnTblInvDetailRow = tblViewOrderDetails.getSelectionModel().getSelectedIndex();
@@ -727,48 +727,48 @@ public class InvStockRequest_ROQ_EntryMcSpController implements Initializable, S
     }
 
     private void loadTableInvDetail() {
-        ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setMaxSize(50, 50);
-        progressIndicator.setStyle("-fx-accent: #FF8201;");
-
-        StackPane loadingPane = new StackPane(progressIndicator);
-        loadingPane.setAlignment(Pos.CENTER);
-        loadingPane.setStyle("-fx-background-color: transparent;");
-        tblViewOrderDetails.setPlaceholder(loadingPane);
-        progressIndicator.setVisible(true);
-
-        Task<List<ModelInvOrderDetail>> task = new Task<List<ModelInvOrderDetail>>() {
-            @Override
-            protected List<ModelInvOrderDetail> call() throws Exception {
-                try {
-                    ObservableList<ModelInvOrderDetail> roqItems = loadItemsWithROQ();
-
-                    Platform.runLater(() -> {
-                        invOrderDetail_data.setAll(roqItems);
-                        tblViewOrderDetails.setItems(invOrderDetail_data);
-                        initFields(pnEditMode);
-                    });
-
-                    return roqItems;
-
-                } catch (Exception ex) {
-                    Logger.getLogger(InvStockRequest_ROQ_EntryMcSpController.class.getName()).log(Level.SEVERE, null, ex);
-                    return null;
-                }
-            }
-
-            @Override
-            protected void succeeded() {
-                progressIndicator.setVisible(false);
-            }
-
-            @Override
-            protected void failed() {
-                progressIndicator.setVisible(false);
-            }
-        };
-
-        new Thread(task).start();
+//        ProgressIndicator progressIndicator = new ProgressIndicator();
+//        progressIndicator.setMaxSize(50, 50);
+//        progressIndicator.setStyle("-fx-accent: #FF8201;");
+//
+//        StackPane loadingPane = new StackPane(progressIndicator);
+//        loadingPane.setAlignment(Pos.CENTER);
+//        loadingPane.setStyle("-fx-background-color: transparent;");
+//        tblViewOrderDetails.setPlaceholder(loadingPane);
+//        progressIndicator.setVisible(true);
+//
+//        Task<List<ModelInvOrderDetail>> task = new Task<List<ModelInvOrderDetail>>() {
+//            @Override
+//            protected List<ModelInvOrderDetail> call() throws Exception {
+//                try {
+//                    //ObservableList<ModelInvOrderDetail> roqItems = loadItemsWithROQ();
+//
+//                    Platform.runLater(() -> {
+//                        //invOrderDetail_data.setAll(roqItems);
+//                        tblViewOrderDetails.setItems(invOrderDetail_data);
+//                        initFields(pnEditMode);
+//                    });
+//
+//                    //return roqItems;
+//
+//                } catch (Exception ex) {
+//                    Logger.getLogger(InvStockRequest_ROQ_EntryMcSpController.class.getName()).log(Level.SEVERE, null, ex);
+//                    return null;
+//                }
+//            }
+//
+//            @Override
+//            protected void succeeded() {
+//                progressIndicator.setVisible(false);
+//            }
+//
+//            @Override
+//            protected void failed() {
+//                progressIndicator.setVisible(false);
+//            }
+//        };
+//
+//        new Thread(task).start();
     }
 //    private void validateQuantityAgainstROQ(String fsValue) {
 //        try {

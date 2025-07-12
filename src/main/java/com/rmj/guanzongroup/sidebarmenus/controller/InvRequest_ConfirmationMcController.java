@@ -204,7 +204,7 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    loadTableList();
+                    //loadTableList();
                 }
 
             }
@@ -214,7 +214,7 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    loadTableList();
+                    //loadTableList();
                 }
             }
         });
@@ -888,7 +888,7 @@ public class InvRequest_ConfirmationMcController implements Initializable, Scree
                     break;
                 case "tfSearchReferenceNo":
                      psReferID = tfSearchReferenceNo.getText();
-                    loadTableList();
+                    //loadTableList();
                     break;
             }
         } else {
