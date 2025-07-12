@@ -936,20 +936,22 @@ public class InvRequest_UpdateMPController implements Initializable, ScreenInter
     };
 
 
-            // for disabling textfield
-        private void initFields(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
+         private void initFields(int fnEditMode) {
+        boolean lbShow = (fnEditMode == EditMode.UPDATE);
+        boolean lbNew = (fnEditMode == EditMode.ADDNEW);
         /* Master Fields*/
-        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)) {
+        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
+            invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbShow,
                     dpTransactionDate, taRemarks,tfReferenceNo);
 
            
             CustomCommonUtil.setDisable(true,
-                    tfInvType,tfVariant,tfColor,tfReservationQTY,tfQOH,tfROQ,tfClassification);
-           CustomCommonUtil.setDisable(!lbShow,
-                    tfBrand, tfModel, tfOrderQuantity);
+                    tfInvType,tfReservationQTY
+                    ,tfQOH,tfROQ,tfClassification);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbNew, tfBrand,tfModel);
             
         } else {
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
