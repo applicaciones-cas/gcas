@@ -521,19 +521,31 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                             invRequestController.StockRequest().setTransactionStatus("102");
                             loadTableList();
                             break;
-                        case "btnUpdate":
-                            poJSON = invRequestController.StockRequest().UpdateTransaction();
-                            pnEditMode = invRequestController.StockRequest().getEditMode();
-                            
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), "Warning", null);
-                            }
-                            clearDetailFields();
-                            pnTblInvDetailRow = invRequestController.StockRequest().getDetailCount() > 0 ? 0 : -1; 
-                            loadTableInvDetail();
-                            tableListInformation.toFront();
+                     case "btnUpdate":
+                        poJSON = invRequestController.StockRequest().UpdateTransaction();
+                        pnEditMode = invRequestController.StockRequest().getEditMode();
+
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), "Warning", null);
+                        }
+
+                        clearDetailFields();
+                        loadTableInvDetail();
+
+                        if (tblViewOrderDetails.getItems().size() > 0) {
+                            Platform.runLater(() -> {
+                                tblViewOrderDetails.getSelectionModel().select(0);
+                                pnTblInvDetailRow = 0; 
+                                loadDetail();
+
+                               
+                            });
+                        }
+
+                        initFields(pnEditMode);
+                        tableListInformation.toFront();
                         break;
-                         
+
                        case "btnSave":
                             if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                                 return;
@@ -870,7 +882,6 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                         invOrderDetail_data.setAll(detailsList); // ObservableList<ModelInvOrderDetail>
                         tblViewOrderDetails.setItems(invOrderDetail_data);
                         reselectLastRow();
-                        System.out.println("edit "+ pnEditMode);
                         initFields(pnEditMode);
                     });
 
@@ -922,26 +933,34 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
     };
 
 
-            // for disabling textfield
-        private void initFields(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
+            
+         private void initFields(int fnEditMode) {
+          
+        boolean lbShow = (fnEditMode == EditMode.UPDATE ||fnEditMode == EditMode.ADDNEW);
+        boolean lbNew = (fnEditMode == EditMode.ADDNEW);
+        
+        
         /* Master Fields*/
-        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)) {
+        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
+            invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbShow,
+            CustomCommonUtil.setDisable(!lbNew,
                     dpTransactionDate, taRemarks,tfReferenceNo);
 
-           
+
             CustomCommonUtil.setDisable(true,
-                    tfInvType,tfVariant,tfColor,tfReservationQTY,tfQOH,tfROQ,tfClassification);
-           CustomCommonUtil.setDisable(!lbShow,
-                    tfBrand, tfModel, tfOrderQuantity);
+                    tfInvType,tfReservationQTY
+                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            CustomCommonUtil.setDisable(!lbNew, tfBrand,tfModel);
+            
             
         } else {
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
         
     }
+
 
         private void initTextAreaFocus() {
             taRemarks.focusedProperty().addListener(txtArea_Focus);
@@ -1098,19 +1117,20 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                                 event.consume();
                                 break;
                                 
-                  case UP:
+                 case UP:
                         setOrderQuantityToDetail(tfOrderQuantity.getText());
 
-                        if (fieldId.equals("tfOrderQuantity")) {
+                        if (!fieldId.equals("tfBrand") && !fieldId.equals("tfModel")) {
                             if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
                                 pnTblInvDetailRow--;
                             }
                         }
-
-                       
                         switch (fieldId) {
                             case "tfModel":
                                 tfBrand.requestFocus();
+                                break;
+                            case "tfOrderQuantity":
+                                tfModel.requestFocus();
                                 break;
                             default:
                                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
@@ -1125,7 +1145,9 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                         setOrderQuantityToDetail(lsValue);
                         if ("tfBrand".equals(fieldId)) {
                             tfModel.requestFocus();
-                        } else if("tfOrderQuantity".equals(fieldId)) {
+                        } else if ("tfModel".equals(fieldId)) {
+                            tfOrderQuantity.requestFocus();
+                        } else if ("tfOrderQuantity".equals(fieldId)) {
                             if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                 pnTblInvDetailRow++;
                             }
@@ -1150,7 +1172,7 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
        
 
 
-    private void loadTableInvDetailAndSelectedRow() {
+   private void loadTableInvDetailAndSelectedRow() {
             if (pnTblInvDetailRow >= 0) {
                 Platform.runLater(() -> {
                     PauseTransition delay = new PauseTransition(Duration.millis(10));
@@ -1165,10 +1187,9 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                 initDetailFocus();
             }
         }
-    private void initTextFieldPattern() {
-            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
+    
      private void setOrderQuantityToDetail(String fsValue) {
+         
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
@@ -1207,7 +1228,6 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                 header.setReordering(false);
             });
         });
-        initTableHighlithers();
     }
         private void initTableInvDetail() {
 
@@ -1230,7 +1250,6 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                     });
                 }
             });
-            initTableHighlithers();
         }
         //step 6-7
         private void tblViewOrderDetails_Clicked(MouseEvent event) {
@@ -1321,7 +1340,7 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
     }
 
       private void initDetailFocus() {
-            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            if (pnEditMode == EditMode.ADDNEW ) {
                 if (pnTblInvDetailRow >= 0) {
                     boolean isSourceNotEmpty = !invRequestController.StockRequest().Master().getSourceNo().isEmpty();
                     tfBrand.setDisable(isSourceNotEmpty);
@@ -1329,10 +1348,23 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                     if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {
                         tfOrderQuantity.requestFocus();
                     } else {
-                        if (!tfModel.getText().isEmpty() && (pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.ADDNEW)) {
+                        if (!tfModel.getText().isEmpty() && (pnEditMode == EditMode.ADDNEW)) {
                             tfOrderQuantity.requestFocus();
                         } else {
                             tfBrand.requestFocus();
+                        }
+                    }
+                }
+
+            }else if (pnEditMode == EditMode.UPDATE ) {
+                if (pnTblInvDetailRow >= 0) {
+                    boolean isSourceNotEmpty = !invRequestController.StockRequest().Master().getSourceNo().isEmpty();
+                    
+                    if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {
+                        tfOrderQuantity.requestFocus();
+                    } else {
+                        if (!tfModel.getText().isEmpty() && (pnEditMode == EditMode.UPDATE )) {
+                            tfOrderQuantity.requestFocus();
                         }
                     }
                 }
@@ -1347,58 +1379,7 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
          tfModel.setOnMouseClicked(e -> activeField = tfModel);
     }  
 
-private void initTableHighlithers() {
-        tableListInformation.setRowFactory(tv -> new TableRow<ModelInvTableListInformation>() {
-            @Override
-            protected void updateItem(ModelInvTableListInformation item, boolean empty) {
-                super.updateItem(item, empty);
 
-                if (item == null || empty) {
-                    setStyle("");
-                } else {
-                    String lsStatus = invRequestController.StockRequest().Master().getTransactionStatus();
-                  
-                    //String status = item.getIndex05(); // Replace with actual getter
-                    switch (lsStatus) {
-                        case StockRequestStatus.CONFIRMED:
-                            setStyle("-fx-background-color: #C1E1C1;");
-                            break;
-                        case StockRequestStatus.VOID:
-                            setStyle("-fx-background-color: #FAA0A0;");
-                            break;
-                        case StockRequestStatus.OPEN:
-                            setStyle("-fx-background-color: #FAC898;");
-                            break;
-                        default:
-                            setStyle("");
-                            break;
-                    }
-                    tableListInformation.refresh();
-                }
-            }
-        });
-        tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelInvOrderDetail>() {
-            @Override
-            protected void updateItem(ModelInvOrderDetail item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (item == null || empty) {
-                    setStyle("");
-                } else {
-                    //String status = item.getIndex10(); // Replace with actual getter
-                    String status = "1";
-                    switch (status) {
-                        case "1":
-                            setStyle("-fx-background-color: #FAA0A0;");
-                            break;
-                        default:
-                            setStyle("");
-                    }
-                    tblViewOrderDetails.refresh();
-                }
-            }
-        });
-    }
         private void clearAllTables() {
    
     invOrderDetail_data.clear();
