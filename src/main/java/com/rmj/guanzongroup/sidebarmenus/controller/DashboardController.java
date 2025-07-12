@@ -2819,7 +2819,11 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateLpFood.fxml":
                     return new InvRequest_Roq_UpdateLPFoodController();    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMp.fxml":
-                    return new InvRequest_HistoryMPController();    
+                    return new InvRequest_HistoryMPController();   
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMpGeneral.fxml":
+                    return new InvRequest_HistoryMPGeneralController();    
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMpGeneral.fxml":
+                    return new InvRequest_Roq_HistoryMPGeneralController();    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMc.fxml":
                     return new InvRequest_HistoryMcController();    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMcGeneral.fxml":
@@ -2894,10 +2898,7 @@ public class DashboardController implements Initializable {
                     return new InvRequest_UpdateAppliancesGeneralController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryAppliancesGeneral.fxml":
                     return new InvRequest_HistoryAppliancesGeneralController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMpGeneral.fxml":
-                    return new InvRequest_HistoryMPGeneralController();
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMpGeneral.fxml":
-                    return new InvRequest_Roq_HistoryMPGeneralController();
+                
                 /* PURCHASING/PURCHASING/ */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/SampleForm1.fxml":
 //                    return new SampleForm1Controller();

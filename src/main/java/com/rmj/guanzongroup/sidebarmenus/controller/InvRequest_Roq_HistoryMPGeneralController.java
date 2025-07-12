@@ -63,7 +63,7 @@ import org.json.simple.JSONObject;
  * @author User
  */
 public class InvRequest_Roq_HistoryMPGeneralController implements Initializable, ScreenInterface{
-    @FXML
+    
     private String psFormName = "Inv Stock Request ROQ History MP General";
     unloadForm poUnload = new unloadForm();
     @FXML
