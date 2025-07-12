@@ -252,6 +252,7 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
             if (JFXUtil.isJSONSuccess(pnJSON)) {
                 loadTableJEDetail();
             } else {
+                lblJEStatus.setText("UNKNOWN");
                 JEdetails_data.clear();
             }
         } catch (SQLException ex) {

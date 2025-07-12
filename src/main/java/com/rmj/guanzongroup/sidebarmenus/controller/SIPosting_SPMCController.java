@@ -266,6 +266,7 @@ public class SIPosting_SPMCController implements Initializable, ScreenInterface 
             if (JFXUtil.isJSONSuccess(pnJSON)) {
                 loadTableJEDetail();
             } else {
+                lblJEStatus.setText("UNKNOWN");
                 JEdetails_data.clear();
             }
         } catch (SQLException ex) {

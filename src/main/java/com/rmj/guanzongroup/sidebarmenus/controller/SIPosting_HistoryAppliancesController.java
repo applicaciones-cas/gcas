@@ -249,6 +249,7 @@ public class SIPosting_HistoryAppliancesController implements Initializable, Scr
             if (JFXUtil.isJSONSuccess(pnJSON)) {
                 loadTableJEDetail();
             } else {
+                lblJEStatus.setText("UNKNOWN");
                 JEdetails_data.clear();
             }
         } catch (SQLException ex) {

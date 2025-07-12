@@ -266,6 +266,7 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
             if (JFXUtil.isJSONSuccess(pnJSON)) {
                 loadTableJEDetail();
             } else {
+                lblJEStatus.setText("UNKNOWN");
                 JEdetails_data.clear();
             }
         } catch (SQLException ex) {

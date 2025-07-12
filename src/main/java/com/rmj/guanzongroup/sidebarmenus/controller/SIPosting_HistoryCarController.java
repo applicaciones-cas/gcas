@@ -251,6 +251,7 @@ public class SIPosting_HistoryCarController implements Initializable, ScreenInte
             if (JFXUtil.isJSONSuccess(pnJSON)) {
                 loadTableJEDetail();
             } else {
+                lblJEStatus.setText("UNKNOWN");
                 JEdetails_data.clear();
             }
         } catch (SQLException ex) {

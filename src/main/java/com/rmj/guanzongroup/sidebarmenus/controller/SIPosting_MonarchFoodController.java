@@ -269,6 +269,7 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
             if (JFXUtil.isJSONSuccess(pnJSON)) {
                 loadTableJEDetail();
             } else {
+                lblJEStatus.setText("UNKNOWN");
                 JEdetails_data.clear();
             }
         } catch (SQLException ex) {
