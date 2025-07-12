@@ -271,7 +271,7 @@ public class InvRequest_EntryMPGeneralController implements Initializable, Scree
                                     clearDetailFields();
                                     break;
                                 }
-                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID
+                                    poJSON = invRequestController.StockRequest().SearchBarcodeGeneral(lsValue, true, pnTblInvDetailRow,brandID
                                 );
                                 
                                 if ("error".equals(poJSON.get("result"))) {
@@ -306,7 +306,7 @@ public class InvRequest_EntryMPGeneralController implements Initializable, Scree
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,brandID
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescriptionGeneral(lsValue, false, pnTblInvDetailRow,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -800,7 +800,7 @@ public class InvRequest_EntryMPGeneralController implements Initializable, Scree
                                     break;
                                 }
                                 
-                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID
+                                    loJSON = invRequestController.StockRequest().SearchBarcodeGeneral(lsValue, true, pnTblInvDetailRow,brandID
                                 );
                                 
                                 if ("error".equals(loJSON.get("result"))) {
@@ -834,7 +834,7 @@ public class InvRequest_EntryMPGeneralController implements Initializable, Scree
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,brandID
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescriptionGeneral(lsValue, false, pnTblInvDetailRow,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
