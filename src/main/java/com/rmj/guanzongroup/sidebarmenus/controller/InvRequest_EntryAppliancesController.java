@@ -283,27 +283,23 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
 
                                    
                                        
-                                        double currentQty = 0;
-                                        try {
-                                            currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                        } catch (Exception e) {
-                                            currentQty = 0;
-                                        }
+                                       if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
 
 
-                                        double newQty = currentQty + 1;
-
-
-                                        tfOrderQuantity.setText(String.valueOf(newQty));
-                                        invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                    
-
-
-                                    loadTableInvDetail();
-                                    loadDetail();
-                                    initDetailFocus();
-                                    //selectTheExistedDetailFromStockRequest();
-                                    break;
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                         case "tfBarCode":
                                 if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
@@ -324,21 +320,23 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                                     }
                                 }
                                 
-                                           currentQty = 0;
-                                          try {
-                                              currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                          } catch (Exception e) {
-                                              currentQty = 0;
-                                          }
-                                           newQty = currentQty + 1;
-                                          tfOrderQuantity.setText(String.valueOf(newQty));
-                                          invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                      
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
-                               
-                                break;
+                                          if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
+
+
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                         
                          case "tfDescription":
                                 if (pnTblInvDetailRow < 0) {
@@ -358,25 +356,23 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                                     }
                                 }
                                
-                                          // Get current quantity
-                                           currentQty = 0;
-                                          try {
-                                              currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                          } catch (Exception e) {
-                                              currentQty = 0;
-                                          }
+                                          if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
 
 
-                                           newQty = currentQty + 1;
-
-
-                                          tfOrderQuantity.setText(String.valueOf(newQty));
-                                          invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                      
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
-                                break;
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                          }
                     break;
                 case "btnVoid":
@@ -856,22 +852,23 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                                         break;
                                     }
                                 }
-                                double currentQty = 0;
-                                          try {
-                                              currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                          } catch (Exception e) {
-                                              currentQty = 0;
-                                          }
-                                          double newQty = currentQty + 1;
-                                          tfOrderQuantity.setText(String.valueOf(newQty));
-                                          invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
-                                //selectTheExistedDetailFromStockRequest();
-                                break;
+                                 if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
 
+
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                         case "tfDescription":
                            if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
@@ -889,19 +886,23 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                                         break;
                                     }
                                 }
-                                    currentQty = 0;
-                                          try {
-                                              currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                          } catch (Exception e) {
-                                              currentQty = 0;
-                                          }
-                                           newQty = currentQty + 1;
-                                          tfOrderQuantity.setText(String.valueOf(newQty));
-                                          invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
-                                break;
+                                    if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
+
+
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                          case "tfModel":
                                      if (pnTblInvDetailRow < 0) {
                                         ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
@@ -922,27 +923,23 @@ public class InvRequest_EntryAppliancesController implements Initializable, Scre
                                     }
 
                                     
-                                         currentQty = 0;
-                                        try {
-                                            currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                        } catch (Exception e) {
-                                            currentQty = 0;
-                                        }
+                                         if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
 
 
-                                         newQty = currentQty + 1;
-
-
-                                        tfOrderQuantity.setText(String.valueOf(newQty));
-                                        invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                    
-
-
-                                    loadTableInvDetail();
-                                    loadDetail();
-                                    initDetailFocus();
-                                    //selectTheExistedDetailFromStockRequest();
-                                    break;
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                         case "tfBrand":
                            if (pnTblInvDetailRow < 0) {
                                       ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
