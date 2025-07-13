@@ -209,7 +209,7 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    loadTableList();
                 }
 
             }
@@ -485,6 +485,7 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                 System.exit(1);
             }
         }
+
         private void handleButtonAction(ActionEvent event) {
             try{
             JSONObject loJSON = new JSONObject();
@@ -858,9 +859,9 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                             
                         detailsList.add(new ModelInvOrderDetail(
                                 detail.Inventory().Brand().getDescription(), 
-                                detail.Inventory().Model().getDescription(),
                                 detail.Inventory().getBarCode(),
                                 detail.Inventory().getDescription(),
+                                detail.Inventory().Model().getDescription(),
                                 detail.Inventory().Variant().getDescription(),
                                 detail.Inventory().Color().getDescription(),
                                 detail.Inventory().InventoryType().getDescription(),
@@ -901,7 +902,6 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
 
         new Thread(task).start();
     }
-     
         final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTextFieldID = loTextField.getId();
@@ -920,7 +920,7 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                     break;
                 case "tfSearchReferenceNo":
                      psReferID = tfSearchReferenceNo.getText();
-                    //loadTableList();
+                    loadTableList();
                     break;
             }
         } else {
@@ -946,23 +946,16 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
+                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel, tfBarCode, tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             
             
         } else {
+            // Disable everything if not in OPEN/CONFIRMED status
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
-
-        // Additional condition for when just retrieving (not editing)
-        if (fnEditMode == EditMode.UNKNOWN) {
-            CustomCommonUtil.setDisable(true,
-                    tfInvType, tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel,
-                     tfQOH, tfROQ, tfClassification, tfBarCode, tfDescription, tfOrderQuantity);
-        }
+        
     }
-
-
 
         private void initTextAreaFocus() {
             taRemarks.focusedProperty().addListener(txtArea_Focus);
@@ -1157,9 +1150,9 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
       private void initTableInvDetail() {
 
             tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
             tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
             tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
             tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));

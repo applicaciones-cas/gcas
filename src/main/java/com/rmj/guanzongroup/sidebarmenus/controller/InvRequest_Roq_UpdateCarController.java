@@ -73,7 +73,7 @@ public class InvRequest_Roq_UpdateCarController implements Initializable, Screen
     @FXML
     private String psFormName = "Inv Stock Request ROQ Update Car";
     
-    @FXML
+     @FXML
     private AnchorPane AnchorMain, AnchorDetailMaster;
     unloadForm poUnload = new unloadForm();
     private InvWarehouseControllers invRequestController;
@@ -190,6 +190,7 @@ public class InvRequest_Roq_UpdateCarController implements Initializable, Screen
             initTableInvDetail();
             tableListInformation.setOnMouseClicked(this::tableListInformation_Clicked);
             tblViewOrderDetails.setOnMouseClicked(this::tblViewOrderDetails_Clicked);
+            
             initButtons(EditMode.UNKNOWN);
             initFields(EditMode.UNKNOWN);
 
@@ -499,11 +500,16 @@ public class InvRequest_Roq_UpdateCarController implements Initializable, Screen
                     }
                     break;
                 case "btnRetrieve":
+                    
                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                     invRequestController.StockRequest().setTransactionStatus("102");
                     loadTableList();
+                    
+                    pnEditMode = EditMode.UNKNOWN;
+                    initFields(pnEditMode); // This will disable all detail fields
+                    initButtons(pnEditMode);
                     
                     break;
                 case "btnUpdate":
@@ -880,13 +886,14 @@ public class InvRequest_Roq_UpdateCarController implements Initializable, Screen
         if (lsValue == null) {
             return;
         }
+        if ("tfReferenceNo".equals(lsTextFieldID)) {
+        return;
+    }
         poJSON = new JSONObject();
         if (!nv) {
             /*Lost Focus*/
             switch (lsTextFieldID) {
-                case "tfReferenceNo":
-                    invRequestController.StockRequest().Master().setReferenceNo(lsValue);
-                    break;
+                
                 case "tfOrderQuantity":
                     break;
                 case "tfSearchReferenceNo":
@@ -1240,7 +1247,7 @@ public class InvRequest_Roq_UpdateCarController implements Initializable, Screen
         }
 
     private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(tfReferenceNo, tfOrderQuantity, tfSearchReferenceNo);
+        List<TextField> loTxtField = Arrays.asList(tfReferenceNo,tfOrderQuantity, tfSearchReferenceNo);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
         tfBrand.setOnMouseClicked(e -> activeField = tfBrand);
         tfModel.setOnMouseClicked(e -> activeField = tfModel);

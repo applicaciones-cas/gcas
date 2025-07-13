@@ -536,6 +536,9 @@ public class InvRequest_UpdateAppliancesController implements Initializable, Scr
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
                             loadTableList();
+                            pnEditMode = EditMode.UNKNOWN;
+                            initFields(pnEditMode); // This will disable all detail fields
+                            initButtons(pnEditMode);
                             break;
                      case "btnUpdate":
                         poJSON = invRequestController.StockRequest().UpdateTransaction();

@@ -964,34 +964,7 @@ public class InvRequest_UpdateMonarchFoodController implements Initializable, Sc
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
         
-        // Enable/disable master fields based on edit mode
-        CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-        CustomCommonUtil.setDisable(!lbNew, dpTransactionDate, taRemarks, tfReferenceNo);
-
-        // Always disable these read-only fields
-        CustomCommonUtil.setDisable(true,
-            tfInvType, tfReservationQTY, tfQOH, tfROQ, 
-            tfClassification, tfBarCode, tfDescription);
-            
-        // Enable brand only in add new mode
-        CustomCommonUtil.setDisable(!lbNew, tfBrand);
-        
-        // Enable order quantity in edit modes
-        CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
-            
-    } else {
-        // Disable everything if not in OPEN/CONFIRMED status
-        CustomCommonUtil.setDisable(true, AnchorDetailMaster);
     }
-    
-    // Special case for retrieve - disable all detail fields
-    if (fnEditMode == EditMode.UNKNOWN) {
-        CustomCommonUtil.setDisable(true,
-            tfBrand, tfOrderQuantity, tfInvType, 
-            tfReservationQTY, tfQOH, tfROQ, tfClassification,
-            tfBarCode, tfDescription);
-    }
-}
 
 
         private void initTextAreaFocus() {

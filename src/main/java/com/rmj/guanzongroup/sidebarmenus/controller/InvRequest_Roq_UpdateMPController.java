@@ -74,7 +74,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request ROQ Update MP";
-    @FXML
+     @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();
         private InvWarehouseControllers invRequestController;
@@ -210,7 +210,7 @@ public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenI
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    loadTableList();
                 }
 
             }
@@ -486,6 +486,7 @@ public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenI
                 System.exit(1);
             }
         }
+
         private void handleButtonAction(ActionEvent event) {
             try{
             JSONObject loJSON = new JSONObject();
@@ -520,6 +521,9 @@ public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenI
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
                             loadTableList();
+                            pnEditMode = EditMode.UNKNOWN;
+                            initFields(pnEditMode); // This will disable all detail fields
+                            initButtons(pnEditMode);
                             break;
                      case "btnUpdate":
                         poJSON = invRequestController.StockRequest().UpdateTransaction();
@@ -856,9 +860,9 @@ public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenI
                             
                         detailsList.add(new ModelInvOrderDetail(
                                 detail.Inventory().Brand().getDescription(), 
-                                detail.Inventory().Model().getDescription(),
                                 detail.Inventory().getBarCode(),
                                 detail.Inventory().getDescription(),
+                                detail.Inventory().Model().getDescription(),
                                 detail.Inventory().Variant().getDescription(),
                                 detail.Inventory().Color().getDescription(),
                                 detail.Inventory().InventoryType().getDescription(),
@@ -899,7 +903,6 @@ public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenI
 
         new Thread(task).start();
     }
-     
         final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTextFieldID = loTextField.getId();
@@ -918,7 +921,7 @@ public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenI
                     break;
                 case "tfSearchReferenceNo":
                      psReferID = tfSearchReferenceNo.getText();
-                    //loadTableList();
+                    loadTableList();
                     break;
             }
         } else {
@@ -944,17 +947,16 @@ public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenI
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel, tfDescription, tfBarCode);
+                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel, tfBarCode, tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             
             
         } else {
+            // Disable everything if not in OPEN/CONFIRMED status
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
         
     }
-
-
 
         private void initTextAreaFocus() {
             taRemarks.focusedProperty().addListener(txtArea_Focus);
@@ -1149,9 +1151,9 @@ public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenI
       private void initTableInvDetail() {
 
             tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
             tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
             tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
             tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
