@@ -521,26 +521,23 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                                     }
                                 }
                                 
-                                          double currentQty = 0;
-                                          try {
-                                              currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                          } catch (Exception e) {
-                                              currentQty = 0;
-                                          }
+                                        if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
 
 
-                                          double newQty = currentQty + 1;
-
-
-                                          tfOrderQuantity.setText(String.valueOf(newQty));
-                                          invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                      
-                                
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
-                                //selectTheExistedDetailFromStockRequest();
-                                break;
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
 
                         case "tfDescription":
                            if (pnTblInvDetailRow < 0) {
@@ -559,24 +556,23 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                                         break;
                                     }
                                 }
-                                currentQty = 0;
-                                          try {
-                                              currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                          } catch (Exception e) {
-                                              currentQty = 0;
-                                          }
+                                if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
 
 
-                                           newQty = currentQty + 1;
-
-
-                                          tfOrderQuantity.setText(String.valueOf(newQty));
-                                          invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                      
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
-                                break;
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                                 
                                 default:
                                     System.out.println("Unknown TextField");
@@ -964,27 +960,23 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                                     }
                                 }
                                 
-                                          double currentQty = 0;
-                                          try {
-                                              currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                          } catch (Exception e) {
-                                              currentQty = 0;
-                                          }
+                                          if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
 
 
-                                          double newQty = currentQty + 1;
-
-                                          System.out.println(newQty);
-                                          tfOrderQuantity.setText(String.valueOf(newQty));
-                                          invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                      
-                                
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
-                                //selectTheExistedDetailFromStockRequest();
-                                break;
-
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                         case "tfDescription":
                            if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
@@ -1002,24 +994,23 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                                         break;
                                     }
                                 }
-                                        currentQty = 0;
-                                          try {
-                                              currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                          } catch (Exception e) {
-                                              currentQty = 0;
-                                          }
+                                       if ("success".equals(poJSON.get("result"))) {
+                                double currentQty = 0.0;
+                                try {
+                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                } catch (Exception e) {
+                                    currentQty = 0.0;
+                                }
+                                double newQty = currentQty + 1;
+                                tfOrderQuantity.setText(String.valueOf(newQty));
+                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                            }
 
 
-                                           newQty = currentQty + 1;
-
-                                          System.out.println(newQty);
-                                          tfOrderQuantity.setText(String.valueOf(newQty));
-                                          invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                                      
-                                loadTableInvDetail();
-                                loadDetail();
-                                initDetailFocus();
-                                break;
+                            loadTableInvDetail();
+                            loadDetail();
+                            initDetailFocus();
+                            break;
                         
                     }
                     
