@@ -629,12 +629,7 @@ public class InvRequest_UpdateMPGeneralController implements Initializable, Scre
 
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction now?")) {
                                 try {
-                                    JSONObject approvalJSON = ShowDialogFX.getUserApproval(poApp);
-                                    if (!"success".equals((String) approvalJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) approvalJSON.get("message"), psFormName, null);
-                                        return;
-                                    }
-
+                                    
                                     loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed");
                                     if (!"success".equals((String) loJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
