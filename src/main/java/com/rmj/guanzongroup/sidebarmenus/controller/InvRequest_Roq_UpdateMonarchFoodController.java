@@ -116,7 +116,7 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
     private TableView<ModelInvTableListInformation> tableListInformation;
 
     @FXML
-    private Button btnClose, btnSave, btnCancel, btnBrowse, btnUpdate, btnRetrieve;
+    private Button btnClose, btnNew,btnSave, btnCancel, btnBrowse, btnUpdate, btnRetrieve;
 
     @FXML
     private TableColumn<ModelInvOrderDetail, String> tblBrandDetail,
@@ -494,7 +494,35 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
             JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
+                case "btnNew":
+                    clearAllTables();
+                    clearDetailFields();
+                    clearMasterFields();
+                    invOrderDetail_data.clear();
+                    loJSON = invRequestController.StockRequest().NewTransaction();
+                    if ("success".equals((String) loJSON.get("result"))) {
+                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                        invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                        invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
+                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
+                        
+                        loadMaster();
+                        pnTblInvDetailRow = 0;
+                        pnEditMode = invRequestController.StockRequest().getEditMode();
+                        loadTableInvDetail();
+                        loadTableInvDetailAndSelectedRow();
+                      Platform.runLater(() -> {
+                        tblViewOrderDetails.getSelectionModel().select(0);
+                        tfOrderQuantity.requestFocus();
+                    });
 
+                        
+                        
+                       
+                    } else {
+                        ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
+                    }
+                    break;
                 case "btnBrowse":
                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
@@ -521,6 +549,9 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                     invRequestController.StockRequest().setTransactionStatus("102");
                     loadTableList();
+                    pnEditMode = EditMode.UNKNOWN;
+                    initFields(pnEditMode); // This will disable all detail fields
+                    initButtons(pnEditMode);
                     break;
                 case "btnUpdate":
                     poJSON = invRequestController.StockRequest().UpdateTransaction();
@@ -659,7 +690,27 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
             System.exit(1);
         }
     }
-
+    private void clearAllTables() {
+   
+    invOrderDetail_data.clear();
+    tableListInformation_data.clear();
+    
+    
+    Platform.runLater(() -> {
+        tblViewOrderDetails.getItems().clear();
+        tableListInformation.getItems().clear();
+        
+        tblViewOrderDetails.getSelectionModel().clearSelection();
+        tableListInformation.getSelectionModel().clearSelection();
+        
+        
+        tblViewOrderDetails.setPlaceholder(new Label("NO RECORD TO LOAD"));
+        tableListInformation.setPlaceholder(new Label("NO RECORD TO LOAD"));
+      
+        tblViewOrderDetails.refresh();
+        tableListInformation.refresh();
+    });
+}
     private void loadTableList() {
         btnRetrieve.setDisable(true);
         ProgressIndicator progressIndicator = new ProgressIndicator();
@@ -853,22 +904,40 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
     // for disabling textfield
     
     private void initFields(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
-        /* Master Fields*/
-        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)) {
-            CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+        boolean lbShow = (fnEditMode == EditMode.UPDATE || fnEditMode == EditMode.ADDNEW);
+        boolean lbNew = (fnEditMode == EditMode.ADDNEW);
 
-           
-            CustomCommonUtil.setDisable(true, tfBrand,
-                    tfInvType,tfReservationQTY,tfQOH,tfROQ,tfClassification, tfBarCode, tfDescription);
-           CustomCommonUtil.setDisable(!lbShow,tfOrderQuantity);
-            
+        /* Master Fields*/
+        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)
+                || invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
+
+            // Enable/disable master fields based on edit mode
+            CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
+            CustomCommonUtil.setDisable(!lbNew, dpTransactionDate, taRemarks, tfReferenceNo);
+
+            // Always disable these read-only fields
+            CustomCommonUtil.setDisable(true,
+                    tfInvType, tfReservationQTY, tfQOH, tfROQ,
+                    tfClassification, tfBarCode, tfDescription);
+
+            // Enable brand only in add new mode
+            CustomCommonUtil.setDisable(!lbNew, tfBrand);
+
+            // Enable order quantity in edit modes
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+
         } else {
+            // Disable everything if not in OPEN/CONFIRMED status
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
-        
+
+        // Special case for retrieve - disable all detail fields
+        if (fnEditMode == EditMode.UNKNOWN) {
+            CustomCommonUtil.setDisable(true,
+                    tfBrand, tfOrderQuantity, tfInvType,
+                    tfReservationQTY, tfQOH, tfROQ, tfClassification,
+                    tfBarCode, tfDescription);
+        }
     }
     private void initTextAreaFocus() {
         taRemarks.focusedProperty().addListener(txtArea_Focus);
@@ -1133,10 +1202,11 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
     }
 
     private void initButtons(int fnEditMode) {
-        boolean lbShow = (pnEditMode == EditMode.UPDATE);
+         boolean lbShow = (fnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
+         CustomCommonUtil.setVisible(!lbShow ,btnClose, btnNew);
+         CustomCommonUtil.setManaged(!lbShow ,btnClose, btnNew);
 
-        btnClose.setVisible(!lbShow);
-        btnClose.setManaged(!lbShow);
+    
 
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
@@ -1144,21 +1214,21 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
         CustomCommonUtil.setVisible(false, btnUpdate);
         CustomCommonUtil.setManaged(false, btnUpdate);
 
+        
         if (fnEditMode == EditMode.READY) {
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
-                    CustomCommonUtil.setVisible(true, btnUpdate);
-                    CustomCommonUtil.setManaged(true, btnUpdate);
+                    CustomCommonUtil.setVisible(true,  btnUpdate);
+                    CustomCommonUtil.setManaged(true,  btnUpdate);
                     break;
                 case StockRequestStatus.CONFIRMED:
-                    CustomCommonUtil.setVisible(true, btnUpdate);
+                    CustomCommonUtil.setVisible(true,btnUpdate);
                     CustomCommonUtil.setManaged(true, btnUpdate);
                     break;
-
+               
             }
         }
     }
-
     private void initDetailFocus() {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 

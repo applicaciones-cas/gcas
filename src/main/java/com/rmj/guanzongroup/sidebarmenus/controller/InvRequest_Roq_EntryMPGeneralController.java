@@ -577,11 +577,7 @@ public class InvRequest_Roq_EntryMPGeneralController implements Initializable, S
                                             return;
                                         }
 
-                                        loJSON = ShowDialogFX.getUserApproval(poApp);
-                                        if (!"success".equals((String) loJSON.get("result"))) {
-                                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                            return;
-                                        }
+                                        
 
                                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                     } catch (ParseException ex) {
@@ -621,7 +617,6 @@ public class InvRequest_Roq_EntryMPGeneralController implements Initializable, S
                         }
                         break;
                 case "btnNew":
-                    clearAllTables();
                     clearDetailFields();
                     clearMasterFields();
                     invOrderDetail_data.clear();
@@ -630,8 +625,8 @@ public class InvRequest_Roq_EntryMPGeneralController implements Initializable, S
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
-                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                        invRequestController.StockRequest().getROQItems();
+                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
+                        
                         loadMaster();
                         pnTblInvDetailRow = 0;
                         pnEditMode = invRequestController.StockRequest().getEditMode();

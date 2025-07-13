@@ -231,6 +231,10 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
                         pnEditMode = invRequestController.StockRequest().getEditMode();
                         loadTableInvDetail();
                         loadTableInvDetailAndSelectedRow();
+                        Platform.runLater(() -> {
+                            tblViewOrderDetails.getSelectionModel().select(0);
+                            tfOrderQuantity.requestFocus();
+                        });
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -458,11 +462,7 @@ public class InvRequest_Roq_EntryAppliancesController implements Initializable, 
                                             return;
                                         }
 
-                                        loJSON = ShowDialogFX.getUserApproval(poApp);
-                                        if (!"success".equals((String) loJSON.get("result"))) {
-                                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                            return;
-                                        }
+                                        
 
                                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                     } catch (ParseException ex) {

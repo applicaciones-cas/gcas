@@ -599,12 +599,7 @@ public class InvRequest_ConfirmationCarController implements Initializable, Scre
                         return;
                     }
 
-                    if (pnEditMode == EditMode.UPDATE && (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED))) {
-                        if (!"success".equals((loJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            return;
-                        }
-                    }
+                    
                     if (pnEditMode == EditMode.UPDATE) {
                         invRequestController.StockRequest().Master().setModifiedDate(poApp.getServerDate());
                         invRequestController.StockRequest().Master().setModifyingId(poApp.getUserID());

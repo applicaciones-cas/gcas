@@ -458,11 +458,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                                             return;
                                         }
 
-                                        loJSON = ShowDialogFX.getUserApproval(poApp);
-                                        if (!"success".equals((String) loJSON.get("result"))) {
-                                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                            return;
-                                        }
+                                        
 
                                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                     } catch (ParseException ex) {

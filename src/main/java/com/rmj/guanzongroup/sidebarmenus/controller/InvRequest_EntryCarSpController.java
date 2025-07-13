@@ -457,11 +457,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                                             return;
                                         }
 
-                                        loJSON = ShowDialogFX.getUserApproval(poApp);
-                                        if (!"success".equals((String) loJSON.get("result"))) {
-                                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                            return;
-                                        }
+                                        
 
                                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                     } catch (ParseException ex) {

@@ -608,12 +608,7 @@ public class InvRequest_ConfirmationAppliancesController implements Initializabl
                         return;
                     }
 
-                    if (pnEditMode == EditMode.UPDATE && (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED))) {
-                        if (!"success".equals((loJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
-                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                            return;
-                        }
-                    }
+                    
                     if (pnEditMode == EditMode.UPDATE) {
                         invRequestController.StockRequest().Master().setModifiedDate(poApp.getServerDate());
                         invRequestController.StockRequest().Master().setModifyingId(poApp.getUserID());

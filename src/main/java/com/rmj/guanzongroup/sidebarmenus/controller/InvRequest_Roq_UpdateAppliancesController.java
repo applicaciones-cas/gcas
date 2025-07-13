@@ -533,6 +533,9 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
                             loadTableList();
+                            pnEditMode = EditMode.UNKNOWN;
+                            initFields(pnEditMode); // This will disable all detail fields
+                            initButtons(pnEditMode);
                             break;
                         case "btnUpdate":
                             poJSON = invRequestController.StockRequest().UpdateTransaction();
@@ -713,7 +716,7 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                         loadTableInvDetailAndSelectedRow();
                       Platform.runLater(() -> {
                         tblViewOrderDetails.getSelectionModel().select(0);
-                        tfBrand.requestFocus();
+                        tfOrderQuantity.requestFocus();
                     });
 
                         
@@ -933,23 +936,30 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
     };
 
 
-         private void initFields(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
+        private void initFields(int fnEditMode) {
+        boolean lbShow = (fnEditMode == EditMode.UPDATE);
+
         /* Master Fields*/
         if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
             CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
+                    dpTransactionDate, taRemarks, tfReferenceNo);
 
-           
-            CustomCommonUtil.setDisable(true, tfBrand, tfModel,
-                    tfInvType,tfVariant,tfColor,tfReservationQTY,tfQOH,tfROQ,tfClassification, tfBarCode, tfDescription);
-           CustomCommonUtil.setDisable(!lbShow,tfOrderQuantity);
-            
+            // Always disable these fields unless in edit mode
+            CustomCommonUtil.setDisable(true,
+                    tfInvType, tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel,
+                     tfQOH, tfROQ, tfClassification, tfBarCode, tfDescription);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
         } else {
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
-        
+
+        // Additional condition for when just retrieving (not editing)
+        if (fnEditMode == EditMode.UNKNOWN) {
+            CustomCommonUtil.setDisable(true,
+                    tfInvType, tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel,
+                     tfQOH, tfROQ, tfClassification, tfBarCode, tfDescription, tfOrderQuantity);
+        }
     }
 
         private void initTextAreaFocus() {

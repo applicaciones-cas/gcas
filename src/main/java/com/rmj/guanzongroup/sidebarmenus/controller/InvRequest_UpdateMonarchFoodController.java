@@ -522,6 +522,9 @@ public class InvRequest_UpdateMonarchFoodController implements Initializable, Sc
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
                             loadTableList();
+                            pnEditMode = EditMode.UNKNOWN;
+                            initFields(pnEditMode); // This will disable all detail fields
+                            initButtons(pnEditMode);
                             break;
                         case "btnUpdate":
                             poJSON = invRequestController.StockRequest().UpdateTransaction();
@@ -857,24 +860,41 @@ public class InvRequest_UpdateMonarchFoodController implements Initializable, Sc
 
             // for disabling textfield
         private void initFields(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.UPDATE);
-        /* Master Fields*/
-        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)) {
-            CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks,tfReferenceNo);
-
-           
-            CustomCommonUtil.setDisable(true,
-                    tfInvType,tfReservationQTY,tfBrand
-                    ,tfQOH,tfROQ,tfClassification,tfBarCode,tfDescription);
-            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
-            
-        } else {
-            CustomCommonUtil.setDisable(true, AnchorDetailMaster);
-        }
+    boolean lbShow = (fnEditMode == EditMode.UPDATE || fnEditMode == EditMode.ADDNEW);
+    boolean lbNew = (fnEditMode == EditMode.ADDNEW);
+    
+    /* Master Fields*/
+    if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN) ||
+        invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
         
+        // Enable/disable master fields based on edit mode
+        CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
+        CustomCommonUtil.setDisable(!lbNew, dpTransactionDate, taRemarks, tfReferenceNo);
+
+        // Always disable these read-only fields
+        CustomCommonUtil.setDisable(true,
+            tfInvType, tfReservationQTY, tfQOH, tfROQ, 
+            tfClassification, tfBarCode, tfDescription);
+            
+        // Enable brand only in add new mode
+        CustomCommonUtil.setDisable(!lbNew, tfBrand);
+        
+        // Enable order quantity in edit modes
+        CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            
+    } else {
+        // Disable everything if not in OPEN/CONFIRMED status
+        CustomCommonUtil.setDisable(true, AnchorDetailMaster);
     }
+    
+    // Special case for retrieve - disable all detail fields
+    if (fnEditMode == EditMode.UNKNOWN) {
+        CustomCommonUtil.setDisable(true,
+            tfBrand, tfOrderQuantity, tfInvType, 
+            tfReservationQTY, tfQOH, tfROQ, tfClassification,
+            tfBarCode, tfDescription);
+    }
+}
 
         private void initTextAreaFocus() {
             taRemarks.focusedProperty().addListener(txtArea_Focus);

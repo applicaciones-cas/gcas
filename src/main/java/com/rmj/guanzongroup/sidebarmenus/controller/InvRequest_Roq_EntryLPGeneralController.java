@@ -574,11 +574,7 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                                             return;
                                         }
 
-                                        loJSON = ShowDialogFX.getUserApproval(poApp);
-                                        if (!"success".equals((String) loJSON.get("result"))) {
-                                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                            return;
-                                        }
+                                        
 
                                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                     } catch (ParseException ex) {
@@ -617,32 +613,7 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         }
                         break;
-                case "btnNew":
-                    clearAllTables();
-                    clearDetailFields();
-                    clearMasterFields();
-                    invOrderDetail_data.clear();
-                    loJSON = invRequestController.StockRequest().NewTransaction();
-                    if ("success".equals((String) loJSON.get("result"))) {
-                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
-                        invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
-                        invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
-                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                        invRequestController.StockRequest().getROQItems();
-                        loadMaster();
-                        pnTblInvDetailRow = 0;
-                        pnEditMode = invRequestController.StockRequest().getEditMode();
-                        loadTableInvDetail();
-                        loadTableInvDetailAndSelectedRow();
-                        Platform.runLater(() -> {
-                            tblViewOrderDetails.getSelectionModel().select(0);
-                            tfOrderQuantity.requestFocus();
-                        });
-                    } else {
-                        ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
-                    }
-                    break;
-
+                
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this form?", psFormName, null)) {
                         if (poUnload != null) {
