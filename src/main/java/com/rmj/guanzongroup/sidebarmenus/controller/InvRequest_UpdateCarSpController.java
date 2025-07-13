@@ -818,11 +818,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
 
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction now?")) {
                                 try {
-                                    JSONObject approvalJSON = ShowDialogFX.getUserApproval(poApp);
-                                    if (!"success".equals((String) approvalJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) approvalJSON.get("message"), psFormName, null);
-                                        return;
-                                    }
+                                    
 
                                     loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed");
                                     if (!"success".equals((String) loJSON.get("result"))) {

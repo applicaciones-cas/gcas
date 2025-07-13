@@ -761,7 +761,7 @@ public class InvRequest_UpdateMcSpController implements Initializable, ScreenInt
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                try {
+                try {   
                     tableListInformation_data.clear();
                     JSONObject poJSON = invRequestController.StockRequest().getTableListInformation(psTransNo, psReferID);
                     if ("success".equals(poJSON.get("result"))) {

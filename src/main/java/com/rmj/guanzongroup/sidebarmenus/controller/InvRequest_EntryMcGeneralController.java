@@ -457,8 +457,7 @@ public class InvRequest_EntryMcGeneralController implements Initializable, Scree
                                             return;
                                         }
 
-                                        
-
+                                       
                                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                     } catch (ParseException ex) {
                                         Logger.getLogger(InvRequest_Roq_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
