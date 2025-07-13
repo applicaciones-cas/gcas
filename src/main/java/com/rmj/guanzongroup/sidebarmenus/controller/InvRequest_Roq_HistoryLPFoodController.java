@@ -67,7 +67,7 @@ import org.json.simple.JSONObject;
 public class InvRequest_Roq_HistoryLPFoodController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request ROQ History LP Food";
-   unloadForm poUnload = new unloadForm();
+    unloadForm poUnload = new unloadForm();
     @FXML
     private AnchorPane AnchorMain;
     private GRiderCAS poApp;
@@ -566,7 +566,6 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
                                 String.valueOf(detail.getQuantity()),
                                 "",
                                 ""
-
                         ));
                     }
 
@@ -797,7 +796,7 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
                 tfOrderQuantity);
         CustomCommonUtil.setDisable(true,
                 tfInvType, tfVariant, tfColor, tfReservationQTY,
-                tfQOH, tfROQ, tfClassification, tfModel, tfBrand);
+                tfQOH, tfROQ, tfClassification, tfModel, tfBrand,tfDescription, tfBarCode);
         if (!tfReferenceNo.getText().isEmpty()) {
             dpTransactionDate.setDisable(!lbShow);
         }
@@ -823,7 +822,6 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
                 header.setReordering(false);
             });
         });
-        
     }
 
      private void initTableInvDetail() {
@@ -831,8 +829,8 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
             tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
             tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
             tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblMeasureDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblMeasureDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
             tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
             tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
             tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
@@ -847,7 +845,8 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
                     });
                 }
             });
-        }
+     }}
+        
     
-}
+    
 

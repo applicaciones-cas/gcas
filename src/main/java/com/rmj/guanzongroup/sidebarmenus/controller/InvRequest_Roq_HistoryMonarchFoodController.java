@@ -67,7 +67,6 @@ import org.json.simple.JSONObject;
 public class InvRequest_Roq_HistoryMonarchFoodController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request ROQ History Monarch Food";
-    
      unloadForm poUnload = new unloadForm();
     @FXML
     private AnchorPane AnchorMain;
@@ -567,7 +566,6 @@ public class InvRequest_Roq_HistoryMonarchFoodController implements Initializabl
                                 String.valueOf(detail.getQuantity()),
                                 "",
                                 ""
-
                         ));
                     }
 
@@ -798,7 +796,7 @@ public class InvRequest_Roq_HistoryMonarchFoodController implements Initializabl
                 tfOrderQuantity);
         CustomCommonUtil.setDisable(true,
                 tfInvType, tfVariant, tfColor, tfReservationQTY,
-                tfQOH, tfROQ, tfClassification, tfModel, tfBrand);
+                tfQOH, tfROQ, tfClassification, tfModel, tfBrand,tfDescription, tfBarCode);
         if (!tfReferenceNo.getText().isEmpty()) {
             dpTransactionDate.setDisable(!lbShow);
         }
@@ -824,7 +822,6 @@ public class InvRequest_Roq_HistoryMonarchFoodController implements Initializabl
                 header.setReordering(false);
             });
         });
-       
     }
 
      private void initTableInvDetail() {
@@ -848,6 +845,8 @@ public class InvRequest_Roq_HistoryMonarchFoodController implements Initializabl
                     });
                 }
             });
-        }
+     }}
+        
     
-}
+    
+

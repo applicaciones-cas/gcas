@@ -69,7 +69,7 @@ public class InvRequest_Roq_HistoryCarSpController implements Initializable, Scr
 
     @FXML
     private String psFormName = "Inv Stock Request ROQ History Car Sp";
-    unloadForm poUnload = new unloadForm();
+   unloadForm poUnload = new unloadForm();
     @FXML
     private AnchorPane AnchorMain;
     private GRiderCAS poApp;
@@ -795,7 +795,7 @@ public class InvRequest_Roq_HistoryCarSpController implements Initializable, Scr
                 tfOrderQuantity);
         CustomCommonUtil.setDisable(true,
                 tfInvType, tfVariant, tfColor, tfReservationQTY,
-                tfQOH, tfROQ, tfClassification, tfModel, tfBrand);
+                tfQOH, tfROQ, tfClassification, tfModel, tfBrand, tfDescription, tfBarCode);
         if (!tfReferenceNo.getText().isEmpty()) {
             dpTransactionDate.setDisable(!lbShow);
         }
@@ -821,7 +821,6 @@ public class InvRequest_Roq_HistoryCarSpController implements Initializable, Scr
                 header.setReordering(false);
             });
         });
-        
     }
 
     private void initTableInvDetail() {
@@ -847,8 +846,6 @@ public class InvRequest_Roq_HistoryCarSpController implements Initializable, Scr
                 });
             }
         });
-        
-    }
+    }}
 
     
-}

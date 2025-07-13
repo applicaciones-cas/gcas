@@ -67,7 +67,7 @@ import org.json.simple.JSONObject;
 public class InvRequest_Roq_HistoryCarController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request ROQ History Car";
-    unloadForm poUnload = new unloadForm();
+   unloadForm poUnload = new unloadForm();
     @FXML
     private AnchorPane AnchorMain;
     private GRiderCAS poApp;
@@ -822,7 +822,6 @@ public class InvRequest_Roq_HistoryCarController implements Initializable, Scree
                 header.setReordering(false);
             });
         });
-        
     }
 
     private void initTableInvDetail() {
@@ -846,8 +845,7 @@ public class InvRequest_Roq_HistoryCarController implements Initializable, Scree
                 });
             }
         });
-       
     }
 
-    
+   
 }

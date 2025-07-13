@@ -501,17 +501,16 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                             String loTextFieldId = activeField.getId();
                             String lsValue = activeField.getText().trim();
                         switch (loTextFieldId) {                    
-                              case "tfBarCode":
-                             if (pnTblInvDetailRow < 0) {
+                           case "tfBarCode":
+                                if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
                                     break;
                                 }
-                                
-                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,null
+                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,null
                                 );
                                 
-                                if ("error".equals(poJSON.get("result"))) {
+                                 if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                 tfBarCode.setText("");
                                 if (poJSON.get("tableRow") != null) {
@@ -537,9 +536,9 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                             loadDetail();
                             initDetailFocus();
                             break;
-
-                        case "tfDescription":
-                           if (pnTblInvDetailRow < 0) {
+                        
+                         case "tfDescription":
+                                if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
                                     break;
@@ -940,16 +939,15 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                             loadTableInvDetailAndSelectedRow();
                             break;
                          case "tfBarCode":
-                             if (pnTblInvDetailRow < 0) {
+                                if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
                                     break;
                                 }
-                                
-                                    loJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,null
+                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,null
                                 );
                                 
-                               if ("error".equals(poJSON.get("result"))) {
+                                 if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                 tfBarCode.setText("");
                                 if (poJSON.get("tableRow") != null) {
@@ -975,16 +973,16 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                             loadDetail();
                             initDetailFocus();
                             break;
-
-                        case "tfDescription":
-                           if (pnTblInvDetailRow < 0) {
+                        
+                         case "tfDescription":
+                                if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
                                     break;
                                 }
                                 poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,null
                                 );
-                                 if ("error".equals(poJSON.get("result"))) {
+                                if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                 tfDescription.setText("");
                                 if (poJSON.get("tableRow") != null) {

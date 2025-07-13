@@ -817,22 +817,22 @@ public class InvRequest_Roq_HistoryAppliancesGeneralController implements Initia
                 header.setReordering(false);
             });
         });
-            }
+    }
 
     private void initTableInvDetail() {
 
         tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-            tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-            tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-            tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-            tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
-            tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
-            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index11"));
-            tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index12"));
+        tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+        tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+        tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+        tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+        tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+        tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+        tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+        tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
+        tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
+        tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index11"));
+        tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index12"));
         // Prevent column reordering
         tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblViewOrderDetails.lookup("TableHeaderRow");
@@ -842,8 +842,6 @@ public class InvRequest_Roq_HistoryAppliancesGeneralController implements Initia
                 });
             }
         });
-        
-    }
+    }}
 
     
-}

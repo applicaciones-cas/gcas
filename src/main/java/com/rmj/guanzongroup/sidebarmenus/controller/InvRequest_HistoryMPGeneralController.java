@@ -600,6 +600,7 @@ public class InvRequest_HistoryMPGeneralController implements Initializable, Scr
 
         new Thread(task).start();
     }
+
     private void loadDetail() {
             try {
                 if (pnTblInvDetailRow >= 0) {
@@ -610,14 +611,14 @@ public class InvRequest_HistoryMPGeneralController implements Initializable, Scr
                     }
                     tfBrand.setText(lsBrand);
                     
-                    String lsDescription = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                   String lsDescription = "";
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
                         lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
                     }
                     tfDescription.setText(lsDescription);
                     
                     String lsBarCode = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode() != null) {
                         lsBarCode = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode();
                     }
                     tfBarCode.setText(lsBarCode);
@@ -820,7 +821,6 @@ public class InvRequest_HistoryMPGeneralController implements Initializable, Scr
                 header.setReordering(false);
             });
         });
-        initTableHighlithers();
     }
 
     private void initTableInvDetail() {
@@ -846,58 +846,6 @@ public class InvRequest_HistoryMPGeneralController implements Initializable, Scr
                 });
             }
         });
-        initTableHighlithers();
-    }
+    }}
 
-    private void initTableHighlithers() {
-        tableListInformation.setRowFactory(tv -> new TableRow<ModelInvTableListInformation>() {
-            @Override
-            protected void updateItem(ModelInvTableListInformation item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (item == null || empty) {
-                    setStyle("");
-                } else {
-                    // Assuming empIndex05 corresponds to an employee status
-                    //String status = item.getIndex05(); // Replace with actual getter
-                    switch (StockRequestStatus.CONFIRMED) {
-                        case StockRequestStatus.CONFIRMED:
-                            setStyle("-fx-background-color: #C1E1C1;");
-                            break;
-                        case StockRequestStatus.VOID:
-                            setStyle("-fx-background-color: #FAA0A0;");
-                            break;
-                        case StockRequestStatus.OPEN:
-                            setStyle("-fx-background-color: #FAC898;");
-                            break;
-                        default:
-                            setStyle("");
-                            break;
-                    }
-                    tableListInformation.refresh();
-                }
-            }
-        });
-        tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelInvOrderDetail>() {
-            @Override
-            protected void updateItem(ModelInvOrderDetail item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (item == null || empty) {
-                    setStyle("");
-                } else {
-                    //String status = item.getIndex10(); // Replace with actual getter
-                    String status = "1";
-                    switch (status) {
-                        case "1":
-                            setStyle("-fx-background-color: #FAA0A0;");
-                            break;
-                        default:
-                            setStyle("");
-                    }
-                    tblViewOrderDetails.refresh();
-                }
-            }
-        });
-    }
-}
+    

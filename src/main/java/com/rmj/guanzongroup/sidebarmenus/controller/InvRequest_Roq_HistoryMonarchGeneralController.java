@@ -596,6 +596,7 @@ public class InvRequest_Roq_HistoryMonarchGeneralController implements Initializ
 
         new Thread(task).start();
     }
+
     private void loadDetail() {
             try {
                 if (pnTblInvDetailRow >= 0) {
@@ -606,14 +607,14 @@ public class InvRequest_Roq_HistoryMonarchGeneralController implements Initializ
                     }
                     tfBrand.setText(lsBrand);
                     
-                    String lsDescription = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                   String lsDescription = "";
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
                         lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
                     }
                     tfDescription.setText(lsDescription);
                     
                     String lsBarCode = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode() != null) {
                         lsBarCode = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode();
                     }
                     tfBarCode.setText(lsBarCode);
@@ -790,7 +791,7 @@ public class InvRequest_Roq_HistoryMonarchGeneralController implements Initializ
                 tfOrderQuantity);
         CustomCommonUtil.setDisable(true,
                 tfInvType, tfVariant, tfColor, tfReservationQTY,
-                tfQOH, tfROQ, tfClassification, tfModel, tfBrand, tfBarCode, tfDescription);
+                tfQOH, tfROQ, tfClassification, tfModel, tfBrand, tfDescription, tfBarCode);
         if (!tfReferenceNo.getText().isEmpty()) {
             dpTransactionDate.setDisable(!lbShow);
         }
@@ -816,7 +817,6 @@ public class InvRequest_Roq_HistoryMonarchGeneralController implements Initializ
                 header.setReordering(false);
             });
         });
-     
     }
 
     private void initTableInvDetail() {
@@ -842,8 +842,6 @@ public class InvRequest_Roq_HistoryMonarchGeneralController implements Initializ
                 });
             }
         });
-      
-    }
+    }}
 
     
-}
