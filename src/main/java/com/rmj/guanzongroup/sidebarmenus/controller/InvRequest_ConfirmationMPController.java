@@ -1180,9 +1180,9 @@ public class InvRequest_ConfirmationMPController implements Initializable, Scree
           private void initTableInvDetail() {
 
             tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
             tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
             tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
             tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));

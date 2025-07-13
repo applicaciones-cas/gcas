@@ -67,7 +67,7 @@ import org.json.simple.JSONObject;
 public class InvRequest_Roq_HistoryMPController implements Initializable, ScreenInterface{
    
     private String psFormName = "Inv Stock Request ROQ History MP";
-    unloadForm poUnload = new unloadForm();
+     unloadForm poUnload = new unloadForm();
     @FXML
     private AnchorPane AnchorMain;
     private GRiderCAS poApp;
@@ -90,9 +90,11 @@ public class InvRequest_Roq_HistoryMPController implements Initializable, Screen
 
     @FXML
     private TextField tfReservationQTY, tfOrderQuantity, tfTransactionNo, tfReferenceNo,
-            tfSearchTransNo, tfSearchReferenceNo, tfBarCode, tfDescription, tfMeasure;
+            tfSearchTransNo, tfSearchReferenceNo, tfBarCode, tfDescription ;
     @FXML
-    private TableColumn<ModelInvOrderDetail, String> tblBrandDetail,tblBarCodeDetail,tblDescriptionDetail, tblModelDetail, tblVariantDetail, tblColorDetail, tblInvTypeDetail, tblROQDetail, tblClassificationDetail, tblQOHDetail, tblReservationQtyDetail, tblOrderQuantityDetail, tblMeasureDetail;
+    private TableColumn<ModelInvOrderDetail, String> tblBrandDetail,tblBarCodeDetail,tblDescriptionDetail, tblModelDetail,
+            tblVariantDetail, tblColorDetail, tblInvTypeDetail, tblROQDetail, tblClassificationDetail, tblQOHDetail, tblReservationQtyDetail,
+            tblOrderQuantityDetail ;
     @FXML
     private TextField tfBrand, tfModel, tfInvType,
             tfVariant, tfColor, tfROQ, tfClassification, tfQOH;
@@ -554,18 +556,18 @@ public class InvRequest_Roq_HistoryMPController implements Initializable, Screen
                         Model_Inv_Stock_Request_Detail detail = invRequestController.StockRequest().Detail(i);
                        
                         detailsList.add(new ModelInvOrderDetail(
-                                detail.Inventory().getBarCode(),
-                                detail.Inventory().getDescription(),
-                                detail.Inventory().Brand().getDescription(),
+                                detail.Inventory().Brand().getDescription(), 
+                                detail.Inventory().Model().getDescription(),
+                                detail.Inventory().getDescription(), 
+                                detail.Inventory().getBarCode(), 
+                                detail.Inventory().Variant().getDescription(),
+                                detail.Inventory().Color().getDescription(),
                                 detail.Inventory().InventoryType().getDescription(),
-                                detail.Inventory().Measure().getDescription(),
                                 String.valueOf(detail.getRecommendedOrder()),
                                 detail.getClassification(),
                                 String.valueOf(detail.getQuantityOnHand()),
                                 String.valueOf(detail.getReservedOrder()),
-                                String.valueOf(detail.getQuantity()),
-                                "",
-                                ""
+                                String.valueOf(detail.getQuantity())
 
                         ));
                     }
@@ -618,11 +620,17 @@ public class InvRequest_Roq_HistoryMPController implements Initializable, Screen
                 }
             }; 
 
-     private void loadDetail() {
+   private void loadDetail() {
             try {
                 if (pnTblInvDetailRow >= 0) {
+
+                    String lsBrand = "";
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                        lsBrand = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription();
+                    }
+                    tfBrand.setText(lsBrand);
                     
-                   String lsDescription = "";
+                    String lsDescription = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
                         lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
                     }
@@ -635,23 +643,32 @@ public class InvRequest_Roq_HistoryMPController implements Initializable, Screen
                     tfBarCode.setText(lsBarCode);
 
                     
-                    String lsBrand = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
-                        lsBrand = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription();
+                    String lsModel = "";
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Model().getDescription() != null) {
+                        lsModel = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Model().getDescription();
                     }
-                    tfBrand.setText(lsBrand);
+                    tfModel.setText(lsModel);
 
+                   
+
+                    String lsVariant = "";
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Variant().getDescription()!= null) {
+                        lsVariant = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Variant().getDescription();
+                    }
+                    tfVariant.setText(lsVariant);
+
+                    String lsColor = "";
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Color().getDescription() != null) {
+                        lsColor = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Color().getDescription();
+                    }
+                    tfColor.setText(lsColor);
+                    
                     String lsInvType = "";
+                    
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().InventoryType().getDescription() != null) {
                         lsInvType = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().InventoryType().getDescription();
                     }
                     tfInvType.setText(lsInvType);
-                    
-                    String lsMeasure = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Measure().getDescription() != null) {
-                        lsMeasure = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Measure().getDescription();
-                    }
-                    tfMeasure.setText(lsMeasure);
                     
                     String lsROQ = "0";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).getRecommendedOrder() != 0) {
@@ -679,7 +696,7 @@ public class InvRequest_Roq_HistoryMPController implements Initializable, Screen
                     }
                     tfReservationQTY.setText(lsReservationQTY);
                     
-                    String lsOrderQuantity = "0";
+                    String lsOrderQuantity = "0.0";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity() != 0) {
                         lsOrderQuantity = String.valueOf(invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity());
                     }
@@ -827,16 +844,18 @@ public class InvRequest_Roq_HistoryMPController implements Initializable, Screen
 
      private void initTableInvDetail() {
 
-            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-            tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-            tblMeasureDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-            tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-            tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-            tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
-            tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
+            tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+            tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+            tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+            tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
+            tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
+            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index11"));
+            tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index12"));
             // Prevent column reordering
             tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
                 TableHeaderRow header = (TableHeaderRow) tblViewOrderDetails.lookup("TableHeaderRow");

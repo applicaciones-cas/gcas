@@ -896,9 +896,9 @@ public class InvRequest_ConfirmationAppliancesController implements Initializabl
                             
                         detailsList.add(new ModelInvOrderDetail(
                                 detail.Inventory().Brand().getDescription(), 
+                                detail.Inventory().Model().getDescription(),
                                 detail.Inventory().getDescription(), 
                                 detail.Inventory().getBarCode(), 
-                                detail.Inventory().Model().getDescription(),
                                 detail.Inventory().Variant().getDescription(),
                                 detail.Inventory().Color().getDescription(),
                                 detail.Inventory().InventoryType().getDescription(),
@@ -1180,9 +1180,9 @@ public class InvRequest_ConfirmationAppliancesController implements Initializabl
           private void initTableInvDetail() {
 
             tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
             tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
             tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
             tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
