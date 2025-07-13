@@ -75,7 +75,7 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
     @FXML
     private String psFormName = "Inv Stock Request ROQ Update Monarch Food";
 
-    @FXML
+     @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();
         private InvWarehouseControllers invRequestController;
@@ -124,7 +124,7 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
         @FXML
         private TableColumn<ModelInvOrderDetail, String> tblBrandDetail, tblModelDetail,tblVariantDetail,
                 tblColorDetail,tblInvTypeDetail,tblROQDetail,tblClassificationDetail,
-                tblQOHDetail,tblMeasureDetail, tblReservationQtyDetail,tblOrderQuantityDetail,tblDescriptionDetail,tblBarCodeDetail;
+                tblQOHDetail,tblReservationQtyDetail,tblOrderQuantityDetail,tblDescriptionDetail,tblBarCodeDetail;
         
         @FXML
         private TableColumn<ModelInvTableListInformation, String> tblTransactionNo,tblReferenceNo,tblTransactionDate;
@@ -211,7 +211,7 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    loadTableList();
                 }
 
             }
@@ -401,8 +401,14 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
         }
         private void loadDetail() {
             try {
+                 int detailCount = invRequestController.StockRequest().getDetailCount();
+                    if (pnTblInvDetailRow < 0 || pnTblInvDetailRow >= detailCount) {
+                        clearDetailFields();
+                        return;
+                    }
                 if (pnTblInvDetailRow >= 0) {
 
+                    
                     String lsBrand = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
                         lsBrand = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription();
@@ -487,6 +493,7 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
                 System.exit(1);
             }
         }
+
         private void handleButtonAction(ActionEvent event) {
             try{
             JSONObject loJSON = new JSONObject();
@@ -617,11 +624,7 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
 
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction now?")) {
                                 try {
-                                    JSONObject approvalJSON = ShowDialogFX.getUserApproval(poApp);
-                                    if (!"success".equals((String) approvalJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) approvalJSON.get("message"), psFormName, null);
-                                        return;
-                                    }
+                                    
 
                                     loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed");
                                     if (!"success".equals((String) loJSON.get("result"))) {
@@ -863,18 +866,18 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
                         Model_Inv_Stock_Request_Detail detail = invRequestController.StockRequest().Detail(lnCtr);
                             
                         detailsList.add(new ModelInvOrderDetail(
-                                detail.Inventory().getBarCode(),
-                                detail.Inventory().getDescription(),
-                                detail.Inventory().Brand().getDescription(),
+                                detail.Inventory().Brand().getDescription(), 
+                                detail.Inventory().getDescription(), 
+                                detail.Inventory().getBarCode(), 
+                                detail.Inventory().Model().getDescription(),
+                                detail.Inventory().Variant().getDescription(),
+                                detail.Inventory().Color().getDescription(),
                                 detail.Inventory().InventoryType().getDescription(),
-                                detail.Inventory().Measure().getDescription(),
                                 String.valueOf(detail.getRecommendedOrder()),
                                 detail.getClassification(),
                                 String.valueOf(detail.getQuantityOnHand()),
                                 String.valueOf(detail.getReservedOrder()),
-                                String.valueOf(detail.getQuantity()),
-                                "",
-                                ""
+                                String.valueOf(detail.getQuantity())
                                 
                         ));
                     }
@@ -926,7 +929,7 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
                     break;
                 case "tfSearchReferenceNo":
                      psReferID = tfSearchReferenceNo.getText();
-                    //loadTableList();
+                    loadTableList();
                     break;
             }
         } else {
@@ -952,23 +955,16 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
+                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel, tfBarCode, tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             
             
         } else {
+            // Disable everything if not in OPEN/CONFIRMED status
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
-
-        // Additional condition for when just retrieving (not editing)
-        if (fnEditMode == EditMode.UNKNOWN) {
-            CustomCommonUtil.setDisable(true,
-                    tfInvType, tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel,
-                     tfQOH, tfROQ, tfClassification, tfBarCode, tfDescription, tfOrderQuantity);
-        }
+        
     }
-
-
 
         private void initTextAreaFocus() {
             taRemarks.focusedProperty().addListener(txtArea_Focus);
@@ -1161,16 +1157,19 @@ public class InvRequest_Roq_UpdateMonarchFoodController implements Initializable
         });
     }
       private void initTableInvDetail() {
-             tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+
+            tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
             tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-            tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-            tblMeasureDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-            tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-            tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-            tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
-            tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
+            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+            tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+            tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+            tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
+            tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
+            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index11"));
+            tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index12"));
         
         
         // Prevent column reordering

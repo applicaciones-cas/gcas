@@ -206,7 +206,7 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    loadTableList();
                 }
 
             }
@@ -600,12 +600,7 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
 
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction now?")) {
                         try {
-                            JSONObject approvalJSON = ShowDialogFX.getUserApproval(poApp);
-                            if (!"success".equals((String) approvalJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) approvalJSON.get("message"), psFormName, null);
-                                return;
-                            }
-
+                            
                             loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed");
                             if (!"success".equals((String) loJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -899,7 +894,7 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
                     break;
                 case "tfSearchReferenceNo":
                     psReferID = tfSearchReferenceNo.getText();
-                    //loadTableList();
+                    loadTableList();
                     break;
             }
         } else {

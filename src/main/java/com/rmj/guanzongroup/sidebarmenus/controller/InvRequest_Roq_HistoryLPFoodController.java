@@ -92,7 +92,7 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
     private TextField tfReservationQTY, tfOrderQuantity, tfTransactionNo, tfReferenceNo,
             tfSearchTransNo, tfSearchReferenceNo, tfBarCode, tfDescription;
     @FXML
-    private TableColumn<ModelInvOrderDetail, String> tblBrandDetail, tblMeasureDetail,tblBarCodeDetail,tblDescriptionDetail, tblModelDetail, tblVariantDetail, tblColorDetail, tblInvTypeDetail, tblROQDetail, tblClassificationDetail, tblQOHDetail, tblReservationQtyDetail, tblOrderQuantityDetail;
+    private TableColumn<ModelInvOrderDetail, String> tblBrandDetail,tblBarCodeDetail,tblDescriptionDetail, tblModelDetail, tblVariantDetail, tblColorDetail, tblInvTypeDetail, tblROQDetail, tblClassificationDetail, tblQOHDetail, tblReservationQtyDetail, tblOrderQuantityDetail;
     @FXML
     private TextField tfBrand, tfModel, tfInvType,
             tfVariant, tfColor, tfROQ, tfClassification, tfQOH;
@@ -554,18 +554,18 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
                         Model_Inv_Stock_Request_Detail detail = invRequestController.StockRequest().Detail(lnCtr);
                             
                         detailsList.add(new ModelInvOrderDetail(
+                                detail.Inventory().Brand().getDescription(), 
                                 detail.Inventory().getBarCode(),
                                 detail.Inventory().getDescription(),
-                                detail.Inventory().Brand().getDescription(),
+                                detail.Inventory().Model().getDescription(),
+                                detail.Inventory().Variant().getDescription(),
+                                detail.Inventory().Color().getDescription(),
                                 detail.Inventory().InventoryType().getDescription(),
-                                detail.Inventory().Measure().getDescription(),
                                 String.valueOf(detail.getRecommendedOrder()),
                                 detail.getClassification(),
                                 String.valueOf(detail.getQuantityOnHand()),
                                 String.valueOf(detail.getReservedOrder()),
-                                String.valueOf(detail.getQuantity()),
-                                "",
-                                ""
+                                String.valueOf(detail.getQuantity())
                                 
                         ));
                     }
@@ -598,7 +598,6 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
 
         new Thread(task).start();
     }
-
     private void loadDetail() {
             try {
                 if (pnTblInvDetailRow >= 0) {
@@ -687,6 +686,7 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
                 System.exit(1);
             }
         }
+
 
     private void initDatePickerActions() {
         dpTransactionDate.setOnAction(e -> {
@@ -823,16 +823,18 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
     }
 
     private void initTableInvDetail() {
-             tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-            tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-            tblMeasureDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-            tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-            tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-            tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
-            tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
+            tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+            tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+            tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+            tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
+            tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
+            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index11"));
+            tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index12"));
         
         
         // Prevent column reordering
@@ -844,8 +846,6 @@ public class InvRequest_Roq_HistoryLPFoodController implements Initializable, Sc
                 });
             }
         });
-    }
-        
     }
 
     

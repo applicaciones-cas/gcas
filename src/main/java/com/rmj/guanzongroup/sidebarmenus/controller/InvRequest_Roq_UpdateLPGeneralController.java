@@ -72,7 +72,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_Roq_UpdateLPGeneralController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request ROQ Update LP General";
-    @FXML
+     @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();
         private InvWarehouseControllers invRequestController;
@@ -208,7 +208,7 @@ public class InvRequest_Roq_UpdateLPGeneralController implements Initializable, 
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    loadTableList();
                 }
 
             }
@@ -621,11 +621,7 @@ public class InvRequest_Roq_UpdateLPGeneralController implements Initializable, 
 
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction now?")) {
                                 try {
-                                    JSONObject approvalJSON = ShowDialogFX.getUserApproval(poApp);
-                                    if (!"success".equals((String) approvalJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) approvalJSON.get("message"), psFormName, null);
-                                        return;
-                                    }
+                                    
 
                                     loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed");
                                     if (!"success".equals((String) loJSON.get("result"))) {
@@ -930,7 +926,7 @@ public class InvRequest_Roq_UpdateLPGeneralController implements Initializable, 
                     break;
                 case "tfSearchReferenceNo":
                      psReferID = tfSearchReferenceNo.getText();
-                    //loadTableList();
+                    loadTableList();
                     break;
             }
         } else {
@@ -956,23 +952,16 @@ public class InvRequest_Roq_UpdateLPGeneralController implements Initializable, 
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
+                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel, tfBarCode, tfDescription);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             
             
         } else {
+            // Disable everything if not in OPEN/CONFIRMED status
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
-
-        // Additional condition for when just retrieving (not editing)
-        if (fnEditMode == EditMode.UNKNOWN) {
-            CustomCommonUtil.setDisable(true,
-                    tfInvType, tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel,
-                     tfQOH, tfROQ, tfClassification, tfBarCode, tfDescription, tfOrderQuantity);
-        }
+        
     }
-
-
 
         private void initTextAreaFocus() {
             taRemarks.focusedProperty().addListener(txtArea_Focus);

@@ -613,11 +613,7 @@ public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenI
 
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction now?")) {
                                 try {
-                                    JSONObject approvalJSON = ShowDialogFX.getUserApproval(poApp);
-                                    if (!"success".equals((String) approvalJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) approvalJSON.get("message"), psFormName, null);
-                                        return;
-                                    }
+                                    
 
                                     loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed");
                                     if (!"success".equals((String) loJSON.get("result"))) {
@@ -948,7 +944,7 @@ public class InvRequest_Roq_UpdateMPController implements Initializable, ScreenI
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
+                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel, tfDescription, tfBarCode);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
             
             
