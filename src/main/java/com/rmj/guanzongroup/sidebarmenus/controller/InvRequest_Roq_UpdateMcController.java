@@ -210,18 +210,7 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
                 }
 
             }
-        });
-        tfSearchReferenceNo.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    invRequestController.StockRequest().Master().setReferenceNo("");
-                    tfSearchReferenceNo.setText("");
-                    //loadTableList();
-                }
-            }
-        });
-    }
-
+        });}
     private void loadRecordSearch() {
         try {
             System.out.print("LBL SOURCE: " + invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
@@ -518,6 +507,7 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                     invRequestController.StockRequest().setTransactionStatus("102");
                     loadTableList();
+                    
                     break;
                 case "btnUpdate":
                     poJSON = invRequestController.StockRequest().UpdateTransaction();
@@ -539,7 +529,7 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
                         });
                     }
 
-                    initFields(pnEditMode);
+                    initFields(pnEditMode); 
                     tableListInformation.toFront();
                     break;
 
@@ -696,7 +686,7 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode());
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-
+                        invRequestController.StockRequest().getROQItems();
                         loadMaster();
                         pnTblInvDetailRow = 0;
                         pnEditMode = invRequestController.StockRequest().getEditMode();
@@ -704,7 +694,7 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
                         loadTableInvDetailAndSelectedRow();
                         Platform.runLater(() -> {
                             tblViewOrderDetails.getSelectionModel().select(0);
-                            tfBrand.requestFocus();
+                            tfOrderQuantity.requestFocus();
                         });
 
                     } else {
@@ -918,21 +908,29 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
     };
 
     private void initFields(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
+          
+        boolean lbShow = (fnEditMode == EditMode.UPDATE ||fnEditMode == EditMode.ADDNEW);
+        boolean lbNew = (fnEditMode == EditMode.ADDNEW);
+        
+        
         /* Master Fields*/
-        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)) {
+        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
+            invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks, tfReferenceNo);
+            CustomCommonUtil.setDisable(!lbNew,
+                    dpTransactionDate, taRemarks,tfReferenceNo);
 
-            CustomCommonUtil.setDisable(true, tfBrand, tfModel,
-                    tfInvType, tfVariant, tfColor, tfReservationQTY, tfQOH, tfROQ, tfClassification);
+
+            CustomCommonUtil.setDisable(true,
+                    tfInvType,tfReservationQTY
+                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
-
+            
+            
         } else {
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
-
+        
     }
 
     private void initTextAreaFocus() {
@@ -960,7 +958,7 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
 
     private void initTextFieldKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(
-                tfOrderQuantity
+                tfOrderQuantity, tfSearchTransNo
         );
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
@@ -985,6 +983,24 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
                     case ENTER:
                     case F3:
                         switch (fieldId) {
+                            case "tfSearchTransNo":
+                                    System.out.print("Company ID" + psCompanyID);
+                                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                                    invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                                    invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
+                                    invRequestController.StockRequest().setTransactionStatus("102");
+                                    poJSON = invRequestController.StockRequest().searchTransaction();
+                                    if (!"error".equals((String) poJSON.get("result"))) {
+                                        pnTblInvDetailRow = -1;
+                                        loadMaster();
+                                        pnEditMode = invRequestController.StockRequest().getEditMode();
+                                        loadDetail();
+                                        loadTableInvDetail();
+                                        initButtons(pnEditMode);
+                                    } else {
+                                        ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
+                                    }
+                                    break;
                             case "tfOrderQuantity":
                                          setOrderQuantityToDetail(tfOrderQuantity.getText());
                                           if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
@@ -996,6 +1012,20 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
                                           break;
                         }
                         event.consume();
+                         switch (fieldId) {
+                                    case "tfSearchTransNo":
+                                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                                        break;
+                                    case "tfOrderQuantity":
+                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                                        if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
+                                            pnTblInvDetailRow++;
+                                        }
+                                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                                        loadTableInvDetailAndSelectedRow();
+                                        break;
+                                }
+                                event.consume();
                         break;
 
                     case UP:
@@ -1202,6 +1232,8 @@ public class InvRequest_Roq_UpdateMcController implements Initializable, ScreenI
 
             }
         }
+        
+        
     }
 
     private void initDetailFocus() {

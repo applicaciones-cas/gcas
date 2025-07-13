@@ -252,7 +252,7 @@
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Bar Code" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Description" GridPane.rowIndex="1" />
                                                             <TextField fx:id="tfBarCode" GridPane.columnIndex="2" />
-                                                            <TextField fx:id="tfDescription" promptText="\\" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+                                                            <TextField fx:id="tfDescription" GridPane.columnIndex="2" GridPane.columnSpan="4" GridPane.rowIndex="1" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" GridPane.rowIndex="2" />
                                                             <TextField fx:id="tfBrand" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Measure" GridPane.columnIndex="3" GridPane.rowIndex="3" />

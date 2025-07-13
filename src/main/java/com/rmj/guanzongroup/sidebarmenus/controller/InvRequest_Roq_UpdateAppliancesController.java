@@ -73,10 +73,10 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_Roq_UpdateAppliancesController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request ROQ Update Appliances";
-     @FXML
-    private AnchorPane AnchorMain,AnchorDetailMaster;
-    unloadForm poUnload = new unloadForm();
-    private InvWarehouseControllers invRequestController;
+    @FXML
+        private AnchorPane AnchorMain,AnchorDetailMaster;
+        unloadForm poUnload = new unloadForm();
+        private InvWarehouseControllers invRequestController;
         private GRiderCAS poApp;
         private String psIndustryID = "";
         private String psCompanyID = "";
@@ -101,7 +101,7 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
         @FXML
         private TextField tfTransactionNo,tfBrand,tfModel,tfInvType,
                 tfVariant,tfColor,tfROQ,tfClassification,tfQOH,tfReferenceNo,tfReservationQTY,
-                tfOrderQuantity,tfSearchTransNo,tfSearchReferenceNo,tfDescription,tfBarCode;
+                tfOrderQuantity,tfSearchTransNo,tfSearchReferenceNo,tfBarCode,tfDescription;
        
 
         @FXML
@@ -121,8 +121,8 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
 
         @FXML
         private TableColumn<ModelInvOrderDetail, String> tblBrandDetail, tblModelDetail,tblVariantDetail,
-                tblColorDetail,tblInvTypeDetail,tblROQDetail,tblClassificationDetail,tblQOHDetail,
-                tblReservationQtyDetail,tblOrderQuantityDetail,tblDescriptionDetail,tblBarCodeDetail;
+                tblColorDetail,tblInvTypeDetail,tblROQDetail,tblClassificationDetail,
+                tblQOHDetail,tblReservationQtyDetail,tblOrderQuantityDetail,tblDescriptionDetail,tblBarCodeDetail;
         
         @FXML
         private TableColumn<ModelInvTableListInformation, String> tblTransactionNo,tblReferenceNo,tblTransactionDate;
@@ -187,9 +187,9 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                 initTextFieldPattern();
                 initButtonsClickActions();
                 initTextFieldFocus();
-                initTextFieldPattern();
                 initTextAreaFocus();
                 initTextFieldKeyPressed();
+                initTextFieldPattern();
                 initDatePickerActions();
                 initTableList();
                 initTextFieldsProperty();
@@ -213,17 +213,7 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                 }
 
             }
-        });
-        tfSearchReferenceNo.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    invRequestController.StockRequest().Master().setReferenceNo("");
-                    tfSearchReferenceNo.setText("");
-                    //loadTableList();
-                }
-            }
-        });
-    }
+        });}
         private void loadRecordSearch() {
             try {
               
@@ -409,18 +399,15 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
         }
         private void loadDetail() {
             try {
-                 int detailCount = invRequestController.StockRequest().getDetailCount();
-                    if (pnTblInvDetailRow < 0 || pnTblInvDetailRow >= detailCount) {
-                        clearDetailFields();
-                        return;
-                    }
-                String lsBrand = "";
+                if (pnTblInvDetailRow >= 0) {
+
+                    String lsBrand = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
                         lsBrand = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription();
                     }
                     tfBrand.setText(lsBrand);
                     
-                    String lsDescription = "";
+                   String lsDescription = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
                         lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
                     }
@@ -492,13 +479,12 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                     }
                     tfOrderQuantity.setText(lsOrderQuantity);
 
-                
+                }
             } catch (SQLException | GuanzonException e) {
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
                 System.exit(1);
             }
         }
-
         private void handleButtonAction(ActionEvent event) {
             try{
             JSONObject loJSON = new JSONObject();
@@ -534,19 +520,31 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                             invRequestController.StockRequest().setTransactionStatus("102");
                             loadTableList();
                             break;
-                        case "btnUpdate":
-                            poJSON = invRequestController.StockRequest().UpdateTransaction();
-                            pnEditMode = invRequestController.StockRequest().getEditMode();
-                            
-                            if ("error".equals((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), "Warning", null);
-                            }
-                            clearDetailFields();
-                            pnTblInvDetailRow = invRequestController.StockRequest().getDetailCount() > 0 ? 0 : -1; 
-                            loadTableInvDetail();
-                            tableListInformation.toFront();
+                     case "btnUpdate":
+                        poJSON = invRequestController.StockRequest().UpdateTransaction();
+                        pnEditMode = invRequestController.StockRequest().getEditMode();
+
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), "Warning", null);
+                        }
+
+                        clearDetailFields();
+                        loadTableInvDetail();
+
+                        if (tblViewOrderDetails.getItems().size() > 0) {
+                            Platform.runLater(() -> {
+                                tblViewOrderDetails.getSelectionModel().select(0);
+                                pnTblInvDetailRow = 0; 
+                                loadDetail();
+
+                               
+                            });
+                        }
+
+                        initFields(pnEditMode);
+                        tableListInformation.toFront();
                         break;
-                         
+
                        case "btnSave":
                             if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                                 return;
@@ -703,22 +701,19 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                     if ("success".equals((String) loJSON.get("result"))) {
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
-                        invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
-                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
-                        
+                        invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode());
+                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
+                        invRequestController.StockRequest().getROQItems();
                         loadMaster();
                         pnTblInvDetailRow = 0;
                         pnEditMode = invRequestController.StockRequest().getEditMode();
                         loadTableInvDetail();
                         loadTableInvDetailAndSelectedRow();
-                      Platform.runLater(() -> {
-                        tblViewOrderDetails.getSelectionModel().select(0);
-                        tfBrand.requestFocus();
-                    });
+                        Platform.runLater(() -> {
+                            tblViewOrderDetails.getSelectionModel().select(0);
+                            tfOrderQuantity.requestFocus();
+                        });
 
-                        
-                        
-                       
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -810,7 +805,8 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
         private void clearDetailFields() {
             /* Detail Fields*/
             CustomCommonUtil.setText("", tfBrand, tfModel,
-                    tfColor, tfReservationQTY, tfQOH,tfInvType, tfVariant,tfROQ,tfClassification);
+                    tfColor, tfReservationQTY, tfQOH,tfInvType, 
+                    tfVariant,tfROQ,tfClassification,tfBarCode,tfDescription);
            CustomCommonUtil.setText("0", tfOrderQuantity);
         }           
 
@@ -831,7 +827,7 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
         }
 
 
-      private void loadTableInvDetail() {
+     private void loadTableInvDetail() {
         ProgressIndicator progressIndicator = new ProgressIndicator();
         progressIndicator.setMaxSize(50, 50);
         progressIndicator.setStyle("-fx-accent: #FF8201;");
@@ -906,6 +902,7 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
 
         new Thread(task).start();
     }
+     
         final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTextFieldID = loTextField.getId();
@@ -933,24 +930,34 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
     };
 
 
+            
          private void initFields(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
+          
+        boolean lbShow = (fnEditMode == EditMode.UPDATE ||fnEditMode == EditMode.ADDNEW);
+        boolean lbNew = (fnEditMode == EditMode.ADDNEW);
+        
+        
         /* Master Fields*/
-        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)) {
+        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
+            invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbShow,
+            CustomCommonUtil.setDisable(!lbNew,
                     dpTransactionDate, taRemarks,tfReferenceNo);
 
-           
-            CustomCommonUtil.setDisable(true, tfBrand, tfModel,
-                    tfInvType,tfVariant,tfColor,tfReservationQTY,tfQOH,tfROQ,tfClassification, tfBarCode, tfDescription);
-           CustomCommonUtil.setDisable(!lbShow,tfOrderQuantity);
+
+            CustomCommonUtil.setDisable(true,
+                    tfInvType,tfReservationQTY
+                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
+            CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            
             
         } else {
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
         
     }
+
+
 
         private void initTextAreaFocus() {
             taRemarks.focusedProperty().addListener(txtArea_Focus);
@@ -975,20 +982,20 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
             }
         };
 
-        private void initTextFieldKeyPressed() {
-            List<TextField> loTxtField = Arrays.asList(
-                    tfOrderQuantity,tfSearchTransNo,tfBrand,tfModel
-                    );
+      private void initTextFieldKeyPressed() {
+        List<TextField> loTxtField = Arrays.asList(
+                tfOrderQuantity, tfSearchTransNo
+        );
 
-            loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-        }  
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+    }
         private void initButtonsClickActions() {
             List<Button> buttons = Arrays.asList( btnSave, btnCancel,
                     btnClose,btnBrowse,btnUpdate,btnRetrieve,btnNew);
 
             buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
         }    
-               private void txtField_KeyPressed(KeyEvent event) {
+        private void txtField_KeyPressed(KeyEvent event) {
             TextField sourceField = (TextField) event.getSource();
             String fieldId = sourceField.getId();
 
@@ -1000,6 +1007,24 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                     case ENTER:
                     case F3:
                         switch (fieldId) {
+                            case "tfSearchTransNo":
+                                    System.out.print("Company ID" + psCompanyID);
+                                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                                    invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                                    invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
+                                    invRequestController.StockRequest().setTransactionStatus("102");
+                                    poJSON = invRequestController.StockRequest().searchTransaction();
+                                    if (!"error".equals((String) poJSON.get("result"))) {
+                                        pnTblInvDetailRow = -1;
+                                        loadMaster();
+                                        pnEditMode = invRequestController.StockRequest().getEditMode();
+                                        loadDetail();
+                                        loadTableInvDetail();
+                                        initButtons(pnEditMode);
+                                    } else {
+                                        ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
+                                    }
+                                    break;
                             case "tfOrderQuantity":
                                          setOrderQuantityToDetail(tfOrderQuantity.getText());
                                           if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
@@ -1011,6 +1036,20 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                                           break;
                         }
                         event.consume();
+                        switch (fieldId) {
+                                    case "tfSearchTransNo":
+                                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                                        break;
+                                    case "tfOrderQuantity":
+                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                                        if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
+                                            pnTblInvDetailRow++;
+                                        }
+                                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                                        loadTableInvDetailAndSelectedRow();
+                                        break;
+                                }
+                                event.consume();
                         break;
 
                     case UP:
@@ -1042,13 +1081,15 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                         
                         break;
                 }
-            } catch (Exception e) {
+            } catch (Exception e) {     
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error", psFormName);
             }
         }
 
+       
 
-    private void loadTableInvDetailAndSelectedRow() {
+
+   private void loadTableInvDetailAndSelectedRow() {
             if (pnTblInvDetailRow >= 0) {
                 Platform.runLater(() -> {
                     PauseTransition delay = new PauseTransition(Duration.millis(10));
@@ -1063,10 +1104,8 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                 initDetailFocus();
             }
         }
-    private void initTextFieldPattern() {
-            CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
-        }
-     private void setOrderQuantityToDetail(String fsValue) {
+    
+    private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
@@ -1109,14 +1148,13 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
                 header.setReordering(false);
             });
         });
-        initTableHighlithers();
     }
-       private void initTableInvDetail() {
+      private void initTableInvDetail() {
 
             tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
             tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
             tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
             tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
             tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
@@ -1225,7 +1263,7 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
         }
     }
 
-      private void initDetailFocus() {
+     private void initDetailFocus() {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 
                             tfOrderQuantity.requestFocus();
@@ -1233,69 +1271,15 @@ public class InvRequest_Roq_UpdateAppliancesController implements Initializable,
 
             }
         }
-
            private void initTextFieldFocus() {
-    List<TextField> searchableFields = Arrays.asList(tfReferenceNo, tfOrderQuantity);
-    searchableFields.forEach(tf -> {
-        tf.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal) activeField = tf;
-        });
-        tf.focusedProperty().addListener(txtField_Focus);
-    });
-    }
+        List<TextField> loTxtField = Arrays.asList(tfReferenceNo, tfOrderQuantity,tfSearchReferenceNo,tfOrderQuantity,tfBrand,tfDescription);
+        loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
+         tfBrand.setOnMouseClicked(e -> activeField = tfBrand);
+         tfBarCode.setOnMouseClicked(e -> activeField = tfBarCode);
+         tfDescription.setOnMouseClicked(e -> activeField = tfDescription);
+    }  
 
-private void initTableHighlithers() {
-        tableListInformation.setRowFactory(tv -> new TableRow<ModelInvTableListInformation>() {
-            @Override
-            protected void updateItem(ModelInvTableListInformation item, boolean empty) {
-                super.updateItem(item, empty);
 
-                if (item == null || empty) {
-                    setStyle("");
-                } else {
-                    String lsStatus = invRequestController.StockRequest().Master().getTransactionStatus();
-                  
-                    //String status = item.getIndex05(); // Replace with actual getter
-                    switch (lsStatus) {
-                        case StockRequestStatus.CONFIRMED:
-                            setStyle("-fx-background-color: #C1E1C1;");
-                            break;
-                        case StockRequestStatus.VOID:
-                            setStyle("-fx-background-color: #FAA0A0;");
-                            break;
-                        case StockRequestStatus.OPEN:
-                            setStyle("-fx-background-color: #FAC898;");
-                            break;
-                        default:
-                            setStyle("");
-                            break;
-                    }
-                    tableListInformation.refresh();
-                }
-            }
-        });
-        tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelInvOrderDetail>() {
-            @Override
-            protected void updateItem(ModelInvOrderDetail item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (item == null || empty) {
-                    setStyle("");
-                } else {
-                    //String status = item.getIndex10(); // Replace with actual getter
-                    String status = "1";
-                    switch (status) {
-                        case "1":
-                            setStyle("-fx-background-color: #FAA0A0;");
-                            break;
-                        default:
-                            setStyle("");
-                    }
-                    tblViewOrderDetails.refresh();
-                }
-            }
-        });
-    }
         private void clearAllTables() {
    
     invOrderDetail_data.clear();
@@ -1317,5 +1301,8 @@ private void initTableHighlithers() {
         tableListInformation.refresh();
     });
 }
-       
+       private void initTextFieldPattern() {
+        
+        CustomCommonUtil.inputDecimalOnly(tfOrderQuantity);
+    }
 }
