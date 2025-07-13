@@ -83,9 +83,8 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
     private JSONObject poJSON;
     private int pnEditMode;
     private LogWrapper logWrapper;
-     private String psOldDate = "";
-     unloadForm poUnload = new unloadForm();
-
+    private String psOldDate = "";
+    unloadForm poUnload = new unloadForm();
     String brandID;
     String brandDesc;
     private ObservableList<ModelInvOrderDetail> invOrderDetail_data = FXCollections.observableArrayList();
@@ -166,13 +165,13 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                     }
 
         }));
-        Platform.runLater(() -> btnNew.fire());
         initTextFieldPattern();
+        Platform.runLater(() -> btnNew.fire());
         initButtonsClickActions();
         initTextFieldFocus();
+        initTextFieldPattern();
         initTextAreaFocus();
         initTextFieldKeyPressed();
-        initTextFieldPattern();
         initDatePickerActions();          
         initTableInvDetail();
         tblViewOrderDetails.setOnMouseClicked(this::tblViewOrderDetails_Clicked);
@@ -275,13 +274,13 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                             loadTableInvDetail();
                             break;
 
-                         case "tfBarCode":
+                        case "tfBarCode":
                                 if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
                                     break;
                                 }
-                                    poJSON = invRequestController.StockRequest().SearchBarcodeGeneral(lsValue, true, pnTblInvDetailRow,brandID
+                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID
                                 );
                                 
                                  if ("error".equals(poJSON.get("result"))) {
@@ -317,7 +316,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                                     clearDetailFields();
                                     break;
                                 }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescriptionGeneral(lsValue, false, pnTblInvDetailRow,brandID
+                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -456,8 +455,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                                             return;
                                         }
 
-                                        
-
+                                       
                                         ShowMessageFX.Information((String) loJSON.get("message"), psFormName, null);
                                     } catch (ParseException ex) {
                                         Logger.getLogger(InvRequest_Roq_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
@@ -797,25 +795,26 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                             CommonUtils.SetNextFocus(sourceField);
                             loadTableInvDetailAndSelectedRow();
                             break;
-                       case "tfBarCode":
-                                if (pnTblInvDetailRow < 0) {
+                        case "tfBarCode":
+                             if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
                                     break;
                                 }
+                                
                                     poJSON = invRequestController.StockRequest().SearchBarcodeGeneral(lsValue, true, pnTblInvDetailRow,brandID
                                 );
                                 
-                                 if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                tfBarCode.setText("");
-                                if (poJSON.get("tableRow") != null) {
-                                    pnTblInvDetailRow = (int) poJSON.get("tableRow");
+                                if ("error".equals(poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    tfBarCode.setText("");
+                                    if (poJSON.get("tableRow") != null) {
+                                        pnTblInvDetailRow = (int) poJSON.get("tableRow");
+                                    } else {
+                                        break;
+                                    }
                                 }
-                                break;
-                            }
-
-                            if ("success".equals(poJSON.get("result"))) {
+                               if ("success".equals(poJSON.get("result"))) {
                                 double currentQty = 0.0;
                                 try {
                                     currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
@@ -832,9 +831,9 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                             loadDetail();
                             initDetailFocus();
                             break;
-                        
-                         case "tfDescription":
-                                if (pnTblInvDetailRow < 0) {
+
+                        case "tfDescription":
+                           if (pnTblInvDetailRow < 0) {
                                     ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                     clearDetailFields();
                                     break;
@@ -842,15 +841,15 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                                 poJSON = invRequestController.StockRequest().SearchBarcodeDescriptionGeneral(lsValue, false, pnTblInvDetailRow,brandID
                                 );
                                 if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                tfDescription.setText("");
-                                if (poJSON.get("tableRow") != null) {
-                                    pnTblInvDetailRow = (int) poJSON.get("tableRow");
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    tfDescription.setText("");
+                                    if (poJSON.get("tableRow") != null) {
+                                        pnTblInvDetailRow = (int) poJSON.get("tableRow");
+                                    } else {
+                                        break;
+                                    }
                                 }
-                                break;
-                            }
-
-                            if ("success".equals(poJSON.get("result"))) {
+                                     if ("success".equals(poJSON.get("result"))) {
                                 double currentQty = 0.0;
                                 try {
                                     currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
@@ -866,8 +865,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                             loadTableInvDetail();
                             loadDetail();
                             initDetailFocus();
-                            break;
-                        case "tfBrand":
+                            break;                        case "tfBrand":
                            if (pnTblInvDetailRow < 0) {
                                       ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                                       clearDetailFields();
@@ -900,7 +898,7 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
                 case UP:
                         setOrderQuantityToDetail(tfOrderQuantity.getText());
 
-                       if (fieldId.equals("tfOrderQuantity")) {
+                      if (fieldId.equals("tfOrderQuantity")) {
                             if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
                                 pnTblInvDetailRow--;
                             }
@@ -1298,5 +1296,5 @@ public class InvRequest_EntryCarGeneralController implements Initializable, Scre
 
         }
     }
-   
+    
   }

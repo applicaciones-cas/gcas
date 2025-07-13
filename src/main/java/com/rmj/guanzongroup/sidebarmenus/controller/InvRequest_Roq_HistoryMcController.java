@@ -824,7 +824,6 @@ public class InvRequest_Roq_HistoryMcController implements Initializable, Screen
                 header.setReordering(false);
             });
         });
-        
     }
 
     private void initTableInvDetail() {
@@ -848,8 +847,7 @@ public class InvRequest_Roq_HistoryMcController implements Initializable, Screen
                 });
             }
         });
-       
     }
 
-    
+   
 }
