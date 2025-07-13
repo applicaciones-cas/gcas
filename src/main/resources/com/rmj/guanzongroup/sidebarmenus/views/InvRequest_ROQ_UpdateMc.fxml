@@ -244,8 +244,8 @@
                                                          <children>
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.rowIndex="1" />
-                                                            <TextField fx:id="tfBrand" promptText="Press F3: Search" GridPane.columnIndex="2" />
-                                                            <TextField fx:id="tfModel" prefHeight="28.0" prefWidth="130.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                            <TextField fx:id="tfBrand" GridPane.columnIndex="2" />
+                                                            <TextField fx:id="tfModel" prefHeight="28.0" prefWidth="130.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Variant" GridPane.rowIndex="2" />
                                                             <TextField fx:id="tfVariant" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="4" GridPane.rowIndex="1" />

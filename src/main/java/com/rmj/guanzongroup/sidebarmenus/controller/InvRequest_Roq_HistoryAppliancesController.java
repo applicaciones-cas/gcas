@@ -817,7 +817,7 @@ public class InvRequest_Roq_HistoryAppliancesController implements Initializable
                 header.setReordering(false);
             });
         });
-        initTableHighlithers();
+       
     }
 
     private void initTableInvDetail() {
@@ -843,58 +843,8 @@ public class InvRequest_Roq_HistoryAppliancesController implements Initializable
                 });
             }
         });
-        initTableHighlithers();
+        
     }
 
-    private void initTableHighlithers() {
-        tableListInformation.setRowFactory(tv -> new TableRow<ModelInvTableListInformation>() {
-            @Override
-            protected void updateItem(ModelInvTableListInformation item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (item == null || empty) {
-                    setStyle("");
-                } else {
-                    // Assuming empIndex05 corresponds to an employee status
-                    //String status = item.getIndex05(); // Replace with actual getter
-                    switch (StockRequestStatus.CONFIRMED) {
-                        case StockRequestStatus.CONFIRMED:
-                            setStyle("-fx-background-color: #C1E1C1;");
-                            break;
-                        case StockRequestStatus.VOID:
-                            setStyle("-fx-background-color: #FAA0A0;");
-                            break;
-                        case StockRequestStatus.OPEN:
-                            setStyle("-fx-background-color: #FAC898;");
-                            break;
-                        default:
-                            setStyle("");
-                            break;
-                    }
-                    tableListInformation.refresh();
-                }
-            }
-        });
-        tblViewOrderDetails.setRowFactory(tv -> new TableRow<ModelInvOrderDetail>() {
-            @Override
-            protected void updateItem(ModelInvOrderDetail item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (item == null || empty) {
-                    setStyle("");
-                } else {
-                    //String status = item.getIndex10(); // Replace with actual getter
-                    String status = "1";
-                    switch (status) {
-                        case "1":
-                            setStyle("-fx-background-color: #FAA0A0;");
-                            break;
-                        default:
-                            setStyle("");
-                    }
-                    tblViewOrderDetails.refresh();
-                }
-            }
-        });
-    }
+    
 }

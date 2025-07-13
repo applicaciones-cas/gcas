@@ -72,7 +72,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_Roq_UpdateCarGeneralController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request ROQ Update Car General";
-     @FXML
+    @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();
         private InvWarehouseControllers invRequestController;
@@ -212,17 +212,7 @@ public class InvRequest_Roq_UpdateCarGeneralController implements Initializable,
                 }
 
             }
-        });
-        tfSearchReferenceNo.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                if (newValue.isEmpty()) {
-                    invRequestController.StockRequest().Master().setReferenceNo("");
-                    tfSearchReferenceNo.setText("");
-                    //loadTableList();
-                }
-            }
-        });
-    }
+        });}
         private void loadRecordSearch() {
             try {
               
@@ -720,22 +710,19 @@ public class InvRequest_Roq_UpdateCarGeneralController implements Initializable,
                     if ("success".equals((String) loJSON.get("result"))) {
                         invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
-                        invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode()); 
-                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID); 
-                        
+                        invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode());
+                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
+                        invRequestController.StockRequest().getROQItems();
                         loadMaster();
                         pnTblInvDetailRow = 0;
                         pnEditMode = invRequestController.StockRequest().getEditMode();
                         loadTableInvDetail();
                         loadTableInvDetailAndSelectedRow();
-                      Platform.runLater(() -> {
-                        tblViewOrderDetails.getSelectionModel().select(0);
-                        tfOrderQuantity.requestFocus();
-                    });
+                        Platform.runLater(() -> {
+                            tblViewOrderDetails.getSelectionModel().select(0);
+                            tfOrderQuantity.requestFocus();
+                        });
 
-                        
-                        
-                       
                     } else {
                         ShowMessageFX.Warning((String) loJSON.get("message"), "Warning", null);
                     }
@@ -953,20 +940,26 @@ public class InvRequest_Roq_UpdateCarGeneralController implements Initializable,
 
 
             
-            private void initFields(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.UPDATE);
-
+         private void initFields(int fnEditMode) {
+          
+        boolean lbShow = (fnEditMode == EditMode.UPDATE ||fnEditMode == EditMode.ADDNEW);
+        boolean lbNew = (fnEditMode == EditMode.ADDNEW);
+        
+        
         /* Master Fields*/
-        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)) {
+        if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)||
+            invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.CONFIRMED)) {
             CustomCommonUtil.setDisable(!lbShow, AnchorDetailMaster);
-            CustomCommonUtil.setDisable(!lbShow,
-                    dpTransactionDate, taRemarks, tfReferenceNo);
+            CustomCommonUtil.setDisable(!lbNew,
+                    dpTransactionDate, taRemarks,tfReferenceNo);
 
-            // Always disable these fields unless in edit mode
+
             CustomCommonUtil.setDisable(true,
-                    tfInvType, tfVariant, tfColor, tfReservationQTY, tfBrand, tfModel,
-                     tfQOH, tfROQ, tfClassification, tfBarCode, tfDescription);
+                    tfInvType,tfReservationQTY
+                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
+            
+            
         } else {
             CustomCommonUtil.setDisable(true, AnchorDetailMaster);
         }
@@ -1005,12 +998,12 @@ public class InvRequest_Roq_UpdateCarGeneralController implements Initializable,
         };
 
       private void initTextFieldKeyPressed() {
-            List<TextField> loTxtField = Arrays.asList(
-                    tfOrderQuantity
-                    );
+        List<TextField> loTxtField = Arrays.asList(
+                tfOrderQuantity, tfSearchTransNo
+        );
 
-            loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-        }  
+        loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
+    }
         private void initButtonsClickActions() {
             List<Button> buttons = Arrays.asList( btnSave, btnCancel,
                     btnClose,btnBrowse,btnUpdate,btnRetrieve,btnNew);
@@ -1029,6 +1022,24 @@ public class InvRequest_Roq_UpdateCarGeneralController implements Initializable,
                     case ENTER:
                     case F3:
                         switch (fieldId) {
+                            case "tfSearchTransNo":
+                                    System.out.print("Company ID" + psCompanyID);
+                                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                                    invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                                    invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
+                                    invRequestController.StockRequest().setTransactionStatus("102");
+                                    poJSON = invRequestController.StockRequest().searchTransaction();
+                                    if (!"error".equals((String) poJSON.get("result"))) {
+                                        pnTblInvDetailRow = -1;
+                                        loadMaster();
+                                        pnEditMode = invRequestController.StockRequest().getEditMode();
+                                        loadDetail();
+                                        loadTableInvDetail();
+                                        initButtons(pnEditMode);
+                                    } else {
+                                        ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
+                                    }
+                                    break;
                             case "tfOrderQuantity":
                                          setOrderQuantityToDetail(tfOrderQuantity.getText());
                                           if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
@@ -1040,6 +1051,20 @@ public class InvRequest_Roq_UpdateCarGeneralController implements Initializable,
                                           break;
                         }
                         event.consume();
+                        switch (fieldId) {
+                                    case "tfSearchTransNo":
+                                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                                        break;
+                                    case "tfOrderQuantity":
+                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                                        if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
+                                            pnTblInvDetailRow++;
+                                        }
+                                        CommonUtils.SetNextFocus((TextField) event.getSource());
+                                        loadTableInvDetailAndSelectedRow();
+                                        break;
+                                }
+                                event.consume();
                         break;
 
                     case UP:
@@ -1253,7 +1278,7 @@ public class InvRequest_Roq_UpdateCarGeneralController implements Initializable,
         }
     }
 
-      private void initDetailFocus() {
+     private void initDetailFocus() {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 
                             tfOrderQuantity.requestFocus();
@@ -1261,7 +1286,6 @@ public class InvRequest_Roq_UpdateCarGeneralController implements Initializable,
 
             }
         }
-
            private void initTextFieldFocus() {
         List<TextField> loTxtField = Arrays.asList(tfReferenceNo, tfOrderQuantity,tfSearchReferenceNo,tfOrderQuantity,tfBrand,tfDescription);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
