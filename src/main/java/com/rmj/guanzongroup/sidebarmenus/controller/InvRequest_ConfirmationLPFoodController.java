@@ -1002,7 +1002,7 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
 
         private void initTextFieldKeyPressed() {
             List<TextField> loTxtField = Arrays.asList(
-                    tfOrderQuantity,tfSearchTransNo
+                    tfOrderQuantity,tfSearchTransNo,tfSearchReferenceNo
                     );
 
             loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
@@ -1045,6 +1045,24 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
                                         ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
                                     }
                                     break;
+                                    case "tfSearchReferenceNo":
+                                        System.out.print("Enter pressed");
+                                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                                        invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
+                                        invRequestController.StockRequest().setTransactionStatus("102");
+                                        poJSON = invRequestController.StockRequest().searchTransaction();
+                                        if (!"error".equals((String) poJSON.get("result"))) {
+                                            pnTblInvDetailRow = -1;
+                                            loadMaster();
+                                            pnEditMode = invRequestController.StockRequest().getEditMode();
+                                            loadDetail();
+                                            loadTableInvDetail();
+                                            initButtons(pnEditMode);
+                                        } else {
+                                            ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
+                                        }
+                                        break;
                                 } 
                                switch (fieldId) {
                                     case "tfSearchTransNo":
