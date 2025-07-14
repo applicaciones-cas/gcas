@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -49,7 +48,7 @@ public class CheckClearingAssignController implements Initializable {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
-    private final String pxeModuleName = "Check Assignment";
+    private final String pxeModuleName = "Check Clearing Assignment";
     private CheckStatusUpdate poCheckStatusUpdateController;
 
     public int pnEditMode;
