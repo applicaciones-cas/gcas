@@ -58,7 +58,6 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.junit.Assert;
 import ph.com.guanzongroup.cas.cashflow.CheckStatusUpdate;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 import ph.com.guanzongroup.cas.cashflow.status.CheckStatus;
@@ -470,8 +469,8 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
         try {
             tfBankName.setText(poCheckStatusUpdateController.CheckPayments().getModel().Banks().getBankName() != null ? poCheckStatusUpdateController.CheckPayments().getModel().Banks().getBankName() : "");
             tfBankAccount.setText(poCheckStatusUpdateController.CheckPayments().getModel().getBankAcountID() != null ? poCheckStatusUpdateController.CheckPayments().getModel().getBankAcountID() : "");
-            tfPayeeName.setText(poCheckStatusUpdateController.Master().Payee().getPayeeName() != null ? poCheckStatusUpdateController.Master().Payee().getPayeeName() : "");
-            tfCheckNo.setText(poCheckStatusUpdateController.CheckPayments().getModel().getCheckNo());
+            tfPayeeName.setText(poCheckStatusUpdateController.Master().CheckPayments().Payee().getPayeeName() != null ? poCheckStatusUpdateController.Master().CheckPayments().Payee().getPayeeName() : "");
+            tfCheckNo.setText(poCheckStatusUpdateController.Master().CheckPayments().getCheckNo());
             dpCheckDate.setValue(poCheckStatusUpdateController.CheckPayments().getModel().getCheckDate() != null
                     ? CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poCheckStatusUpdateController.CheckPayments().getModel().getCheckDate(), SQLUtil.FORMAT_SHORT_DATE))
                     : null);
@@ -775,6 +774,7 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                 CustomCommonUtil.setVisible(true, dpClearDate, lblClearingDate);
                 CustomCommonUtil.setManaged(true, dpClearDate, lblClearingDate);
                 CustomCommonUtil.setDisable(!lbShow, dpClearDate);
+                dpClearDate.setValue(LocalDate.now());
                 break;
             case CheckStatus.CANCELLED:
             case CheckStatus.BOUNCED:
@@ -788,6 +788,8 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                 row09.setMaxHeight(30);
                 CustomCommonUtil.setVisible(true, dpHoldUntil, lblHoldUntil, taRemarks, lblRemarks);
                 CustomCommonUtil.setManaged(true, dpHoldUntil, lblHoldUntil, taRemarks, lblRemarks);
+                dpHoldUntil.setValue(LocalDate.now());
+                CustomCommonUtil.setDisable(!lbShow, dpHoldUntil);
                 break;
             default:
                 row09.setPrefHeight(30);

@@ -1206,6 +1206,8 @@ public class DashboardController implements Initializable {
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
                     return "Check Status Update";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdateByBatch.fxml":
+                    return "Check Clear Status";
                 //Importing
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml":
                     return "Check Importing";
@@ -1755,6 +1757,8 @@ public class DashboardController implements Initializable {
             //Update
             case "Check Status Update":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml";
+            case "Check Clear Status":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdateByBatch.fxml";
             //Importing
             case "Check Importing":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml";
@@ -2324,6 +2328,8 @@ public class DashboardController implements Initializable {
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
                     return new CheckStatusUpdateController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdateByBatch.fxml":
+                    return new CheckStatusUpdateByBatchController();
 
                 //IMPORTING
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml":
@@ -3701,6 +3707,7 @@ public class DashboardController implements Initializable {
                 //STATUS UPDATE
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Update\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"078\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Status Update\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml\",\"controller_path\":\"CheckStatusUpdateController\",\"menu_id\":\"079\",\"menu_parent\":\"078\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Clear Status\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdateByBatch.fxml\",\"controller_path\":\"CheckStatusUpdateByBatchController\",\"menu_id\":\"094\",\"menu_parent\":\"078\"},"
                 //IMPORTING
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Import\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"080\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Importing\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml\",\"controller_path\":\"CheckImportingController\",\"menu_id\":\"081\",\"menu_parent\":\"080\"},"
