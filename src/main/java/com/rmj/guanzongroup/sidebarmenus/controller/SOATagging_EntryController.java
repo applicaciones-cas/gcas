@@ -1153,9 +1153,6 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 Platform.runLater(() -> {
                     loadTableDetail();
                 });
-                if (JFXUtil.isObjectEqualTo(pnEditMode, EditMode.ADDNEW, EditMode.READY)) {
-                    retrievePayables(false);
-                }
             } else {
                 ShowMessageFX.Warning(null, pxeModuleName, "Data can only be viewed when in ADD or UPDATE mode.");
             }
