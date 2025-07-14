@@ -65,6 +65,7 @@ import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatic;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
+import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.constant.UserRight;
 import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
@@ -120,9 +121,16 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     @FXML
     private TableView tblViewTransDetailList, tblViewMainList;
     @FXML
-    private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail, tblAppliedAmtDetail, tblRowNo, tblSupplier, tblDate, tblReferenceNo;
+    private TableColumn tblRowNoDetail, tblSourceNoDetail, tblSourceCodeDetail, tblReferenceNoDetail, tblCreditAmtDetail, tblDebitAmtDetail, tblAppliedAmtDetail, tblRowNo, tblTransType, tblSupplier, tblDate, tblReferenceNo;
     @FXML
     private Pagination pgPagination;
+    @FXML
+    private ComboBox cmbTransType;
+    ObservableList<String> TransactionType = FXCollections.observableArrayList(
+            "ALL",
+            "Cache Payable",
+            "PRF"
+    );
 
     public void setTabTitle(String lsTabTitle, boolean isGeneral) {
         this.pxeModuleName = lsTabTitle;
@@ -140,6 +148,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
+        initComboBoxes();
         initTextFields();
         initDatePickers();
         initMainGrid();
@@ -381,13 +390,22 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
 
     public void retrievePayables(boolean isInReferenceNo) {
-
         poJSON = new JSONObject();
+        String lsTransType = "ALL";
+        switch(cmbTransType.getSelectionModel().getSelectedIndex()){
+            case 1:
+                lsTransType = SOATaggingStatic.CachePayable;
+                break;
+            case 2:
+                lsTransType = SOATaggingStatic.PaymentRequest;
+                break;
+        }
+        
         if (isInReferenceNo) {
-            poJSON = poSOATaggingController.loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(), tfReferenceNo.getText());
+            poJSON = poSOATaggingController.loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(), tfReferenceNo.getText(), lsTransType);
         } else {
             //general
-            poJSON = poSOATaggingController.loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(),  "");
+            poJSON = poSOATaggingController.loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(),  "", lsTransType);
         }
 
         if (!"success".equals((String) poJSON.get("result"))) {
@@ -933,6 +951,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     String lsTransNo = "";
                     String lsTransDate = "";
                     String lsTransNoBasis = "";
+                    String lsTransType = "";
                     //retreiving using column index
                     for (int lnCtr = 0; lnCtr <= poSOATaggingController.getPayablesCount() - 1; lnCtr++) {
                         try {
@@ -942,24 +961,25 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                     lsTransNo = poSOATaggingController.PaymentRequestList(lnCtr).getSeriesNo();
                                     lsTransDate = String.valueOf(poSOATaggingController.PaymentRequestList(lnCtr).getTransactionDate());
                                     lsTransNoBasis = poSOATaggingController.PaymentRequestList(lnCtr).getTransactionNo();
+                                    lsTransType = "PRF";
                                     break;
                                 case SOATaggingStatic.CachePayable:
                                     lsPayeeName = poSOATaggingController.CachePayableList(lnCtr).Client().getCompanyName();
                                     lsTransNo = poSOATaggingController.CachePayableList(lnCtr).getReferNo();
                                     lsTransDate = String.valueOf(poSOATaggingController.CachePayableList(lnCtr).getTransactionDate());
                                     lsTransNoBasis = poSOATaggingController.CachePayableList(lnCtr).getTransactionNo();
+                                    lsTransType = "Cache Payable";
                                     break;
                             }
 
                             main_data.add(new ModelSOATagging_Main(String.valueOf(lnCtr + 1),
+                                    lsTransType,
                                     lsPayeeName,
                                     lsTransDate,
                                     lsTransNo,
                                     lsTransNoBasis
                             ));
-                        } catch (SQLException ex) {
-                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-                        } catch (GuanzonException ex) {
+                        } catch (SQLException | GuanzonException ex) {
                             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                         }
                     }
@@ -1258,6 +1278,15 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
 
     }
 
+    private void initComboBoxes() {
+        // Set the items of the ComboBox to the list of genders
+        cmbTransType.setItems(TransactionType);
+        cmbTransType.getSelectionModel().select(0);
+        cmbTransType.setOnAction(event -> {
+            retrievePayables(false);
+        });
+    }
+    
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
@@ -1344,7 +1373,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
 
     public void initMainGrid() {
-        JFXUtil.setColumnCenter(tblRowNo, tblDate, tblReferenceNo);
+        JFXUtil.setColumnCenter(tblRowNo,tblTransType,tblDate, tblReferenceNo);
         JFXUtil.setColumnLeft(tblSupplier);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewMainList);
 
