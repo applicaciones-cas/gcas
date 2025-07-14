@@ -968,7 +968,7 @@ public class InvRequest_Roq_UpdateLPFoodController implements Initializable, Scr
 
       private void initTextFieldKeyPressed() {
         List<TextField> loTxtField = Arrays.asList(
-                tfOrderQuantity, tfSearchTransNo
+                tfOrderQuantity, tfSearchTransNo, tfSearchReferenceNo
         );
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
@@ -1018,6 +1018,24 @@ public class InvRequest_Roq_UpdateLPFoodController implements Initializable, Scr
                                           CommonUtils.SetNextFocus(sourceField);
                                           loadTableInvDetailAndSelectedRow();
                                           break;
+                            case "tfSearchReferenceNo":
+                                System.out.print("Enter pressed");
+                                invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                                invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                                invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
+                                invRequestController.StockRequest().setTransactionStatus("102");
+                                poJSON = invRequestController.StockRequest().searchTransaction();
+                                if (!"error".equals((String) poJSON.get("result"))) {
+                                    pnTblInvDetailRow = -1;
+                                    loadMaster();
+                                    pnEditMode = invRequestController.StockRequest().getEditMode();
+                                    loadDetail();
+                                    loadTableInvDetail();
+                                    initButtons(pnEditMode);
+                                } else {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
+                                }
+                                break;
                         }
                         event.consume();
                         switch (fieldId) {
@@ -1069,7 +1087,6 @@ public class InvRequest_Roq_UpdateLPFoodController implements Initializable, Scr
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error", psFormName);
             }
         }
-
        
 
 
