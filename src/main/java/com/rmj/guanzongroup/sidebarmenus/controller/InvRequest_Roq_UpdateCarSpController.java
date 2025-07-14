@@ -209,7 +209,7 @@ public class InvRequest_Roq_UpdateCarSpController implements Initializable, Scre
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    loadTableList();
+                    //loadTableList();
                 }
 
             }
@@ -525,7 +525,7 @@ public class InvRequest_Roq_UpdateCarSpController implements Initializable, Scre
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
-                            loadTableList();
+                            //loadTableList();
                             pnEditMode = EditMode.UNKNOWN;
                             initFields(pnEditMode); // This will disable all detail fields
                             initButtons(pnEditMode);
@@ -927,7 +927,7 @@ public class InvRequest_Roq_UpdateCarSpController implements Initializable, Scre
                     break;
                 case "tfSearchReferenceNo":
                      psReferID = tfSearchReferenceNo.getText();
-                    loadTableList();
+                    //loadTableList();
                     break;
             }
         } else {

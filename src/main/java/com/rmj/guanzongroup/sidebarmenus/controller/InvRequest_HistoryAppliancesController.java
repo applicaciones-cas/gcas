@@ -90,9 +90,11 @@ public class InvRequest_HistoryAppliancesController implements Initializable, Sc
 
     @FXML
     private TextField tfReservationQTY, tfOrderQuantity, tfTransactionNo, tfReferenceNo,
-            tfSearchTransNo, tfSearchReferenceNo, tfBarCode, tfDescription, tfMeasure;
+            tfSearchTransNo, tfSearchReferenceNo, tfBarCode, tfDescription ;
     @FXML
-    private TableColumn<ModelInvOrderDetail, String> tblBrandDetail,tblBarCodeDetail,tblDescriptionDetail, tblModelDetail, tblVariantDetail, tblColorDetail, tblInvTypeDetail, tblROQDetail, tblClassificationDetail, tblQOHDetail, tblReservationQtyDetail, tblOrderQuantityDetail, tblMeasureDetail;
+    private TableColumn<ModelInvOrderDetail, String> tblBrandDetail,tblBarCodeDetail,tblDescriptionDetail, tblModelDetail,
+            tblVariantDetail, tblColorDetail, tblInvTypeDetail, tblROQDetail, tblClassificationDetail, tblQOHDetail, tblReservationQtyDetail,
+            tblOrderQuantityDetail ;
     @FXML
     private TextField tfBrand, tfModel, tfInvType,
             tfVariant, tfColor, tfROQ, tfClassification, tfQOH;

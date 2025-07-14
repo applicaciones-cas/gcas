@@ -208,7 +208,7 @@ public class InvRequest_Roq_UpdateAppliancesGeneralController implements Initial
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    loadTableList();
+                    //loadTableList();
                 }
 
             }
@@ -926,7 +926,7 @@ public class InvRequest_Roq_UpdateAppliancesGeneralController implements Initial
                     break;
                 case "tfSearchReferenceNo":
                      psReferID = tfSearchReferenceNo.getText();
-                    loadTableList();
+                    //loadTableList();
                     break;
             }
         } else {
