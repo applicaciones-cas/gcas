@@ -105,7 +105,7 @@ public class InvRequest_Roq_EntryLPFoodController implements Initializable, Scre
     @FXML
     private DatePicker dpTransactionDate;
     @FXML
-        private TextField tfTransactionNo,tfBrand,tfModel,tfInvType,
+        private TextField tfTransactionNo,tfBrand,tfMeasure,tfModel,tfInvType,
                 tfVariant,tfColor,tfROQ,tfClassification,tfQOH,tfReferenceNo,tfReservationQTY,tfOrderQuantity,tfDescription,tfBarCode;
         
     @FXML
@@ -681,12 +681,6 @@ public class InvRequest_Roq_EntryLPFoodController implements Initializable, Scre
     private void loadDetail() {
             try {
                 if (pnTblInvDetailRow >= 0) {
-
-                    String lsBrand = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
-                        lsBrand = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription();
-                    }
-                    tfBrand.setText(lsBrand);
                     
                    String lsDescription = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
@@ -701,32 +695,23 @@ public class InvRequest_Roq_EntryLPFoodController implements Initializable, Scre
                     tfBarCode.setText(lsBarCode);
 
                     
-                    String lsModel = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Model().getDescription() != null) {
-                        lsModel = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Model().getDescription();
+                    String lsBrand = "";
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
+                        lsBrand = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription();
                     }
-                    tfModel.setText(lsModel);
+                    tfBrand.setText(lsBrand);
 
-                   
-
-                    String lsVariant = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Variant().getDescription()!= null) {
-                        lsVariant = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Variant().getDescription();
-                    }
-                    tfVariant.setText(lsVariant);
-
-                    String lsColor = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Color().getDescription() != null) {
-                        lsColor = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Color().getDescription();
-                    }
-                    tfColor.setText(lsColor);
-                    
                     String lsInvType = "";
-                    
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().InventoryType().getDescription() != null) {
                         lsInvType = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().InventoryType().getDescription();
                     }
                     tfInvType.setText(lsInvType);
+                    
+                    String lsMeasure = "";
+                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Measure().getDescription() != null) {
+                        lsMeasure = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Measure().getDescription();
+                    }
+                    tfMeasure.setText(lsMeasure);
                     
                     String lsROQ = "0";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).getRecommendedOrder() != 0) {
@@ -754,7 +739,7 @@ public class InvRequest_Roq_EntryLPFoodController implements Initializable, Scre
                     }
                     tfReservationQTY.setText(lsReservationQTY);
                     
-                    String lsOrderQuantity = "0.0";
+                    String lsOrderQuantity = "0";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity() != 0) {
                         lsOrderQuantity = String.valueOf(invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity());
                     }
@@ -951,7 +936,7 @@ public class InvRequest_Roq_EntryLPFoodController implements Initializable, Scre
 
            
             CustomCommonUtil.setDisable(true, tfBrand, tfModel,
-                    tfInvType,tfVariant,tfColor,tfReservationQTY,tfQOH,tfROQ,tfClassification, tfBarCode, tfDescription);
+                    tfInvType,tfMeasure, tfVariant,tfColor,tfReservationQTY,tfQOH,tfROQ,tfClassification, tfBarCode, tfDescription);
            CustomCommonUtil.setDisable(!lbShow,tfOrderQuantity);
             
         } else {
@@ -1112,7 +1097,7 @@ public class InvRequest_Roq_EntryLPFoodController implements Initializable, Scre
         }
     
     private void initTableInvDetail() {
-             tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
+            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
             tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
             tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
             tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
