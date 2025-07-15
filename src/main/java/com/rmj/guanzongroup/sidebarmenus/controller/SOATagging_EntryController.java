@@ -1034,7 +1034,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     break;
                 case SOATaggingStatic.CachePayable:
                     lsReferenceNo = poSOATaggingController.Detail(pnDetail).CachePayableMaster().getReferNo();
-                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).PaymentRequestMaster().getTransactionDate());
+                    lsReferenceDate = CustomCommonUtil.formatDateToShortString(poSOATaggingController.Detail(pnDetail).CachePayableMaster().getTransactionDate());
                     break;
             }
             boolean lbDisable = lsReferenceNo != null && "".equals(lsReferenceNo);

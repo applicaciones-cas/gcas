@@ -197,6 +197,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
             poCheckPrintingRequestController.Master().setCompanyID(psCompanyId);
             poCheckPrintingRequestController.setIndustryID(psIndustryId);
             poCheckPrintingRequestController.setCompanyID(psCompanyId);
+            poCheckPrintingRequestController.Master().setBranchCode(oApp.getBranchCode());
             loadRecordSearch();
             btnNew.fire();
         });
@@ -257,6 +258,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                     }
                     poCheckPrintingRequestController.Master().setIndustryID(psIndustryId);
                     poCheckPrintingRequestController.Master().setCompanyID(psCompanyId);
+                    poCheckPrintingRequestController.Master().setBranchCode(oApp.getBranchCode());
                     loadTableDetail();
                     pnEditMode = poCheckPrintingRequestController.getEditMode();
                     break;
@@ -308,6 +310,20 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                 case "btnRetrieve":
                     loadTableMain();
                     break;
+                case "btnExport":
+                    if (ShowMessageFX.YesNo("Are you sure you want to export this transaction?", "Exporting", null)) {
+                        poJSON = poCheckPrintingRequestController.ExportTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                            return;
+                        }
+                        ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                        loadTableDetail();
+                        pnEditMode = poCheckPrintingRequestController.getEditMode();
+                    } else {
+                        return;
+                    }
+                    break;
                 case "btnClose":
                     if (ShowMessageFX.YesNo("Are you sure you want to close this Tab?", "Close Tab", null)) {
                         poUnload.unloadForm(AnchorMain, oApp, pxeModuleName);
@@ -318,6 +334,14 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                 default:
                     ShowMessageFX.Warning("Please contact admin to assist about no button available", pxeModuleName, null);
                     break;
+            }
+            if (lsButton.equals("btnSave") || lsButton.equals("btnVoid") || lsButton.equals("btnCancel")) {
+                poCheckPrintingRequestController.resetMaster();
+                poCheckPrintingRequestController.resetOthers();
+                poCheckPrintingRequestController.Detail().clear();
+                clearFields();
+                details_data.clear();
+                pnEditMode = EditMode.UNKNOWN;
             }
             initFields(pnEditMode);
             initButton(pnEditMode);
@@ -399,10 +423,6 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                                         CustomCommonUtil.formatDateToShortString(poCheckPrintingRequestController.CheckPayments(lnCntr).getTransactionDate()),
                                         poCheckPrintingRequestController.CheckPayments(lnCntr).getSourceNo()
                                 ));
-                                if (poCheckPrintingRequestController.CheckPayments(lnCntr).getTransactionStatus().equals(DisbursementStatic.VERIFIED)) {
-                                    plOrderNoPartial.add(new Pair<>(String.valueOf(lnCntr + 1), "1"));
-                                }
-
                             }
                         }
                         showRetainedHighlight(true);
@@ -468,6 +488,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
             tfBankName.setText(poCheckPrintingRequestController.Master().Banks().getBankName() != null ? poCheckPrintingRequestController.Master().Banks().getBankName() : "");
             tfTotalAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Master().getTotalAmount(), true));
             taRemarks.setText(poCheckPrintingRequestController.Master().getRemarks() != null ? poCheckPrintingRequestController.Master().getRemarks() : "");
+            chbkUploaded.setSelected(poCheckPrintingRequestController.Master().isUploaded());
         } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(CheckPrintRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -528,7 +549,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                     String lsTransactionNo = selected.getIndex05();
                     poJSON = poCheckPrintingRequestController.addCheckPaymentToCheckPrintRequest(lsTransactionNo);
                     if ("success".equals(poJSON.get("result"))) {
-                        JFXUtil.highlightByKey(tblVwMain, String.valueOf(pnRowMain + 1), "#A7C7E7", highlightedRowsMain);
+                        JFXUtil.highlightByKey(tblVwMain, lsTransactionNo, "#A7C7E7", highlightedRowsMain);
                     } else {
                         if ("true".equals((String) poJSON.get("warning"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -552,7 +573,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                                 dpDVDate.setValue(null);
                                 JFXUtil.disableAllHighlightByColor(tblVwMain, "#A7C7E7", highlightedRowsMain);
                             } else {
-                                JFXUtil.disableHighlightByKey(tblVwMain, String.valueOf(pnRowMain + 1), highlightedRowsMain);
+                                JFXUtil.disableHighlightByKey(tblVwMain, lsTransactionNo, highlightedRowsMain);
                             }
                         } else {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -592,56 +613,66 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
             @Override
             protected Void call() throws Exception {
                 Platform.runLater(() -> {
-                    details_data.clear();
-                    int lnCtr;
-                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                        lnCtr = poCheckPrintingRequestController.getDetailCount() - 1;
-                        if (lnCtr >= 0) {
-                            if (poCheckPrintingRequestController.Detail(lnCtr).getSourceNo() != null
-                                    && !poCheckPrintingRequestController.Detail(lnCtr).getSourceNo().equals("")) {
-                                try {
-                                    poCheckPrintingRequestController.AddDetail();
+                    try {
+                        details_data.clear();
+                        int lnCtr;
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            lnCtr = poCheckPrintingRequestController.getDetailCount() - 1;
+                            if (lnCtr >= 0) {
+                                if (poCheckPrintingRequestController.Detail(lnCtr).getSourceNo() != null
+                                        && !poCheckPrintingRequestController.Detail(lnCtr).getSourceNo().equals("")) {
+                                    try {
+                                        poCheckPrintingRequestController.AddDetail();
 
-                                } catch (CloneNotSupportedException ex) {
-                                    Logger.getLogger(CheckPrintRequest_EntryController.class
-                                            .getName()).log(Level.SEVERE, null, ex);
+                                    } catch (CloneNotSupportedException ex) {
+                                        Logger.getLogger(CheckPrintRequest_EntryController.class
+                                                .getName()).log(Level.SEVERE, null, ex);
+                                    }
                                 }
                             }
                         }
-                    }
-                    for (lnCtr = 0; lnCtr < poCheckPrintingRequestController.getDetailCount(); lnCtr++) {
-                        try {
+                        for (lnCtr = 0; lnCtr < poCheckPrintingRequestController.getDetailCount(); lnCtr++) {
+                            try {
 
-                            details_data.add(
-                                    new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
-                                            poCheckPrintingRequestController.Detail(lnCtr).getSourceNo(),
-                                            poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().getTransactionNo(),
-                                            CustomCommonUtil.formatDateToShortString(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().getTransactionDate()),
-                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().getNetTotal(), true),
-                                            poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckNo(),
-                                            poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckDate() != null
-                                            ? CustomCommonUtil.formatDateToShortString(
-                                                    poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckDate())
-                                            : "",
-                                            CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getAmount(), true)
-                                    ));
+                                details_data.add(
+                                        new ModelDisbursementVoucher_Detail(String.valueOf(lnCtr + 1),
+                                                poCheckPrintingRequestController.Detail(lnCtr).getSourceNo(),
+                                                poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().getTransactionNo(),
+                                                CustomCommonUtil.formatDateToShortString(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().getTransactionDate()),
+                                                CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().getNetTotal(), true),
+                                                poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckNo(),
+                                                poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckDate() != null
+                                                ? CustomCommonUtil.formatDateToShortString(
+                                                        poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getCheckDate())
+                                                : "",
+                                                CustomCommonUtil.setIntegerValueToDecimalFormat(poCheckPrintingRequestController.Detail(lnCtr).DisbursementMaster().CheckPayments().getAmount(), true)
+                                        ));
 
-                        } catch (SQLException | GuanzonException ex) {
-                            Logger.getLogger(CheckPrintRequest_EntryController.class
-                                    .getName()).log(Level.SEVERE, null, ex);
+                            } catch (SQLException | GuanzonException ex) {
+                                Logger.getLogger(CheckPrintRequest_EntryController.class
+                                        .getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
-                    }
-                    if (pnDetail < 0 || pnDetail >= details_data.size()) {
-                        if (!details_data.isEmpty()) {
-                            tblVwDetail.getSelectionModel().select(0);
-                            tblVwDetail.getFocusModel().focus(0);
-                            pnDetail = tblVwDetail.getSelectionModel().getSelectedIndex();
+                        if (pnDetail < 0 || pnDetail
+                                >= details_data.size()) {
+                            if (!details_data.isEmpty()) {
+                                JFXUtil.selectAndFocusRow(tblVwDetail, 0);
+                                pnDetail = tblVwDetail.getSelectionModel().getSelectedIndex();
+                                loadRecordDetail();
+                            }
+                        } else {
+                            JFXUtil.selectAndFocusRow(tblVwMain, pnDetail);
+                            loadRecordDetail();
                         }
-                    } else {
-                        tblVwDetail.getSelectionModel().select(pnDetail);
-                        tblVwDetail.getFocusModel().focus(pnDetail);
+                        poJSON = poCheckPrintingRequestController.computeFields();
+                        if ("error".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                            return;
+                        }
+                        loadRecordMaster();
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(CheckPrintRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    loadRecordMaster();
                 });
                 return null;
             }
@@ -709,7 +740,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                 if (item == null || empty) {
                     setStyle("");
                 } else {
-                    String key = item.getIndex01();
+                    String key = item.getIndex05();
                     if (highlightedRowsMain.containsKey(key)) {
                         List<String> colors = highlightedRowsMain.get(key);
                         if (!colors.isEmpty()) {
@@ -809,18 +840,6 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
         }
     }
 
-    private void movePrevious() {
-        apDetail.requestFocus();
-
-        initFields(pnEditMode);
-    }
-
-    private void moveNext() {
-        apDetail.requestFocus();
-
-        initFields(pnEditMode);
-    }
-
     private void initTextAreaFields() {
         //Initialise  TextArea Focus
         taRemarks.focusedProperty().addListener(txtArea_Focus);
@@ -849,23 +868,6 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                     case "taRemarks":
                         poCheckPrintingRequestController.Master().setRemarks(lsValue);
                         break;
-                    case "taRemarksDetails":
-                        try {
-                        poCheckPrintingRequestController.Detail(pnDetail).DisbursementMaster().CheckPayments().setRemarks(lsValue);
-
-                    } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(CheckPrintRequest_EntryController.class
-                                .getName()).log(Level.SEVERE, null, ex);
-                    }
-                    Platform.runLater(() -> {
-                        PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                        delay.setOnFinished(event -> {
-                            loadTableDetail();
-                        });
-                        delay.play();
-                    });
-                    break;
-
                 }
             } else {
                 txtArea.selectAll();
@@ -886,16 +888,33 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                     CommonUtils.SetNextFocus(txtArea);
                     switch (lsID) {
                         case "taRemarksDetails":
-                            moveNext();
-                            event.consume();
-                            break;
+                            try {
+                            poCheckPrintingRequestController.Detail(pnDetail).DisbursementMaster().CheckPayments().setRemarks(taRemarksDetails.getText());
+                        } catch (SQLException | GuanzonException ex) {
+                            Logger.getLogger(CheckPrintRequest_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        Platform.runLater(() -> {
+                            PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                            delay.setOnFinished(event1 -> {
+                                pnDetail = JFXUtil.moveToNextRow(tblVwDetail);
+                                apDetail.requestFocus();
+                                loadRecordDetail();
+                            });
+                            delay.play();
+                        });
+                        loadTableDetail();
+                        event.consume();
+                        break;
+
                     }
                     event.consume();
                     break;
                 case UP:
                     switch (lsID) {
                         case "taRemarksDetails":
-                            movePrevious();
+                            pnDetail = JFXUtil.moveToPreviousRow(tblVwDetail);
+                            apDetail.requestFocus();
+                            loadRecordDetail();
                             event.consume();
                             break;
                     }
@@ -904,7 +923,9 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                 case DOWN:
                     switch (lsID) {
                         case "taRemarksDetails":
-                            moveNext();
+                            pnDetail = JFXUtil.moveToNextRow(tblVwDetail);
+                            apDetail.requestFocus();
+                            loadRecordDetail();
                             event.consume();
                             break;
                     }
@@ -953,13 +974,18 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
         JFXUtil.setButtonsVisibility(lbShow, btnSave, btnCancel);
         JFXUtil.setButtonsVisibility(false, btnUpdate, btnExport);
         JFXUtil.setButtonsVisibility(fnEditMode != EditMode.ADDNEW && fnEditMode != EditMode.UNKNOWN, btnHistory);
+        if (poCheckPrintingRequestController.Master().isUploaded()) {
+            btnExport.setText("ReExport");
+        } else {
+            btnExport.setText("Export");
+        }
         if (fnEditMode == EditMode.READY) {
             switch (poCheckPrintingRequestController.Master().getTransactionStatus()) {
                 case CheckPrintRequestStatus.OPEN:
                     JFXUtil.setButtonsVisibility(true, btnUpdate);
                     break;
                 case CheckPrintRequestStatus.CONFIRMED:
-                    JFXUtil.setButtonsVisibility(true, btnUpdate, btnExport);
+                    JFXUtil.setButtonsVisibility(true, btnExport);
                     break;
             }
         }
@@ -1115,6 +1141,7 @@ public class CheckPrintRequest_EntryController implements Initializable, ScreenI
                             }
                             tfSearchBankAccount.setText("");
                             return false;
+
                         } catch (ExceptionInInitializerError | SQLException | GuanzonException ex) {
                             Logger.getLogger(CheckPrintRequest_EntryController.class
                                     .getName()).log(Level.SEVERE, null, ex);

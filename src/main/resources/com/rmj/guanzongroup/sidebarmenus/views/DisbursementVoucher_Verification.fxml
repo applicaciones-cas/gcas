@@ -24,6 +24,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+
 <?import java.net.URL?>
 
 <AnchorPane fx:id="AnchorMain" minWidth="1455.0" prefHeight="1000.0" prefWidth="1809.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
@@ -54,7 +55,7 @@
                                                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <Label text="Supplier" GridPane.columnIndex="4">
+                                                <Label text="Supplier/Payee" GridPane.columnIndex="4">
                                                     <font>
                                                         <Font name="System Bold" size="14.0" />
                                                     </font>
@@ -282,6 +283,8 @@
                                                                                                                                                         <ComboBox fx:id="cmbClaimantType" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                                                                                                         <TextField fx:id="tfAuthorizedPerson" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                                                                                                                                         <Label text="Bank Account" GridPane.rowIndex="1" />
+                                                                                                                                                        <ComboBox fx:id="cmbCheckStatus" disable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="6" />
+                                                                                                                                                        <Label text="Check Status" GridPane.columnIndex="4" GridPane.rowIndex="6" />
                                                                                                                                                     </children>
                                                                                                                                                 </GridPane>
                                                                                                                                             </children>
@@ -444,7 +447,7 @@
                                                                                                     <children>
                                                                                                         <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                                                             <columnConstraints>
-                                                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+                                                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                                                                             </columnConstraints>

@@ -12,9 +12,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,7 +46,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Pair;
+import javax.script.ScriptException;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -89,10 +87,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
     private FilteredList<ModelDisbursementVoucher_Main> filteredMain_Data;
 
     ArrayList<SelectedITems> getSelectedItems = new ArrayList<>();
-//    List<Pair<String, String>> plOrderNoPartial = new ArrayList<>();
-//    List<Pair<String, String>> plOrderNoFinal = new ArrayList<>();
 
-    private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
     @FXML
     private AnchorPane AnchorMain, apBrowse, apButton;
     @FXML
@@ -163,6 +158,10 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
         initTableOnClick();
         initButtons();
         initTextFieldsProperty();
+        if (main_data.isEmpty()) {
+            pagination.setManaged(false);
+            pagination.setVisible(false);
+        }
     }
 
     private void loadRecordSearch() {
@@ -193,7 +192,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                 handleDisbursementAction("disapprove");
                 break;
             case "btnRetrieve":
-                loadTableMain();
+                loadTableMainAndClearSelectedItems();
                 break;
             case "btnClose":
                 if (ShowMessageFX.YesNo("Are you sure you want to close this Tab?", "Close Tab", null)) {
@@ -204,6 +203,12 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                 ShowMessageFX.Warning("Please contact admin to assist about no button available", pxeModuleName, null);
                 break;
         }
+    }
+
+    private void loadTableMainAndClearSelectedItems() {
+        chckSelectAll.setSelected(false);
+        getSelectedItems.clear();
+        loadTableMain();
     }
 
     private void handleDisbursementAction(String action) {
@@ -241,6 +246,8 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                    chckSelectAll.setSelected(false);
+                    getSelectedItems.clear();
                     break;
                 case "return":
                     poJSON = poDisbursementController.ReturnTransaction("Returned", getSelectedItems);
@@ -248,6 +255,8 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                    chckSelectAll.setSelected(false);
+                    getSelectedItems.clear();
                     break;
                 case "dissapprove":
                     poJSON = poDisbursementController.DisapprovedTransaction("Disapproved", getSelectedItems);
@@ -255,12 +264,16 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
+                    chckSelectAll.setSelected(false);
+                    getSelectedItems.clear();
                     break;
                 default:
                     throw new AssertionError();
             }
             loadTableMain();
         } catch (ParseException | SQLException | GuanzonException | CloneNotSupportedException ex) {
+            Logger.getLogger(CheckAuthorizationController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ScriptException ex) {
             Logger.getLogger(CheckAuthorizationController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -301,7 +314,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                                 break;
                         }
                         CommonUtils.SetNextFocus((TextField) event.getSource());
-                        loadTableMain();
+                        loadTableMainAndClearSelectedItems();
                         event.consume();
                     default:
                         break;
@@ -332,8 +345,6 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                 Platform.runLater(() -> {
                     try {
                         main_data.clear();
-                        //                        plOrderNoFinal.clear();
-//                        plOrderNoPartial.clear();
                         poJSON = poDisbursementController.getDisbursementForCheckAuthorization(psSearchBankID, psSearchBankAccountID);
                         if ("success".equals(poJSON.get("result"))) {
                             if (poDisbursementController.getDisbursementMasterCount() > 0) {
@@ -428,23 +439,6 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
         tblVwMain.setItems(filteredMain_Data);
     }
 
-//    private void showRetainedHighlight(boolean isRetained) {
-//        if (isRetained) {
-//            for (Pair<String, String> pair : plOrderNoPartial) {
-//                if (!"0".equals(pair.getValue())) {
-//
-//                    plOrderNoFinal.add(new Pair<>(pair.getKey(), pair.getValue()));
-//                }
-//            }
-//        }
-//        JFXUtil.disableAllHighlight(tblVwMain, highlightedRowsMain);
-//        plOrderNoPartial.clear();
-//        for (Pair<String, String> pair : plOrderNoFinal) {
-//            if (!"0".equals(pair.getValue())) {
-//                JFXUtil.highlightByKey(tblVwMain, pair.getKey(), "#A7C7E7", highlightedRowsMain);
-//            }
-//        }
-//    }
     private void initTableOnClick() {
         tblVwMain.setOnMouseClicked(event -> {
             if (tblVwMain.getSelectionModel().getSelectedIndex() >= 0 && event.getClickCount() == 2) {
@@ -507,7 +501,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                     tfSearchBankAccount.setText("");
                     psSearchBankID = "";
                     psSearchBankAccountID = "";
-                    loadTableMain();
+                    loadTableMainAndClearSelectedItems();
                 }
             }
         }
@@ -518,7 +512,7 @@ public class CheckAuthorizationController implements Initializable, ScreenInterf
                     poDisbursementController.CheckPayments().getModel().setBankAcountID("");
                     tfSearchBankAccount.setText("");
                     psSearchBankAccountID = "";
-                    loadTableMain();
+                    loadTableMainAndClearSelectedItems();
                 }
             }
         }

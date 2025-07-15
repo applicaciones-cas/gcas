@@ -56,9 +56,6 @@ import org.guanzon.appdriver.base.CommonUtils;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
-import org.guanzon.appdriver.base.SQLUtil;
-import org.guanzon.appdriver.constant.EditMode;
-import org.guanzon.cas.purchasing.status.PurchaseOrderStaticData;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.cashflow.CheckPayments;
 import ph.com.guanzongroup.cas.cashflow.CheckPrinting;
@@ -246,7 +243,8 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         buttons.forEach(button -> button.setOnAction(this::cmdButton_Click));
     }
 
-    private void validateSelectedItem() {
+    private JSONObject validateSelectedItem() {
+        poJSON = new JSONObject();
         ObservableList<ModelCheckPrinting> selectedItems = FXCollections.observableArrayList();
 
         for (ModelCheckPrinting item : tblVwMain.getItems()) {
@@ -256,13 +254,11 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         }
 
         if (selectedItems.isEmpty()) {
-            ShowMessageFX.Information(null, pxeModuleName, "No items selected to assign.");
-            return;
+            poJSON.put("message", "No items selected to assign.");
+            poJSON.put("result", "error");
+            return poJSON;
         }
-
-//                    if (!ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to assign?")) {
-//                        return;
-//                    }
+        
         int successCount = 0;
         String firstBank = null;
         boolean allSameBank = true;
@@ -282,9 +278,20 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
             successCount++;
         }
         if (!allSameBank) {
-            ShowMessageFX.Information(null, pxeModuleName, "Selected items must belong to the same bank.");
-
+            
+            poJSON.put("message", "Selected items must belong to the same bank.");
+            poJSON.put("result", "error");
+            return poJSON;
         }
+        
+        poJSON.put("result", "success");
+        return poJSON;
+    }
+    private void loadTableMainAndClearSelectedItems() {
+        chckSelectAll.setSelected(false);
+        getSelectedItems.clear();
+        listOfDVToAssign.clear();
+        loadTableMain();
     }
 
     private void cmdButton_Click(ActionEvent event) {
@@ -294,31 +301,52 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
 
             switch (lsButton) {
                 case "btnAssign":
-                    validateSelectedItem();
+                    poJSON =  validateSelectedItem();
+                     if ("error".equals(poJSON.get("result"))){
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                         break;
+                   }
                     if (!listOfDVToAssign.isEmpty()) {
                         loadAssignWindow(listOfDVToAssign);
+                        chckSelectAll.setSelected(false);
+                        getSelectedItems.clear();
+                        listOfDVToAssign.clear();
                     }
                     break;
                 case "btnRetrieve":
-                    loadTableMain();
+                    loadTableMainAndClearSelectedItems() ;
                     break;
                 case "btnPrintCheck":
-                    validateSelectedItem();
+                   poJSON =  validateSelectedItem();
+                   if ("error".equals(poJSON.get("result"))){
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                         break;
+                   }
                     if (!listOfDVToAssign.isEmpty()) {
                         poJSON = poCheckPrintingController.PrintCheck(listOfDVToAssign);
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                             break;
                         }
+                        chckSelectAll.setSelected(false);
+                        getSelectedItems.clear();
+                        listOfDVToAssign.clear();
                     }
                     break;
                 case "btnPrintDV":
-                    validateSelectedItem();
+                    poJSON =  validateSelectedItem();
+                     if ("error".equals(poJSON.get("result"))){
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                         break;
+                   }
                     if (!listOfDVToAssign.isEmpty()) {
                         poJSON = poCheckPrintingController.printTransaction(listOfDVToAssign);
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         }
-                        ShowMessageFX.Warning("Button PrintDV is Underdevelopment.", pxeModuleName, null);
+                        chckSelectAll.setSelected(false);
+                        getSelectedItems.clear();
+                        listOfDVToAssign.clear();
                     }
                     break;
                 case "btnClose":
@@ -559,7 +587,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
         });
     }
 
-    private void loadAssignWindow(List<String> fsTransactionNos) throws SQLException {
+    private void loadAssignWindow(List<String> fsTransactionNos) throws SQLException, GuanzonException {
         try {
             Stage stage = new Stage();
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -590,6 +618,7 @@ public class CheckPrintingController implements Initializable, ScreenInterface {
             stage.showAndWait();
 
             loadTableMain();
+//            poCheckPrintingController.resetOthers();
         } catch (IOException e) {
             ShowMessageFX.Warning(e.getMessage(), "Warning", null);
             System.exit(1);

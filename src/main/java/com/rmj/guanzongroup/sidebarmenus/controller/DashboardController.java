@@ -5,6 +5,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -341,8 +342,6 @@ public class DashboardController implements Initializable {
                      psIndustryID = "02";
                     psCategoryID = "0004";
                     return "Inv Stock Request ROQ History Mc Sp";  
-                    
-                //with roq car    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryCar.fxml":
                     psIndustryID = "03";
                     psCategoryID = "0005";
@@ -364,7 +363,7 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0007";
                     return "Inv Stock Request ROQ Confirmation Car General"; 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCarSp.fxml":
-                    return "Inv Stock Request ROQ Confirmation Car Sp"; 
+                    return "Inv Stock Request ROQ Confirmation Car Sp";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateCar.fxml":
                      psIndustryID = "03";
                     psCategoryID = "0005";
@@ -381,8 +380,6 @@ public class DashboardController implements Initializable {
                      psIndustryID = "03";
                     psCategoryID = "0006";
                     return "Inv Stock Request ROQ History Car Sp";
-                    
-                //with roq phones
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMp.fxml":
                     psIndustryID = "01";
                     psCategoryID = "0001";
@@ -613,8 +610,6 @@ public class DashboardController implements Initializable {
                     psIndustryID = "03";
                     psCategoryID = "0006";
                     return "Inv Stock Request History Car Sp";
-                
-                //without roq phones 
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMp.fxml":
                     psIndustryID = "01";
                     psCategoryID = "0001";
@@ -681,8 +676,6 @@ public class DashboardController implements Initializable {
                      psIndustryID = "05";
                     psCategoryID = "0007";
                     return "Inv Stock Request History LP General";
-                
-                
                 //without roq hospitality    
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMonarchFood.fxml":
                     psIndustryID = "04";
@@ -955,7 +948,6 @@ public class DashboardController implements Initializable {
                     psIndustryID = "07";
                     psCategoryID = "0002";
                     return "Purchase Order Receiving History Appliances";
-
 
                 //Car
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryCar.fxml":
@@ -1280,6 +1272,8 @@ public class DashboardController implements Initializable {
                     return "Check Print Request";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml":
                     return "Check Print Request Confirmation";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_History.fxml":
+                    return "Check Print Request History";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml":
                     return "Check Printing";
 
@@ -1468,9 +1462,62 @@ public class DashboardController implements Initializable {
                     psIndustryID = "04";
                     psCategoryID = "0009";
                     return "SI Posting MH";
+                //SI POSTING HISTORY
+                //General
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_History.fxml":
+                    psIndustryID = "";
+                    psCategoryID = "0007";
+                    return "SI Posting History";
+                //Appliances
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryAppliances.fxml":
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
+                    return "SI Posting History Appliances";
+                //Car
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
+                    return "SI Posting History Car";
+                //MC
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "SI Posting History MC";
+                //Mobile Phone
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMP.fxml":
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
+                    return "SI Posting History MP";
+                //Los Pedritos
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "SI Posting History LP";
+                //Spare Parts Car
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPCar.fxml":
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
+                    return "SI Posting History SPCar";
+                //Spare Parts Motorcycle
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPMC.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0004";
+                    return "SI Posting History SPMC";
+                //Monarch Food
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0008";
+                    return "SI Posting History MF";
+                //Monarch Hospitality
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchHospitality.fxml":
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
+                    return "SI Posting History MH";
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
                     return "Check Status Update";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdateByBatch.fxml":
+                    return "Check Clear Status";
                 //Importing
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml":
                     return "Check Importing";
@@ -1683,7 +1730,6 @@ public class DashboardController implements Initializable {
             case "Purchase Order Receiving History Appliances":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryAppliances.fxml";
 
-
             // Car
             case "Purchase Order Receiving Entry Car":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_EntryCar.fxml";
@@ -1858,6 +1904,8 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Entry.fxml";
             case "Check Print Request Confirmation":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml";
+            case "Check Print Request History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_History.fxml";
             case "Check Printing":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml";
 
@@ -1984,17 +2032,49 @@ public class DashboardController implements Initializable {
             // Monarch Hospitality
             case "SI Posting MH":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml";
+            //SI POSTING HISTORY
+            // General
+            case "SI Posting History":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_History.fxml";
+            // Appliances
+            case "SI Posting History Appliances":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryAppliances.fxml";
+            // Car
+            case "SI Posting History Car":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryCar.fxml";
+            // Motorcycle
+            case "SI Posting History MC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMC.fxml";
+            // Mobile Phone
+            case "SI Posting History MP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMP.fxml";
+            // Los Pedritos
+            case "SI Posting History LP":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml";
+            // Spare Parts Car
+            case "SI Posting History SPCar":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPCar.fxml";
+            // Spare Parts Motorcycle
+            case "SI Posting History SPMC":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPMC.fxml";
+            // Monarch Food
+            case "SI Posting History MF":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml";
+            // Monarch Hospitality
+            case "SI Posting History MH":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchHospitality.fxml";
             /*END SI POSTING*/
             //Update
             case "Check Status Update":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml";
+            case "Check Clear Status":
+                return "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdateByBatch.fxml";
             //Importing
             case "Check Importing":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml";
 
             /*END PURCHASE ORDER RECEIVING*/
-        
-            /*Inventory Stock Request*/
+ /*Inventory Stock Request*/
             //without ROQ
             //motorcycles
             case "Inv Stock Request Entry Mc Sp":
@@ -2062,7 +2142,6 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMp.fxml";
             case "Inv Stock Request History MP General":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMpGeneral.fxml";
-            
             //food
             case "Inv Stock Request Entry LP Food":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryLpFood.fxml";
@@ -2080,8 +2159,6 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryLpFood.fxml";    
             case "Inv Stock Request History LP General":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryLpGeneral.fxml";    
-                
-            
             //hospitality
             case "Inv Stock Request Entry Monarch Food":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMonarchFood.fxml";    
@@ -2170,7 +2247,6 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCarGeneral.fxml";
             case "Inv Stock Request ROQ History Car Sp":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCarSp.fxml";
-            
             //phones
             case "Inv Stock Request ROQ Entry MP":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMp.fxml";
@@ -2188,7 +2264,6 @@ public class DashboardController implements Initializable {
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMp.fxml"; 
             case "Inv Stock Request ROQ History MP General":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMpGeneral.fxml"; 
-            
             //food
             case "Inv Stock Request ROQ Entry LP Food":
                 return "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryLpFood.fxml";
@@ -2427,25 +2502,6 @@ public class DashboardController implements Initializable {
                     return new DeliveryAcceptance_ConfirmationMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ConfirmationMonarchHospitality.fxml":
                     return new DeliveryAcceptance_ConfirmationMonarchHospitalityController();
-                // APPROVAL
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_Approval.fxml":
-//                    return new DeliveryAcceptance_ApprovalController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalCar.fxml":
-//                    return new DeliveryAcceptance_ApprovalCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMC.fxml":
-//                    return new DeliveryAcceptance_ApprovalMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMP.fxml":
-//                    return new DeliveryAcceptance_ApprovalMPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalLP.fxml":
-//                    return new DeliveryAcceptance_ApprovalLPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPCar.fxml":
-//                    return new DeliveryAcceptance_ApprovalSPCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalSPMC.fxml":
-//                    return new DeliveryAcceptance_ApprovalSPMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchFood.fxml":
-//                    return new DeliveryAcceptance_ApprovalMonarchFoodController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_ApprovalMonarchHospitality.fxml":
-//                    return new DeliveryAcceptance_ApprovalMonarchHospitalityController();
                 // HISTORY
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_HistoryAppliances.fxml":
                     return new DeliveryAcceptance_HistoryAppliancesController();
@@ -2562,6 +2618,8 @@ public class DashboardController implements Initializable {
                     return new CheckPrintRequest_EntryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_Confirmation.fxml":
                     return new CheckPrintRequest_ConfirmationController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_History.fxml":
+                    return new CheckPrintRequest_HistoryController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckPrinting.fxml":
                     return new CheckPrintingController();
                 /* SI POSTING */
@@ -2585,6 +2643,28 @@ public class DashboardController implements Initializable {
                     return new SIPosting_MonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml":
                     return new SIPosting_MonarchHospitalityController();
+                //SI POSTING HISTORY
+
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_History.fxml":
+                    return new SIPosting_HistoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryAppliances.fxml":
+                    return new SIPosting_HistoryAppliancesController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryCar.fxml":
+                    return new SIPosting_HistoryCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMC.fxml":
+                    return new SIPosting_HistoryMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMP.fxml":
+                    return new SIPosting_HistoryMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml":
+                    return new SIPosting_HistoryLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPCar.fxml":
+                    return new SIPosting_HistorySPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPMC.fxml":
+                    return new SIPosting_HistorySPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml":
+                    return new SIPosting_HistoryMonarchFoodController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchHospitality.fxml":
+                    return new SIPosting_HistoryMonarchHospitalityController();
 
                 /* AP PAYMENT ADJUSTMENT */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_Entry.fxml":
@@ -2662,9 +2742,11 @@ public class DashboardController implements Initializable {
                         }
                     };
 
-                //UPDATE
+//                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
                     return new CheckStatusUpdateController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdateByBatch.fxml":
+                    return new CheckStatusUpdateByBatchController();
 
                 //IMPORTING
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml":
@@ -2921,7 +3003,6 @@ public class DashboardController implements Initializable {
 //                    return new RegionController();
 
                 /* OTHERS/PARAMETERS/BANKS */
-
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/Banks.fxml":
 //                    return new BanksController();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml":
@@ -3107,6 +3188,8 @@ public class DashboardController implements Initializable {
      * @param fsFormName
      * @return
      */
+    boolean lbproceed = false;
+
     public TabPane loadAnimate(String fsFormName) {
         //set fxml controller class
         if (tabpane.getTabs().isEmpty()) {
@@ -3150,7 +3233,10 @@ public class DashboardController implements Initializable {
             });
 
             newTab.setOnClosed(event -> {
-                SIPostingWindowKeyEvent(newTab, fxObj, true);
+                if (lbproceed) {
+                    SIPostingWindowKeyEvent(newTab, fxObj, true);
+                    lbproceed = false;
+                }
             });
 
             newTab.setOnSelectionChanged(event -> {
@@ -3177,79 +3263,52 @@ public class DashboardController implements Initializable {
         return null;
     }
 
-    private void SIPostingWindowKeyEvent(Tab newTab, ScreenInterface fxObj, boolean isRemove) {
-        if (newTab.getText().equals("SI Posting")) {
-            SIPosting_Controller localController = (SIPosting_Controller) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting Car")) {
-            SIPosting_CarController localController = (SIPosting_CarController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting Appliances")) {
-            SIPosting_AppliancesController localController = (SIPosting_AppliancesController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting LP")) {
-            SIPosting_LPController localController = (SIPosting_LPController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting MP")) {
-            SIPosting_MPController localController = (SIPosting_MPController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting MC")) {
-            SIPosting_MCController localController = (SIPosting_MCController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting SPMC")) {
-            SIPosting_SPMCController localController = (SIPosting_SPMCController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting SPCar")) {
-            SIPosting_SPCarController localController = (SIPosting_SPCarController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting MF")) {
-            SIPosting_MonarchFoodController localController = (SIPosting_MonarchFoodController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else if (newTab.getText().equals("SI Posting MH")) {
-            SIPosting_MonarchHospitalityController localController = (SIPosting_MonarchHospitalityController) fxObj;
-            if (isRemove) {
-                localController.RemoveWindowEvent();
-            } else {
-                localController.TriggerWindowEvent();
-            }
-        } else {
+    public class ControllerBinding {
 
+        public final String tabName;
+        public final Class<? extends ScreenInterface> controllerClass;
+
+        public ControllerBinding(String tabName, Class<? extends ScreenInterface> controllerClass) {
+            this.tabName = tabName;
+            this.controllerClass = controllerClass;
+        }
+    }
+
+    ControllerBinding[] controllerArray = new ControllerBinding[]{
+        new ControllerBinding("SI Posting", SIPosting_Controller.class),
+        new ControllerBinding("SI Posting Car", SIPosting_CarController.class),
+        new ControllerBinding("SI Posting Appliances", SIPosting_AppliancesController.class),
+        new ControllerBinding("SI Posting LP", SIPosting_LPController.class),
+        new ControllerBinding("SI Posting MP", SIPosting_MPController.class),
+        new ControllerBinding("SI Posting MC", SIPosting_MCController.class),
+        new ControllerBinding("SI Posting SPMC", SIPosting_SPMCController.class),
+        new ControllerBinding("SI Posting SPCar", SIPosting_SPCarController.class),
+        new ControllerBinding("SI Posting MF", SIPosting_MonarchFoodController.class),
+        new ControllerBinding("SI Posting MH", SIPosting_MonarchHospitalityController.class),
+        new ControllerBinding("SI Posting History", SIPosting_HistoryController.class),
+        new ControllerBinding("SI Posting History Appliances", SIPosting_HistoryAppliancesController.class),
+        new ControllerBinding("SI Posting History Car", SIPosting_HistoryCarController.class),
+        new ControllerBinding("SI Posting History LP", SIPosting_HistoryLPController.class),
+        new ControllerBinding("SI Posting History MP", SIPosting_HistoryMPController.class),
+        new ControllerBinding("SI Posting History MC", SIPosting_HistoryMCController.class),
+        new ControllerBinding("SI Posting History SPMC", SIPosting_HistorySPMCController.class),
+        new ControllerBinding("SI Posting History SPCar", SIPosting_HistorySPCarController.class),
+        new ControllerBinding("SI Posting History MF", SIPosting_HistoryMonarchFoodController.class),
+        new ControllerBinding("SI Posting History MH", SIPosting_HistoryMonarchHospitalityController.class)
+    };
+
+    private void SIPostingWindowKeyEvent(Tab newTab, ScreenInterface fxObj, boolean isRemove) {
+        for (ControllerBinding cb : controllerArray) {
+            if (cb.tabName.equals(newTab.getText())) {
+                try {
+                    Object casted = cb.controllerClass.cast(fxObj);
+                    Method method = isRemove ? cb.controllerClass.getMethod("RemoveWindowEvent") : cb.controllerClass.getMethod("TriggerWindowEvent");
+                    method.invoke(casted);
+                } catch (Exception e) {
+                    e.printStackTrace(); // Or log nicely
+                }
+                break;
+            }
         }
     }
 
@@ -3423,6 +3482,7 @@ public class DashboardController implements Initializable {
 
                     EventHandler<Event> onClosed = tab.getOnClosed();
                     if (onClosed != null) {
+                        lbproceed = true;
                         onClosed.handle(new Event(Event.ANY));
                     }
                 }
@@ -3686,6 +3746,7 @@ public class DashboardController implements Initializable {
 
                 EventHandler<Event> onClosed = tab.getOnClosed();
                 if (onClosed != null) {
+                    lbproceed = true;
                     onClosed.handle(new Event(Event.ANY));
                 }
             }
@@ -3807,7 +3868,6 @@ public class DashboardController implements Initializable {
     /**
      * **************** MENU ITEMS SECTIONS *********************************
      */
-
          private void inventoryMenuItems() {
         String jsonString = "["
 
@@ -3839,6 +3899,7 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"07\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryAppliancesGeneral.fxml\", \"controller_path\": \"InvRequest_HistoryAppliancesGeneral.controller\", \"menu_id\": \"0119\", \"menu_parent\": \"0117\"},"
                 //Without ROQ Motorcycle
                 + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryMc.fxml\", \"controller_path\": \"InvStockRequest_EntryMc.controller\", \"menu_id\": \"034\", \"menu_parent\": \"030\"},"
+
                 + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationMc.fxml\", \"controller_path\": \"InvRequest_ConfirmationMc.controller\", \"menu_id\": \"063\", \"menu_parent\": \"059\"},"
                 + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateMc.fxml\", \"controller_path\": \"InvRequest_UpdateMc.controller\", \"menu_id\": \"093\", \"menu_parent\": \"089\"},"
                 + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMc.fxml\", \"controller_path\": \"InvRequest_HistoryMc.controller\", \"menu_id\": \"0120\", \"menu_parent\": \"0117\"},"
@@ -3851,12 +3912,12 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateMcGeneral.fxml\", \"controller_path\": \"InvRequest_UpdateMcGeneral.controller\", \"menu_id\": \"095\", \"menu_parent\": \"089\"},"
                 + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryMcGeneral.fxml\", \"controller_path\": \"InvRequest_HistoryMcGeneral.controller\", \"menu_id\": \"0122\", \"menu_parent\": \"0117\"}," 
                 //Without ROQ Car
-                + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCar.fxml\", \"controller_path\": \"InvStockRequest_EntryCar.controller\", \"menu_id\": \"037\", \"menu_parent\": \"030\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationCar.fxml\", \"controller_path\": \"InvRequest_ConfirmationCar.controller\", \"menu_id\": \"067\", \"menu_parent\": \"059\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateCar.fxml\", \"controller_path\": \"InvRequest_UpdateCar.controller\", \"menu_id\": \"096\", \"menu_parent\": \"089\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryCar.fxml\", \"controller_path\": \"InvRequest_HistoryCar.controller\", \"menu_id\": \"0123\", \"menu_parent\": \"0117\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCarSp.fxml\", \"controller_path\": \"InvRequest_EntryCarSp.controller\", \"menu_id\": \"038\", \"menu_parent\": \"030\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ConfirmationCarSp.fxml\", \"controller_path\": \"InvRequest_ConfirmationCarSp.controller\", \"menu_id\": \"068\", \"menu_parent\": \"059\"},"
+          
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateCarSp.fxml\", \"controller_path\": \"InvRequest_UpdateCarSp.controller\", \"menu_id\": \"097\", \"menu_parent\": \"089\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryCarSp.fxml\", \"controller_path\": \"InvRequest_HistoryCarSp.controller\", \"menu_id\": \"0124\", \"menu_parent\": \"0117\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_EntryCarGeneral.fxml\", \"controller_path\": \"InvRequest_EntryCarGeneral.controller\", \"menu_id\": \"039\", \"menu_parent\": \"030\"},"
@@ -3908,6 +3969,7 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"02\", \"menu_name\": \"Motorcycle\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMc.fxml\", \"controller_path\": \"InvRequest_Roq_HistoryMc.controller\", \"menu_id\": \"0134\", \"menu_parent\": \"0130\"},"
                 + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcSp.fxml\", \"controller_path\": \"InvStockRequest_ROQ_EntryMcSp.controller\", \"menu_id\": \"49\", \"menu_parent\": \"044\"},"
                 + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationMcSp.fxml\", \"controller_path\": \"InvRequest_Roq_ConfirmationMcSp.controller\", \"menu_id\": \"79\", \"menu_parent\": \"074\"},"
+
                 + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateMcSp.fxml\", \"controller_path\": \"InvRequest_Roq_UpdateMcSp.controller\", \"menu_id\": \"107\", \"menu_parent\": \"0103\"},"
                 + "  {\"access_level\": \"02\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryMcSp.fxml\", \"controller_path\": \"InvRequest_Roq_HistoryMcSp.controller\", \"menu_id\": \"135\", \"menu_parent\": \"0130\"},"
                 + "  {\"access_level\": \"02\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryMcGeneral.fxml\", \"controller_path\": \"InvRequest_Roq_EntryMcGeneral.controller\", \"menu_id\": \"050\", \"menu_parent\": \"044\"},"
@@ -3922,6 +3984,7 @@ public class DashboardController implements Initializable {
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Car\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCar.fxml\", \"controller_path\": \"InvRequest_Roq_HistoryCar.controller\", \"menu_id\": \"0137\", \"menu_parent\": \"0130\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryCarSp.fxml\", \"controller_path\": \"InvRequest_ROQ_EntryCarSP.controller\", \"menu_id\": \"052\", \"menu_parent\": \"044\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_ConfirmationCarSp.fxml\", \"controller_path\": \"InvRequest_Roq_ConfirmationCarSp.controller\", \"menu_id\": \"082\", \"menu_parent\": \"074\"},"
+
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_UpdateCarSp.fxml\", \"controller_path\": \"InvRequest_Roq_UpdateCarSp.controller\", \"menu_id\": \"0110\", \"menu_parent\": \"0103\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"Spareparts\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_HistoryCarSp.fxml\", \"controller_path\": \"InvRequest_Roq_HistoryCarSp.controller\", \"menu_id\": \"0138\", \"menu_parent\": \"0130\"},"
                 + "  {\"access_level\": \"03\", \"menu_name\": \"General\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_ROQ_EntryCarGeneral.fxml\", \"controller_path\": \"InvRequest_Roq_EntryCarGeneral.controller\", \"menu_id\": \"053\", \"menu_parent\": \"044\"},"
@@ -4247,6 +4310,7 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest.fxml\",\"controller_path\":\"PaymentRequest.controller\",\"menu_id\":\"007\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Payment Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/PaymentRequest_History.fxml\",\"controller_path\":\"PaymentRequestHistoryController\",\"menu_id\":\"008\",\"menu_parent\":\"007\"}"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Disbursement Voucher\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DisbursementVoucher_History.fxml\",\"controller_path\":\"DisbursementVoucher_HistoryController\",\"menu_id\":\"016\",\"menu_parent\":\"007\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Print Request\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckPrintRequest_History.fxml\",\"controller_path\":\"CheckPrintRequest_HistoryController\",\"menu_id\":\"093\",\"menu_parent\":\"007\"},"
                 //AP Adjustment
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"AP Adjustment\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"035\",\"menu_parent\":\"007\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/APPaymentAdjustment_History.fxml\",\"controller_path\":\"APPaymentAdjustmentHistory.controller\",\"menu_id\":\"036\",\"menu_parent\":\"035\"},"
@@ -4275,14 +4339,27 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"02\",\"menu_name\":\"SPMC\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_SPMC.fxml\",\"controller_path\":\"SIPosting_SPMC.controller\",\"menu_id\":\"073\",\"menu_parent\":\"067\"},"
                 + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MP.fxml\",\"controller_path\":\"SIPosting_MP.controller\",\"menu_id\":\"074\",\"menu_parent\":\"067\"},"
                 + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchHospitality.fxml\",\"controller_path\":\"SIPosting_MonarchHospitality.controller\",\"menu_id\":\"075\",\"menu_parent\":\"067\"},"
-                + "{\"access_level\":\"05\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchFood.fxml\",\"controller_path\":\"SIPosting_MonarchFood.controller\",\"menu_id\":\"076\",\"menu_parent\":\"067\"},"
-                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_LP.fxml\",\"controller_path\":\"SIPosting_LP.controller\",\"menu_id\":\"077\",\"menu_parent\":\"067\"}"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_MonarchFood.fxml\",\"controller_path\":\"SIPosting_MonarchFood.controller\",\"menu_id\":\"076\",\"menu_parent\":\"067\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_LP.fxml\",\"controller_path\":\"SIPosting_LP.controller\",\"menu_id\":\"077\",\"menu_parent\":\"067\"},"
                 //STATUS UPDATE
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Update\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"078\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Status Update\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml\",\"controller_path\":\"CheckStatusUpdateController\",\"menu_id\":\"079\",\"menu_parent\":\"078\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Clear Status\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdateByBatch.fxml\",\"controller_path\":\"CheckStatusUpdateByBatchController\",\"menu_id\":\"094\",\"menu_parent\":\"078\"},"
                 //IMPORTING
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Import\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"080\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Check Importing\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/CheckImporting.fxml\",\"controller_path\":\"CheckImportingController\",\"menu_id\":\"081\",\"menu_parent\":\"080\"},"
+                //SI POSTING HISTORY
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"SI Posting\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"082\",\"menu_parent\":\"007\"},"
+                + "{\"access_level\":\"07\",\"menu_name\":\"Appliances\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryAppliances.fxml\",\"controller_path\":\"SIPosting_HistoryAppliances.controller\",\"menu_id\":\"083\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"General\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_History.fxml\",\"controller_path\":\"SIPosting_History.controller\",\"menu_id\":\"084\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"Car\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryCar.fxml\",\"controller_path\":\"SIPosting_HistoryCar.controller\",\"menu_id\":\"085\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"03\",\"menu_name\":\"SPCar\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPCar.fxml\",\"controller_path\":\"SIPosting_HistorySPCar.controller\",\"menu_id\":\"086\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"Motorcycle\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMC.fxml\",\"controller_path\":\"SIPosting_HistoryMC.controller\",\"menu_id\":\"087\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"02\",\"menu_name\":\"SPMC\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistorySPMC.fxml\",\"controller_path\":\"SIPosting_HistorySPMC.controller\",\"menu_id\":\"088\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"01\",\"menu_name\":\"Mobile Phone\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMP.fxml\",\"controller_path\":\"SIPosting_HistoryMP.controller\",\"menu_id\":\"089\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchHospitality.fxml\",\"controller_path\":\"SIPosting_HistoryMonarchHospitality.controller\",\"menu_id\":\"090\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"04\",\"menu_name\":\"Monarch Restaurant\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryMonarchFood.fxml\",\"controller_path\":\"SIPosting_HistoryMonarchFood.controller\",\"menu_id\":\"091\",\"menu_parent\":\"082\"},"
+                + "{\"access_level\":\"05\",\"menu_name\":\"Los Pedritos\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/SIPosting_HistoryLP.fxml\",\"controller_path\":\"SIPosting_HistoryLP.controller\",\"menu_id\":\"092\",\"menu_parent\":\"082\"}"
                 + "]";
         JSONParser parser = new JSONParser();
         try {

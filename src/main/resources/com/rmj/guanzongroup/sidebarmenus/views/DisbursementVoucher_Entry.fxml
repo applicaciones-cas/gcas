@@ -45,7 +45,7 @@
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                 <ColumnConstraints halignment="RIGHT" minWidth="-Infinity" prefWidth="250.0" />
-                                                <ColumnConstraints halignment="RIGHT" minWidth="1020.0" prefWidth="1020.0" />
+                                                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" />
                                                 <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                             </columnConstraints>
                                             <rowConstraints>
@@ -131,6 +131,17 @@
                                             </font>
                                         </Button>
                                         <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" layoutX="185.0" layoutY="15.0" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Cancel">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="TIMES" size="20" />
+                                            </graphic>
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Button>
+                                        <Button fx:id="btnVoid" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
                                             <effect>
                                                 <Blend />
                                             </effect>
@@ -301,6 +312,8 @@
                                                                                                                                                         <ComboBox fx:id="cmbClaimantType" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                                                                                                                         <TextField fx:id="tfAuthorizedPerson" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="3" />
                                                                                                                                                         <Label text="Bank Account" GridPane.rowIndex="1" />
+                                                                                                                                                        <Label text="Check Status" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+                                                                                                                                                        <ComboBox fx:id="cmbCheckStatus" disable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="6" GridPane.rowIndex="6" />
                                                                                                                                                     </children>
                                                                                                                                                 </GridPane>
                                                                                                                                             </children>
@@ -463,7 +476,7 @@
                                                                                                     <children>
                                                                                                         <GridPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                                                             <columnConstraints>
-                                                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+                                                                                                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="120.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                                                                             </columnConstraints>
