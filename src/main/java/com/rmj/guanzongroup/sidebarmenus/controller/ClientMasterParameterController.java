@@ -529,7 +529,7 @@ public class ClientMasterParameterController implements Initializable, ScreenInt
                         }
                         break;
                 }
-            } catch (SQLException | GuanzonException  ex) {
+            } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(ClientMasterParameterController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
