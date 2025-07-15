@@ -124,7 +124,7 @@ public class DashboardController implements Initializable {
     @FXML
     private TabPane tabpane;
     @FXML
-    private AnchorPane anchorLeftSideBarMenu, anchorSpace, MainAnchor, anchorRightSideBarMenu, badgeNotification, badgeAddtoCart;
+    private AnchorPane anchorLeftSideBarMenu, anchorSpace, MainAnchor, anchorRightSideBarMenu, badgeNotification, badgeAddtoCart, apClock;
     @FXML
     private TreeView<String> tvLeftSideBar;
     @FXML
@@ -212,6 +212,12 @@ public class DashboardController implements Initializable {
                     });
                 }
             });
+
+            JFXUtil.applyToggleHoverAnimation(btnInventory, btnPurchasing, btnSales, btnServiceRepair,
+                    btnAccountsReceivable, btnGeneralAccounting, btnOthers, btnHelp, btnLogout,
+                    btnSysMonitor, btnAddToCart);
+            JFXUtil.applyHoverFadeToButtons("#FFFFFF", "#552B00", btnMinimize, btnClose);
+            JFXUtil.placeClockInAnchorPane(apClock, 25);
 
             monitorMenuItems();
         } catch (Exception e) {
