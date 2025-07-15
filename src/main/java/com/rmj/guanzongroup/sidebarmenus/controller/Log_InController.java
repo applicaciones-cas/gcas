@@ -59,7 +59,7 @@ public class Log_InController implements Initializable, ScreenInterface {
     private boolean isMainOffice = true;
     private boolean isWarehouse = true;
     private LogWrapper poLogWrapper;
-
+    private DashboardController dashboardController;
     ObservableList<ModelLog_In_Industry> industryOptions = FXCollections.observableArrayList();
     ObservableList<ModelLog_In_Company> companyOptions = FXCollections.observableArrayList();
     @FXML
