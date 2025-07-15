@@ -7,11 +7,13 @@ package com.rmj.guanzongroup.sidebarmenus.utility;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -27,8 +29,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.ScaleTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -66,6 +74,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -79,11 +88,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
 import org.apache.poi.ss.formula.functions.T;
@@ -1499,5 +1512,141 @@ public class JFXUtil {
         }
 
         return result.toString();
+    }
+
+    @FunctionalInterface
+    public interface Action<T> {
+
+        T execute();
+    }
+
+    public static void executeConditional(boolean condition, Runnable trueAction, Runnable falseAction) {
+        if (condition) {
+            trueAction.run();
+        } else {
+            falseAction.run();
+        }
+    }
+
+    public static void applyHoverFadeToButtons(String firstColorHex, String secondColorHex, Button... buttons) {
+        for (Button button : buttons) {
+            Node graphic = button.getGraphic();
+            if (graphic instanceof FontAwesomeIconView) {
+                FontAwesomeIconView icon = (FontAwesomeIconView) graphic;
+
+                button.setOnMouseEntered(e -> animateColorFade(icon, firstColorHex, secondColorHex));
+                button.setOnMouseExited(e -> animateColorFade(icon, secondColorHex, firstColorHex));
+            }
+        }
+    }
+
+    private static void animateColorFade(FontAwesomeIconView icon, String fromColorHex, String toColorHex) {
+        Color startColor = Color.web(fromColorHex);
+        Color endColor = Color.web(toColorHex);
+
+        ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>(startColor);
+        colorProperty.addListener((obs, oldVal, newVal) -> icon.setFill(newVal));
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, new KeyValue(colorProperty, startColor)),
+                new KeyFrame(Duration.millis(300), new KeyValue(colorProperty, endColor))
+        );
+
+        timeline.play();
+    }
+
+    public static void applyToggleHoverAnimation(ToggleButton... toggleButtons) {
+        for (ToggleButton toggleButton : toggleButtons) {
+            FontAwesomeIconView icon = extractFontAwesomeIcon(toggleButton);
+            if (icon != null) {
+                // Hover behavior
+                toggleButton.setOnMouseEntered(e -> scaleIcon(icon, 1.2));
+                toggleButton.setOnMouseExited(e -> {
+                    if (!toggleButton.isSelected()) {
+                        scaleIcon(icon, 1.0);
+                    }
+                });
+
+                // Toggle behavior
+                toggleButton.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                    scaleIcon(icon, isSelected ? 1.2 : 1.0);
+                });
+            }
+        }
+    }
+
+    private static FontAwesomeIconView extractFontAwesomeIcon(ToggleButton toggleButton) {
+        Node graphic = toggleButton.getGraphic();
+        if (graphic instanceof FontAwesomeIconView) {
+            return (FontAwesomeIconView) graphic;
+        }
+        return null;
+    }
+
+    private static void scaleIcon(FontAwesomeIconView icon, double scaleTo) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(150), icon);
+        st.setToX(scaleTo);
+        st.setToY(scaleTo);
+        st.play();
+    }
+
+    public static void placeClockInAnchorPane(AnchorPane anchorPane, double size) {
+        if (anchorPane == null) {
+            return;
+        }
+
+        Pane clockGraphic = createClockGraphic(size);
+        anchorPane.getChildren().add(clockGraphic);
+    }
+    static double hourHand1 = 0.27;
+    static double minuteHand1 = 0.3;
+
+    private static Pane createClockGraphic(final double size) {
+        final Pane clockPane = new Pane();
+        final double center = size / 2;
+        final double radius = center - 5;
+
+        Circle clockFace = new Circle(center, center, radius);
+        clockFace.setFill(Color.TRANSPARENT);
+        clockFace.setStroke(Color.BLACK);
+        clockFace.setStrokeWidth(2.5);
+
+        final Line hourHand = new Line(center, center, center, center - radius * hourHand1);
+        hourHand.setStrokeWidth(1.3);
+
+        final Line minuteHand = new Line(center, center, center, center - radius * minuteHand1);
+        minuteHand.setStrokeWidth(1.3);
+        minuteHand.setStroke(Color.BLACK);
+
+        clockPane.getChildren().addAll(clockFace, hourHand, minuteHand);
+
+        Timeline clockUpdater = new Timeline(new KeyFrame(Duration.seconds(1),
+                new javafx.event.EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(javafx.event.ActionEvent event) {
+                updateHands(hourHand, minuteHand, center);
+            }
+        }
+        ));
+        clockUpdater.setCycleCount(Timeline.INDEFINITE);
+        clockUpdater.play();
+
+        clockPane.setPrefSize(size, size);
+        return clockPane;
+    }
+
+    private static void updateHands(Line hourHand, Line minuteHand, double center) {
+        LocalDateTime now = LocalDateTime.now();
+        double hourAngle = (now.getHour() % 12 + now.getMinute() / 60.0) * 30;
+        double minuteAngle = now.getMinute() * 6;
+
+        setHandAngle(hourHand, hourAngle, center, center * hourHand1);
+        setHandAngle(minuteHand, minuteAngle, center, center * minuteHand1);
+    }
+
+    private static void setHandAngle(Line hand, double angle, double center, double length) {
+        double radians = Math.toRadians(angle - 90);
+        hand.setEndX(center + length * Math.cos(radians));
+        hand.setEndY(center + length * Math.sin(radians));
     }
 }
