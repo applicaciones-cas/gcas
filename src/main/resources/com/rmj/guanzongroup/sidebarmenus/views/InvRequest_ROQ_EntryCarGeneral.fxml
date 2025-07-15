@@ -289,10 +289,9 @@
                                                 </AnchorPane>
                                                 <TableView fx:id="tblViewStock_Request" minWidth="-Infinity" prefWidth="500.0" GridPane.rowIndex="1">
                                                    <columns>
-                                                      <TableColumn fx:id="tblModelCodeVSR" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Model Code" />
-                                                      <TableColumn fx:id="tblDescriptionVSR" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Description" />
-                                                      <TableColumn fx:id="tblBrandVSR" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Brand" />
-                                                      <TableColumn fx:id="tblOnhandVSR" maxWidth="106.0" minWidth="58.0" prefWidth="68.0" resizable="false" sortable="false" text="On Hand" />
+                                                      <TableColumn fx:id="tblTransactionNo" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Transaction No" />
+                                                      <TableColumn fx:id="tblReferenceNo" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Reference No" />
+                                                      <TableColumn fx:id="tblTransactionDate" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" resizable="false" sortable="false" text="Transaction Date" />
                                                    </columns>
                                                    <GridPane.margin>
                                                       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
