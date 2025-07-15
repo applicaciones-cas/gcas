@@ -380,23 +380,23 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                     poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     // Confirmation Prompt
-                    if ("error".equals(poJSON.get("result"))){
+                    if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                         return;
-                    } 
-                            
-                    if( poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
+                    }
+
+                    if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                         if ("error".equals(poJSON.get("result"))) {
                             ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                             return;
                         }
-                    }    
-                        
+                    }
+
                     poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirm");
-                    if ("error".equals(poJSON.get("result"))){
-                       ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                       return;
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        return;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
 
@@ -1215,7 +1215,7 @@ public class PurchaseOrder_ConfirmationMPController implements Initializable, Sc
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
-                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().intValue();
+                        double lnTotalAmount = orderDetail.getUnitPrice().doubleValue() * orderDetail.getQuantity().intValue();
                         grandTotalAmount += lnTotalAmount;
                         double lnRequestQuantity = 0;
                         String status = "0";

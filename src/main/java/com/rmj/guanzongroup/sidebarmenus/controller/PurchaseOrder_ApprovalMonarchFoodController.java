@@ -1179,7 +1179,7 @@ public class PurchaseOrder_ApprovalMonarchFoodController implements Initializabl
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
-                        double lnTotalAmount = orderDetail.getUnitPrice().doubleValue() * orderDetail.getQuantity().doubleValue();
+                        double lnTotalAmount = orderDetail.getUnitPrice().doubleValue() * orderDetail.getQuantity().intValue();
                         grandTotalAmount += lnTotalAmount;
                         double lnRequestQuantity = 0.00;
                         String status = "0";

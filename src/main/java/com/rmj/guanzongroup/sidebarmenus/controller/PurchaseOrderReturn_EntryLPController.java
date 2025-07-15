@@ -194,7 +194,6 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                         }
                         pnEditMode = poPurchaseReturnController.getEditMode();
                         psSupplierId = poPurchaseReturnController.Master().getSupplierId();
-
                         break;
                     case "btnPrint":
                         poJSON = poPurchaseReturnController.printRecord(() -> {
@@ -842,8 +841,8 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                 pbSuccess = false;
                                 if (oApp.getUserLevel() == UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                            + "If YES, please seek approval to proceed with the new selected date.\n"
+                                            + "If NO, the previous transaction date will be retained.") == true) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
