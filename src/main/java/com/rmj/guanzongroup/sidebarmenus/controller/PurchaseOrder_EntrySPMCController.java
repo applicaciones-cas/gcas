@@ -1098,9 +1098,15 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                         if (proceed) {
                             if (poApp.getUserLevel() <= UserRight.ENCODER) {
                                 poJSON = ShowDialogFX.getUserApproval(poApp);
-                                if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                if (!"success".equals((String) poJSON.get("result"))) {
                                     approved = false;
+                                    return;
+                                } else {
+                                    if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
+                                        ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
+                                        approved = false;
+                                        return;
+                                    }
                                 }
                             }
                         } else {
@@ -1128,9 +1134,15 @@ public class PurchaseOrder_EntrySPMCController implements Initializable, ScreenI
                         if (proceed) {
                             if (poApp.getUserLevel() <= UserRight.ENCODER) {
                                 poJSON = ShowDialogFX.getUserApproval(poApp);
-                                if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                if (!"success".equals((String) poJSON.get("result"))) {
                                     approved = false;
+                                    return;
+                                } else {
+                                    if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
+                                        ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
+                                        approved = false;
+                                        return;
+                                    }
                                 }
                             }
                         } else {

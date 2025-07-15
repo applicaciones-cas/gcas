@@ -382,26 +382,18 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                     poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                    // Confirmation Prompt
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                         return;
                     }
 
-                    if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
+                    // Confirmation Prompt
+                    if ("success".equals(poJSON.get("result")) && poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                        if ("error".equals(poJSON.get("result"))) {
+                        if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
                             ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                            return;
                         }
                     }
-
-                    poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirm");
-                    if ("error".equals(poJSON.get("result"))) {
-                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                        return;
-                    }
-                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
 
                     // Print Transaction Prompt
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
@@ -411,10 +403,8 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                         }
                     }
                     poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                    System.out.println("STATUS AFTER UPDATE confirm : " + poPurchasingController.PurchaseOrder().Master().getTransactionStatus());
                     clearMasterFields();
                     clearDetailFields();
-
                     loadRecordMaster();
                     loadRecordDetail();
                     loadTableDetail();
@@ -843,9 +833,15 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     if (proceed) {
                         if (poApp.getUserLevel() <= UserRight.ENCODER) {
                             poJSON = ShowDialogFX.getUserApproval(poApp);
-                            if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            if (!"success".equals((String) poJSON.get("result"))) {
                                 approved = false;
+                                return;
+                            } else {
+                                if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
+                                    ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
+                                    approved = false;
+                                    return;
+                                }
                             }
                         }
                     } else {
