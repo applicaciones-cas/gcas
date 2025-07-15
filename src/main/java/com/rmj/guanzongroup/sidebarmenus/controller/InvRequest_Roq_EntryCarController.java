@@ -964,7 +964,6 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
             invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Double.valueOf(fsValue));
            
       }
-
        
         private void initTableInvDetail() {
 

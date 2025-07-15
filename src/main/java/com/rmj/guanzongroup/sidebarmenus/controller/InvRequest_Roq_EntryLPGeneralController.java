@@ -968,7 +968,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
             invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Double.valueOf(fsValue));
            
       }
-
        
         private void initTableInvDetail() {
 

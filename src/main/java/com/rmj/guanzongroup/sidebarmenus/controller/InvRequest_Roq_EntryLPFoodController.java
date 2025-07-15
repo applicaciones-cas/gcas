@@ -891,22 +891,23 @@ public class InvRequest_Roq_EntryLPFoodController implements Initializable, Scre
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
+            double quantity = Double.parseDouble(fsValue);
             if (Double.parseDouble(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 
             }
-            if (tfOrderQuantity.isFocused()) {
-                if (tfBrand.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
-                    fsValue = "0";
-                }
-                if (!tfBrand.getText().isEmpty() && tfModel.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
-                    fsValue = "0";
-                }
-            }
-            if (pnTblInvDetailRow < 0) {
+            if (pnTblInvDetailRow >= 0 && pnTblInvDetailRow < invRequestController.StockRequest().getDetailCount()) {
+                    double roq = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getRecommendedOrder();
+                    if (quantity > roq) {
+                        if (!"success".equals((poJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            tfOrderQuantity.setText("0");
+                            return;
+                        }
+                    }
+              }
+             if (pnTblInvDetailRow < 0) {
                 fsValue = "0";
                 ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                 clearDetailFields();
@@ -915,8 +916,8 @@ public class InvRequest_Roq_EntryLPFoodController implements Initializable, Scre
             }
             tfOrderQuantity.setText(fsValue);
             invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Double.valueOf(fsValue));
-
-        }
+           
+      }
     private void initTextFieldFocus() {
     List<TextField> searchableFields = Arrays.asList(tfBrand,tfBarCode, tfDescription);
     searchableFields.forEach(tf -> {
