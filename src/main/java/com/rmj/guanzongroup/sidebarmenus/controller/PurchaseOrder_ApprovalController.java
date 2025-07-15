@@ -381,18 +381,28 @@ public class PurchaseOrder_ApprovalController implements Initializable, ScreenIn
                         return;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                    if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
+                    poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        return;
+                    }
+
+                    // Confirmation Prompt
+                    if ("success".equals(poJSON.get("result")) && poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
                         if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved")).get("result"))) {
                             ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                         }
-                    } else {
-                        if (!"success".equals((poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo())).get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            return;
-                        }
                     }
 
+                    // Print Transaction Prompt
+                    if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                        poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CARSp_MCSp_General);
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), "Print Purchase Order", null);
+                        }
+                    }
+                    poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     loadRecordMaster();
                     loadRecordDetail();
                     loadTableDetail();

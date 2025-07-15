@@ -397,14 +397,12 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
 
                     // Print Transaction Prompt
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CAR_MC_MPUnit_Appliance);
+                        poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CARSp_MCSp_General);
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), "Print Purchase Order", null);
                         }
                     }
                     poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                    clearMasterFields();
-                    clearDetailFields();
                     loadRecordMaster();
                     loadRecordDetail();
                     loadTableDetail();
