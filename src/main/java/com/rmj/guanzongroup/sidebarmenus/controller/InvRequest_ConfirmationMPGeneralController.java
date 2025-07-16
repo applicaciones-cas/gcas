@@ -574,16 +574,19 @@ public class InvRequest_ConfirmationMPGeneralController implements Initializable
                                 return;
                             }
 
-                            for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
-                                double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
-                                String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
+                            for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
+                            double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
+                            String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
-                                if (detailCount == 1 && (stockID == null || stockID.trim().isEmpty() || quantity == 0)) {
-                                    ShowMessageFX.Warning("Invalid item in order. Ensure all items have a valid Stock ID and quantity greater than 0.", psFormName, null);
-                                    return;
-                                }
-                                hasValidItem = true;
+                            if (stockID == null || stockID.trim().isEmpty()) {
+                                continue; 
                             }
+
+                            if (quantity > 0) {
+                                hasValidItem = true;
+                                break; 
+                            }
+                        }
 
                             if (!hasValidItem) {
                                 ShowMessageFX.Warning("Your order must have at least one valid item with a Stock ID and quantity greater than 0.", psFormName, null);

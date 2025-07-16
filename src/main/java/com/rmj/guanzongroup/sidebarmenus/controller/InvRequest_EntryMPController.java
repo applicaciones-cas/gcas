@@ -203,13 +203,14 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
                             invRequestController.StockRequest().setTransactionStatus("102");
                             poJSON = invRequestController.StockRequest().searchTransaction();
                             if (!"error".equals((String) poJSON.get("result"))) {
-
+                                clearDetailFields();
                                 pnTblInvDetailRow = -1;
                                 loadMaster();
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
+                                
                                 loadDetail();
                                 loadTableInvDetail();
-
+                                
 
                             } else {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
@@ -424,19 +425,18 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
                             ShowMessageFX.Warning("Your order is empty. Please add at least one item.", psFormName, null);
                             return;
                         }
-                    for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
+                   for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
                             double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
                             String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
-                            // If any stock ID is empty OR quantity is 0, show an error and prevent saving
-                            if (detailCount == 1) {
-                                if (stockID == null || stockID.trim().isEmpty() || quantity == 0) {
-                                    ShowMessageFX.Warning("Invalid item in order. Ensure all items have a valid Stock ID and quantity greater than 0.", psFormName, null);
-                                    return;
-                                }
+                            if (stockID == null || stockID.trim().isEmpty()) {
+                                continue; 
                             }
 
-                            hasValidItem = true;
+                            if (quantity > 0) {
+                                hasValidItem = true;
+                                break; 
+                            }
                         }
                         if (!hasValidItem) {
                                 ShowMessageFX.Warning("Your order must have at least one valid item with a Stock ID and quantity greater than 0.", psFormName, null);
