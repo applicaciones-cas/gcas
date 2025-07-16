@@ -1155,23 +1155,26 @@ public class InvRequest_Roq_ConfirmationMonarchGeneralController implements Init
         }
     
      private void setOrderQuantityToDetail(String fsValue) {
-         
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
+            double quantity = Double.parseDouble(fsValue);
             if (Double.parseDouble(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 
             }
-            if (tfOrderQuantity.isFocused()) {
-                if (tfBarCode.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter Bar Code first. ", psFormName, null);
-                    fsValue = "0";
-                }
-                
-            }
-            if (pnTblInvDetailRow < 0) {
+            if (pnTblInvDetailRow >= 0 && pnTblInvDetailRow < invRequestController.StockRequest().getDetailCount()) {
+                    double roq = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getRecommendedOrder();
+                    if (quantity > roq) {
+                        if (!"success".equals((poJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            tfOrderQuantity.setText("0");
+                            return;
+                        }
+                    }
+              }
+             if (pnTblInvDetailRow < 0) {
                 fsValue = "0";
                 ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                 clearDetailFields();
@@ -1180,9 +1183,8 @@ public class InvRequest_Roq_ConfirmationMonarchGeneralController implements Init
             }
             tfOrderQuantity.setText(fsValue);
             invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Double.valueOf(fsValue));
-
-        }
-        private void initTableList() {
+           
+      }        private void initTableList() {
         
         tblTransactionNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
         tblReferenceNo.setCellValueFactory(new PropertyValueFactory<>("index02"));

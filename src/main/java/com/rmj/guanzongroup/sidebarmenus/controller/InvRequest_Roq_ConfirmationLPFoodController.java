@@ -1142,7 +1142,7 @@ public class InvRequest_Roq_ConfirmationLPFoodController implements Initializabl
             }
         }
     
-     private void setOrderQuantityToDetail(String fsValue) {
+      private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }

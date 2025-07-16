@@ -1155,7 +1155,7 @@ public class InvRequest_Roq_ConfirmationLPGeneralController implements Initializ
             }
         }
     
-      private void setOrderQuantityToDetail(String fsValue) {
+    private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
