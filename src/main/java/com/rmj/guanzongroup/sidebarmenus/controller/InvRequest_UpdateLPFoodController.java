@@ -1141,7 +1141,7 @@ public class InvRequest_UpdateLPFoodController implements Initializable, ScreenI
                                         CommonUtils.SetNextFocus((TextField) event.getSource());
                                         break;
                                     case "tfOrderQuantity":
-                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                                        setOrderQuantityToDetail(tfOrderQuantity.getText(),tfROQ.getText());
                                         if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                             pnTblInvDetailRow++;
                                         }
@@ -1153,7 +1153,7 @@ public class InvRequest_UpdateLPFoodController implements Initializable, ScreenI
                                 break;
                                 
                  case UP:
-                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                        setOrderQuantityToDetail(tfOrderQuantity.getText(),tfROQ.getText());
 
                          if (fieldId.equals("tfOrderQuantity")) {
                             if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
@@ -1179,7 +1179,7 @@ public class InvRequest_UpdateLPFoodController implements Initializable, ScreenI
 
 
                     case DOWN:
-                        setOrderQuantityToDetail(lsValue);
+                        setOrderQuantityToDetail(lsValue,tfROQ.getText());
                         if ("tfBrand".equals(fieldId)) {
                             tfBarCode.requestFocus();
                         } else if ("tfBarCode".equals(fieldId)) {
@@ -1227,7 +1227,9 @@ public class InvRequest_UpdateLPFoodController implements Initializable, ScreenI
             }
         }
     
-    private void setOrderQuantityToDetail(String fsValue) {
+    private void setOrderQuantityToDetail(String fsValue,String fsROQ) {
+      
+       
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
@@ -1238,10 +1240,20 @@ public class InvRequest_UpdateLPFoodController implements Initializable, ScreenI
             }
             if (tfOrderQuantity.isFocused()) {
                 if (tfBarCode.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter BarCode first. ", psFormName, null);
+                    ShowMessageFX.Warning("Invalid action, Please enter barCode first. ", psFormName, null);
                     fsValue = "0";
                 }
-             
+               
+            
+                 if( Double.parseDouble(fsROQ) != 0){
+                    if (Double.parseDouble(fsValue) > Double.parseDouble(fsROQ)) {
+                        if (!"success".equals((poJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            tfOrderQuantity.setText("0");
+                            return;
+                        }
+                    }
+                }
             }
             if (pnTblInvDetailRow < 0) {
                 fsValue = "0";

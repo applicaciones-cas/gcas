@@ -980,15 +980,17 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
 
                        
                         switch (fieldId) {
-                            case "tfModel":
-                                tfBrand.requestFocus();
+                            case "tfDescription":
+                                tfBarCode.requestFocus();
                                 break;
                             case "tfBarCode":
                                 tfDescription.requestFocus();
                                 break;
-                            case "tfDescription":
-                                tfBarCode.requestFocus();
+                            case "tfModel":
+                                tfBrand.requestFocus();
                                 break;
+                            
+                            
                             default:
                                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
                         }
@@ -1196,7 +1198,7 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
     };
 
         private void initTextFieldKeyPressed() {
-        List<TextField> loTxtField = Arrays.asList(tfBarCode, tfBrand,tfModel,
+        List<TextField> loTxtField = Arrays.asList( tfBrand,tfModel,tfBarCode,
                 tfDescription,tfOrderQuantity);
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
@@ -1356,7 +1358,7 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
         }
         }
     
-    private void initDetailFocus() {
+  private void initDetailFocus() {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             if (pnTblInvDetailRow >= 0) {
                 boolean isSourceNotEmpty = !invRequestController.StockRequest().Master().getSourceNo().isEmpty();
@@ -1376,4 +1378,4 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
         }
     }
      
-  }
+}

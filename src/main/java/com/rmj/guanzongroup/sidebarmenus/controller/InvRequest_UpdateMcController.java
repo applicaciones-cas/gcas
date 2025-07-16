@@ -1127,7 +1127,7 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                                         CommonUtils.SetNextFocus((TextField) event.getSource());
                                         break;
                                     case "tfOrderQuantity":
-                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                                        setOrderQuantityToDetail(tfOrderQuantity.getText(),tfROQ.getText());
                                         if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                             pnTblInvDetailRow++;
                                         }
@@ -1139,7 +1139,7 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
                                 break;
                                 
                  case UP:
-                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                        setOrderQuantityToDetail(tfOrderQuantity.getText(),tfROQ.getText());
 
                         if (!fieldId.equals("tfBrand") && !fieldId.equals("tfModel")) {
                             if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
@@ -1163,7 +1163,7 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
 
 
                     case DOWN:
-                        setOrderQuantityToDetail(lsValue);
+                        setOrderQuantityToDetail(lsValue,tfROQ.getText());
                         if ("tfBrand".equals(fieldId)) {
                             tfModel.requestFocus();
                         } else if ("tfModel".equals(fieldId)) {
@@ -1209,8 +1209,9 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
             }
         }
     
-     private void setOrderQuantityToDetail(String fsValue) {
-         
+ private void setOrderQuantityToDetail(String fsValue,String fsROQ) {
+      
+       
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
@@ -1221,10 +1222,23 @@ public class InvRequest_UpdateMcController implements Initializable, ScreenInter
             }
             if (tfOrderQuantity.isFocused()) {
                 if (tfBrand.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter Bar Code first. ", psFormName, null);
+                    ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
                     fsValue = "0";
                 }
-                
+                if (!tfBrand.getText().isEmpty() && tfModel.getText().isEmpty()) {
+                    ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
+                    fsValue = "0";
+                }
+            
+                 if( Double.parseDouble(fsROQ) != 0){
+                    if (Double.parseDouble(fsValue) > Double.parseDouble(fsROQ)) {
+                        if (!"success".equals((poJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            tfOrderQuantity.setText("0");
+                            return;
+                        }
+                    }
+                }
             }
             if (pnTblInvDetailRow < 0) {
                 fsValue = "0";
