@@ -413,8 +413,8 @@ public class InvRequest_HistoryMPGeneralController implements Initializable, Scr
                         if (invRequestController.StockRequest().getINVMasterCount() > 0) {
                             for (int lnCntr = 0; lnCntr <= invRequestController.StockRequest().getINVMasterCount() - 1; lnCntr++) {
                                 tableListInformation_data.add(new ModelInvTableListInformation(
+                                        SQLUtil.dateFormat(invRequestController.StockRequest().INVMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),                                  
                                         invRequestController.StockRequest().INVMaster(lnCntr).getTransactionNo(),
-                                        SQLUtil.dateFormat(invRequestController.StockRequest().INVMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
                                         invRequestController.StockRequest().INVMaster(lnCntr).getReferenceNo(),
                                         ""));
                             }
