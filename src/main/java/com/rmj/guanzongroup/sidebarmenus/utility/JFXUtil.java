@@ -638,6 +638,8 @@ public class JFXUtil {
                 ((TextInputControl) node).clear();
             } else if (node instanceof Parent) {
                 clearTextInputsRecursive((Parent) node); // Recursively check child nodes
+            } else {
+
             }
         }
     }
@@ -1559,17 +1561,21 @@ public class JFXUtil {
         for (ToggleButton toggleButton : toggleButtons) {
             FontAwesomeIconView icon = extractFontAwesomeIcon(toggleButton);
             if (icon != null) {
-                // Hover behavior
-                toggleButton.setOnMouseEntered(e -> scaleIcon(icon, 1.2));
+                // Hover
+                toggleButton.setOnMouseEntered(e -> scaleIcon(icon, 1.2, 150));
                 toggleButton.setOnMouseExited(e -> {
                     if (!toggleButton.isSelected()) {
-                        scaleIcon(icon, 1.0);
+                        scaleIcon(icon, 1.0, 150);
                     }
                 });
 
-                // Toggle behavior
+                // Toggle click
                 toggleButton.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
-                    scaleIcon(icon, isSelected ? 1.2 : 1.0);
+                    if (isSelected) {
+                        playClickBounce(icon);
+                    } else {
+                        scaleIcon(icon, 1.0, 150);
+                    }
                 });
             }
         }
@@ -1583,11 +1589,24 @@ public class JFXUtil {
         return null;
     }
 
-    private static void scaleIcon(FontAwesomeIconView icon, double scaleTo) {
-        ScaleTransition st = new ScaleTransition(Duration.millis(150), icon);
+    private static void scaleIcon(FontAwesomeIconView icon, double scaleTo, double durationMillis) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(durationMillis), icon);
         st.setToX(scaleTo);
         st.setToY(scaleTo);
         st.play();
+    }
+
+    private static void playClickBounce(FontAwesomeIconView icon) {
+        ScaleTransition shrink = new ScaleTransition(Duration.millis(80), icon);
+        shrink.setToX(0.9);
+        shrink.setToY(0.9);
+
+        ScaleTransition expand = new ScaleTransition(Duration.millis(150), icon);
+        expand.setToX(1.2);
+        expand.setToY(1.2);
+
+        shrink.setOnFinished(e -> expand.play());
+        shrink.play();
     }
 
     public static void placeClockInAnchorPane(AnchorPane anchorPane, double size) {
