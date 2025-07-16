@@ -383,13 +383,16 @@ public class PurchaseOrder_ConfirmationMonarchFoodController implements Initiali
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                         return;
-                    }
-
-                    // Confirmation Prompt
-                    if ("success".equals(poJSON.get("result")) && poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                        if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                    } else {
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
+                            if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
+                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                                } else {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
                         }
                     }
 

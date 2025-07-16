@@ -586,14 +586,18 @@ public class PurchaseOrder_EntryMonarchFoodController implements Initializable, 
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                     poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
-                    // Confirmation Prompt
-                    if ("success".equals(poJSON.get("result")) && poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                        if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                    if ("success".equals(poJSON.get("result"))) {
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
+                            if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
+                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                                } else {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
                         }
                     }
-
                     // Print Transaction Prompt
                     if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
                         poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_Pedritos);

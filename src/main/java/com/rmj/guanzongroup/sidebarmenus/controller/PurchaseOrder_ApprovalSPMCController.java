@@ -384,12 +384,16 @@ public class PurchaseOrder_ApprovalSPMCController implements Initializable, Scre
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                         return;
-                    }
-
-                    if ("success".equals(poJSON.get("result")) && poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
-                        if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved")).get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                    } else {
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)) {
+                            if (ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
+                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved")).get("result"))) {
+                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                                } else {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
                         }
                     }
 
