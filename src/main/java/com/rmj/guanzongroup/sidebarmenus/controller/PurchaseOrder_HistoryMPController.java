@@ -68,7 +68,7 @@ public class PurchaseOrder_HistoryMPController implements Initializable, ScreenI
 
     private GRiderCAS poApp;
     private PurchaseOrderControllers poPurchasingController;
-    private String psFormName = "Purchase Order History Appliances";
+    private String psFormName = "Purchase Order History MP";
     private LogWrapper logWrapper;
     private JSONObject poJSON;
 
@@ -437,7 +437,7 @@ public class PurchaseOrder_HistoryMPController implements Initializable, ScreenI
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
-                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().doubleValue();
+                        double lnTotalAmount = orderDetail.getUnitPrice().doubleValue() * orderDetail.getQuantity().intValue();
                         double lnRequestQuantity = 0;
                         String status = "0";
                         double lnTotalQty = 0.0000;
