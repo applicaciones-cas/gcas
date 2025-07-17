@@ -1131,32 +1131,6 @@ public class SIPosting_LPController implements Initializable, ScreenInterface {
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
-                            if (selectedDate.isAfter(currentDate)) {
-                                JFXUtil.setJSONError(poJSON, "Future dates are not allowed.");
-                                pbSuccess = false;
-                            }
-                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
-                                    || !lsServerDate.equals(lsSelectedDate))) {
-                                pbSuccess = false;
-                                if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
-                                    if (oApp.getUserLevel() == UserRight.ENCODER) {
-                                        poJSON = ShowDialogFX.getUserApproval(oApp);
-                                        if (!"success".equals((String) poJSON.get("result"))) {
-                                            pbSuccess = false;
-                                        } else {
-                                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
-                                        }
-                                    }
-                                } else {
-                                    pbSuccess = false;
-                                }
-                            }
-
-                        }
                         break;
                     case "dpReferenceDate":
                         if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
