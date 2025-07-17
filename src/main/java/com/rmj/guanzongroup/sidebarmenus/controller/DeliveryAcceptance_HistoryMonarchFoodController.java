@@ -534,6 +534,7 @@ public class DeliveryAcceptance_HistoryMonarchFoodController implements Initiali
                         break;
                     case PurchaseOrderReceivingStatus.CANCELLED:
                         lsStat = "CANCELLED";
+                        lbPrintStat = false;
                         break;
                     default:
                         lsStat = "UNKNOWN";
