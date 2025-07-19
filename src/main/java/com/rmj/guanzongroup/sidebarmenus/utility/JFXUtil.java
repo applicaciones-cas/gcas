@@ -477,7 +477,7 @@ public class JFXUtil {
             return root;
         }
 
-        public void closeSerialDialog() {
+        public void closeDialog() {
             if (dialog != null) {
                 dialog.close();
                 dialog = null;
