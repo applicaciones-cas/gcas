@@ -251,7 +251,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
     public void RemoveWindowEvent() {
         root.sceneProperty().removeListener(WindowKeyEvent);
         scene.setOnKeyPressed(null);
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
     }
 
     private void populateJE() {
@@ -304,7 +304,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
 
     public void showAttachmentDialog() {
         poJSON = new JSONObject();
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
         openedAttachment = "";
         if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
@@ -331,7 +331,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
     public void showSerialDialog() {
         try {
             poJSON = new JSONObject();
-            stageSerial.closeSerialDialog();
+            stageSerial.closeDialog();
             if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
                 return;
             }
@@ -576,10 +576,10 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
     
     private void closeDialog(){
         if(stageAttachment != null){
-            stageAttachment.closeSerialDialog();
+            stageAttachment.closeDialog();
         }
         if(stageSerial != null){
-            stageSerial.closeSerialDialog();
+            stageSerial.closeDialog();
         }
     }
 
@@ -1612,10 +1612,10 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
             poPurchaseReceivingController.loadAttachments();
 //            if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
 //                if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
-//                    stageAttachment.closeSerialDialog();
+//                    stageAttachment.closeDialog();
 //                }
 //            } else {
-//                stageAttachment.closeSerialDialog();
+//                stageAttachment.closeDialog();
 //            }
 
             Platform.runLater(() -> {
@@ -1993,7 +1993,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewTransDetailList.getSelectionModel().getSelectedItem();
                     if (selected != null) {
-                        stageSerial.closeSerialDialog();
+                        stageSerial.closeDialog();
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
                         tfCost.requestFocus();

@@ -250,7 +250,7 @@ public class SIPosting_MCController implements Initializable, ScreenInterface {
     public void RemoveWindowEvent() {
         root.sceneProperty().removeListener(WindowKeyEvent);
         scene.setOnKeyPressed(null);
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
     }
 
     private void populateJE() {
@@ -303,7 +303,7 @@ public class SIPosting_MCController implements Initializable, ScreenInterface {
 
     public void showAttachmentDialog() {
         poJSON = new JSONObject();
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
         openedAttachment = "";
         if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
@@ -330,7 +330,7 @@ public class SIPosting_MCController implements Initializable, ScreenInterface {
     public void showSerialDialog() {
         try {
             poJSON = new JSONObject();
-            stageSerial.closeSerialDialog();
+            stageSerial.closeDialog();
             if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
                 return;
             }
@@ -578,10 +578,10 @@ public class SIPosting_MCController implements Initializable, ScreenInterface {
     
     private void closeDialog(){
         if(stageAttachment != null){
-            stageAttachment.closeSerialDialog();
+            stageAttachment.closeDialog();
         }
         if(stageSerial != null){
-            stageSerial.closeSerialDialog();
+            stageSerial.closeDialog();
         }
     }
 
@@ -1614,10 +1614,10 @@ public class SIPosting_MCController implements Initializable, ScreenInterface {
             poPurchaseReceivingController.loadAttachments();
 //            if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
 //                if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
-//                    stageAttachment.closeSerialDialog();
+//                    stageAttachment.closeDialog();
 //                }
 //            } else {
-//                stageAttachment.closeSerialDialog();
+//                stageAttachment.closeDialog();
 //            }
 
             Platform.runLater(() -> {

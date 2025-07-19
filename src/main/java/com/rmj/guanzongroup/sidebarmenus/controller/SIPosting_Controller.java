@@ -256,7 +256,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
     public void RemoveWindowEvent() {
         root.sceneProperty().removeListener(WindowKeyEvent);
         scene.setOnKeyPressed(null);
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
     }
 
     private void populateJE() {
@@ -309,7 +309,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     public void showAttachmentDialog() {
         poJSON = new JSONObject();
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
         openedAttachment = "";
         if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
@@ -364,7 +364,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-                            stageAttachment.closeSerialDialog();
+                            stageAttachment.closeDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -1558,10 +1558,10 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
             poPurchaseReceivingController.loadAttachments();
             if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
                 if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
-                    stageAttachment.closeSerialDialog();
+                    stageAttachment.closeDialog();
                 }
             } else {
-                stageAttachment.closeSerialDialog();
+                stageAttachment.closeDialog();
             }
 
             Platform.runLater(() -> {
@@ -2149,7 +2149,7 @@ public class SIPosting_Controller implements Initializable, ScreenInterface {
 
     public void clearTextFields() {
         Platform.runLater(() -> {
-            stageAttachment.closeSerialDialog();
+            stageAttachment.closeDialog();
 
             imageinfo_temp.clear();
             JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpReportMonthYear);
