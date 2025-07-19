@@ -998,30 +998,12 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
-                goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                 loadRecordMaster();
                 loadTableDetail();
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
-    }
-
-    private void goToPageBasedOnSelectedRow(String pnRowMain) {
-        int realIndex = Integer.parseInt(pnRowMain);
-
-        if (realIndex == -1) {
-            return; // Not found
-        }
-        int targetPage = realIndex / ROWS_PER_PAGE;
-        int indexInPage = realIndex % ROWS_PER_PAGE;
-
-        initMainGrid();
-        int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
-        pgPagination.setPageCount(totalPage);
-        pgPagination.setCurrentPageIndex(targetPage);
-        JFXUtil.changeTableView(targetPage, ROWS_PER_PAGE, tblViewMainList, main_data.size(), filteredData);
-
     }
 
     public void loadTableDetail() {

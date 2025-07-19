@@ -1587,25 +1587,6 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
         return ldblGrossTotal;
     }
 
-    private void goToPageBasedOnSelectedRow(String pnRowMain) {
-
-        int realIndex = Integer.parseInt(pnRowMain);
-
-        if (realIndex == -1) {
-            return; // Not found
-        }
-        int targetPage = realIndex / ROWS_PER_PAGE;
-        int indexInPage = realIndex % ROWS_PER_PAGE;
-
-        initMainGrid();
-        initDetailsGrid();
-        int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
-        pgPagination.setPageCount(totalPage);
-        pgPagination.setCurrentPageIndex(targetPage);
-        JFXUtil.changeTableView(targetPage, ROWS_PER_PAGE, tblViewMainList, main_data.size(), filteredData);
-
-    }
-
     public void loadTableDetailFromMain() {
         try {
 
@@ -1623,7 +1604,6 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
-                goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                 lbSelectTabJE = false;
                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
                 psBranchId = poPurchaseReceivingController.Master().getBranchCode();
