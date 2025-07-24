@@ -478,15 +478,17 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
 
-                    if (poGLControllers.PaymentRequest().Master().getTransactionStatus().equals(PaymentRequestStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                        if ("success".equals((poJSON = poGLControllers.PaymentRequest().ConfirmTransaction("Confirmed")).get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                        }
-                    } else {
-                        if (!"success".equals((poJSON = poGLControllers.PaymentRequest().OpenTransaction(poGLControllers.PaymentRequest().Master().getTransactionNo())).get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            return;
+                    poJSON = poGLControllers.PaymentRequest().OpenTransaction(poGLControllers.PaymentRequest().Master().getTransactionNo());
+                    if ("success".equals(poJSON.get("result"))) {
+                        if (poGLControllers.PaymentRequest().Master().getTransactionStatus().equals(PaymentRequestStatus.OPEN)) {
+                            if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                                if ("success".equals((poJSON = poGLControllers.PaymentRequest().ConfirmTransaction("Confirmed")).get("result"))) {
+                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                                } else {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
                         }
                     }
 

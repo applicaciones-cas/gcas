@@ -489,14 +489,14 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                             String imgPath2 = selectedFile.getName().toString();
                             for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getTransactionAttachmentCount() - 1; lnCtr++) {
                                 if (imgPath2.equals(poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getFileName())) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, "File name already exist.");
+                                    ShowMessageFX.Warning(null, pxeModuleName, "File name already exists.");
                                     pnAttachment = lnCtr;
                                     loadRecordAttachment(true);
                                     return;
                                 }
                             }
                             if (imageinfo_temp.containsKey(selectedFile.getName().toString())) {
-                                ShowMessageFX.Warning(null, pxeModuleName, "File name already exist.");
+                                ShowMessageFX.Warning(null, pxeModuleName, "File name already exists.");
                                 loadRecordAttachment(true);
                                 return;
                             } else {

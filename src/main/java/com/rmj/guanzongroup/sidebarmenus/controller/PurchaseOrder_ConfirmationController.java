@@ -316,7 +316,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                             return;
                         }
                         if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
-                            poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CARSp_MCSp_General);
+                            poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CAR_MC_MPUnit_Appliance);
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             }
@@ -373,6 +373,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                             }
                         }
                     }
+
                     poJSON = poPurchasingController.PurchaseOrder().SaveTransaction();
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -380,19 +381,31 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                         return;
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-
-                    if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)
-                            && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                        if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
-                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                        }
+                    poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
+                    if ("error".equals(poJSON.get("result"))) {
+                        ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                        return;
                     } else {
-                        if (!"success".equals((poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo())).get("result"))) {
-                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                            return;
+                        if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
+                            if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
+                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
+                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                                } else {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
                         }
                     }
 
+                    // Print Transaction Prompt
+                    if (ShowMessageFX.YesNo(null, psFormName, "Do you want to print this transaction?")) {
+                        poJSON = poPurchasingController.PurchaseOrder().printTransaction(PurchaseOrderStaticData.Printing_CARSp_MCSp_General);
+                        if (!"success".equals((String) poJSON.get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), "Print Purchase Order", null);
+                        }
+                    }
+                    poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     loadRecordMaster();
                     loadRecordDetail();
                     loadTableDetail();
@@ -481,7 +494,8 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
             initButtons(pnEditMode);
             initFields(pnEditMode);
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-            Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+//            Logger.getLogger(PurchaseOrder_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            ShowMessageFX.Warning(ex.toString(), psFormName, null);
         }
     }
 
@@ -820,9 +834,15 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
                     if (proceed) {
                         if (poApp.getUserLevel() <= UserRight.ENCODER) {
                             poJSON = ShowDialogFX.getUserApproval(poApp);
-                            if (!"success".equalsIgnoreCase((String) poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            if (!"success".equals((String) poJSON.get("result"))) {
                                 approved = false;
+                                return;
+                            } else {
+                                if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
+                                    ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
+                                    approved = false;
+                                    return;
+                                }
                             }
                         }
                     } else {
@@ -1014,9 +1034,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
             protected Void call() throws Exception {
                 try {
                     main_data.clear();
-                    poJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder(
-                            psSupplierID,
-                            psReferID);
+                    poJSON = poPurchasingController.PurchaseOrder().getPurchaseOrder(psSupplierID, psReferID);
                     if ("success".equals(poJSON.get("result"))) {
                         if (poPurchasingController.PurchaseOrder().getPOMasterCount() > 0) {
                             for (int lnCntr = 0; lnCntr <= poPurchasingController.PurchaseOrder().getPOMasterCount() - 1; lnCntr++) {
@@ -1198,7 +1216,7 @@ public class PurchaseOrder_ConfirmationController implements Initializable, Scre
 
                     for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
                         Model_PO_Detail orderDetail = poPurchasingController.PurchaseOrder().Detail(lnCtr);
-                        double lnTotalAmount = orderDetail.Inventory().getCost().doubleValue() * orderDetail.getQuantity().intValue();
+                        double lnTotalAmount = orderDetail.getUnitPrice().doubleValue() * orderDetail.getQuantity().intValue();
                         grandTotalAmount += lnTotalAmount;
                         double lnRequestQuantity = 0;
                         String status = "0";

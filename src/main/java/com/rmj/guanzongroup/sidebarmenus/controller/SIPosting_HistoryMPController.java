@@ -235,7 +235,7 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
     public void RemoveWindowEvent() {
         root.sceneProperty().removeListener(WindowKeyEvent);
         scene.setOnKeyPressed(null);
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
     }
 
     private void populateJE() {
@@ -288,7 +288,7 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
 
     public void showAttachmentDialog() {
         poJSON = new JSONObject();
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
         openedAttachment = "";
         if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
@@ -315,7 +315,7 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
     public void showSerialDialog() {
         try {
             poJSON = new JSONObject();
-            stageSerial.closeSerialDialog();
+            stageSerial.closeDialog();
             if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
                 return;
             }
@@ -468,10 +468,10 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
 
     private void closeDialog() {
         if (stageAttachment != null) {
-            stageAttachment.closeSerialDialog();
+            stageAttachment.closeDialog();
         }
         if (stageSerial != null) {
-            stageSerial.closeSerialDialog();
+            stageSerial.closeDialog();
         }
     }
 
@@ -1213,7 +1213,7 @@ public class SIPosting_HistoryMPController implements Initializable, ScreenInter
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewTransDetailList.getSelectionModel().getSelectedItem();
                     if (selected != null) {
-                        stageSerial.closeSerialDialog();
+                        stageSerial.closeDialog();
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
                         tfCost.requestFocus();

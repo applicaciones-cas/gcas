@@ -240,7 +240,7 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
     public void RemoveWindowEvent() {
         root.sceneProperty().removeListener(WindowKeyEvent);
         scene.setOnKeyPressed(null);
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
     }
 
     private void populateJE() {
@@ -293,7 +293,7 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
 
     public void showAttachmentDialog() {
         poJSON = new JSONObject();
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
         openedAttachment = "";
         if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
@@ -339,7 +339,7 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
                             return;
                         }
 
-                        stageAttachment.closeSerialDialog();
+                        stageAttachment.closeDialog();
                         pnEditMode = poPurchaseReceivingController.getEditMode();
                         psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                         psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
@@ -350,7 +350,7 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-                            stageAttachment.closeSerialDialog();
+                            stageAttachment.closeDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -469,7 +469,7 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            stageAttachment.closeSerialDialog();
+                            stageAttachment.closeDialog();
                             poJSON = poPurchaseReceivingController.searchTransaction(psIndustryId, psCompanyId,
                                     tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
@@ -477,7 +477,7 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
                                 tfSearchReferenceNo.setText("");
                                 break;
                             } else {
-                                stageAttachment.closeSerialDialog();
+                                stageAttachment.closeDialog();
                                 pnEditMode = poPurchaseReceivingController.getEditMode();
                                 psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
                                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
@@ -1277,7 +1277,7 @@ public class SIPosting_HistoryMonarchFoodController implements Initializable, Sc
 
     public void clearTextFields() {
         Platform.runLater(() -> {
-            stageAttachment.closeSerialDialog();
+            stageAttachment.closeDialog();
             imageinfo_temp.clear();
             JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpReportMonthYear);
             psSupplierId = "";

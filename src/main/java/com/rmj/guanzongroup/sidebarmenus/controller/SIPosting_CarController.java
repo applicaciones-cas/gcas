@@ -254,8 +254,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     public void RemoveWindowEvent() {
         root.sceneProperty().removeListener(WindowKeyEvent);
         scene.setOnKeyPressed(null);
-        stageSerial.closeSerialDialog();
-        stageAttachment.closeSerialDialog();
+        stageSerial.closeDialog();
+        stageAttachment.closeDialog();
     }
 
     private void populateJE() {
@@ -306,7 +306,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     public void showAttachmentDialog() {
         poJSON = new JSONObject();
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
         openedAttachment = "";
         if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
@@ -345,7 +345,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     public void showSerialDialog() {
         try {
             poJSON = new JSONObject();
-            stageSerial.closeSerialDialog();
+            stageSerial.closeDialog();
             if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
                 return;
             }
@@ -578,10 +578,10 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     private void closeDialog() {
         if (stageAttachment != null) {
-            stageAttachment.closeSerialDialog();
+            stageAttachment.closeDialog();
         }
         if (stageSerial != null) {
-            stageSerial.closeSerialDialog();
+            stageSerial.closeDialog();
         }
     }
 
@@ -1587,26 +1587,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         }
         return ldblGrossTotal;
     }
-
-    private void goToPageBasedOnSelectedRow(String pnRowMain) {
-
-        int realIndex = Integer.parseInt(pnRowMain);
-
-        if (realIndex == -1) {
-            return; // Not found
-        }
-        int targetPage = realIndex / ROWS_PER_PAGE;
-        int indexInPage = realIndex % ROWS_PER_PAGE;
-
-        initMainGrid();
-        initDetailsGrid();
-        int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
-        pgPagination.setPageCount(totalPage);
-        pgPagination.setCurrentPageIndex(targetPage);
-        JFXUtil.changeTableView(targetPage, ROWS_PER_PAGE, tblViewMainList, main_data.size(), filteredData);
-
-    }
-
     public void loadTableDetailFromMain() {
         try {
 
@@ -1624,7 +1604,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
-                goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                 lbSelectTabJE = false;
                 
                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
@@ -1634,10 +1613,10 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             poPurchaseReceivingController.loadAttachments();
 //            if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
 //                if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
-//                    stageAttachment.closeSerialDialog();
+//                    stageAttachment.closeDialog();
 //                }
 //            } else {
-//                stageAttachment.closeSerialDialog();
+//                stageAttachment.closeDialog();
 //            }
 
             Platform.runLater(() -> {
@@ -2015,7 +1994,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewTransDetailList.getSelectionModel().getSelectedItem();
                     if (selected != null) {
-                        stageSerial.closeSerialDialog();
+                        stageSerial.closeDialog();
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
                         tfCost.requestFocus();
