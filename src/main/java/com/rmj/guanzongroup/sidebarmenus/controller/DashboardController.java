@@ -3269,39 +3269,39 @@ public class DashboardController implements Initializable {
 //                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
 //                 return new PurchasingOrder_HistoryController();
                 /* OTHERS/PARAMETERS/ADDRESS */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
-//                    return new BarangayController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Country.fxml":
-//                    return new CountryController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Province.fxml":
-//                    return new ProvinceController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Region.fxml":
-//                    return new RegionController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
+                    return new BarangayController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Country.fxml":
+                    return new CountryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Province.fxml":
+                    return new ProvinceController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Region.fxml":
+                    return new RegionController();
 
                 /* OTHERS/PARAMETERS/BANKS */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Banks.fxml":
-//                    return new BanksController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml":
-//                    return new BanksBranchesController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Banks.fxml":
+                    return new BanksController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml":
+                    return new BanksBranchesController();
 //                /* OTHERS/PARAMETERS/CATEGORY */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml":
-//                    return new CategoryController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel2.fxml":
-//                    return new CategoryLevel2Controller();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel3.fxml":
-//                    return new CategoryLevel3Controller();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml":
-//                    return new CategoryLevel4Controller();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml":
+                    return new CategoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel2.fxml":
+                    return new CategoryLevel2Controller();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel3.fxml":
+                    return new CategoryLevel3Controller();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml":
+                    return new CategoryLevel4Controller();
 //
 //                /* OTHERS/PARAMETERS/CATEGORY */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml":
-//                    return new ColorController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml":
-//                    return new ColorDetailController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml":
+                    return new ColorController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml":
+                    return new ColorDetailController();
 //
 //                /* OTHERS/PARAMETERS/COMPANY */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml":
-//                    return new AffiliatedCompanyController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml":
+                    return new AffiliatedCompanyController();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/Branch.fxml":
 //                    return new BranchController();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/Company.fxml":

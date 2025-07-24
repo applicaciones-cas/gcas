@@ -93,13 +93,17 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        pnEditMode = EditMode.UNKNOWN;
-        initButton(pnEditMode);
-        initializeObject();
-        InitTextFields();
-        ClickButton();
-        initTabAnchor();
-        pbLoaded = true;
+        try {
+            initializeObject();
+            pnEditMode = oParameters.CategoryLevel2().getEditMode();
+            initButton(pnEditMode);
+            InitTextFields();
+            ClickButton();
+            initTabAnchor();
+            pbLoaded = true;
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initializeObject() {
@@ -107,9 +111,7 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
             LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
             oParameters = new ParamControllers(oApp, logwrapr);
             oParameters.CategoryLevel2().setRecordStatus("0123");
-        } catch (SQLException ex) {
-            Logger.getLogger(CategoryLevel2Controller.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(CategoryLevel2Controller.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -198,35 +200,55 @@ public class CategoryLevel2Controller implements Initializable, ScreenInterface 
                         break;
                     case "btnActivate":
                         String Status = oParameters.CategoryLevel2().getModel().getRecordStatus();
+                        String id = oParameters.CategoryLevel2().getModel().getCategoryId();
                         JSONObject poJsON;
-
+                        
                         switch (Status) {
                             case "0":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                    ShowMessageFX.Information(String.valueOf(oParameters.CategoryLevel2().getEditMode()), "Computerized Accounting System", pxeModuleName);
+                                    oParameters.CategoryLevel2().initialize();
                                     poJsON = oParameters.CategoryLevel2().activateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.CategoryLevel2().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
                             case "1":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                   
+                                    
+                                    System.out.println("EDIT MODE : " + oParameters.CategoryLevel2().getEditMode());
+                                    ShowMessageFX.Information(String.valueOf(oParameters.CategoryLevel2().getEditMode()), "Computerized Accounting System", pxeModuleName);
+                                    
                                     poJsON = oParameters.CategoryLevel2().deactivateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.CategoryLevel2().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
-                            default:
-
-                                break;
-
                         }
-                        break;
+
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(CategoryLevel2Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (GuanzonException ex) {
-                Logger.getLogger(CategoryLevel2Controller.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (CloneNotSupportedException ex) {
+            } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(CategoryLevel2Controller.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
