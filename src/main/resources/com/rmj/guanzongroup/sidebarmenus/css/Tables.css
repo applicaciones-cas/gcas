@@ -34,36 +34,29 @@
 
 .table-view .filler, .table-view .column-header {
     -fx-background-color: transparent;
-    -fx-size: 20px;
+    -fx-size: 25px;
 }
 
 .table-view .table-cell{
     -fx-text-fill: black;
-    -fx-font-size: 11px;
-    -fx-font-weight: 300;
+    -fx-font-size: 9pt;
+    /*-fx-font-weight: 300;*/
     -fx-font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
 }
 
 
 .table-view .column-header {
-    -fx-min-height: 20px; /* Sets minimum height */
-    -fx-pref-height: 20px; /* Sets preferred height */
-    -fx-max-height: 20px; /* Sets maximum height */
+    -fx-min-height: 25px; /* Sets minimum height */
+    -fx-pref-height: 25px; /* Sets preferred height */
+    -fx-max-height: 25px; /* Sets maximum height */
 }
 
-.table-view .table-cell{
-    -fx-text-fill: black;
-    -fx-font-size: 11px;
-    -fx-font-size: 12px;
-    -fx-font-weight: 300;
-    -fx-font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
-}
 
 .table-row-cell{
     -fx-background-color: -fx-table-cell-border-color, #D0D3D4;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em; /* 0 */
-    -fx-cell-size: 20px;
+    -fx-cell-size: 25px;
 }
 .table-row-cell:selected {
     -fx-background-color: #B3B6B7;

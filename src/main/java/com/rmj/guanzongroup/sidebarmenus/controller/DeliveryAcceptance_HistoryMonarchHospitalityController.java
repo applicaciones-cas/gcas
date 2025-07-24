@@ -530,6 +530,7 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
                         break;
                     case PurchaseOrderReceivingStatus.CANCELLED:
                         lsStat = "CANCELLED";
+                        lbPrintStat = false;
                         break;
                     default:
                         lsStat = "UNKNOWN";

@@ -5,6 +5,7 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
+import static com.rmj.guanzongroup.sidebarmenus.controller.SIPosting_MCController.poPurchaseReceivingController;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Attachment;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelDeliveryAcceptance_Main;
@@ -102,7 +103,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
-    private String psSupplierId = "";
+    private String psSupplierId = "";    
+    private String psSearchSupplierId = "";
+    private String psSearchBranchId = "";
     private String psBranchId = "";
     private String openedAttachment = "";
     private boolean pbEntered = false;
@@ -178,7 +181,9 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
+        
 
+        
         initTextFields();
         initDatePickers();
         initMainGrid();
@@ -249,8 +254,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     public void RemoveWindowEvent() {
         root.sceneProperty().removeListener(WindowKeyEvent);
         scene.setOnKeyPressed(null);
-        stageSerial.closeSerialDialog();
-        stageAttachment.closeSerialDialog();
+        stageSerial.closeDialog();
+        stageAttachment.closeDialog();
     }
 
     private void populateJE() {
@@ -262,16 +267,11 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             if (JFXUtil.isJSONSuccess(pnJSON)) {
                 loadTableJEDetail();
             } else {
+                lblJEStatus.setText("UNKNOWN");
                 JEdetails_data.clear();
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (ScriptException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException | GuanzonException | CloneNotSupportedException | ScriptException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -306,7 +306,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     public void showAttachmentDialog() {
         poJSON = new JSONObject();
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
         openedAttachment = "";
         if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
@@ -345,7 +345,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     public void showSerialDialog() {
         try {
             poJSON = new JSONObject();
-            stageSerial.closeSerialDialog();
+            stageSerial.closeDialog();
             if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
                 return;
             }
@@ -367,9 +367,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             }
             stageSerial.setOnHidden(event -> {
                 moveNext();
-                Platform.runLater(() -> {
-                    loadTableDetail();
-                });
             });
 
             stageSerial.showDialog((Stage) btnSave.getScene().getWindow(), getClass().getResource("/com/rmj/guanzongroup/sidebarmenus/views/DeliveryAcceptance_SerialCar.fxml"), controller, "Inventory Serial", true, false, false);
@@ -428,6 +425,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                            closeDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -578,9 +576,18 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         }
     }
 
+    private void closeDialog() {
+        if (stageAttachment != null) {
+            stageAttachment.closeDialog();
+        }
+        if (stageSerial != null) {
+            stageSerial.closeDialog();
+        }
+    }
+
     public void retrievePOR() {
         poJSON = new JSONObject();
-        poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("siposting", psCompanyId, psSupplierId, psBranchId, tfSearchReferenceNo.getText());
+        poJSON = poPurchaseReceivingController.loadUnPostPurchaseOrderReceiving( tfSearchSupplier.getText(), tfSearchReceiveBranch.getText(), tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
@@ -834,7 +841,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     break;
                 case "tfJEAcctDescription":
                     if (lsValue.isEmpty()) {
-//                        poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).Account_Chart().setDescription(lsValue);
                         poJSON = poPurchaseReceivingController.Journal().Detail(pnJEDetail).setAccountCode(lsValue);
                     }
                     if ("error".equals((String) poJSON.get("result"))) {
@@ -947,36 +953,38 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             switch (lsTxtFieldID) {
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
-                        psSupplierId = "";
+                        psSearchSupplierId = "";
                     }
                     break;
                 case "tfSearchReceiveBranch":
                     if (lsValue.equals("")) {
-                        psBranchId = "";
+                        psSearchBranchId = "";
                     }
                     break;
                 case "tfSearchReferenceNo":
                     break;
             }
-            if (JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfSearchSupplier", "tfSearchReceiveBranch", "tfSearchReferenceNo")) {
-                loadRecordSearch();
-            }
+//            if (JFXUtil.isObjectEqualTo(lsTxtFieldID, "tfSearchSupplier", "tfSearchReceiveBranch", "tfSearchReferenceNo")) {
+//                loadRecordSearch();
+//            }
         }
     };
 
     public void moveNext() {
-        double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-        apDetail.requestFocus();
-        double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-        if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
-                && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
-            tfCost.requestFocus();
-        } else {
-            pnDetail = JFXUtil.moveToNextRow(tblViewTransDetailList);
-            loadRecordDetail();
-            tfOrderNo.setText("");
-            tfCost.requestFocus();
+        if (poPurchaseReceivingController.getDetailCount() > 0) {
+            double lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
+            apDetail.requestFocus();
+            double lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
+            if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
+                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
+                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                tfCost.requestFocus();
+            } else {
+                pnDetail = JFXUtil.moveToNextRow(tblViewTransDetailList);
+                loadRecordDetail();
+                tfOrderNo.setText("");
+                tfCost.requestFocus();
+            }
         }
     }
 
@@ -1061,25 +1069,25 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                             poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                psSupplierId = "";
+                                psSearchSupplierId  = "";
                                 break;
                             } else {
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                psSearchSupplierId  = poPurchaseReceivingController.Master().getSupplierId();
                             }
-                            retrievePOR();
                             loadRecordSearch();
+                            retrievePOR();
                             return;
                         case "tfSearchReceiveBranch":
                             poJSON = poPurchaseReceivingController.SearchBranch(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                psBranchId = "";
+                                psSearchBranchId = "";
                                 break;
                             } else {
-                                psBranchId = poPurchaseReceivingController.Master().getBranchCode();
+                                psSearchBranchId = poPurchaseReceivingController.Master().getBranchCode();
                             }
-                            retrievePOR();
                             loadRecordSearch();
+                            retrievePOR();
                             return;
                         case "tfSearchReferenceNo":
                             poPurchaseReceivingController.Master().setTransactionNo(lsValue);
@@ -1095,7 +1103,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                             loadRecordMaster();
                             break;
                         case "tfJEAcctCode":
-                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, true, null, null);
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, true, poPurchaseReceivingController.Master().getIndustryId(), PurchaseOrderReceivingStatus.GLCODE);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfJEAcctCode.setText("");
@@ -1116,7 +1124,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                             loadTableJEDetail();
                             break;
                         case "tfJEAcctDescription":
-                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, false, psIndustryId, null);
+                            poJSON = poPurchaseReceivingController.Journal().SearchAccountCode(pnJEDetail, lsValue, false, poPurchaseReceivingController.Master().getIndustryId(), PurchaseOrderReceivingStatus.GLCODE);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfJEAcctCode.setText("");
@@ -1325,9 +1333,10 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
-            tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poPurchaseReceivingController.Master().Supplier().getCompanyName());
-            tfSearchReceiveBranch.setText(psBranchId.equals("") ? "" : poPurchaseReceivingController.Master().Branch().getBranchName());
+//            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName());
+            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
+            tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poPurchaseReceivingController.Master().Supplier().getCompanyName());
+            tfSearchReceiveBranch.setText(psSearchBranchId.equals("") ? "" : poPurchaseReceivingController.Master().Branch().getBranchName());
             JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1482,6 +1491,8 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
     }
 
     public void loadRecordMaster() {
+        poPurchaseReceivingController.Master().setSupplierId(psSupplierId);
+        poPurchaseReceivingController.Master().setBranchCode(psBranchId);
         try {
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poPurchaseReceivingController.Master().getTransactionStatus();
@@ -1576,26 +1587,6 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         }
         return ldblGrossTotal;
     }
-
-    private void goToPageBasedOnSelectedRow(String pnRowMain) {
-
-        int realIndex = Integer.parseInt(pnRowMain);
-
-        if (realIndex == -1) {
-            return; // Not found
-        }
-        int targetPage = realIndex / ROWS_PER_PAGE;
-        int indexInPage = realIndex % ROWS_PER_PAGE;
-
-        initMainGrid();
-        initDetailsGrid();
-        int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
-        pgPagination.setPageCount(totalPage);
-        pgPagination.setCurrentPageIndex(targetPage);
-        JFXUtil.changeTableView(targetPage, ROWS_PER_PAGE, tblViewMainList, main_data.size(), filteredData);
-
-    }
-
     public void loadTableDetailFromMain() {
         try {
 
@@ -1613,18 +1604,20 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
-                goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                 lbSelectTabJE = false;
+                
+                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                psBranchId = poPurchaseReceivingController.Master().getBranchCode();
             }
-
+            closeDialog();
             poPurchaseReceivingController.loadAttachments();
-            if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
-                if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
-                    stageAttachment.closeSerialDialog();
-                }
-            } else {
-                stageAttachment.closeSerialDialog();
-            }
+//            if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
+//                if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
+//                    stageAttachment.closeDialog();
+//                }
+//            } else {
+//                stageAttachment.closeDialog();
+//            }
 
             Platform.runLater(() -> {
                 loadTableDetail();
@@ -1947,7 +1940,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apDetail, apJEDetail, apBrowse);
 
         JFXUtil.setCommaFormatter(tfDiscountAmount, tfFreightAmt, tfVatSales, tfTaxAmount, tfVatAmount,
-                tfZeroVatSales, tfVatExemptSales, tfCost, tfAddlDiscAmtDetail, tfCreditAmt,
+                tfZeroVatSales, tfVatExemptSales, tfCost, tfCreditAmt,
                 tfDebitAmt, tfAddlDiscAmtDetail, tfSRPAmount);
 
         CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfSINo);
@@ -2001,7 +1994,7 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     ModelDeliveryAcceptance_Detail selected = (ModelDeliveryAcceptance_Detail) tblViewTransDetailList.getSelectionModel().getSelectedItem();
                     if (selected != null) {
-                        stageSerial.closeSerialDialog();
+                        stageSerial.closeDialog();
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
                         tfCost.requestFocus();
@@ -2214,10 +2207,13 @@ public class SIPosting_CarController implements Initializable, ScreenInterface {
             JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpReportMonthYear);
             psSupplierId = "";
             psBranchId = "";
+            psSearchSupplierId = "";
+            psSearchBranchId = "";
             JFXUtil.clearTextFields(apMaster, apDetail, apJEDetail, apJEMaster, apAttachments);
 
             cbVatInclusive.setSelected(false);
             cbVatable.setSelected(false);
+            closeDialog();
         });
     }
 }

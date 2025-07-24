@@ -530,6 +530,7 @@ public class DeliveryAcceptance_HistorySPMCController implements Initializable, 
                         break;
                     case PurchaseOrderReceivingStatus.CANCELLED:
                         lsStat = "CANCELLED";
+                        lbPrintStat = false;
                         break;
                     default:
                         lsStat = "UNKNOWN";

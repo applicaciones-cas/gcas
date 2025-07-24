@@ -531,6 +531,7 @@ public class DeliveryAcceptance_HistorySPCarController implements Initializable,
                         break;
                     case PurchaseOrderReceivingStatus.CANCELLED:
                         lsStat = "CANCELLED";
+                        lbPrintStat = false;
                         break;
                     default:
                         lsStat = "UNKNOWN";

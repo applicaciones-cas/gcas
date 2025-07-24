@@ -814,6 +814,7 @@ public class DeliveryAcceptance_HistoryAppliancesController implements Initializ
                         break;
                     case PurchaseOrderReceivingStatus.CANCELLED:
                         lsStat = "CANCELLED";
+                        lbPrintStat = false;
                         break;
                     default:
                         lsStat = "UNKNOWN";

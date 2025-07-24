@@ -281,6 +281,11 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                                 pnEditMode = EditMode.UNKNOWN;
                                 clearTextFields();
                                 initButton(pnEditMode);
+                                
+                                poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
+                                poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+                                poPurchaseReceivingController.Master().setCategoryCode(psCategoryId);
+                                
                             }
                             Platform.runLater(() -> {
                                 try {
@@ -507,14 +512,14 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                             String imgPath2 = selectedFile.getName().toString();
                             for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getTransactionAttachmentCount() - 1; lnCtr++) {
                                 if (imgPath2.equals(poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getFileName())) {
-                                    ShowMessageFX.Warning(null, pxeModuleName, "File name already exist.");
+                                    ShowMessageFX.Warning(null, pxeModuleName, "File name already exists.");
                                     pnAttachment = lnCtr;
                                     loadRecordAttachment(true);
                                     return;
                                 }
                             }
                             if (imageinfo_temp.containsKey(selectedFile.getName().toString())) {
-                                ShowMessageFX.Warning(null, pxeModuleName, "File name already exist.");
+                                ShowMessageFX.Warning(null, pxeModuleName, "File name already exists.");
                                 loadRecordAttachment(true);
                                 return;
                             } else {
@@ -568,6 +573,10 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                         imageView.setImage(null);
                         pnEditMode = EditMode.UNKNOWN;
                         clearTextFields();
+                        
+                        poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
+                        poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
+                        poPurchaseReceivingController.Master().setCategoryCode(psCategoryId);
                     }
                 }
 
@@ -1260,13 +1269,19 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
 
                             if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
-                                if (oApp.getUserLevel() == UserRight.ENCODER) {
+                                if (oApp.getUserLevel() <= UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
                                             + "If YES, please seek approval to proceed with the new selected date.\n"
                                             + "If NO, the previous transaction date will be retained.") == true) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
+                                        } else {
+                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+                                                poJSON.put("result", "error");
+                                                poJSON.put("message", "User is not an authorized approving officer.");
+                                                pbSuccess = false;
+                                            }
                                         }
                                     } else {
                                         pbSuccess = false;
@@ -1661,7 +1676,7 @@ public class DeliveryAcceptance_ConfirmationCarController implements Initializab
                 tfModel.getStyleClass().add("DisabledTextField");
             }
 
-            if (oApp.getUserLevel() == UserRight.ENCODER) {
+            if (oApp.getUserLevel() <= UserRight.ENCODER) {
                 tfCost.getStyleClass().add("DisabledTextField");
                 tfCost.setDisable(true);
             } else {

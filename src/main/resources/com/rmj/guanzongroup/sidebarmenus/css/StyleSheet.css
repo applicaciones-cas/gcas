@@ -15,6 +15,40 @@
  * DRAWER CSS                                                                     *
  *                                                                             *
  ******************************************************************************/
+/* Selected Number */
+.pagination .toggle-button:selected {
+    -fx-text-fill: white ; /* Change text color for selected number */
+    -fx-background-color: #4D5656; /* Background color for selected number */
+    -fx-font-weight: bold; /* Optional: Make selected number bold */
+}
+.pagination .toggle-button {
+    -fx-text-fill:#4D5656; /* Change text color for selected number */
+    -fx-background-color: white; /* Background color for selected number */
+    -fx-font-weight: bold; /* Optional: Make selected number bold */
+    -fx-background-radius: 1px;
+}
+
+.pagination .button {
+    -fx-text-fill: white; /* Change to your desired color */
+    -fx-background-color: #4D5656; /* Optional: Change button background */
+}
+
+
+.pagination .left-arrow,
+.pagination .right-arrow {
+    -fx-background-color: #E9E9E9; /* Keeps background transparent */
+
+}
+.pagination .label {
+    -fx-text-fill: #4D5656; /* Change to your desired color */
+    -fx-font-size: 10px; /* Optional: Adjust font size */
+    -fx-font-weight: bold; /* Optional: Make it bold */
+}
+
+.pagination .toggle-button:hover {
+    -fx-text-fill: #4D5656;
+    -fx-background-color: #F8F8F8;
+}
 .tooltip {
     -fx-background-color: gray;
     -fx-text-fill: white;
@@ -162,6 +196,8 @@
     -fx-background-color: #7F7F7F;
     -fx-text-fill: white;
     -fx-cursor: hand;
+    -fx-pref-width: 70;
+    -fx-pref-height: 70;
 }
 .button_process:hover
 {
@@ -291,6 +327,7 @@
     -fx-text-fill: black;
 }
 .text-area {
+    -fx-font-size: 10pt;
     -fx-resize: auto;
     -fx-opacity: 1.0;
     -fx-background-color:
@@ -539,9 +576,7 @@
     -fx-background-color: transparent;
 }
 .list-cell {
-    -fx-cell-size: 50 ;
     -fx-animated: true;
-    -fx-padding: 1px;
     -fx-opacity: 1;
     -fx-text-fill: black;
 }
@@ -590,7 +625,7 @@
     -fx-border-radius: 0px;
 }
 
-/* Default Tree Cell Styling */
+
 .tree-cell {
     -fx-background-color: #DFDFDF;  /* Light gray background */
     -fx-border-color: transparent transparent #333333 transparent;
@@ -679,26 +714,26 @@
     -fx-background-color: white;
 }
 
-
-
-
 .combo-box {
-    -fx-border-color: black ;
-    -fx-max-height: 30px;
-    -fx-min-height: 30px;
-    -fx-background-color: transparent;
-    -fx-border-width: .5px;
-    -fx-border-radius: 5px;
-    -fx-padding: 3px;
+    -fx-border-color: gray;
+    /*    -fx-max-height: 26px;
+        -fx-min-height: 26px;*/
+    -fx-background-color: white;
+    /*-fx-border-width: 1px;*/
+    -fx-border-radius: 2px;
+    /*-fx-padding:3px;*/
+    -fx-background-radius:3px;
 }
 
 .combo-box .arrow-button {
     -fx-background-color: transparent;
-    -fx-shape: "";
-    -fx-padding: 0;
+    /*-fx-font-size:10px;*/
+    /*-fx-padding: 3;*/
+    /*-fx-shape: "";*/
+
 }
 .combo-box:focused {
-    -fx-border-color: #F88222 ;
+    /*-fx-border-color: #F88222 ;*/
 }
 
 .combo-box-base:disabled,
@@ -706,25 +741,21 @@
 .check-box:disabled{
     -fx-opacity: 1;
 }
-
-.combo-box {
-
-    -fx-max-height: 30px;
-    -fx-min-height: 30px;
-    -fx-background-color: transparent;
-    -fx-border-width: .5px;
-    -fx-border-radius: 5px;
-    -fx-padding: 3px;
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color:black;
+    -fx-border-width:.5px;
+    -fx-background-radius:2px;
+    -fx-border-radius:3px;
+}
+.check-box .box:selected {
+    -fx-background-color: white;
+    -fx-border-color:black;
+    -fx-border-width:1px;
+    -fx-background-radius:2px;
+    -fx-border-radius:3px;
 }
 
-.combo-box .arrow-button {
-    -fx-background-color: transparent;
-    -fx-shape: "";
-    -fx-padding: 0;
-}
-.combo-box:focused {
-    -fx-border-color: #F88222 ;
-}
 
 .button_process2 {
     -fx-background-color: #FF8201;
@@ -734,4 +765,55 @@
 .button_process2:hover
 {
     -fx-background-color: #CC6900;
+}
+
+.DisabledTextField {
+    -fx-border-color: gray;
+    -fx-border-radius: 3;
+    -fx-background-color: #f7f7f7;
+    -fx-padding: 0 7 0 7;
+}
+
+.check-box:disabled {
+    -fx-text-fill: gray;
+}
+
+.custom-text-area {
+    -fx-background-color: transparent;
+}
+
+.custom-text-area .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.custom-text-area .scroll-bar .increment-button,
+.custom-text-area .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-max-width: 0;
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+}
+
+.custom-text-area .scroll-bar .increment-button .arrow,
+.custom-text-area .scroll-bar .decrement-button .arrow {
+    -fx-background-color: transparent;
+    -fx-opacity: 0;
+}
+
+.custom-text-area .scroll-bar .track {
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 0px;
+}
+
+.custom-text-area .scroll-bar .thumb {
+    -fx-background-color: #ff8201;
+    -fx-background-radius: 5px;
+    -fx-background-insets: 2;
 }
