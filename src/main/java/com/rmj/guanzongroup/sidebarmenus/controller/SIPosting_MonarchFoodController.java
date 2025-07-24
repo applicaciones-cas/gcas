@@ -257,7 +257,7 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
     public void RemoveWindowEvent() {
         root.sceneProperty().removeListener(WindowKeyEvent);
         scene.setOnKeyPressed(null);
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
     }
 
     private void populateJE() {
@@ -310,7 +310,7 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
 
     public void showAttachmentDialog() {
         poJSON = new JSONObject();
-        stageAttachment.closeSerialDialog();
+        stageAttachment.closeDialog();
         openedAttachment = "";
         if (poPurchaseReceivingController.getTransactionAttachmentCount() <= 0) {
             ShowMessageFX.Warning(null, pxeModuleName, "No transaction attachment to load.");
@@ -365,7 +365,7 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
                         if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
-                            stageAttachment.closeSerialDialog();
+                            stageAttachment.closeDialog();
                             appUnload.unloadForm(apMainAnchor, oApp, pxeModuleName);
                         } else {
                             return;
@@ -1529,26 +1529,6 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
         }
         return ldblGrossTotal;
     }
-
-    private void goToPageBasedOnSelectedRow(String pnRowMain) {
-
-        int realIndex = Integer.parseInt(pnRowMain);
-
-        if (realIndex == -1) {
-            return; // Not found
-        }
-        int targetPage = realIndex / ROWS_PER_PAGE;
-        int indexInPage = realIndex % ROWS_PER_PAGE;
-
-        initMainGrid();
-        initDetailsGrid();
-        int totalPage = (int) (Math.ceil(main_data.size() * 1.0 / ROWS_PER_PAGE));
-        pgPagination.setPageCount(totalPage);
-        pgPagination.setCurrentPageIndex(targetPage);
-        JFXUtil.changeTableView(targetPage, ROWS_PER_PAGE, tblViewMainList, main_data.size(), filteredData);
-
-    }
-
     public void loadTableDetailFromMain() {
         try {
 
@@ -1566,7 +1546,6 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
-                goToPageBasedOnSelectedRow(String.valueOf(pnMain));
                 lbSelectTabJE = false;
                                 
                 psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
@@ -1576,10 +1555,10 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
             poPurchaseReceivingController.loadAttachments();
             if (poPurchaseReceivingController.getTransactionAttachmentCount() > 1) {
                 if (!openedAttachment.equals(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo())) {
-                    stageAttachment.closeSerialDialog();
+                    stageAttachment.closeDialog();
                 }
             } else {
-                stageAttachment.closeSerialDialog();
+                stageAttachment.closeDialog();
             }
 
             Platform.runLater(() -> {
@@ -2167,7 +2146,7 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
 
     public void clearTextFields() {
         Platform.runLater(() -> {
-            stageAttachment.closeSerialDialog();
+            stageAttachment.closeDialog();
 
             imageinfo_temp.clear();
             JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate, dpReferenceDate, dpExpiryDate, dpReportMonthYear);
