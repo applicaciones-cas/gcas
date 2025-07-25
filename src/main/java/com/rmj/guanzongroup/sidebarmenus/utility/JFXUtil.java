@@ -37,9 +37,11 @@ import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -78,10 +80,13 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -96,6 +101,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
@@ -1668,4 +1674,149 @@ public class JFXUtil {
         hand.setEndX(center + length * Math.cos(radians));
         hand.setEndY(center + length * Math.sin(radians));
     }
+
+    public static <T> void enableRowDragAndDrop(
+            TableView<T> tableView,
+            Function<T, StringProperty> rowNumberPropertyGetter
+    ) {
+        ObservableList<T> items = tableView.getItems();
+
+        tableView.setRowFactory(new Callback<TableView<T>, TableRow<T>>() {
+            @Override
+            public TableRow<T> call(TableView<T> tv) {
+                TableRow<T> row = new TableRow<>();
+
+                // Cursor style
+                row.setOnMouseEntered(e -> {
+                    if (!row.isEmpty()) {
+                        row.setCursor(Cursor.OPEN_HAND);
+                    }
+                });
+                row.setOnMouseExited(e -> row.setCursor(Cursor.DEFAULT));
+                row.setOnMousePressed(e -> {
+                    if (!row.isEmpty()) {
+                        row.setCursor(Cursor.CLOSED_HAND);
+                    }
+                });
+                row.setOnMouseReleased(e -> {
+                    if (!row.isEmpty()) {
+                        row.setCursor(Cursor.OPEN_HAND);
+                    }
+                });
+
+                row.setOnDragDetected(event -> {
+                    if (!row.isEmpty()) {
+                        Dragboard db = row.startDragAndDrop(TransferMode.MOVE);
+                        ClipboardContent content = new ClipboardContent();
+                        content.putString(""); // dummy content
+                        db.setContent(content);
+                        tableView.getProperties().put("dragSourceIndex", row.getIndex());
+                        event.consume();
+                    }
+                });
+
+                row.setOnDragOver(event -> {
+                    if (event.getGestureSource() != row && event.getDragboard().hasString()) {
+                        event.acceptTransferModes(TransferMode.MOVE);
+
+                        int dragIndex = (int) tableView.getProperties().get("dragSourceIndex");
+                        int hoverIndex = row.getIndex();
+
+                        double sceneY = event.getSceneY();
+                        double rowY = row.localToScene(row.getBoundsInLocal()).getMinY();
+                        double rowHeight = row.getHeight();
+
+                        boolean isTopHalf = (sceneY - rowY) < rowHeight / 2;
+                        boolean isDropOnSameSpot = (dragIndex == hoverIndex || dragIndex == hoverIndex - 1);
+
+                        // Show line on top or bottom
+                        if (isTopHalf) {
+                            row.setStyle("-fx-border-color: #2196F3; -fx-border-width: 2px 0 0 0;");
+                        } else {
+                            row.setStyle("-fx-border-color: #2196F3; -fx-border-width: 0 0 2px 0;");
+                        }
+
+                        event.consume();
+                    }
+                });
+
+                row.setOnDragExited(event -> row.setStyle(""));
+
+                row.setOnDragDropped(event -> {
+                    Integer dragSourceIndex = (Integer) tableView.getProperties().get("dragSourceIndex");
+                    if (dragSourceIndex == null) {
+                        return;
+                    }
+
+                    int dropIndex = row.getIndex();
+                    double sceneY = event.getSceneY();
+                    double rowY = row.localToScene(row.getBoundsInLocal()).getMinY();
+                    boolean isTopHalf = (sceneY - rowY) < row.getHeight() / 2;
+
+                    int targetIndex = isTopHalf ? dropIndex : dropIndex + 1;
+
+                    if (targetIndex > items.size()) {
+                        targetIndex = items.size();
+                    }
+
+                    // Prevent moving to same place
+                    if (dragSourceIndex == targetIndex || dragSourceIndex + 1 == targetIndex) {
+                        event.setDropCompleted(false);
+                        event.consume();
+                        return;
+                    }
+
+                    T draggedItem = items.remove((int) dragSourceIndex);
+                    if (targetIndex > items.size()) {
+                        targetIndex = items.size();
+                    }
+                    items.add(targetIndex > dragSourceIndex ? targetIndex - 1 : targetIndex, draggedItem);
+
+                    // Re-number
+                    for (int i = 0; i < items.size(); i++) {
+                        StringProperty prop = rowNumberPropertyGetter.apply(items.get(i));
+                        if (prop != null) {
+                            prop.set(String.valueOf(i + 1));
+                        }
+                    }
+
+                    tableView.getSelectionModel().select(targetIndex > items.size() ? items.size() - 1 : targetIndex);
+                    event.setDropCompleted(true);
+                    event.consume();
+                });
+
+                return row;
+            }
+        });
+
+        // Allow drop at end
+        tableView.setOnDragOver(event -> {
+            if (event.getGestureSource() != tableView && event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+                event.consume();
+            }
+        });
+
+        tableView.setOnDragDropped(event -> {
+            Integer dragSourceIndex = (Integer) tableView.getProperties().get("dragSourceIndex");
+            if (dragSourceIndex == null) {
+                return;
+            }
+
+            T draggedItem = items.remove((int) dragSourceIndex);
+            items.add(draggedItem);
+
+            for (int i = 0; i < items.size(); i++) {
+                StringProperty prop = rowNumberPropertyGetter.apply(items.get(i));
+                if (prop != null) {
+                    prop.set(String.valueOf(i + 1));
+                }
+            }
+
+            tableView.getSelectionModel().select(items.size() - 1);
+            event.setDropCompleted(true);
+            event.consume();
+        });
+    }
+
 }

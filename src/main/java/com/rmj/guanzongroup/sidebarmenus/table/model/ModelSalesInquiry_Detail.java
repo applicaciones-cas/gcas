@@ -5,6 +5,7 @@
 package com.rmj.guanzongroup.sidebarmenus.table.model;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -47,7 +48,7 @@ public class ModelSalesInquiry_Detail {
         this.index09 = new SimpleStringProperty(index09);
         this.index10 = new SimpleStringProperty(index10);
     }
-    
+
     public ModelSalesInquiry_Detail(
             String index01,
             String index02,
@@ -115,6 +116,10 @@ public class ModelSalesInquiry_Detail {
         this.index07 = new SimpleStringProperty(index07);
         this.index08 = new SimpleStringProperty(index08);
         this.index09 = new SimpleStringProperty(index09);
+    }
+
+    public StringProperty index01Property() { // for Drag Drop purpose Sales Inquiry
+        return index01;
     }
 
     public String getIndex01() {
@@ -188,7 +193,7 @@ public class ModelSalesInquiry_Detail {
     public void setIndex09(String index09) {
         this.index09.set(index09);
     }
-    
+
     public String getIndex10() {
         return index10.get();
     }

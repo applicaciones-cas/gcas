@@ -65,10 +65,20 @@ import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatic;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import javafx.beans.property.IntegerProperty;
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableRow;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.base.GRiderCAS;
@@ -81,7 +91,8 @@ import ph.com.guanzongroup.cas.sales.t1.status.SalesInquiryStatic;
  *
  * @author User
  */
-public class SalesInquiry_EntryCarController  implements Initializable, ScreenInterface {
+public class SalesInquiry_EntryMCController implements Initializable, ScreenInterface {
+
     private GRiderCAS oApp;
     private JSONObject poJSON;
     int pnDetail = 0;
@@ -101,7 +112,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
     private boolean pbEntered = false;
-    
+
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apTransactionInfo, apMaster, apDetail;
     @FXML
@@ -128,8 +139,11 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
     );
     ObservableList<String> PurchaseType = FXCollections.observableArrayList(
             "Cash",
-            "Bank Financing",
-            "Installment"
+            "Cash Balance",
+            "Term",
+            "Installment",
+            "Finance",
+            "Insurance"
     );
     ObservableList<String> CategoryType = FXCollections.observableArrayList(
             "New",
@@ -143,7 +157,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
     private TableView tblViewTransDetails;
     @FXML
     private TableColumn tblRowNoDetail, tblBrandDetail, tblDescriptionDetail;
-    
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         poSalesInquiryController = new SalesControllers(oApp, null).SalesInquiry();
@@ -193,7 +207,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
     public void setCategoryID(String fsValue) {
         psCategoryId = fsValue;
     }
-    
+
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         poJSON = new JSONObject();
@@ -286,6 +300,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                             poSalesInquiryController.Master().setIndustryId(psIndustryId);
                             poSalesInquiryController.Master().setCompanyId(psCompanyId);
                             poSalesInquiryController.Master().setCategoryCode(psCategoryId);
+                            poSalesInquiryController.initFields();
                             pnEditMode = EditMode.UNKNOWN;
 
                             break;
@@ -311,7 +326,8 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (poSalesInquiryController.Master().getTransactionStatus().equals(SalesInquiryStatic.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
-                                            loJSON = poSalesInquiryController.ConfirmTransaction("Confirmed");
+                                            poSalesInquiryController.setWithUI(true);
+                                            loJSON = poSalesInquiryController.ConfirmTransaction("");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             } else {
@@ -320,6 +336,8 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                                         }
                                     }
                                 }
+
+                                btnNew.fire();
 
                             }
                         } else {
@@ -353,7 +371,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.ADDNEW;
         if (!lbDisable) {
@@ -408,15 +426,14 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
 
             tfBranch.setText(poSalesInquiryController.Master().Branch().getBranchName());
             tfInquiryStatus.setText(poSalesInquiryController.Master().getInquiryStatus());//TODO
-            
+
             tfClient.setText(poSalesInquiryController.Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.Master().ClientAddress().getAddress());
             tfContactNo.setText(poSalesInquiryController.Master().ClientMobile().getMobileNo());
-            
+
             tfSalesPerson.setText(poSalesInquiryController.Master().SalesPerson().getCompanyName());
-            tfReferralAgent.setText(poSalesInquiryController.Master().ReferralAgent().getCompanyName());
             taRemarks.setText(poSalesInquiryController.Master().getRemarks());
-            
+
             cmbInquiryType.getSelectionModel().select(poSalesInquiryController.Master().getSourceCode());
             cmbPurchaseType.getSelectionModel().select(poSalesInquiryController.Master().getPurchaseType());
             cmbClientType.getSelectionModel().select(poSalesInquiryController.Master().Client().getClientType());
@@ -428,7 +445,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
         }
 
     }
-    
+
     public void loadRecordDetail() {
         try {
             if (pnDetail < 0 || pnDetail > poSalesInquiryController.getDetailCount() - 1) {
@@ -492,6 +509,8 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
 
         tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails); // need to use computed-size in min-width of the column to work
+        JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property());
+
     }
 
     public void loadTableDetail() {
@@ -524,7 +543,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poSalesInquiryController.getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poSalesInquiryController.Detail(lnCtr).getModelId()== null || poSalesInquiryController.Detail(lnCtr).getModelId().equals("")) {
+                                if (poSalesInquiryController.Detail(lnCtr).getModelId() == null || poSalesInquiryController.Detail(lnCtr).getModelId().equals("")) {
                                     if (poSalesInquiryController.Detail(lnCtr).getBrandId() != null
                                             || !"".equals(poSalesInquiryController.Detail(lnCtr).getBrandId())) {
                                         lsBrandId = poSalesInquiryController.Detail(lnCtr).getBrandId();
@@ -543,7 +562,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                             if ((poSalesInquiryController.getDetailCount() - 1) < 0) {
                                 poSalesInquiryController.AddDetail();
                             }
-                            
+
                             //Set brand Id to last row
                             if (!lsBrandId.isEmpty()) {
                                 poSalesInquiryController.Detail(poSalesInquiryController.getDetailCount() - 1).setBrandId(lsBrandId);
@@ -557,7 +576,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                                 lsBrand = poSalesInquiryController.Detail(lnCtr).Brand().getDescription();
                             }
                             String lsModelVariant = " ";
-                            if( poSalesInquiryController.Detail(lnCtr).getStockId() != null && !"".equals( poSalesInquiryController.Detail(lnCtr).getStockId())){
+                            if (poSalesInquiryController.Detail(lnCtr).getStockId() != null && !"".equals(poSalesInquiryController.Detail(lnCtr).getStockId())) {
                                 lsModelVariant = " " + poSalesInquiryController.Detail(lnCtr).ModelVariant().getDescription() + " ";
                             }
                             String lsModel = "";
@@ -569,8 +588,8 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                                 lsColor = poSalesInquiryController.Detail(lnCtr).Color().getDescription();
                             }
                             String lsDescription = lsModel
-                                                + lsModelVariant
-                                                + lsColor;
+                                    + lsModelVariant
+                                    + lsColor;
                             details_data.add(
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.Detail(lnCtr).getPriority()),
@@ -739,16 +758,15 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                         poJSON = poSalesInquiryController.Master().setContactId("");
                     }
                     break;
-                    
+
             }
-            
+
             loadRecordMaster();
-            
+
         }
 
     };
 
-    
     public void moveNext() {
         String lsBrand = poSalesInquiryController.Detail(pnDetail).getBrandId();
         apDetail.requestFocus();
@@ -765,6 +783,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
 //            }
 //        }
     }
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -904,8 +923,9 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-    
+
     boolean pbSuccess = true;
+
     private void datepicker_Action(ActionEvent event) {
         poJSON = new JSONObject();
         JFXUtil.setJSONSuccess(poJSON, "success");
@@ -972,7 +992,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void initComboBoxes() {
         // Set the items of the ComboBox to the list of genders
         cmbClientType.setItems(ClientType);
@@ -984,7 +1004,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
         cmbCategoryType.setItems(CategoryType);
         cmbCategoryType.getSelectionModel().select(0);
     }
-    
+
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat(dpTransactionDate, dpTargetDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpTargetDate);
@@ -995,7 +1015,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
             JFXUtil.setVerticalScroll(taRemarks);
         });
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus,  tfClient, tfSalesPerson, tfReferralAgent, tfInquirySource);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfReferralAgent, tfInquirySource);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBrand, tfModel, tfColor);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
@@ -1036,7 +1056,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
         tblViewTransDetails.setItems(sortedData);
         tblViewTransDetails.autosize();
     }
-    
+
     public void loadRecordSearch() {
         try {
             lblSource.setText(poSalesInquiryController.Master().Company().getCompanyName() + " - " + poSalesInquiryController.Master().Industry().getDescription());
