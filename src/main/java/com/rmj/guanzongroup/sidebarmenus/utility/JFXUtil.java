@@ -1711,6 +1711,7 @@ public class JFXUtil {
                         content.putString(""); // dummy content
                         db.setContent(content);
                         tableView.getProperties().put("dragSourceIndex", row.getIndex());
+                        tableView.getProperties().remove("highlightIndex");
                         event.consume();
                     }
                 });
@@ -1725,22 +1726,30 @@ public class JFXUtil {
                         double sceneY = event.getSceneY();
                         double rowY = row.localToScene(row.getBoundsInLocal()).getMinY();
                         double rowHeight = row.getHeight();
-
                         boolean isTopHalf = (sceneY - rowY) < rowHeight / 2;
-                        boolean isDropOnSameSpot = (dragIndex == hoverIndex || dragIndex == hoverIndex - 1);
 
-                        // Show line on top or bottom
-                        if (isTopHalf) {
+                        int targetIndex = isTopHalf ? hoverIndex : hoverIndex + 1;
+
+                        // Avoid highlight if dropping on same position
+                        if (targetIndex == dragIndex || targetIndex == dragIndex + 1) {
+                            row.setStyle("");
+                        } else if (isTopHalf) {
                             row.setStyle("-fx-border-color: #2196F3; -fx-border-width: 2px 0 0 0;");
                         } else {
                             row.setStyle("-fx-border-color: #2196F3; -fx-border-width: 0 0 2px 0;");
                         }
 
+                        tableView.getProperties().put("highlightIndex", hoverIndex);
                         event.consume();
                     }
                 });
 
-                row.setOnDragExited(event -> row.setStyle(""));
+                row.setOnDragExited(event -> {
+                    Integer lastHighlightIndex = (Integer) tableView.getProperties().get("highlightIndex");
+                    if (lastHighlightIndex != null && lastHighlightIndex == row.getIndex()) {
+                        row.setStyle("");
+                    }
+                });
 
                 row.setOnDragDropped(event -> {
                     Integer dragSourceIndex = (Integer) tableView.getProperties().get("dragSourceIndex");
@@ -1759,7 +1768,6 @@ public class JFXUtil {
                         targetIndex = items.size();
                     }
 
-                    // Prevent moving to same place
                     if (dragSourceIndex == targetIndex || dragSourceIndex + 1 == targetIndex) {
                         event.setDropCompleted(false);
                         event.consume();
@@ -1767,10 +1775,17 @@ public class JFXUtil {
                     }
 
                     T draggedItem = items.remove((int) dragSourceIndex);
+
+                    // Fix: adjust targetIndex if dragging down (because list already shrank)
+                    if (targetIndex > dragSourceIndex) {
+                        targetIndex--;
+                    }
+
                     if (targetIndex > items.size()) {
                         targetIndex = items.size();
                     }
-                    items.add(targetIndex > dragSourceIndex ? targetIndex - 1 : targetIndex, draggedItem);
+
+                    items.add(targetIndex, draggedItem);
 
                     // Re-number
                     for (int i = 0; i < items.size(); i++) {
@@ -1780,7 +1795,7 @@ public class JFXUtil {
                         }
                     }
 
-                    tableView.getSelectionModel().select(targetIndex > items.size() ? items.size() - 1 : targetIndex);
+                    tableView.getSelectionModel().select(targetIndex);
                     event.setDropCompleted(true);
                     event.consume();
                 });
@@ -1789,7 +1804,7 @@ public class JFXUtil {
             }
         });
 
-        // Allow drop at end
+        // Allow drop at end of table
         tableView.setOnDragOver(event -> {
             if (event.getGestureSource() != tableView && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
