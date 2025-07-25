@@ -589,7 +589,8 @@ public class PurchaseOrder_EntryController implements Initializable, ScreenInter
                     if ("success".equals(poJSON.get("result"))) {
                         if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
+                                poPurchasingController.PurchaseOrder().setWithUI(true);
+                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("")).get("result"))) {
                                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                                 } else {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);

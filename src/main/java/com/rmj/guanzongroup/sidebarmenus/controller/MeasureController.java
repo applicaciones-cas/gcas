@@ -91,13 +91,17 @@ public class MeasureController implements Initializable, ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        pnEditMode = EditMode.UNKNOWN;
-        initButton(pnEditMode);
-        initializeObject();
-        InitTextFields();
-        ClickButton();
-        initTabAnchor();
-        pbLoaded = true;
+        try {
+            initializeObject();
+            pnEditMode = oParameters.Measurement().getEditMode();
+            initButton(pnEditMode);
+            InitTextFields();
+            ClickButton();
+            initTabAnchor();
+            pbLoaded = true;
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(MeasureController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initializeObject() {
@@ -105,9 +109,7 @@ public class MeasureController implements Initializable, ScreenInterface {
             LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
             oParameters = new ParamControllers(oApp, logwrapr);
             oParameters.Measurement().setRecordStatus("0123");
-        } catch (SQLException ex) {
-            Logger.getLogger(MeasureController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(MeasureController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -196,29 +198,48 @@ public class MeasureController implements Initializable, ScreenInterface {
                         break;
                     case "btnActivate":
                         String Status = oParameters.Measurement().getModel().getRecordStatus();
+                        String id = oParameters.Measurement().getModel().getMeasureId();
                         JSONObject poJsON;
-
+                        
                         switch (Status) {
                             case "0":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                    oParameters.Measurement().initialize();
                                     poJsON = oParameters.Measurement().activateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.Measurement().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
                             case "1":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                   
                                     poJsON = oParameters.Measurement().deactivateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.Measurement().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
-                            default:
-
-                                break;
-
                         }
-                        break;
+
                 }
             } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(MeasureController.class.getName()).log(Level.SEVERE, null, ex);

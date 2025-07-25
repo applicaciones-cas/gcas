@@ -162,6 +162,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
         try {
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);
             poPurchasingController.PurchaseOrder().setTransactionStatus(PurchaseOrderStatus.CONFIRMED);
+            poPurchasingController.PurchaseOrder().setWithUI(true);
             poJSON = poPurchasingController.PurchaseOrder().InitTransaction();
             if (!"success".equals(poJSON.get("result"))) {
                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -302,7 +303,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                     break;
                 case "btnApprove":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to approve transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved");
+                        poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             break;
@@ -386,7 +387,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                     } else {
                         if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.CONFIRMED)) {
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to approve this transaction?")) {
-                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("Approved")).get("result"))) {
+                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ApproveTransaction("")).get("result"))) {
                                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                                 } else {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -440,7 +441,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                     break;
                 case "btnReturn":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("Returned");
+                        poJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             break;
@@ -459,7 +460,7 @@ public class PurchaseOrder_ApprovalCarController implements Initializable, Scree
                     break;
                 case "btnVoid":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().VoidTransaction("Voided");
+                        poJSON = poPurchasingController.PurchaseOrder().VoidTransaction("");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             break;

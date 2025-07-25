@@ -163,6 +163,7 @@ public class PurchaseOrder_ConfirmationMonarchHospitalityController implements I
             poPurchasingController = new PurchaseOrderControllers(poApp, logWrapper);
             poPurchasingController.PurchaseOrder().setTransactionStatus(PurchaseOrderStatus.OPEN);
             poJSON = new JSONObject();
+            poPurchasingController.PurchaseOrder().setWithUI(true);
             poJSON = poPurchasingController.PurchaseOrder().InitTransaction();
             if (!"success".equals(poJSON.get("result"))) {
                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -304,7 +305,7 @@ public class PurchaseOrder_ConfirmationMonarchHospitalityController implements I
                     break;
                 case "btnConfirm":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed");
+                        poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             break;
@@ -386,7 +387,7 @@ public class PurchaseOrder_ConfirmationMonarchHospitalityController implements I
                     } else {
                         if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
+                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("")).get("result"))) {
                                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                                 } else {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -439,7 +440,7 @@ public class PurchaseOrder_ConfirmationMonarchHospitalityController implements I
                     break;
                 case "btnReturn":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("Returned");
+                        poJSON = poPurchasingController.PurchaseOrder().ReturnTransaction("");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             break;
@@ -458,7 +459,7 @@ public class PurchaseOrder_ConfirmationMonarchHospitalityController implements I
                     break;
                 case "btnVoid":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
-                        poJSON = poPurchasingController.PurchaseOrder().VoidTransaction("Voided");
+                        poJSON = poPurchasingController.PurchaseOrder().VoidTransaction("");
                         if (!"success".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             break;
