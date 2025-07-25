@@ -128,8 +128,11 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
     );
     ObservableList<String> PurchaseType = FXCollections.observableArrayList(
             "Cash",
-            "Bank Financing",
-            "Installment"
+            "Cash Balance",
+            "Term",
+            "Installment",
+            "Finance",
+            "Insurance"
     );
     ObservableList<String> CategoryType = FXCollections.observableArrayList(
             "New",
@@ -286,6 +289,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                             poSalesInquiryController.Master().setIndustryId(psIndustryId);
                             poSalesInquiryController.Master().setCompanyId(psCompanyId);
                             poSalesInquiryController.Master().setCategoryCode(psCategoryId);
+                            poSalesInquiryController.initFields();
                             pnEditMode = EditMode.UNKNOWN;
 
                             break;
@@ -311,7 +315,8 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (poSalesInquiryController.Master().getTransactionStatus().equals(SalesInquiryStatic.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
-                                            loJSON = poSalesInquiryController.ConfirmTransaction("Confirmed");
+                                            poSalesInquiryController.setWithUI(true);
+                                            loJSON = poSalesInquiryController.ConfirmTransaction("");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             } else {
@@ -320,6 +325,8 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
                                         }
                                     }
                                 }
+                                
+                                btnNew.fire();
 
                             }
                         } else {
@@ -417,10 +424,10 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
             tfReferralAgent.setText(poSalesInquiryController.Master().ReferralAgent().getCompanyName());
             taRemarks.setText(poSalesInquiryController.Master().getRemarks());
             
-            cmbInquiryType.getSelectionModel().select(poSalesInquiryController.Master().getSourceCode());
-            cmbPurchaseType.getSelectionModel().select(poSalesInquiryController.Master().getPurchaseType());
-            cmbClientType.getSelectionModel().select(poSalesInquiryController.Master().Client().getClientType());
-            cmbCategoryType.getSelectionModel().select(poSalesInquiryController.Master().getCategoryType());
+            cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getSourceCode()));
+            cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getPurchaseType()));
+            cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().Client().getClientType()));
+            cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getCategoryType()));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
@@ -983,6 +990,57 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
         cmbPurchaseType.getSelectionModel().select(0);
         cmbCategoryType.setItems(CategoryType);
         cmbCategoryType.getSelectionModel().select(0);
+        
+        JFXUtil.initComboBoxCellDesignColor(cmbClientType, "#FF8201");
+        JFXUtil.initComboBoxCellDesignColor(cmbInquiryType, "#FF8201");
+        JFXUtil.initComboBoxCellDesignColor(cmbPurchaseType, "#FF8201");
+        JFXUtil.initComboBoxCellDesignColor(cmbCategoryType, "#FF8201");
+        
+        cmbClientType.setOnAction(event -> {
+            if (ClientType.size() > 0) {
+                try {
+                    int selectedIndex = cmbClientType.getSelectionModel().getSelectedIndex();
+                    poSalesInquiryController.Master().setClientType(String.valueOf(selectedIndex));
+                   cmbClientType.getSelectionModel().select(selectedIndex);
+                } catch (Exception e) {
+                }
+            }
+        });
+        
+        cmbInquiryType.setOnAction(event -> {
+            if (PurchaseType.size() > 0) {
+                try {
+                    int selectedIndex = cmbInquiryType.getSelectionModel().getSelectedIndex();
+                    poSalesInquiryController.Master().setSourceCode(String.valueOf(selectedIndex));
+                   cmbInquiryType.getSelectionModel().select(selectedIndex);
+                } catch (Exception e) {
+                }
+            }
+        });
+        
+        
+        cmbPurchaseType.setOnAction(event -> {
+            if (InquiryType.size() > 0) {
+                try {
+                    int selectedIndex = cmbPurchaseType.getSelectionModel().getSelectedIndex();
+                    poSalesInquiryController.Master().setPurchaseType(String.valueOf(selectedIndex));
+                   cmbPurchaseType.getSelectionModel().select(selectedIndex);
+                } catch (Exception e) {
+                }
+            }
+        });
+        
+        
+        cmbCategoryType.setOnAction(event -> {
+            if (CategoryType.size() > 0) {
+                try {
+                    int selectedIndex = cmbCategoryType.getSelectionModel().getSelectedIndex();
+                    poSalesInquiryController.Master().setCategoryType(String.valueOf(selectedIndex));
+                   cmbCategoryType.getSelectionModel().select(selectedIndex);
+                } catch (Exception e) {
+                }
+            }
+        });
     }
     
     public void initDatePickers() {
