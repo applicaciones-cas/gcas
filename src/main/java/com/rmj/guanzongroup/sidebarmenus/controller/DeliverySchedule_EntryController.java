@@ -16,14 +16,21 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -47,7 +54,10 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.DeliverySchedule;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryScheduleControllers;
-import ph.com.guanzongroup.cas.inv.warehouse.t4.status.DeliveryScheduleStatus;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleStatus;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleTruck;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Delivery_Schedule_Detail;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.parameter.model.Model_Branch_Others;
 
 /**
  *
@@ -75,7 +85,9 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             apCenter, apDetailField, apMaster,
             apDetail, apDetailTable;
     @FXML
-    private TextField tfSearchCluster, tfTransactionNo, tfTruckSize, tfClusterName;
+    private TextField tfSearchCluster, tfTransactionNo, tfClusterName, tfAllocation;
+    @FXML
+    private ComboBox cbTruckSize;
     @FXML
     private DatePicker dpSearchDate, dpSearchScheduleDate, dpTransactionDate,
             dpScheduleDate;
@@ -88,9 +100,13 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
     @FXML
     private TextArea taRemarks, taNotes;
     @FXML
-    private TableView tblClusterDetail, tblTransaction, tblBranchList;
+    private TableView<Model_Delivery_Schedule_Detail> tblClusterDetail;
     @FXML
-    private TableColumn tblColDetailNo, tblColDetailName, tblColDetailDeliveryDate, tblColDetailTruckSize;
+    private TableView<Model_Delivery_Schedule_Detail> tblTransaction;
+    @FXML
+    private TableView<Model_Branch_Others> tblBranchList;
+    @FXML
+    private TableColumn<Model_Delivery_Schedule_Detail, String> tblColDetailNo, tblColDetailName, tblColDetailTruckSize, tblColDetailAllocation;
     @FXML
     private TableColumn tblColDeliveryNo, tblColDeliveryTransaction, tblColDeliveryDate, tblColDeliveryScheduledDate;
     @FXML
@@ -124,9 +140,9 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         try {
             poAppController = new DeliveryScheduleControllers(poApp, poLogWrapper).DeliverySchedule();
             poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
-            poJSON = poAppController.initTransaction();
-            if (!"success".equals(poJSON.get("result"))) {
-                poLogWrapper.severe("Init failed: " + poJSON.get("message"));
+            if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
+                unloadForm appUnload = new unloadForm();
+                appUnload.unloadForm(apMainAnchor, poApp, psFormName);
             }
 
             Platform.runLater(() -> {
@@ -150,31 +166,30 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         try {
             switch (lsButton) {
                 case "btnUpdate":
-                    poJSON = poAppController.UpdateTransaction();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        poLogWrapper.severe((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, psFormName, (String) poJSON.get("message"));
+                    if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize Update Transaction")) {
                         return;
                     }
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnSearch":
                 case "btnNew":
-                    poJSON = poAppController.newTransaction();
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        poLogWrapper.severe((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, psFormName, (String) poJSON.get("message"));
+                    if (!isJSONSuccess(poAppController.newTransaction(), "Initialize New Transaction")) {
                         return;
                     }
-                    return;
+                    clearAllInputs();
+                    loadTransactionMaster();
+                    loadTableTransactionDetail();
+                    pnEditMode = poAppController.getEditMode();
+                    break;
                 case "btnSave":
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
                         poAppController = new DeliveryScheduleControllers(poApp, poLogWrapper).DeliverySchedule();
                         poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
-                        poJSON = poAppController.initTransaction();
-                        if (!"success".equals(poJSON.get("result"))) {
-                            poLogWrapper.severe("Init failed: " + poJSON.get("message"));
+
+                        if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
+                            unloadForm appUnload = new unloadForm();
+                            appUnload.unloadForm(apMainAnchor, poApp, psFormName);
                         }
 
                         Platform.runLater(() -> {
@@ -182,6 +197,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                             poAppController.setIndustryID(psIndustryID);
                             poAppController.setCompanyID(psCompanyID);
                             poAppController.setCategoryID(psCategoryID);
+                            clearAllInputs();
                         });
                         pnEditMode = poAppController.getEditMode();
                         break;
@@ -207,6 +223,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                             "This feature is under development and will be available soon.\nThank you for your patience!");
             }
             initButtonDisplay(poAppController.getEditMode());
+
         } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
             Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(ex.getMessage());
@@ -228,6 +245,12 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         if (pnClusterDetail < 0) {
             return;
         }
+        
+        try {
+            loadSelectedTransactionDetail(pnClusterDetail);
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @FXML
@@ -245,7 +268,12 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             field.setAccessible(true);
             try {
                 Object value = field.get(this);
-                if (value instanceof TextField || value instanceof TextArea || value instanceof Button) {
+                if (value instanceof TextField
+                        || value instanceof TextArea
+                        || value instanceof Button
+                        || value instanceof TableView
+                        || value instanceof DatePicker
+                        || value instanceof ComboBox) {
                     controls.add((Control) value);
                 }
             } catch (IllegalAccessException e) {
@@ -283,16 +311,19 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         List<Control> laControls = getAllSupportedControls();
 
         for (Control loControl : laControls) {
-            if (laControls instanceof TextField) {
-                ((TextField) laControls).clear();
-            } else if (laControls instanceof TextArea) {
-                ((TextArea) laControls).clear();
-            } else if (laControls instanceof TableView) {
-                ((TableView) laControls).getItems().clear();
-            } else if (laControls instanceof DatePicker) {
-                ((DatePicker) laControls).setValue(null);
+            if (loControl instanceof TextField) {
+                ((TextField) loControl).clear();
+            } else if (loControl instanceof TextArea) {
+                ((TextArea) loControl).clear();
+            } else if (loControl instanceof TableView) {
+                ((TableView) loControl).getItems().clear();
+            } else if (loControl instanceof DatePicker) {
+                ((DatePicker) loControl).setValue(null);
+            } else if (loControl instanceof ComboBox) {
+                ((ComboBox) loControl).setItems(null);
             }
         }
+        cbTruckSize.setItems(FXCollections.observableArrayList(DeliveryScheduleTruck.SIZE));
         pnEditMode = poAppController.getEditMode();
         initButtonDisplay(poAppController.getEditMode());
 
@@ -369,27 +400,18 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
                         //Search Pane
                         case "tfSearchCluster":
-                            poJSON = poAppController.searchTransaction(lsValue, true, false);
-                            if (!"success".equals(poJSON.get("result"))) {
-                                System.err.println("Unable to  Search Transaction! " + poJSON.get("message"));
+                            if (!isJSONSuccess(poAppController.searchTransaction(lsValue, true, false),
+                                    "Unable to  Search Transaction!")) {
                             }
                             return;
 
                         //Detail Pane
                         case "tfClusterName":
-//                            poJSON = poAppController.searchDetail(pnClusterDetail, 1, lsValue, true, false);
-//                            if (!"success".equals(poJSON.get("result"))) {
-//                                System.err.println("Unable to Search Cluster! " + poJSON.get("message"));
-//                            }
-//                            return;
-                        case "tfTruckSize":
-//                            poJSON = poAppController.searchDetail(pnClusterDetail, 2, lsValue, true, false);
-//                            if (!"success".equals(poJSON.get("result"))) {
-//                                System.err.println("Unable to Search Truck Size! " + poJSON.get("message"));
+//                            if (!isJSONSuccess(poAppController.searchDetail(pnClusterDetail, 1, lsValue, true, false),
+//                                    "Unable to Search Cluster! ")) {
 //                            }
 //                            return;
 
-                            return;
                         default:
                             CommonUtils.SetPreviousFocus((TextField) event.getSource());
                             return;
@@ -487,20 +509,141 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     switch (lsDatePickerID) {
                         //retrieve only
                         case "dpSearchDate":
-                            poAppController.searchTransaction(SQLUtil.dateFormat(ldDateValue, SQLUtil.FORMAT_SHORT_DATE), true, true);
-                            if (!"success".equals(poJSON.get("result"))) {
-                                System.err.println("Unable to  Search Transaction! " + poJSON.get("message"));
+
+                            if (!isJSONSuccess(poAppController.searchTransaction(SQLUtil.dateFormat(ldDateValue, SQLUtil.FORMAT_SHORT_DATE), true, true),
+                                    "Unable to  Search Transaction!! BY Date")) {
                             }
                             return;
                         case "dpSearchScheduleDate":
-                            poAppController.searchTransaction(SQLUtil.dateFormat(ldDateValue, SQLUtil.FORMAT_SHORT_DATE), false, true);
-                            if (!"success".equals(poJSON.get("result"))) {
-                                System.err.println("Unable to  Search Transaction! " + poJSON.get("message"));
+                            if (!isJSONSuccess(poAppController.searchTransaction(SQLUtil.dateFormat(ldDateValue, SQLUtil.FORMAT_SHORT_DATE), false, true),
+                                    "Unable to  Search Transaction!! BY Schedule Date")) {
                             }
-                            return;
-
                     }
             }
         }
     }
+
+    private boolean isJSONSuccess(JSONObject loJSON, String fsModule) {
+        String result = (String) loJSON.get("result");
+        if ("error".equals(result)) {
+            String message = (String) loJSON.get("message");
+            poLogWrapper.severe(message);
+            ShowMessageFX.Warning(null, psFormName, fsModule + ": " + message);
+            return false;
+        }
+        return true;
+
+    }
+
+    private void loadTransactionMaster() {
+        tfTransactionNo.setText(poAppController.getMaster().getTransactionNo());
+        dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
+        dpScheduleDate.setValue(ParseDate(poAppController.getMaster().getScheduleDate()));
+        taRemarks.setText(poAppController.getMaster().getRemarks());
+        lblStatus.setText(DeliveryScheduleStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())));
+
+    }
+
+    private LocalDate ParseDate(Date date) {
+        return date == null ? null : date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    private void loadSelectedTransactionDetail(int fnRow) throws SQLException, GuanzonException {
+        tfClusterName.setText(tblColDetailName.getCellData(fnRow));
+        taNotes.setText(poAppController.getDetail(fnRow).getRemarks());
+        tfClusterName.setText(tblColDetailTruckSize.getCellData(fnRow));
+        if (tfClusterName.getText().isEmpty() && tfClusterName.getText() != null ) {
+            return;
+        }
+        Set<Integer> enabledTruckSizes = new HashSet<>();
+        for (int lnCBDelivery = 0;
+                lnCBDelivery < poAppController.getDetail(fnRow).BranchCluster().getBranchClusterDeliverysCount();
+                lnCBDelivery++) {
+            int lnEnableList = poAppController.getDetail(fnRow)
+                    .BranchCluster().BranchClusterDelivery(lnCBDelivery).getTruckSize();
+
+            enabledTruckSizes.add(lnEnableList); // Collect enabled truck size index
+        }
+        cbTruckSize.setCellFactory(lv -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String fsItem, boolean isEmpty) {
+                super.updateItem(fsItem, isEmpty);
+                if (isEmpty || fsItem == null) {
+                    setText(null);
+                    setDisable(false);
+                } else {
+                    setText(fsItem);
+                    int lnIndex = FXCollections.observableArrayList(DeliveryScheduleTruck.SIZE).indexOf(fsItem);
+                    boolean isEnabled = enabledTruckSizes.contains(lnIndex);
+                    setDisable(!isEnabled);
+                    setOpacity(isEnabled ? 1.0 : 0.5);
+                }
+            }
+        });
+
+        int selectedIndex = -1;
+        try {
+            selectedIndex = Integer.parseInt(poAppController.getDetail(fnRow).getTruckSize());
+        } catch (NumberFormatException e) {
+            // Invalid input; selectedIndex remains -1
+        }
+
+        if (enabledTruckSizes.contains(selectedIndex)) {
+            cbTruckSize.getSelectionModel().select(selectedIndex);
+            tfAllocation.setText(
+                    poAppController.getDetail(fnRow)
+                            .BranchCluster().BranchClusterDelivery(selectedIndex)
+                            .getAllocation().toString()
+            );
+        } else {
+            // Fallback to first enabled index
+            for (int i = 0; i < cbTruckSize.getItems().size(); i++) {
+                if (enabledTruckSizes.contains(i)) {
+                    cbTruckSize.getSelectionModel().select(i);
+                    tfAllocation.setText(
+                            poAppController.getDetail(fnRow).BranchCluster().BranchClusterDelivery(i)
+                                    .getAllocation().toString()
+                    );
+                    break;
+                }
+            }
+        }
+
+    }
+
+    private void loadTableTransactionDetail() {
+        ObservableList<Model_Delivery_Schedule_Detail> items
+                = FXCollections.observableArrayList(poAppController.getDetailList());
+
+        tblClusterDetail.setItems(items);
+
+        tblColDetailNo.setCellValueFactory(loModel -> {
+            int index = tblClusterDetail.getItems().indexOf(loModel.getValue()) + 1;
+            return new SimpleStringProperty(String.valueOf(index));
+        });
+
+        tblColDetailName.setCellValueFactory(loModel
+                -> new SimpleStringProperty(loModel.getValue().getClusterID()));
+        tblColDetailTruckSize.setCellValueFactory(loModel
+                -> new SimpleStringProperty(DeliveryScheduleTruck.SIZE.get(Integer.parseInt(loModel.getValue().getTruckSize()))));
+        tblColDetailAllocation.setCellValueFactory(loModel -> {
+            try {
+                int truckSizeIndex = Integer.parseInt(loModel.getValue().getTruckSize());
+                Object loAllocation = 0;
+                if (loModel.getValue().BranchCluster().getBranchClusterDeliverysCount() > 0) {
+                    loAllocation = loModel.getValue()
+                            .BranchCluster().BranchClusterDeliveryTruck(truckSizeIndex)
+                            .getAllocation().toString();
+                } else {
+                    loAllocation = 0;
+                }
+                return new SimpleStringProperty(loAllocation != null ? loAllocation.toString() : "0");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new SimpleStringProperty("");
+            }
+        }
+        );
+    }
+
 }
