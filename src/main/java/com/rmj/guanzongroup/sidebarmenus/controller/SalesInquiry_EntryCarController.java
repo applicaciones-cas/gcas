@@ -12,7 +12,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -31,7 +30,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -46,32 +44,19 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatus;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
-import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import javafx.animation.PauseTransition;
-import javafx.util.Pair;
-import java.util.ArrayList;
-import ph.com.guanzongroup.cas.cashflow.SOATagging;
-import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatic;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.atomic.AtomicReference;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.StackPane;
-import org.guanzon.appdriver.agent.ShowDialogFX;
-import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.sales.t1.SalesInquiry;
@@ -999,11 +984,11 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
         JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail);
 
         switch (poSalesInquiryController.Master().getTransactionStatus()) {
-            case SOATaggingStatus.PAID:
+            case SalesInquiryStatic.PAID:
                 JFXUtil.setButtonsVisibility(false, btnUpdate);
                 break;
-            case SOATaggingStatus.VOID:
-            case SOATaggingStatus.CANCELLED:
+            case SalesInquiryStatic.VOID:
+            case SalesInquiryStatic.CANCELLED:
                 JFXUtil.setButtonsVisibility(false, btnUpdate);
                 break;
         }
