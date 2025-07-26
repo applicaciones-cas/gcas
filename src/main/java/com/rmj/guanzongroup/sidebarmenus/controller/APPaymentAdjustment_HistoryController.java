@@ -38,7 +38,7 @@ import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 public class APPaymentAdjustment_HistoryController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
-    static APPaymentAdjustment poAPPaymentAdjustmentController;
+    static CashflowControllers poAPPaymentAdjustmentController;
     private JSONObject poJSON;
     public int pnEditMode;
     private String pxeModuleName = "";
@@ -73,8 +73,8 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     public void initialize(URL location, ResourceBundle resources) {
         psIndustryId = isGeneral ? "" : psIndustryId;
         poJSON = new JSONObject();
-        poAPPaymentAdjustmentController = new CashflowControllers(oApp, null).APPaymentAdjustment();
-        poAPPaymentAdjustmentController.initialize(); // Initialize transaction
+        poAPPaymentAdjustmentController = new CashflowControllers(oApp, null);
+        poAPPaymentAdjustmentController.APPaymentAdjustment().initialize(); // Initialize transaction
         initTextFields();
         initDatePickers();
         clearTextFields();
@@ -112,44 +112,44 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
                 case F3:
                     switch (lsID) {
                         case "tfSearchCompany":
-                            poJSON = poAPPaymentAdjustmentController.SearchCompany(lsValue, false);
+                            poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().SearchCompany(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchCompany.setText("");
                                 psCompanyId = "";
                                 break;
                             } else {
-                                psCompanyId = poAPPaymentAdjustmentController.getModel().getCompanyId();
+                                psCompanyId = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getCompanyId();
                             }
                             loadRecordSearch();
                             return;
                         case "tfSearchSupplier":
-                            poJSON = poAPPaymentAdjustmentController.SearchClient(lsValue, false);
+                            poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().SearchClient(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             } else {
-                                psSupplierId = poAPPaymentAdjustmentController.getModel().getClientId();
+                                psSupplierId = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getClientId();
                             }
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poAPPaymentAdjustmentController.setRecordStatus(APPaymentAdjustmentStatus.OPEN
+                            poAPPaymentAdjustmentController.APPaymentAdjustment().setRecordStatus(APPaymentAdjustmentStatus.OPEN
                                     + "" + APPaymentAdjustmentStatus.CONFIRMED
                                     + "" + APPaymentAdjustmentStatus.PAID
                                     + "" + APPaymentAdjustmentStatus.VOID
                                     + "" + APPaymentAdjustmentStatus.CANCELLED);
-                            poJSON = poAPPaymentAdjustmentController.searchTransaction(psIndustryId, tfSearchCompany.getText(),
+                            poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().searchTransaction(psIndustryId, tfSearchCompany.getText(),
                                     tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
                                 return;
                             } else {
-//                                psSupplierId = poAPPaymentAdjustmentController.getModel().getClientId();
-                                pnEditMode = poAPPaymentAdjustmentController.getEditMode();
+//                                psSupplierId = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getClientId();
+                                pnEditMode = poAPPaymentAdjustmentController.APPaymentAdjustment().getEditMode();
                                 loadRecordMaster();
                                 initButton(pnEditMode);
                             }
@@ -181,13 +181,13 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
 
     public void loadRecordSearch() {
         try {
-            if(poAPPaymentAdjustmentController.getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.getModel().Industry().getDescription())){
-                lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
+            if(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription())){
+                lblSource.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription());
             } else {
                 lblSource.setText("General");
             }
-            tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
-            tfSearchCompany.setText(psCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
+            tfSearchSupplier.setText(psSupplierId.equals("") ? "" : poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Supplier().getCompanyName());
+            tfSearchCompany.setText(psCompanyId.equals("") ? "" : poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Company().getCompanyName());
             JFXUtil.updateCaretPositions(apBrowse);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -242,9 +242,9 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
 
     public void loadRecordMaster() {
         try {
-            tfTransactionNo.setText(poAPPaymentAdjustmentController.getModel().getTransactionNo());
+            tfTransactionNo.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getTransactionNo());
             Platform.runLater(() -> {
-                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poAPPaymentAdjustmentController.getModel().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(APPaymentAdjustmentStatus.OPEN, "OPEN");
                 statusMap.put(APPaymentAdjustmentStatus.PAID, "PAID");
@@ -257,16 +257,16 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
                 lblStatus.setText(lsStat);
             });
             // Transaction Date
-            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poAPPaymentAdjustmentController.getModel().getTransactionDate());
+            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
-            tfClient.setText(poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
-            taRemarks.setText(poAPPaymentAdjustmentController.getModel().getRemarks());
-            tfIssuedTo.setText(poAPPaymentAdjustmentController.getModel().Payee().getPayeeName());
-            tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue(), true));
-            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getDebitAmount().doubleValue(), true));
-            tfReferenceNo.setText(poAPPaymentAdjustmentController.getModel().getReferenceNo());
-            tfCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
+            tfClient.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Supplier().getCompanyName());
+            taRemarks.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getRemarks());
+            tfIssuedTo.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Payee().getPayeeName());
+            tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getCreditAmount().doubleValue(), true));
+            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getDebitAmount().doubleValue(), true));
+            tfReferenceNo.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getReferenceNo());
+            tfCompany.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Company().getCompanyName());
 
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -285,20 +285,20 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poAPPaymentAdjustmentController.setRecordStatus(APPaymentAdjustmentStatus.OPEN
+                        poAPPaymentAdjustmentController.APPaymentAdjustment().setRecordStatus(APPaymentAdjustmentStatus.OPEN
                                 + "" + APPaymentAdjustmentStatus.CONFIRMED
                                 + "" + APPaymentAdjustmentStatus.PAID
                                 + "" + APPaymentAdjustmentStatus.VOID
                                 + "" + APPaymentAdjustmentStatus.CANCELLED);
-                        poJSON = poAPPaymentAdjustmentController.searchTransaction(psIndustryId, tfSearchCompany.getText(),
+                        poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().searchTransaction(psIndustryId, tfSearchCompany.getText(),
                                 tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        pnEditMode = poAPPaymentAdjustmentController.getEditMode();
-                        psSupplierId = poAPPaymentAdjustmentController.getModel().getClientId();
+                        pnEditMode = poAPPaymentAdjustmentController.APPaymentAdjustment().getEditMode();
+                        psSupplierId = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getClientId();
                         break;
                     case "btnHistory":
                         break;

@@ -48,7 +48,7 @@ import ph.com.guanzongroup.cas.cashflow.services.CashflowControllers;
 public class APPaymentAdjustment_EntryController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
-    static APPaymentAdjustment poAPPaymentAdjustmentController;
+    static CashflowControllers poAPPaymentAdjustmentController;
     private JSONObject poJSON;
     public int pnEditMode;
     private String pxeModuleName = "";
@@ -84,9 +84,9 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
         psIndustryId = isGeneral ? "" : psIndustryId;
 
         poJSON = new JSONObject();
-        poAPPaymentAdjustmentController = new CashflowControllers(oApp, null).APPaymentAdjustment();
-        poAPPaymentAdjustmentController.initialize(); // Initialize transaction
-        poAPPaymentAdjustmentController.initFields();
+        poAPPaymentAdjustmentController = new CashflowControllers(oApp, null);
+        poAPPaymentAdjustmentController.APPaymentAdjustment().initialize(); // Initialize transaction
+        poAPPaymentAdjustmentController.APPaymentAdjustment().initFields();
         initTextFields();
         initDatePickers();
         clearTextFields();
@@ -94,10 +94,11 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
         initButton(pnEditMode);
 
         Platform.runLater(() -> {
-            poAPPaymentAdjustmentController.getModel().setIndustryId(psIndustryId);
-            poAPPaymentAdjustmentController.getModel().setCompanyId(psCompanyId);
-            poAPPaymentAdjustmentController.setIndustryId(psIndustryId);
-            poAPPaymentAdjustmentController.setCompanyId(psCompanyId);
+            poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setIndustryId(psIndustryId);
+            poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setCompanyId(psCompanyId);
+            poAPPaymentAdjustmentController.APPaymentAdjustment().setIndustryId(psIndustryId);
+            poAPPaymentAdjustmentController.APPaymentAdjustment().setCompanyId(psCompanyId);
+            poAPPaymentAdjustmentController.APPaymentAdjustment().setWithUI(true);
             loadRecordSearch();
             btnNew.fire();
         });
@@ -143,18 +144,18 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                 case F3:
                     switch (lsID) {
                         case "tfCompany":
-                            poJSON = poAPPaymentAdjustmentController.SearchCompany(lsValue, false);
+                            poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().SearchCompany(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfCompany.setText("");
                                 psCompanyId = "";
                                 break;
                             }
-                            psCompanyId = poAPPaymentAdjustmentController.getModel().getCompanyId();
+                            psCompanyId = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getCompanyId();
                             loadRecordMaster();
                             break;
                         case "tfClient":
-                            poJSON = poAPPaymentAdjustmentController.SearchClient(lsValue, false);
+                            poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().SearchClient(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfClient.setText("");
@@ -163,7 +164,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                             loadRecordMaster();
                             break;
                         case "tfIssuedTo":
-                            poJSON = poAPPaymentAdjustmentController.SearchPayee(lsValue, false);
+                            poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().SearchPayee(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfIssuedTo.setText("");
@@ -197,24 +198,24 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             switch (lsTxtFieldID) {
                 case "tfCompany":
                     if (lsValue.isEmpty()) {
-                        poJSON = poAPPaymentAdjustmentController.getModel().setCompanyId("");
+                        poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setCompanyId("");
                     }
                     break;
                 case "tfClient":
                     if (lsValue.isEmpty()) {
-                        poJSON = poAPPaymentAdjustmentController.getModel().setClientId("");
+                        poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setClientId("");
                     }
                     break;
                 case "tfIssuedTo":
                     if (lsValue.isEmpty()) {
-                        poJSON = poAPPaymentAdjustmentController.getModel().setIssuedTo("");
+                        poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setIssuedTo("");
                     }
                     break;
                 case "tfReferenceNo":
                     if (!lsValue.isEmpty()) {
-                        poJSON = poAPPaymentAdjustmentController.getModel().setReferenceNo(lsValue);
+                        poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setReferenceNo(lsValue);
                     } else {
-                        poJSON = poAPPaymentAdjustmentController.getModel().setReferenceNo("");
+                        poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setReferenceNo("");
                     }
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -227,20 +228,20 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                         lsValue = "0";
                     }
                     lsValue = JFXUtil.removeComma(lsValue);
-                    if (poAPPaymentAdjustmentController.getModel().getCreditAmount() != null
-                            && !"".equals(poAPPaymentAdjustmentController.getModel().getCreditAmount())) {
+                    if (poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getCreditAmount() != null
+                            && !"".equals(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getCreditAmount())) {
                         if (Double.valueOf(lsValue) < 0.00) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Credit amount cannot be lesser than 0.0000");
-                            poAPPaymentAdjustmentController.getModel().setCreditAmount(0.0000);
+                            poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setCreditAmount(0.0000);
                             tfCreditAmount.setText("0.0000");
                             tfCreditAmount.requestFocus();
                             break;
                         }
 
                         if (Double.valueOf(lsValue) > 0.00) {
-                            if (poAPPaymentAdjustmentController.getModel().getDebitAmount().doubleValue() > 0.0000) {
+                            if (poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getDebitAmount().doubleValue() > 0.0000) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
-                                poAPPaymentAdjustmentController.getModel().setCreditAmount(0.0000);
+                                poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setCreditAmount(0.0000);
                                 tfCreditAmount.setText("0.0000");
                                 tfCreditAmount.requestFocus();
                                 break;
@@ -248,7 +249,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                         }
                     }
 
-                    poJSON = poAPPaymentAdjustmentController.getModel().setCreditAmount((Double.valueOf(lsValue)));
+                    poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setCreditAmount((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
@@ -258,20 +259,20 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                         lsValue = "0";
                     }
                     lsValue = JFXUtil.removeComma(lsValue);
-                    if (poAPPaymentAdjustmentController.getModel().getDebitAmount() != null
-                            && !"".equals(poAPPaymentAdjustmentController.getModel().getDebitAmount())) {
+                    if (poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getDebitAmount() != null
+                            && !"".equals(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getDebitAmount())) {
                         if (Double.valueOf(lsValue) < 0.00) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Debit amount cannot be lesser than 0.0000");
-                            poAPPaymentAdjustmentController.getModel().setDebitAmount(0.0000);
+                            poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setDebitAmount(0.0000);
                             tfDebitAmount.setText("0.0000");
                             tfDebitAmount.requestFocus();
                             break;
                         }
 
                         if (Double.valueOf(lsValue) > 0.00) {
-                            if (poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue() > 0.0000) {
+                            if (poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getCreditAmount().doubleValue() > 0.0000) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Debit and credit amounts cannot both have values at the same time.");
-                                poAPPaymentAdjustmentController.getModel().setDebitAmount(0.0000);
+                                poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setDebitAmount(0.0000);
                                 tfDebitAmount.setText("0.0000");
                                 tfDebitAmount.requestFocus();
                                 break;
@@ -279,7 +280,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                         }
                     }
 
-                    poJSON = poAPPaymentAdjustmentController.getModel().setDebitAmount((Double.valueOf(lsValue)));
+                    poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setDebitAmount((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
@@ -304,7 +305,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             lsValue = lsValue.trim();
             switch (lsID) {
                 case "taRemarks": { // Remarks
-                    poJSON = poAPPaymentAdjustmentController.getModel().setRemarks(lsValue);
+                    poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -348,10 +349,10 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
 //                selectedDate = ldtResult.selectedDate;
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (poAPPaymentAdjustmentController.getEditMode() == EditMode.ADDNEW
-                                || poAPPaymentAdjustmentController.getEditMode() == EditMode.UPDATE) {
+                        if (poAPPaymentAdjustmentController.APPaymentAdjustment().getEditMode() == EditMode.ADDNEW
+                                || poAPPaymentAdjustmentController.APPaymentAdjustment().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate = sdfFormat.format(poAPPaymentAdjustmentController.getModel().getTransactionDate());
+                            lsTransDate = sdfFormat.format(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getTransactionDate());
                             lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
@@ -362,7 +363,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                                 pbSuccess = false;
                             }
 
-                            if (pbSuccess && ((poAPPaymentAdjustmentController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                            if (pbSuccess && ((poAPPaymentAdjustmentController.APPaymentAdjustment().getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 if (oApp.getUserLevel() <= UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
@@ -385,7 +386,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                             }
 
                             if (pbSuccess) {
-                                poAPPaymentAdjustmentController.getModel().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -428,8 +429,8 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
 
     public void loadRecordSearch() {
         try {
-            if(poAPPaymentAdjustmentController.getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.getModel().Industry().getDescription())){
-                lblSource.setText(poAPPaymentAdjustmentController.getModel().Industry().getDescription());
+            if(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription() != null && !"".equals(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription())){
+                lblSource.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Industry().getDescription());
             } else {
                 lblSource.setText("General");
             }
@@ -440,9 +441,9 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
 
     public void loadRecordMaster() {
         try {
-            tfTransactionNo.setText(poAPPaymentAdjustmentController.getModel().getTransactionNo());
+            tfTransactionNo.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getTransactionNo());
             Platform.runLater(() -> {
-                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poAPPaymentAdjustmentController.getModel().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(APPaymentAdjustmentStatus.OPEN, "OPEN");
                 statusMap.put(APPaymentAdjustmentStatus.PAID, "PAID");
@@ -456,18 +457,18 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
             });
 
             // Transaction Date
-            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poAPPaymentAdjustmentController.getModel().getTransactionDate());
+            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
-            tfClient.setText(poAPPaymentAdjustmentController.getModel().Supplier().getCompanyName());
-            taRemarks.setText(poAPPaymentAdjustmentController.getModel().getRemarks());
-            tfIssuedTo.setText(poAPPaymentAdjustmentController.getModel().Payee().getPayeeName());
-            tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getCreditAmount().doubleValue(), true));
-            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.getModel().getDebitAmount().doubleValue(), true));
-            tfReferenceNo.setText(poAPPaymentAdjustmentController.getModel().getReferenceNo());
-            tfCompany.setText(poAPPaymentAdjustmentController.getModel().Company().getCompanyName());
+            tfClient.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Supplier().getCompanyName());
+            taRemarks.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getRemarks());
+            tfIssuedTo.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Payee().getPayeeName());
+            tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getCreditAmount().doubleValue(), true));
+            tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getDebitAmount().doubleValue(), true));
+            tfReferenceNo.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getReferenceNo());
+            tfCompany.setText(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().Company().getCompanyName());
 
-            poAPPaymentAdjustmentController.computeFields();
+            poAPPaymentAdjustmentController.APPaymentAdjustment().computeFields();
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -486,36 +487,36 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-//                        poAPPaymentAdjustmentController.getModel().setTransactionStatus(APPaymentAdjustmentStatus.RETURNED + "" + APPaymentAdjustmentStatus.OPEN);
-                        poAPPaymentAdjustmentController.setRecordStatus(APPaymentAdjustmentStatus.OPEN);
-                        poJSON = poAPPaymentAdjustmentController.searchTransaction();
+//                        poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setTransactionStatus(APPaymentAdjustmentStatus.RETURNED + "" + APPaymentAdjustmentStatus.OPEN);
+                        poAPPaymentAdjustmentController.APPaymentAdjustment().setRecordStatus(APPaymentAdjustmentStatus.OPEN);
+                        poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        pnEditMode = poAPPaymentAdjustmentController.getEditMode();
+                        pnEditMode = poAPPaymentAdjustmentController.APPaymentAdjustment().getEditMode();
                         break;
                     case "btnNew":
                         //Clear data
-                        poAPPaymentAdjustmentController.resetMaster();
+                        poAPPaymentAdjustmentController.APPaymentAdjustment().resetMaster();
                         clearTextFields();
 
-                        poJSON = poAPPaymentAdjustmentController.NewTransaction();
+                        poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().NewTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        poAPPaymentAdjustmentController.initFields();
-                        pnEditMode = poAPPaymentAdjustmentController.getEditMode();
+                        poAPPaymentAdjustmentController.APPaymentAdjustment().initFields();
+                        pnEditMode = poAPPaymentAdjustmentController.APPaymentAdjustment().getEditMode();
                         break;
                     case "btnUpdate":
-                        poJSON = poAPPaymentAdjustmentController.UpdateTransaction();
+                        poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        pnEditMode = poAPPaymentAdjustmentController.getEditMode();
+                        pnEditMode = poAPPaymentAdjustmentController.APPaymentAdjustment().getEditMode();
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
@@ -542,9 +543,9 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                             //Clear data
-                            poAPPaymentAdjustmentController.resetMaster();
+                            poAPPaymentAdjustmentController.APPaymentAdjustment().resetMaster();
                             clearTextFields();
-                            poAPPaymentAdjustmentController.getModel().setIndustryId(psIndustryId);
+                            poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().setIndustryId(psIndustryId);
                             pnEditMode = EditMode.UNKNOWN;
                             break;
                         } else {
@@ -556,7 +557,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                         //Validator
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
-                            poJSON = poAPPaymentAdjustmentController.SaveTransaction();
+                            poJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
@@ -564,11 +565,11 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
 
                                 // Confirmation Prompt
-                                JSONObject loJSON = poAPPaymentAdjustmentController.OpenTransaction(poAPPaymentAdjustmentController.getModel().getTransactionNo());
+                                JSONObject loJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().OpenTransaction(poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if (poAPPaymentAdjustmentController.getModel().getTransactionStatus().equals(APPaymentAdjustmentStatus.OPEN)) {
+                                    if (poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getTransactionStatus().equals(APPaymentAdjustmentStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
-                                            loJSON = poAPPaymentAdjustmentController.ConfirmTransaction("Confirmed");
+                                            loJSON = poAPPaymentAdjustmentController.APPaymentAdjustment().ConfirmTransaction("");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             } else {
@@ -624,7 +625,7 @@ public class APPaymentAdjustment_EntryController implements Initializable, Scree
         JFXUtil.setDisabled(!lbShow, taRemarks);
         JFXUtil.setDisabled(lbShow3, apMaster);
 
-        switch (poAPPaymentAdjustmentController.getModel().getTransactionStatus()) {
+        switch (poAPPaymentAdjustmentController.APPaymentAdjustment().getModel().getTransactionStatus()) {
             case APPaymentAdjustmentStatus.PAID:
                 JFXUtil.setButtonsVisibility(false, btnUpdate);
                 break;
