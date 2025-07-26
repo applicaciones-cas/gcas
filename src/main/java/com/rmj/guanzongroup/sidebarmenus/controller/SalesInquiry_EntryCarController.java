@@ -168,6 +168,7 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
         Platform.runLater(() -> {
             poSalesInquiryController.Master().setIndustryId(psIndustryId);
             poSalesInquiryController.Master().setCompanyId(psCompanyId);
+            poSalesInquiryController.Master().setCompanyId(psCategoryId);
             poSalesInquiryController.setIndustryId(psIndustryId);
             poSalesInquiryController.setCompanyId(psCompanyId);
             poSalesInquiryController.setCategoryId(psCategoryId);
@@ -426,7 +427,11 @@ public class SalesInquiry_EntryCarController  implements Initializable, ScreenIn
             
             cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getSourceCode()));
             cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getPurchaseType()));
-            cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().Client().getClientType()));
+            if(poSalesInquiryController.Master().getClientId() != null && !"".equals(poSalesInquiryController.Master().getClientId())){
+                cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().Client().getClientType()));
+            } else {
+                cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getClientType()));
+            }
             cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getCategoryType()));
 
             JFXUtil.updateCaretPositions(apMaster);
