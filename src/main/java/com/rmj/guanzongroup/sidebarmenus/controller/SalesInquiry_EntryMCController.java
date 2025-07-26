@@ -57,6 +57,7 @@ import javafx.animation.PauseTransition;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONObject;
@@ -139,7 +140,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     public void initialize(URL url, ResourceBundle rb) {
         poSalesInquiryController = new SalesControllers(oApp, null);
         poJSON = new JSONObject();
-        poJSON =  poSalesInquiryController.SalesInquiry().InitTransaction(); // Initialize transaction
+        poJSON = poSalesInquiryController.SalesInquiry().InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -150,7 +151,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         initDetailsGrid();
         initTableOnClick();
         clearTextFields();
-        pnEditMode =  poSalesInquiryController.SalesInquiry().getEditMode();
+        pnEditMode = poSalesInquiryController.SalesInquiry().getEditMode();
         initButton(pnEditMode);
 
         Platform.runLater(() -> {
@@ -197,14 +198,14 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                         poSalesInquiryController.SalesInquiry().setTransactionStatus(SalesInquiryStatic.OPEN);
-                        poJSON =  poSalesInquiryController.SalesInquiry().searchTransaction();
+                        poSalesInquiryController.SalesInquiry().setTransactionStatus(SalesInquiryStatic.OPEN);
+                        poJSON = poSalesInquiryController.SalesInquiry().searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        pnEditMode =  poSalesInquiryController.SalesInquiry().getEditMode();
+                        pnEditMode = poSalesInquiryController.SalesInquiry().getEditMode();
                         break;
                     case "btnClose":
                         unloadForm appUnload = new unloadForm();
@@ -216,28 +217,28 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         break;
                     case "btnNew":
                         //Clear data
-                         poSalesInquiryController.SalesInquiry().resetMaster();
-                         poSalesInquiryController.SalesInquiry().Detail().clear();
+                        poSalesInquiryController.SalesInquiry().resetMaster();
+                        poSalesInquiryController.SalesInquiry().Detail().clear();
                         clearTextFields();
 
-                        poJSON =  poSalesInquiryController.SalesInquiry().NewTransaction();
+                        poJSON = poSalesInquiryController.SalesInquiry().NewTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
 
-                         poSalesInquiryController.SalesInquiry().initFields();
-                        pnEditMode =  poSalesInquiryController.SalesInquiry().getEditMode();
+                        poSalesInquiryController.SalesInquiry().initFields();
+                        pnEditMode = poSalesInquiryController.SalesInquiry().getEditMode();
 
                         break;
                     case "btnUpdate":
-                        poJSON =  poSalesInquiryController.SalesInquiry().OpenTransaction( poSalesInquiryController.SalesInquiry().Master().getTransactionNo());
-                        poJSON =  poSalesInquiryController.SalesInquiry().UpdateTransaction();
+                        poJSON = poSalesInquiryController.SalesInquiry().OpenTransaction(poSalesInquiryController.SalesInquiry().Master().getTransactionNo());
+                        poJSON = poSalesInquiryController.SalesInquiry().UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        pnEditMode =  poSalesInquiryController.SalesInquiry().getEditMode();
+                        pnEditMode = poSalesInquiryController.SalesInquiry().getEditMode();
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
@@ -271,14 +272,14 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                             //Clear data
-                             poSalesInquiryController.SalesInquiry().resetMaster();
-                             poSalesInquiryController.SalesInquiry().Detail().clear();
+                            poSalesInquiryController.SalesInquiry().resetMaster();
+                            poSalesInquiryController.SalesInquiry().Detail().clear();
                             clearTextFields();
 
-                             poSalesInquiryController.SalesInquiry().Master().setIndustryId(psIndustryId);
-                             poSalesInquiryController.SalesInquiry().Master().setCompanyId(psCompanyId);
-                             poSalesInquiryController.SalesInquiry().Master().setCategoryCode(psCategoryId);
-                             poSalesInquiryController.SalesInquiry().initFields();
+                            poSalesInquiryController.SalesInquiry().Master().setIndustryId(psIndustryId);
+                            poSalesInquiryController.SalesInquiry().Master().setCompanyId(psCompanyId);
+                            poSalesInquiryController.SalesInquiry().Master().setCategoryCode(psCategoryId);
+                            poSalesInquiryController.SalesInquiry().initFields();
                             pnEditMode = EditMode.UNKNOWN;
 
                             break;
@@ -291,20 +292,20 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         //Validator
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
-                            poJSON =  poSalesInquiryController.SalesInquiry().SaveTransaction();
+                            poJSON = poSalesInquiryController.SalesInquiry().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                 poSalesInquiryController.SalesInquiry().AddDetail();
+                                poSalesInquiryController.SalesInquiry().AddDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
 
                                 // Confirmation Prompt
-                                JSONObject loJSON =  poSalesInquiryController.SalesInquiry().OpenTransaction( poSalesInquiryController.SalesInquiry().Master().getTransactionNo());
+                                JSONObject loJSON = poSalesInquiryController.SalesInquiry().OpenTransaction(poSalesInquiryController.SalesInquiry().Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if ( poSalesInquiryController.SalesInquiry().Master().getTransactionStatus().equals(SalesInquiryStatic.OPEN)) {
+                                    if (poSalesInquiryController.SalesInquiry().Master().getTransactionStatus().equals(SalesInquiryStatic.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
-                                            loJSON =  poSalesInquiryController.SalesInquiry().ConfirmTransaction("");
+                                            loJSON = poSalesInquiryController.SalesInquiry().ConfirmTransaction("");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             } else {
@@ -334,7 +335,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 initButton(pnEditMode);
 
                 if (lsButton.equals("btnUpdate")) {
-                    if ( poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && !"".equals( poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())) {
+                    if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())) {
                         tfBrand.requestFocus();
                     } else {
                         tfBrand.requestFocus();
@@ -354,7 +355,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         JFXUtil.setDisabled(!lbDisable, tfClient, tfSalesPerson);
         try {
             Platform.runLater(() -> {
-                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" :  poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
                 statusMap.put(SalesInquiryStatic.POSTED, "POSTED");
                 statusMap.put(SalesInquiryStatic.PAID, "PAID");
@@ -368,31 +369,31 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             });
 
             // Transaction Date
-            tfTransactionNo.setText( poSalesInquiryController.SalesInquiry().Master().getTransactionNo());
-            String lsTransactionDate = CustomCommonUtil.formatDateToShortString( poSalesInquiryController.SalesInquiry().Master().getTransactionDate());
+            tfTransactionNo.setText(poSalesInquiryController.SalesInquiry().Master().getTransactionNo());
+            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
-            String lsTargetDate = CustomCommonUtil.formatDateToShortString( poSalesInquiryController.SalesInquiry().Master().getTargetDate());
+            String lsTargetDate = CustomCommonUtil.formatDateToShortString(poSalesInquiryController.SalesInquiry().Master().getTargetDate());
             dpTargetDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTargetDate, "yyyy-MM-dd"));
 
-            tfBranch.setText( poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
-            tfInquiryStatus.setText( poSalesInquiryController.SalesInquiry().Master().getInquiryStatus());//TODO
+            tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
+            tfInquiryStatus.setText(poSalesInquiryController.SalesInquiry().Master().getInquiryStatus());//TODO
 
-            tfClient.setText( poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
-            tfAddress.setText( poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
-            tfContactNo.setText( poSalesInquiryController.SalesInquiry().Master().ClientMobile().getMobileNo());
+            tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
+            tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
+            tfContactNo.setText(poSalesInquiryController.SalesInquiry().Master().ClientMobile().getMobileNo());
 
-            tfSalesPerson.setText( poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
-            tfInquirySource.setText( poSalesInquiryController.SalesInquiry().Master().ReferralAgent().getCompanyName());
-            taRemarks.setText( poSalesInquiryController.SalesInquiry().Master().getRemarks());
+            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
+            tfInquirySource.setText(poSalesInquiryController.SalesInquiry().Master().ReferralAgent().getCompanyName());
+            taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
 
-            cmbInquiryType.getSelectionModel().select(Integer.parseInt( poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
-            cmbPurchaseType.getSelectionModel().select(Integer.parseInt( poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
-            if ( poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals( poSalesInquiryController.SalesInquiry().Master().getClientId())) {
-                cmbClientType.getSelectionModel().select(Integer.parseInt( poSalesInquiryController.SalesInquiry().Master().Client().getClientType()));
+            cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
+            cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
+            if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
+                cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().Client().getClientType()));
             } else {
-                cmbClientType.getSelectionModel().select(Integer.parseInt( poSalesInquiryController.SalesInquiry().Master().getClientType()));
+                cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getClientType()));
             }
-            cmbCategoryType.getSelectionModel().select(Integer.parseInt( poSalesInquiryController.SalesInquiry().Master().getCategoryType()));
+            cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getCategoryType()));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
@@ -403,14 +404,14 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
     public void loadRecordDetail() {
         try {
-            if (pnDetail < 0 || pnDetail >  poSalesInquiryController.SalesInquiry().getDetailCount() - 1) {
+            if (pnDetail < 0 || pnDetail > poSalesInquiryController.SalesInquiry().getDetailCount() - 1) {
                 return;
             }
 
-            tfBrand.setText( poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getDescription());
-            tfModel.setText( poSalesInquiryController.SalesInquiry().Detail(pnDetail).Model().getDescription());
-            tfModelVariant.setText( poSalesInquiryController.SalesInquiry().Detail(pnDetail).ModelVariant().getDescription());
-            tfColor.setText( poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getDescription());
+            tfBrand.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getDescription());
+            tfModel.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Model().getDescription());
+            tfModelVariant.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).ModelVariant().getDescription());
+            tfColor.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getDescription());
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -437,7 +438,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         break;
                 }
                 loadRecordDetail();
-                if ( poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && ! poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId().equals("")) {
+                if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && !poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId().equals("")) {
                     tfBrand.requestFocus();
                 } else {
                     tfBrand.requestFocus();
@@ -453,7 +454,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if ( poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && ! poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId().equals("")) {
+                    if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && !poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId().equals("")) {
                         tfBrand.requestFocus();
                     } else {
                         tfBrand.requestFocus();
@@ -465,8 +466,14 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails); // need to use computed-size in min-width of the column to work
         JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property(), () -> {
-            System.out.println("Row changed!");
-//                    updateDatabaseWithNewOrder(details_data);
+//          updateDatabaseWithNewOrder(details_data); //basis data
+            int no = 0;
+            String thedata = "";
+            while (details_data.size() > no) {
+                thedata += "\n" + details_data.get(no).getIndex02();
+                no += 1;
+            }
+            ShowMessageFX.Information(thedata, "result", "result");
         });
 
     }
@@ -490,60 +497,60 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
                         String lsBrandId = "";
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnCtr =  poSalesInquiryController.SalesInquiry().getDetailCount() - 1;
+                            lnCtr = poSalesInquiryController.SalesInquiry().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if ( poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId() == null ||  poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId().equals("")) {
-                                    if ( poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId() != null
-                                            || !"".equals( poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
-                                        lsBrandId =  poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId() == null || poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId().equals("")) {
+                                    if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId() != null
+                                            || !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
+                                        lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
                                     }
-                                     poSalesInquiryController.SalesInquiry().Detail().remove(lnCtr);
+                                    poSalesInquiryController.SalesInquiry().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;
                             }
 
-                            if (( poSalesInquiryController.SalesInquiry().getDetailCount() - 1) >= 0) {
-                                if ( poSalesInquiryController.SalesInquiry().Detail( poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId() != null && ! poSalesInquiryController.SalesInquiry().Detail( poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId().equals("")) {
-                                     poSalesInquiryController.SalesInquiry().AddDetail();
+                            if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) >= 0) {
+                                if (poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId() != null && !poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId().equals("")) {
+                                    poSalesInquiryController.SalesInquiry().AddDetail();
                                 }
                             }
 
-                            if (( poSalesInquiryController.SalesInquiry().getDetailCount() - 1) < 0) {
-                                 poSalesInquiryController.SalesInquiry().AddDetail();
+                            if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) < 0) {
+                                poSalesInquiryController.SalesInquiry().AddDetail();
                             }
 
                             //Set brand Id to last row
                             if (!lsBrandId.isEmpty()) {
-                                 poSalesInquiryController.SalesInquiry().Detail( poSalesInquiryController.SalesInquiry().getDetailCount() - 1).setBrandId(lsBrandId);
+                                poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).setBrandId(lsBrandId);
                             }
-                            
+
                             poSalesInquiryController.SalesInquiry().sortPriority();
                         }
 
                         double lnTotal = 0.0;
-                        for (lnCtr = 0; lnCtr <  poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
+                        for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
                             String lsBrand = "";
-                            if ( poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription() != null) {
-                                lsBrand =  poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription();
+                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription() != null) {
+                                lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription();
                             }
                             String lsModelVariant = " ";
-                            if ( poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null && !"".equals( poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
-                                lsModelVariant = " " +  poSalesInquiryController.SalesInquiry().Detail(lnCtr).ModelVariant().getDescription() + " ";
+                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
+                                lsModelVariant = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).ModelVariant().getDescription() + " ";
                             }
                             String lsModel = "";
-                            if ( poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription() != null) {
-                                lsModel =  poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription();
+                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription() != null) {
+                                lsModel = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription();
                             }
                             String lsColor = "";
-                            if ( poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription() != null) {
-                                lsColor =  poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription();
+                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription() != null) {
+                                lsColor = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription();
                             }
                             String lsDescription = lsModel
                                     + lsModelVariant
                                     + lsColor;
                             details_data.add(
                                     new ModelSalesInquiry_Detail(
-                                            String.valueOf( poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             String.valueOf(lsBrand),
                                             lsDescription
                                     ));
@@ -608,7 +615,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             lsValue = lsValue.trim();
             switch (lsID) {
                 case "taRemarks"://Remarks
-                    poJSON =  poSalesInquiryController.SalesInquiry().Master().setRemarks(lsValue);
+                    poJSON = poSalesInquiryController.SalesInquiry().Master().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -639,25 +646,25 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 case "tfBrand":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
-                         poSalesInquiryController.SalesInquiry().Detail(pnDetail).setBrandId("");
-                        poJSON =  poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
-                        poJSON =  poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
-                        poJSON =  poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                        poSalesInquiryController.SalesInquiry().Detail(pnDetail).setBrandId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
                     }
                     break;
                 case "tfModel":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
-                        poJSON =  poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
-                        poJSON =  poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
-                        poJSON =  poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setModelId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
                     }
                     break;
                 case "tfColor":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
-                        poJSON =  poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
-                        poJSON =  poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setColorId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Detail(pnDetail).setStockId("");
                     }
                     if (pbEntered) {
                         moveNext(false);
@@ -690,19 +697,19 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             switch (lsTxtFieldID) {
                 case "tfSalesPerson":
                     if (lsValue.isEmpty()) {
-                        poJSON =  poSalesInquiryController.SalesInquiry().Master().setSalesMan("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Master().setSalesMan("");
                     }
                     break;
                 case "tfInquirySource":
                     if (lsValue.isEmpty()) {
-                        poJSON =  poSalesInquiryController.SalesInquiry().Master().setSourceNo("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceNo("");
                     }
                     break;
                 case "tfClient":
                     if (lsValue.isEmpty()) {
-                        poJSON =  poSalesInquiryController.SalesInquiry().Master().setClientId("");
-                        poJSON =  poSalesInquiryController.SalesInquiry().Master().setAddressId("");
-                        poJSON =  poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Master().setAddressId("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Master().setContactId("");
                     }
                     break;
 
@@ -715,13 +722,13 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     };
 
     public void moveNext(boolean isUp) {
-        String lsBrand =  poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId();
+        String lsBrand = poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId();
         apDetail.requestFocus();
-        String ldblNewValue =  poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId();
+        String ldblNewValue = poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId();
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
-        if (!JFXUtil.isObjectEqualTo( poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-            if (!JFXUtil.isObjectEqualTo( poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
+        if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
+            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
                 tfColor.requestFocus();
             } else {
                 tfModel.requestFocus();
@@ -774,7 +781,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 case F3:
                     switch (lsID) {
                         case "tfClient":
-                            poJSON =  poSalesInquiryController.SalesInquiry().SearchClient(lsValue, false);
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchClient(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfClient.setText("");
@@ -783,7 +790,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             loadRecordMaster();
                             return;
                         case "tfSalesPerson":
-                            poJSON =  poSalesInquiryController.SalesInquiry().SearchSalesPerson(lsValue, false);
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchSalesPerson(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSalesPerson.setText("");
@@ -792,7 +799,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             loadRecordMaster();
                             return;
                         case "tfInquirySource":
-                            poJSON =  poSalesInquiryController.SalesInquiry().SearchReferralAgent(lsValue, false);
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchReferralAgent(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfInquirySource.setText("");
@@ -801,7 +808,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             loadRecordMaster();
                             return;
                         case "tfBrand":
-                            poJSON =  poSalesInquiryController.SalesInquiry().SearchBrand(lsValue, false, pnDetail);
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchBrand(lsValue, false, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfBrand.setText("");
@@ -818,7 +825,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
                             break;
                         case "tfModel":
-                            poJSON =  poSalesInquiryController.SalesInquiry().SearchModel(lsValue, false, pnDetail);
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchModel(lsValue, false, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -835,7 +842,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             });
                             break;
                         case "tfColor":
-                            poJSON =  poSalesInquiryController.SalesInquiry().SearchColor(lsValue, false, pnDetail);
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchColor(lsValue, false, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -885,10 +892,10 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
                 switch (datePicker.getId()) {
                     case "dpTargetDate":
-                        if ( poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.ADDNEW
-                                ||  poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.UPDATE) {
+                        if (poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.ADDNEW
+                                || poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate = sdfFormat.format( poSalesInquiryController.SalesInquiry().Master().getTransactionDate());
+                            lsTransDate = sdfFormat.format(poSalesInquiryController.SalesInquiry().Master().getTransactionDate());
                             lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
@@ -897,7 +904,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 JFXUtil.setJSONError(poJSON, "Target date cannot be before the transaction date.");
                                 pbSuccess = false;
                             } else {
-                                 poSalesInquiryController.SalesInquiry().Master().setTargetDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                poSalesInquiryController.SalesInquiry().Master().setTargetDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             }
                             if (pbSuccess) {
                             } else {
@@ -928,19 +935,19 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         switch (cbId) {
             case "cmbClientType":
                 //if client type is changed then remove the client 
-                if (! poSalesInquiryController.SalesInquiry().Master().getClientType().equals(selectedIndex)) {
-                     poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                if (!poSalesInquiryController.SalesInquiry().Master().getClientType().equals(selectedIndex)) {
+                    poSalesInquiryController.SalesInquiry().Master().setClientId("");
                 }
-                 poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
+                poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
                 break;
             case "cmbInquiryType":
-                 poSalesInquiryController.SalesInquiry().Master().setSourceCode(String.valueOf(selectedIndex));
+                poSalesInquiryController.SalesInquiry().Master().setSourceCode(String.valueOf(selectedIndex));
                 break;
             case "cmbPurchaseType":
-                 poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
+                poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
                 break;
             case "cmbCategoryType":
-                 poSalesInquiryController.SalesInquiry().Master().setCategoryType(String.valueOf(selectedIndex));
+                poSalesInquiryController.SalesInquiry().Master().setCategoryType(String.valueOf(selectedIndex));
                 break;
             default:
                 System.out.println("⚠ Unrecognized ComboBox ID: " + cbId);
@@ -985,7 +992,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
         JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail);
 
-        switch ( poSalesInquiryController.SalesInquiry().Master().getTransactionStatus()) {
+        switch (poSalesInquiryController.SalesInquiry().Master().getTransactionStatus()) {
             case SOATaggingStatus.PAID:
                 JFXUtil.setButtonsVisibility(false, btnUpdate);
                 break;
@@ -1002,15 +1009,15 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
-        SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
-        sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());
-        tblViewTransDetails.setItems(sortedData);
+//        SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
+//        sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());
+        tblViewTransDetails.setItems(details_data);
         tblViewTransDetails.autosize();
     }
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText( poSalesInquiryController.SalesInquiry().Master().Company().getCompanyName() + " - " +  poSalesInquiryController.SalesInquiry().Master().Industry().getDescription());
+            lblSource.setText(poSalesInquiryController.SalesInquiry().Master().Company().getCompanyName() + " - " + poSalesInquiryController.SalesInquiry().Master().Industry().getDescription());
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
