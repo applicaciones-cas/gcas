@@ -67,6 +67,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyProperty;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
@@ -120,9 +122,9 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     @FXML
     private Label lblSource, lblStatus;
     @FXML
-    private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnHistory, btnRetrieve, btnClose;
+    private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnHistory, btnClose;
     @FXML
-    private TextField tfTransactionNo, tfBranch, tfSalesPerson, tfReferralAgent, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfColor, tfModelVariant;
+    private TextField tfTransactionNo, tfBranch, tfSalesPerson, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfColor, tfModelVariant;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -374,47 +376,20 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.ADDNEW;
-        if (!lbDisable) {
-            JFXUtil.AddStyleClass("DisabledTextField", tfClient, tfSalesPerson);
-        } else {
-            while (JFXUtil.isTextFieldContainsStyleClass("DisabledTextField", tfClient, tfSalesPerson)) {
-                JFXUtil.RemoveStyleClass("DisabledTextField", tfClient, tfSalesPerson);
-            }
-        }
-
         JFXUtil.setDisabled(!lbDisable, tfClient, tfSalesPerson);
-
         try {
-
             Platform.runLater(() -> {
-                String lsActive = poSalesInquiryController.Master().getTransactionStatus();
-                String lsStat = "UNKNOWN";
-                switch (lsActive) {
-                    case SalesInquiryStatic.POSTED:
-                        lsStat = "POSTED";
-                        break;
-                    case SalesInquiryStatic.PAID:
-                        lsStat = "PAID";
-                        break;
-                    case SalesInquiryStatic.CONFIRMED:
-                        lsStat = "CONFIRMED";
-                        break;
-                    case SalesInquiryStatic.OPEN:
-                        lsStat = "OPEN";
-                        break;
-                    case SalesInquiryStatic.VOID:
-                        lsStat = "VOIDED";
-                        break;
-                    case SalesInquiryStatic.CANCELLED:
-                        lsStat = "CANCELLED";
-                        break;
-                    default:
-                        lsStat = "UNKNOWN";
-                        break;
+                String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.Master().getTransactionStatus();
+                Map<String, String> statusMap = new HashMap<>();
+                statusMap.put(SalesInquiryStatic.POSTED, "POSTED");
+                statusMap.put(SalesInquiryStatic.PAID, "PAID");
+                statusMap.put(SalesInquiryStatic.CONFIRMED, "CONFIRMED");
+                statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
+                statusMap.put(SalesInquiryStatic.VOID, "VOIDED");
+                statusMap.put(SalesInquiryStatic.CANCELLED, "CANCELLED");
 
-                }
+                String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
-
             });
 
             // Transaction Date
@@ -432,13 +407,24 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             tfContactNo.setText(poSalesInquiryController.Master().ClientMobile().getMobileNo());
 
             tfSalesPerson.setText(poSalesInquiryController.Master().SalesPerson().getCompanyName());
+            tfInquirySource.setText(poSalesInquiryController.Master().ReferralAgent().getCompanyName());
             taRemarks.setText(poSalesInquiryController.Master().getRemarks());
-
-            cmbInquiryType.getSelectionModel().select(poSalesInquiryController.Master().getSourceCode());
-            cmbPurchaseType.getSelectionModel().select(poSalesInquiryController.Master().getPurchaseType());
-            cmbClientType.getSelectionModel().select(poSalesInquiryController.Master().Client().getClientType());
-            cmbCategoryType.getSelectionModel().select(poSalesInquiryController.Master().getCategoryType());
-
+            Platform.runLater(() -> {
+                try {
+                    cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getSourceCode()));
+                    cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getPurchaseType()));
+                    if (poSalesInquiryController.Master().getClientId() != null && !"".equals(poSalesInquiryController.Master().getClientId())) {
+                        cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().Client().getClientType()));
+                    } else {
+                        cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getClientType()));
+                    }
+                    cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getCategoryType()));
+                } catch (SQLException ex) {
+                    Logger.getLogger(SalesInquiry_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (GuanzonException ex) {
+                    Logger.getLogger(SalesInquiry_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -509,25 +495,19 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
         tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails); // need to use computed-size in min-width of the column to work
-        JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property());
+        JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property(), () -> {
+            System.out.println("Row changed!");
+//                    updateDatabaseWithNewOrder(details_data);
+        });
 
     }
 
     public void loadTableDetail() {
         pbEntered = false;
-        // Setting data to table detail
 
-        // Setting data to table detail
-        ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setMaxHeight(50);
-        progressIndicator.setStyle("-fx-progress-color: #FF8201;");
-        StackPane loadingPane = new StackPane(progressIndicator);
-        loadingPane.setAlignment(Pos.CENTER);
-        tblViewTransDetails.setPlaceholder(loadingPane);
-        progressIndicator.setVisible(true);
-
-        Label placeholderLabel = new Label("NO RECORD TO LOAD");
-        placeholderLabel.setStyle("-fx-font-size: 10px;"); // Adjust the size as needed
+        JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
+        tblViewTransDetails.setPlaceholder(loading.loadingPane);
+        loading.progressIndicator.setVisible(true);
 
         Task<Void> task = new Task<Void>() {
             @Override
@@ -602,15 +582,13 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 >= details_data.size()) {
                             if (!details_data.isEmpty()) {
                                 /* FOCUS ON FIRST ROW */
-                                tblViewTransDetails.getSelectionModel().select(0);
-                                tblViewTransDetails.getFocusModel().focus(0);
+                                JFXUtil.selectAndFocusRow(tblViewTransDetails, 0);
                                 pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
                                 loadRecordDetail();
                             }
                         } else {
                             /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
-                            tblViewTransDetails.getSelectionModel().select(pnDetail);
-                            tblViewTransDetails.getFocusModel().focus(pnDetail);
+                            JFXUtil.selectAndFocusRow(tblViewTransDetails, pnDetail);
                             loadRecordDetail();
                         }
                         loadRecordMaster();
@@ -626,20 +604,20 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             @Override
             protected void succeeded() {
                 if (details_data == null || details_data.isEmpty()) {
-                    tblViewTransDetails.setPlaceholder(placeholderLabel);
+                    tblViewTransDetails.setPlaceholder(loading.placeholderLabel);
                 } else {
                     tblViewTransDetails.toFront();
                 }
-                progressIndicator.setVisible(false);
+                loading.progressIndicator.setVisible(false);
 
             }
 
             @Override
             protected void failed() {
                 if (details_data == null || details_data.isEmpty()) {
-                    tblViewTransDetails.setPlaceholder(placeholderLabel);
+                    tblViewTransDetails.setPlaceholder(loading.placeholderLabel);
                 }
-                progressIndicator.setVisible(false);
+                loading.progressIndicator.setVisible(false);
             }
 
         };
@@ -741,11 +719,6 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         poJSON = poSalesInquiryController.Master().setSalesMan("");
                     }
                     break;
-                case "tfReferralAgent":
-                    if (lsValue.isEmpty()) {
-                        poJSON = poSalesInquiryController.Master().setAgentId("");
-                    }
-                    break;
                 case "tfInquirySource":
                     if (lsValue.isEmpty()) {
                         poJSON = poSalesInquiryController.Master().setSourceNo("");
@@ -767,21 +740,21 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
     };
 
-    public void moveNext() {
+    public void moveNext(boolean isUp) {
         String lsBrand = poSalesInquiryController.Detail(pnDetail).getBrandId();
         apDetail.requestFocus();
         String ldblNewValue = poSalesInquiryController.Detail(pnDetail).getBrandId();
-//        if (!lsBrand.equals(ldblNewValue)) {
-//            tfAppliedAmtDetail.requestFocus();
-//        } else {
-//            pnDetail = JFXUtil.moveToNextRow(tblViewTransDetails);
-//            loadRecordDetail();
-//            if (poSalesInquiryController.Detail(pnDetail).getBrandId() != null && !"".equals(poSalesInquiryController.Detail(pnDetail).getBrandId())) {
-//                tfModel.requestFocus();
-//            } else {
-//                tfReferenceNo.requestFocus();
-//            }
-//        }
+        pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
+        loadRecordDetail();
+        if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.Detail(pnDetail).getBrandId(), null, "")) {
+            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.Detail(pnDetail).getModelId(), null, "")) {
+                tfColor.requestFocus();
+            } else {
+                tfModel.requestFocus();
+            }
+        } else {
+            tfBrand.requestFocus();
+        }
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -807,23 +780,8 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         case "tfBrand":
                         case "tfModel":
                         case "tfColor":
-//                            double ldblAppliedAmt = poSalesInquiryController.Detail(pnDetail).getAppliedAmount().doubleValue();
-//                            apDetail.requestFocus();
-//                            double ldblNewValue = poSalesInquiryController.Detail(pnDetail).getAppliedAmount().doubleValue();
-//                            if (ldblAppliedAmt != ldblNewValue && (ldblAppliedAmt > 0
-//                                    && poSalesInquiryController.Detail(pnDetail).getSourceNo() != null
-//                                    && !"".equals(poSalesInquiryController.Detail(pnDetail).getSourceNo()))) {
-//                                tfAppliedAmtDetail.requestFocus();
-//                            } else {
-//                                pnDetail = JFXUtil.moveToPreviousRow(currentTable);
-//                                loadRecordDetail();
-//                                if (poSalesInquiryController.Detail(pnDetail).getSourceNo() != null && !poSalesInquiryController.Detail(pnDetail).getSourceNo().equals("")) {
-//                                    tfAppliedAmtDetail.requestFocus();
-//                                } else {
-//                                    tfReferenceNo.requestFocus();
-//                                }
-//                                event.consume();
-//                            }
+                            moveNext(true);
+                            event.consume();
                             break;
                     }
                     break;
@@ -832,7 +790,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         case "tfBrand":
                         case "tfModel":
                         case "tfColor":
-                            moveNext();
+                            moveNext(false);
                             event.consume();
                             break;
                         default:
@@ -859,11 +817,11 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             }
                             loadRecordMaster();
                             return;
-                        case "tfReferralAgent":
+                        case "tfInquirySource":
                             poJSON = poSalesInquiryController.SearchReferralAgent(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfReferralAgent.setText("");
+                                tfInquirySource.setText("");
                                 break;
                             }
                             loadRecordMaster();
@@ -909,8 +867,10 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfModel.setText("");
                                 break;
+                            } else {
+                                loadTableDetail();
+                                moveNext(false);
                             }
-                            loadTableDetail();
                             break;
                     }
                     break;
@@ -936,13 +896,8 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 DatePicker datePicker = (DatePicker) source;
                 String inputText = datePicker.getEditor().getText();
                 SimpleDateFormat sdfFormat = new SimpleDateFormat(SQLUtil.FORMAT_SHORT_DATE);
-                LocalDate currentDate = null;
-                LocalDate selectedDate = null;
-                LocalDate receivingDate = null;
-                String lsServerDate = "";
-                String lsTransDate = "";
-                String lsSelectedDate = "";
-                String lsReceivingDate = "";
+                LocalDate currentDate = null, selectedDate = null, receivingDate = null;
+                String lsServerDate = "", lsTransDate = "", lsSelectedDate = "", lsReceivingDate = "";
 
                 JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
                 poJSON = ldtResult.poJSON;
@@ -992,6 +947,46 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
+    final EventHandler<ActionEvent> comboBoxActionListener = event -> {
+        Object source = event.getSource();
+        if (!(source instanceof ComboBox)) {
+            return;
+        }
+        @SuppressWarnings("unchecked")
+        ComboBox<?> cb = (ComboBox<?>) source;
+
+        String cbId = cb.getId();
+        Object selectedItem = cb.getSelectionModel().getSelectedItem();
+        int selectedIndex = cb.getSelectionModel().getSelectedIndex();
+
+        if (selectedItem == null || cbId == null) {
+            return;
+        }
+        switch (cbId) {
+            case "cmbClientType":
+                poSalesInquiryController.Master().setClientType(String.valueOf(selectedIndex));
+                break;
+
+            case "cmbInquiryType":
+                poSalesInquiryController.Master().setSourceCode(String.valueOf(selectedIndex));
+                break;
+
+            case "cmbPurchaseType":
+                poSalesInquiryController.Master().setPurchaseType(String.valueOf(selectedIndex));
+                break;
+
+            case "cmbCategoryType":
+                poSalesInquiryController.Master().setCategoryType(String.valueOf(selectedIndex));
+                break;
+
+            default:
+                System.out.println("⚠ Unrecognized ComboBox ID: " + cbId);
+                break;
+        }
+
+        loadRecordMaster();
+
+    };
 
     private void initComboBoxes() {
         // Set the items of the ComboBox to the list of genders
@@ -1003,6 +998,10 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         cmbPurchaseType.getSelectionModel().select(0);
         cmbCategoryType.setItems(CategoryType);
         cmbCategoryType.getSelectionModel().select(0);
+
+        JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbInquiryType, cmbPurchaseType, cmbCategoryType);
+        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbInquiryType, cmbPurchaseType, cmbCategoryType);
+
     }
 
     public void initDatePickers() {
@@ -1011,11 +1010,8 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     }
 
     public void initTextFields() {
-        Platform.runLater(() -> {
-            JFXUtil.setVerticalScroll(taRemarks);
-        });
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfReferralAgent, tfInquirySource);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfInquirySource, tfInquirySource);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBrand, tfModel, tfColor);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
