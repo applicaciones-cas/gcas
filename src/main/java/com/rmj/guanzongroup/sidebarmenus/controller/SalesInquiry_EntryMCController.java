@@ -689,6 +689,10 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         poJSON = poSalesInquiryController.Detail(pnDetail).setColorId("");
                         poJSON = poSalesInquiryController.Detail(pnDetail).setStockId("");
                     }
+                    if (pbEntered) {
+                        moveNext(false);
+                        pbEntered = false;
+                    }
                     break;
             }
             Platform.runLater(() -> {
@@ -867,10 +871,8 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfModel.setText("");
                                 break;
-                            } else {
-                                loadTableDetail();
-                                moveNext(false);
-                            }
+                            } 
+                            loadTableDetail();
                             break;
                     }
                     break;
