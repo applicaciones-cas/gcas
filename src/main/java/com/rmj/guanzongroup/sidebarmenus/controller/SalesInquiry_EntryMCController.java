@@ -12,7 +12,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -31,7 +30,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -50,39 +48,16 @@ import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatus;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
-import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
 import org.guanzon.appdriver.base.MiscUtil;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import javafx.animation.PauseTransition;
-import javafx.util.Pair;
-import java.util.ArrayList;
-import ph.com.guanzongroup.cas.cashflow.SOATagging;
-import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatic;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ReadOnlyProperty;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TableRow;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import org.guanzon.appdriver.agent.ShowDialogFX;
-import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.sales.t1.SalesInquiry;
@@ -409,22 +384,16 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             tfSalesPerson.setText(poSalesInquiryController.Master().SalesPerson().getCompanyName());
             tfInquirySource.setText(poSalesInquiryController.Master().ReferralAgent().getCompanyName());
             taRemarks.setText(poSalesInquiryController.Master().getRemarks());
-            Platform.runLater(() -> {
-                try {
-                    cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getSourceCode()));
-                    cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getPurchaseType()));
-                    if (poSalesInquiryController.Master().getClientId() != null && !"".equals(poSalesInquiryController.Master().getClientId())) {
-                        cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().Client().getClientType()));
-                    } else {
-                        cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getClientType()));
-                    }
-                    cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getCategoryType()));
-                } catch (SQLException ex) {
-                    Logger.getLogger(SalesInquiry_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (GuanzonException ex) {
-                    Logger.getLogger(SalesInquiry_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            });
+
+            cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getSourceCode()));
+            cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getPurchaseType()));
+            if (poSalesInquiryController.Master().getClientId() != null && !"".equals(poSalesInquiryController.Master().getClientId())) {
+                cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().Client().getClientType()));
+            } else {
+                cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getClientType()));
+            }
+            cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.Master().getCategoryType()));
+
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -595,9 +564,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                     } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                         Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                     }
-
                 });
-
                 return null;
             }
 
@@ -609,7 +576,6 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                     tblViewTransDetails.toFront();
                 }
                 loading.progressIndicator.setVisible(false);
-
             }
 
             @Override
@@ -619,7 +585,6 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 }
                 loading.progressIndicator.setVisible(false);
             }
-
         };
         new Thread(task).start(); // Run task in background
     }
@@ -951,19 +916,10 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     }
     final EventHandler<ActionEvent> comboBoxActionListener = event -> {
         Object source = event.getSource();
-        if (!(source instanceof ComboBox)) {
-            return;
-        }
         @SuppressWarnings("unchecked")
         ComboBox<?> cb = (ComboBox<?>) source;
-
         String cbId = cb.getId();
-        Object selectedItem = cb.getSelectionModel().getSelectedItem();
         int selectedIndex = cb.getSelectionModel().getSelectedIndex();
-
-        if (selectedItem == null || cbId == null) {
-            return;
-        }
         switch (cbId) {
             case "cmbClientType":
                 //if client type is changed then remove the client 
@@ -972,26 +928,20 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 }
                 poSalesInquiryController.Master().setClientType(String.valueOf(selectedIndex));
                 break;
-
             case "cmbInquiryType":
                 poSalesInquiryController.Master().setSourceCode(String.valueOf(selectedIndex));
                 break;
-
             case "cmbPurchaseType":
                 poSalesInquiryController.Master().setPurchaseType(String.valueOf(selectedIndex));
                 break;
-
             case "cmbCategoryType":
                 poSalesInquiryController.Master().setCategoryType(String.valueOf(selectedIndex));
                 break;
-
             default:
                 System.out.println("⚠ Unrecognized ComboBox ID: " + cbId);
                 break;
         }
-
         loadRecordMaster();
-
     };
 
     private void initComboBoxes() {
