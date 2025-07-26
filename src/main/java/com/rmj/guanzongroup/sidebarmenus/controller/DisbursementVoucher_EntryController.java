@@ -278,6 +278,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         try {
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poJSON = new JSONObject();
+            poDisbursementController.setWithUI(true);
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -474,7 +475,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                         ShowMessageFX.Warning("Please see the Journal Entry, before save", pxeModuleName, null);
                                         return;
                                     } else {
-                                        poJSON = poDisbursementController.VerifyTransaction("Verified");
+                                        poJSON = poDisbursementController.VerifyTransaction("");
                                         if ("error".equals((String) poJSON.get("result"))) {
                                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                             return;
@@ -508,7 +509,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         pnEditMode = poDisbursementController.getEditMode();
                         if (pnEditMode == EditMode.READY) {
                             if (!poDisbursementController.existJournal().equals("")) {
-                                poJSON = poDisbursementController.VoidTransaction("Voided");
+                                poJSON = poDisbursementController.VoidTransaction("");
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;

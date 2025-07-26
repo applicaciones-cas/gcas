@@ -274,6 +274,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poDisbursementController.setTransactionStatus(DisbursementStatic.OPEN + DisbursementStatic.VERIFIED + DisbursementStatic.RETURNED);
             poJSON = new JSONObject();
+            poDisbursementController.setWithUI(true);
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -410,7 +411,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to verify this transaction?")) {
                         poJSON = poDisbursementController.OpenTransaction(poDisbursementController.Master().getTransactionNo());
                         if ("success".equals(poJSON.get("result"))) {
-                            poJSON = poDisbursementController.VerifyTransaction("Verified");
+                            poJSON = poDisbursementController.VerifyTransaction("");
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                 return;
@@ -473,7 +474,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                 case "btnDVCancel":
                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to cancel transaction?")) {
                         pnEditMode = poDisbursementController.getEditMode();
-                        poJSON = poDisbursementController.CancelTransaction("Cancelled");
+                        poJSON = poDisbursementController.CancelTransaction("");
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                             return;
@@ -492,7 +493,7 @@ public class DisbursementVoucher_VerificationController implements Initializable
                         pnEditMode = poDisbursementController.getEditMode();
                         if (pnEditMode == EditMode.READY) {
                             if (!poDisbursementController.existJournal().equals("")) {
-                                poJSON = poDisbursementController.VoidTransaction("Voided");
+                                poJSON = poDisbursementController.VoidTransaction("");
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;

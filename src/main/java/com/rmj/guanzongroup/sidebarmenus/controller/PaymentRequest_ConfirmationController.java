@@ -206,6 +206,7 @@ public class PaymentRequest_ConfirmationController implements Initializable, Scr
             poGLControllers = new CashflowControllers(poApp, logWrapper);
             poGLControllers.PaymentRequest().setTransactionStatus(PaymentRequestStatus.OPEN
                     + PaymentRequestStatus.CONFIRMED);
+            poGLControllers.PaymentRequest().setWithUI(true);
             poJSON = poGLControllers.PaymentRequest().InitTransaction();
             if (!"success".equals(poJSON.get("result"))) {
                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
