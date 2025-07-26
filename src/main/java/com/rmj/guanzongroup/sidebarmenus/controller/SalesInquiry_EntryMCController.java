@@ -871,7 +871,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfModel.setText("");
                                 break;
-                            } 
+                            }
                             loadTableDetail();
                             break;
                     }
@@ -966,6 +966,10 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         }
         switch (cbId) {
             case "cmbClientType":
+                //if client type is changed then remove the client 
+                if (!poSalesInquiryController.Master().getClientType().equals(selectedIndex)) {
+                    poSalesInquiryController.Master().setClientId("");
+                }
                 poSalesInquiryController.Master().setClientType(String.valueOf(selectedIndex));
                 break;
 
@@ -992,15 +996,9 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
     private void initComboBoxes() {
         // Set the items of the ComboBox to the list of genders
-        cmbClientType.setItems(ClientType);
-        cmbClientType.getSelectionModel().select(0);
-        cmbInquiryType.setItems(InquiryType);
-        cmbInquiryType.getSelectionModel().select(0);
-        cmbPurchaseType.setItems(PurchaseType);
-        cmbPurchaseType.getSelectionModel().select(0);
-        cmbCategoryType.setItems(CategoryType);
-        cmbCategoryType.getSelectionModel().select(0);
-
+        JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType), new JFXUtil.Pairs<>(InquiryType, cmbInquiryType),
+                new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType), new JFXUtil.Pairs<>(CategoryType, cmbCategoryType)
+        );
         JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbInquiryType, cmbPurchaseType, cmbCategoryType);
         JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbInquiryType, cmbPurchaseType, cmbCategoryType);
 
