@@ -142,12 +142,12 @@ public class DashboardController implements Initializable {
             btnServiceRepair,
             btnAccountsReceivable,
             btnGeneralAccounting,
+            btnDelivery,
             btnOthers,
             btnHelp,
             btnLogout,
             btnSysMonitor,
-            btnAddToCart,
-            btnDelivery;
+            btnAddToCart;
 
     @FXML
     private Pane pane;
@@ -3883,8 +3883,8 @@ public class DashboardController implements Initializable {
             btnServiceRepair,
             btnAccountsReceivable,
             btnGeneralAccounting,
-            btnOthers,
-            btnDelivery
+            btnDelivery,
+            btnOthers
         };
 
         // Tooltip texts for each button
@@ -3895,6 +3895,7 @@ public class DashboardController implements Initializable {
             "Service Repair",
             "AR/AP (Accounts Payable and Receivable)",
             "General Accounting",
+            "Delivery",
             "Others"
         };
 
@@ -4013,7 +4014,6 @@ public class DashboardController implements Initializable {
     @FXML
     private void switchDelivery(ActionEvent event) {
         deliveryMenuItems();
-        tvLeftSideBar.setRoot(null);
         toggleLeftSideBarMenuButton("switchDelivery", 6);
 
     }
@@ -4725,8 +4725,8 @@ public class DashboardController implements Initializable {
         try {
             try {
                 flatMenuItems = (JSONArray) parser.parse(new StringReader(jsonString));
-                JSONObject salesMainMenu = buildHierarchy("001");
-                dissectLeftSideBarJSON(salesMainMenu.toJSONString());
+                JSONObject deliveryMainMenu = buildHierarchy("001");
+                dissectLeftSideBarJSON(deliveryMainMenu.toJSONString());
 
             } catch (IOException ex) {
                 Logger.getLogger(DashboardController.class

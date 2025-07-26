@@ -82,7 +82,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
     @FXML
     private Label lblSource, lblStatus;
     @FXML
-    private Button btnUpdate, btnSearch, btnSave,
+    private Button btnNew, btnUpdate, btnSearch, btnSave,
             btnCancel, btnHistory, btnRetrieve,
             btnClose;
     @FXML
@@ -159,6 +159,14 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnSearch":
+                case "btnNew":
+                    poJSON = poAppController.newTransaction();
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        poLogWrapper.severe((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, psFormName, (String) poJSON.get("message"));
+                        return;
+                    }
+                    return;
                 case "btnSave":
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
@@ -199,7 +207,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                             "This feature is under development and will be available soon.\nThank you for your patience!");
             }
             initButtonDisplay(poAppController.getEditMode());
-        } catch (GuanzonException | SQLException ex) {
+        } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
             Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(ex.getMessage());
 
@@ -290,18 +298,23 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
     }
 
-    private void initButtonControls(boolean visible, String... buttonIdsToShow) {
-        Set<String> showOnly = new HashSet<>(Arrays.asList(buttonIdsToShow));
+    private void initButtonControls(boolean visible, String... buttonFxIdsToShow) {
+        Set<String> showOnly = new HashSet<>(Arrays.asList(buttonFxIdsToShow));
 
         for (Field loField : getClass().getDeclaredFields()) {
             loField.setAccessible(true);
+            String fieldName = loField.getName(); // fx:id
+
+            // Only touch the buttons listed
+            if (!showOnly.contains(fieldName)) {
+                continue;
+            }
             try {
                 Object value = loField.get(this);
                 if (value instanceof Button) {
                     Button loButton = (Button) value;
-                    boolean shouldShow = showOnly.isEmpty() || showOnly.contains(loButton.getId());
-                    loButton.setVisible(visible && shouldShow);
-                    loButton.setManaged(visible && shouldShow);
+                    loButton.setVisible(visible);
+                    loButton.setManaged(visible);
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -311,11 +324,13 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
     private void initButtonDisplay(int fnEditMode) {
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
-        initButtonControls(!lbShow, "btnSearch", "btnUpdate",
-                "btnPrint", "btnHistory", "btnClose");
-        initButtonControls(lbShow, "btnSave", "btnCancel",
-                "btnRetrieve", "btnClose");
-        ;
+
+        // Always show these buttons
+        initButtonControls(true, "btnSearch", "btnClose");
+
+        // Show-only based on mode
+        initButtonControls(lbShow, "btnRetrieve", "btnSave", "btnCancel");
+        initButtonControls(!lbShow, "btnNew", "btnUpdate", "btnHistory");
     }
 
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
