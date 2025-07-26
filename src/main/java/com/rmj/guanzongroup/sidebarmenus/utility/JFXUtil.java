@@ -642,10 +642,14 @@ public class JFXUtil {
         for (Node node : parent.getChildrenUnmodifiable()) {
             if (node instanceof TextInputControl) {
                 ((TextInputControl) node).clear();
+            } else if (node instanceof DatePicker) {
+                DatePicker dp = (DatePicker) node;
+                dp.setValue(null); // Set the selected date to null
+                if (dp.getEditor() != null) {
+                    dp.getEditor().clear(); // Clear any text in the editor field
+                }
             } else if (node instanceof Parent) {
                 clearTextInputsRecursive((Parent) node); // Recursively check child nodes
-            } else {
-
             }
         }
     }
@@ -1677,7 +1681,8 @@ public class JFXUtil {
 
     public static <T> void enableRowDragAndDrop(
             TableView<T> tableView,
-            Function<T, StringProperty> rowNumberPropertyGetter
+            Function<T, StringProperty> rowNumberPropertyGetter,
+            Runnable onRowReorder
     ) {
         ObservableList<T> items = tableView.getItems();
 
@@ -1686,7 +1691,7 @@ public class JFXUtil {
             public TableRow<T> call(TableView<T> tv) {
                 TableRow<T> row = new TableRow<>();
 
-                // Cursor style
+                // Cursor styling
                 row.setOnMouseEntered(e -> {
                     if (!row.isEmpty()) {
                         row.setCursor(Cursor.OPEN_HAND);
@@ -1708,7 +1713,7 @@ public class JFXUtil {
                     if (!row.isEmpty()) {
                         Dragboard db = row.startDragAndDrop(TransferMode.MOVE);
                         ClipboardContent content = new ClipboardContent();
-                        content.putString(""); // dummy content
+                        content.putString(""); // dummy payload
                         db.setContent(content);
                         tableView.getProperties().put("dragSourceIndex", row.getIndex());
                         tableView.getProperties().remove("highlightIndex");
@@ -1730,9 +1735,8 @@ public class JFXUtil {
 
                         int targetIndex = isTopHalf ? hoverIndex : hoverIndex + 1;
 
-                        // Avoid highlight if dropping on same position
                         if (targetIndex == dragIndex || targetIndex == dragIndex + 1) {
-                            row.setStyle("");
+                            row.setStyle(""); // no highlight
                         } else if (isTopHalf) {
                             row.setStyle("-fx-border-color: #2196F3; -fx-border-width: 2px 0 0 0;");
                         } else {
@@ -1763,7 +1767,6 @@ public class JFXUtil {
                     boolean isTopHalf = (sceneY - rowY) < row.getHeight() / 2;
 
                     int targetIndex = isTopHalf ? dropIndex : dropIndex + 1;
-
                     if (targetIndex > items.size()) {
                         targetIndex = items.size();
                     }
@@ -1776,7 +1779,6 @@ public class JFXUtil {
 
                     T draggedItem = items.remove((int) dragSourceIndex);
 
-                    // Fix: adjust targetIndex if dragging down (because list already shrank)
                     if (targetIndex > dragSourceIndex) {
                         targetIndex--;
                     }
@@ -1784,15 +1786,19 @@ public class JFXUtil {
                     if (targetIndex > items.size()) {
                         targetIndex = items.size();
                     }
-
                     items.add(targetIndex, draggedItem);
 
-                    // Re-number
+                    // Re-number rows
                     for (int i = 0; i < items.size(); i++) {
                         StringProperty prop = rowNumberPropertyGetter.apply(items.get(i));
                         if (prop != null) {
                             prop.set(String.valueOf(i + 1));
                         }
+                    }
+
+                    // ✅ Trigger user-supplied callback
+                    if (onRowReorder != null) {
+                        onRowReorder.run();
                     }
 
                     tableView.getSelectionModel().select(targetIndex);
@@ -1804,7 +1810,7 @@ public class JFXUtil {
             }
         });
 
-        // Allow drop at end of table
+        // Support drop at end of table
         tableView.setOnDragOver(event -> {
             if (event.getGestureSource() != tableView && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
@@ -1828,10 +1834,46 @@ public class JFXUtil {
                 }
             }
 
+            // Trigger user-supplied callback
+            if (onRowReorder != null) {
+                onRowReorder.run();
+            }
+
             tableView.getSelectionModel().select(items.size() - 1);
             event.setDropCompleted(true);
             event.consume();
         });
+    }
+
+    public static class Pairs<K, V> {
+
+        public final K key;
+        public final V value;
+
+        public Pairs(K ObservableList, V comboBox) {
+            this.key = ObservableList;
+            this.value = comboBox;
+        }
+    }
+
+    public static <T> void setComboBoxItems(Pairs<ObservableList<T>, ComboBox<T>>... comboPairs) {
+        for (Pairs<ObservableList<T>, ComboBox<T>> pair : comboPairs) {
+            ObservableList<T> list = pair.key;
+            ComboBox<T> cb = pair.value;
+
+            cb.getItems().clear();
+            cb.setItems(list);
+
+            if (!list.isEmpty()) {
+                cb.getSelectionModel().select(0); // selects the first item
+            }
+        }
+    }
+
+    public static void setComboBoxActionListener(EventHandler<ActionEvent> listener, ComboBox<?>... comboBoxes) {
+        for (ComboBox<?> cb : comboBoxes) {
+            cb.setOnAction(listener);
+        }
     }
 
 }
