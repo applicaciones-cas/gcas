@@ -65,7 +65,7 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
     int pnDetail = 0;
     boolean lsIsSaved = false;
     private final String pxeModuleName = "Purchase Order Return History SPMC";
-    static PurchaseOrderReturn poPurchaseReturnController;
+    static PurchaseOrderReturnControllers poPurchaseReturnController;
     public int pnEditMode;
 
     private String psIndustryId = "";
@@ -112,9 +112,9 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        poPurchaseReturnController = new PurchaseOrderReturnControllers(oApp, null).PurchaseOrderReturn();
+        poPurchaseReturnController = new PurchaseOrderReturnControllers(oApp, null);
         poJSON = new JSONObject();
-        poJSON = poPurchaseReturnController.InitTransaction(); // Initialize transaction
+        poJSON = poPurchaseReturnController.PurchaseOrderReturn().InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -130,11 +130,12 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
         initButton(pnEditMode);
 
         Platform.runLater(() -> {
-            poPurchaseReturnController.Master().setIndustryId(psIndustryId);
-            poPurchaseReturnController.Master().setCompanyId(psCompanyId);
-            poPurchaseReturnController.setIndustryId(psIndustryId);
-            poPurchaseReturnController.setCompanyId(psCompanyId);
-            poPurchaseReturnController.setCategoryId(psCategoryId);
+            poPurchaseReturnController.PurchaseOrderReturn().Master().setIndustryId(psIndustryId);
+            poPurchaseReturnController.PurchaseOrderReturn().Master().setCompanyId(psCompanyId);
+            poPurchaseReturnController.PurchaseOrderReturn().setIndustryId(psIndustryId);
+            poPurchaseReturnController.PurchaseOrderReturn().setCompanyId(psCompanyId);
+            poPurchaseReturnController.PurchaseOrderReturn().setCategoryId(psCategoryId);
+            poPurchaseReturnController.PurchaseOrderReturn().setWithUI(true);
             loadRecordSearch();
 
         });
@@ -171,18 +172,18 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poJSON = poPurchaseReturnController.searchTransaction(psIndustryId, psCompanyId, psCategoryId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().searchTransaction(psIndustryId, psCompanyId, psCategoryId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        pnEditMode = poPurchaseReturnController.getEditMode();
-                        psSupplierId = poPurchaseReturnController.Master().getSupplierId();
+                        pnEditMode = poPurchaseReturnController.PurchaseOrderReturn().getEditMode();
+                        psSupplierId = poPurchaseReturnController.PurchaseOrderReturn().Master().getSupplierId();
 
                         break;
                     case "btnPrint":
-                        poJSON = poPurchaseReturnController.printRecord(() -> {
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().printRecord(() -> {
                             loadRecordMaster();
                         });
                         if ("error".equals((String) poJSON.get("result"))) {
@@ -252,26 +253,26 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
                 case F3:
                     switch (lsID) {
                         case "tfSearchSupplier":
-                            poJSON = poPurchaseReturnController.SearchSupplier(lsValue, false);
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             } else {
-                                psSupplierId = poPurchaseReturnController.Master().getSupplierId();
+                                psSupplierId = poPurchaseReturnController.PurchaseOrderReturn().Master().getSupplierId();
                             }
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poJSON = poPurchaseReturnController.searchTransaction(psIndustryId, psCompanyId, psCategoryId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().searchTransaction(psIndustryId, psCompanyId, psCategoryId, tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchReferenceNo.setText("");
                                 break;
                             } else {
-                                psSupplierId = poPurchaseReturnController.Master().getSupplierId();
-                                pnEditMode = poPurchaseReturnController.getEditMode();
+                                psSupplierId = poPurchaseReturnController.PurchaseOrderReturn().Master().getSupplierId();
+                                pnEditMode = poPurchaseReturnController.PurchaseOrderReturn().getEditMode();
                                 loadRecordMaster();
                                 loadTableDetail();
                                 initButton(pnEditMode);
@@ -343,12 +344,12 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
+            lblSource.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().Company().getCompanyName() + " - " + poPurchaseReturnController.PurchaseOrderReturn().Master().Industry().getDescription());
 
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
-                tfSearchSupplier.setText(poPurchaseReturnController.Master().Supplier().getCompanyName());
+                tfSearchSupplier.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().Supplier().getCompanyName());
             }
 
             try {
@@ -366,20 +367,20 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
 
     public void loadRecordDetail() {
         try {
-            if (pnDetail < 0 || pnDetail > poPurchaseReturnController.getDetailCount() - 1) {
+            if (pnDetail < 0 || pnDetail > poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1) {
                 return;
             }
-            tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
-            tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());
-            tfBrand.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Brand().getDescription());
-            tfModel.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Model().getDescription());
-            tfColor.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Color().getDescription());
-            tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
-            tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
+            tfBarcode.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().getBarCode());
+            tfDescription.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().getDescription());
+            tfBrand.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Brand().getDescription());
+            tfModel.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Model().getDescription());
+            tfColor.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Color().getDescription());
+            tfInventoryType.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().InventoryType().getDescription());
+            tfMeasure.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce(), true));
-             tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.getReceiveQty(pnDetail).intValue()));
-            tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().intValue()));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getUnitPrce(), true));
+             tfReceiveQuantity.setText(String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().getReceiveQty(pnDetail).intValue()));
+            tfReturnQuantity.setText(String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity().intValue()));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -392,7 +393,7 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
         try {
 
             Platform.runLater(() -> {
-                boolean lbIsReprint = poPurchaseReturnController.Master().getPrint().equals("1") ? true : false;
+                boolean lbIsReprint = poPurchaseReturnController.PurchaseOrderReturn().Master().getPrint().equals("1") ? true : false;
                 if (lbIsReprint) {
                     btnPrint.setText("Reprint");
                 } else {
@@ -400,7 +401,7 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
                 }
                 
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
-                String lsActive = poPurchaseReturnController.Master().getTransactionStatus();
+                String lsActive = poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionStatus();
                 String lsStat = "UNKNOWN";
                 switch (lsActive) {
                     case PurchaseOrderReturnStatus.POSTED:
@@ -434,19 +435,19 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
                 JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
             });
 
-            poPurchaseReturnController.computeFields();
+            poPurchaseReturnController.PurchaseOrderReturn().computeFields();
 
             // Transaction Date
-            tfTransactionNo.setText(poPurchaseReturnController.Master().getTransactionNo());
-            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReturnController.Master().getTransactionDate());
+            tfTransactionNo.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionNo());
+            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
-            tfSupplier.setText(poPurchaseReturnController.Master().Supplier().getCompanyName());
-            tfReferenceNo.setText(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo());
-            tfPOReceivingNo.setText(poPurchaseReturnController.Master().getSourceNo());
-            taRemarks.setText(poPurchaseReturnController.Master().getRemarks());
+            tfSupplier.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().Supplier().getCompanyName());
+            tfReferenceNo.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().PurchaseOrderReceivingMaster().getReferenceNo());
+            tfPOReceivingNo.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().getSourceNo());
+            taRemarks.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().getRemarks());
 
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Master().getTransactionTotal().doubleValue(), true));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionTotal().doubleValue(), true));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
@@ -473,7 +474,7 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
                         break;
                 }
                 loadRecordDetail();
-                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId().equals("")) {
                     tfReturnQuantity.requestFocus();
                 } else {
                     tfBarcode.requestFocus();
@@ -489,7 +490,7 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                    if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId().equals("")) {
                         tfReturnQuantity.requestFocus();
                     } else {
                         tfBarcode.requestFocus();
@@ -528,39 +529,39 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
                     try {
 
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnCtr = poPurchaseReturnController.getDetailCount() - 1;
+                            lnCtr = poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poPurchaseReturnController.Detail(lnCtr).getStockId() == null || poPurchaseReturnController.Detail(lnCtr).getStockId().equals("")) {
-                                    poPurchaseReturnController.Detail().remove(lnCtr);
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getStockId() == null || poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getStockId().equals("")) {
+                                    poPurchaseReturnController.PurchaseOrderReturn().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;
                             }
 
-                            if ((poPurchaseReturnController.getDetailCount() - 1) >= 0) {
-                                if (poPurchaseReturnController.Detail(poPurchaseReturnController.getDetailCount() - 1).getStockId() != null && !poPurchaseReturnController.Detail(poPurchaseReturnController.getDetailCount() - 1).getStockId().equals("")) {
-                                    poPurchaseReturnController.AddDetail();
+                            if ((poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Detail(poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1).getStockId().equals("")) {
+                                    poPurchaseReturnController.PurchaseOrderReturn().AddDetail();
                                 }
                             }
 
-                            if ((poPurchaseReturnController.getDetailCount() - 1) < 0) {
-                                poPurchaseReturnController.AddDetail();
+                            if ((poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1) < 0) {
+                                poPurchaseReturnController.PurchaseOrderReturn().AddDetail();
                             }
                         }
 
                         double lnTotal = 0.0;
-                        for (lnCtr = 0; lnCtr < poPurchaseReturnController.getDetailCount(); lnCtr++) {
+                        for (lnCtr = 0; lnCtr < poPurchaseReturnController.PurchaseOrderReturn().getDetailCount(); lnCtr++) {
                             try {
-                                lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue();
+                                lnTotal = poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getQuantity().intValue();
                             } catch (Exception e) {
                             }
 
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
-                                               String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
-                                            String.valueOf(poPurchaseReturnController.getReceiveQty(lnCtr).intValue()),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).getQuantity().intValue()),
+                                            String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).Inventory().getBarCode()),
+                                            String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).Inventory().getDescription()),
+                                               String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().getReceiveQty(lnCtr).intValue()),
+                                            String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getQuantity().intValue()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true))) //identify total
                                     );
                         }
@@ -620,7 +621,7 @@ public class PurchaseOrderReturn_HistorySPMCController implements Initializable,
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(lbShow, btnPrint, btnHistory);
 
-        switch (poPurchaseReturnController.Master().getTransactionStatus()) {
+        switch (poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionStatus()) {
             case PurchaseOrderReturnStatus.VOID:
             case PurchaseOrderReturnStatus.CANCELLED:
                 JFXUtil.setButtonsVisibility(false, btnPrint);
