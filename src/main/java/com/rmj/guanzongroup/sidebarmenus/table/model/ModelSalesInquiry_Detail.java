@@ -15,6 +15,30 @@ import javafx.collections.ObservableList;
  */
 public class ModelSalesInquiry_Detail {
 
+    public static ObservableList<String> ClientType = FXCollections.observableArrayList(
+            "Individual",
+            "Corporate",
+            "Institution"
+    );
+    public static ObservableList<String> InquiryType = FXCollections.observableArrayList(
+            "Walk-in",
+            "Referral",
+            "Activity"
+    );
+    public static ObservableList<String> PurchaseType = FXCollections.observableArrayList(
+            "Cash",
+            "Cash Balance",
+            "Term",
+            "Installment",
+            "Finance",
+            "Insurance"
+    );
+    public static ObservableList<String> CategoryType = FXCollections.observableArrayList(
+            "New",
+            "Sold/Repo",
+            "BNOS",
+            "Demo"
+    );
     public SimpleStringProperty index01;
     public SimpleStringProperty index02;
     public SimpleStringProperty index03;
@@ -120,6 +144,10 @@ public class ModelSalesInquiry_Detail {
 
     public StringProperty index01Property() { // for Drag Drop purpose Sales Inquiry
         return index01;
+    }
+
+    public StringProperty index02Property() { // for Drag Drop purpose Sales Inquiry
+        return index02;
     }
 
     public String getIndex01() {

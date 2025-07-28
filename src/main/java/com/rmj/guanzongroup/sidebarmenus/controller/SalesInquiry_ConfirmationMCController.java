@@ -4,7 +4,6 @@
  */
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
-import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSalesInquiry_Main;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSalesInquiry_Detail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelSalesInquiry_Main;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
@@ -62,6 +61,7 @@ import org.json.simple.parser.ParseException;
 import javafx.animation.PauseTransition;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicReference;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import ph.com.guanzongroup.cas.sales.t1.SalesInquiry;
@@ -88,6 +88,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psSupplierId = "";
+    private String psSearchSupplierId = "";
     private String psTransactionNo = "";
     private boolean pbEntered = false;
 
@@ -100,32 +101,14 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
     private int pnAttachment;
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
-    private Object lastFocusedTextField = null;
-    private Object previousSearchedTextField = null;
-    ObservableList<String> ClientType = FXCollections.observableArrayList(
-            "Individual",
-            "Corporate",
-            "Institution"
-    );
-    ObservableList<String> InquiryType = FXCollections.observableArrayList(
-            "Walk-in",
-            "Referral",
-            "Activity"
-    );
-    ObservableList<String> PurchaseType = FXCollections.observableArrayList(
-            "Cash",
-            "Cash Balance",
-            "Term",
-            "Installment",
-            "Finance",
-            "Insurance"
-    );
-    ObservableList<String> CategoryType = FXCollections.observableArrayList(
-            "New",
-            "Sold/Repo",
-            "BNOS",
-            "Demo"
-    );
+
+    AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
+    AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
+    ObservableList<String> ClientType = ModelSalesInquiry_Detail.ClientType;
+    ObservableList<String> InquiryType = ModelSalesInquiry_Detail.InquiryType;
+    ObservableList<String> PurchaseType = ModelSalesInquiry_Detail.PurchaseType;
+    ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
+
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
     @FXML
@@ -173,8 +156,8 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
             poSalesInquiryController.setIndustryId(psIndustryId);
             poSalesInquiryController.setCompanyId(psCompanyId);
             poSalesInquiryController.setCategoryId(psCategoryId);
-//            poSalesInquiryController.initFields();
-//            poSalesInquiryController.setWithUI(true);
+            poSalesInquiryController.initFields();
+            poSalesInquiryController.setWithUI(true);
             loadRecordSearch();
         });
 
@@ -182,6 +165,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
 
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
+        JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField); // for btnSearch Reference
     }
 
     @Override
@@ -234,23 +218,16 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
-                        if ((lastFocusedTextField != null)) {
-                            if (lastFocusedTextField instanceof TextField) {
-                                TextField tf = (TextField) lastFocusedTextField;
-                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail).contains(tf.getId())) {
-                                    if (lastFocusedTextField == previousSearchedTextField) {
+                        if ((lastFocusedTextField.get() != null)) {
+                            if (lastFocusedTextField.get() instanceof TextField) {
+                                TextField tf = (TextField) lastFocusedTextField.get();
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apMaster).contains(tf.getId())) {
+                                    if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
-                                    previousSearchedTextField = lastFocusedTextField;
+                                    previousSearchedTextField.set(lastFocusedTextField.get());
                                     // Create a simulated KeyEvent for F3 key press
-                                    KeyEvent keyEvent = new KeyEvent(
-                                            KeyEvent.KEY_PRESSED,
-                                            "",
-                                            "",
-                                            KeyCode.F3,
-                                            false, false, false, false
-                                    );
-                                    tf.fireEvent(keyEvent);
+                                    JFXUtil.makeKeyPressed(tf, KeyCode.F3);
                                 } else {
                                     ShowMessageFX.Information(null, pxeModuleName, lsMessage);
                                 }
@@ -419,9 +396,6 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
         String lsID = (txtField.getId());
         String lsValue = txtField.getText();
 
-        lastFocusedTextField = txtField;
-        previousSearchedTextField = null;
-
         if (lsValue == null) {
             return;
         }
@@ -452,8 +426,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
+
         if (lsValue == null) {
             return;
         }
@@ -501,8 +474,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
+
         if (lsValue == null) {
             return;
         }
@@ -511,8 +483,9 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
             switch (lsTxtFieldID) {
                 case "tfSearchSupplier":
                     if (lsValue.equals("")) {
-                        psSupplierId = "";
+                        psSearchSupplierId = "";
                     }
+                    loadRecordSearch();
                     break;
                 case "tfSearchReferenceNo":
                     break;
@@ -583,6 +556,21 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                     break;
                 case F3:
                     switch (lsID) {
+                        case "tfSearchSupplier":
+                            poJSON = poSalesInquiryController.SearchClient(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfSearchSupplier.setText("");
+                                psSearchSupplierId = "";
+                                break;
+                            }
+                            psSearchSupplierId = poSalesInquiryController.Master().getClientId();
+                            loadRecordSearch();
+                            retrieveSalesInquiry();
+                            return;
+                        case "tfSearchReferenceNo":
+                            retrieveSalesInquiry();
+                            return;
                         case "tfClient":
                             poJSON = poSalesInquiryController.SearchClient(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
@@ -813,6 +801,9 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
     public void loadRecordSearch() {
         try {
             lblSource.setText(poSalesInquiryController.Master().Company().getCompanyName() + " - " + poSalesInquiryController.Master().Industry().getDescription());
+            tfSearchSupplier.setText(psSearchSupplierId.equals("") ? "" : poSalesInquiryController.Master().Client().getCompanyName());
+
+            tfSearchReferenceNo.setText("");
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -1227,7 +1218,8 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
     }
 
     public void clearTextFields() {
-        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate);
+        psSearchSupplierId = "";
+        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField);
         JFXUtil.clearTextFields(apMaster, apDetail, apBrowse);
     }
 

@@ -14,7 +14,6 @@ import javafx.collections.ObservableList;
  * @author User
  */
 public class ModelSalesInquiry_Main {
-
     public SimpleStringProperty index01;
     public SimpleStringProperty index02;
     public SimpleStringProperty index03;
@@ -118,10 +117,6 @@ public class ModelSalesInquiry_Main {
         this.index07 = new SimpleStringProperty(index07);
         this.index08 = new SimpleStringProperty(index08);
         this.index09 = new SimpleStringProperty(index09);
-    }
-
-    public StringProperty index01Property() { // for Drag Drop purpose Sales Inquiry
-        return index01;
     }
 
     public String getIndex01() {

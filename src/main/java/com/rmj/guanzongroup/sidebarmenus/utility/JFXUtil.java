@@ -9,6 +9,7 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -1679,9 +1680,20 @@ public class JFXUtil {
         hand.setEndY(center + length * Math.sin(radians));
     }
 
+    public static class RowDragLock {
+
+        public boolean isEnabled;
+
+        public RowDragLock(boolean enabled) {
+            this.isEnabled = enabled;
+        }
+    }
+
     public static <T> void enableRowDragAndDrop(
             TableView<T> tableView,
             Function<T, StringProperty> rowNumberPropertyGetter,
+            Function<T, StringProperty> secondColumnGetter,
+            RowDragLock dragLock,
             Runnable onRowReorder
     ) {
         ObservableList<T> items = tableView.getItems();
@@ -1691,42 +1703,70 @@ public class JFXUtil {
             public TableRow<T> call(TableView<T> tv) {
                 TableRow<T> row = new TableRow<>();
 
-                // Cursor styling
                 row.setOnMouseEntered(e -> {
-                    if (!row.isEmpty()) {
+                    if (!row.isEmpty() && dragLock.isEnabled) {
                         row.setCursor(Cursor.OPEN_HAND);
+                    } else {
+                        row.setCursor(Cursor.DEFAULT);
                     }
                 });
+
                 row.setOnMouseExited(e -> row.setCursor(Cursor.DEFAULT));
+
                 row.setOnMousePressed(e -> {
-                    if (!row.isEmpty()) {
+                    if (!row.isEmpty() && dragLock.isEnabled) {
                         row.setCursor(Cursor.CLOSED_HAND);
+                    } else {
+                        row.setCursor(Cursor.DEFAULT);
                     }
                 });
+
                 row.setOnMouseReleased(e -> {
-                    if (!row.isEmpty()) {
+                    if (!row.isEmpty() && dragLock.isEnabled) {
                         row.setCursor(Cursor.OPEN_HAND);
+                    } else {
+                        row.setCursor(Cursor.DEFAULT);
                     }
                 });
 
                 row.setOnDragDetected(event -> {
-                    if (!row.isEmpty()) {
-                        Dragboard db = row.startDragAndDrop(TransferMode.MOVE);
-                        ClipboardContent content = new ClipboardContent();
-                        content.putString(""); // dummy payload
-                        db.setContent(content);
-                        tableView.getProperties().put("dragSourceIndex", row.getIndex());
-                        tableView.getProperties().remove("highlightIndex");
-                        event.consume();
+                    if (!dragLock.isEnabled || row.isEmpty()) {
+                        return;
                     }
+
+                    int index = row.getIndex();
+                    T item = row.getItem();
+
+                    // Block dragging of fixed last row
+                    if (isFixedLastRow(index, item, items, rowNumberPropertyGetter, secondColumnGetter)) {
+                        return;
+                    }
+
+                    Dragboard db = row.startDragAndDrop(TransferMode.MOVE);
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(""); // dummy
+                    db.setContent(content);
+                    tableView.getProperties().put("dragSourceIndex", index);
+                    tableView.getProperties().remove("highlightIndex");
+                    event.consume();
                 });
 
                 row.setOnDragOver(event -> {
-                    if (event.getGestureSource() != row && event.getDragboard().hasString()) {
-                        event.acceptTransferModes(TransferMode.MOVE);
+                    if (!dragLock.isEnabled || row.isEmpty()) {
+                        return;
+                    }
 
-                        int dragIndex = (int) tableView.getProperties().get("dragSourceIndex");
-                        int hoverIndex = row.getIndex();
+                    int dragIndex = (int) tableView.getProperties().get("dragSourceIndex");
+                    int hoverIndex = row.getIndex();
+                    T hoverItem = row.getItem();
+
+                    // Block drop over fixed last row
+                    if (isFixedLastRow(hoverIndex, hoverItem, items, rowNumberPropertyGetter, secondColumnGetter)) {
+                        return;
+                    }
+
+                    if (event.getDragboard().hasString()) {
+                        event.acceptTransferModes(TransferMode.MOVE);
 
                         double sceneY = event.getSceneY();
                         double rowY = row.localToScene(row.getBoundsInLocal()).getMinY();
@@ -1736,7 +1776,7 @@ public class JFXUtil {
                         int targetIndex = isTopHalf ? hoverIndex : hoverIndex + 1;
 
                         if (targetIndex == dragIndex || targetIndex == dragIndex + 1) {
-                            row.setStyle(""); // no highlight
+                            row.setStyle("");
                         } else if (isTopHalf) {
                             row.setStyle("-fx-border-color: #2196F3; -fx-border-width: 2px 0 0 0;");
                         } else {
@@ -1756,6 +1796,10 @@ public class JFXUtil {
                 });
 
                 row.setOnDragDropped(event -> {
+                    if (!dragLock.isEnabled) {
+                        return;
+                    }
+
                     Integer dragSourceIndex = (Integer) tableView.getProperties().get("dragSourceIndex");
                     if (dragSourceIndex == null) {
                         return;
@@ -1766,9 +1810,14 @@ public class JFXUtil {
                     double rowY = row.localToScene(row.getBoundsInLocal()).getMinY();
                     boolean isTopHalf = (sceneY - rowY) < row.getHeight() / 2;
 
+                    int maxDropIndex = items.size();
+                    if (isFixedLastRow(items.size() - 1, items.get(items.size() - 1), items, rowNumberPropertyGetter, secondColumnGetter)) {
+                        maxDropIndex = items.size() - 1;
+                    }
+
                     int targetIndex = isTopHalf ? dropIndex : dropIndex + 1;
-                    if (targetIndex > items.size()) {
-                        targetIndex = items.size();
+                    if (targetIndex > maxDropIndex) {
+                        targetIndex = maxDropIndex;
                     }
 
                     if (dragSourceIndex == targetIndex || dragSourceIndex + 1 == targetIndex) {
@@ -1778,25 +1827,13 @@ public class JFXUtil {
                     }
 
                     T draggedItem = items.remove((int) dragSourceIndex);
-
                     if (targetIndex > dragSourceIndex) {
                         targetIndex--;
                     }
 
-                    if (targetIndex > items.size()) {
-                        targetIndex = items.size();
-                    }
                     items.add(targetIndex, draggedItem);
+                    renumberRows(items, rowNumberPropertyGetter);
 
-                    // Re-number rows
-                    for (int i = 0; i < items.size(); i++) {
-                        StringProperty prop = rowNumberPropertyGetter.apply(items.get(i));
-                        if (prop != null) {
-                            prop.set(String.valueOf(i + 1));
-                        }
-                    }
-
-                    // ✅ Trigger user-supplied callback
                     if (onRowReorder != null) {
                         onRowReorder.run();
                     }
@@ -1810,8 +1847,10 @@ public class JFXUtil {
             }
         });
 
-        // Support drop at end of table
         tableView.setOnDragOver(event -> {
+            if (!dragLock.isEnabled) {
+                return;
+            }
             if (event.getGestureSource() != tableView && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
                 event.consume();
@@ -1819,30 +1858,60 @@ public class JFXUtil {
         });
 
         tableView.setOnDragDropped(event -> {
+            if (!dragLock.isEnabled) {
+                return;
+            }
+
             Integer dragSourceIndex = (Integer) tableView.getProperties().get("dragSourceIndex");
             if (dragSourceIndex == null) {
                 return;
             }
 
-            T draggedItem = items.remove((int) dragSourceIndex);
-            items.add(draggedItem);
-
-            for (int i = 0; i < items.size(); i++) {
-                StringProperty prop = rowNumberPropertyGetter.apply(items.get(i));
-                if (prop != null) {
-                    prop.set(String.valueOf(i + 1));
-                }
+            int insertIndex = items.size();
+            if (isFixedLastRow(items.size() - 1, items.get(items.size() - 1), items, rowNumberPropertyGetter, secondColumnGetter)) {
+                insertIndex = items.size() - 1;
             }
 
-            // Trigger user-supplied callback
+            T draggedItem = items.remove((int) dragSourceIndex);
+            if (insertIndex > dragSourceIndex) {
+                insertIndex--;
+            }
+
+            items.add(insertIndex, draggedItem);
+            renumberRows(items, rowNumberPropertyGetter);
+
             if (onRowReorder != null) {
                 onRowReorder.run();
             }
 
-            tableView.getSelectionModel().select(items.size() - 1);
+            tableView.getSelectionModel().select(insertIndex);
             event.setDropCompleted(true);
             event.consume();
         });
+    }
+
+    private static <T> boolean isFixedLastRow(
+            int index,
+            T item,
+            ObservableList<T> items,
+            Function<T, StringProperty> rowNumberPropertyGetter,
+            Function<T, StringProperty> secondColumnGetter
+    ) {
+        if (index != items.size() - 1) {
+            return false;
+        }
+        String rowNum = rowNumberPropertyGetter.apply(item).get();
+        String second = secondColumnGetter.apply(item).get();
+        return rowNum != null && !rowNum.trim().isEmpty() && (second == null || second.trim().isEmpty());
+    }
+
+    private static <T> void renumberRows(ObservableList<T> items, Function<T, StringProperty> rowNumberGetter) {
+        int count = 1;
+        for (T item : items) {
+            if (rowNumberGetter.apply(item) != null) {
+                rowNumberGetter.apply(item).set(String.valueOf(count++));
+            }
+        }
     }
 
     public static class Pairs<K, V> {

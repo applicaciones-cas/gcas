@@ -90,6 +90,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     private Object lastFocusedTextField = null;
     private Object previousSearchedTextField = null;
     private boolean pbEntered = false;
+    private final JFXUtil.RowDragLock dragLock = new JFXUtil.RowDragLock(true);
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apTransactionInfo, apMaster, apDetail;
@@ -105,30 +106,11 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     private TextArea taRemarks;
     @FXML
     private ComboBox cmbClientType, cmbInquiryType, cmbPurchaseType, cmbCategoryType;
-    ObservableList<String> ClientType = FXCollections.observableArrayList(
-            "Individual",
-            "Corporate",
-            "Institution"
-    );
-    ObservableList<String> InquiryType = FXCollections.observableArrayList(
-            "Walk-in",
-            "Referral",
-            "Activity"
-    );
-    ObservableList<String> PurchaseType = FXCollections.observableArrayList(
-            "Cash",
-            "Cash Balance",
-            "Term",
-            "Installment",
-            "Finance",
-            "Insurance"
-    );
-    ObservableList<String> CategoryType = FXCollections.observableArrayList(
-            "New",
-            "Sold/Repo",
-            "BNOS",
-            "Demo"
-    );
+    ObservableList<String> ClientType = ModelSalesInquiry_Detail.ClientType;
+    ObservableList<String> InquiryType = ModelSalesInquiry_Detail.InquiryType;
+    ObservableList<String> PurchaseType = ModelSalesInquiry_Detail.PurchaseType;
+    ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
+    
     @FXML
     private DatePicker dpTransactionDate, dpTargetDate;
     @FXML
@@ -465,7 +447,8 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
         tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails); // need to use computed-size in min-width of the column to work
-        JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property(), () -> {
+        JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property(),
+                item -> ((ModelSalesInquiry_Detail) item).index02Property(), dragLock, () -> {
 //          updateDatabaseWithNewOrder(details_data); //basis data
             int no = 0;
             String thedata = "";
@@ -524,7 +507,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).setBrandId(lsBrandId);
                             }
 
-                            poSalesInquiryController.SalesInquiry().sortPriority();
+//                            poSalesInquiryController.SalesInquiry().sortPriority();
                         }
 
                         double lnTotal = 0.0;
@@ -983,6 +966,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
+        dragLock.isEnabled = lbShow; // for drag drop
 
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(!lbShow, btnNew);
