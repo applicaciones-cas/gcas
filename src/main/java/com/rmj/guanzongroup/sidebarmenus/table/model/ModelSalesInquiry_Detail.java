@@ -76,11 +76,13 @@ public class ModelSalesInquiry_Detail {
     public ModelSalesInquiry_Detail(
             String index01,
             String index02,
-            String index03
+            String index03,
+            String index04
     ) {
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
         this.index03 = new SimpleStringProperty(index03);
+        this.index04 = new SimpleStringProperty(index04);
     }
 
     public ModelSalesInquiry_Detail(
@@ -146,8 +148,12 @@ public class ModelSalesInquiry_Detail {
         return index01;
     }
 
-    public StringProperty index02Property() { // for Drag Drop purpose Sales Inquiry
-        return index02;
+    public StringProperty index03Property() { // for Drag Drop purpose Sales Inquiry
+        return index03;
+    }
+
+    public StringProperty index04Property() { // for Drag Drop purpose Sales Inquiry
+        return index04;
     }
 
     public String getIndex01() {

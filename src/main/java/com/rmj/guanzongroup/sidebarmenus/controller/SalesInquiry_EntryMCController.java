@@ -56,6 +56,7 @@ import org.json.simple.parser.ParseException;
 import javafx.animation.PauseTransition;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.atomic.AtomicReference;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
@@ -87,8 +88,8 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     private ObservableList<ModelSalesInquiry_Detail> details_data = FXCollections.observableArrayList();
     private FilteredList<ModelSalesInquiry_Detail> filteredDataDetail;
 
-    private Object lastFocusedTextField = null;
-    private Object previousSearchedTextField = null;
+    AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
+    AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
     private boolean pbEntered = false;
     private final JFXUtil.RowDragLock dragLock = new JFXUtil.RowDragLock(true);
 
@@ -110,7 +111,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     ObservableList<String> InquiryType = ModelSalesInquiry_Detail.InquiryType;
     ObservableList<String> PurchaseType = ModelSalesInquiry_Detail.PurchaseType;
     ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
-    
+
     @FXML
     private DatePicker dpTransactionDate, dpTargetDate;
     @FXML
@@ -147,6 +148,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
 
             btnNew.fire();
         });
+        JFXUtil.initKeyClickObject(apMainAnchor, lastFocusedTextField, previousSearchedTextField);
     }
 
     @Override
@@ -224,23 +226,16 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
-                        if ((lastFocusedTextField != null)) {
-                            if (lastFocusedTextField instanceof TextField) {
-                                TextField tf = (TextField) lastFocusedTextField;
+                        if ((lastFocusedTextField.get() != null)) {
+                            if (lastFocusedTextField.get() instanceof TextField) {
+                                TextField tf = (TextField) lastFocusedTextField.get();
                                 if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apMaster, apDetail).contains(tf.getId())) {
-                                    if (lastFocusedTextField == previousSearchedTextField) {
+                                    if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
-                                    previousSearchedTextField = lastFocusedTextField;
+                                    previousSearchedTextField.set(lastFocusedTextField.get());
                                     // Create a simulated KeyEvent for F3 key press
-                                    KeyEvent keyEvent = new KeyEvent(
-                                            KeyEvent.KEY_PRESSED,
-                                            "",
-                                            "",
-                                            KeyCode.F3,
-                                            false, false, false, false
-                                    );
-                                    tf.fireEvent(keyEvent);
+                                    JFXUtil.makeKeyPressed(tf, KeyCode.F3);
                                 } else {
                                     ShowMessageFX.Information(null, pxeModuleName, lsMessage);
                                 }
@@ -448,16 +443,28 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails); // need to use computed-size in min-width of the column to work
         JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property(),
-                item -> ((ModelSalesInquiry_Detail) item).index02Property(), dragLock, () -> {
-//          updateDatabaseWithNewOrder(details_data); //basis data
-            int no = 0;
-            String thedata = "";
-            while (details_data.size() > no) {
-                thedata += "\n" + details_data.get(no).getIndex02();
-                no += 1;
-            }
-            ShowMessageFX.Information(thedata, "result", "result");
-        });
+                item -> ((ModelSalesInquiry_Detail) item).index03Property(),
+                item -> ((ModelSalesInquiry_Detail) item).index04Property(), dragLock, index -> {
+
+                    for (ModelSalesInquiry_Detail detailData : details_data) { // value returned
+                        String index04 = detailData.getIndex04(); // brand ID
+                        String priorityStr = detailData.getIndex01(); // priority no
+                        for (int i = 0; i < poSalesInquiryController.SalesInquiry().getDetailCount(); i++) {
+                            if (index04.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())) {
+                                try {
+                                    detailData.getIndex02();
+                                    int priority = Integer.parseInt(priorityStr);
+                                    poSalesInquiryController.SalesInquiry().Detail(i).setPriority(priority);
+                                } catch (NumberFormatException e) {
+//                                    System.err.println("Invalid priority: " + priorityStr);
+                                }
+                                break; // stop inner loop once matched
+                            }
+                        }
+                    }
+                    pnDetail = index;
+                    loadTableDetail();
+                });
 
     }
 
@@ -507,7 +514,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).setBrandId(lsBrandId);
                             }
 
-//                            poSalesInquiryController.SalesInquiry().sortPriority();
+                            poSalesInquiryController.SalesInquiry().sortPriority();
                         }
 
                         double lnTotal = 0.0;
@@ -535,7 +542,8 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             String.valueOf(lsBrand),
-                                            lsDescription
+                                            lsDescription,
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())
                                     ));
                         }
 
@@ -586,9 +594,6 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         String lsID = (txtField.getId());
         String lsValue = txtField.getText();
 
-        lastFocusedTextField = txtField;
-        previousSearchedTextField = null;
-
         if (lsValue == null) {
             return;
         }
@@ -618,8 +623,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
+
         if (lsValue == null) {
             return;
         }
@@ -670,8 +674,6 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTxtFieldID = (txtPersonalInfo.getId());
         String lsValue = (txtPersonalInfo.getText() == null ? "" : txtPersonalInfo.getText());
-        lastFocusedTextField = txtPersonalInfo;
-        previousSearchedTextField = null;
         if (lsValue == null) {
             return;
         }
