@@ -1113,9 +1113,6 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
     }
 
     public void initTextFields() {
-        Platform.runLater(() -> {
-            JFXUtil.setVerticalScroll(taRemarks);
-        });
         JFXUtil.setFocusListener(txtField_Focus, tfSearchClient, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfReferralAgent, tfInquirySource, tfInquirySource);
