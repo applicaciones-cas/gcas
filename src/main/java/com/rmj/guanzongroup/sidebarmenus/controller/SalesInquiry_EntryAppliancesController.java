@@ -419,8 +419,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                         break;
                 }
                 loadRecordDetail();
-                if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() == null
-                        || "".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())) {
+                if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
                     tfBarcode.requestFocus();
                 }
                 event.consume();
@@ -434,14 +433,8 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
-                        if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
-                            tfColor.requestFocus();
-                        } else {
-                            tfModel.requestFocus();
-                        }
-                    } else {
-                        tfBrand.requestFocus();
+                    if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
+                        tfBarcode.requestFocus();
                     }
                 }
             }
@@ -530,7 +523,10 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             String.valueOf(lsBarcode),
-                                            lsDescription
+                                            lsDescription,
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId())
                                     ));
                         }
 
@@ -697,8 +693,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
 
-        if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() == null
-                || "".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())) {
+        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
             tfBarcode.requestFocus();
         }
     }

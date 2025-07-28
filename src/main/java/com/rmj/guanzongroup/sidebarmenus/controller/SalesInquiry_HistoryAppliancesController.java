@@ -284,10 +284,8 @@ public class SalesInquiry_HistoryAppliancesController implements Initializable, 
                         break;
                 }
                 loadRecordDetail();
-                if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && !poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId().equals("")) {
-                    tfBrand.requestFocus();
-                } else {
-                    tfBrand.requestFocus();
+                if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
+                    tfBarcode.requestFocus();
                 }
                 event.consume();
             }
@@ -300,10 +298,8 @@ public class SalesInquiry_HistoryAppliancesController implements Initializable, 
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && !poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId().equals("")) {
-                        tfBrand.requestFocus();
-                    } else {
-                        tfBrand.requestFocus();
+                    if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
+                        tfBarcode.requestFocus();
                     }
                 }
             }
@@ -502,7 +498,6 @@ public class SalesInquiry_HistoryAppliancesController implements Initializable, 
                             }
                             loadRecordSearch();
                             return;
-
                     }
                     break;
                 default:
@@ -551,7 +546,6 @@ public class SalesInquiry_HistoryAppliancesController implements Initializable, 
         JFXUtil.setButtonsVisibility(lbShow3, btnBrowse, btnClose);
 
         JFXUtil.setDisabled(true, taRemarks, apMaster, apDetail);
-
     }
 
     public void initDetailsGrid() {

@@ -217,7 +217,7 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                         if ((lastFocusedTextField.get() != null)) {
                             if (lastFocusedTextField.get() instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField.get();
-                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse,apMaster,apDetail).contains(tf.getId())) {
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail).contains(tf.getId())) {
                                     if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
@@ -1019,7 +1019,10 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             String.valueOf(lsBrand),
-                                            lsDescription
+                                            lsDescription,
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId())
                                     ));
                         }
 
