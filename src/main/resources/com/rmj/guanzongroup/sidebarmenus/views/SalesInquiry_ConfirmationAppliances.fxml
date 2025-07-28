@@ -61,7 +61,7 @@
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfSearchSupplier" promptText="Press F3: Search" GridPane.columnIndex="2" />
+                                    <TextField fx:id="tfSearchClient" promptText="Press F3: Search" GridPane.columnIndex="2" />
                                     <TextField fx:id="tfSearchReferenceNo" promptText="Press F3: Search" GridPane.columnIndex="6" />
                                     <Label fx:id="lblSource" layoutX="367.0" layoutY="14.0" text="Company - Industry" GridPane.columnIndex="9">
                                        <font>
@@ -376,7 +376,7 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                  <TextField fx:id="tfModel1" layoutX="519.0" layoutY="42.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="tfDescription" layoutX="519.0" layoutY="42.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
@@ -435,7 +435,7 @@
                                                                   <Insets left="5.0" right="5.0" top="5.0" />
                                                               </GridPane.margin>
                                                           </AnchorPane>
-                                                          <TableView fx:id="tblViewPuchaseOrder" prefWidth="551.0" GridPane.rowIndex="1">
+                                                          <TableView fx:id="tblViewMainList" prefWidth="551.0" GridPane.rowIndex="1">
                                                               <columns>
                                                                   <TableColumn fx:id="tblRowNo" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="No." />
                                                                   <TableColumn fx:id="tblClient" editable="false" maxWidth="300.0" minWidth="-1.0" prefWidth="300.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Client" />
