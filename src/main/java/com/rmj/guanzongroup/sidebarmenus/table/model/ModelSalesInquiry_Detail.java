@@ -147,6 +147,11 @@ public class ModelSalesInquiry_Detail {
     public StringProperty index01Property() { // for Drag Drop purpose Sales Inquiry
         return index01;
     }
+
+    public StringProperty index03Property() { // for Drag Drop purpose Sales Inquiry
+        return index03;
+    }
+
     public StringProperty index04Property() { // for Drag Drop purpose Sales Inquiry
         return index04;
     }

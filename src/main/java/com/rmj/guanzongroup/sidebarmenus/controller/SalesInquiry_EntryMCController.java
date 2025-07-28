@@ -443,9 +443,10 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails); // need to use computed-size in min-width of the column to work
         JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property(),
+                item -> ((ModelSalesInquiry_Detail) item).index03Property(),
                 item -> ((ModelSalesInquiry_Detail) item).index04Property(), dragLock, index -> {
 
-                    for (ModelSalesInquiry_Detail detailData : details_data) {
+                    for (ModelSalesInquiry_Detail detailData : details_data) { // value returned
                         String index04 = detailData.getIndex04(); // brand ID
                         String priorityStr = detailData.getIndex01(); // priority no
                         for (int i = 0; i < poSalesInquiryController.SalesInquiry().getDetailCount(); i++) {

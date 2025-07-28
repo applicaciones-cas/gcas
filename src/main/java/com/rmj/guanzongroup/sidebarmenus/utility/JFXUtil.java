@@ -1692,38 +1692,36 @@ public class JFXUtil {
     public static <T> void enableRowDragAndDrop(
             TableView<T> tableView,
             Function<T, StringProperty> index01Getter,
+            Function<T, StringProperty> index03Getter,
             Function<T, StringProperty> index04Getter,
             RowDragLock dragLock,
-            Consumer<Integer> onDropCallback // callback after drop
+            Consumer<Integer> onDropCallback
     ) {
         tableView.setRowFactory(tv -> {
             TableRow<T> row = new TableRow<>();
 
-            // Mouse cursor for open/closed hand visual feedback
             row.setOnMouseEntered(e -> {
-                if (!row.isEmpty() && dragLock.isEnabled && !isBlankRow(row.getItem(), index01Getter, index04Getter)) {
+                if (!row.isEmpty() && dragLock.isEnabled && !isBlankRow(row.getItem(), index01Getter, index03Getter, index04Getter)) {
                     row.setCursor(Cursor.OPEN_HAND);
                 }
             });
 
-            row.setOnMouseExited(e -> {
-                row.setCursor(Cursor.DEFAULT);
-            });
+            row.setOnMouseExited(e -> row.setCursor(Cursor.DEFAULT));
 
             row.setOnMousePressed(e -> {
-                if (!row.isEmpty() && dragLock.isEnabled && !isBlankRow(row.getItem(), index01Getter, index04Getter)) {
+                if (!row.isEmpty() && dragLock.isEnabled && !isBlankRow(row.getItem(), index01Getter, index03Getter, index04Getter)) {
                     row.setCursor(Cursor.CLOSED_HAND);
                 }
             });
 
             row.setOnMouseReleased(e -> {
-                if (!row.isEmpty() && dragLock.isEnabled && !isBlankRow(row.getItem(), index01Getter, index04Getter)) {
+                if (!row.isEmpty() && dragLock.isEnabled && !isBlankRow(row.getItem(), index01Getter, index03Getter, index04Getter)) {
                     row.setCursor(Cursor.OPEN_HAND);
                 }
             });
 
             row.setOnDragDetected(event -> {
-                if (!dragLock.isEnabled || row.isEmpty() || isBlankRow(row.getItem(), index01Getter, index04Getter)) {
+                if (!dragLock.isEnabled || row.isEmpty() || isBlankRow(row.getItem(), index01Getter, index03Getter, index04Getter)) {
                     return;
                 }
 
@@ -1739,7 +1737,7 @@ public class JFXUtil {
 
             row.setOnDragOver(event -> {
                 if (!dragLock.isEnabled || event.getGestureSource() == row || row.isEmpty()
-                        || isBlankRow(row.getItem(), index01Getter, index04Getter)) {
+                        || isBlankRow(row.getItem(), index01Getter, index03Getter, index04Getter)) {
                     return;
                 }
 
@@ -1812,10 +1810,7 @@ public class JFXUtil {
         });
     }
 
-    private static <T> void renumberIndex01(
-            ObservableList<T> items,
-            Function<T, StringProperty> index01Getter
-    ) {
+    private static <T> void renumberIndex01(ObservableList<T> items, Function<T, StringProperty> index01Getter) {
         for (int i = 0; i < items.size(); i++) {
             index01Getter.apply(items.get(i)).set(String.valueOf(i + 1));
         }
@@ -1824,14 +1819,20 @@ public class JFXUtil {
     private static <T> boolean isBlankRow(
             T item,
             Function<T, StringProperty> index01Getter,
+            Function<T, StringProperty> index03Getter,
             Function<T, StringProperty> index04Getter
     ) {
         if (item == null) {
             return true;
         }
+
         String val1 = index01Getter.apply(item).get();
-        String val2 = index04Getter.apply(item).get();
-        return val1 != null && !val1.isEmpty() && (val2 == null || val2.trim().isEmpty());
+        String val3 = index03Getter.apply(item).get();
+        String val4 = index04Getter.apply(item).get();
+
+        return val1 == null || val1.trim().isEmpty()
+                || val3 == null || val3.trim().isEmpty()
+                || val4 == null || val4.trim().isEmpty();
     }
 
     public static class Pairs<K, V> {
