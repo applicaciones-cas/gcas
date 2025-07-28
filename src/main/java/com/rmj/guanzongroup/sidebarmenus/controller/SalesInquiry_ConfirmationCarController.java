@@ -73,7 +73,7 @@ import ph.com.guanzongroup.cas.sales.t1.status.SalesInquiryStatic;
  *
  * @author Team 2 : Arsiela & Aldrich
  */
-public class SalesInquiry_ConfirmationMCController implements Initializable, ScreenInterface {
+public class SalesInquiry_ConfirmationCarController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private JSONObject poJSON;
@@ -110,7 +110,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
     @FXML
-    private TextField tfSearchClient, tfSearchReferenceNo, tfTransactionNo, tfBranch, tfSalesPerson, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfColor, tfBarcode, tfModelVariant;
+    private TextField tfSearchClient, tfSearchReferenceNo, tfTransactionNo, tfBranch, tfSalesPerson, tfReferralAgent, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfColor, tfBarcode, tfModelVariant;
     @FXML
     private Label lblSource, lblStatus;
     @FXML
@@ -449,6 +449,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
             });
         }
     };
+    
     final ChangeListener<? super Boolean> txtMaster_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -463,6 +464,11 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                 case "tfSalesPerson":
                     if (lsValue.isEmpty()) {
                         poJSON = poSalesInquiryController.SalesInquiry().Master().setSalesMan("");
+                    }
+                    break;
+                case "tfReferralAgent":
+                    if (lsValue.isEmpty()) {
+                        poJSON = poSalesInquiryController.SalesInquiry().Master().setAgentId("");
                     }
                     break;
                 case "tfInquirySource":
@@ -485,6 +491,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
         }
 
     };
+
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         poJSON = new JSONObject();
         TextField txtPersonalInfo = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
@@ -592,6 +599,15 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfClient.setText("");
+                                break;
+                            }
+                            loadRecordMaster();
+                            return;
+                        case "tfReferralAgent":
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchReferralAgent(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfReferralAgent.setText("");
                                 break;
                             }
                             loadRecordMaster();
@@ -872,8 +888,9 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
             tfContactNo.setText(poSalesInquiryController.SalesInquiry().Master().ClientMobile().getMobileNo());
-
+            
             tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
+            tfReferralAgent.setText(poSalesInquiryController.SalesInquiry().Master().ReferralAgent().getCompanyName());
             tfInquirySource.setText("");
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
             if(pnEditMode != EditMode.UNKNOWN ){
@@ -1104,7 +1121,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
         });
         JFXUtil.setFocusListener(txtField_Focus, tfSearchClient, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfInquirySource, tfInquirySource);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfReferralAgent,tfInquirySource, tfInquirySource);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBrand, tfModel, tfColor);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);

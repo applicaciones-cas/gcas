@@ -326,7 +326,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
 
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.ADDNEW;
-        JFXUtil.setDisabled(!lbDisable, tfClient, tfSalesPerson);
+        JFXUtil.setDisabled(!lbDisable, tfClient, tfSalesPerson, cmbClientType,cmbCategoryType);
         try {
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
@@ -350,6 +350,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
             tfInquiryStatus.setText(poSalesInquiryController.SalesInquiry().Master().getInquiryStatus());//TODO
+            tfInquirySource.setText("");
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
@@ -359,14 +360,21 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             tfReferralAgent.setText(poSalesInquiryController.SalesInquiry().Master().ReferralAgent().getCompanyName());
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
 
-            cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
-            cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
-            if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
-                cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().Client().getClientType()));
+            if(pnEditMode != EditMode.UNKNOWN ){
+                cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
+                cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
+                if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
+                    cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().Client().getClientType()));
+                } else {
+                    cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getClientType()));
+                }
+                cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getCategoryType()));
             } else {
-                cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getClientType()));
+                cmbInquiryType.getSelectionModel().select(0);
+                cmbPurchaseType.getSelectionModel().select(0);
+                cmbClientType.getSelectionModel().select(0);
+                cmbCategoryType.getSelectionModel().select(0);
             }
-            cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getCategoryType()));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
@@ -466,6 +474,9 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                             || !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
                                         lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
                                     }
+                                    if(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE){
+                                        poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
+                                    }
                                     poSalesInquiryController.SalesInquiry().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;
@@ -486,7 +497,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).setBrandId(lsBrandId);
                             }
 
-//                            poSalesInquiryController.SalesInquiry().sortPriority();
+                            poSalesInquiryController.SalesInquiry().sortPriority();
                         }
 
                         double lnTotal = 0.0;
@@ -902,6 +913,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                 //if client type is changed then remove the client 
                 if (!poSalesInquiryController.SalesInquiry().Master().getClientType().equals(selectedIndex)) {
                     poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                    poSalesInquiryController.SalesInquiry().Master().setAddressId("");
+                    poSalesInquiryController.SalesInquiry().Master().setContactId("");
                 }
                 poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
                 break;
