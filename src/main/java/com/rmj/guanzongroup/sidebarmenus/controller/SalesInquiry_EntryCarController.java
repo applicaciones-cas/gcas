@@ -60,7 +60,6 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONObject;
-import ph.com.guanzongroup.cas.sales.t1.SalesInquiry;
 import ph.com.guanzongroup.cas.sales.t1.services.SalesControllers;
 import ph.com.guanzongroup.cas.sales.t1.status.SalesInquiryStatic;
 
@@ -108,6 +107,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
     ObservableList<String> InquiryType = ModelSalesInquiry_Detail.InquiryType;
     ObservableList<String> PurchaseType = ModelSalesInquiry_Detail.PurchaseType;
     ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
+    private final JFXUtil.RowDragLock dragLock = new JFXUtil.RowDragLock(true);
     @FXML
     private DatePicker dpTransactionDate, dpTargetDate;
     @FXML
@@ -226,7 +226,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         if ((lastFocusedTextField.get() != null)) {
                             if (lastFocusedTextField.get() instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField.get();
-                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apMaster).contains(tf.getId())) {
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apMaster,apDetail).contains(tf.getId())) {
                                     if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
@@ -326,7 +326,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
 
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.ADDNEW;
-        JFXUtil.setDisabled(!lbDisable, tfClient, tfSalesPerson, cmbClientType,cmbCategoryType);
+        JFXUtil.setDisabled(!lbDisable, tfClient, tfSalesPerson, cmbClientType, cmbCategoryType);
         try {
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
@@ -360,7 +360,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             tfReferralAgent.setText(poSalesInquiryController.SalesInquiry().Master().ReferralAgent().getCompanyName());
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
 
-            if(pnEditMode != EditMode.UNKNOWN ){
+            if (pnEditMode != EditMode.UNKNOWN) {
                 cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
                 cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
                 if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
@@ -435,8 +435,12 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && !poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId().equals("")) {
-                        tfBrand.requestFocus();
+                    if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
+                        if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getModelId(), null, "")) {
+                            tfColor.requestFocus();
+                        } else {
+                            tfModel.requestFocus();
+                        }
                     } else {
                         tfBrand.requestFocus();
                     }
@@ -446,6 +450,33 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
 
         tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails); // need to use computed-size in min-width of the column to work
+        JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property(),
+                item -> ((ModelSalesInquiry_Detail) item).index03Property(),
+                item -> ((ModelSalesInquiry_Detail) item).index04Property(), dragLock, index -> {
+
+                    for (ModelSalesInquiry_Detail d : details_data) {
+                        String brand = d.getIndex04();
+                        String model = d.getIndex05();
+                        String color = d.getIndex06();
+                        String priorityStr = d.getIndex01();
+                        for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
+                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())
+                            || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelId())
+                            || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())) {
+                                continue;
+                            }
+                            try {
+                                /*System.out.println(d.getIndex02() +" - "+priorityStr);*/
+                                poSalesInquiryController.SalesInquiry().Detail(i).setPriority(Integer.parseInt(priorityStr));
+                            } catch (NumberFormatException e) {
+                                System.err.println("Invalid priority: " + priorityStr);
+                            }
+                            break;
+                        }
+                    }
+                    pnDetail = index;
+                    loadTableDetail();
+                });
     }
 
     public void loadTableDetail() {
@@ -474,7 +505,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                             || !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
                                         lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
                                     }
-                                    if(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE){
+                                    if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
                                         poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
                                     }
                                     poSalesInquiryController.SalesInquiry().Detail().remove(lnCtr);
@@ -960,7 +991,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
-
+        dragLock.isEnabled = lbShow;
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(!lbShow, btnNew);
         JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);
