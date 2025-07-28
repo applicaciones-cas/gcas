@@ -446,20 +446,24 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 item -> ((ModelSalesInquiry_Detail) item).index03Property(),
                 item -> ((ModelSalesInquiry_Detail) item).index04Property(), dragLock, index -> {
 
-                    for (ModelSalesInquiry_Detail detailData : details_data) { // value returned
-                        String index04 = detailData.getIndex04(); // brand ID
-                        String priorityStr = detailData.getIndex01(); // priority no
-                        for (int i = 0; i < poSalesInquiryController.SalesInquiry().getDetailCount(); i++) {
-                            if (index04.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())) {
-                                try {
-                                    detailData.getIndex02();
-                                    int priority = Integer.parseInt(priorityStr);
-                                    poSalesInquiryController.SalesInquiry().Detail(i).setPriority(priority);
-                                } catch (NumberFormatException e) {
-//                                    System.err.println("Invalid priority: " + priorityStr);
-                                }
-                                break; // stop inner loop once matched
+                    for (ModelSalesInquiry_Detail d : details_data) {
+                        String brand = d.getIndex04();
+                        String model = d.getIndex05();
+                        String color = d.getIndex06();
+                        String priorityStr = d.getIndex01();
+                        for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
+                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())
+                            || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelId())
+                            || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())) {
+                                continue;
                             }
+                            try {
+//                                System.out.println(d.getIndex02() +" - "+priorityStr);
+                                poSalesInquiryController.SalesInquiry().Detail(i).setPriority(Integer.parseInt(priorityStr));
+                            } catch (NumberFormatException e) {
+                                System.err.println("Invalid priority: " + priorityStr);
+                            }
+                            break;
                         }
                     }
                     pnDetail = index;
@@ -543,7 +547,9 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             String.valueOf(lsBrand),
                                             lsDescription,
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId())
                                     ));
                         }
 
