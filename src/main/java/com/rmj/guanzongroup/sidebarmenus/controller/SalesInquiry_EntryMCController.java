@@ -99,7 +99,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     @FXML
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnHistory, btnClose;
     @FXML
-    private TextField tfTransactionNo, tfBranch, tfSalesPerson, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfColor, tfModelVariant;
+    private TextField tfTransactionNo, tfBranch, tfSalesPerson, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfColor, tfModelVariant, tfBarcode;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -137,6 +137,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         Platform.runLater(() -> {
             poSalesInquiryController.SalesInquiry().Master().setIndustryId(psIndustryId);
             poSalesInquiryController.SalesInquiry().Master().setCompanyId(psCompanyId);
+            poSalesInquiryController.SalesInquiry().Master().setCategoryCode(psCategoryId);
             poSalesInquiryController.SalesInquiry().setIndustryId(psIndustryId);
             poSalesInquiryController.SalesInquiry().setCompanyId(psCompanyId);
             poSalesInquiryController.SalesInquiry().setCategoryId(psCategoryId);
@@ -394,6 +395,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             tfModel.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Model().getDescription());
             tfModelVariant.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).ModelVariant().getDescription());
             tfColor.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getDescription());
+            tfBarcode.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode());
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -504,9 +506,9 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             while (lnCtr >= 0) {
                                 if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId() == null || poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId().equals("")) {
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId() != null
-                                            || !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
-                                        lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
-                                    }
+                                                && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
+                                            lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
+                                        }
 
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
                                         poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));

@@ -148,6 +148,7 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
         Platform.runLater(() -> {
             poSalesInquiryController.SalesInquiry().Master().setIndustryId(psIndustryId);
             poSalesInquiryController.SalesInquiry().Master().setCompanyId(psCompanyId);
+            poSalesInquiryController.SalesInquiry().Master().setCategoryCode(psCategoryId);
             poSalesInquiryController.SalesInquiry().setIndustryId(psIndustryId);
             poSalesInquiryController.SalesInquiry().setCompanyId(psCompanyId);
             poSalesInquiryController.SalesInquiry().setCategoryId(psCategoryId);
@@ -962,9 +963,9 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                             while (lnCtr >= 0) {
                                 if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId() == null || poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId().equals("")) {
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId() != null
-                                            || !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
-                                        lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
-                                    }
+                                                && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
+                                            lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
+                                        }
 
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
                                         poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));

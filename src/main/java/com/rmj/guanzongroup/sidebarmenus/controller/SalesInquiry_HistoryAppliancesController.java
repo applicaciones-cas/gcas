@@ -126,6 +126,7 @@ public class SalesInquiry_HistoryAppliancesController implements Initializable, 
         Platform.runLater(() -> {
             poSalesInquiryController.SalesInquiry().Master().setIndustryId(psIndustryId);
             poSalesInquiryController.SalesInquiry().Master().setCompanyId(psCompanyId);
+            poSalesInquiryController.SalesInquiry().Master().setCategoryCode(psCategoryId);
             poSalesInquiryController.SalesInquiry().setIndustryId(psIndustryId);
             poSalesInquiryController.SalesInquiry().setCompanyId(psCompanyId);
             poSalesInquiryController.SalesInquiry().setCategoryId(psCategoryId);

@@ -150,6 +150,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
         Platform.runLater(() -> {
             poSalesInquiryController.SalesInquiry().Master().setIndustryId(psIndustryId);
             poSalesInquiryController.SalesInquiry().Master().setCompanyId(psCompanyId);
+            poSalesInquiryController.SalesInquiry().Master().setCategoryCode(psCategoryId);
             poSalesInquiryController.SalesInquiry().setIndustryId(psIndustryId);
             poSalesInquiryController.SalesInquiry().setCompanyId(psCompanyId);
             poSalesInquiryController.SalesInquiry().setCategoryId(psCategoryId);
