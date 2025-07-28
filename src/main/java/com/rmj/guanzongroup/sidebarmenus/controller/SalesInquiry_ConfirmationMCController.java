@@ -1211,9 +1211,10 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 
-        SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
-        sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());
-        tblViewTransDetails.setItems(sortedData);
+        filteredDataDetail = new FilteredList<>(details_data, b -> true);
+//        SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
+//        sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());
+        tblViewTransDetails.setItems(details_data);
         tblViewTransDetails.autosize();
     }
 
