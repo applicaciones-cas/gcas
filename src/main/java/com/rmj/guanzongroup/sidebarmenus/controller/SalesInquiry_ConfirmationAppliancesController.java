@@ -47,7 +47,6 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -106,7 +105,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
     ObservableList<String> InquiryType = ModelSalesInquiry_Detail.InquiryType;
     ObservableList<String> PurchaseType = ModelSalesInquiry_Detail.PurchaseType;
     ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
-
+    private final JFXUtil.RowDragLock dragLock = new JFXUtil.RowDragLock(true);
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
     @FXML
@@ -136,7 +135,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
         poSalesInquiryController = new SalesControllers(oApp, null);
         poJSON = new JSONObject();
         poJSON = poSalesInquiryController.SalesInquiry().InitTransaction(); // Initialize transaction
-        if (!"success".equals((String) poJSON.get("result"))) { 
+        if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         }
@@ -220,7 +219,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                         if ((lastFocusedTextField.get() != null)) {
                             if (lastFocusedTextField.get() instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField.get();
-                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apMaster).contains(tf.getId())) {
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail).contains(tf.getId())) {
                                     if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
@@ -350,7 +349,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                 if (lsButton.equals("btnUpdate")) {
                     if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId())) {
                         tfBarcode.requestFocus();
-                    } 
+                    }
                 }
             }
         } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
@@ -513,10 +512,9 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
         String ldblNewValue = poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId();
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
-        if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() == null 
-                || "".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId()) ) {
+        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
             tfBarcode.requestFocus();
-        } 
+        }
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -529,7 +527,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
 
             TableView<?> currentTable = tblViewTransDetails;
             TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
- switch (event.getCode()) {
+            switch (event.getCode()) {
                 case TAB:
                 case ENTER:
                     pbEntered = true;
@@ -790,7 +788,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
             if (pnDetail < 0 || pnDetail > poSalesInquiryController.SalesInquiry().getDetailCount() - 1) {
                 return;
             }
-            
+
             tfBarcode.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getDescription());
 
@@ -840,7 +838,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
             tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
             tfInquirySource.setText("");
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
-            if(pnEditMode != EditMode.UNKNOWN ){
+            if (pnEditMode != EditMode.UNKNOWN) {
                 cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
                 cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
                 if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
@@ -909,14 +907,14 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poSalesInquiryController.SalesInquiry().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()== null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
                                     poSalesInquiryController.SalesInquiry().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;
                             }
 
                             if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) >= 0) {
-                                if (poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId() != null 
+                                if (poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId() != null
                                         && !"".equals(poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId())) {
                                     poSalesInquiryController.SalesInquiry().AddDetail();
                                 }
@@ -933,7 +931,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                         for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
                             String lsBarcode = "";
                             String lsDescription = "";
-                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()!= null) {
+                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null) {
                                 lsBarcode = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getBarCode();
                                 lsDescription = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getDescription();
                             }
@@ -941,7 +939,10 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             String.valueOf(lsBarcode),
-                                            lsDescription
+                                            lsDescription,
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId())
                                     ));
                         }
 
@@ -1042,12 +1043,8 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfInquirySource, tfInquirySource);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription);
-        
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
-
-//        CustomCommonUtil.inputIntegersOnly(tfReceiveQuantity, tfReturnQuantity);
-//        CustomCommonUtil.inputDecimalOnly(tfCost);
     }
 
     public void initTableOnClick() {
@@ -1057,10 +1054,9 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() == null 
-                            || "".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId()) ) {
+                    if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
                         tfBarcode.requestFocus();
-                    } 
+                    }
                 }
             }
         });
@@ -1076,36 +1072,45 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
             }
         });
 
-        tblViewMainList.setRowFactory(tv -> new TableRow<ModelSalesInquiry_Main>() {
-            @Override
-            protected void updateItem(ModelSalesInquiry_Main item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setStyle(""); // Reset for empty rows
-                } else {
-                    String key = item.getIndex01(); // defines the ReferenceNo
-                    if (highlightedRowsMain.containsKey(key)) {
-                        List<String> colors = highlightedRowsMain.get(key);
-                        if (!colors.isEmpty()) {
-                            setStyle("-fx-background-color: " + colors.get(colors.size() - 1) + ";"); // Apply latest color
-                        }
-                    } else {
-                        setStyle(""); // Default style
-                    }
-                }
-            }
-        });
-
         tblViewTransDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewTransDetails, tblViewMainList); // need to use computed-size in min-width of the column to work
+        JFXUtil.applyRowHighlighting(tblViewMainList, item -> ((ModelSalesInquiry_Main) item).getIndex01(), highlightedRowsMain);
+
+        JFXUtil.enableRowDragAndDrop(tblViewTransDetails, item -> ((ModelSalesInquiry_Detail) item).index01Property(),
+                item -> ((ModelSalesInquiry_Detail) item).index03Property(),
+                item -> ((ModelSalesInquiry_Detail) item).index04Property(), dragLock, index -> {
+
+                    for (ModelSalesInquiry_Detail d : details_data) {
+                        String brand = d.getIndex04();
+                        String model = d.getIndex05();
+                        String color = d.getIndex06();
+                        String priorityStr = d.getIndex01();
+                        for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
+                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())
+                            || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelId())
+                            || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())) {
+                                continue;
+                            }
+                            try {
+                                /*System.out.println(d.getIndex02() +" - "+priorityStr);*/
+                                poSalesInquiryController.SalesInquiry().Detail(i).setPriority(Integer.parseInt(priorityStr));
+                            } catch (NumberFormatException e) {
+                                System.err.println("Invalid priority: " + priorityStr);
+                            }
+                            break;
+                        }
+                    }
+                    pnDetail = index;
+                    loadTableDetail();
+                });
     }
 
     private void initButton(int fnValue) {
 
         boolean lbShow1 = (fnValue == EditMode.UPDATE);
-//        boolean lbShow2 = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
         boolean lbShow3 = (fnValue == EditMode.READY);
         boolean lbShow4 = (fnValue == EditMode.UNKNOWN || fnValue == EditMode.READY);
+        dragLock.isEnabled = lbShow1; // for drag drop 
         // Manage visibility and managed state of other buttons
         //Update 
         JFXUtil.setButtonsVisibility(lbShow1, btnSearch, btnSave, btnCancel);
@@ -1128,7 +1133,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
             case SalesInquiryStatic.PAID:
             case SalesInquiryStatic.VOID:
             case SalesInquiryStatic.CANCELLED:
-                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate,  btnVoid);
+                JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate, btnVoid);
                 break;
         }
     }
@@ -1175,10 +1180,9 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                                 break;
                         }
                         loadRecordDetail();
-                        if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() == null 
-                                || "".equals(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId()) ) {
+                        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
                             tfBarcode.requestFocus();
-                        } 
+                        }
                         event.consume();
                     }
                     break;
