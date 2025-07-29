@@ -326,7 +326,6 @@
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                      <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
                                                       <Label text="Category" GridPane.columnIndex="4" GridPane.rowIndex="3">
@@ -334,23 +333,23 @@
                                                             <Insets right="5.0" />
                                                          </GridPane.margin>
                                                       </Label>
-                                                      <Label text="Barcode">
+                                                      <Label text="Brand">
                                                          <GridPane.margin>
                                                             <Insets right="5.0" />
                                                          </GridPane.margin>
                                                       </Label>
-                                                      <Label text="Description" GridPane.rowIndex="1">
+                                                      <Label text="Model" GridPane.rowIndex="1">
                                                          <GridPane.margin>
                                                             <Insets right="5.0" />
                                                          </GridPane.margin>
                                                       </Label>
-                                                      <TextField fx:id="tfBarcode" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="4" />
-                                                      <TextField fx:id="tfDescription" maxHeight="25.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+                                                      <TextField fx:id="tfBrand" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="4" />
+                                                      <TextField fx:id="tfModel" maxHeight="25.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" promptText="Press F3: Search" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1" />
                                                       <TextField fx:id="tfUnitPrice" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0.0000" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                       <TextField fx:id="tfQuantity" alignment="CENTER_RIGHT" promptText="0" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                       <TextField fx:id="tfDownPayment" alignment="CENTER_RIGHT" disable="true" editable="false" promptText="0" GridPane.columnIndex="9" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                      <TextField fx:id="tfBrand" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                      <TextField fx:id="tfModel" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                      <TextField fx:id="tfVariant" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                      <TextField fx:id="tfInvType" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                                                       <Label text="Down payment" GridPane.columnIndex="8" GridPane.rowIndex="4">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
@@ -359,29 +358,17 @@
                                                             <Insets right="5.0" />
                                                          </GridPane.margin>
                                                       </Label>
-                                                      <Label text="Brand" GridPane.rowIndex="3">
+                                                      <Label text="Variant" GridPane.rowIndex="3">
                                                          <GridPane.margin>
                                                             <Insets right="5.0" />
                                                          </GridPane.margin>
                                                       </Label>
                                                       <TextField fx:id="tfCategory" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                      <Label text="Model" GridPane.rowIndex="4">
+                                                      <Label text="Inv. Type" GridPane.rowIndex="4">
                                                          <GridPane.margin>
                                                             <Insets right="5.0" />
                                                          </GridPane.margin>
                                                       </Label>
-                                                      <Label text="Color" GridPane.rowIndex="5">
-                                                         <GridPane.margin>
-                                                            <Insets right="5.0" />
-                                                         </GridPane.margin>
-                                                      </Label>
-                                                      <Label text="Measure" GridPane.columnIndex="4" GridPane.rowIndex="5">
-                                                         <GridPane.margin>
-                                                            <Insets right="5.0" />
-                                                         </GridPane.margin>
-                                                      </Label>
-                                                      <TextField fx:id="tfColor" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                                      <TextField fx:id="tfMeasure" disable="true" editable="false" maxHeight="25.0" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                       <Label text="QTY" GridPane.columnIndex="8" GridPane.rowIndex="5">
                                                          <font>
                                                             <Font name="System Bold" size="15.0" />
@@ -395,18 +382,18 @@
                                                             <Insets right="5.0" />
                                                          </GridPane.margin>
                                                       </Label>
-                                                      <Label text="Inv. Type" GridPane.columnIndex="4" GridPane.rowIndex="4">
+                                                      <Label text="Color" GridPane.columnIndex="4" GridPane.rowIndex="4">
                                                          <GridPane.margin>
                                                             <Insets right="5.0" />
                                                          </GridPane.margin>
                                                       </Label>
-                                                      <TextField fx:id="tfInventoryType" disable="true" editable="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                      <Label alignment="CENTER_RIGHT" text="Notes" GridPane.rowIndex="6">
+                                                      <TextField fx:id="tfColor" disable="true" editable="false" GridPane.columnIndex="5" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                      <Label alignment="CENTER_RIGHT" text="Notes" GridPane.rowIndex="5">
                                                          <GridPane.margin>
                                                             <Insets right="5.0" />
                                                          </GridPane.margin>
                                                       </Label>
-                                                      <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="6" GridPane.rowSpan="2" />
+                                                      <TextArea fx:id="taNotes" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="6" GridPane.rowIndex="5" GridPane.rowSpan="2" />
                                                    </children>
                                                 </GridPane>
                                              </children>
@@ -461,7 +448,7 @@
                                                 <Insets left="5.0" right="5.0" top="5.0" />
                                              </GridPane.margin>
                                           </AnchorPane>
-                                          <TableView fx:id="tblMasterList" minWidth="242.0" GridPane.rowIndex="1">
+                                          <TableView fx:id="tblSourceList" minWidth="242.0" GridPane.rowIndex="1">
                                              <columns>
                                                 <TableColumn fx:id="tblRowNo" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" text="No." />
                                                 <TableColumn fx:id="tblPayeeName" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" resizable="false" sortable="false" text="Traansaction No" />
