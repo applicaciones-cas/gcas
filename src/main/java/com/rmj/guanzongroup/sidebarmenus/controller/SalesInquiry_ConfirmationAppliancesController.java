@@ -941,7 +941,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             String.valueOf(lsBarcode),
                                             lsDescription,
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getBrandId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getModelId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getColorId())
                                     ));
@@ -1084,16 +1084,8 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                         String color = d.getIndex06();
                         String priorityStr = d.getIndex01();
                         for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
-                            try {
-                                if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).Brand().getBrandId())
-                                || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).Model().getModelId())
-                                || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).Color().getColorId())) {
-                                    continue;
-                                }
-                            } catch (SQLException ex) {
-                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                            } catch (GuanzonException ex) {
-                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getStockId())) {
+                                continue;
                             }
                             try {
                                 /*System.out.println(d.getIndex02() +" - "+priorityStr);*/
