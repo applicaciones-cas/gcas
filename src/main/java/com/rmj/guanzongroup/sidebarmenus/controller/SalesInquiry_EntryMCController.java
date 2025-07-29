@@ -874,8 +874,17 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfModel.setText("");
                                 break;
+                            } else {
+                                loadTableDetail();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.20));
+                                    delay.setOnFinished(event1 -> {
+                                        moveNext(false);
+                                    });
+                                    delay.play();
+                                });
                             }
-                            loadTableDetail();
+
                             break;
                     }
                     break;
@@ -1036,12 +1045,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         JFXUtil.setColumnCenter(tblRowNoDetail);
         JFXUtil.setColumnLeft(tblBrandDetail, tblDescriptionDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
-
-        filteredDataDetail = new FilteredList<>(details_data, b -> true);
-//        SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
-//        sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());
         tblViewTransDetails.setItems(details_data);
-        tblViewTransDetails.autosize();
     }
 
     public void loadRecordSearch() {

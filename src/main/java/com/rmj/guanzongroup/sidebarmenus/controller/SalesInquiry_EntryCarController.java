@@ -876,8 +876,16 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfModel.setText("");
                                 break;
+                            } else {
+                                loadTableDetail();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.20));
+                                    delay.setOnFinished(event1 -> {
+                                        moveNext(false);
+                                    });
+                                    delay.play();
+                                });
                             }
-                            loadTableDetail();
                             break;
                     }
                     break;
