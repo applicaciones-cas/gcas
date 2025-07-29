@@ -464,11 +464,17 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         String variant = d.getIndex07();
                         String priorityStr = d.getIndex01();
                         for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
-                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())
-                            || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelId())
-                            || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())
-                            || !variant.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelVarianId())) {
-                                continue;
+                            try {
+                                if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())
+                                || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelId())
+                                || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())
+                                || !variant.equals(poSalesInquiryController.SalesInquiry().Detail(i).ModelVariant().getVariantId())) {
+                                    continue;
+                                }
+                            } catch (SQLException ex) {
+                                Logger.getLogger(SalesInquiry_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (GuanzonException ex) {
+                                Logger.getLogger(SalesInquiry_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
                             }
                             try {
 //                                System.out.println(d.getIndex02() +" - "+priorityStr);
@@ -568,8 +574,9 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId()),
-                                            poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelVarianId()
+                                            poSalesInquiryController.SalesInquiry().Detail(lnCtr).ModelVariant().getVariantId()
                                     ));
+
                         }
 
                         if (pnDetail < 0 || pnDetail
