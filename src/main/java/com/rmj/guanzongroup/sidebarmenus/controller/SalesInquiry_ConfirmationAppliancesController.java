@@ -941,9 +941,9 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             String.valueOf(lsBarcode),
                                             lsDescription,
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId())
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Model().getModelId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getColorId())
                                     ));
                         }
 
@@ -1037,9 +1037,6 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
     }
 
     public void initTextFields() {
-        Platform.runLater(() -> {
-            JFXUtil.setVerticalScroll(taRemarks);
-        });
         JFXUtil.setFocusListener(txtField_Focus, tfSearchClient, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfInquirySource, tfInquirySource);
@@ -1087,10 +1084,16 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                         String color = d.getIndex06();
                         String priorityStr = d.getIndex01();
                         for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
-                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())
-                            || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelId())
-                            || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())) {
-                                continue;
+                            try {
+                                if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).Brand().getBrandId())
+                                || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).Model().getModelId())
+                                || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).Color().getColorId())) {
+                                    continue;
+                                }
+                            } catch (SQLException ex) {
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                            } catch (GuanzonException ex) {
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                             }
                             try {
                                 /*System.out.println(d.getIndex02() +" - "+priorityStr);*/
@@ -1146,9 +1149,9 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
 
         filteredDataDetail = new FilteredList<>(details_data, b -> true);
 
-        SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
-        sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());
-        tblViewTransDetails.setItems(sortedData);
+//        SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
+//        sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());
+        tblViewTransDetails.setItems(details_data);
         tblViewTransDetails.autosize();
     }
 

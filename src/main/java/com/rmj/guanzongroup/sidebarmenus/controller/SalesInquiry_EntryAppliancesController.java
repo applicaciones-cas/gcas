@@ -338,14 +338,14 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                 statusMap.put(SalesInquiryStatic.CANCELLED, "CANCELLED");
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
-                
-                switch(poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()){
+
+                switch (poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()) {
                     case "0":
                         tfInquiryStatus.setText("OPEN");
-                    break;
+                        break;
                     default:
                         tfInquiryStatus.setText("");
-                    break; 
+                        break;
                 }
             });
 
@@ -460,10 +460,16 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                         String color = d.getIndex06();
                         String priorityStr = d.getIndex01();
                         for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
-                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())
-                            || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelId())
-                            || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())) {
-                                continue;
+                            try {
+                                if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).Brand().getBrandId())
+                                        || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).Model().getModelId())
+                                        || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).Color().getColorId())) {
+                                    continue;
+                                }
+                            } catch (SQLException ex) {
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                            } catch (GuanzonException ex) {
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                             }
                             try {
 //                                System.out.println(d.getIndex02() +" - "+priorityStr);
@@ -532,9 +538,9 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             String.valueOf(lsBarcode),
                                             lsDescription,
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId())
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Model().getModelId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getColorId())
                                     ));
                         }
 
@@ -918,7 +924,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
-
+        dragLock.isEnabled = lbShow;
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(!lbShow, btnNew);
         JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);
