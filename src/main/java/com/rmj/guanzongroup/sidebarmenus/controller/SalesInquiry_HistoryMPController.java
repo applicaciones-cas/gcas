@@ -366,33 +366,42 @@ public class SalesInquiry_HistoryMPController implements Initializable, ScreenIn
                             }
                         }
 
-                        double lnTotal = 0.0;
+                        String lsBrand = "";
+                        String lsModel = "";
+                        String lsModelVariant = "";
+                        String lsColor = "";
+                        String lsDescription = "";
                         for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
-                            String lsBrand = "";
-                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription() != null) {
-                                lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription();
+                            if(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null 
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())){
+                                lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Brand().getDescription();
+                                lsModel = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Model().getDescription();
+                                lsModelVariant = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Variant().getDescription();
+                                lsColor = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Color().getDescription();
+                            } else {
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription() != null) {
+                                    lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getDescription();
+                                }
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription() != null) {
+                                    lsModel = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription();
+                                }
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).ModelVariant().getDescription() != null) {
+                                    lsModelVariant = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).ModelVariant().getDescription();
+                                }
+                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription() != null) {
+                                    lsColor = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription();
+                                }
                             }
-                            String lsModelVariant = " ";
-                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
-                                lsModelVariant = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).ModelVariant().getDescription() + " ";
-                            }
-                            String lsModel = "";
-                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription() != null) {
-                                lsModel = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getDescription();
-                            }
-                            String lsColor = "";
-                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription() != null) {
-                                lsColor = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getDescription();
-                            }
-                            String lsDescription = lsModel
-                                    + lsModelVariant
-                                    + lsColor;
+                            lsDescription = lsModel
+                                        + lsModelVariant
+                                        + lsColor;
                             details_data.add(
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
-                                            String.valueOf(lsBrand),
-                                            lsDescription
+                                            lsBrand,
+                                            lsDescription.trim()
                                     ));
+                            lsBrand = "";lsModel = "";lsModelVariant = "";lsColor = "";
                         }
 
                         if (pnDetail < 0 || pnDetail
