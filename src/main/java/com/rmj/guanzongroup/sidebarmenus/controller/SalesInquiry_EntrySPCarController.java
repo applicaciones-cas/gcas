@@ -530,7 +530,7 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
                                             lsDescription,
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getModelId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getColorId())
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getColorId()),""
                                     ));
                         }
 

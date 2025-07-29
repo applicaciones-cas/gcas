@@ -458,11 +458,13 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         String brand = d.getIndex04();
                         String model = d.getIndex05();
                         String color = d.getIndex06();
+                        String variant = d.getIndex07();
                         String priorityStr = d.getIndex01();
                         for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
                             if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())
                             || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelId())
-                            || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())) {
+                            || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())
+                            || !variant.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelVarianId())) {
                                 continue;
                             }
                             try {
@@ -500,12 +502,12 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poSalesInquiryController.SalesInquiry().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                    
+
                                 if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId() == null || poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId().equals("")) {
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId() != null
-                                                && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
-                                            lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
-                                        }
+                                            && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
+                                        lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
+                                    }
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
                                         poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
                                     }
@@ -560,7 +562,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                             lsDescription,
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId())
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId()),
+                                            poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelVarianId()
                                     ));
                         }
 

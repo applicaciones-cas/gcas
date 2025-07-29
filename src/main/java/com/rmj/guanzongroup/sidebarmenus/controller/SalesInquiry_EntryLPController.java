@@ -531,7 +531,7 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
                                             lsDescription,
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId())
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId()),""
                                     ));
                         }
 
