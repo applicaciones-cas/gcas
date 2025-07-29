@@ -941,9 +941,9 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             String.valueOf(lsBarcode),
                                             lsDescription,
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getBrandId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Model().getModelId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getColorId())
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Brand().getBrandId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getModelId()),
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getColorId())
                                     ));
                         }
 
