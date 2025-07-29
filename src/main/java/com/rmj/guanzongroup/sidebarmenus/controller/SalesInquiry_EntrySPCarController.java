@@ -530,7 +530,7 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
                                             lsDescription,
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getModelId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getColorId()),""
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getColorId()), ""
                                     ));
                         }
 
@@ -766,9 +766,16 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfBarcode.setText("");
                                 break;
+                            } else {
+                                loadTableDetail();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        moveNext(false);
+                                    });
+                                    delay.play();
+                                });
                             }
-                            loadTableDetail();
-
                             break;
                         case "tfDescription":
                             poJSON = poSalesInquiryController.SalesInquiry().SearchInventory(lsValue, false, pnDetail);
@@ -776,9 +783,16 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfDescription.setText("");
                                 break;
+                            } else {
+                                loadTableDetail();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        moveNext(false);
+                                    });
+                                    delay.play();
+                                });
                             }
-                            loadTableDetail();
-
                             break;
                     }
                     break;

@@ -672,7 +672,7 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                             } else {
                                 loadTableDetail();
                                 Platform.runLater(() -> {
-                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.20));
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
                                         moveNext(false);
                                     });

@@ -460,22 +460,22 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                         String color = d.getIndex06();
                         String priorityStr = d.getIndex01();
                         for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
-                                if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getStockId())) {
-                                    continue;
-                                }
-                                try {
-//                                System.out.println(d.getIndex02() +" - "+priorityStr);
-                                    poSalesInquiryController.SalesInquiry().Detail(i).setPriority(Integer.parseInt(priorityStr));
-                                } catch (NumberFormatException e) {
-                                    System.err.println("Invalid priority: " + priorityStr);
-                                }
-                                break;
+                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getStockId())) {
+                                continue;
                             }
+                            try {
+//                                System.out.println(d.getIndex02() +" - "+priorityStr);
+                                poSalesInquiryController.SalesInquiry().Detail(i).setPriority(Integer.parseInt(priorityStr));
+                            } catch (NumberFormatException e) {
+                                System.err.println("Invalid priority: " + priorityStr);
+                            }
+                            break;
                         }
-                        pnDetail = index;
-                        loadTableDetail();
                     }
-                );
+                    pnDetail = index;
+                    loadTableDetail();
+                }
+        );
     }
 
     public void loadTableDetail() {
@@ -533,7 +533,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                             lsDescription,
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getModelId()),
-                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getColorId()),""
+                                            String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getColorId()), ""
                                     ));
                         }
 
@@ -769,9 +769,16 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfBarcode.setText("");
                                 break;
+                            } else {
+                                loadTableDetail();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        moveNext(false);
+                                    });
+                                    delay.play();
+                                });
                             }
-                            loadTableDetail();
-
                             break;
                         case "tfDescription":
                             poJSON = poSalesInquiryController.SalesInquiry().SearchInventory(lsValue, false, pnDetail);
@@ -779,9 +786,16 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfDescription.setText("");
                                 break;
+                            } else {
+                                loadTableDetail();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        moveNext(false);
+                                    });
+                                    delay.play();
+                                });
                             }
-                            loadTableDetail();
-
                             break;
                     }
                     break;

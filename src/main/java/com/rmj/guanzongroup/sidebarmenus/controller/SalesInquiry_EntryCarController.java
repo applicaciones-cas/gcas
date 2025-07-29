@@ -879,7 +879,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             } else {
                                 loadTableDetail();
                                 Platform.runLater(() -> {
-                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.20));
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
                                         moveNext(false);
                                     });

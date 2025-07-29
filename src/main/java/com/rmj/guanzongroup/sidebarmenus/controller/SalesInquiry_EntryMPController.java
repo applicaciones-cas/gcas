@@ -552,8 +552,8 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                         String lsColor = "";
                         String lsDescription = "";
                         for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
-                            if(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null 
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())){
+                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
                                 lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Brand().getDescription();
                                 lsModel = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Model().getDescription();
                                 lsModelVariant = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Variant().getDescription();
@@ -573,8 +573,8 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                                 }
                             }
                             lsDescription = lsModel
-                                        + lsModelVariant
-                                        + lsColor;
+                                    + lsModelVariant
+                                    + lsColor;
                             details_data.add(
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
@@ -585,7 +585,10 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelVarianId())
                                     ));
-                            lsBrand = "";lsModel = "";lsModelVariant = "";lsColor = "";
+                            lsBrand = "";
+                            lsModel = "";
+                            lsModelVariant = "";
+                            lsColor = "";
 
                         }
 
@@ -875,8 +878,16 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfModel.setText("");
                                 break;
+                            } else {
+                                loadTableDetail();
+                                Platform.runLater(() -> {
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+                                    delay.setOnFinished(event1 -> {
+                                        moveNext(false);
+                                    });
+                                    delay.play();
+                                });
                             }
-                            loadTableDetail();
                             break;
                     }
                     break;

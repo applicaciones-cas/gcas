@@ -656,7 +656,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                             } else {
                                 loadTableDetail();
                                 Platform.runLater(() -> {
-                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.20));
+                                    PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                     delay.setOnFinished(event1 -> {
                                         moveNext(false);
                                     });
