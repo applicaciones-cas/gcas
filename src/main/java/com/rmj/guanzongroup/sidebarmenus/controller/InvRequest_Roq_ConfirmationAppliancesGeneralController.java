@@ -573,16 +573,19 @@ public class InvRequest_Roq_ConfirmationAppliancesGeneralController implements I
                                 return;
                             }
 
-                            for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
-                                double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
-                                String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
+                            for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
+                            double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
+                            String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
-                                if (detailCount == 1 && (stockID == null || stockID.trim().isEmpty() || quantity == 0)) {
-                                    ShowMessageFX.Warning("Invalid item in order. Ensure all items have a valid Stock ID and quantity greater than 0.", psFormName, null);
-                                    return;
-                                }
-                                hasValidItem = true;
+                            if (stockID == null || stockID.trim().isEmpty()) {
+                                continue; 
                             }
+
+                            if (quantity > 0) {
+                                hasValidItem = true;
+                                break; 
+                            }
+                        }
 
                             if (!hasValidItem) {
                                 ShowMessageFX.Warning("Your order must have at least one valid item with a Stock ID and quantity greater than 0.", psFormName, null);
@@ -1150,24 +1153,27 @@ public class InvRequest_Roq_ConfirmationAppliancesGeneralController implements I
             }
         }
     
-     private void setOrderQuantityToDetail(String fsValue) {
-         
+    private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
+            double quantity = Double.parseDouble(fsValue);
             if (Double.parseDouble(fsValue) < 0) {
                 ShowMessageFX.Warning("Invalid Order Quantity", psFormName, null);
                 fsValue = "0";
 
             }
-            if (tfOrderQuantity.isFocused()) {
-                if (tfBarCode.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter Bar Code first. ", psFormName, null);
-                    fsValue = "0";
-                }
-                
-            }
-            if (pnTblInvDetailRow < 0) {
+            if (pnTblInvDetailRow >= 0 && pnTblInvDetailRow < invRequestController.StockRequest().getDetailCount()) {
+                    double roq = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getRecommendedOrder();
+                    if (quantity > roq) {
+                        if (!"success".equals((poJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            tfOrderQuantity.setText("0");
+                            return;
+                        }
+                    }
+              }
+             if (pnTblInvDetailRow < 0) {
                 fsValue = "0";
                 ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
                 clearDetailFields();
@@ -1176,8 +1182,9 @@ public class InvRequest_Roq_ConfirmationAppliancesGeneralController implements I
             }
             tfOrderQuantity.setText(fsValue);
             invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Double.valueOf(fsValue));
+           
+      }
 
-        }
         private void initTableList() {
         
         tblTransactionNo.setCellValueFactory(new PropertyValueFactory<>("index01"));

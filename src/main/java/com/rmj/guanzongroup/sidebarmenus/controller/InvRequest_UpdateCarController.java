@@ -563,16 +563,19 @@ public class InvRequest_UpdateCarController implements Initializable, ScreenInte
                                 return;
                             }
 
-                            for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
-                                double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
-                                String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
+                            for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
+                            double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
+                            String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
-                                if (detailCount == 1 && (stockID == null || stockID.trim().isEmpty() || quantity == 0)) {
-                                    ShowMessageFX.Warning("Invalid item in order. Ensure all items have a valid Stock ID and quantity greater than 0.", psFormName, null);
-                                    return;
-                                }
-                                hasValidItem = true;
+                            if (stockID == null || stockID.trim().isEmpty()) {
+                                continue; 
                             }
+
+                            if (quantity > 0) {
+                                hasValidItem = true;
+                                break; 
+                            }
+                        }
 
                             if (!hasValidItem) {
                                 ShowMessageFX.Warning("Your order must have at least one valid item with a Stock ID and quantity greater than 0.", psFormName, null);
@@ -1124,7 +1127,7 @@ public class InvRequest_UpdateCarController implements Initializable, ScreenInte
                                         CommonUtils.SetNextFocus((TextField) event.getSource());
                                         break;
                                     case "tfOrderQuantity":
-                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                                        setOrderQuantityToDetail(tfOrderQuantity.getText(),tfROQ.getText());
                                         if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                             pnTblInvDetailRow++;
                                         }
@@ -1136,7 +1139,7 @@ public class InvRequest_UpdateCarController implements Initializable, ScreenInte
                                 break;
                                 
                  case UP:
-                        setOrderQuantityToDetail(tfOrderQuantity.getText());
+                        setOrderQuantityToDetail(tfOrderQuantity.getText(),tfROQ.getText());
 
                         if (!fieldId.equals("tfBrand") && !fieldId.equals("tfModel")) {
                             if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
@@ -1160,7 +1163,7 @@ public class InvRequest_UpdateCarController implements Initializable, ScreenInte
 
 
                     case DOWN:
-                        setOrderQuantityToDetail(lsValue);
+                        setOrderQuantityToDetail(lsValue,tfROQ.getText());
                         if ("tfBrand".equals(fieldId)) {
                             tfModel.requestFocus();
                         } else if ("tfModel".equals(fieldId)) {
@@ -1206,8 +1209,9 @@ public class InvRequest_UpdateCarController implements Initializable, ScreenInte
             }
         }
     
-     private void setOrderQuantityToDetail(String fsValue) {
-         
+    private void setOrderQuantityToDetail(String fsValue,String fsROQ) {
+      
+       
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
@@ -1218,10 +1222,23 @@ public class InvRequest_UpdateCarController implements Initializable, ScreenInte
             }
             if (tfOrderQuantity.isFocused()) {
                 if (tfBrand.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter Bar Code first. ", psFormName, null);
+                    ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
                     fsValue = "0";
                 }
-                
+                if (!tfBrand.getText().isEmpty() && tfModel.getText().isEmpty()) {
+                    ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
+                    fsValue = "0";
+                }
+            
+                 if( Double.parseDouble(fsROQ) != 0){
+                    if (Double.parseDouble(fsValue) > Double.parseDouble(fsROQ)) {
+                        if (!"success".equals((poJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                            tfOrderQuantity.setText("0");
+                            return;
+                        }
+                    }
+                }
             }
             if (pnTblInvDetailRow < 0) {
                 fsValue = "0";

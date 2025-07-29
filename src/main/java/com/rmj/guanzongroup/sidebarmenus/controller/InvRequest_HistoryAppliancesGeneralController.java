@@ -410,8 +410,8 @@ public class InvRequest_HistoryAppliancesGeneralController implements Initializa
                             for (int lnCntr = 0; lnCntr <= invRequestController.StockRequest().getINVMasterCount() - 1; lnCntr++) {
                                 tableListInformation_data.add(new ModelInvTableListInformation(
                                         invRequestController.StockRequest().INVMaster(lnCntr).getTransactionNo(),
-                                        SQLUtil.dateFormat(invRequestController.StockRequest().INVMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
                                         invRequestController.StockRequest().INVMaster(lnCntr).getReferenceNo(),
+                                        SQLUtil.dateFormat(invRequestController.StockRequest().INVMaster(lnCntr).getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE),
                                         ""));
                             }
                         } else {
