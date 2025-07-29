@@ -963,9 +963,9 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                             while (lnCtr >= 0) {
                                 if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId() == null || poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId().equals("")) {
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId() != null
-                                                && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
-                                            lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
-                                        }
+                                            && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
+                                        lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
+                                    }
 
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
                                         poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
@@ -1111,8 +1111,8 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate);
+        JFXUtil.setDatePickerFormat(dpTransactionDate, dpTargetDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpTargetDate);
 
     }
 

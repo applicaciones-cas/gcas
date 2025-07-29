@@ -1031,8 +1031,8 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate);
+        JFXUtil.setDatePickerFormat(dpTransactionDate, dpTargetDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpTargetDate);
 
     }
 

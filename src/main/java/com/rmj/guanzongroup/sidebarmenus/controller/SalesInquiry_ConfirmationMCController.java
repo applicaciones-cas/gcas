@@ -218,7 +218,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                         if ((lastFocusedTextField.get() != null)) {
                             if (lastFocusedTextField.get() instanceof TextField) {
                                 TextField tf = (TextField) lastFocusedTextField.get();
-                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse,apMaster, apDetail).contains(tf.getId())) {
+                                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", apBrowse, apMaster, apDetail).contains(tf.getId())) {
                                     if (lastFocusedTextField.get() == previousSearchedTextField.get()) {
                                         break;
                                     }
@@ -947,9 +947,9 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                             while (lnCtr >= 0) {
                                 if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId() == null || poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId().equals("")) {
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId() != null
-                                                && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
-                                            lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
-                                        }
+                                            && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
+                                        lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
+                                    }
 
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
 //                                        poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
@@ -1092,8 +1092,8 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
-        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate);
+        JFXUtil.setDatePickerFormat(dpTransactionDate, dpTargetDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpTargetDate);
 
     }
 
