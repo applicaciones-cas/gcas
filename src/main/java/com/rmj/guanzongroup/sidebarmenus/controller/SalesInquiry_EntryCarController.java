@@ -330,8 +330,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
-                statusMap.put(SalesInquiryStatic.POSTED, "POSTED");
-                statusMap.put(SalesInquiryStatic.PAID, "PAID");
+                statusMap.put(SalesInquiryStatic.QUOTED , "QUOTED");
+                statusMap.put(SalesInquiryStatic.SALE, "SALE");
                 statusMap.put(SalesInquiryStatic.CONFIRMED, "CONFIRMED");
                 statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
                 statusMap.put(SalesInquiryStatic.VOID, "VOIDED");
@@ -1041,7 +1041,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
         JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail);
 
         switch (poSalesInquiryController.SalesInquiry().Master().getTransactionStatus()) {
-            case SalesInquiryStatic.PAID:
+            case SalesInquiryStatic.SALE:
                 JFXUtil.setButtonsVisibility(false, btnUpdate);
                 break;
             case SalesInquiryStatic.VOID:
