@@ -1154,7 +1154,7 @@ public class SalesInquiry_ConfirmationAppliancesController implements Initializa
         JFXUtil.setColumnCenter(tblRowNoDetail);
         JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
-        tblViewMainList.setItems(details_data);
+        tblViewTransDetails.setItems(details_data);
         tblViewTransDetails.autosize();
     }
 
