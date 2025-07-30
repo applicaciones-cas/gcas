@@ -214,6 +214,15 @@ public class SalesInquiry_HistorySPCarController implements Initializable, Scree
                 statusMap.put(SalesInquiryStatic.CANCELLED, "CANCELLED");
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
+                
+                switch(poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()){
+                    case "0":
+                        tfInquiryStatus.setText("OPEN");
+                    break;
+                    default:
+                        tfInquiryStatus.setText("");
+                    break; 
+                }
             });
 
             // Transaction Date
@@ -224,7 +233,7 @@ public class SalesInquiry_HistorySPCarController implements Initializable, Scree
             dpTargetDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTargetDate, "yyyy-MM-dd"));
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
-            tfInquiryStatus.setText(poSalesInquiryController.SalesInquiry().Master().getInquiryStatus());//TODO
+            tfInquirySource.setText("");
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());

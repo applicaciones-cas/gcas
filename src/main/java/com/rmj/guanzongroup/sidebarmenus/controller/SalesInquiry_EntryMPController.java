@@ -360,7 +360,6 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
             dpTargetDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTargetDate, "yyyy-MM-dd"));
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
-            tfInquiryStatus.setText(poSalesInquiryController.SalesInquiry().Master().getInquiryStatus());//TODO
             tfInquirySource.setText("");
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
