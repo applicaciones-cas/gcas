@@ -93,7 +93,7 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
     private FilteredList<ModelSalesInquiry_Main> filteredData;
     private FilteredList<ModelSalesInquiry_Detail> filteredDataDetail;
 
-    private int pnAttachment;
+    
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
 
@@ -751,7 +751,6 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                 Thread.sleep(100);
 //                Thread.sleep(1000);
 
-                // contains try catch, for loop of loading data to observable list until loadTab()
                 Platform.runLater(() -> {
                     main_data.clear();
                     JFXUtil.disableAllHighlight(tblViewMainList, highlightedRowsMain);
@@ -864,14 +863,14 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
 
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
-                
-                switch(poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()){
+
+                switch (poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()) {
                     case "0":
                         tfInquiryStatus.setText("OPEN");
-                    break;
+                        break;
                     default:
                         tfInquiryStatus.setText("");
-                    break; 
+                        break;
                 }
             });
 
@@ -996,15 +995,11 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                             poSalesInquiryController.SalesInquiry().sortPriority();
                         }
 
+                        String lsBrand = "", lsModel = "", lsModelVariant = "", lsColor = "", lsDescription = "";
                         
-                        String lsBrand = "";
-                        String lsModel = "";
-                        String lsModelVariant = "";
-                        String lsColor = "";
-                        String lsDescription = "";
                         for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
-                            if(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null 
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())){
+                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
                                 lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Brand().getDescription();
                                 lsModel = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Model().getDescription();
                                 lsModelVariant = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Variant().getDescription();
@@ -1024,8 +1019,8 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                                 }
                             }
                             lsDescription = lsModel
-                                        + lsModelVariant
-                                        + lsColor;
+                                    + lsModelVariant
+                                    + lsColor;
                             details_data.add(
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
@@ -1036,7 +1031,10 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelVarianId())
                                     ));
-                            lsBrand = "";lsModel = "";lsModelVariant = "";lsColor = "";
+                            lsBrand = "";
+                            lsModel = "";
+                            lsModelVariant = "";
+                            lsColor = "";
                         }
 
                         if (pnDetail < 0 || pnDetail
@@ -1115,8 +1113,7 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
     private void initComboBoxes() {
         // Set the items of the ComboBox to the list of genders
         JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType), new JFXUtil.Pairs<>(InquiryType, cmbInquiryType),
-                new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType), new JFXUtil.Pairs<>(CategoryType, cmbCategoryType)
-        );
+                new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType), new JFXUtil.Pairs<>(CategoryType, cmbCategoryType));
         JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbInquiryType, cmbPurchaseType, cmbCategoryType);
         JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbInquiryType, cmbPurchaseType, cmbCategoryType);
 
@@ -1247,11 +1244,6 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
         JFXUtil.setColumnLeft(tblBrandDetail, tblDescriptionDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
 
-        filteredDataDetail = new FilteredList<>(details_data, b -> true);
-
-        filteredDataDetail = new FilteredList<>(details_data, b -> true);
-//        SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
-//        sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());
         tblViewTransDetails.setItems(details_data);
         tblViewTransDetails.autosize();
     }

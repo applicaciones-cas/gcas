@@ -95,7 +95,7 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
     private FilteredList<ModelSalesInquiry_Main> filteredData;
     private FilteredList<ModelSalesInquiry_Detail> filteredDataDetail;
 
-    private int pnAttachment;
+    
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
 
@@ -1156,9 +1156,6 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
         JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
 
-        filteredDataDetail = new FilteredList<>(details_data, b -> true);
-//        SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
-//        sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());
         tblViewTransDetails.setItems(details_data);
         tblViewTransDetails.autosize();
     }

@@ -949,9 +949,6 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
         JFXUtil.setColumnLeft(tblBarcodeDetail, tblDescriptionDetail);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewTransDetails);
 
-        filteredDataDetail = new FilteredList<>(details_data, b -> true);
-//        SortedList<ModelSalesInquiry_Detail> sortedData = new SortedList<>(filteredDataDetail);
-//        sortedData.comparatorProperty().bind(tblViewTransDetails.comparatorProperty());
         tblViewTransDetails.setItems(details_data);
         tblViewTransDetails.autosize();
     }
