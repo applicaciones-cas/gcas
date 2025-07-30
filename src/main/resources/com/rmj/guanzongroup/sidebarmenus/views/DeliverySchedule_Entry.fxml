@@ -6,7 +6,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -307,7 +306,7 @@
                                                       </Label>
                                                       <TextArea fx:id="taNotes" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="54.0" GridPane.columnIndex="9" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" GridPane.rowSpan="2" />
                                                       <ComboBox fx:id="cbTruckSize" prefWidth="150.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                      <TextField fx:id="tfAllocation" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                                                      <TextField fx:id="tfAllocation" alignment="CENTER_RIGHT" maxHeight="25.0" GridPane.columnIndex="6" GridPane.rowIndex="2" />
                                                       <Label text="Allocation" GridPane.columnIndex="4" GridPane.rowIndex="2">
                                                          <font>
                                                             <Font size="12.0" />
@@ -355,7 +354,6 @@
                                                 <rowConstraints>
                                                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                                                     <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                      <RowConstraints maxHeight="47.5" minHeight="-Infinity" prefHeight="37.0" vgrow="SOMETIMES" />
                                                 </rowConstraints>
                                                 <children>
                                                     <AnchorPane minHeight="-Infinity" prefHeight="28.0" prefWidth="402.0" style="-fx-background-color: FF8201;">
@@ -384,7 +382,6 @@
                                                             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                                          </columnResizePolicy>
                                                     </TableView>
-                                                      <Pagination fx:id="pgTransaction" GridPane.rowIndex="2" />
                                                 </children>
                                             </GridPane>
                                              </children>
@@ -398,7 +395,6 @@
                                                    <rowConstraints>
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                      <RowConstraints maxHeight="47.5" minHeight="-Infinity" prefHeight="37.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
                                                       <AnchorPane minHeight="-Infinity" prefHeight="28.0" prefWidth="402.0" style="-fx-background-color: FF8201;">
@@ -426,7 +422,6 @@
                                                             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                                          </columnResizePolicy>
                                                       </TableView>
-                                                      <Pagination fx:id="pgBranchList" GridPane.rowIndex="2" />
                                                    </children>
                                                 </GridPane>
                                              </children>

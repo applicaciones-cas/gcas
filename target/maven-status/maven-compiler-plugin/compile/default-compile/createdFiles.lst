@@ -57,6 +57,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_ConfirmationMPController
 com\rmj\guanzongroup\sidebarmenus\controller\SIPosting_HistoryMonarchFoodController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrderReturn_HistoryMCController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\SIPosting_HistorySPMCController$1.class
+com\rmj\guanzongroup\sidebarmenus\controller\DeliverySchedule_EntryController$4.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_HistoryMonarchGeneralController$3.class
 com\rmj\guanzongroup\sidebarmenus\utility\JFXUtil$StageManager.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_ConfirmationMPController.class
@@ -308,6 +309,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_UpdateCarController$2.cl
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryMPController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\BrandController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\SIPosting_SPCarController$1.class
+com\rmj\guanzongroup\sidebarmenus\controller\DeliverySchedule_EntryController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryMPController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_ConfirmationMonarchHospitalityController$7.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_ConfirmationMPGeneralController$1.class
@@ -870,6 +872,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\SIPosting_HistoryAppliancesControll
 com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_ROQ_EntryMcSpController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_SerialCarController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_UpdateLPGeneralController$1.class
+com\rmj\guanzongroup\sidebarmenus\controller\DeliverySchedule_EntryController$3.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_EntryMcGeneralController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_EntryLPFoodController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrderReturn_ConfirmationAppliancesController$1.class
@@ -1059,6 +1062,7 @@ com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_UpdateMonarchFoodControl
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrderReturn_ConfirmationSPCarController.class
 com\rmj\guanzongroup\sidebarmenus\controller\CheckPrintRequest_ConfirmationController$1.class
 com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_EntryMonarchFoodController$5.class
+com\rmj\guanzongroup\sidebarmenus\controller\DeliverySchedule_EntryController$2.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_HistoryMCController.class
 com\rmj\guanzongroup\sidebarmenus\controller\DisbursementVoucher_CertificationController.class
 com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMonarchFoodController.class
