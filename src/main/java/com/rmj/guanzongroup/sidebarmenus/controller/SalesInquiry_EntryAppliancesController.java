@@ -22,7 +22,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -514,10 +513,8 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                             if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) < 0) {
                                 poSalesInquiryController.SalesInquiry().AddDetail();
                             }
-
-                            poSalesInquiryController.SalesInquiry().sortPriority();
                         }
-
+                        poSalesInquiryController.SalesInquiry().sortPriority();
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
                             String lsBarcode = "";

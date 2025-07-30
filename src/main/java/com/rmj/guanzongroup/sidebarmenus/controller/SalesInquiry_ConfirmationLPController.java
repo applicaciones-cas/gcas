@@ -23,7 +23,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,7 +33,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -63,7 +61,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
-import ph.com.guanzongroup.cas.sales.t1.SalesInquiry;
 import ph.com.guanzongroup.cas.sales.t1.services.SalesControllers;
 import ph.com.guanzongroup.cas.sales.t1.status.SalesInquiryStatic;
 
@@ -94,8 +91,6 @@ public class SalesInquiry_ConfirmationLPController implements Initializable, Scr
 
     private FilteredList<ModelSalesInquiry_Main> filteredData;
     private FilteredList<ModelSalesInquiry_Detail> filteredDataDetail;
-
-    
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
 
@@ -834,14 +829,14 @@ public class SalesInquiry_ConfirmationLPController implements Initializable, Scr
 
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
-                
-                switch(poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()){
+
+                switch (poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()) {
                     case "0":
                         tfInquiryStatus.setText("OPEN");
-                    break;
+                        break;
                     default:
                         tfInquiryStatus.setText("");
-                    break; 
+                        break;
                 }
             });
 
@@ -945,10 +940,8 @@ public class SalesInquiry_ConfirmationLPController implements Initializable, Scr
                             if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) < 0) {
                                 poSalesInquiryController.SalesInquiry().AddDetail();
                             }
-
-                            poSalesInquiryController.SalesInquiry().sortPriority();
                         }
-
+                        poSalesInquiryController.SalesInquiry().sortPriority();
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
                             String lsBarcode = "";

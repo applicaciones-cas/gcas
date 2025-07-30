@@ -23,7 +23,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -92,8 +91,6 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
 
     private FilteredList<ModelSalesInquiry_Main> filteredData;
     private FilteredList<ModelSalesInquiry_Detail> filteredDataDetail;
-
-    
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
 
@@ -879,14 +876,14 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
 
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
-                
-                switch(poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()){
+
+                switch (poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()) {
                     case "0":
                         tfInquiryStatus.setText("OPEN");
-                    break;
+                        break;
                     default:
                         tfInquiryStatus.setText("");
-                    break; 
+                        break;
                 }
             });
 
@@ -1008,10 +1005,8 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                             if (!lsBrandId.isEmpty()) {
                                 poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).setBrandId(lsBrandId);
                             }
-
-                            poSalesInquiryController.SalesInquiry().sortPriority();
                         }
-
+                        poSalesInquiryController.SalesInquiry().sortPriority();
                         
                         String lsBrand = "";
                         String lsModel = "";
@@ -1019,8 +1014,8 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                         String lsColor = "";
                         String lsDescription = "";
                         for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
-                            if(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null 
-                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())){
+                            if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null
+                                    && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
                                 lsBrand = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Brand().getDescription();
                                 lsModel = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Model().getDescription();
                                 lsModelVariant = " " + poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().Variant().getDescription();
@@ -1040,8 +1035,8 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                                 }
                             }
                             lsDescription = lsModel
-                                        + lsModelVariant
-                                        + lsColor;
+                                    + lsModelVariant
+                                    + lsColor;
                             details_data.add(
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
@@ -1052,7 +1047,10 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelVarianId())
                                     ));
-                            lsBrand = "";lsModel = "";lsModelVariant = "";lsColor = "";
+                            lsBrand = "";
+                            lsModel = "";
+                            lsModelVariant = "";
+                            lsColor = "";
                         }
 
                         if (pnDetail < 0 || pnDetail
@@ -1208,9 +1206,9 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                                     continue;
                                 }
                             } catch (SQLException ex) {
-                                Logger.getLogger(SalesInquiry_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                             } catch (GuanzonException ex) {
-                                Logger.getLogger(SalesInquiry_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                             }
                             try {
 //                                System.out.println(d.getIndex02() +" - "+priorityStr);

@@ -541,10 +541,8 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                             if (!lsBrandId.isEmpty()) {
                                 poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).setBrandId(lsBrandId);
                             }
-
-                            poSalesInquiryController.SalesInquiry().sortPriority();
                         }
-
+                        poSalesInquiryController.SalesInquiry().sortPriority();
                         String lsBrand = "";
                         String lsModel = "";
                         String lsModelVariant = "";

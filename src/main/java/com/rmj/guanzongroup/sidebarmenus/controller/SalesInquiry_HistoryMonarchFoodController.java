@@ -217,14 +217,14 @@ public class SalesInquiry_HistoryMonarchFoodController implements Initializable,
                 statusMap.put(SalesInquiryStatic.CANCELLED, "CANCELLED");
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
-                
-                switch(poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()){
+
+                switch (poSalesInquiryController.SalesInquiry().Master().getInquiryStatus()) {
                     case "0":
                         tfInquiryStatus.setText("OPEN");
-                    break;
+                        break;
                     default:
                         tfInquiryStatus.setText("");
-                    break; 
+                        break;
                 }
             });
 
@@ -364,7 +364,7 @@ public class SalesInquiry_HistoryMonarchFoodController implements Initializable,
                             }
 
                         }
-
+                        poSalesInquiryController.SalesInquiry().sortPriority();
                         double lnTotal = 0.0;
                         for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
                             String lsBarcode = "";

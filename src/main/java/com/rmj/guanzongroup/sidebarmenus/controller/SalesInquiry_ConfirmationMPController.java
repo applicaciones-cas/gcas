@@ -23,7 +23,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -92,8 +91,6 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
 
     private FilteredList<ModelSalesInquiry_Main> filteredData;
     private FilteredList<ModelSalesInquiry_Detail> filteredDataDetail;
-
-    
 
     private final Map<String, List<String>> highlightedRowsMain = new HashMap<>();
 
@@ -991,12 +988,10 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                             if (!lsBrandId.isEmpty()) {
                                 poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).setBrandId(lsBrandId);
                             }
-
-                            poSalesInquiryController.SalesInquiry().sortPriority();
                         }
-
+                        poSalesInquiryController.SalesInquiry().sortPriority();
                         String lsBrand = "", lsModel = "", lsModelVariant = "", lsColor = "", lsDescription = "";
-                        
+
                         for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
                             if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null
                                     && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
@@ -1188,9 +1183,9 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                                     continue;
                                 }
                             } catch (SQLException ex) {
-                                Logger.getLogger(SalesInquiry_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                             } catch (GuanzonException ex) {
-                                Logger.getLogger(SalesInquiry_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                             }
                             try {
                                 /*System.out.println(d.getIndex02() +" - "+priorityStr);*/
