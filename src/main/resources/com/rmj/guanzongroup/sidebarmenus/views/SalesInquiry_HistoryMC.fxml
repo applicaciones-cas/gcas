@@ -150,7 +150,6 @@
                                                       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                       <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                       <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" />
-                                                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                       </columnConstraints>
                                                                       <rowConstraints>
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
@@ -158,11 +157,11 @@
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                   <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="10.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                           <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                       </rowConstraints>
                                                                       <children>
@@ -204,10 +203,10 @@
                                                                           <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                                               <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                                           <TextField fx:id="tfBranch" disable="true" editable="false" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                                  <TextField fx:id="tfSalesPerson" layoutX="100.0" layoutY="135.0" maxHeight="25.0"   GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                                  <TextField fx:id="tfInquirySource" layoutX="100.0" layoutY="135.0" maxHeight="25.0"   GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                                  <TextField fx:id="tfSalesPerson" layoutX="100.0" layoutY="135.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="tfInquirySource" layoutX="100.0" layoutY="135.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
                                                                   <ComboBox fx:id="cmbClientType" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-                                                                  <TextField fx:id="tfClient" layoutX="85.0" layoutY="78.0" maxHeight="25.0"   GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                                                                  <TextField fx:id="tfClient" layoutX="85.0" layoutY="78.0" maxHeight="25.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="8" />
                                                                   <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="85.0" layoutY="203.0" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="9" />
                                                       <TextArea fx:id="taRemarks" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="10">
                                                          <GridPane.margin>
@@ -276,12 +275,11 @@
                                                                           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
                                                       <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                           <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="200.0" />
-                                                                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="10.0" />
                                                                       </columnConstraints>
                                                                       <rowConstraints>
                                                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
                                                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="28.0" vgrow="SOMETIMES" />
                                                                       </rowConstraints>
                                                                       <children>
                                                                           <Label text="Brand">
@@ -300,9 +298,9 @@
                                                                                  <font>
                                                                                     <Font size="12.0" />
                                                                                  </font></Label>
-                                                                          <TextField fx:id="tfBrand" maxHeight="25.0"   GridPane.columnIndex="2" />
-                                                                              <TextField fx:id="tfModel"   GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                                          <TextField fx:id="tfColor" maxHeight="25.0"   GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                                          <TextField fx:id="tfBrand" maxHeight="25.0" GridPane.columnIndex="2" />
+                                                                              <TextField fx:id="tfModel" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                                          <TextField fx:id="tfColor" maxHeight="25.0" GridPane.columnIndex="7" GridPane.rowIndex="1" />
                                                                           <TextField fx:id="tfBarcode" disable="true" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                   <Label layoutX="55.0" layoutY="46.0" text="Model Variant" GridPane.rowIndex="2">
                                                                      <font>
