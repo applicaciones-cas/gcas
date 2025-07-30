@@ -1756,9 +1756,9 @@ public class JFXUtil {
                     if (targetIndex == dragIndex || targetIndex == dragIndex + 1) {
                         row.setStyle("");
                     } else if (isTopHalf) {
-                        row.setStyle("-fx-border-color: #2196F3; -fx-border-width: 2px 0 0 0;");
+                        row.setStyle("-fx-border-color: #FF8201; -fx-border-width: 2px 0 0 0;");
                     } else {
-                        row.setStyle("-fx-border-color: #2196F3; -fx-border-width: 0 0 2px 0;");
+                        row.setStyle("-fx-border-color: #FF8201; -fx-border-width: 0 0 2px 0;");
                     }
 
                     tableView.getProperties().put("highlightIndex", targetIndex);
