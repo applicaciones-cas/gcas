@@ -495,8 +495,9 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poSalesInquiryController.SalesInquiry().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
-                                    
+                                if ((poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()))
+                                        && (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()== null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()))) {
+                                   
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
                                         poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
                                     }
@@ -507,8 +508,10 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
                             }
 
                             if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) >= 0) {
-                                if (poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId() != null
-                                        && !"".equals(poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId())) {
+                                if ((poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId() != null
+                                        && !"".equals(poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId()))
+                                    || (poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId()!= null
+                                        && !"".equals(poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId()))) {
                                     poSalesInquiryController.SalesInquiry().AddDetail();
                                 }
                             }

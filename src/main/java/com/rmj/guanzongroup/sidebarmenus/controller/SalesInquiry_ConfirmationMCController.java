@@ -959,7 +959,9 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             lnCtr = poSalesInquiryController.SalesInquiry().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId() == null || poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId().equals("")) {
+                                if ((poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()))
+                                        && (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()== null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()))) {
+                                    
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId() != null
                                             && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
                                         lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
@@ -975,8 +977,10 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                             }
 
                             if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) >= 0) {
-                                if (poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId() != null
-                                        && !poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId().equals("")) {
+                                if ((poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId() != null
+                                        && !"".equals(poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId()))
+                                    || (poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId()!= null
+                                        && !"".equals(poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId()))) {
                                     poSalesInquiryController.SalesInquiry().AddDetail();
                                 }
                             }
