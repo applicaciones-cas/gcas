@@ -705,7 +705,7 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                     if (lsValue.isEmpty()) {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
-                                if (poSalesInquiryController.SalesInquiry().getDetailCount() > 1) {
+                                if (poSalesInquiryController.SalesInquiry().getDetailCount() > 0) {
                                     if (!pbKeyPressed) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
