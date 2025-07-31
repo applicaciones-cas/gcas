@@ -577,25 +577,12 @@ public class SalesInquiry_HistoryMPController implements Initializable, ScreenIn
         tblViewTransDetails.setItems(sortedData);
         tblViewTransDetails.autosize();
     }
-
     public void loadRecordSearch() {
         try {
             lblSource.setText(poSalesInquiryController.SalesInquiry().Master().Company().getCompanyName() + " - " + poSalesInquiryController.SalesInquiry().Master().Industry().getDescription());
+            tfSearchClient.setText(psSearchClientId.equals("") ? "" : poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
 
-            if (psClientId.equals("")) {
-                tfSearchClient.setText("");
-            } else {
-                tfSearchClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
-            }
-
-            try {
-                if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
-                    tfSearchReferenceNo.setText("");
-                }
-            } catch (Exception e) {
-                tfSearchReferenceNo.setText("");
-            }
-
+            tfSearchReferenceNo.setText("");
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
