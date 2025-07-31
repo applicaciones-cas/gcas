@@ -272,3 +272,249 @@ Jul 30, 2025 6:13:46 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
 Jul 30, 2025 6:13:55 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Delivery Schedule Entry :Data truncation: Incorrect datetime value: '' for column 'dModified' at row 1
+Jul 30, 2025 6:19:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:19:24 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:19:41 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:19:41 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:21:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :Data truncation: Incorrect datetime value: '' for column 'dModified' at row 1
+Jul 30, 2025 6:22:08 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:22:12 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:22:35 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:22:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:22:56 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :Guanzon Object Execution Sequence Error
+Jul 30, 2025 6:25:24 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:25:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:25:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:25:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:25:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :Column 'sClustrID' cannot be null
+Jul 30, 2025 6:25:53 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :Guanzon Object Execution Sequence Error
+Jul 30, 2025 6:27:40 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:27:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:27:47 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:27:48 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:27:54 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :Column 'sClustrID' cannot be null
+Jul 30, 2025 6:31:39 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:31:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:31:47 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:31:48 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:32:01 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :Column 'sClustrID' cannot be null
+Jul 30, 2025 6:34:14 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:34:22 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:34:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:34:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:37:15 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :Guanzon Object Execution Sequence Error
+Jul 30, 2025 6:38:23 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:38:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:38:33 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:38:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:41:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:41:23 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:41:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:41:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:43:11 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:43:14 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:43:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:43:18 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:43:26 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :Column 'sClustrID' cannot be null
+Jul 30, 2025 6:45:57 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:46:05 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:46:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:46:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:47:09 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :Guanzon Object Execution Sequence Error
+Jul 30, 2025 6:49:39 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:49:46 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:50:01 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to Search Cluster! 
+Jul 30, 2025 6:50:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 6:50:30 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Save Transaction
+Jul 30, 2025 6:53:26 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :No record loaded.
+Jul 30, 2025 6:56:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:56:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 6:56:38 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to  Search Transaction!
+Jul 30, 2025 6:56:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to  Search Transaction!
+Jul 30, 2025 6:57:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:57:16 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to  Search Transaction!
+Jul 30, 2025 6:57:50 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Transaction List
+Jul 30, 2025 6:57:52 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Open Transaction
+Jul 30, 2025 6:58:24 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :No record loaded.
+Jul 30, 2025 6:58:33 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 6:58:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to  Search Transaction!
+Jul 30, 2025 7:00:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to  Search Transaction!
+Jul 30, 2025 7:01:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Delivery Schedule Entry :No record loaded.
+Jul 30, 2025 7:01:50 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Unable to  Search Transaction!
+Jul 30, 2025 7:03:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 30, 2025 7:04:08 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 7:04:19 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on  Search Cluster! 
+Jul 30, 2025 7:04:20 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 30, 2025 7:04:41 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Save Transaction
+Jul 30, 2025 7:05:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 30, 2025 7:07:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 30, 2025 7:08:15 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 30, 2025 7:10:25 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 7:14:54 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 30, 2025 7:17:36 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 30, 2025 7:17:45 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 30, 2025 7:18:36 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 8:38:06 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 8:38:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 8:38:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 31, 2025 8:41:49 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 8:43:57 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 8:45:23 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 31, 2025 8:47:51 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 8:47:55 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 31, 2025 8:48:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 8:48:07 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 8:48:37 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 8:48:50 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 31, 2025 8:49:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Transaction List
+Jul 31, 2025 8:49:07 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Open Transaction
+Jul 31, 2025 8:49:15 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Open Transaction
+Jul 31, 2025 8:49:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Open Transaction
+Jul 31, 2025 8:49:25 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 31, 2025 10:20:05 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 31, 2025 10:20:19 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Open Transaction
+Jul 31, 2025 10:20:29 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 31, 2025 10:20:37 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 10:20:49 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 10:21:12 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 2:31:25 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 2:31:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 2:31:39 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 3:06:33 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 3:06:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 3:06:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 3:07:39 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 3:07:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 3:11:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 3:11:38 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List
+Jul 31, 2025 3:11:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Update Transaction
+Jul 31, 2025 3:26:35 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 3:26:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 31, 2025 3:26:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 3:28:51 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize Transaction
+Jul 31, 2025 3:28:55 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize New Transaction
+Jul 31, 2025 3:29:04 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Search Transaction!
+Jul 31, 2025 3:29:04 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Delivery Schedule Entry : Success on Initialize : Load of Branch Cluster Delivery List

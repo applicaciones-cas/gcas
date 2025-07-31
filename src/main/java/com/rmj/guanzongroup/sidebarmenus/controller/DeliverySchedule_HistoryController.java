@@ -65,7 +65,7 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.parameter.model.Model_Branch_Oth
  *
  * @author 12mnv
  */
-public class DeliverySchedule_EntryController implements Initializable, ScreenInterface {
+public class DeliverySchedule_HistoryController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private String psIndustryID = "";
@@ -100,8 +100,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
     @FXML
     private Label lblSource, lblStatus;
     @FXML
-    private Button btnNew, btnUpdate, btnSearch, btnSave,
-            btnCancel, btnHistory, btnRetrieve,
+    private Button btnSearch, btnHistory, btnRetrieve,
             btnClose;
     @FXML
     private TextArea taRemarks, taNotes;
@@ -167,7 +166,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliverySchedule_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -177,12 +176,6 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         String lsButton = ((Button) event.getSource()).getId();
         try {
             switch (lsButton) {
-                case "btnUpdate":
-                    if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize Update Transaction")) {
-                        return;
-                    }
-                    pnEditMode = poAppController.getEditMode();
-                    break;
                 case "btnSearch":
                     if (lastFocusedControl == null) {
                         ShowMessageFX.Information(null, psFormName,
@@ -235,43 +228,6 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
                     }
                     break;
-                case "btnNew":
-                    if (!isJSONSuccess(poAppController.newTransaction(), "Initialize New Transaction")) {
-                        return;
-                    }
-                    getLoadedTransaction();
-                    pnEditMode = poAppController.getEditMode();
-                    break;
-                case "btnSave":
-                    if (!isJSONSuccess(poAppController.saveTransaction(), "Initialize Save Transaction")) {
-                        return;
-                    }
-                    clearAllInputs();
-                    reloadTableDetail();
-                    pnEditMode = poAppController.getEditMode();
-                    break;
-                case "btnCancel":
-                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
-                        poAppController = new DeliveryScheduleControllers(poApp, poLogWrapper).DeliverySchedule();
-                        poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
-
-                        if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
-                            unloadForm appUnload = new unloadForm();
-                            appUnload.unloadForm(apMainAnchor, poApp, psFormName);
-                        }
-
-                        Platform.runLater(() -> {
-                            poAppController.getMaster().setIndustryId(psIndustryID);
-                            poAppController.setIndustryID(psIndustryID);
-                            poAppController.setCompanyID(psCompanyID);
-                            poAppController.setCategoryID(psCategoryID);
-                            clearAllInputs();
-                        });
-                        pnEditMode = poAppController.getEditMode();
-                        break;
-                    } else {
-                        return;
-                    }
                 case "btnHistory":
                     ShowMessageFX.Information(null, psFormName,
                             "This feature is under development and will be available soon.\nThank you for your patience!");
@@ -322,7 +278,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             initButtonDisplay(poAppController.getEditMode());
 
         } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliverySchedule_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
         }
@@ -350,7 +306,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 }
                 getLoadedTransaction();
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DeliverySchedule_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
 
             }
@@ -375,7 +331,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 loadSelectedTransactionDetail(pnClusterDetail);
             }
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliverySchedule_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -421,18 +377,14 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 TextField loControlField = (TextField) loControl;
                 controllerFocusTracker(loControl);
                 loControlField.setOnKeyPressed(this::txtField_KeyPressed);
-                loControlField.focusedProperty().addListener(txtField_Focus);
 
             } else if (loControl instanceof TextArea) {
                 TextArea loControlField = (TextArea) loControl;
                 controllerFocusTracker(loControl);
                 loControlField.setOnKeyPressed(this::txtArea_KeyPressed);
-                loControlField.focusedProperty().addListener(txtArea_Focus);
             } else if (loControl instanceof DatePicker) {
                 DatePicker loControlField = (DatePicker) loControl;
                 controllerFocusTracker(loControlField);
-                loControlField.focusedProperty().addListener(dPicker_Focus);
-                loControlField.getEditor().setOnKeyPressed(event -> dPicker_KeyPressed(event, loControlField));
             }
         }
 
@@ -505,32 +457,10 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true, "btnSearch", "btnRetrieve", "btnClose");
-
-        // Show-only based on mode
-        initButtonControls(lbShow, "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnNew", "btnUpdate", "btnHistory");
+        initButtonControls(true, "btnSearch", "btnHistory", "btnRetrieve", "btnClose");
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
     }
-
-    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
-        TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTextFieldID = loTextField.getId();
-        String lsValue = loTextField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTextFieldID) {
-            }
-        } else {
-            loTextField.selectAll();
-        }
-    };
 
     private void txtField_KeyPressed(KeyEvent event) {
         TextField loTxtField = (TextField) event.getSource();
@@ -541,70 +471,20 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         } else {
             lsValue = loTxtField.getText();
         }
-        try {
-            if (null != event.getCode()) {
-                switch (event.getCode()) {
-                    case TAB:
-                    case ENTER:
-                    case F3:
-                        switch (txtFieldID) {
+        if (null != event.getCode()) {
+            switch (event.getCode()) {
+                case TAB:
+                case ENTER:
+                case UP:
+                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                    return;
+                case DOWN:
+                    CommonUtils.SetNextFocus(loTxtField);
+                    return;
 
-                            //Search Pane
-                            case "tfSearchCluster":
-                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, true, true),
-                                        "Search Transaction!")) {
-                                }
-                                getLoadedTransaction();
-                                return;
-                            //Detail Pane
-                            case "tfClusterName":
-                                if (!isJSONSuccess(poAppController.searchClusterBranch(pnClusterDetail, lsValue, false),
-                                        " Search Cluster! ")) {
-                                }
-                                loadSelectedTransactionDetail(pnClusterDetail);
-                                return;
-
-                            default:
-                                CommonUtils.SetNextFocus((TextField) event.getSource());
-                                return;
-                        }
-                    case UP:
-                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
-                        return;
-                    case DOWN:
-                        CommonUtils.SetNextFocus(loTxtField);
-                        return;
-
-                }
             }
-        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
-
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
-        TextArea loTextArea = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsTextAreaID = loTextArea.getId();
-        String lsValue = loTextArea.getText();
-        if (lsValue == null) {
-            return;
-        }
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsTextAreaID) {
-                case "taRemarks":
-                    poAppController.getMaster().setRemarks(lsValue);
-                    break;
-
-                case "taNotes":
-                    poAppController.getDetail(pnClusterDetail).setRemarks(lsValue);
-                    break;
-            }
-        } else {
-            loTextArea.selectAll();
-        }
-    };
 
     private void txtArea_KeyPressed(KeyEvent event) {
         TextArea loTxtArea = (TextArea) event.getSource();
@@ -613,8 +493,6 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 case TAB:
                 case ENTER:
                 case F3:
-                    CommonUtils.SetNextFocus((TextArea) event.getSource());
-                    return;
                 case UP:
                     CommonUtils.SetPreviousFocus((TextArea) event.getSource());
                     return;
@@ -623,75 +501,6 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     return;
 
             }
-        }
-    }
-    final ChangeListener<? super Boolean> dPicker_Focus = (o, ov, nv) -> {
-        DatePicker loDatePicker = (DatePicker) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsDatePickerID = loDatePicker.getId();
-        LocalDate loValue = loDatePicker.getValue();
-
-        if (loValue == null) {
-            return;
-        }
-        Date ldDateValue = Date.from(loValue.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        if (!nv) {
-            /*Lost Focus*/
-            switch (lsDatePickerID) {
-                case "dpTransactionDate":
-                    poAppController.getMaster().setTransactionDate((ldDateValue));
-                    return;
-                case "dpScheduleDate":
-                    poAppController.getMaster().setScheduleDate((ldDateValue));
-                    return;
-
-            }
-        } else {
-            loDatePicker.setValue(loValue);
-        }
-    };
-
-    private void dPicker_KeyPressed(KeyEvent event, DatePicker loDatePicker) {
-        String lsDatePickerID = loDatePicker.getId();
-        LocalDate loValue = loDatePicker.getValue();
-
-        try {
-            if (loValue == null) {
-                lsDatePickerID = null;
-                loDatePicker.getEditor().requestFocus();
-                return;
-
-            }
-            Date ldDateValue = Date.from(loValue.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            if (null != event.getCode()) {
-                switch (event.getCode()) {
-                    case TAB:
-                    case ENTER:
-                    case F3:
-                        switch (lsDatePickerID) {
-                            //retrieve only
-                            case "dpSearchDate":
-                                if (!isJSONSuccess(poAppController.searchTransaction(SQLUtil.dateFormat(ldDateValue, SQLUtil.FORMAT_SHORT_DATE), false, true),
-                                        "earch Transaction!! BY Date")) {
-
-                                    return;
-                                }
-                                getLoadedTransaction();
-
-                                return;
-
-                            case "dpSearchScheduleDate":
-                                if (!isJSONSuccess(poAppController.searchTransaction(SQLUtil.dateFormat(ldDateValue, SQLUtil.FORMAT_SHORT_DATE), false, false),
-                                        "Search Transaction!! BY Schedule Date")) {
-                                    return;
-                                }
-                                getLoadedTransaction();
-                                return;
-                        }
-                }
-            }
-        } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
-            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
 
@@ -765,7 +574,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     String desc = loModel.getValue().BranchCluster().getClusterDescription();
                     return new SimpleStringProperty(desc != null ? desc : "");
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeliverySchedule_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
                 }
@@ -785,7 +594,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                         }
                     }
                 } catch (Exception ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeliverySchedule_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("UNKNOWN");
                 }
@@ -804,7 +613,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                         }
                     }
                 } catch (Exception ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeliverySchedule_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                 }
                 return new SimpleStringProperty("0");
@@ -881,7 +690,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     apDetail.setDisable(false);
                     reloadTableDetail();
                 } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeliverySchedule_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                 }
             }
@@ -965,7 +774,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                         return new SimpleStringProperty(loModel.getValue().Branch().getBranchName());
 
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(DeliverySchedule_EntryController.class
+                        Logger.getLogger(DeliverySchedule_HistoryController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                         poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                         return new SimpleStringProperty("");
@@ -977,7 +786,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                         return new SimpleStringProperty(loModel.getValue().Branch().getAddress());
 
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(DeliverySchedule_EntryController.class
+                        Logger.getLogger(DeliverySchedule_HistoryController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                         poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                         return new SimpleStringProperty("");
@@ -1053,7 +862,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 overlay.setVisible(false);
                 pi.setVisible(false);
                 Throwable ex = getException();
-                Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DeliverySchedule_HistoryController.class.getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }
 
