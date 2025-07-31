@@ -884,7 +884,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfModel.setText("");
+                                tfColor.setText("");
                                 break;
                             } else {
                                 loadTableDetail();
