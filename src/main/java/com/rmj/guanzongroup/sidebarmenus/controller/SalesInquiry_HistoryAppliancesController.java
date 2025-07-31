@@ -72,7 +72,7 @@ public class SalesInquiry_HistoryAppliancesController implements Initializable, 
     private String psCompanyId = "";
     private String psCategoryId = "";
     private String psClientId = "";
-
+    private String psSearchClientId = "";
     private ObservableList<ModelSalesInquiry_Detail> details_data = FXCollections.observableArrayList();
     private FilteredList<ModelSalesInquiry_Detail> filteredDataDetail;
 
@@ -209,7 +209,7 @@ public class SalesInquiry_HistoryAppliancesController implements Initializable, 
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
-                statusMap.put(SalesInquiryStatic.QUOTED , "QUOTED");
+                statusMap.put(SalesInquiryStatic.QUOTED, "QUOTED");
                 statusMap.put(SalesInquiryStatic.SALE, "SALE");
                 statusMap.put(SalesInquiryStatic.CONFIRMED, "CONFIRMED");
                 statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
@@ -413,7 +413,7 @@ public class SalesInquiry_HistoryAppliancesController implements Initializable, 
             switch (lsTxtFieldID) {
                 case "tfSearchClient":
                     if (lsValue.equals("")) {
-                        psClientId = "";
+                        psSearchClientId = "";
                     }
                     break;
 
@@ -469,11 +469,10 @@ public class SalesInquiry_HistoryAppliancesController implements Initializable, 
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchClient.setText("");
-                                psClientId = "";
+                                psSearchClientId = "";
                                 break;
-                            } else {
-                                psClientId = poSalesInquiryController.SalesInquiry().Master().getClientId();
                             }
+                            psSearchClientId = poSalesInquiryController.SalesInquiry().Master().getClientId();
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
@@ -577,7 +576,7 @@ public class SalesInquiry_HistoryAppliancesController implements Initializable, 
     }
 
     public void clearTextFields() {
-        JFXUtil.setValueToNull(previousSearchedTextField, lastFocusedTextField, dpTransactionDate);
+        psSearchClientId = "";
         JFXUtil.clearTextFields(apMaster, apDetail, apBrowse);
     }
 }
