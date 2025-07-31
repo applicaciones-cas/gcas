@@ -965,7 +965,7 @@ public class SalesInquiry_ConfirmationMPController implements Initializable, Scr
                                     }
 
                                     if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
-//                                        poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
+                                        poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
                                     }
 
                                     poSalesInquiryController.SalesInquiry().Detail().remove(lnCtr);

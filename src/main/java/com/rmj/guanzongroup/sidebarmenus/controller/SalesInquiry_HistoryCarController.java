@@ -344,6 +344,11 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                                             && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
                                         lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
                                     }
+                                    
+                                    if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
+                                        poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
+                                    }
+                                    
                                     poSalesInquiryController.SalesInquiry().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;

@@ -495,6 +495,11 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
                             lnCtr = poSalesInquiryController.SalesInquiry().getDetailCount() - 1;
                             while (lnCtr >= 0) {
                                 if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId())) {
+                                    
+                                    if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
+                                        poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
+                                    }
+                                    
                                     poSalesInquiryController.SalesInquiry().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;
