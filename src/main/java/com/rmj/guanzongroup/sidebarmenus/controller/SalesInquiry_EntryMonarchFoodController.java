@@ -728,6 +728,8 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfClient.setText("");
                                 break;
+                            } else {
+                                JFXUtil.focusFirstTextField(apDetail);
                             }
                             loadRecordMaster();
                             return;

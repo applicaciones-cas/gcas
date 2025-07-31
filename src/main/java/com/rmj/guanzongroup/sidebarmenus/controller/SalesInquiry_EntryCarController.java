@@ -827,6 +827,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfClient.setText("");
                                 break;
+                            } else {
+                                JFXUtil.focusFirstTextField(apDetail);
                             }
                             loadRecordMaster();
                             return;
