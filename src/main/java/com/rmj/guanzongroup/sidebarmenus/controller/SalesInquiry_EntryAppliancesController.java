@@ -329,7 +329,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
-                statusMap.put(SalesInquiryStatic.QUOTED , "QUOTED");
+                statusMap.put(SalesInquiryStatic.QUOTED, "QUOTED");
                 statusMap.put(SalesInquiryStatic.SALE, "SALE");
                 statusMap.put(SalesInquiryStatic.CONFIRMED, "CONFIRMED");
                 statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
@@ -368,11 +368,15 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
             if (pnEditMode != EditMode.UNKNOWN) {
                 cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
                 cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
+
                 if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
+
                     cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().Client().getClientType()));
+//
                 } else {
                     cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getClientType()));
                 }
+
                 cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getCategoryType()));
             } else {
                 cmbInquiryType.getSelectionModel().select(0);
@@ -658,9 +662,30 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                     break;
                 case "tfClient":
                     if (lsValue.isEmpty()) {
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
+                                if (poSalesInquiryController.SalesInquiry().getDetailCount() > 1) {
+                                    if (!pbKeyPressed) {
+                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
+                                            poJSON = poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                                            poJSON = poSalesInquiryController.SalesInquiry().Master().setAddressId("");
+                                            poJSON = poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                                            poSalesInquiryController.SalesInquiry().removeSalesInquiryDetails();
+                                            loadTableDetail();
+                                        } else {
+                                            loadRecordMaster();
+                                            return;
+                                        }
+                                    } else {
+                                        loadRecordMaster();
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+
                         poJSON = poSalesInquiryController.SalesInquiry().Master().setClientId("");
-                        poJSON = poSalesInquiryController.SalesInquiry().Master().setAddressId("");
-                        poJSON = poSalesInquiryController.SalesInquiry().Master().setContactId("");
                     }
                     break;
 
@@ -725,6 +750,19 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                 case F3:
                     switch (lsID) {
                         case "tfClient":
+                            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                                if (poSalesInquiryController.SalesInquiry().getDetailCount() > 1) {
+                                    pbKeyPressed = true;
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                            "Are you sure you want to change the client name?\nPlease note that doing so will delete all sales inquiry details.\n\nDo you wish to proceed?") == true) {
+                                        poSalesInquiryController.SalesInquiry().removeSalesInquiryDetails();
+                                        loadTableDetail();
+                                    } else {
+                                        return;
+                                    }
+                                    pbKeyPressed = false;
+                                }
+                            }
                             poJSON = poSalesInquiryController.SalesInquiry().SearchClient(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -852,36 +890,51 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
         }
     }
     final EventHandler<ActionEvent> comboBoxActionListener = event -> {
-        Object source = event.getSource();
-        @SuppressWarnings("unchecked")
-        ComboBox<?> cb = (ComboBox<?>) source;
+        Platform.runLater(() -> {
+            Object source = event.getSource();
+            @SuppressWarnings("unchecked")
+            ComboBox<?> cb = (ComboBox<?>) source;
 
-        String cbId = cb.getId();
-        int selectedIndex = cb.getSelectionModel().getSelectedIndex();
-        switch (cbId) {
-            case "cmbClientType":
-                //if client type is changed then remove the client 
-                if (!poSalesInquiryController.SalesInquiry().Master().getClientType().equals(selectedIndex)) {
-                    poSalesInquiryController.SalesInquiry().Master().setClientId("");
-                    poSalesInquiryController.SalesInquiry().Master().setAddressId("");
-                    poSalesInquiryController.SalesInquiry().Master().setContactId("");
-                }
-                poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
-                break;
-            case "cmbInquiryType":
-                poSalesInquiryController.SalesInquiry().Master().setSourceCode(String.valueOf(selectedIndex));
-                break;
-            case "cmbPurchaseType":
-                poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
-                break;
-            case "cmbCategoryType":
-                poSalesInquiryController.SalesInquiry().Master().setCategoryType(String.valueOf(selectedIndex));
-                break;
-            default:
-                System.out.println("⚠ Unrecognized ComboBox ID: " + cbId);
-                break;
-        }
-        loadRecordMaster();
+            String cbId = cb.getId();
+            int selectedIndex = cb.getSelectionModel().getSelectedIndex();
+            switch (cbId) {
+                case "cmbClientType":
+                    if (!poSalesInquiryController.SalesInquiry().Master().getClientType().equals(String.valueOf(selectedIndex))) {
+                        if (poSalesInquiryController.SalesInquiry().getDetailCount() > 0) {
+                            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(0).getStockId(), null, "")) {
+                                if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                        "Are you sure you want to change the client name?\nPlease note that doing so will delete all sales inquiry details.\n\nDo you wish to proceed?") == true) {
+                                    poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                                    poSalesInquiryController.SalesInquiry().Master().setAddressId("");
+                                    poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                                    poSalesInquiryController.SalesInquiry().removeSalesInquiryDetails();
+                                    poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
+                                    loadTableDetail();
+                                }
+                            } else {
+                                poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                                poSalesInquiryController.SalesInquiry().Master().setAddressId("");
+                                poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                                poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
+                            }
+                        }
+                    }
+                    break;
+                case "cmbInquiryType":
+                    poSalesInquiryController.SalesInquiry().Master().setSourceCode(String.valueOf(selectedIndex));
+                    break;
+                case "cmbPurchaseType":
+                    poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
+                    break;
+                case "cmbCategoryType":
+                    poSalesInquiryController.SalesInquiry().Master().setCategoryType(String.valueOf(selectedIndex));
+                    break;
+                default:
+                    System.out.println("⚠ Unrecognized ComboBox ID: " + cbId);
+                    break;
+            }
+            loadRecordMaster();
+        });
     };
 
     private void initComboBoxes() {
