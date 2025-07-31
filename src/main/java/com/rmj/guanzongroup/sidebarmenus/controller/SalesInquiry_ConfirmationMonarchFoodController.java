@@ -922,38 +922,12 @@ public class SalesInquiry_ConfirmationMonarchFoodController implements Initializ
                     try {
 
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnCtr = poSalesInquiryController.SalesInquiry().getDetailCount() - 1;
-                            while (lnCtr >= 0) {
-                                if ((poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()))
-                                        && (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()== null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()))) {
-                                    
-                                    if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
-                                        poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
-                                    }
-                                    
-                                    poSalesInquiryController.SalesInquiry().Detail().remove(lnCtr);
-                                }
-                                lnCtr--;
-                            }
-
-                            if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) >= 0) {
-                                if ((poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId() != null
-                                        && !"".equals(poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId()))
-                                    || (poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId()!= null
-                                        && !"".equals(poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId()))) {
-                                    poSalesInquiryController.SalesInquiry().AddDetail();
-                                }
-                            }
-
-                            if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) < 0) {
-                                poSalesInquiryController.SalesInquiry().AddDetail();
-                            }
+                            poSalesInquiryController.SalesInquiry().loadDetail();
                         }
                         poSalesInquiryController.SalesInquiry().sortPriority();
-                        double lnTotal = 0.0;
+                        String lsBarcode = "";
+                        String lsDescription = "";
                         for (lnCtr = 0; lnCtr < poSalesInquiryController.SalesInquiry().getDetailCount(); lnCtr++) {
-                            String lsBarcode = "";
-                            String lsDescription = "";
                             if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() != null) {
                                 lsBarcode = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getBarCode();
                                 lsDescription = poSalesInquiryController.SalesInquiry().Detail(lnCtr).Inventory().getDescription();
@@ -967,6 +941,8 @@ public class SalesInquiry_ConfirmationMonarchFoodController implements Initializ
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Model().getModelId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).Color().getColorId()), ""
                                     ));
+                            lsBarcode = "";
+                            lsDescription = "";
                         }
 
                         if (pnDetail < 0 || pnDetail

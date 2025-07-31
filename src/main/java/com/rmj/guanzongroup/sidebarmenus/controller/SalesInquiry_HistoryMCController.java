@@ -336,44 +336,8 @@ public class SalesInquiry_HistoryMCController implements Initializable, ScreenIn
                     details_data.clear();
                     try {
 
-                        String lsBrandId = "";
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnCtr = poSalesInquiryController.SalesInquiry().getDetailCount() - 1;
-                            while (lnCtr >= 0) {
-                                if ((poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId() == null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getStockId()))
-                                        && (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()== null || "".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()))) {
-                                    
-                                    if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId() != null
-                                            && !"".equals(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId())) {
-                                        lsBrandId = poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId();
-                                    }
-                                    
-                                    if (poSalesInquiryController.SalesInquiry().Detail(lnCtr).getEditMode() == EditMode.UPDATE) {
-                                        poSalesInquiryController.SalesInquiry().removeDetail(poSalesInquiryController.SalesInquiry().Detail(lnCtr));
-                                    }
-                                    
-                                    poSalesInquiryController.SalesInquiry().Detail().remove(lnCtr);
-                                }
-                                lnCtr--;
-                            }
-
-                            if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) >= 0) {
-                                if ((poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId() != null
-                                        && !"".equals(poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getStockId()))
-                                    || (poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId()!= null
-                                        && !"".equals(poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).getModelId()))) {
-                                    poSalesInquiryController.SalesInquiry().AddDetail();
-                                }
-                            }
-
-                            if ((poSalesInquiryController.SalesInquiry().getDetailCount() - 1) < 0) {
-                                poSalesInquiryController.SalesInquiry().AddDetail();
-                            }
-
-                            //Set brand Id to last row
-                            if (!lsBrandId.isEmpty()) {
-                                poSalesInquiryController.SalesInquiry().Detail(poSalesInquiryController.SalesInquiry().getDetailCount() - 1).setBrandId(lsBrandId);
-                            }
+                            poSalesInquiryController.SalesInquiry().loadDetail();
                         }
                         poSalesInquiryController.SalesInquiry().sortPriority();
                         String lsBrand = "";
