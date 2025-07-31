@@ -329,7 +329,7 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
-                statusMap.put(SalesInquiryStatic.QUOTED , "QUOTED");
+                statusMap.put(SalesInquiryStatic.QUOTED, "QUOTED");
                 statusMap.put(SalesInquiryStatic.SALE, "SALE");
                 statusMap.put(SalesInquiryStatic.CONFIRMED, "CONFIRMED");
                 statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
@@ -905,7 +905,7 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
-
+        dragLock.isEnabled = lbShow; // for drag drop
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(!lbShow, btnNew);
         JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);

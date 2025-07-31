@@ -328,7 +328,7 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
                 Map<String, String> statusMap = new HashMap<>();
-                statusMap.put(SalesInquiryStatic.QUOTED , "QUOTED");
+                statusMap.put(SalesInquiryStatic.QUOTED, "QUOTED");
                 statusMap.put(SalesInquiryStatic.SALE, "SALE");
                 statusMap.put(SalesInquiryStatic.CONFIRMED, "CONFIRMED");
                 statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
@@ -456,9 +456,7 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
                         String color = d.getIndex06();
                         String priorityStr = d.getIndex01();
                         for (int i = 0, n = poSalesInquiryController.SalesInquiry().getDetailCount(); i < n; i++) {
-                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getBrandId())
-                            || !model.equals(poSalesInquiryController.SalesInquiry().Detail(i).getModelId())
-                            || !color.equals(poSalesInquiryController.SalesInquiry().Detail(i).getColorId())) {
+                            if (!brand.equals(poSalesInquiryController.SalesInquiry().Detail(i).getStockId())) {
                                 continue;
                             }
                             try {
@@ -910,7 +908,7 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
-
+        dragLock.isEnabled = lbShow; // for drag drop
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(!lbShow, btnNew);
         JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);
