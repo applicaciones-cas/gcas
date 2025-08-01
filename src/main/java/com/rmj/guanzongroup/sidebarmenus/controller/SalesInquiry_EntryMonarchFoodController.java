@@ -682,6 +682,16 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
             tfBarcode.requestFocus();
         }
     }
+    
+    private void textFieldMoveNext(TextField fsId){
+        Platform.runLater(() -> {
+            PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+            delay.setOnFinished(e -> {
+                fsId.requestFocus();
+            });
+            delay.play();
+        });
+    }
 
     private void txtField_KeyPressed(KeyEvent event) {
         try {
@@ -740,6 +750,8 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSalesPerson.setText("");
                                 break;
+                            } else {
+                                textFieldMoveNext(tfInquirySource);
                             }
                             loadRecordMaster();
                             return;
@@ -749,6 +761,8 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfInquirySource.setText("");
                                 break;
+                            } else {
+                                textFieldMoveNext(tfClient);
                             }
                             loadRecordMaster();
                             return;
@@ -791,9 +805,7 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
                 default:
                     break;
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }

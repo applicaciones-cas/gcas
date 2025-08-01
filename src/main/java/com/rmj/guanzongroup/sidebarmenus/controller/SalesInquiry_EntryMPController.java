@@ -753,7 +753,16 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
             tfBrand.requestFocus();
         }
     }
-
+    
+    private void textFieldMoveNext(TextField fsId){
+        Platform.runLater(() -> {
+            PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+            delay.setOnFinished(e -> {
+                fsId.requestFocus();
+            });
+            delay.play();
+        });
+    }
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -826,6 +835,8 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSalesPerson.setText("");
                                 break;
+                            } else {
+                                textFieldMoveNext(tfInquirySource);
                             }
                             loadRecordMaster();
                             return;
@@ -835,6 +846,8 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfInquirySource.setText("");
                                 break;
+                            } else {
+                                textFieldMoveNext(tfClient);
                             }
                             loadRecordMaster();
                             return;
@@ -846,13 +859,7 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                                 break;
                             }
                             loadTableDetail();
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(e -> {
-                                    tfModel.requestFocus();
-                                });
-                                delay.play();
-                            });
+                            textFieldMoveNext(tfModel);
 
                             break;
                         case "tfModel":
@@ -864,13 +871,7 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                                 break;
                             }
                             loadTableDetail();
-                            Platform.runLater(() -> {
-                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-                                delay.setOnFinished(e -> {
-                                    tfColor.requestFocus();
-                                });
-                                delay.play();
-                            });
+                            textFieldMoveNext(tfColor);
                             break;
                         case "tfColor":
                             poJSON = poSalesInquiryController.SalesInquiry().SearchColor(lsValue, false, pnDetail);
@@ -895,9 +896,7 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                 default:
                     break;
             }
-        } catch (GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (SQLException ex) {
+        } catch (GuanzonException | SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
