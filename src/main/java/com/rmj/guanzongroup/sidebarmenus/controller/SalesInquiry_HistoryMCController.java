@@ -71,7 +71,6 @@ public class SalesInquiry_HistoryMCController implements Initializable, ScreenIn
     private String psIndustryId = "";
     private String psCompanyId = "";
     private String psCategoryId = "";
-    private String psClientId = "";
     private String psSearchClientId = "";
     private ObservableList<ModelSalesInquiry_Detail> details_data = FXCollections.observableArrayList();
     private FilteredList<ModelSalesInquiry_Detail> filteredDataDetail;
@@ -170,7 +169,6 @@ public class SalesInquiry_HistoryMCController implements Initializable, ScreenIn
                             return;
                         }
                         pnEditMode = poSalesInquiryController.SalesInquiry().getEditMode();
-                        psClientId = poSalesInquiryController.SalesInquiry().Master().getClientId();
 
                         break;
                     case "btnClose":
@@ -213,6 +211,7 @@ public class SalesInquiry_HistoryMCController implements Initializable, ScreenIn
                 statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
                 statusMap.put(SalesInquiryStatic.VOID, "VOIDED");
                 statusMap.put(SalesInquiryStatic.CANCELLED, "CANCELLED");
+                statusMap.put(SalesInquiryStatic.LOST, "LOST");
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
 
@@ -234,13 +233,13 @@ public class SalesInquiry_HistoryMCController implements Initializable, ScreenIn
             dpTargetDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTargetDate, "yyyy-MM-dd"));
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
-            tfInquirySource.setText("");
+            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
+            tfInquirySource.setText(poSalesInquiryController.SalesInquiry().Master().Source().getCompanyName());
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
             tfContactNo.setText(poSalesInquiryController.SalesInquiry().Master().ClientMobile().getMobileNo());
 
-            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
 
             cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
@@ -506,7 +505,6 @@ public class SalesInquiry_HistoryMCController implements Initializable, ScreenIn
                                 tfSearchReferenceNo.setText("");
                                 break;
                             } else {
-                                psClientId = poSalesInquiryController.SalesInquiry().Master().getClientId();
                                 pnEditMode = poSalesInquiryController.SalesInquiry().getEditMode();
                                 loadRecordMaster();
                                 loadTableDetail();

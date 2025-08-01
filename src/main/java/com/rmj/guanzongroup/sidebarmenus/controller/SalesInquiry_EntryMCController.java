@@ -43,7 +43,6 @@ import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import ph.com.guanzongroup.cas.cashflow.status.SOATaggingStatus;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
@@ -338,6 +337,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                 statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
                 statusMap.put(SalesInquiryStatic.VOID, "VOIDED");
                 statusMap.put(SalesInquiryStatic.CANCELLED, "CANCELLED");
+                statusMap.put(SalesInquiryStatic.LOST, "LOST");
 
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
@@ -360,14 +360,13 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             dpTargetDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTargetDate, "yyyy-MM-dd"));
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
-            tfInquirySource.setText("");
+            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
+            tfInquirySource.setText(poSalesInquiryController.SalesInquiry().Master().Source().getCompanyName());
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
             tfContactNo.setText(poSalesInquiryController.SalesInquiry().Master().ClientMobile().getMobileNo());
 
-            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
-            tfInquirySource.setText(poSalesInquiryController.SalesInquiry().Master().ReferralAgent().getCompanyName());
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
 
             if (pnEditMode != EditMode.UNKNOWN) {
@@ -839,7 +838,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                             loadRecordMaster();
                             return;
                         case "tfInquirySource":
-                            poJSON = poSalesInquiryController.SalesInquiry().SearchReferralAgent(lsValue, false);
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchSource(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfInquirySource.setText("");
@@ -1060,11 +1059,11 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
         JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail);
 
         switch (poSalesInquiryController.SalesInquiry().Master().getTransactionStatus()) {
-            case SOATaggingStatus.PAID:
-                JFXUtil.setButtonsVisibility(false, btnUpdate);
-                break;
-            case SOATaggingStatus.VOID:
-            case SOATaggingStatus.CANCELLED:
+            case SalesInquiryStatic.QUOTED:
+            case SalesInquiryStatic.SALE:
+            case SalesInquiryStatic.LOST:
+            case SalesInquiryStatic.VOID:
+            case SalesInquiryStatic.CANCELLED:
                 JFXUtil.setButtonsVisibility(false, btnUpdate);
                 break;
         }

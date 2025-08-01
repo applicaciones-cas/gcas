@@ -334,6 +334,7 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
                 statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
                 statusMap.put(SalesInquiryStatic.VOID, "VOIDED");
                 statusMap.put(SalesInquiryStatic.CANCELLED, "CANCELLED");
+                statusMap.put(SalesInquiryStatic.LOST, "LOST");
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
 
@@ -355,13 +356,13 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
             dpTargetDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTargetDate, "yyyy-MM-dd"));
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
-            tfInquirySource.setText("");
+            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
+            tfInquirySource.setText(poSalesInquiryController.SalesInquiry().Master().Source().getCompanyName());
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
             tfContactNo.setText(poSalesInquiryController.SalesInquiry().Master().ClientMobile().getMobileNo());
 
-            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
 
             if (pnEditMode != EditMode.UNKNOWN) {
@@ -742,6 +743,15 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
                             }
                             loadRecordMaster();
                             return;
+                        case "tfInquirySource":
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchSource(lsValue, false);
+                            if ("error".equals(poJSON.get("result"))) {
+                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                tfInquirySource.setText("");
+                                break;
+                            }
+                            loadRecordMaster();
+                            return;
                         case "tfBarcode":
                             poJSON = poSalesInquiryController.SalesInquiry().SearchInventory(lsValue, true, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
@@ -920,9 +930,9 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
         JFXUtil.setDisabled(!lbShow, taRemarks, apMaster, apDetail);
 
         switch (poSalesInquiryController.SalesInquiry().Master().getTransactionStatus()) {
+            case SalesInquiryStatic.QUOTED:
             case SalesInquiryStatic.SALE:
-                JFXUtil.setButtonsVisibility(false, btnUpdate);
-                break;
+            case SalesInquiryStatic.LOST:
             case SalesInquiryStatic.VOID:
             case SalesInquiryStatic.CANCELLED:
                 JFXUtil.setButtonsVisibility(false, btnUpdate);

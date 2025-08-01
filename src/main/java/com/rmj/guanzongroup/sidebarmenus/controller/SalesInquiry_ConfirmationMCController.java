@@ -355,6 +355,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
 
     public void retrieveSalesInquiry() {
         poJSON = new JSONObject();
+        poSalesInquiryController.SalesInquiry().setTransactionStatus(SalesInquiryStatic.OPEN + SalesInquiryStatic.CONFIRMED);
         poJSON = poSalesInquiryController.SalesInquiry().loadSalesInquiry(psIndustryId, tfSearchClient.getText(), tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -601,7 +602,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                             loadRecordMaster();
                             return;
                         case "tfInquirySource":
-                            poJSON = poSalesInquiryController.SalesInquiry().SearchReferralAgent(lsValue, false);
+                            poJSON = poSalesInquiryController.SalesInquiry().SearchSource(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfInquirySource.setText("");
@@ -858,6 +859,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                 statusMap.put(SalesInquiryStatic.OPEN, "OPEN");
                 statusMap.put(SalesInquiryStatic.VOID, "VOIDED");
                 statusMap.put(SalesInquiryStatic.CANCELLED, "CANCELLED");
+                statusMap.put(SalesInquiryStatic.LOST, "LOST");
 
                 String lsStat = statusMap.getOrDefault(lsActive, "UNKNOWN"); //default
                 lblStatus.setText(lsStat);
@@ -880,14 +882,13 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
             dpTargetDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTargetDate, "yyyy-MM-dd"));
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
-            tfInquirySource.setText("");
+            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
+            tfInquirySource.setText(poSalesInquiryController.SalesInquiry().Master().Source().getCompanyName());
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
             tfContactNo.setText(poSalesInquiryController.SalesInquiry().Master().ClientMobile().getMobileNo());
 
-            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
-            tfInquirySource.setText("");
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
             if (pnEditMode != EditMode.UNKNOWN) {
                 cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
@@ -1201,6 +1202,7 @@ public class SalesInquiry_ConfirmationMCController implements Initializable, Scr
                 break;
             case SalesInquiryStatic.QUOTED:
             case SalesInquiryStatic.SALE:
+            case SalesInquiryStatic.LOST:
             case SalesInquiryStatic.VOID:
             case SalesInquiryStatic.CANCELLED:
                 JFXUtil.setButtonsVisibility(false, btnConfirm, btnUpdate, btnVoid);
