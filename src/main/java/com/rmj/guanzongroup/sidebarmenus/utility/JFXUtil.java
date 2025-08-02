@@ -32,6 +32,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -108,6 +109,7 @@ import javafx.util.Pair;
 import javafx.util.StringConverter;
 import org.apache.poi.ss.formula.functions.T;
 import org.json.simple.JSONObject;
+import javafx.concurrent.Task;
 
 /**
  * Date : 4/28/2025
@@ -302,6 +304,25 @@ public class JFXUtil {
 
     public static void setDatePickerFormat(DatePicker... datePickers) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        for (DatePicker datePicker : datePickers) {
+            datePicker.setConverter(new StringConverter<LocalDate>() {
+                @Override
+                public String toString(LocalDate date) {
+                    return (date != null) ? date.format(formatter) : "";
+                }
+
+                @Override
+                public LocalDate fromString(String string) {
+                    return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatter) : null;
+                }
+            });
+        }
+    }
+
+    public static void setDatePickerFormat(String pattern, DatePicker... datePickers) {
+//        "yyyy-MM-dd"
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
 
         for (DatePicker datePicker : datePickers) {
             datePicker.setConverter(new StringConverter<LocalDate>() {
@@ -707,14 +728,28 @@ public class JFXUtil {
         }
     }
 
+    public static String convertToIsoFormat(String dateStr) {
+        try {
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            LocalDate date = LocalDate.parse(dateStr, inputFormatter);
+            return date.format(outputFormatter);
+        } catch (DateTimeParseException e) {
+            // You can return null or throw an exception depending on your needs
+            System.err.println("Invalid date format: " + dateStr);
+            return null;
+        }
+    }
+
     public static JFXUtilDateResult processDate(String inputText, DatePicker datePicker) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy"); // accepted string
         JSONObject poJSON = new JSONObject();
         LocalDate selectedDate = null;
 
         if (inputText != null && !inputText.trim().isEmpty()) {
             try {
-                LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
                 datePicker.setValue(parsedDate);
                 datePicker.getEditor().setText(formatter.format(parsedDate));
                 inputText = datePicker.getEditor().getText();
@@ -728,7 +763,7 @@ public class JFXUtil {
                 datePicker.setValue(selectedDate);
             } catch (Exception ex) {
                 poJSON.put("result", "error");
-                poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
+                poJSON.put("message", "Invalid date format. Please use MM/dd/yyyy format.");
                 return new JFXUtilDateResult("", selectedDate, poJSON);
             }
         } else {
@@ -1866,4 +1901,111 @@ public class JFXUtil {
         }
     }
 
+//    public static <T> void enableAutoFillOnFocusWithDropdownHighlight(String hexColor, ComboBox<T>... comboBoxes) {
+//        for (ComboBox<T> comboBox : comboBoxes) {
+//            comboBox.setEditable(false);
+//
+//            // Only style dropdown list cells — do not change display
+//            comboBox.setCellFactory(cb -> new ListCell<T>() {
+//                @Override
+//                protected void updateItem(T item, boolean empty) {
+//                    super.updateItem(item, empty);
+//                    if (empty || item == null) {
+//                        setText(null);
+//                        setStyle("");
+//                    } else {
+//                        setText(item.toString());
+//                        if (comboBox.getSelectionModel().getSelectedItem() != null
+//                                && comboBox.getSelectionModel().getSelectedItem().equals(item)) {
+//                            setStyle("-fx-background-color: " + hexColor + "; -fx-text-fill: white;");
+//                        } else {
+//                            setStyle("");
+//                        }
+//                    }
+//                }
+//            });
+//
+//            // On key typed, select the first item starting with that character (case-insensitive)
+//            comboBox.addEventFilter(KeyEvent.KEY_TYPED, event -> {
+//                if (!comboBox.isFocused()) {
+//                    return;
+//                }
+//
+//                String typedChar = event.getCharacter().toLowerCase();
+//                ObservableList<T> items = comboBox.getItems();
+//
+//                for (T item : items) {
+//                    if (item != null && item.toString().toLowerCase().startsWith(typedChar)) {
+//                        comboBox.getSelectionModel().select(item);
+//                        break;
+//                    }
+//                }
+//
+//                event.consume();
+//            });
+//        }
+//    }
+//
+    
+    //sample usage
+//    JFXUtil.ReloadableTableTask loadTableDetail = new JFXUtil.ReloadableTableTask(
+//            tblViewTransDetails,
+//            details_data,
+//            () -> {
+//            }
+//    );
+    public static class ReloadableTableTask {
+
+        private final TableView<?> tableView;
+        private final ObservableList<?> data;
+        private final Runnable content;
+
+        public ReloadableTableTask(TableView<?> tableView, ObservableList<?> data, Runnable content) {
+            this.tableView = tableView;
+            this.data = data;
+            this.content = content;
+        }
+
+        public void reload() {
+            JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
+            tableView.setPlaceholder(loading.loadingPane);
+            loading.progressIndicator.setVisible(true);
+
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    content.run(); // Caller must wrap with Platform.runLater if needed
+                    return null;
+                }
+
+                @Override
+                protected void succeeded() {
+                    if (data == null || data.isEmpty()) {
+                        tableView.setPlaceholder(loading.placeholderLabel);
+                    } else {
+                        tableView.toFront();
+                    }
+                    loading.progressIndicator.setVisible(false);
+                }
+
+                @Override
+                protected void failed() {
+                    if (data == null || data.isEmpty()) {
+                        tableView.setPlaceholder(loading.placeholderLabel);
+                    }
+                    loading.progressIndicator.setVisible(false);
+                }
+            };
+            new Thread(task).start();
+        }
+    }
+    public static void textFieldMoveNext(TextField fsId) {
+        Platform.runLater(() -> {
+            PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
+            delay.setOnFinished(e -> {
+                fsId.requestFocus();
+            });
+            delay.play();
+        });
+    }
 }
