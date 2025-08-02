@@ -857,7 +857,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     loadRecordMaster();
                     return;
                 }
-                if (JFXUtil.isObjectEqualTo(inputText, null, "", "1900-01-01")) {
+                if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
                     return;
                 }
                 selectedDate = ldtResult.selectedDate;
@@ -868,7 +868,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 || poSOATaggingController.SOATagging().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poSOATaggingController.SOATagging().Master().getTransactionDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText),  SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
@@ -1052,7 +1052,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 return;
             }
 
-            String lsReferenceDate = "1900-01-01";
+            String lsReferenceDate = "01/01/1900";
             String lsReferenceNo = "";
             switch (poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode()) {
                 case SOATaggingStatic.PaymentRequest:
@@ -1070,7 +1070,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             tfSourceNo.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo());
             tfSourceCode.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode());
             tfReferenceNo.setText(lsReferenceNo);
-            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
+            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(JFXUtil.convertToIsoFormat(lsReferenceDate),  "yyyy-MM-dd"));
             tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getCreditAmount(), true));
             tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getDebitAmount(), true));
             tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount(), true));
@@ -1292,7 +1292,8 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     }
     
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate, dpReferenceDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
     }
 

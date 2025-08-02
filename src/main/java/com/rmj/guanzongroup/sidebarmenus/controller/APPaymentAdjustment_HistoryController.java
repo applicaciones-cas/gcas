@@ -232,7 +232,7 @@ public class APPaymentAdjustment_HistoryController implements Initializable, Scr
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",dpTransactionDate);
     }
 
     public void clearTextFields() {

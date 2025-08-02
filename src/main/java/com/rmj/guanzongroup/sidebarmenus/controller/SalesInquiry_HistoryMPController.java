@@ -544,7 +544,7 @@ public class SalesInquiry_HistoryMPController implements Initializable, ScreenIn
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpTargetDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",dpTransactionDate, dpTargetDate);
     }
 
     public void initTextFields() {

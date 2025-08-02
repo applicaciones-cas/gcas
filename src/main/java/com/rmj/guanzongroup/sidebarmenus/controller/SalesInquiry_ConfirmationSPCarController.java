@@ -663,7 +663,7 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
                     loadRecordMaster();
                     return;
                 }
-                if (JFXUtil.isObjectEqualTo(inputText, null, "", "1900-01-01")) {
+                if (JFXUtil.isObjectEqualTo(inputText, null, "","01/01/1900")) {
                     return;
                 }
                 selectedDate = ldtResult.selectedDate;
@@ -674,7 +674,7 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
                                 || poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poSalesInquiryController.SalesInquiry().Master().getTransactionDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText),  SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
@@ -1027,7 +1027,7 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpTargetDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",dpTransactionDate, dpTargetDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpTargetDate);
 
     }

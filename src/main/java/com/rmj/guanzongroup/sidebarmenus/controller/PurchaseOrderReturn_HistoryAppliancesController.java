@@ -315,7 +315,8 @@ public class PurchaseOrderReturn_HistoryAppliancesController implements Initiali
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate);
         
     }
 

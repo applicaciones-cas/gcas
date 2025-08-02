@@ -76,6 +76,7 @@ import org.json.simple.JSONObject;
 import javafx.scene.control.ComboBox;
 import org.guanzon.appdriver.constant.DocumentType;
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
+
 /**
  * FXML Controller class
  *
@@ -345,7 +346,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                             loadRecordSearch();
                             return;
                         case "tfSearchReferenceNo":
-                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().searchTransaction(psIndustryId, psCompanyId, 
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().searchTransaction(psIndustryId, psCompanyId,
                                     tfSearchSupplier.getText(), tfSearchReferenceNo.getText());
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -484,7 +485,7 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
             tfInventoryType.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().InventoryType().getDescription());
             tfMeasure.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Measure().getDescription());
 
-             tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
             tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue()));
             tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
 
@@ -580,10 +581,10 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
                     tfDiscountRate.setText("0.00");
                 }
             });
-            
+
             tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount(), true));
             tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionTotal(), true));
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(DeliveryAcceptance_HistoryController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         } catch (GuanzonException ex) {
@@ -843,9 +844,8 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
     }
 
     public void initDatePickers() {
-        setDatePickerFormat(dpTransactionDate);
-        setDatePickerFormat(dpReferenceDate);
-        setDatePickerFormat(dpExpiryDate);
+
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate, dpExpiryDate);
 
     }
 
@@ -920,7 +920,6 @@ public class DeliveryAcceptance_HistoryController implements Initializable, Scre
         tblAttachments.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
         JFXUtil.adjustColumnForScrollbar(tblViewOrderDetails, tblAttachments);  // need to use computed-size as min-width on particular column to work
 
-        
     }
 
     private void initButton(int fnValue) {

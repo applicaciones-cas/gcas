@@ -771,7 +771,7 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                     loadRecordMaster();
                     return;
                 }
-                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                if (inputText == null || "".equals(inputText) || "01/01/1900".equals(inputText)) {
                     return;
                 }
                 selectedDate = ldtResult.selectedDate;
@@ -782,7 +782,7 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
                                 || poPurchaseReturnController.PurchaseOrderReturn().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText),  SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
@@ -1227,7 +1227,8 @@ public class PurchaseOrderReturn_ConfirmationAppliancesController implements Ini
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate);
 
     }

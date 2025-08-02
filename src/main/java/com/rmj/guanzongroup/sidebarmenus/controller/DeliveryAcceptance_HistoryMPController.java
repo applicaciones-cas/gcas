@@ -1147,8 +1147,8 @@ public class DeliveryAcceptance_HistoryMPController implements Initializable, Sc
     }
 
     public void initDatePickers() {
-        setDatePickerFormat(dpTransactionDate);
-        setDatePickerFormat(dpReferenceDate);
+        
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
 
     }
 

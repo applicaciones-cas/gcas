@@ -1061,7 +1061,8 @@ public class SIPosting_HistoryController implements Initializable, ScreenInterfa
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate, dpReferenceDate, dpExpiryDate, dpJETransactionDate, dpReportMonthYear);
     }
 
     public void initTextFields() {

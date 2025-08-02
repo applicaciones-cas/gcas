@@ -317,7 +317,8 @@ public class PurchaseOrderReturn_HistoryMCController implements Initializable, S
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate);
         
     }
 

@@ -314,7 +314,8 @@ public class PurchaseOrderReturn_HistorySPCarController implements Initializable
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate);
         
 
     }

@@ -315,7 +315,8 @@ public class PurchaseOrderReturn_HistoryMonarchHospitalityController implements 
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate);
         
 
     }

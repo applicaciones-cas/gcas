@@ -492,7 +492,8 @@ public class SOATagging_HistoryController implements Initializable, ScreenInterf
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate, dpReferenceDate);
     }
 
     public void initTextFields() {

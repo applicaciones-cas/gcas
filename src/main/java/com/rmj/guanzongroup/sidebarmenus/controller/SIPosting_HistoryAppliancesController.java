@@ -1164,7 +1164,8 @@ public class SIPosting_HistoryAppliancesController implements Initializable, Scr
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
     }
 
     public void initTextFields() {

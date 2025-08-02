@@ -1124,8 +1124,8 @@ public class DeliveryAcceptance_HistoryAppliancesController implements Initializ
     }
 
     public void initDatePickers() {
-        setDatePickerFormat(dpTransactionDate);
-        setDatePickerFormat(dpReferenceDate);
+        
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
 
     }
 

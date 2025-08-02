@@ -839,8 +839,8 @@ public class DeliveryAcceptance_HistoryMonarchHospitalityController implements I
     }
 
     public void initDatePickers() {
-        setDatePickerFormat(dpTransactionDate);
-        setDatePickerFormat(dpReferenceDate);
+        
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
 
     }
 

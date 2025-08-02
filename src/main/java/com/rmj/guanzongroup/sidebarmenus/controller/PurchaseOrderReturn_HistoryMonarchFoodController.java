@@ -314,7 +314,8 @@ public class PurchaseOrderReturn_HistoryMonarchFoodController implements Initial
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate);
         
 
     }

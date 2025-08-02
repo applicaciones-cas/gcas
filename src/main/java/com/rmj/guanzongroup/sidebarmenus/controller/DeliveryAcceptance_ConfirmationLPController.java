@@ -273,11 +273,11 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                                 pnEditMode = EditMode.UNKNOWN;
                                 clearTextFields();
                                 initButton(pnEditMode);
-                                
+
                                 poPurchaseReceivingController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
                                 poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
                                 poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCategoryCode(psCategoryId);
-                                
+
                             }
                             Platform.runLater(() -> {
                                 try {
@@ -545,7 +545,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                     imageView.setImage(null);
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
-                        
+
                     poPurchaseReceivingController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
                     poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
                     poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCategoryCode(psCategoryId);
@@ -1129,33 +1129,17 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE);
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
-                        datePicker.setValue(parsedDate);
-                        datePicker.getEditor().setText(formatter.format(parsedDate));
-                        inputText = datePicker.getEditor().getText();
-                    } catch (DateTimeParseException ignored) {
-                    }
-                }
-                // Check if the user typed something in the text field
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        selectedDate = LocalDate.parse(inputText, formatter);
-                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
-                    } catch (Exception ex) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid date format. Please use yyyy-mm-dd format.");
-                        loadRecordMaster();
-                        return;
-                    }
-                }
-
-                System.out.println("input text : " + inputText);
-
-                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
+                poJSON = ldtResult.poJSON;
+                if ("error".equals(poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    loadRecordMaster();
                     return;
                 }
+                if (inputText == null || "".equals(inputText) || "01/01/1900".equals(inputText)) {
+                    return;
+                }
+                selectedDate = ldtResult.selectedDate;
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
@@ -1164,7 +1148,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
                             lsRefDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             referenceDate = LocalDate.parse(lsRefDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
@@ -1191,7 +1175,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
-                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+                                            if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
                                                 poJSON.put("result", "error");
                                                 poJSON.put("message", "User is not an authorized approving officer.");
                                                 pbSuccess = false;
@@ -1223,7 +1207,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
                             lsRefDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
@@ -1250,6 +1234,32 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
 
                             pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                             loadRecordMaster();
+                            pbSuccess = true; //Set to original value
+                        }
+                        break;
+                    case "dpExpiryDate":
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE) {
+                            lsServerDate = sdfFormat.format(oApp.getServerDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+                            if (selectedDate.isBefore(currentDate)) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "The selected date cannot be earlier than the current date.");
+                                pbSuccess = false;
+                            }
+                            if (pbSuccess) {
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setExpiryDate(SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE));
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                }
+                            }
+
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordDetail();
                             pbSuccess = true; //Set to original value
                         }
                         break;
@@ -1281,7 +1291,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
                         datePicker.setValue(parsedDate);
                         datePicker.getEditor().setText(formatter.format(parsedDate));
                         inputText = datePicker.getEditor().getText();
@@ -1296,7 +1306,7 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
                         poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
+                        poJSON.put("message", "Invalid date format. Please use MM/dd/yyyy format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         loadRecordMaster();
                         // datePicker.requestFocus();
@@ -2109,20 +2119,9 @@ public class DeliveryAcceptance_ConfirmationLPController implements Initializabl
     }
 
     public void initDatePickers() {
-        setDatePickerFormat(dpTransactionDate);
-        setDatePickerFormat(dpReferenceDate);
-        setDatePickerFormat(dpExpiryDate);
 
-        dpTransactionDate.setOnAction(this::datepicker_Action);
-        dpReferenceDate.setOnAction(this::datepicker_Action);
-
-//        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
-//        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
-        dpExpiryDate.focusedProperty().addListener(datepicker_Focus);
-
-//        addKeyEventFilter(dpTransactionDate);
-//        addKeyEventFilter(dpReferenceDate);
-        addKeyEventFilter(dpExpiryDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate, dpExpiryDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpExpiryDate);
     }
 
     public void initTextFields() {

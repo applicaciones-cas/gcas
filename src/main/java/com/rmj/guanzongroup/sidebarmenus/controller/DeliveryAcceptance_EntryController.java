@@ -1120,33 +1120,17 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE);
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
-                        datePicker.setValue(parsedDate);
-                        datePicker.getEditor().setText(formatter.format(parsedDate));
-                        inputText = datePicker.getEditor().getText();
-                    } catch (DateTimeParseException ignored) {
-                    }
-                }
-                // Check if the user typed something in the text field
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        selectedDate = LocalDate.parse(inputText, formatter);
-                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
-                    } catch (Exception ex) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid date format. Please use yyyy-mm-dd format.");
-                        loadRecordMaster();
-                        return;
-                    }
-                }
-
-                System.out.println("input text : " + inputText);
-
-                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
+                poJSON = ldtResult.poJSON;
+                if ("error".equals(poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    loadRecordMaster();
                     return;
                 }
+                if (inputText == null || "".equals(inputText) || "01/01/1900".equals(inputText)) {
+                    return;
+                }
+                selectedDate = ldtResult.selectedDate;
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
@@ -1155,7 +1139,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
                             lsRefDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             referenceDate = LocalDate.parse(lsRefDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
@@ -1182,7 +1166,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
-                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+                                            if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
                                                 poJSON.put("result", "error");
                                                 poJSON.put("message", "User is not an authorized approving officer.");
                                                 pbSuccess = false;
@@ -1214,7 +1198,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
                             lsRefDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
@@ -1244,6 +1228,32 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
                             pbSuccess = true; //Set to original value
                         }
                         break;
+                    case "dpExpiryDate":
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE) {
+                            lsServerDate = sdfFormat.format(oApp.getServerDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+                            if (selectedDate.isBefore(currentDate)) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "The selected date cannot be earlier than the current date.");
+                                pbSuccess = false;
+                            }
+                            if (pbSuccess) {
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setExpiryDate(SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE));
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                }
+                            }
+
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordDetail();
+                            pbSuccess = true; //Set to original value
+                        }
+                        break;
                     default:
 
                         break;
@@ -1254,108 +1264,108 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
         }
     }
 
-    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
-        poJSON = new JSONObject();
-        poJSON.put("result", "success");
-        poJSON.put("message", "success");
-        try {
-
-            if (!newValue) { // Lost focus
-                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
-                String lsID = datePicker.getId();
-                String inputText = datePicker.getEditor().getText();
-                LocalDate currentDate = LocalDate.now();
-                LocalDate selectedDate = null;
-
-                lastFocusedTextField = datePicker;
-                previousSearchedTextField = null;
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
-                        datePicker.setValue(parsedDate);
-                        datePicker.getEditor().setText(formatter.format(parsedDate));
-                        inputText = datePicker.getEditor().getText();
-                    } catch (DateTimeParseException ignored) {
-                    }
-                }
-                // Check if the user typed something in the text field
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        selectedDate = LocalDate.parse(inputText, formatter);
-                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
-                    } catch (Exception ex) {
-                        poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        loadRecordMaster();
-                        // datePicker.requestFocus();
-                        return;
-                    }
-                } else {
-                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
-                }
-
-                String formattedDate = selectedDate.toString();
-
-                switch (lsID) {
-                    case "dpTransactionDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
-
-                        } else {
-                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
-                        }
-                        break;
-                    case "dpReferenceDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isAfter(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "Future dates are not allowed.");
-                        } else {
-                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
-                        }
-                        break;
-                    case "dpExpiryDate":
-                        if (selectedDate == null) {
-                            break;
-                        }
-                        if (selectedDate.isBefore(currentDate)) {
-                            poJSON.put("result", "error");
-                            poJSON.put("message", "The selected date cannot be earlier than the current date.");
-                        } else {
-                            poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
-                        }
-                        break;
-                    default:
-
-                        break;
-                }
-                datePicker.getEditor().setText(formattedDate);
-                if ("error".equals((String) poJSON.get("result"))) {
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                    // datePicker.requestFocus();
-                }
-                Platform.runLater(() -> {
-                    if (lsID.equals("dpExpiryDate")) {
-                        loadRecordDetail();
-                    } else {
-                        loadRecordMaster();
-                    }
-                });
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    };
+//    ChangeListener<Boolean> datepicker_Focus = (observable, oldValue, newValue) -> {
+//        poJSON = new JSONObject();
+//        poJSON.put("result", "success");
+//        poJSON.put("message", "success");
+//        try {
+//
+//            if (!newValue) { // Lost focus
+//                DatePicker datePicker = (DatePicker) ((javafx.beans.property.ReadOnlyBooleanProperty) observable).getBean();
+//                String lsID = datePicker.getId();
+//                String inputText = datePicker.getEditor().getText();
+//                LocalDate currentDate = LocalDate.now();
+//                LocalDate selectedDate = null;
+//
+//                lastFocusedTextField = datePicker;
+//                previousSearchedTextField = null;
+//
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//                if (inputText != null && !inputText.trim().isEmpty()) {
+//                    try {
+//                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+//                        datePicker.setValue(parsedDate);
+//                        datePicker.getEditor().setText(formatter.format(parsedDate));
+//                        inputText = datePicker.getEditor().getText();
+//                    } catch (DateTimeParseException ignored) {
+//                    }
+//                }
+//                // Check if the user typed something in the text field
+//                if (inputText != null && !inputText.trim().isEmpty()) {
+//                    try {
+//                        selectedDate = LocalDate.parse(inputText, formatter);
+//                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
+//                    } catch (Exception ex) {
+//                        poJSON.put("result", "error");
+//                        poJSON.put("message", "Invalid date format. Please use MM/dd/yyyy format.");
+//                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                        loadRecordMaster();
+//                        // datePicker.requestFocus();
+//                        return;
+//                    }
+//                } else {
+//                    selectedDate = datePicker.getValue(); // Fallback to selected date if nothing was typed
+//                }
+//
+//                String formattedDate = selectedDate.toString();
+//
+//                switch (lsID) {
+//                    case "dpTransactionDate":
+//                        if (selectedDate == null) {
+//                            break;
+//                        }
+//                        if (selectedDate.isAfter(currentDate)) {
+//                            poJSON.put("result", "error");
+//                            poJSON.put("message", "Future dates are not allowed.");
+//
+//                        } else {
+//                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+//                        }
+//                        break;
+//                    case "dpReferenceDate":
+//                        if (selectedDate == null) {
+//                            break;
+//                        }
+//                        if (selectedDate.isAfter(currentDate)) {
+//                            poJSON.put("result", "error");
+//                            poJSON.put("message", "Future dates are not allowed.");
+//                        } else {
+//                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
+//                        }
+//                        break;
+//                    case "dpExpiryDate":
+//                        if (selectedDate == null) {
+//                            break;
+//                        }
+//                        if (selectedDate.isBefore(currentDate)) {
+//                            poJSON.put("result", "error");
+//                            poJSON.put("message", "The selected date cannot be earlier than the current date.");
+//                        } else {
+//                            poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
+//                        }
+//                        break;
+//                    default:
+//
+//                        break;
+//                }
+////                datePicker.getEditor().setText(formattedDate);
+//                if ("error".equals((String) poJSON.get("result"))) {
+//                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+//                    // datePicker.requestFocus();
+//                }
+//                Platform.runLater(() -> {
+//                    if (lsID.equals("dpExpiryDate")) {
+//                        loadRecordDetail();
+//                    } else {
+//                        loadRecordMaster();
+//                    }
+//                });
+//
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    };
 
     private void setDatePickerFormat(DatePicker datePicker) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -1393,19 +1403,8 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
 
     public void initDatePickers() {
 
-        setDatePickerFormat(dpTransactionDate);
-        setDatePickerFormat(dpReferenceDate);
-        setDatePickerFormat(dpExpiryDate);
-
-        dpTransactionDate.setOnAction(this::datepicker_Action);
-        dpReferenceDate.setOnAction(this::datepicker_Action);
-//        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
-//        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
-        dpExpiryDate.focusedProperty().addListener(datepicker_Focus);
-
-//        addKeyEventFilter(dpTransactionDate);
-//        addKeyEventFilter(dpReferenceDate);
-        addKeyEventFilter(dpExpiryDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate, dpExpiryDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpExpiryDate);
     }
 
     public void initDetailsGrid() {
@@ -1645,7 +1644,7 @@ public class DeliveryAcceptance_EntryController implements Initializable, Screen
             //ReferenceDate
             String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
-
+            
             tfTransactionNo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
 
             tfSupplier.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Supplier().getCompanyName());

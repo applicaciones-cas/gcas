@@ -1060,7 +1060,8 @@ public class SIPosting_HistorySPCarController implements Initializable, ScreenIn
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate, dpReferenceDate, dpJETransactionDate, dpReportMonthYear);
     }
 
     public void initTextFields() {

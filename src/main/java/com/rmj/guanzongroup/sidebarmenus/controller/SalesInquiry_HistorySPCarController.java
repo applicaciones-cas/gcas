@@ -518,7 +518,7 @@ public class SalesInquiry_HistorySPCarController implements Initializable, Scree
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate, dpTargetDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",dpTransactionDate, dpTargetDate);
     }
 
     public void initTextFields() {
