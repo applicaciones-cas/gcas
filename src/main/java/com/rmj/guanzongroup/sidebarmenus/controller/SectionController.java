@@ -91,13 +91,17 @@ public class SectionController implements Initializable, ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        pnEditMode = EditMode.UNKNOWN;
-        initButton(pnEditMode);
-        initializeObject();
-        InitTextFields();
-        ClickButton();
-        initTabAnchor();
-        pbLoaded = true;
+        try {
+            initializeObject();
+            pnEditMode = oParameters.Section().getEditMode();
+            initButton(pnEditMode);
+            InitTextFields();
+            ClickButton();
+            initTabAnchor();
+            pbLoaded = true;
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(SectionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initializeObject() {
@@ -194,29 +198,48 @@ public class SectionController implements Initializable, ScreenInterface {
                         break;
                     case "btnActivate":
                         String Status = oParameters.Section().getModel().getRecordStatus();
+                        String id = oParameters.Section().getModel().getSectionId();
                         JSONObject poJsON;
-
+                        
                         switch (Status) {
                             case "0":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                    oParameters.Section().initialize();
                                     poJsON = oParameters.Section().activateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.Section().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
                             case "1":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                  
                                     poJsON = oParameters.Section().deactivateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.Section().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
-                            default:
-
-                                break;
-
                         }
-                        break;
+                    break;
                 }
             } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(SectionController.class.getName()).log(Level.SEVERE, null, ex);

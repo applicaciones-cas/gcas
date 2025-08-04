@@ -92,14 +92,19 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        pnEditMode = EditMode.UNKNOWN;
-        initButton(pnEditMode);
-        initializeObject();
-        InitTextFields();
-        ClickButton();
-        initTabAnchor();
-        pbLoaded = true;
+       try {
+            initializeObject();
+            pnEditMode = oParameters.CategoryLevel4().getEditMode();
+            initButton(pnEditMode);
+            InitTextFields();
+            ClickButton();
+            initTabAnchor();
+            pbLoaded = true;
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(CategoryLevel4Controller.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
+
 
     private void initializeObject() {
         try {
@@ -195,29 +200,53 @@ public class CategoryLevel4Controller implements Initializable, ScreenInterface 
                         break;
                     case "btnActivate":
                         String Status = oParameters.CategoryLevel4().getModel().getRecordStatus();
+                        String id = oParameters.CategoryLevel4().getModel().getCategoryId();
                         JSONObject poJsON;
-
+                        
                         switch (Status) {
                             case "0":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                    ShowMessageFX.Information(String.valueOf(oParameters.CategoryLevel4().getEditMode()), "Computerized Accounting System", pxeModuleName);
+                                    oParameters.CategoryLevel4().initialize();
                                     poJsON = oParameters.CategoryLevel4().activateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.CategoryLevel4().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
                             case "1":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                   
+                                    
+                                    System.out.println("EDIT MODE : " + oParameters.CategoryLevel4().getEditMode());
+                                    ShowMessageFX.Information(String.valueOf(oParameters.CategoryLevel4().getEditMode()), "Computerized Accounting System", pxeModuleName);
+                                    
                                     poJsON = oParameters.CategoryLevel4().deactivateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.CategoryLevel4().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
-                            default:
-
-                                break;
-
                         }
-                        break;
+
                 }
             } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(CategoryLevel4Controller.class.getName()).log(Level.SEVERE, null, ex);

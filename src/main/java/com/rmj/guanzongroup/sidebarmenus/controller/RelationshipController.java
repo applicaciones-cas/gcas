@@ -91,13 +91,17 @@ public class RelationshipController implements Initializable, ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        pnEditMode = EditMode.UNKNOWN;
-        initButton(pnEditMode);
-        initializeObject();
-        InitTextFields();
-        ClickButton();
-        initTabAnchor();
-        pbLoaded = true;
+        try {
+            initializeObject();
+            pnEditMode = oParameters.Relationship().getEditMode();
+            initButton(pnEditMode);
+            InitTextFields();
+            ClickButton();
+            initTabAnchor();
+            pbLoaded = true;
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(RelationshipController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initializeObject() {
@@ -194,29 +198,48 @@ public class RelationshipController implements Initializable, ScreenInterface {
                         break;
                     case "btnActivate":
                         String Status = oParameters.Relationship().getModel().getRecordStatus();
+                        String id = oParameters.Relationship().getModel().getRelationId();
                         JSONObject poJsON;
-
+                        
                         switch (Status) {
                             case "0":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                    oParameters.Relationship().initialize();
                                     poJsON = oParameters.Relationship().activateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.Relationship().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
                             case "1":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                  
                                     poJsON = oParameters.Relationship().deactivateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.Relationship().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
-                            default:
-
-                                break;
-
                         }
-                        break;
+                    break;
                 }
             } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(RelationshipController.class.getName()).log(Level.SEVERE, null, ex);

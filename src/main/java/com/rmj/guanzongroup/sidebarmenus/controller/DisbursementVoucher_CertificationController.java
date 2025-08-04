@@ -137,6 +137,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poDisbursementController.setTransactionStatus(DisbursementStatic.VERIFIED);
             poJSON = new JSONObject();
+            poDisbursementController.setWithUI(true);
             poJSON = poDisbursementController.InitTransaction();
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -242,7 +243,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
             }
             switch (action) {
                 case "certify":
-                    poJSON = poDisbursementController.CertifyTransaction("Certified", getSelectedItems);
+                    poJSON = poDisbursementController.CertifyTransaction("", getSelectedItems);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         break;
@@ -252,7 +253,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                     getSelectedItems.clear();
                     break;
                 case "return":
-                    poJSON = poDisbursementController.ReturnTransaction("Returned", getSelectedItems);
+                    poJSON = poDisbursementController.ReturnTransaction("", getSelectedItems);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         break;
@@ -262,7 +263,7 @@ public class DisbursementVoucher_CertificationController implements Initializabl
                     getSelectedItems.clear();
                     break;
                 case "dissapprove":
-                    poJSON = poDisbursementController.DisapprovedTransaction("Disapproved", getSelectedItems);
+                    poJSON = poDisbursementController.DisapprovedTransaction("", getSelectedItems);
                     if (!"success".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         break;

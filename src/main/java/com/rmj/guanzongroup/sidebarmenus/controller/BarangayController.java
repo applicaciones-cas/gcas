@@ -23,7 +23,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
-import org.guanzon.appdriver.base.GRider;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.parameter.services.ParamControllers;
@@ -47,6 +46,7 @@ public class BarangayController implements Initializable, ScreenInterface {
     private int pnRow = 0;
     private ObservableList<ModelResultSet> data = FXCollections.observableArrayList();
     private String psPrimary = "";
+    private String lbStat = "";
     @FXML
     private AnchorPane AnchorMain, AnchorInputs;
     @FXML
@@ -92,13 +92,17 @@ public class BarangayController implements Initializable, ScreenInterface {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        pnEditMode = EditMode.UNKNOWN;
-        initButton(pnEditMode);
-        initializeObject();
-        InitTextFields();
-        ClickButton();
-        initTabAnchor();
-        pbLoaded = true;
+        try {
+            initializeObject();
+            pnEditMode = oParameters.Barangay().getEditMode();
+            initButton(pnEditMode);
+            InitTextFields();
+            ClickButton();
+            initTabAnchor();
+            pbLoaded = true;
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initializeObject() {
@@ -106,9 +110,7 @@ public class BarangayController implements Initializable, ScreenInterface {
             LogWrapper logwrapr = new LogWrapper("CAS", System.getProperty("sys.default.path.temp") + "cas-error.log");
             oParameters = new ParamControllers(oApp, logwrapr);
             oParameters.Barangay().setRecordStatus("0123");
-        } catch (SQLException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -140,9 +142,9 @@ public class BarangayController implements Initializable, ScreenInterface {
                         clearAllFields();
                         txtField02.requestFocus();
                         JSONObject poJSON = oParameters.Barangay().newRecord();
-                        pnEditMode = EditMode.READY;
+                        pnEditMode = oParameters.Barangay().getEditMode();
                         if ("success".equals((String) poJSON.get("result"))) {
-                            pnEditMode = EditMode.ADDNEW;
+                            pnEditMode = oParameters.Barangay().getEditMode();
                             initButton(pnEditMode);
                             initTabAnchor();
                             loadRecord();
@@ -160,6 +162,7 @@ public class BarangayController implements Initializable, ScreenInterface {
                             break;
                         }
                         pnEditMode = EditMode.READY;
+                        
                         loadRecord();
                         initTabAnchor();
                         break;
@@ -197,36 +200,51 @@ public class BarangayController implements Initializable, ScreenInterface {
                         break;
                     case "btnActivate":
                         String Status = oParameters.Barangay().getModel().getRecordStatus();
+                        String id = oParameters.Barangay().getModel().getBarangayId();
                         JSONObject poJsON;
-
+                        
                         switch (Status) {
                             case "0":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                   oParameters.Barangay().initialize();
                                     poJsON = oParameters.Barangay().activateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.Barangay().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
                             case "1":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                   ShowMessageFX.Information(String.valueOf(oParameters.Barangay().getEditMode()), "Computerized Accounting System", pxeModuleName);
+                                    
                                     poJsON = oParameters.Barangay().deactivateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.Barangay().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
-                            default:
-
-                                break;
-
                         }
-                        break;
 
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (GuanzonException ex) {
-                Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (CloneNotSupportedException ex) {
+            } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                 Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -334,9 +352,7 @@ public class BarangayController implements Initializable, ScreenInterface {
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -374,9 +390,7 @@ public class BarangayController implements Initializable, ScreenInterface {
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
+        } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(BarangayController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

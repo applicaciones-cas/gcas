@@ -16,7 +16,7 @@ public class LetMeIn extends Application {
     public static void main(String[] args) throws SQLException, GuanzonException {
         String path;
         if (System.getProperty("os.name").toLowerCase().contains("win")) {
-            path = "C:/GGC_Maven_Systems";
+            path = "D:/GGC_Maven_Systems";
         } else {
             path = "/srv/GGC_Maven_Systems";
         }

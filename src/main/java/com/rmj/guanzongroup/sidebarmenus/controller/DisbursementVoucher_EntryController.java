@@ -278,6 +278,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
         try {
             poDisbursementController = new CashflowControllers(oApp, null).Disbursement();
             poJSON = new JSONObject();
+            poDisbursementController.setWithUI(true);
             poJSON = poDisbursementController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -386,8 +387,9 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
                     }
-                    poDisbursementController.Master().setVoucherNo(poDisbursementController.getVoucherNo());
-                    tfVoucherNo.setText(poDisbursementController.Master().getVoucherNo());
+                    
+                    tfVoucherNo.setText(poDisbursementController.getVoucherNo());
+                    poDisbursementController.Master().setVoucherNo(tfVoucherNo.getText());
                     poDisbursementController.Master().setDisbursementType(DisbursementStatic.DisbursementType.CHECK);
                     poDisbursementController.Master().setSupplierClientID(psSupplierPayeeId);
                     CustomCommonUtil.switchToTab(tabDetails, tabPaneMain);
@@ -474,7 +476,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                                         ShowMessageFX.Warning("Please see the Journal Entry, before save", pxeModuleName, null);
                                         return;
                                     } else {
-                                        poJSON = poDisbursementController.VerifyTransaction("Verified");
+                                        poJSON = poDisbursementController.VerifyTransaction("");
                                         if ("error".equals((String) poJSON.get("result"))) {
                                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                             return;
@@ -508,7 +510,7 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
                         pnEditMode = poDisbursementController.getEditMode();
                         if (pnEditMode == EditMode.READY) {
                             if (!poDisbursementController.existJournal().equals("")) {
-                                poJSON = poDisbursementController.VoidTransaction("Voided");
+                                poJSON = poDisbursementController.VoidTransaction("");
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                     return;
@@ -763,7 +765,12 @@ public class DisbursementVoucher_EntryController implements Initializable, Scree
             tfSupplier.setText(poDisbursementController.Master().Payee().Client().getCompanyName() != null ? poDisbursementController.Master().Payee().Client().getCompanyName() : "");
             tfDVTransactionNo.setText(poDisbursementController.Master().getTransactionNo() != null ? poDisbursementController.Master().getTransactionNo() : "");
             dpDVTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poDisbursementController.Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-            tfVoucherNo.setText(poDisbursementController.Master().getVoucherNo());
+            
+            if(poDisbursementController.Master().getEditMode() == EditMode.UPDATE) {
+                tfVoucherNo.setText(poDisbursementController.Master().getVoucherNo());
+            }
+            
+            
             cmbPaymentMode.getSelectionModel().select(!poDisbursementController.Master().getDisbursementType().equals("") ? Integer.valueOf(poDisbursementController.Master().getDisbursementType()) : -1);
             switch (poDisbursementController.Master().getDisbursementType()) {
                 case DisbursementStatic.DisbursementType.CHECK:

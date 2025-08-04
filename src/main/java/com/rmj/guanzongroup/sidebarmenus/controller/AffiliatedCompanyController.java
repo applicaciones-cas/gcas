@@ -94,15 +94,20 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        clearAllFields();
-        pnEditMode = EditMode.UNKNOWN;
-        initButton(pnEditMode);
-        initializeObject();
-        InitTextFields();
-        initDatePicker();
-        ClickButton();
-        initTabAnchor();
-        pbLoaded = true;
+        try {
+            initializeObject();
+            clearAllFields();
+            pnEditMode = oParameters.AffiliatedCompany().getEditMode();
+            initButton(pnEditMode);
+            
+            InitTextFields();
+            initDatePicker();
+            ClickButton();
+            initTabAnchor();
+            pbLoaded = true;
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(AffiliatedCompanyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void initializeObject() {
@@ -199,29 +204,51 @@ public class AffiliatedCompanyController implements Initializable, ScreenInterfa
                             ShowMessageFX.Information((String) saveResult.get("message"), "Computerized Acounting System", pxeModuleName);
                         }
                         break;
-                    case "btnActivate":
+                     case "btnActivate":
                         String Status = oParameters.AffiliatedCompany().getModel().getRecordStatus();
+                        String id = oParameters.AffiliatedCompany().getModel().getCompanyId();
                         JSONObject poJsON;
-
                         switch (Status) {
                             case "0":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
+                                    ShowMessageFX.Information(String.valueOf(oParameters.Color().getEditMode()), "Computerized Accounting System", pxeModuleName);
+                                    oParameters.AffiliatedCompany().initialize();
                                     poJsON = oParameters.AffiliatedCompany().activateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.AffiliatedCompany().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
                             case "1":
                                 if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
+                                   
+                                    
+                                    System.out.println("EDIT MODE : " + oParameters.AffiliatedCompany().getEditMode());
+                                    
                                     poJsON = oParameters.AffiliatedCompany().deactivateRecord();
-                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    poJsON = oParameters.AffiliatedCompany().openRecord(id);
+                                    if ("error".equals(poJsON.get("result"))) {
+                                        ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
+                                        break;
+                                    }
+                                    clearAllFields();
                                     loadRecord();
+                                    ShowMessageFX.Information((String) poJsON.get("message"), "Computerized Accounting System", pxeModuleName);
                                 }
                                 break;
-                            default:
-
-                                break;
-
                         }
                         break;
                 }

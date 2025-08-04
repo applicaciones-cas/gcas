@@ -591,7 +591,8 @@ public class PaymentRequest_EntryController implements Initializable, ScreenInte
                     if ("success".equals(poJSON.get("result"))) {
                         if (poGLControllers.PaymentRequest().Master().getTransactionStatus().equals(PaymentRequestStatus.OPEN)) {
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                                if ("success".equals((poJSON = poGLControllers.PaymentRequest().ConfirmTransaction("Confirmed")).get("result"))) {
+                                poGLControllers.PaymentRequest().setWithUI(true);
+                                if ("success".equals((poJSON = poGLControllers.PaymentRequest().ConfirmTransaction("")).get("result"))) {
                                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                                 } else {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);

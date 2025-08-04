@@ -579,12 +579,14 @@ public class PurchaseOrder_EntryCarController implements Initializable, ScreenIn
                         loadTableDetail();
                         return;
                     }
+                    
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                     poJSON = poPurchasingController.PurchaseOrder().OpenTransaction(poPurchasingController.PurchaseOrder().Master().getTransactionNo());
                     if ("success".equals(poJSON.get("result"))) {
                         if (poPurchasingController.PurchaseOrder().Master().getTransactionStatus().equals(PurchaseOrderStatus.OPEN)) {
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
-                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("Confirmed")).get("result"))) {
+                                poPurchasingController.PurchaseOrder().setWithUI(true);
+                                if ("success".equals((poJSON = poPurchasingController.PurchaseOrder().ConfirmTransaction("")).get("result"))) {
                                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                                 } else {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
