@@ -785,9 +785,9 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
         taRemarks.setText(poAppController.getMaster().getRemarks());
         lblStatus.setText(DeliveryScheduleStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())));
         if (poAppController.getMaster().getTransactionStatus().equals(DeliveryScheduleStatus.CONFIRMED)) {
-            btnVoid.setText("Void");
-        } else {
             btnVoid.setText("Cancel");
+        } else {
+            btnVoid.setText("Void");
         }
     }
 
