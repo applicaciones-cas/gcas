@@ -253,7 +253,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
 
                     }
                     break;
-                case "btnConfirm":
+                case "btnApprove":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?") == true) {
                         if (!isJSONSuccess(poAppController.CloseTransaction(), "Initialize Close Transaction")) {
                             return;
@@ -265,7 +265,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                     }
                     return;
                 case "btnVoid":
-                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?") == true) {
+                    if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to Void/Cancel transaction?") == true) {
                         if (btnVoid.getText().equals("Void")) {
                             if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
                                 return;
@@ -550,7 +550,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
-        initButtonControls(!lbShow, "btnApprove", "btnVoid", "btnUpdate");
+        initButtonControls(!lbShow, "btnUpdate", "btnApprove", "btnVoid");
         apMaster.setDisable(!lbShow);
         apDetail.setDisable(!lbShow);
     }
