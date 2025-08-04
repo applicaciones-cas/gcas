@@ -263,7 +263,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
-                    return;
+                    break;
                 case "btnVoid":
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to Void/Cancel transaction?") == true) {
                         if (btnVoid.getText().equals("Void")) {
@@ -281,6 +281,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
+                    break;
                 case "btnSave":
                     if (!isJSONSuccess(poAppController.saveTransaction(), "Initialize Save Transaction")) {
                         return;
@@ -764,7 +765,14 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
             });
             return false;
         }
+        String message = (String) loJSON.get("message");
 
+        poLogWrapper.severe(psFormName + " :" + message);
+        Platform.runLater(() -> {
+            if (message != null) {
+                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+            }
+        });
         poLogWrapper.info(psFormName + " : Success on " + fsModule);
         return true;
 
