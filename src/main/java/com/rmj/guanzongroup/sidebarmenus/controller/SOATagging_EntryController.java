@@ -1289,6 +1289,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         cmbTransType.setOnAction(event -> {
             retrievePayables(false);
         });
+        JFXUtil.initComboBoxCellDesignColor("#FF8201",cmbTransType);
     }
     
     public void initDatePickers() {
