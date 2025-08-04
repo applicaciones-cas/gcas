@@ -162,7 +162,6 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                 System.err.println("Initialize value : Industry >" + psIndustryID
                         + "\nCompany :" + psCompanyID
                         + "\nCategory:" + psCategoryID);
-//            poAppController.initFields();
             });
             initializeTableDetail();
             initControlEvents();
@@ -732,12 +731,13 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
 
     }
 
-    private void loadTransactionMaster() {
+    private void loadTransactionMaster() throws SQLException, GuanzonException {
         tfTransactionNo.setText(poAppController.getMaster().getTransactionNo());
         dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
         dpScheduleDate.setValue(ParseDate(poAppController.getMaster().getScheduleDate()));
         taRemarks.setText(poAppController.getMaster().getRemarks());
         lblStatus.setText(DeliveryScheduleStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())));
+        lblSource.setText(poAppController.getMaster().Company().getCompanyName() + " - " + poAppController.getMaster().Industry().getDescription());
         if (poAppController.getMaster().getTransactionStatus().equals(DeliveryScheduleStatus.CONFIRMED)) {
             btnVoid.setText("Void");
         } else {

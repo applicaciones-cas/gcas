@@ -153,17 +153,20 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 unloadForm appUnload = new unloadForm();
                 appUnload.unloadForm(apMainAnchor, poApp, psFormName);
             }
+            
 
             Platform.runLater(() -> {
-                poAppController.getMaster().setIndustryId(psIndustryID);
+                
                 poAppController.setIndustryID(psIndustryID);
                 poAppController.setCompanyID(psCompanyID);
                 poAppController.setCategoryID(psCategoryID);
                 System.err.println("Initialize value : Industry >" + psIndustryID
                         + "\nCompany :" + psCompanyID
                         + "\nCategory:" + psCategoryID);
-//            poAppController.initFields();
+                
+                btnNew.fire();
             });
+            
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException ex) {
@@ -711,13 +714,13 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
     }
 
-    private void loadTransactionMaster() {
+    private void loadTransactionMaster() throws GuanzonException, SQLException{
         tfTransactionNo.setText(poAppController.getMaster().getTransactionNo());
         dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
         dpScheduleDate.setValue(ParseDate(poAppController.getMaster().getScheduleDate()));
         taRemarks.setText(poAppController.getMaster().getRemarks());
         lblStatus.setText(DeliveryScheduleStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())));
-
+        lblSource.setText(poAppController.getMaster().Company().getCompanyName() + " - " + poAppController.getMaster().Industry().getDescription());
     }
 
     private LocalDate ParseDate(Date date) {

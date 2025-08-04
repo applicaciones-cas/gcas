@@ -471,18 +471,45 @@ public class DeliverySchedule_HistoryController implements Initializable, Screen
         } else {
             lsValue = loTxtField.getText();
         }
-        if (null != event.getCode()) {
-            switch (event.getCode()) {
-                case TAB:
-                case ENTER:
-                case UP:
-                    CommonUtils.SetPreviousFocus((TextField) event.getSource());
-                    return;
-                case DOWN:
-                    CommonUtils.SetNextFocus(loTxtField);
-                    return;
+        try {
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                    case F3:
+                        switch (txtFieldID) {
 
+                            //Search Pane
+                            case "tfSearchCluster":
+                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, true, true),
+                                        "Search Transaction!")) {
+                                }
+                                getLoadedTransaction();
+                                return;
+                            //Detail Pane
+                            case "tfClusterName":
+                                if (!isJSONSuccess(poAppController.searchClusterBranch(pnClusterDetail, lsValue, false),
+                                        " Search Cluster! ")) {
+                                }
+                                loadSelectedTransactionDetail(pnClusterDetail);
+                                return;
+
+                            default:
+                                CommonUtils.SetNextFocus((TextField) event.getSource());
+                                return;
+                        }
+                    case UP:
+                        CommonUtils.SetPreviousFocus((TextField) event.getSource());
+                        return;
+                    case DOWN:
+                        CommonUtils.SetNextFocus(loTxtField);
+                        return;
+
+                }
             }
+        } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+            Logger.getLogger(DeliverySchedule_ConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
 
@@ -520,12 +547,13 @@ public class DeliverySchedule_HistoryController implements Initializable, Screen
 
     }
 
-    private void loadTransactionMaster() {
+    private void loadTransactionMaster() throws SQLException, GuanzonException {
         tfTransactionNo.setText(poAppController.getMaster().getTransactionNo());
         dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
         dpScheduleDate.setValue(ParseDate(poAppController.getMaster().getScheduleDate()));
         taRemarks.setText(poAppController.getMaster().getRemarks());
         lblStatus.setText(DeliveryScheduleStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())));
+        lblSource.setText(poAppController.getMaster().Company().getCompanyName() + " - " + poAppController.getMaster().Industry().getDescription());
 
     }
 

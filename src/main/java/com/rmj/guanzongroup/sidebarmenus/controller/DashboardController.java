@@ -2975,10 +2975,10 @@ public class DashboardController implements Initializable {
                      return new DeliverySchedule_EntryController();
                 //Confirmation
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_Confirmation.fxml":
-                   return new DeliverySchedule_EntryController();
+                   return new DeliverySchedule_ConfirmationController();
                 //History
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_History.fxml":
-                   return new DeliverySchedule_EntryController();
+                   return new DeliverySchedule_HistoryController();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -4716,10 +4716,10 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Delivery Schedule\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_Entry.fxml\",\"controller_path\":\"DeliveryScheduleEntry.controller\",\"menu_id\":\"005\",\"menu_parent\":\"002\"},"
                 //Confirmation
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Confirmation\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"003\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Delivery Schedule\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_Confirmation.fxml\",\"controller_path\":\"DeliveryScheduleConfirmation.controller\",\"menu_id\":\"006\",\"menu_parent\":\"003\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Delivery Confirmation\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_Confirmation.fxml\",\"controller_path\":\"DeliveryScheduleConfirmation.controller\",\"menu_id\":\"006\",\"menu_parent\":\"003\"},"
                 //History
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"004\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Delivery Schedule\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_History.fxml\",\"controller_path\":\"DeliveryScheduleHistory.controller\",\"menu_id\":\"007\",\"menu_parent\":\"004\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Delivery History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_History.fxml\",\"controller_path\":\"DeliveryScheduleHistory.controller\",\"menu_id\":\"007\",\"menu_parent\":\"004\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
