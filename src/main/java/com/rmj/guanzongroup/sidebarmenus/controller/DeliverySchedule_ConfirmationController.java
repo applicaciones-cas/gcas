@@ -177,6 +177,11 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
         try {
             switch (lsButton) {
                 case "btnUpdate":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Search Transaction! by Trasaction", "Delivery Schedule Confirmation");
+                        return;
+                    }
+                    
                     if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize Update Transaction")) {
                         return;
                     }
@@ -253,6 +258,11 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                     }
                     break;
                 case "btnApprove":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Search Transaction! by Trasaction", "Delivery Schedule Confirmation");
+                        return;
+                    }
+                    
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?") == true) {
                         if (!isJSONSuccess(poAppController.CloseTransaction(), "Initialize Close Transaction")) {
                             return;
@@ -264,6 +274,11 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                     }
                     break;
                 case "btnVoid":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Search Transaction! by Trasaction", "Delivery Schedule Confirmation");
+                        return;
+                    }
+                    
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to Void/Cancel transaction?") == true) {
                         if (btnVoid.getText().equals("Void")) {
                             if (!isJSONSuccess(poAppController.VoidTransaction(), "Initialize Void Transaction")) {
@@ -603,6 +618,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                                     return;
                                 }
                                 getLoadedTransaction();
+                                initButtonDisplay(poAppController.getEditMode());
                                 return;
                             //Detail Pane
                             case "tfClusterName":
@@ -729,6 +745,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                                     return;
                                 }
                                 getLoadedTransaction();
+                                initButtonDisplay(poAppController.getEditMode());
                                 break;
 
                             case "dpSearchScheduleDate":
@@ -743,6 +760,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                                     return;
                                 }
                                 getLoadedTransaction();
+                                initButtonDisplay(poAppController.getEditMode());
                                 break;
                         }
                 }
@@ -1023,7 +1041,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                 }
                 overlay.setVisible(false);
                 pi.setVisible(false);
-                tblBranchList.getItems().clear();// Clear and update table
+                //tblBranchList.getItems().clear();// Clear and update table
                 tblBranchList.setItems(laBranchList);
 
                 tblColBranchNo.setCellValueFactory(loModel -> {

@@ -181,6 +181,11 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         try {
             switch (lsButton) {
                 case "btnUpdate":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Search Transaction! by Trasaction", "Delivery Schedule Encoding");
+                        return;
+                    }
+                    
                     if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize Update Transaction")) {
                         return;
                     }
@@ -1001,7 +1006,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 }
                 overlay.setVisible(false);
                 pi.setVisible(false);
-                tblBranchList.getItems().clear();// Clear and update table
+                //tblBranchList.getItems().clear();// Clear and update table
                 tblBranchList.setItems(laBranchList);
 
                 tblColBranchNo.setCellValueFactory(loModel -> {

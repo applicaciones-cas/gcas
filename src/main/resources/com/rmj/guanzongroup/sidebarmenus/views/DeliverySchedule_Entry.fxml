@@ -66,13 +66,13 @@
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <DatePicker fx:id="dpSearchDate" GridPane.columnIndex="6" />
+                                    <DatePicker fx:id="dpSearchDate" editable="false" GridPane.columnIndex="6" />
                                     <Label text="Sched. Date" GridPane.columnIndex="7">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <DatePicker fx:id="dpSearchScheduleDate" GridPane.columnIndex="9" />
+                                    <DatePicker fx:id="dpSearchScheduleDate" editable="false" GridPane.columnIndex="9" />
                                  </children>
                               </GridPane>
                               <Label fx:id="lblSource" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Company - Industry" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
@@ -249,13 +249,13 @@
                                                          </font>
                                                       </Label>
                                                   <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                                      <DatePicker fx:id="dpTransactionDate" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                      <DatePicker fx:id="dpTransactionDate" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <TextArea fx:id="taRemarks" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="54.0" GridPane.columnIndex="2" GridPane.columnSpan="8" GridPane.rowIndex="4" GridPane.rowSpan="2">
                                  <GridPane.margin>
                                     <Insets top="1.0" />
                                  </GridPane.margin>
                               </TextArea>
-                                                      <DatePicker fx:id="dpScheduleDate" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                      <DatePicker fx:id="dpScheduleDate" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                               </children>
                                           </GridPane>
                                       </children>

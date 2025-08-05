@@ -66,13 +66,13 @@
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <DatePicker fx:id="dpSearchDate" GridPane.columnIndex="6" />
+                                    <DatePicker fx:id="dpSearchDate" editable="false" GridPane.columnIndex="6" />
                                     <Label text="Sched. Date" GridPane.columnIndex="7">
                                        <font>
                                           <Font name="System Bold" size="14.0" />
                                        </font>
                                     </Label>
-                                    <DatePicker fx:id="dpSearchScheduleDate" GridPane.columnIndex="9" />
+                                    <DatePicker fx:id="dpSearchScheduleDate" editable="false" GridPane.columnIndex="9" />
                                  </children>
                               </GridPane>
                               <Label fx:id="lblSource" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Company - Industry" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
