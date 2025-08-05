@@ -74,7 +74,7 @@ import org.json.simple.parser.ParseException;
  */
 public class InvRequest_EntryLPFoodController implements Initializable, ScreenInterface{
     @FXML
-    private String psFormName = "Inv Stock Request Update LP Food";
+    private String psFormName = "Inv Stock Request Entry LP Food";
         @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();

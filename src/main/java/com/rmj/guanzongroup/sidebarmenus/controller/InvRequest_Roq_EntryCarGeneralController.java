@@ -71,7 +71,7 @@ import org.json.simple.parser.ParseException;
  */
 public class InvRequest_Roq_EntryCarGeneralController implements Initializable, ScreenInterface{
     @FXML
-    private String psFormName = "Inv Stock Request ROQ Update Car General";
+    private String psFormName = "Inv Stock Request ROQ Entry Car General";
      @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();

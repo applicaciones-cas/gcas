@@ -73,7 +73,7 @@ import org.json.simple.parser.ParseException;
  */
 public class InvRequest_EntryAppliancesGeneralController implements Initializable, ScreenInterface{
     @FXML
-    private String psFormName = "Inv Stock Request Update Appliances General";
+    private String psFormName = "Inv Stock Request Entry Appliances General";
     @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();

@@ -73,7 +73,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_EntryCarController implements Initializable, ScreenInterface{
     
     @FXML
-    private String psFormName = "Inv Stock Request Update Car";
+    private String psFormName = "Inv Stock Request Entry Car";
      
         @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
