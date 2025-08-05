@@ -110,6 +110,7 @@ import javafx.util.StringConverter;
 import org.apache.poi.ss.formula.functions.T;
 import org.json.simple.JSONObject;
 import javafx.concurrent.Task;
+import org.guanzon.appdriver.agent.ShowMessageFX;
 
 /**
  * Date : 4/28/2025
@@ -729,14 +730,23 @@ public class JFXUtil {
     }
 
     public static String convertToIsoFormat(String dateStr) {
-        try {
-            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter isoFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter usFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-            LocalDate date = LocalDate.parse(dateStr, inputFormatter);
-            return date.format(outputFormatter);
+        // Try to parse as ISO format first
+        try {
+            LocalDate date = LocalDate.parse(dateStr, isoFormatter);
+            // If it parses successfully, return as-is
+            return dateStr;
+        } catch (DateTimeParseException ignore) {
+            // Not in ISO format, try MM/dd/yyyy
+        }
+
+        // Try to parse as MM/dd/yyyy and convert
+        try {
+            LocalDate date = LocalDate.parse(dateStr, usFormatter);
+            return date.format(isoFormatter);
         } catch (DateTimeParseException e) {
-            // You can return null or throw an exception depending on your needs
             System.err.println("Invalid date format: " + dateStr);
             return null;
         }
@@ -1946,7 +1956,6 @@ public class JFXUtil {
 //        }
 //    }
 //
-    
     //sample usage
 //    JFXUtil.ReloadableTableTask loadTableDetail = new JFXUtil.ReloadableTableTask(
 //            tblViewTransDetails,
@@ -1999,6 +2008,7 @@ public class JFXUtil {
             new Thread(task).start();
         }
     }
+
     public static void textFieldMoveNext(TextField fsId) {
         Platform.runLater(() -> {
             PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
@@ -2007,5 +2017,44 @@ public class JFXUtil {
             });
             delay.play();
         });
+    }
+
+    public static void initiateBtnSearch(
+            String pxeModuleName,
+            AtomicReference<Object> lastFocusedTextField,
+            AtomicReference<Object> previousSearchedTextField,
+            AnchorPane... anchorPanes
+    ) {
+        String lsMessage = "Focus a searchable textfield to search";
+
+        Object lastNode = lastFocusedTextField.get();
+
+        if (lastNode instanceof TextField) {
+            TextField tf = (TextField) lastNode;
+
+            boolean isSearchable = false;
+            for (AnchorPane ap : anchorPanes) {
+                if (JFXUtil.getTextFieldsIDWithPrompt("Press F3: Search", ap).contains(tf.getId())) {
+                    isSearchable = true;
+                    break;
+                }
+            }
+
+            if (isSearchable) {
+                if (lastNode == previousSearchedTextField.get()) {
+                    return;
+                }
+
+                previousSearchedTextField.set(lastNode);
+                JFXUtil.makeKeyPressed(tf, KeyCode.F3);
+            } else {
+                ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+            }
+
+        } else if (lastNode != null) {
+            ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+        } else {
+            ShowMessageFX.Information(null, pxeModuleName, lsMessage);
+        }
     }
 }
