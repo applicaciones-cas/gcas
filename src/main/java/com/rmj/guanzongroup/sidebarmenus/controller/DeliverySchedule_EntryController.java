@@ -271,8 +271,8 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     if (!isJSONSuccess(poAppController.saveTransaction(), "Initialize Save Transaction")) {
                         return;
                     }
-                    clearAllInputs();
                     reloadTableDetail();
+                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":
