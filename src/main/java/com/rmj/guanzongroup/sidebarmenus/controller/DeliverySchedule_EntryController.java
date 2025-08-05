@@ -910,7 +910,6 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
         overlay.setVisible(true);
         pi.setVisible(true);
 
-        apDetail.setDisable(true);
         Task<Void> clusterDeliveryTask = new Task<Void>() {
             private ObservableList<Model_Branch_Cluster_Delivery> laSelectedBranchDelivery;
             private List<String> laValidSizes;
@@ -951,7 +950,6 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
                     // Select current truck size
                     // Store the selected name (or index as string if preferred)
-                    apDetail.setDisable(false);
                     if (!isJSONSuccess(poAppController.LoadBranchClusterDelivery(fnSelectedRow),
                             "Initialize : Load of Branch Cluster Delivery List")) {
                     }
@@ -968,14 +966,12 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             protected void failed() {
                 overlay.setVisible(false);
                 pi.setVisible(false);
-                apDetail.setDisable(false);
             }
 
             @Override
             protected void cancelled() {
                 overlay.setVisible(false);
                 pi.setVisible(false);
-                apDetail.setDisable(false);
             }
         };
 

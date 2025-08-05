@@ -263,12 +263,17 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                         return;
                     }
                     
+                    if(!poAppController.getMaster().getTransactionStatus().equalsIgnoreCase(DeliveryScheduleStatus.OPEN)){
+                        ShowMessageFX.Information("Status was already " + DeliveryScheduleStatus.STATUS.get(Integer.parseInt(poAppController.getMaster().getTransactionStatus())).toLowerCase(), "Search Transaction! by Trasaction", "Delivery Schedule Confirmation");
+                        return;
+                    }
+                    
                     if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?") == true) {
                         if (!isJSONSuccess(poAppController.CloseTransaction(), "Initialize Close Transaction")) {
                             return;
                         }
-                        clearAllInputs();
                         reloadTableDetail();
+                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -290,8 +295,8 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                             }
 
                         }
-                        clearAllInputs();
                         reloadTableDetail();
+                        clearAllInputs();
                         pnEditMode = poAppController.getEditMode();
                         break;
                     }
@@ -300,8 +305,8 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                     if (!isJSONSuccess(poAppController.saveTransaction(), "Initialize Save Transaction")) {
                         return;
                     }
-                    clearAllInputs();
                     reloadTableDetail();
+                    clearAllInputs();
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnCancel":
@@ -518,17 +523,24 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
             } else if (loControl instanceof TextArea) {
                 ((TextArea) loControl).clear();
             } else if (loControl != null && loControl instanceof TableView) {
-                ((TableView<?>) loControl).getItems().clear();
+                TableView<?> table = (TableView<?>) loControl;
+                if (table.getItems() != null) {
+                    table.getItems().clear();
+                }
+
             } else if (loControl instanceof DatePicker) {
                 ((DatePicker) loControl).setValue(null);
             } else if (loControl instanceof ComboBox) {
                 ((ComboBox) loControl).setItems(null);
             }
         }
+
         cbTruckSize.setItems(FXCollections.observableArrayList(DeliveryScheduleTruck.SIZE));
         pnEditMode = poAppController.getEditMode();
+
         initButtonDisplay(poAppController.getEditMode());
         lblStatus.setText("UNKNOWN");
+        laTransactionDetail.clear();
 
     }
 
