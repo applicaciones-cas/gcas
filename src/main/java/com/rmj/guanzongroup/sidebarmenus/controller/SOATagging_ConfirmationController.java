@@ -258,7 +258,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             poJSON = poSOATaggingController.SOATagging().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                poSOATaggingController.SOATagging().AddDetail();
+                                //poSOATaggingController.SOATagging().AddDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1035,12 +1035,12 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             if ((poSOATaggingController.SOATagging().getDetailCount() - 1) >= 0) {
                                 if (poSOATaggingController.SOATagging().Detail(poSOATaggingController.SOATagging().getDetailCount() - 1).getSourceNo() != null
                                         && !"".equals(poSOATaggingController.SOATagging().Detail(poSOATaggingController.SOATagging().getDetailCount() - 1).getSourceNo())) {
-                                    poSOATaggingController.SOATagging().AddDetail();
+                                    //poSOATaggingController.SOATagging().AddDetail();
                                 }
                             }
 
                             if ((poSOATaggingController.SOATagging().getDetailCount() - 1) < 0) {
-                                poSOATaggingController.SOATagging().AddDetail();
+                                //poSOATaggingController.SOATagging().AddDetail();
                             }
                         }
 
@@ -1081,11 +1081,7 @@ public class SOATagging_ConfirmationController implements Initializable, ScreenI
                             loadRecordDetail();
                         }
                         loadRecordMaster();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                    } catch (CloneNotSupportedException ex) {
+                    } catch (SQLException | GuanzonException ex) {
                         Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                 });
