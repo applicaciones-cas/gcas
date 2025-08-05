@@ -77,6 +77,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import org.guanzon.appdriver.base.GuanzonException;
 
 public class DashboardController implements Initializable {
 
@@ -1647,7 +1648,7 @@ public class DashboardController implements Initializable {
                     psIndustryID = "04";
                     psCategoryID = "0009";
                     return "Sales Inquiry History MH";
-                    
+
                 /*Delivery Schedule */
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_Entry.fxml":
                     return "Delivery Schedule Request";
@@ -2970,13 +2971,13 @@ public class DashboardController implements Initializable {
                 /* Delivery Schedule */
                 //Entry
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_Entry.fxml":
-                     return new DeliverySchedule_EntryController();
+                    return new DeliverySchedule_EntryController();
                 //Confirmation
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_Confirmation.fxml":
-                   return new DeliverySchedule_ConfirmationController();
+                    return new DeliverySchedule_ConfirmationController();
                 //History
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_History.fxml":
-                   return new DeliverySchedule_HistoryController();
+                    return new DeliverySchedule_HistoryController();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -4106,6 +4107,16 @@ public class DashboardController implements Initializable {
         btnLogout.setSelected(false);
         sformname = "";
         LoginControllerHolder.setLogInStatus(false);
+        try {
+            if (!oApp.logUser("gRider", "M001000001")) {
+                System.err.println(oApp.getMessage());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        loadUserInfo();
     }
 
     /**
@@ -5192,9 +5203,13 @@ public class DashboardController implements Initializable {
     /**
      * LOAD USER INFO*
      */
-    private void loadUserInfo() {
+    public void loadUserInfo() {
         try {
-            AppUser.setText(oApp.getLogName() + " || " + getAllIndustries(oApp.getIndustry()));
+            if (nav_bar.isDisabled()) {
+                AppUser.setText("");
+            } else {
+                AppUser.setText(oApp.getLogName() + " || " + getAllIndustries(oApp.getIndustry()));
+            }
         } catch (SQLException ex) {
             Logger.getLogger(DashboardController.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -6,6 +6,7 @@ package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelLog_In_Company;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelLog_In_Industry;
+import com.rmj.guanzongroup.sidebarmenus.table.model.ModelLog_In_User;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
@@ -62,6 +63,7 @@ public class Log_InController implements Initializable, ScreenInterface {
     private DashboardController dashboardController;
     ObservableList<ModelLog_In_Industry> industryOptions = FXCollections.observableArrayList();
     ObservableList<ModelLog_In_Company> companyOptions = FXCollections.observableArrayList();
+    ObservableList<ModelLog_In_User> users = FXCollections.observableArrayList();
     @FXML
     private TextField tfUsername;
     @FXML
@@ -235,44 +237,57 @@ public class Log_InController implements Initializable, ScreenInterface {
 
     @FXML
     private void cmdButton_Click(ActionEvent event) {
-        String lsButton = ((Button) event.getSource()).getId();
-        switch (lsButton) {
-            case "btnSignIn":
-                JSONObject poJSON = ValidateLogin();
-                if (!"success".equals((String) poJSON.get("result"))) {
-                    System.err.println((String) poJSON.get("message"));
-                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                } else {
-                    DashboardController dashboardController = LoginControllerHolder.getMainController();
-                    dashboardController.triggervbox2();
-                    dashboardController.setUserIndustry(psIndustryID);
-                    dashboardController.setUserCompany(psCompanyID);
-                    dashboardController.changeUserInfo(psIndustryID);
-                    LoginControllerHolder.setLogInStatus(true);
-                }
-                break;
-            case "btnEyeIcon":
-                FontAwesomeIconView eyeIcon = new FontAwesomeIconView(FontAwesomeIcon.EYE);
-                if (pfPassword.isVisible()) {
-                    tfPassword.setText(pfPassword.getText());
-                    pfPassword.setVisible(false);
-                    tfPassword.setVisible(true);
-                    eyeIcon.setIcon(FontAwesomeIcon.EYE);
-                    eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
-                    btnEyeIcon.setGraphic(eyeIcon);
-                } else {
-                    pfPassword.setText(tfPassword.getText());
-                    tfPassword.setVisible(false);
-                    pfPassword.setVisible(true);
-                    eyeIcon.setIcon(FontAwesomeIcon.EYE_SLASH);
-                    eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
-                    btnEyeIcon.setGraphic(eyeIcon);
-                }
-                break;
-            default:
-                break;
-        }
+        try {
+            String lsButton = ((Button) event.getSource()).getId();
+            switch (lsButton) {
+                case "btnSignIn":
+                    JSONObject poJSON = ValidateLogin();
+                    if (!"success".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    } else {
 
+                        if (!oApp.logUser("gRider", (String) poJSON.get("userID"))) {
+                            System.out.println("Log in status: " + oApp.getMessage() + "\nDefault user logged as " + oApp.getUserID() + "\nUser Level " + oApp.getUserLevel());
+                        } else {
+                            System.out.println("Log in status: " + oApp.getMessage() + "\nUser logged as " + oApp.getUserID() + "\nUser Level " + oApp.getUserLevel());
+                        }
+                        DashboardController dashboardController = LoginControllerHolder.getMainController();
+                        dashboardController.triggervbox2();
+                        dashboardController.setUserIndustry(psIndustryID);
+                        dashboardController.setUserCompany(psCompanyID);
+                        dashboardController.changeUserInfo(psIndustryID);
+                        LoginControllerHolder.setLogInStatus(true);
+                        dashboardController.loadUserInfo();
+
+                    }
+                    break;
+                case "btnEyeIcon":
+                    FontAwesomeIconView eyeIcon = new FontAwesomeIconView(FontAwesomeIcon.EYE);
+                    if (pfPassword.isVisible()) {
+                        tfPassword.setText(pfPassword.getText());
+                        pfPassword.setVisible(false);
+                        tfPassword.setVisible(true);
+                        eyeIcon.setIcon(FontAwesomeIcon.EYE);
+                        eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
+                        btnEyeIcon.setGraphic(eyeIcon);
+                    } else {
+                        pfPassword.setText(tfPassword.getText());
+                        tfPassword.setVisible(false);
+                        pfPassword.setVisible(true);
+                        eyeIcon.setIcon(FontAwesomeIcon.EYE_SLASH);
+                        eyeIcon.setStyle("-fx-fill: gray; -glyph-size: 20; ");
+                        btnEyeIcon.setGraphic(eyeIcon);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void reloadCmbIndustryItems() {
@@ -338,29 +353,57 @@ public class Log_InController implements Initializable, ScreenInterface {
     public JSONObject ValidateLogin() {
         JSONObject poJSON = new JSONObject();
         boolean isUsernameFilled = tfUsername.getText().trim().isEmpty();
+
         if (pfPassword.isVisible()) {
             tfPassword.setText(pfPassword.getText());
         } else {
             pfPassword.setText(tfPassword.getText());
         }
+
         boolean isPasswordFilled = tfPassword.getText().trim().isEmpty();
         if (!isUsernameFilled && !isPasswordFilled) {
-            poJSON.put("result", "success");
-            poJSON.put("message", "success");
 
             if (psIndustryID.equals("") || psCompanyID.equals("")) {
-                poJSON.put("result", "error");
-                poJSON.put("message", "Please fill all the fields");
+                JFXUtil.setJSONError(poJSON, "Please fill all the fields");
             } else {
-                poJSON.put("result", "success");
-                poJSON.put("message", "success");
+                JFXUtil.setJSONSuccess(poJSON, "success");
+                try {
+                    // final log
+                    users.clear();
+                    users = FXCollections.observableArrayList(getAllUsers());
+
+                    for (ModelLog_In_User user : users) {
+                        if (user.getUserName().equals(tfUsername.getText().trim()) && user.getUserPassword().equals(tfPassword.getText().trim())) {
+                            System.out.println("Login success for user ID: " + user.getUserID());
+                            poJSON.put("userID", user.getUserID());
+                        }
+                    }
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(Log_InController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         } else {
-            poJSON.put("result", "error");
-            poJSON.put("message", "Please fill all the fields");
+            JFXUtil.setJSONError(poJSON, "Please fill all the fields");
         }
 
         return poJSON;
+    }
+
+    private List<ModelLog_In_User> getAllUsers() throws SQLException {
+        List<ModelLog_In_User> user = new ArrayList<>();
+        String lsSQL = "SELECT * FROM xxxsysuser";
+//        lsSQL = MiscUtil.addCondition(lsSQL, "cRecdStat = " + SQLUtil.toSQL(Logical.YES));
+        ResultSet rs = oApp.executeQuery(lsSQL);
+
+        while (rs.next()) {
+            String userID = rs.getString("sUserIDxx");
+            String username = rs.getString("sUserName");
+            String userpassword = rs.getString("sPassword");
+            user.add(new ModelLog_In_User(userID, username, userpassword));
+        }
+        MiscUtil.close(rs);
+        return user;
     }
 
     private List<ModelLog_In_Company> getAllCompanies() throws SQLException {
