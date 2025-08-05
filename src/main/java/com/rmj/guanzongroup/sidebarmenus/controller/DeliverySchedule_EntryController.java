@@ -153,20 +153,19 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 unloadForm appUnload = new unloadForm();
                 appUnload.unloadForm(apMainAnchor, poApp, psFormName);
             }
-            
 
             Platform.runLater(() -> {
-                
+
                 poAppController.setIndustryID(psIndustryID);
                 poAppController.setCompanyID(psCompanyID);
                 poAppController.setCategoryID(psCategoryID);
                 System.err.println("Initialize value : Industry >" + psIndustryID
                         + "\nCompany :" + psCompanyID
                         + "\nCategory:" + psCategoryID);
-                
+
                 btnNew.fire();
             });
-            
+
             initializeTableDetail();
             initControlEvents();
         } catch (SQLException | GuanzonException ex) {
@@ -185,7 +184,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                         ShowMessageFX.Information("Please load transaction before proceeding..", "Search Transaction! by Trasaction", "Delivery Schedule Encoding");
                         return;
                     }
-                    
+
                     if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize Update Transaction")) {
                         return;
                     }
@@ -490,17 +489,24 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             } else if (loControl instanceof TextArea) {
                 ((TextArea) loControl).clear();
             } else if (loControl != null && loControl instanceof TableView) {
-                ((TableView<?>) loControl).getItems().clear();
+                TableView<?> table = (TableView<?>) loControl;
+                if (table.getItems() != null) {
+                    table.getItems().clear();
+                }
+
             } else if (loControl instanceof DatePicker) {
                 ((DatePicker) loControl).setValue(null);
             } else if (loControl instanceof ComboBox) {
                 ((ComboBox) loControl).setItems(null);
             }
         }
+
         cbTruckSize.setItems(FXCollections.observableArrayList(DeliveryScheduleTruck.SIZE));
         pnEditMode = poAppController.getEditMode();
+
         initButtonDisplay(poAppController.getEditMode());
         lblStatus.setText("UNKNOWN");
+        laTransactionDetail.clear();
 
     }
 
@@ -590,6 +596,9 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                                     return;
                                 }
                                 getLoadedTransaction();
+
+                                initButtonDisplay(poAppController.getEditMode());
+
                                 return;
                             //Detail Pane
                             case "tfClusterName":
@@ -614,7 +623,8 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 }
             }
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliverySchedule_EntryController.class
+                    .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -718,6 +728,8 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                                     return;
                                 }
                                 getLoadedTransaction();
+                                initButtonDisplay(poAppController.getEditMode());
+
                                 break;
 
                             case "dpSearchScheduleDate":
@@ -732,13 +744,17 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                                     return;
                                 }
                                 getLoadedTransaction();
+                                initButtonDisplay(poAppController.getEditMode());
+
                                 break;
                         }
                 }
             }
             event.consume();
+
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-            Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DeliverySchedule_EntryController.class
+                    .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
         }
     }
@@ -766,7 +782,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
     }
 
-    private void loadTransactionMaster() throws GuanzonException, SQLException{
+    private void loadTransactionMaster() throws GuanzonException, SQLException {
         tfTransactionNo.setText(poAppController.getMaster().getTransactionNo());
         dpTransactionDate.setValue(ParseDate(poAppController.getMaster().getTransactionDate()));
         dpScheduleDate.setValue(ParseDate(poAppController.getMaster().getScheduleDate()));
@@ -819,8 +835,10 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 try {
                     String desc = loModel.getValue().BranchCluster().getClusterDescription();
                     return new SimpleStringProperty(desc != null ? desc : "");
+
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeliverySchedule_EntryController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("");
                 }
@@ -837,10 +855,12 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                             int Size = Integer.parseInt(detail.BranchCluster().BranchClusterDelivery(index).getTruckSize());
                             cbTruckSize.getSelectionModel().select(DeliveryScheduleTruck.SIZE.get(Size));
                             return new SimpleStringProperty(DeliveryScheduleTruck.SIZE.get(Size));
+
                         }
                     }
                 } catch (Exception ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeliverySchedule_EntryController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                     return new SimpleStringProperty("UNKNOWN");
                 }
@@ -856,10 +876,12 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                             int index = tblClusterDetail.getItems().indexOf(detail);
                             Object allocation = detail.BranchCluster().BranchClusterDelivery(index).getAllocation();
                             return new SimpleStringProperty(allocation != null ? allocation.toString() : "0");
+
                         }
                     }
                 } catch (Exception ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeliverySchedule_EntryController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                 }
                 return new SimpleStringProperty("0");
@@ -934,8 +956,10 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                             "Initialize : Load of Branch Cluster Delivery List")) {
                     }
                     reloadTableDetail();
+
                 } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                    Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DeliverySchedule_EntryController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                     poLogWrapper.severe(psFormName + " :" + ex.getMessage());
                 }
             }
@@ -1107,7 +1131,9 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                 overlay.setVisible(false);
                 pi.setVisible(false);
                 Throwable ex = getException();
-                Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger
+                        .getLogger(DeliverySchedule_EntryController.class
+                                .getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }
 
