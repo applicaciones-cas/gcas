@@ -70,10 +70,11 @@ import org.json.simple.parser.ParseException;
  *
  * @author User
  */
-public class InvRequest_UpdateCarSpController implements Initializable, ScreenInterface{
+public class InvRequest_EntryMcController implements Initializable, ScreenInterface{
     
-    @FXML
-    private String psFormName = "Inv Stock Request Update Car Sp";
+        @FXML
+        private String psFormName = "Inv Stock Request Update Mc";
+        
         @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();
@@ -101,8 +102,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
         private ObservableList<ModelInvTableListInformation> tableListInformation_data = FXCollections.observableArrayList();
         @FXML
         private TextField tfTransactionNo,tfBrand,tfModel,tfInvType,
-                tfVariant,tfColor,tfROQ,tfClassification,tfQOH,tfReferenceNo,tfReservationQTY,
-                tfOrderQuantity,tfSearchTransNo,tfSearchReferenceNo,tfBarCode,tfDescription;
+                tfVariant,tfColor,tfROQ,tfClassification,tfQOH,tfReferenceNo,tfReservationQTY,tfOrderQuantity,tfSearchTransNo,tfSearchReferenceNo;
        
 
         @FXML
@@ -121,9 +121,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
         private Button btnClose,btnSave,btnCancel,btnBrowse,btnUpdate,btnRetrieve,btnNew;
 
         @FXML
-        private TableColumn<ModelInvOrderDetail, String> tblBrandDetail, tblModelDetail,tblVariantDetail,
-                tblColorDetail,tblInvTypeDetail,tblROQDetail,tblClassificationDetail,
-                tblQOHDetail,tblReservationQtyDetail,tblOrderQuantityDetail,tblDescriptionDetail,tblBarCodeDetail;
+        private TableColumn<ModelInvOrderDetail, String> tblBrandDetail, tblModelDetail,tblVariantDetail,tblColorDetail,tblInvTypeDetail,tblROQDetail,tblClassificationDetail,tblQOHDetail,tblReservationQtyDetail,tblOrderQuantityDetail;
         
         @FXML
         private TableColumn<ModelInvTableListInformation, String> tblTransactionNo,tblReferenceNo,tblTransactionDate;
@@ -157,7 +155,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
         @Override
         public void initialize(URL url, ResourceBundle rb) {
             try{
-                
+                System.out.print("The company ID: " + psCompanyID);
             invRequestController = new InvWarehouseControllers(poApp,logWrapper);
             invRequestController.StockRequest().setTransactionStatus(StockRequestStatus.OPEN);
             
@@ -202,7 +200,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
                 
                         
                 }catch(ExceptionInInitializerError ex) {
-                Logger.getLogger(InvStockRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
 
             }
         }
@@ -227,11 +225,11 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
     }
         private void loadRecordSearch() {
             try {
-              
+                System.out.print("LBL SOURCE: "+invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
                 lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
 
             } catch (GuanzonException | SQLException ex) {
-                Logger.getLogger(InvStockRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -417,26 +415,12 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
                     }
                 if (pnTblInvDetailRow >= 0) {
 
-                    
                     String lsBrand = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription() != null) {
                         lsBrand = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Brand().getDescription();
                     }
                     tfBrand.setText(lsBrand);
-                    
-                   String lsDescription = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription() != null) {
-                        lsDescription = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getDescription();
-                    }
-                    tfDescription.setText(lsDescription);
-                    
-                    String lsBarCode = "";
-                    if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode() != null) {
-                        lsBarCode = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().getBarCode();
-                    }
-                    tfBarCode.setText(lsBarCode);
 
-                    
                     String lsModel = "";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Model().getDescription() != null) {
                         lsModel = invRequestController.StockRequest().Detail(pnTblInvDetailRow).Inventory().Model().getDescription();
@@ -490,7 +474,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
                     }
                     tfReservationQTY.setText(lsReservationQTY);
                     
-                    String lsOrderQuantity = "0.0";
+                    String lsOrderQuantity = "0";
                     if (invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity() != 0) {
                         lsOrderQuantity = String.valueOf(invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity());
                     }
@@ -579,19 +563,16 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
                                 return;
                             }
 
-                             for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
-                            double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
-                            String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
+                            for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
+                                double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
+                                String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
-                            if (stockID == null || stockID.trim().isEmpty()) {
-                                continue; 
-                            }
-
-                            if (quantity > 0) {
+                                if (detailCount == 1 && (stockID == null || stockID.trim().isEmpty() || quantity == 0)) {
+                                    ShowMessageFX.Warning("Invalid item in order. Ensure all items have a valid Stock ID and quantity greater than 0.", psFormName, null);
+                                    return;
+                                }
                                 hasValidItem = true;
-                                break; 
                             }
-                        }
 
                             if (!hasValidItem) {
                                 ShowMessageFX.Warning("Your order must have at least one valid item with a Stock ID and quantity greater than 0.", psFormName, null);
@@ -828,8 +809,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
         private void clearDetailFields() {
             /* Detail Fields*/
             CustomCommonUtil.setText("", tfBrand, tfModel,
-                    tfColor, tfReservationQTY, tfQOH,tfInvType, 
-                    tfVariant,tfROQ,tfClassification,tfBarCode,tfDescription);
+                    tfColor, tfReservationQTY, tfQOH,tfInvType, tfVariant,tfROQ,tfClassification);
            CustomCommonUtil.setText("0", tfOrderQuantity);
         }           
 
@@ -850,40 +830,39 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
         }
 
 
-     private void loadTableInvDetail() {
-        ProgressIndicator progressIndicator = new ProgressIndicator();
-        progressIndicator.setMaxSize(50, 50);
-        progressIndicator.setStyle("-fx-accent: #FF8201;");
+      private void loadTableInvDetail() {
+            ProgressIndicator progressIndicator = new ProgressIndicator();
+            progressIndicator.setMaxSize(50, 50);
+            progressIndicator.setStyle("-fx-accent: #FF8201;");
 
-        StackPane loadingPane = new StackPane(progressIndicator);
-        loadingPane.setAlignment(Pos.CENTER);
-        loadingPane.setStyle("-fx-background-color: transparent;");
+            StackPane loadingPane = new StackPane(progressIndicator);
+            loadingPane.setAlignment(Pos.CENTER);
+            loadingPane.setStyle("-fx-background-color: transparent;");
 
-        tblViewOrderDetails.setPlaceholder(loadingPane);
-        progressIndicator.setVisible(true);
+            tblViewOrderDetails.setPlaceholder(loadingPane);
+            progressIndicator.setVisible(true);
 
-        Task<List<ModelInvOrderDetail>> task = new Task<List<ModelInvOrderDetail>>() {
-            @Override
+            Task<List<ModelInvOrderDetail>> task = new Task<List<ModelInvOrderDetail>>() {
+                 @Override
             protected List<ModelInvOrderDetail> call() throws Exception {
                 try {
-                   int detailCount = invRequestController.StockRequest().getDetailCount();      
-                    if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
-                        Model_Inv_Stock_Request_Detail lastDetail = invRequestController.StockRequest().Detail(detailCount - 1);
-                        if (lastDetail.getStockId() != null && !lastDetail.getStockId().isEmpty()) {
-                            invRequestController.StockRequest().AddDetail();
-                            detailCount++;
-                        }
-                    }   
-                   
+                   int detailCount = invRequestController.StockRequest().getDetailCount();   
+                    
+                        if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                            Model_Inv_Stock_Request_Detail lastDetail = invRequestController.StockRequest().Detail(detailCount - 1);
+                            if (lastDetail.getStockId() != null && !lastDetail.getStockId().isEmpty()) {
+                                invRequestController.StockRequest().AddDetail();
+                                detailCount++;
+                            }
+                        }   
+
                     List<ModelInvOrderDetail> detailsList = new ArrayList<>();
                     
-                    for (int lnCtr = 0; lnCtr < detailCount; lnCtr++) {
-                        Model_Inv_Stock_Request_Detail detail = invRequestController.StockRequest().Detail(lnCtr);
-                            
+                    for (int i = 0; i < detailCount; i++) {
+                        Model_Inv_Stock_Request_Detail detail = invRequestController.StockRequest().Detail(i);
+                       
                         detailsList.add(new ModelInvOrderDetail(
-                                detail.Inventory().Brand().getDescription(), 
-                                detail.Inventory().getDescription(), 
-                                detail.Inventory().getBarCode(), 
+                                detail.Inventory().Brand().getDescription(),
                                 detail.Inventory().Model().getDescription(),
                                 detail.Inventory().Variant().getDescription(),
                                 detail.Inventory().Color().getDescription(),
@@ -892,22 +871,24 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
                                 detail.getClassification(),
                                 String.valueOf(detail.getQuantityOnHand()),
                                 String.valueOf(detail.getReservedOrder()),
-                                String.valueOf(detail.getQuantity())
-                                
+                                String.valueOf(detail.getQuantity()),
+                                "",
+                                ""
+
                         ));
                     }
-                    
+
                     Platform.runLater(() -> {
-                    invOrderDetail_data.setAll(detailsList); // ObservableList<ModelInvOrderDetail>
-                    tblViewOrderDetails.setItems(invOrderDetail_data);
-                    reselectLastRow();
-                    initFields(pnEditMode);
-                });
+                        invOrderDetail_data.setAll(detailsList); // ObservableList<ModelInvOrderDetail>
+                        tblViewOrderDetails.setItems(invOrderDetail_data);
+                        reselectLastRow();
+                        initFields(pnEditMode);
+                    });
 
                     return detailsList;
 
-                } catch (GuanzonException | SQLException ex) {
-                    Logger.getLogger(InvStockRequest_EntryMcSpController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Exception ex) {
+                    Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
                     return null;
                 }
             }
@@ -925,7 +906,6 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
 
         new Thread(task).start();
     }
-     
         final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
         TextField loTextField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         String lsTextFieldID = loTextField.getId();
@@ -970,9 +950,9 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
 
             CustomCommonUtil.setDisable(true,
                     tfInvType,tfReservationQTY
-                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel,tfDescription,tfBarCode);
+                    ,tfQOH,tfROQ,tfClassification,tfVariant,tfColor,tfBrand,tfModel);
             CustomCommonUtil.setDisable(!lbShow, tfOrderQuantity);
-            CustomCommonUtil.setDisable(!lbNew, tfBrand,tfDescription,tfBarCode);
+            CustomCommonUtil.setDisable(!lbNew, tfBrand,tfModel);
             
             
         } else {
@@ -1007,7 +987,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
 
         private void initTextFieldKeyPressed() {
             List<TextField> loTxtField = Arrays.asList(
-                    tfOrderQuantity,tfSearchTransNo,tfBrand,tfBarCode,tfDescription,tfSearchReferenceNo
+                    tfOrderQuantity,tfSearchTransNo,tfBrand,tfModel,tfSearchReferenceNo
                     );
 
             loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
@@ -1069,104 +1049,74 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
                             }
                             break;
                                     case "tfBrand":
-                              if (pnTblInvDetailRow < 0) {
-                                      ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                      clearDetailFields();
-                                      break;
-                                  }
-                            loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false);
-                            
-                            if ("error".equals(loJSON.get("result"))) {
-                                          ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
-                                          tfBrand.setText("");
-                                          tfBrand.requestFocus();
-                                          break;
-                                      }
-                            
-                            brandID  = (String) loJSON.get("brandID");
-                         
-                            brandDesc = (String) loJSON.get("brandDesc");
-                            tfBrand.setText(brandDesc);
-                            
-                            if (!tfBarCode.getText().isEmpty()||!tfDescription.getText().isEmpty()) {
-                                tfOrderQuantity.requestFocus();
-                            }else{
-                                tfBarCode.requestFocus();
-                            }
-                            loadTableInvDetail();
-                            break;
+                                    if (pnTblInvDetailRow < 0) {
+                                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                        clearDetailFields();
+                                        break;
+                                    }
 
-                        case "tfBarCode":
-                                if (pnTblInvDetailRow < 0) {
-                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                    clearDetailFields();
+                                        loJSON = invRequestController.StockRequest().SearchBrand(lsValue, false);
+
+                                        if ("error".equals(loJSON.get("result"))) {
+                                            ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
+                                            tfBrand.setText("");
+                                            break;
+                                        }
+
+                                        brandID = (String) loJSON.get("brandID");    
+                                        brandDesc = (String) loJSON.get("brandDesc");
+                                        tfBrand.setText(brandDesc);
+                                        
+                                        if (!tfModel.getText().isEmpty()) {
+                                            tfOrderQuantity.requestFocus();
+                                        } else {
+                                            tfModel.requestFocus();
+                                        }
+                                    loadTableInvDetail();
                                     break;
-                                }
-                                    poJSON = invRequestController.StockRequest().SearchBarcode(lsValue, true, pnTblInvDetailRow,brandID
-                                );
-                                
-                               if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                tfBarCode.setText("");
-                                if (poJSON.get("tableRow") != null) {
-                                    pnTblInvDetailRow = (int) poJSON.get("tableRow");
-                                }
-                                break;
-                            }
 
-                            if ("success".equals(poJSON.get("result"))) {
-                                double currentQty = 0.0;
-                                try {
-                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                } catch (Exception e) {
-                                    currentQty = 0.0;
-                                }
-                                double newQty = currentQty + 1;
-                                tfOrderQuantity.setText(String.valueOf(newQty));
-                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                            }
+                                case "tfModel":
+                                     if (pnTblInvDetailRow < 0) {
+                                        ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
+                                        clearDetailFields();
+                                        break;
+                                    }
+                                   
+                                    poJSON = invRequestController.StockRequest().SearchModel(lsValue, false, brandID,pnTblInvDetailRow);
+
+                                    if ("error".equals(poJSON.get("result"))) {
+                                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                        tfModel.setText("");
+                                        if (poJSON.get("tableRow") != null) {
+                                            pnTblInvDetailRow = (int) poJSON.get("tableRow");
+                                        } else {
+                                            break;
+                                        }
+                                    }
+
+                                    if ("success".equals(poJSON.get("result"))) {
+                                       
+                                        double currentQty = 0;
+                                        try {
+                                            currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
+                                        } catch (Exception e) {
+                                            currentQty = 0;
+                                        }
 
 
-                            loadTableInvDetail();
-                            loadDetail();
-                            initDetailFocus();
-                            break;
-                        
-                         case "tfDescription":
-                                if (pnTblInvDetailRow < 0) {
-                                    ShowMessageFX.Warning("Invalid row to update.", psFormName, null);
-                                    clearDetailFields();
+                                        double newQty = currentQty + 1;
+
+
+                                        tfOrderQuantity.setText(String.valueOf(newQty));
+                                        invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
+                                    }
+
+
+                                    loadTableInvDetail();
+                                    loadDetail();
+                                    initDetailFocus();
+                                    //selectTheExistedDetailFromStockRequest();
                                     break;
-                                }
-                                poJSON = invRequestController.StockRequest().SearchBarcodeDescription(lsValue, false, pnTblInvDetailRow,brandID
-                                );
-                                if ("error".equals(poJSON.get("result"))) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                tfDescription.setText("");
-                                if (poJSON.get("tableRow") != null) {
-                                    pnTblInvDetailRow = (int) poJSON.get("tableRow");
-                                }
-                                break;
-                            }
-
-                            if ("success".equals(poJSON.get("result"))) {
-                                double currentQty = 0.0;
-                                try {
-                                    currentQty = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
-                                } catch (Exception e) {
-                                    currentQty = 0.0;
-                                }
-                                double newQty = currentQty + 1;
-                                tfOrderQuantity.setText(String.valueOf(newQty));
-                                invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(newQty);
-                            }
-
-
-                            loadTableInvDetail();
-                            loadDetail();
-                            initDetailFocus();
-                            break;
-                         
                                 }
                               event.consume();
                                switch (fieldId) {
@@ -1174,7 +1124,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
                                         CommonUtils.SetNextFocus((TextField) event.getSource());
                                         break;
                                     case "tfOrderQuantity":
-                                        setOrderQuantityToDetail(tfOrderQuantity.getText(),tfROQ.getText());
+                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
                                         if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                             pnTblInvDetailRow++;
                                         }
@@ -1186,21 +1136,19 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
                                 break;
                                 
                  case UP:
-                        setOrderQuantityToDetail(tfOrderQuantity.getText(),tfROQ.getText());
+                        setOrderQuantityToDetail(tfOrderQuantity.getText());
 
-                         if (fieldId.equals("tfOrderQuantity")) {
+                        if (!fieldId.equals("tfBrand") && !fieldId.equals("tfModel")) {
                             if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
                                 pnTblInvDetailRow--;
                             }
                         }
-
-                       
                         switch (fieldId) {
-                            case "tfBarCode":
+                            case "tfModel":
                                 tfBrand.requestFocus();
                                 break;
-                            case "tfDescription":
-                                tfBarCode.requestFocus();
+                            case "tfOrderQuantity":
+                                tfModel.requestFocus();
                                 break;
                             default:
                                 CommonUtils.SetPreviousFocus((TextField) event.getSource());
@@ -1212,14 +1160,12 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
 
 
                     case DOWN:
-                        setOrderQuantityToDetail(lsValue,tfROQ.getText());
+                        setOrderQuantityToDetail(lsValue);
                         if ("tfBrand".equals(fieldId)) {
-                            tfBarCode.requestFocus();
-                        } else if ("tfBarCode".equals(fieldId)) {
-                            tfDescription.requestFocus();
-                        } else if ("tfDescription".equals(fieldId)) {
+                            tfModel.requestFocus();
+                        } else if ("tfModel".equals(fieldId)) {
                             tfOrderQuantity.requestFocus();
-                        }else if("tfOrderQuantity".equals(fieldId)) {
+                        } else if ("tfOrderQuantity".equals(fieldId)) {
                             if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                 pnTblInvDetailRow++;
                             }
@@ -1260,8 +1206,9 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
             }
         }
     
-   private void setOrderQuantityToDetail(String fsValue,String fsROQ) {
-      
+     private void setOrderQuantityToDetail(String fsValue) {
+         double roq = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getRecommendedOrder();
+        double quantity = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
        
             if (fsValue.isEmpty()) {
                 fsValue = "0";
@@ -1272,14 +1219,16 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
 
             }
             if (tfOrderQuantity.isFocused()) {
-                if (tfBarCode.getText().isEmpty()) {
-                    ShowMessageFX.Warning("Invalid action, Please enter barCode first. ", psFormName, null);
+                if (tfBrand.getText().isEmpty()) {
+                    ShowMessageFX.Warning("Invalid action, Please enter brand first. ", psFormName, null);
                     fsValue = "0";
                 }
-              
-            
-                 if( Double.parseDouble(fsROQ) != 0){
-                    if (Double.parseDouble(fsValue) > Double.parseDouble(fsROQ)) {
+                if (!tfBrand.getText().isEmpty() && tfModel.getText().isEmpty()) {
+                    ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
+                    fsValue = "0";
+                }
+                 if( roq != 0){
+                    if (quantity > roq) {
                         if (!"success".equals((poJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             tfOrderQuantity.setText("0");
@@ -1299,6 +1248,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
             invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Double.valueOf(fsValue));
 
         }
+
         private void initTableList() {
         
         tblTransactionNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
@@ -1312,32 +1262,28 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
             });
         });
     }
-      private void initTableInvDetail() {
+        private void initTableInvDetail() {
 
             tblBrandDetail.setCellValueFactory(new PropertyValueFactory<>("index01"));
-            tblDescriptionDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
-            tblBarCodeDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
-            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
-            tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
-            tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
-            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
-            tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
-            tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
-            tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
-            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index11"));
-            tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index12"));
-        
-        
-        // Prevent column reordering
-        tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblViewOrderDetails.lookup("TableHeaderRow");
-            if (header != null) {
-                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    header.setReordering(false);
-                });
-            }
-        });
-    }
+            tblModelDetail.setCellValueFactory(new PropertyValueFactory<>("index02"));
+            tblVariantDetail.setCellValueFactory(new PropertyValueFactory<>("index03"));
+            tblColorDetail.setCellValueFactory(new PropertyValueFactory<>("index04"));
+            tblInvTypeDetail.setCellValueFactory(new PropertyValueFactory<>("index05"));
+            tblROQDetail.setCellValueFactory(new PropertyValueFactory<>("index06"));
+            tblClassificationDetail.setCellValueFactory(new PropertyValueFactory<>("index07"));
+            tblQOHDetail.setCellValueFactory(new PropertyValueFactory<>("index08"));
+            tblReservationQtyDetail.setCellValueFactory(new PropertyValueFactory<>("index09"));
+            tblOrderQuantityDetail.setCellValueFactory(new PropertyValueFactory<>("index10"));
+            // Prevent column reordering
+            tblViewOrderDetails.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+                TableHeaderRow header = (TableHeaderRow) tblViewOrderDetails.lookup("TableHeaderRow");
+                if (header != null) {
+                    header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                        header.setReordering(false);
+                    });
+                }
+            });
+        }
         //step 6-7
         private void tblViewOrderDetails_Clicked(MouseEvent event) {
              if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
@@ -1431,12 +1377,11 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
                 if (pnTblInvDetailRow >= 0) {
                     boolean isSourceNotEmpty = !invRequestController.StockRequest().Master().getSourceNo().isEmpty();
                     tfBrand.setDisable(isSourceNotEmpty);
-                    tfBarCode.setDisable(isSourceNotEmpty);
-                     tfDescription.setDisable(isSourceNotEmpty);
+                    tfModel.setDisable(isSourceNotEmpty);
                     if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {
                         tfOrderQuantity.requestFocus();
                     } else {
-                        if (!tfBarCode.getText().isEmpty() && (pnEditMode == EditMode.ADDNEW)) {
+                        if (!tfModel.getText().isEmpty() && (pnEditMode == EditMode.ADDNEW)) {
                             tfOrderQuantity.requestFocus();
                         } else {
                             tfBrand.requestFocus();
@@ -1451,7 +1396,7 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
                     if (isSourceNotEmpty && !tfBrand.getText().isEmpty()) {
                         tfOrderQuantity.requestFocus();
                     } else {
-                        if (!tfBarCode.getText().isEmpty() && (pnEditMode == EditMode.UPDATE )) {
+                        if (!tfModel.getText().isEmpty() && (pnEditMode == EditMode.UPDATE )) {
                             tfOrderQuantity.requestFocus();
                         }
                     }
@@ -1461,11 +1406,10 @@ public class InvRequest_UpdateCarSpController implements Initializable, ScreenIn
         }
 
            private void initTextFieldFocus() {
-        List<TextField> loTxtField = Arrays.asList(tfReferenceNo, tfOrderQuantity,tfSearchReferenceNo,tfOrderQuantity,tfBrand,tfDescription);
+        List<TextField> loTxtField = Arrays.asList(tfReferenceNo, tfOrderQuantity,tfSearchReferenceNo);
         loTxtField.forEach(tf -> tf.focusedProperty().addListener(txtField_Focus));
          tfBrand.setOnMouseClicked(e -> activeField = tfBrand);
-         tfBarCode.setOnMouseClicked(e -> activeField = tfBarCode);
-         tfDescription.setOnMouseClicked(e -> activeField = tfDescription);
+         tfModel.setOnMouseClicked(e -> activeField = tfModel);
     }  
 
 

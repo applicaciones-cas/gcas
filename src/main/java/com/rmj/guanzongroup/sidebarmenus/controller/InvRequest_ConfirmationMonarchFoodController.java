@@ -203,7 +203,7 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
                 
                         
                 }catch(ExceptionInInitializerError ex) {
-                Logger.getLogger(InvStockRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
 
             }
         }
@@ -232,7 +232,7 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
                 lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
 
             } catch (GuanzonException | SQLException ex) {
-                Logger.getLogger(InvStockRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -909,7 +909,7 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
                     return detailsList;
 
                 } catch (Exception ex) {
-                    Logger.getLogger(InvStockRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(InvRequest_EntryMcController.class.getName()).log(Level.SEVERE, null, ex);
                     return null;
                 }
             }
