@@ -207,6 +207,12 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
                         //Browse Transaction 
                         case "tfSearchCluster":
+
+                            if (!tfTransactionNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Trasaction", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
                             if (!isJSONSuccess(poAppController.searchTransaction(tfSearchCluster.getText(), true, true),
                                     "Search Transaction!")) {
                                 return;
@@ -214,6 +220,12 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                             getLoadedTransaction();
                             break;
                         case "dpSearchDate":
+
+                            if (!tfTransactionNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Date", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
                             String lsDate = dpSearchDate.getValue() != null ? dpSearchDate.getValue().toString() : "";
                             if (!isJSONSuccess(poAppController.searchTransaction(lsDate, false, true),
                                     "Search Transaction!! BY Date")) {
@@ -222,6 +234,12 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                             getLoadedTransaction();
                             break;
                         case "dpSearchScheduleDate":
+
+                            if (!tfTransactionNo.getText().isEmpty()) {
+                                if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Schedule Date", "Are you sure you want replace loaded Transaction?") == false) {
+                                    return;
+                                }
+                            }
                             String lsScheduleDate = dpSearchDate.getValue() != null ? dpSearchScheduleDate.getValue().toString() : "";
                             if (!isJSONSuccess(poAppController.searchTransaction(lsScheduleDate, false, false),
                                     "Search Transaction!! BY Schedule Date")) {
@@ -422,20 +440,22 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             //add more if required
             if (loControl instanceof TextField) {
                 TextField loControlField = (TextField) loControl;
-                controllerFocusTracker(loControl);
+                controllerFocusTracker(loControlField);
                 loControlField.setOnKeyPressed(this::txtField_KeyPressed);
                 loControlField.focusedProperty().addListener(txtField_Focus);
-
             } else if (loControl instanceof TextArea) {
                 TextArea loControlField = (TextArea) loControl;
                 controllerFocusTracker(loControl);
                 loControlField.setOnKeyPressed(this::txtArea_KeyPressed);
                 loControlField.focusedProperty().addListener(txtArea_Focus);
+            } else if (loControl instanceof TableView) {
+                TableView loControlField = (TableView) loControl;
+                controllerFocusTracker(loControlField);
             } else if (loControl instanceof DatePicker) {
                 DatePicker loControlField = (DatePicker) loControl;
                 controllerFocusTracker(loControlField);
                 loControlField.focusedProperty().addListener(dPicker_Focus);
-                loControlField.getEditor().setOnKeyPressed(event -> dPicker_KeyPressed(event, loControlField));
+                loControlField.getEditor().setOnKeyPressed(this::dPicker_KeyPressed);
             }
         }
 
@@ -554,8 +574,15 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
                             //Search Pane
                             case "tfSearchCluster":
+
+                                if (!tfTransactionNo.getText().isEmpty()) {
+                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Transaction ", "Are you sure you want replace loaded Transaction?") == false) {
+                                        return;
+                                    }
+                                }
                                 if (!isJSONSuccess(poAppController.searchTransaction(lsValue, true, true),
                                         "Search Transaction!")) {
+                                    return;
                                 }
                                 getLoadedTransaction();
                                 return;
@@ -563,6 +590,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                             case "tfClusterName":
                                 if (!isJSONSuccess(poAppController.searchClusterBranch(pnClusterDetail, lsValue, false),
                                         " Search Cluster! ")) {
+                                    return;
                                 }
                                 loadSelectedTransactionDetail(pnClusterDetail);
                                 return;
@@ -648,50 +676,62 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     return;
 
             }
-        } else {
-            loDatePicker.setValue(loValue);
         }
     };
 
-    private void dPicker_KeyPressed(KeyEvent event, DatePicker loDatePicker) {
-        String lsDatePickerID = loDatePicker.getId();
-        LocalDate loValue = loDatePicker.getValue();
+    private void dPicker_KeyPressed(KeyEvent event) {
 
+        TextField loTxtField = (TextField) event.getSource();
+        String loDatePickerID = ((DatePicker) loTxtField.getParent()).getId(); // cautious cast
+        String loValue = loTxtField.getText();
+        String lsValue = "";
         try {
-            if (loValue == null) {
-                lsDatePickerID = null;
-                loDatePicker.getEditor().requestFocus();
-                return;
+            if (loValue != null && !loValue.isEmpty()) {
+                Date toDateValue = SQLUtil.toDate(loValue, "dd/MM/yyyy");
+                lsValue = SQLUtil.dateFormat(toDateValue, SQLUtil.FORMAT_SHORT_DATE);
 
             }
-            Date ldDateValue = Date.from(loValue.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            if (null != event.getCode()) {
+
+            if (event.getCode() != null) {
                 switch (event.getCode()) {
                     case TAB:
                     case ENTER:
                     case F3:
-                        switch (lsDatePickerID) {
-                            //retrieve only
+                        event.consume();
+                        switch (loDatePickerID) {
                             case "dpSearchDate":
-                                if (!isJSONSuccess(poAppController.searchTransaction(SQLUtil.dateFormat(ldDateValue, SQLUtil.FORMAT_SHORT_DATE), false, true),
-                                        "earch Transaction!! BY Date")) {
 
+                                if (!tfTransactionNo.getText().isEmpty()) {
+                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Date", "Are you sure you want replace loaded Transaction?") == false) {
+                                        event.consume();
+                                        return;
+                                    }
+                                }
+                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, false, true),
+                                        "Search Transaction!! BY Date")) {
+                                    event.consume();
                                     return;
                                 }
                                 getLoadedTransaction();
-
-                                return;
+                                break;
 
                             case "dpSearchScheduleDate":
-                                if (!isJSONSuccess(poAppController.searchTransaction(SQLUtil.dateFormat(ldDateValue, SQLUtil.FORMAT_SHORT_DATE), false, false),
+
+                                if (!tfTransactionNo.getText().isEmpty()) {
+                                    if (ShowMessageFX.OkayCancel(null, "Search Transaction! by Schedule Date", "Are you sure you want replace loaded Transaction?") == false) {
+                                        return;
+                                    }
+                                }
+                                if (!isJSONSuccess(poAppController.searchTransaction(lsValue, false, false),
                                         "Search Transaction!! BY Schedule Date")) {
                                     return;
                                 }
                                 getLoadedTransaction();
-                                return;
+                                break;
                         }
                 }
             }
+            event.consume();
         } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
             Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
@@ -708,7 +748,14 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             });
             return false;
         }
+        String message = (String) loJSON.get("message");
 
+        poLogWrapper.severe(psFormName + " :" + message);
+        Platform.runLater(() -> {
+            if (message != null) {
+                ShowMessageFX.Information(null, psFormName, fsModule + ": " + message);
+            }
+        });
         poLogWrapper.info(psFormName + " : Success on " + fsModule);
         return true;
 
@@ -844,10 +891,6 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
             @Override
             protected Void call() throws Exception {
-                if (!isJSONSuccess(poAppController.LoadBranchClusterDelivery(fnSelectedRow),
-                        "Initialize : Load of Branch Cluster Delivery List")) {
-                    return null;
-                }
 
                 // Load and convert delivery list
                 laSelectedBranchDelivery = FXCollections.observableArrayList(
@@ -882,6 +925,9 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     // Select current truck size
                     // Store the selected name (or index as string if preferred)
                     apDetail.setDisable(false);
+                    if (!isJSONSuccess(poAppController.LoadBranchClusterDelivery(fnSelectedRow),
+                            "Initialize : Load of Branch Cluster Delivery List")) {
+                    }
                     reloadTableDetail();
                 } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
                     Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
