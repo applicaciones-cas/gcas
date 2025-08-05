@@ -724,7 +724,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                             poJSON = poSalesInquiryController.SalesInquiry().Master().setClientId("");
                                             poJSON = poSalesInquiryController.SalesInquiry().Master().setAddressId("");
                                             poJSON = poSalesInquiryController.SalesInquiry().Master().setContactId("");
-                                            poSalesInquiryController.SalesInquiry().removeSalesInquiryDetails();
+                                            poSalesInquiryController.SalesInquiry().removeDetails();
                                             loadTableDetail();
                                         } else {
                                             loadRecordMaster();
@@ -825,7 +825,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                     pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the client name?\nPlease note that doing so will delete all sales inquiry details.\n\nDo you wish to proceed?") == true) {
-                                        poSalesInquiryController.SalesInquiry().removeSalesInquiryDetails();
+                                        poSalesInquiryController.SalesInquiry().removeDetails();
                                         loadTableDetail();
                                     } else {
                                         return;
@@ -1007,7 +1007,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                     poSalesInquiryController.SalesInquiry().Master().setClientId("");
                                     poSalesInquiryController.SalesInquiry().Master().setAddressId("");
                                     poSalesInquiryController.SalesInquiry().Master().setContactId("");
-                                    poSalesInquiryController.SalesInquiry().removeSalesInquiryDetails();
+                                    poSalesInquiryController.SalesInquiry().removeDetails();
                                     poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
                                     loadTableDetail();
                                 }
