@@ -727,7 +727,7 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_UpdateAppliancesGeneral.fxml":
                     psIndustryID = "";
                     psCategoryID = "0007";
-                    return "Inv Stock Request Update Appliances";
+                    return "Inv Stock Request Update Appliances General";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InvRequest_HistoryAppliances.fxml":
                     psIndustryID = "07";
                     psCategoryID = "0002";
