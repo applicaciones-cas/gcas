@@ -1091,7 +1091,6 @@ public class SIPosting_MCController implements Initializable, ScreenInterface {
                             retrievePOR();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionNo(lsValue);
                             retrievePOR();
                             return;
                         case "tfTerm":

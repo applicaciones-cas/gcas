@@ -1027,7 +1027,6 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
                             retrievePOR();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionNo(lsValue);
                             retrievePOR();
                             return;
                         case "tfTerm":

@@ -1027,7 +1027,6 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
                             retrievePOR();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionNo(lsValue);
                             retrievePOR();
                             return;
                         case "tfTerm":

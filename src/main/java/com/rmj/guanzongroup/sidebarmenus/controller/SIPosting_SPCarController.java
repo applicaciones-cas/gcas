@@ -1026,7 +1026,6 @@ public class SIPosting_SPCarController implements Initializable, ScreenInterface
                             retrievePOR();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionNo(lsValue);
                             retrievePOR();
                             return;
                         case "tfTerm":
