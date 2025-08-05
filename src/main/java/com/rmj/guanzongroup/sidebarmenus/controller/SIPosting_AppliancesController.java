@@ -1089,7 +1089,6 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                             retrievePOR();
                             return;
                         case "tfSearchReferenceNo":
-                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionNo(lsValue);
                             retrievePOR();
                             return;
                         case "tfTerm":
