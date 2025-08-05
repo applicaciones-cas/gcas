@@ -191,6 +191,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
         poCheckPrintingRequestController = new CashflowControllers(oApp, null).CheckPrintingRequest();
         poCheckPrintingRequestController.setTransactionStatus(CheckPrintRequestStatus.OPEN + CheckPrintRequestStatus.CONFIRMED);
         poJSON = new JSONObject();
+        poCheckPrintingRequestController.setWithUI(true);
         poJSON = poCheckPrintingRequestController.InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -270,7 +271,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     poJSON = poCheckPrintingRequestController.OpenTransaction(poCheckPrintingRequestController.Master().getTransactionNo());
                     if ("success".equals(poJSON.get("result")) && poCheckPrintingRequestController.Master().getTransactionStatus().equals(DisbursementStatic.OPEN)
                             && ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
-                        if ("success".equals((poJSON = poCheckPrintingRequestController.ConfirmTransaction("Confirmed")).get("result"))) {
+                        if ("success".equals((poJSON = poCheckPrintingRequestController.ConfirmTransaction("")).get("result"))) {
                             ShowMessageFX.Information((String) poJSON.get("message"), pxeModuleName, null);
                             JFXUtil.disableAllHighlightByColor(tblVwMain, "#A7C7E7", highlightedRowsMain);
                             plOrderNoPartial.add(new Pair<>(poCheckPrintingRequestController.Master().getTransactionNo(), "1"));
@@ -297,7 +298,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     break;
                 case "btnConfirm":
                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to confirm transaction?")) {
-                        poJSON = poCheckPrintingRequestController.ConfirmTransaction("Confirmed");
+                        poJSON = poCheckPrintingRequestController.ConfirmTransaction("");
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                             return;
@@ -313,7 +314,7 @@ public class CheckPrintRequest_ConfirmationController implements Initializable, 
                     break;
                 case "btnVoid":
                     if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?")) {
-                        poJSON = poCheckPrintingRequestController.VoidTransaction("Voided");
+                        poJSON = poCheckPrintingRequestController.VoidTransaction("");
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                             return;

@@ -166,6 +166,7 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
     public void initialize(URL url, ResourceBundle rb) {
         try {
             poCheckStatusUpdateController = new CashflowControllers(oApp, null).CheckStatusUpdate();
+            poCheckStatusUpdateController.setWithUI(true);
             poJSON = poCheckStatusUpdateController.InitTransaction(); // Initialize transaction
             if (!"success".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -263,7 +264,7 @@ public class CheckStatusUpdateController implements Initializable, ScreenInterfa
                         case CheckStatus.CANCELLED:
                         case CheckStatus.STALED:
                         case CheckStatus.BOUNCED:
-                            poJSON = poCheckStatusUpdateController.ReturnTransaction("Return");
+                            poJSON = poCheckStatusUpdateController.ReturnTransaction("");
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                 return;

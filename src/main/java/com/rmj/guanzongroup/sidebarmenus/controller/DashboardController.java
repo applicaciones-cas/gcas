@@ -3287,43 +3287,43 @@ public class DashboardController implements Initializable {
 //                 case "/com/rmj/guanzongroup/sidebarmenus/views/PurchasingOrder_History.fxml":
 //                 return new PurchasingOrder_HistoryController();
                 /* OTHERS/PARAMETERS/ADDRESS */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
-//                    return new BarangayController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Country.fxml":
-//                    return new CountryController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Province.fxml":
-//                    return new ProvinceController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Region.fxml":
-//                    return new RegionController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Barangay.fxml":
+                    return new BarangayController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Country.fxml":
+                    return new CountryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Province.fxml":
+                    return new ProvinceController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Region.fxml":
+                    return new RegionController();
 
                 /* OTHERS/PARAMETERS/BANKS */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Banks.fxml":
-//                    return new BanksController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml":
-//                    return new BanksBranchesController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Banks.fxml":
+                    return new BanksController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/BanksBranches.fxml":
+                    return new BanksBranchesController();
 //                /* OTHERS/PARAMETERS/CATEGORY */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml":
-//                    return new CategoryController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel2.fxml":
-//                    return new CategoryLevel2Controller();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel3.fxml":
-//                    return new CategoryLevel3Controller();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml":
-//                    return new CategoryLevel4Controller();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml":
+                    return new CategoryController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel2.fxml":
+                    return new CategoryLevel2Controller();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel3.fxml":
+                    return new CategoryLevel3Controller();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml":
+                    return new CategoryLevel4Controller();
 //
 //                /* OTHERS/PARAMETERS/CATEGORY */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml":
-//                    return new ColorController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml":
-//                    return new ColorDetailController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml":
+                    return new ColorController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml":
+                    return new ColorDetailController();
 //
 //                /* OTHERS/PARAMETERS/COMPANY */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml":
-//                    return new AffiliatedCompanyController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Branch.fxml":
-//                    return new BranchController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Company.fxml":
-//                    return new CompanyController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml":
+                    return new AffiliatedCompanyController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Branch.fxml":
+                    return new BranchController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Company.fxml":
+                    return new CompanyController();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/Department.fxml":
 //                    return new DepartmentController();
 //
@@ -3342,26 +3342,26 @@ public class DashboardController implements Initializable {
 //                    return new LaborModelController();
 //
 //                /* OTHERS/PARAMETERS/OTHERS */
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml":
-//                    return new BrandController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Made.fxml":
-//                    return new MadeController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Model.fxml":
-//                    return new ModelController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Measure.fxml":
-//                    return new MeasureController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml":
-//                    return new RelationshipController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml":
+                    return new BrandController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Made.fxml":
+                    return new MadeController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Model.fxml":
+                    return new ModelController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Measure.fxml":
+                    return new MeasureController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml":
+                    return new RelationshipController();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml":
 //                    return new SalesmanController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml":
-//                    return new SectionController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml":
-//                    return new SizeController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml":
-//                    return new TermController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
-//                    return new WarehouseController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml":
+                    return new SectionController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml":
+                    return new SizeController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml":
+                    return new TermController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml":
+                    return new WarehouseController();
 //
 //                /* OTHERS/Clients */
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/ClientMasterParameter.fxml":
@@ -4749,34 +4749,34 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Category\", \"fxml_path\": \"\", \"controller_path\": \"\", \"menu_id\": \"010\", \"menu_parent\": \"001\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Category\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Category.fxml\", \"controller_path\": \"\", \"menu_id\": \"01 02 03 04 05 06\", \"menu_parent\": \"010\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Category Level 2\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel2.fxml\", \"controller_path\": \"\", \"menu_id\": \"012\", \"menu_parent\": \"010\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Category Level 3\", \"fxml_path\": \"Parameters/Category/Category Level 3\", \"controller_path\": \"\", \"menu_id\": \"013\", \"menu_parent\": \"010\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Category Level 4\", \"fxml_path\": \"Parameters/Category/Category Level 4\", \"controller_path\": \"\", \"menu_id\": \"014\", \"menu_parent\": \"010\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Color\", \"fxml_path\": \"Parameters/Color\", \"controller_path\": \"\", \"menu_id\": \"015\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Color\", \"fxml_path\": \"Parameters/Color/Color\", \"controller_path\": \"\", \"menu_id\": \"016\", \"menu_parent\": \"015\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Color Detail\", \"fxml_path\": \"Parameters/Color/Color Detail\", \"controller_path\": \"\", \"menu_id\": \"017\", \"menu_parent\": \"015\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Company\", \"fxml_path\": \"Parameters/Company\", \"controller_path\": \"\", \"menu_id\": \"018\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Affiliated Company\", \"fxml_path\": \"Parameters/Company/Affiliated Company\", \"controller_path\": \"\", \"menu_id\": \"019\", \"menu_parent\": \"018\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Branch\", \"fxml_path\": \"Parameters/Company/Branch\", \"controller_path\": \"\", \"menu_id\": \"020\", \"menu_parent\": \"018\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Company\", \"fxml_path\": \"Parameters/Company/Company\", \"controller_path\": \"\", \"menu_id\": \"021\", \"menu_parent\": \"018\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Department\", \"fxml_path\": \"Parameters/Company/Department\", \"controller_path\": \"\", \"menu_id\": \"022\", \"menu_parent\": \"018\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Category Level 3\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel3.fxml\", \"controller_path\": \"\", \"menu_id\": \"013\", \"menu_parent\": \"010\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Category Level 4\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/CategoryLevel4.fxml\", \"controller_path\": \"\", \"menu_id\": \"014\", \"menu_parent\": \"010\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Color\", \"fxml_path\": \"\", \"controller_path\": \"\", \"menu_id\": \"007\", \"menu_parent\": \"001\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Color\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Color.fxml\", \"controller_path\": \"\", \"menu_id\": \"008\", \"menu_parent\": \"007\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Color Detail\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/ColorDetail.fxml\", \"controller_path\": \"\", \"menu_id\": \"017\", \"menu_parent\": \"015\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Company\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Company.fxml\", \"controller_path\": \"\", \"menu_id\": \"018\", \"menu_parent\": \"001\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Affiliated Company\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/AffiliatedCompany.fxml\", \"controller_path\": \"\", \"menu_id\": \"019\", \"menu_parent\": \"018\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Branch\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Branch.fxml\", \"controller_path\": \"\", \"menu_id\": \"020\", \"menu_parent\": \"018\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Company\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Company.fxml\", \"controller_path\": \"\", \"menu_id\": \"021\", \"menu_parent\": \"018\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Department\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Department.fxml\", \"controller_path\": \"\", \"menu_id\": \"022\", \"menu_parent\": \"018\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Inventory\", \"fxml_path\": \"Parameters/Inventory\", \"controller_path\": \"\", \"menu_id\": \"023\", \"menu_parent\": \"001\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Inventory Location\", \"fxml_path\": \"Parameters/Inventory/Inventory Location\", \"controller_path\": \"\", \"menu_id\": \"024\", \"menu_parent\": \"023\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Inventory Type\", \"fxml_path\": \"Parameters/Inventory/Inventory Type\", \"controller_path\": \"\", \"menu_id\": \"025\", \"menu_parent\": \"023\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Labor\", \"fxml_path\": \"Parameters/Labor\", \"controller_path\": \"\", \"menu_id\": \"026\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Labor\", \"fxml_path\": \"Parameters/Labor/Labor\", \"controller_path\": \"\", \"menu_id\": \"027\", \"menu_parent\": \"026\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Labor Category\", \"fxml_path\": \"Parameters/Labor/Labor Category\", \"controller_path\": \"\", \"menu_id\": \"028\", \"menu_parent\": \"026\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Labor Model\", \"fxml_path\": \"Parameters/Labor/Labor Model\", \"controller_path\": \"\", \"menu_id\": \"029\", \"menu_parent\": \"026\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Labor\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Labor\", \"controller_path\": \"\", \"menu_id\": \"027\", \"menu_parent\": \"026\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Labor Category\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/LaborCategory.fxml\", \"controller_path\": \"\", \"menu_id\": \"028\", \"menu_parent\": \"026\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Labor Model\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/laborModel.fxml\", \"controller_path\": \"\", \"menu_id\": \"029\", \"menu_parent\": \"026\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Others\", \"fxml_path\": \"Parameters/Others\", \"controller_path\": \"\", \"menu_id\": \"030\", \"menu_parent\": \"001\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Brand\", \"fxml_path\": \"Parameters/Others/Brand\", \"controller_path\": \"\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Made\", \"fxml_path\": \"Parameters/Others/Made\", \"controller_path\": \"\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Model\", \"fxml_path\": \"Parameters/Others/Model\", \"controller_path\": \"\", \"menu_id\": \"033\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Measure\", \"fxml_path\": \"Parameters/Others/Measure\", \"controller_path\": \"\", \"menu_id\": \"034\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Relationship\", \"fxml_path\": \"Parameters/Others/Relationship\", \"controller_path\": \"\", \"menu_id\": \"035\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Salesman\", \"fxml_path\": \"Parameters/Others/Salesman\", \"controller_path\": \"\", \"menu_id\": \"036\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Section\", \"fxml_path\": \"Parameters/Others/Section\", \"controller_path\": \"\", \"menu_id\": \"037\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Size\", \"fxml_path\": \"Parameters/Others/Size\", \"controller_path\": \"\", \"menu_id\": \"038\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Term\", \"fxml_path\": \"Parameters/Others/Term\", \"controller_path\": \"\", \"menu_id\": \"039\", \"menu_parent\": \"030\"},"
-                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Warehouse\", \"fxml_path\": \"Parameters/Others/Warehouse\", \"controller_path\": \"\", \"menu_id\": \"040\", \"menu_parent\": \"030\"}"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Brand\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Brand.fxml\", \"controller_path\": \"\", \"menu_id\": \"031\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Made\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Made.fxml\", \"controller_path\": \"\", \"menu_id\": \"032\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Model\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Model.fxml\", \"controller_path\": \"\", \"menu_id\": \"033\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Measure\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Measure.fxml\", \"controller_path\": \"\", \"menu_id\": \"034\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Relationship\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml\", \"controller_path\": \"\", \"menu_id\": \"035\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Salesman\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml\", \"controller_path\": \"\", \"menu_id\": \"036\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Section\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml\", \"controller_path\": \"\", \"menu_id\": \"037\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Size\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml\", \"controller_path\": \"\", \"menu_id\": \"038\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Term\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml\", \"controller_path\": \"\", \"menu_id\": \"039\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Warehouse\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Warehouse.fxml\", \"controller_path\": \"\", \"menu_id\": \"040\", \"menu_parent\": \"030\"}"
                 + "]";
 
         JSONParser parser = new JSONParser();
