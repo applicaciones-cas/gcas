@@ -437,7 +437,6 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
 
                         pnEditMode = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode();
                         break;
@@ -560,6 +559,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
                     loadTableAttachment();
 
                     Tab currentTab = tabPaneForm.getSelectionModel().getSelectedItem();

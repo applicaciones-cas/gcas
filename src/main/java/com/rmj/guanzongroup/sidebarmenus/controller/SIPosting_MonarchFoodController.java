@@ -379,7 +379,6 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
 
                         pnEditMode = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode();
                         break;
@@ -501,6 +500,7 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
                 } else {
                     loadRecordMaster();
                     loadTableDetail();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
                     loadTableAttachment();
 
                     Tab currentTab = tabPaneForm.getSelectionModel().getSelectedItem();
