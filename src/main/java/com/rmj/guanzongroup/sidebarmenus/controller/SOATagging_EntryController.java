@@ -362,12 +362,11 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             for (int lnCtr = 0; lnCtr < poSOATaggingController.SOATagging().getDetailCount(); lnCtr++) {
                 switch (poSOATaggingController.SOATagging().Detail(lnCtr).getSourceCode()) {
                     case SOATaggingStatic.PaymentRequest:
-                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getTransactionNo();
+                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).PaymentRequestMaster().getSeriesNo();
                         break;
-                    case SOATaggingStatic.CachePayable: {
-                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).CachePayableMaster().getTransactionNo();
-                    }
-                    break;
+                    case SOATaggingStatic.CachePayable:
+                        lsTransNoBasis = poSOATaggingController.SOATagging().Detail(lnCtr).CachePayableMaster().getReferNo();
+                        break;
                 }
                 if (!JFXUtil.isObjectEqualTo(poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount(), null, "")) {
                     if (poSOATaggingController.SOATagging().Detail(lnCtr).getAppliedAmount().doubleValue() > 0.0000) {
@@ -393,7 +392,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
     public void retrievePayables(boolean isInReferenceNo) {
         poJSON = new JSONObject();
         String lsTransType = "ALL";
-        switch(cmbTransType.getSelectionModel().getSelectedIndex()){
+        switch (cmbTransType.getSelectionModel().getSelectedIndex()) {
             case 1:
                 lsTransType = SOATaggingStatic.CachePayable;
                 break;
@@ -401,12 +400,12 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                 lsTransType = SOATaggingStatic.PaymentRequest;
                 break;
         }
-        
+
         if (isInReferenceNo) {
             poJSON = poSOATaggingController.SOATagging().loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(), tfReferenceNo.getText(), lsTransType);
         } else {
             //general
-            poJSON = poSOATaggingController.SOATagging().loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(),  "", lsTransType);
+            poJSON = poSOATaggingController.SOATagging().loadPayables(tfClient.getText(), tfCompany.getText(), tfIssuedTo.getText(), "", lsTransType);
         }
 
         if (!"success".equals((String) poJSON.get("result"))) {
@@ -628,7 +627,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                     }
                     break;
             }
-            
+
             System.out.println("Company : " + poSOATaggingController.SOATagging().Master().getCompanyId());
             System.out.println("Supplier : " + poSOATaggingController.SOATagging().Master().getClientId());
             System.out.println("Payee : " + poSOATaggingController.SOATagging().Master().getIssuedTo());
@@ -868,7 +867,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                 || poSOATaggingController.SOATagging().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poSOATaggingController.SOATagging().Master().getTransactionDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText),  SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
@@ -901,8 +900,8 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
-                                            
-                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+
+                                            if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
                                                 poJSON.put("result", "error");
                                                 poJSON.put("message", "User is not an authorized approving officer.");
                                                 pbSuccess = false;
@@ -1070,7 +1069,7 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
             tfSourceNo.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceNo());
             tfSourceCode.setText(poSOATaggingController.SOATagging().Detail(pnDetail).getSourceCode());
             tfReferenceNo.setText(lsReferenceNo);
-            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(JFXUtil.convertToIsoFormat(lsReferenceDate),  "yyyy-MM-dd"));
+            dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(JFXUtil.convertToIsoFormat(lsReferenceDate), "yyyy-MM-dd"));
             tfCreditAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getCreditAmount(), true));
             tfDebitAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getDebitAmount(), true));
             tfAppliedAmtDetail.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poSOATaggingController.SOATagging().Detail(pnDetail).getAppliedAmount(), true));
@@ -1289,12 +1288,12 @@ public class SOATagging_EntryController implements Initializable, ScreenInterfac
         cmbTransType.setOnAction(event -> {
             retrievePayables(false);
         });
-        JFXUtil.initComboBoxCellDesignColor("#FF8201",cmbTransType);
+        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbTransType);
     }
-    
+
     public void initDatePickers() {
         JFXUtil.setDatePickerFormat("MM/dd/yyyy",
-dpTransactionDate, dpReferenceDate);
+                dpTransactionDate, dpReferenceDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
     }
 
@@ -1379,7 +1378,7 @@ dpTransactionDate, dpReferenceDate);
     }
 
     public void initMainGrid() {
-        JFXUtil.setColumnCenter(tblRowNo,tblTransType,tblDate, tblReferenceNo);
+        JFXUtil.setColumnCenter(tblRowNo, tblTransType, tblDate, tblReferenceNo);
         JFXUtil.setColumnLeft(tblSupplier);
         JFXUtil.setColumnsIndexAndDisableReordering(tblViewMainList);
 
