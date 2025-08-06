@@ -185,6 +185,7 @@ public class InvRequest_EntryCarSpController implements Initializable, ScreenInt
                     }
                 }));
                 tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+                Platform.runLater(() -> btnNew.fire());
                 initTextFieldPattern();
                 initButtonsClickActions();
                 initTextFieldFocus();

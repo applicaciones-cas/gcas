@@ -184,6 +184,7 @@ public class InvRequest_Roq_EntryMcSpController implements Initializable, Screen
                     }
                 }));
                 tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+                Platform.runLater(() -> btnNew.fire());
                 initTextFieldPattern();
                 initButtonsClickActions();
                 initTextFieldFocus();

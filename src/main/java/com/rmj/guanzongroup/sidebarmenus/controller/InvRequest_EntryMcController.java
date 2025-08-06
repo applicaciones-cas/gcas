@@ -103,8 +103,7 @@ public class InvRequest_EntryMcController implements Initializable, ScreenInterf
         @FXML
         private TextField tfTransactionNo,tfBrand,tfModel,tfInvType,
                 tfVariant,tfColor,tfROQ,tfClassification,tfQOH,tfReferenceNo,tfReservationQTY,tfOrderQuantity,tfSearchTransNo,tfSearchReferenceNo;
-       
-
+        
         @FXML
         private Label lblTransactionStatus,lblSource;
 
@@ -183,6 +182,7 @@ public class InvRequest_EntryMcController implements Initializable, ScreenInterf
                     }
                 }));
                 tblViewOrderDetails.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+                Platform.runLater(() -> btnNew.fire());
                 initTextFieldPattern();
                 initButtonsClickActions();
                 initTextFieldFocus();

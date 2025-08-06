@@ -78,30 +78,6 @@
                             <children>
                                 <HBox fx:id="hbButtons" alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="1042.0" spacing="5.0" style="-fx-background-color: E9E9E9;" styleClass="button_process" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                              <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="New">
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="PLUS" size="20" />
-                                 </graphic>
-                                 <effect>
-                                    <Blend />
-                                 </effect>
-                              </Button>
-                                        <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Close">
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
-                                            </graphic>
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                        </Button>
-                                        <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Save">
-                                            <effect>
-                                                <Blend />
-                                            </effect>
-                                            <graphic>
-                                                <FontAwesomeIconView glyphName="SAVE" size="20" />
-                                            </graphic>
-                                        </Button>
                               <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Browse">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
@@ -110,6 +86,25 @@
                                     <Blend />
                                  </effect>
                               </Button>
+                                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="New">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="PLUS" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                              <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Save">
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="SAVE" size="20" />
+                                            </graphic>
+                                        </Button>
+                                       
+                                        
+                              
                                         <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Cancel">
                                             <effect>
                                                 <Blend />
@@ -126,6 +121,14 @@
                                     <Blend />
                                  </effect>
                               </Button>
+                               <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="65.0" prefWidth="80.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Close">
+                                            <graphic>
+                                                <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                                            </graphic>
+                                            <effect>
+                                                <Blend />
+                                            </effect>
+                                        </Button>
                               <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Update">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="EDIT" size="20" />
