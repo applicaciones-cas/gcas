@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -38,9 +39,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
@@ -70,9 +73,12 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
     private String psCategoryID = "";
     
     private int pnEditMode;
+    private int pnSourceRow = -1;
+    private int pnDetailRow = -1;
     private static final int ROWS_PER_PAGE = 50;
     
     private ObservableList<ModelSalesReservationSource> source_data = FXCollections.observableArrayList();
+    private ObservableList<ModelSalesReservationDetail> detail_data = FXCollections.observableArrayList();
     
     @Override
     public void setGRider(GRiderCAS foValue) {
@@ -157,15 +163,15 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
     // ──────────────────────────────
     // Detail Table
     // ──────────────────────────────
-    @FXML private TableView<ModelSalesReservationDetail> tblDetailList;
-    @FXML private TableColumn<ModelSalesReservationDetail, String> tblDRowNo;
-    @FXML private TableColumn<ModelSalesReservationDetail, String> tblDStockID;
-    @FXML private TableColumn<ModelSalesReservationDetail, String> tblDClassify;
-    @FXML private TableColumn<ModelSalesReservationDetail, String> tblDIssued;
-    @FXML private TableColumn<ModelSalesReservationDetail, String> tblDCancelled;
-    @FXML private TableColumn<ModelSalesReservationDetail, String> tblDUnitPrice;
-    @FXML private TableColumn<ModelSalesReservationDetail, String> tblDMinDown;
-    @FXML private TableColumn<ModelSalesReservationDetail, String> tblDTotalAmount;
+    @FXML private TableView tblDetailList;
+    @FXML private TableColumn tblDRowNo;
+    @FXML private TableColumn tblDStockID;
+    @FXML private TableColumn tblDClassify;
+    @FXML private TableColumn tblDIssued;
+    @FXML private TableColumn tblDCancelled;
+    @FXML private TableColumn tblDUnitPrice;
+    @FXML private TableColumn tblDMinDown;
+    @FXML private TableColumn tblDTotalAmount;
 
     // ──────────────────────────────
     // Source Table
@@ -223,7 +229,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                 } catch (SQLException | GuanzonException ex) {
                     Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+    }
     
     private void initFields() {
         Node[] txtFieldInputs = {
@@ -271,6 +277,8 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             pagination.setVisible(false);
             pagination.setManaged(false);
         }
+        tblSourceList.setOnMouseClicked(this::tblSourceList_Clicked);
+        tblDetailList.setOnMouseClicked(this::tblDetail_Clicked);
     }
     
     final ChangeListener<Boolean> txtField_Focus = (obs, oldVal, newVal) -> {
@@ -288,8 +296,8 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     case "tfBrand":
 
                         break;
-                    case "tfModel":
-
+                    case "tfQuantity":
+                        poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).setQuantity(Double.parseDouble(lsValue));
                         break;
                     default:
                         break;
@@ -315,10 +323,10 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             try {
                 switch (lsTextAreadID) {
                     case "taRemarks":
-
+                         poSalesReservationControllers.SalesReservation().Master().setRemarks(lsValue);
                         break;
                     case "taNotes":
-
+                         poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).setNotes(lsValue);
                         break;
                     default:
                         break;
@@ -347,13 +355,25 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     case ENTER:
                     case F3:
                         switch (txtFieldID) {
-                            case "tfSupplier":
+                            case "tfCustomerName":
                                 
+                                poJSON = poSalesReservationControllers.SalesReservation().SearchClient(lsValue, false);
+                                if ("error".equals(poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    tfCustomerName.selectAll();
+                                    break;
+                                }
+                                tfCustomerName.setText( poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName());
+                                tfAddress.setText(poSalesReservationControllers.SalesReservation().Master().Client_Address().getAddress());
+//                                if (tfTerm.getText().isEmpty()) {
+//                                    tfTerm.requestFocus();
+//                                }
                                 break;
                             case "tfDestination":
                                
                                 break;
                             case "tfTerm":
+                                
                                 
                                 break;
                             case "tfBrand":
@@ -377,6 +397,10 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
         } catch (ExceptionInInitializerError | NullPointerException ex) {
             Logger.getLogger(SalesReservation_EntryMCController.class
                     .getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (GuanzonException ex) {
+            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -424,6 +448,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         }
                         poSalesReservationControllers.SalesReservation().NewTransaction();
                         loadRecordMaster();
+                        loadTableDetailList();
                         pnEditMode =poSalesReservationControllers.SalesReservation().getEditMode();
                         initButton(pnEditMode);
                         break;
@@ -433,12 +458,13 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
 //                        poSalesReservationControllers.SalesReservation().setBranchCode(poApp.getBranchCode());
 //                        poSalesReservationControllers.SalesReservation().setTransactionStatus(Sales_Reservation_Static.OPEN);
                         String ClientID = poSalesReservationControllers.SalesReservation().Master().getClientID();
-                        poJSON = poSalesReservationControllers.SalesReservation().SearchTransaction(tfCustomerName.getText().toString(),ClientID);
+                        poJSON = poSalesReservationControllers.SalesReservation().SearchTransaction(tfCustomerName.getText(),ClientID);
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning( (String) poJSON.get("message"), psFormName,null);
                             return;
                         }
-                        
+                        loadRecordMaster();
+                        loadRecordDetail();
                         pnEditMode = EditMode.READY;
                         initButton(pnEditMode);
                         break;
@@ -447,10 +473,23 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         initButton(pnEditMode);
                         break;
                     case "btnCancel":
-                        pnEditMode = EditMode.READY;
+                        clearMaster();
+                        clearDetail();
+                        detail_data.clear();
+                        poSalesReservationControllers.SalesReservation().resetMaster();
+                        pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
                         initButton(pnEditMode);
                         break;
                     case "btnSave":
+                         if (ShowMessageFX.YesNo("Are you sure you want to save the transaction?",
+                                "Computerized Acounting System", psFormName)) {
+                            poJSON = poSalesReservationControllers.SalesReservation().SaveTransaction();
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                break;
+                            }
+                        }
+                         btnNew.fire();
                         break;
                     case "btnRetrieve":
                         loadTableSourceList();
@@ -487,7 +526,7 @@ tblSourceList.setItems(source_data);
         tblDUnitPrice.setCellValueFactory(new PropertyValueFactory<>("index06"));
         tblDMinDown.setCellValueFactory(new PropertyValueFactory<>("index07"));
         tblDTotalAmount.setCellValueFactory(new PropertyValueFactory<>("index08"));
-
+        tblDetailList.setItems(detail_data);
         tblDetailList.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblDetailList.lookup("TableHeaderRow");
             if (header != null) {
@@ -499,20 +538,53 @@ tblSourceList.setItems(source_data);
     }
     
     
-    private void loadRecordMaster(){
+    private void loadRecordMaster() {
         try {
             tfTransactionNo.setText(poSalesReservationControllers.SalesReservation().Master().getTransactionNo());
-            dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-            dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+            dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
+                    poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+            dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
+                    poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+            tfCustomerName.setText(poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName() != null
+                    ? poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName() : "");
+            tfCustomerName.setText(poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName() != null
+                    ? poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName() : "");
+            tfAddress.setText(poSalesReservationControllers.SalesReservation().Master().Client_Address().getAddress() != null
+                    ? poSalesReservationControllers.SalesReservation().Master().Client_Address().getAddress() : "");
+//            tfContact.setText(poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName() != null 
+//                ? poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName() : "");
+            tfReference.setText(poSalesReservationControllers.SalesReservation().Master().getReferenceNo() != null
+                    ? poSalesReservationControllers.SalesReservation().Master().getReferenceNo() : "");
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poSalesReservationControllers.SalesReservation().Master().getTransactionTotal(), true));
+            tfAmountPaid.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poSalesReservationControllers.SalesReservation().Master().getAmountPaid(), true));
+            taRemarks.setText(poSalesReservationControllers.SalesReservation().Master().getRemarks() != null
+                    ? poSalesReservationControllers.SalesReservation().Master().getRemarks() : "");
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     private void loadRecordDetail(){
         try {
-            tfTransactionNo.setText(poSalesReservationControllers.SalesReservation().Master().getTransactionNo());
-            dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
-            dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+            tfBrand.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() : "");
+            tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() : "");
+            tfVariant.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Variant().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Variant().getDescription() : "");
+            tfCategory.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() : "");
+            tfColor.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Color().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Color().getDescription() : "");
+            
+            tfUnitPrice.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getCost(), true));
+            tfDownPayment.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    0.0000, true));
+            tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+                    0.00, true));
+           
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -607,6 +679,68 @@ tblSourceList.setItems(source_data);
         };
         new Thread(task).start(); // Run task in background
     }
+    private void tblSourceList_Clicked(MouseEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+            pnSourceRow = tblSourceList.getSelectionModel().getSelectedIndex();
+            if (event.getClickCount() == 2) {
+              
+                    ModelSalesReservationSource loSourceSelected = (ModelSalesReservationSource) tblSourceList.getSelectionModel().getSelectedItem();
+                    if (loSourceSelected != null) {
+                        String lsTransactionNo = loSourceSelected.getIndex02();
+                        String lsSource = loSourceSelected.getIndex04();
+                        try {
+                            poJSON = poSalesReservationControllers.SalesReservation().addSourceToSalesRsvDetail(lsTransactionNo,lsSource);
+                            if ("success".equals(poJSON.get("result"))) {
+                                if (poSalesReservationControllers.SalesReservation().getDetailCount() > 0) {
+                                    pnSourceRow = poSalesReservationControllers.SalesReservation().getDetailCount() - 1;
+                                    loadTableDetailAndSelectedRow();
+//                                    source_data.get(pnSourceRow).setIndex04(Sales_Reservation_Static.CONFIRMED);
+//                                    selectTheExistedDetailFromMainTable();
+                                }
+                            } else {
+                                if("true".equals(poJSON.get("ischange"))){
+                                     if (ShowMessageFX.YesNo((String) poJSON.get("message"), psFormName, null)) {
+                                         btnNew.fire();
+                                         poJSON = poSalesReservationControllers.SalesReservation().addSourceToSalesRsvDetail(lsTransactionNo, lsSource);
+                                         if ("success".equals(poJSON.get("result"))) {
+                                             if (poSalesReservationControllers.SalesReservation().getDetailCount() > 0) {
+                                                 pnSourceRow = poSalesReservationControllers.SalesReservation().getDetailCount() - 1;
+                                                 loadTableDetailAndSelectedRow();
+                                             }
+                                         }
+                                     }
+                                }else{
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                }
+                            }
+                        } catch (SQLException | GuanzonException ex) {
+                            Logger.getLogger(PurchaseOrder_EntryMCController.class
+                                    .getName()).log(Level.SEVERE, null, ex);
+                            ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
+                        } catch (CloneNotSupportedException ex) {
+                            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+            }
+        }
+    }
+    private void loadTableDetailAndSelectedRow() {
+        if (pnDetailRow >= 0) {
+            Platform.runLater(() -> {
+                // Run a delay after the UI thread is free
+                PauseTransition delay = new PauseTransition(Duration.millis(10));
+                delay.setOnFinished(event -> {
+                    Platform.runLater(() -> { // Run UI updates in the next cycle
+                        loadTableDetailList();
+                    });
+                });
+                delay.play();
+            });
+            loadRecordMaster();
+            loadRecordDetail();
+//            initDetailFocus();
+        }
+    }
     
     private Node createPage(int pageIndex) {
         int totalPages = (int) Math.ceil((double) source_data.size() / ROWS_PER_PAGE);
@@ -630,6 +764,120 @@ tblSourceList.setItems(source_data);
         return tblSourceList;
     }
     
+    
+    private void loadTableDetailList() {
+//        pbEnteredDV = false;
+        JFXUtil.LoadScreenComponents loading = JFXUtil.createLoadingComponents();
+        tblDetailList.setPlaceholder(loading.loadingPane);
+        loading.progressIndicator.setVisible(true);
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Platform.runLater(() -> {
+                    try {
+                        detail_data.clear();
+                        int lnCtr;
+                        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                            lnCtr = poSalesReservationControllers.SalesReservation().getDetailCount() - 1;
+                            if (lnCtr >= 0) {
+                                String lsSourceNo = poSalesReservationControllers.SalesReservation().Master().getSourceNo();
+                                if (!lsSourceNo.isEmpty() || poSalesReservationControllers.SalesReservation().Master() == null) {
+                                    try {
+                                        poSalesReservationControllers.SalesReservation().AddDetail();
+
+                                    } catch (CloneNotSupportedException ex) {
+                                        Logger.getLogger(DisbursementVoucher_EntryController.class
+                                                .getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                            }
+                        }
+                        double lnNetTotal = 0.0000;
+                        for (lnCtr = 0; lnCtr < poSalesReservationControllers.SalesReservation().getDetailCount(); lnCtr++) {
+                            try {
+                                double unitprice = Double.parseDouble(poSalesReservationControllers.SalesReservation().Detail(lnCtr).Inventory().getCost().toString());
+                                lnNetTotal = poSalesReservationControllers.SalesReservation().Detail(lnCtr).getQuantity() * unitprice;
+                                detail_data.add(
+                                        new ModelSalesReservationDetail(String.valueOf(lnCtr + 1),
+                                                poSalesReservationControllers.SalesReservation().Detail(lnCtr).getStockID(),
+                                                "F",
+                                                "0",
+                                                "0",
+                                                CustomCommonUtil.setIntegerValueToDecimalFormat(poSalesReservationControllers.SalesReservation().Detail(lnCtr).Inventory().getCost(), true),
+                                                "0.0000",
+                                                CustomCommonUtil.setIntegerValueToDecimalFormat(lnNetTotal, true)
+                                        ));
+                            } catch (SQLException | GuanzonException ex) {
+                                Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        if (pnDetailRow < 0 || pnDetailRow
+                                >= detail_data.size()) {
+                            if (!detail_data.isEmpty()) {
+                                JFXUtil.selectAndFocusRow(tblDetailList, 0);
+                                pnDetailRow = tblDetailList.getSelectionModel().getSelectedIndex();
+                                loadRecordDetail();
+                            }
+                        } else {
+                            JFXUtil.selectAndFocusRow(tblDetailList, pnDetailRow);
+                            loadRecordDetail();
+                        }
+//                        poJSON = poSalesReservationControllers.SalesReservation().computeFields();
+//                        if ("error".equals((String) poJSON.get("result"))) {
+//                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+//                            return;
+//                        }
+                        loadRecordDetail();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (GuanzonException ex) {
+                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                });
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                if (detail_data == null || detail_data.isEmpty()) {
+                    tblDetailList.setPlaceholder(loading.placeholderLabel);
+                } else {
+                    tblDetailList.toFront();
+                }
+                loading.progressIndicator.setVisible(false);
+            }
+
+            @Override
+            protected void failed() {
+                if (detail_data == null || detail_data.isEmpty()) {
+                    tblDetailList.setPlaceholder(loading.placeholderLabel);
+                }
+                loading.progressIndicator.setVisible(false);
+            }
+        };
+        new Thread(task).start();
+
+    }
+    
+    private void tblDetail_Clicked(MouseEvent event) {
+        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
+            pnDetailRow = tblDetailList.getSelectionModel().getSelectedIndex();
+            ModelSalesReservationDetail selectedItem = (ModelSalesReservationDetail) tblDetailList.getSelectionModel().getSelectedItem();
+            if (event.getClickCount() == 1) {
+                clearDetail();
+                if (selectedItem != null) {
+                    if (pnDetailRow >= 0) {
+                        loadRecordDetail();
+//                        initDetailFocus();
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         btnRetrieve.setVisible(lbShow);
@@ -648,5 +896,41 @@ tblSourceList.setItems(source_data);
         btnClose.setManaged(true);
     }
     
-    
+    private void clearMaster() {
+        TextInputControl[] txtFieldInputs = {
+            tfTransactionNo,
+            tfCustomerName,
+            tfAddress,
+            tfContact,
+            tfReference,
+            tfTotal,
+            tfAmountPaid,
+        };
+
+        for (TextInputControl txtInput : txtFieldInputs) {
+            txtInput.clear();
+        }
+        taRemarks.clear();
+        dpTransaction.setValue(null);
+        dpExpedtedDate.setValue(null);
+    }
+    private void clearDetail(){
+            TextInputControl[] txtFieldInputs = {
+            tfBrand,
+            tfModel,
+            tfVariant,
+            tfInvType,
+            tfCategory,
+            tfColor,
+            tfUnitPrice,
+            tfDownPayment,
+            tfQuantity
+        };
+
+        for (TextInputControl txtInput : txtFieldInputs) {
+            txtInput.clear();
+        }
+        taNotes.clear();
+//        detail_data.clear();
+    }
 }
