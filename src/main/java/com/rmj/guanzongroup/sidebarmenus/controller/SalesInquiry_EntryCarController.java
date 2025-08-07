@@ -766,16 +766,6 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             tfBrand.requestFocus();
         }
     }
-    
-    private void textFieldMoveNext(TextField fsId){
-        Platform.runLater(() -> {
-            PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-            delay.setOnFinished(e -> {
-                fsId.requestFocus();
-            });
-            delay.play();
-        });
-    }
 
     private void txtField_KeyPressed(KeyEvent event) {
         try {
@@ -850,7 +840,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 tfSalesPerson.setText("");
                                 break;
                             } else {
-                                textFieldMoveNext(tfReferralAgent);
+                                JFXUtil.textFieldMoveNext(tfReferralAgent);
                             }
                             loadRecordMaster();
                             return;
@@ -861,7 +851,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 tfReferralAgent.setText("");
                                 break;
                             } else {
-                                textFieldMoveNext(tfInquirySource);
+                                JFXUtil.textFieldMoveNext(tfInquirySource);
                             }
                             loadRecordMaster();
                             return;
@@ -871,8 +861,8 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfInquirySource.setText("");
                                 break;
-                            }else {
-                                textFieldMoveNext(tfClient);
+                            } else {
+                                JFXUtil.textFieldMoveNext(tfClient);
                             }
                             loadRecordMaster();
                             return;
@@ -884,7 +874,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 break;
                             }
                             loadTableDetail();
-                            textFieldMoveNext(tfModel);
+                            JFXUtil.textFieldMoveNext(tfModel);
 
                             break;
                         case "tfModel":
@@ -896,7 +886,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 break;
                             }
                             loadTableDetail();
-                            textFieldMoveNext(tfColor);
+                            JFXUtil.textFieldMoveNext(tfColor);
                             break;
                         case "tfColor":
                             poJSON = poSalesInquiryController.SalesInquiry().SearchColor(lsValue, false, pnDetail);
@@ -948,7 +938,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                     loadRecordMaster();
                     return;
                 }
-                if (JFXUtil.isObjectEqualTo(inputText, null, "","01/01/1900")) {
+                if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
                     return;
                 }
                 selectedDate = ldtResult.selectedDate;
@@ -959,7 +949,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
                                 || poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poSalesInquiryController.SalesInquiry().Master().getTransactionDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText),  SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
@@ -999,23 +989,25 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
             int selectedIndex = cb.getSelectionModel().getSelectedIndex();
             switch (cbId) {
                 case "cmbClientType":
-                    if (!poSalesInquiryController.SalesInquiry().Master().getClientType().equals(String.valueOf(selectedIndex))) {
-                        if (poSalesInquiryController.SalesInquiry().getDetailCount() > 0) {
-                            if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(0).getBrandId(), null, "")) {
-                                if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                        "Are you sure you want to change the client name?\nPlease note that doing so will delete all sales inquiry details.\n\nDo you wish to proceed?") == true) {
+                    if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                        if (!poSalesInquiryController.SalesInquiry().Master().getClientType().equals(String.valueOf(selectedIndex))) {
+                            if (poSalesInquiryController.SalesInquiry().getDetailCount() > 0) {
+                                if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(0).getBrandId(), null, "")) {
+                                    if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                            "Are you sure you want to change the client name?\nPlease note that doing so will delete all sales inquiry details.\n\nDo you wish to proceed?") == true) {
+                                        poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                                        poSalesInquiryController.SalesInquiry().Master().setAddressId("");
+                                        poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                                        poSalesInquiryController.SalesInquiry().removeDetails();
+                                        poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
+                                        loadTableDetail();
+                                    }
+                                } else {
                                     poSalesInquiryController.SalesInquiry().Master().setClientId("");
                                     poSalesInquiryController.SalesInquiry().Master().setAddressId("");
                                     poSalesInquiryController.SalesInquiry().Master().setContactId("");
-                                    poSalesInquiryController.SalesInquiry().removeDetails();
                                     poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
-                                    loadTableDetail();
                                 }
-                            } else {
-                                poSalesInquiryController.SalesInquiry().Master().setClientId("");
-                                poSalesInquiryController.SalesInquiry().Master().setAddressId("");
-                                poSalesInquiryController.SalesInquiry().Master().setContactId("");
-                                poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
                             }
                         }
                     }
@@ -1047,7 +1039,7 @@ public class SalesInquiry_EntryCarController implements Initializable, ScreenInt
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy",dpTransactionDate, dpTargetDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpTargetDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpTargetDate);
     }
 

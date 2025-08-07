@@ -1073,10 +1073,12 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
         switch (cbId) {
             case "cmbClientType":
                 //if client type is changed then remove the client 
-                if (!poSalesInquiryController.SalesInquiry().Master().getClientType().equals(selectedIndex)) {
-                    poSalesInquiryController.SalesInquiry().Master().setClientId("");
-                    poSalesInquiryController.SalesInquiry().Master().setAddressId("");
-                    poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    if (!poSalesInquiryController.SalesInquiry().Master().getClientType().equals(selectedIndex)) {
+                        poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                        poSalesInquiryController.SalesInquiry().Master().setAddressId("");
+                        poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                    }
                 }
                 poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
                 break;

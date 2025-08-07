@@ -683,16 +683,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
             tfBarcode.requestFocus();
         }
     }
-    
-    private void textFieldMoveNext(TextField fsId){
-        Platform.runLater(() -> {
-            PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
-            delay.setOnFinished(e -> {
-                fsId.requestFocus();
-            });
-            delay.play();
-        });
-    }
+
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -751,7 +742,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
                                 tfSalesPerson.setText("");
                                 break;
                             } else {
-                                textFieldMoveNext(tfInquirySource);
+                                JFXUtil.textFieldMoveNext(tfInquirySource);
                             }
                             loadRecordMaster();
                             return;
@@ -762,7 +753,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
                                 tfInquirySource.setText("");
                                 break;
                             } else {
-                                textFieldMoveNext(tfClient);
+                                JFXUtil.textFieldMoveNext(tfClient);
                             }
                             loadRecordMaster();
                             return;
@@ -832,7 +823,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
                     loadRecordMaster();
                     return;
                 }
-                if (JFXUtil.isObjectEqualTo(inputText, null, "","01/01/1900")) {
+                if (JFXUtil.isObjectEqualTo(inputText, null, "", "01/01/1900")) {
                     return;
                 }
                 selectedDate = ldtResult.selectedDate;
@@ -843,7 +834,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
                                 || poSalesInquiryController.SalesInquiry().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
                             lsTransDate = sdfFormat.format(poSalesInquiryController.SalesInquiry().Master().getTransactionDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText),  SQLUtil.FORMAT_SHORT_DATE));
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
@@ -883,10 +874,12 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
         switch (cbId) {
             case "cmbClientType":
                 //if client type is changed then remove the client 
-                if (!poSalesInquiryController.SalesInquiry().Master().getClientType().equals(selectedIndex)) {
-                    poSalesInquiryController.SalesInquiry().Master().setClientId("");
-                    poSalesInquiryController.SalesInquiry().Master().setAddressId("");
-                    poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                    if (!poSalesInquiryController.SalesInquiry().Master().getClientType().equals(selectedIndex)) {
+                        poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                        poSalesInquiryController.SalesInquiry().Master().setAddressId("");
+                        poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                    }
                 }
                 poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
                 break;
@@ -915,7 +908,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat("MM/dd/yyyy",dpTransactionDate, dpTargetDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpTargetDate);
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpTargetDate);
     }
 
