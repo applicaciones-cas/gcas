@@ -1655,6 +1655,12 @@ public class DashboardController implements Initializable {
                     return "Delivery Schedule Confirmation";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_History.fxml":
                     return "Delivery Schedule History";
+                    
+                /*Stock Request*/
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_Approval.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Stock Request Approval";
 
                 //Update
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -2977,6 +2983,11 @@ public class DashboardController implements Initializable {
                 //History
                 case "/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_History.fxml":
                    return new DeliverySchedule_HistoryController();
+                   
+                /*Stock Request Transfer*/
+                //Approval
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_Approval.fxml":
+                    return new InventoryRequest_ApprovalController();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -4708,7 +4719,8 @@ public class DashboardController implements Initializable {
 
     private void deliveryMenuItems() {
         String jsonString
-                = //Entry
+                = 
+                //Entry
                 "[{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Delivery\",\"fxml_path\":\"Delivery Schedule\",\"controller_path\":\"deliveryschedule.controller\",\"menu_id\":\"001\",\"menu_parent\":\"\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Entry\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"002\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Delivery Schedule\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_Entry.fxml\",\"controller_path\":\"DeliveryScheduleEntry.controller\",\"menu_id\":\"005\",\"menu_parent\":\"002\"},"
@@ -4718,6 +4730,9 @@ public class DashboardController implements Initializable {
                 //History
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"History\",\"fxml_path\":\"\",\"controller_path\":\"\",\"menu_id\":\"004\",\"menu_parent\":\"001\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Delivery History\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/DeliverySchedule_History.fxml\",\"controller_path\":\"DeliveryScheduleHistory.controller\",\"menu_id\":\"007\",\"menu_parent\":\"004\"},"
+                //Stock Request Approval
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Stock Request\",\"fxml_path\":\"Stock Request\",\"controller_path\":\"stockrequest.controller\",\"menu_id\":\"008\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_Approval.fxml\",\"controller_path\":\"\",\"menu_id\":\"009\",\"menu_parent\":\"008\"}"
                 + "]";
         JSONParser parser = new JSONParser();
         try {

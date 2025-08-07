@@ -181,7 +181,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             switch (lsButton) {
                 case "btnUpdate":
                     if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Search Transaction! by Trasaction", "Delivery Schedule Encoding");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Delivery Schedule Encoding", "");
                         return;
                     }
 
@@ -268,6 +268,11 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnSave":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Delivery Schedule Encoding", "");
+                        return;
+                    }
+                    
                     if (!isJSONSuccess(poAppController.saveTransaction(), "Initialize Save Transaction")) {
                         return;
                     }
