@@ -3219,60 +3219,60 @@ public class DashboardController implements Initializable {
                     return new InvRequest_HistoryAppliancesGeneralController();
                 /* SALES INQUIRY */
                 // ENTRY
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryAppliances.fxml":
-//                    return new SalesInquiry_EntryAppliancesController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryCar.fxml":
-//                    return new SalesInquiry_EntryCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryMC.fxml":
-//                    return new SalesInquiry_EntryMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryMP.fxml":
-//                    return new SalesInquiry_EntryMPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryLP.fxml":
-//                    return new SalesInquiry_EntryLPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntrySPCar.fxml":
-//                    return new SalesInquiry_EntrySPCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntrySPMC.fxml":
-//                    return new SalesInquiry_EntrySPMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryMonarchFood.fxml":
-//                    return new SalesInquiry_EntryMonarchFoodController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryAppliances.fxml":
+                    return new SalesInquiry_EntryAppliancesController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryCar.fxml":
+                    return new SalesInquiry_EntryCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryMC.fxml":
+                    return new SalesInquiry_EntryMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryMP.fxml":
+                    return new SalesInquiry_EntryMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryLP.fxml":
+                    return new SalesInquiry_EntryLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntrySPCar.fxml":
+                    return new SalesInquiry_EntrySPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntrySPMC.fxml":
+                    return new SalesInquiry_EntrySPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryMonarchFood.fxml":
+                    return new SalesInquiry_EntryMonarchFoodController();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_EntryMonarchHospitality.fxml":
 //                    return new SalesInquiry_EntryMonarchHospitalityController();
-//                // CONFIRMATION
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationAppliances.fxml":
-//                    return new SalesInquiry_ConfirmationAppliancesController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationCar.fxml":
-//                    return new SalesInquiry_ConfirmationCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationMC.fxml":
-//                    return new SalesInquiry_ConfirmationMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationMP.fxml":
-//                    return new SalesInquiry_ConfirmationMPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationLP.fxml":
-//                    return new SalesInquiry_ConfirmationLPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationSPCar.fxml":
-//                    return new SalesInquiry_ConfirmationSPCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationSPMC.fxml":
-//                    return new SalesInquiry_ConfirmationSPMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationMonarchFood.fxml":
-//                    return new SalesInquiry_ConfirmationMonarchFoodController();
-////                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationMonarchHospitality.fxml":
-////                    return new SalesInquiry_ConfirmationMonarchHospitalityController();
-//                // HISTORY
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryAppliances.fxml":
-//                    return new SalesInquiry_HistoryAppliancesController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryCar.fxml":
-//                    return new SalesInquiry_HistoryCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryMC.fxml":
-//                    return new SalesInquiry_HistoryMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryMP.fxml":
-//                    return new SalesInquiry_HistoryMPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryLP.fxml":
-//                    return new SalesInquiry_HistoryLPController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistorySPCar.fxml":
-//                    return new SalesInquiry_HistorySPCarController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistorySPMC.fxml":
-//                    return new SalesInquiry_HistorySPMCController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryMonarchFood.fxml":
-//                    return new SalesInquiry_HistoryMonarchFoodController();
+                // CONFIRMATION
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationAppliances.fxml":
+                    return new SalesInquiry_ConfirmationAppliancesController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationCar.fxml":
+                    return new SalesInquiry_ConfirmationCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationMC.fxml":
+                    return new SalesInquiry_ConfirmationMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationMP.fxml":
+                    return new SalesInquiry_ConfirmationMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationLP.fxml":
+                    return new SalesInquiry_ConfirmationLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationSPCar.fxml":
+                    return new SalesInquiry_ConfirmationSPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationSPMC.fxml":
+                    return new SalesInquiry_ConfirmationSPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationMonarchFood.fxml":
+                    return new SalesInquiry_ConfirmationMonarchFoodController();
+//                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_ConfirmationMonarchHospitality.fxml":
+//                    return new SalesInquiry_ConfirmationMonarchHospitalityController();
+                // HISTORY
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryAppliances.fxml":
+                    return new SalesInquiry_HistoryAppliancesController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryCar.fxml":
+                    return new SalesInquiry_HistoryCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryMC.fxml":
+                    return new SalesInquiry_HistoryMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryMP.fxml":
+                    return new SalesInquiry_HistoryMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryLP.fxml":
+                    return new SalesInquiry_HistoryLPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistorySPCar.fxml":
+                    return new SalesInquiry_HistorySPCarController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistorySPMC.fxml":
+                    return new SalesInquiry_HistorySPMCController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryMonarchFood.fxml":
+                    return new SalesInquiry_HistoryMonarchFoodController();
 //                case "/com/rmj/guanzongroup/sidebarmenus/views/SalesInquiry_HistoryMonarchHospitality.fxml":
 //                    return new SalesInquiry_HistoryMonarchHospitalityController();
 
