@@ -75,7 +75,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
     int pnDetail = 0;
     boolean lsIsSaved = false;
     private final String pxeModuleName = "Purchase Order Return Entry LP";
-    static PurchaseOrderReturn poPurchaseReturnController;
+    static PurchaseOrderReturnControllers poPurchaseReturnController;
     public int pnEditMode;
 
     private String psIndustryId = "";
@@ -125,9 +125,9 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        poPurchaseReturnController = new PurchaseOrderReturnControllers(oApp, null).PurchaseOrderReturn();
+        poPurchaseReturnController = new PurchaseOrderReturnControllers(oApp, null);
         poJSON = new JSONObject();
-        poJSON = poPurchaseReturnController.InitTransaction(); // Initialize transaction
+        poJSON = poPurchaseReturnController.PurchaseOrderReturn().InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -139,15 +139,16 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
         clearTextFields();
         loadRecordMaster();
         loadTableDetail();
-        pnEditMode = poPurchaseReturnController.getEditMode();
+        pnEditMode = poPurchaseReturnController.PurchaseOrderReturn().getEditMode();
         initButton(pnEditMode);
 
         Platform.runLater(() -> {
-            poPurchaseReturnController.Master().setIndustryId(psIndustryId);
-            poPurchaseReturnController.Master().setCompanyId(psCompanyId);
-            poPurchaseReturnController.setIndustryId(psIndustryId);
-            poPurchaseReturnController.setCompanyId(psCompanyId);
-            poPurchaseReturnController.setCategoryId(psCategoryId);
+            poPurchaseReturnController.PurchaseOrderReturn().Master().setIndustryId(psIndustryId);
+            poPurchaseReturnController.PurchaseOrderReturn().Master().setCompanyId(psCompanyId);
+            poPurchaseReturnController.PurchaseOrderReturn().setIndustryId(psIndustryId);
+            poPurchaseReturnController.PurchaseOrderReturn().setCompanyId(psCompanyId);
+            poPurchaseReturnController.PurchaseOrderReturn().setCategoryId(psCategoryId);
+            poPurchaseReturnController.PurchaseOrderReturn().setWithUI(true);
             loadRecordSearch();
 
             btnNew.fire();
@@ -185,18 +186,18 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poPurchaseReturnController.setTransactionStatus(PurchaseOrderReturnStatus.RETURNED + "" + PurchaseOrderReturnStatus.OPEN);
-                        poJSON = poPurchaseReturnController.searchTransaction();
+                        poPurchaseReturnController.PurchaseOrderReturn().setTransactionStatus(PurchaseOrderReturnStatus.RETURNED + "" + PurchaseOrderReturnStatus.OPEN);
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
                         }
-                        pnEditMode = poPurchaseReturnController.getEditMode();
-                        psSupplierId = poPurchaseReturnController.Master().getSupplierId();
+                        pnEditMode = poPurchaseReturnController.PurchaseOrderReturn().getEditMode();
+                        psSupplierId = poPurchaseReturnController.PurchaseOrderReturn().Master().getSupplierId();
                         break;
                     case "btnPrint":
-                        poJSON = poPurchaseReturnController.printRecord(() -> {
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().printRecord(() -> {
                             if (lsIsSaved) {
                                 Platform.runLater(() -> {
                                     btnNew.fire();
@@ -220,28 +221,28 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                         break;
                     case "btnNew":
                         //Clear data
-                        poPurchaseReturnController.resetMaster();
-                        poPurchaseReturnController.Detail().clear();
+                        poPurchaseReturnController.PurchaseOrderReturn().resetMaster();
+                        poPurchaseReturnController.PurchaseOrderReturn().Detail().clear();
                         clearTextFields();
 
-                        poJSON = poPurchaseReturnController.NewTransaction();
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().NewTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
 
-                        poPurchaseReturnController.initFields();
-                        pnEditMode = poPurchaseReturnController.getEditMode();
+                        poPurchaseReturnController.PurchaseOrderReturn().initFields();
+                        pnEditMode = poPurchaseReturnController.PurchaseOrderReturn().getEditMode();
 
                         break;
                     case "btnUpdate":
-                        poJSON = poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.Master().getTransactionNo());
-                        poJSON = poPurchaseReturnController.UpdateTransaction();
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().OpenTransaction(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionNo());
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        pnEditMode = poPurchaseReturnController.getEditMode();
+                        pnEditMode = poPurchaseReturnController.PurchaseOrderReturn().getEditMode();
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
@@ -276,13 +277,13 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                             //Clear data
-                            poPurchaseReturnController.resetMaster();
-                            poPurchaseReturnController.Detail().clear();
+                            poPurchaseReturnController.PurchaseOrderReturn().resetMaster();
+                            poPurchaseReturnController.PurchaseOrderReturn().Detail().clear();
                             clearTextFields();
 
-                            poPurchaseReturnController.Master().setIndustryId(psIndustryId);
-                            poPurchaseReturnController.Master().setCompanyId(psCompanyId);
-                            poPurchaseReturnController.Master().setCategoryCode(psCategoryId);
+                            poPurchaseReturnController.PurchaseOrderReturn().Master().setIndustryId(psIndustryId);
+                            poPurchaseReturnController.PurchaseOrderReturn().Master().setCompanyId(psCompanyId);
+                            poPurchaseReturnController.PurchaseOrderReturn().Master().setCategoryCode(psCategoryId);
                             pnEditMode = EditMode.UNKNOWN;
 
                             break;
@@ -295,21 +296,21 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                         //Validator
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
-                            poJSON = poPurchaseReturnController.SaveTransaction();
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                poPurchaseReturnController.AddDetail();
+                                poPurchaseReturnController.PurchaseOrderReturn().AddDetail();
                                 return;
                             } else {
                                 //reshow the highlight
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
 
                                 // Confirmation Prompt
-                                JSONObject loJSON = poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.Master().getTransactionNo());
+                                JSONObject loJSON = poPurchaseReturnController.PurchaseOrderReturn().OpenTransaction(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if (poPurchaseReturnController.Master().getTransactionStatus().equals(PurchaseOrderReturnStatus.OPEN)) {
+                                    if (poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionStatus().equals(PurchaseOrderReturnStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
-                                            loJSON = poPurchaseReturnController.ConfirmTransaction("Confirmed");
+                                            loJSON = poPurchaseReturnController.PurchaseOrderReturn().ConfirmTransaction("");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             } else {
@@ -321,7 +322,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
 
                                 // Print Transaction Prompt
                                 lsIsSaved = false;
-                                loJSON = poPurchaseReturnController.OpenTransaction(poPurchaseReturnController.Master().getTransactionNo());
+                                loJSON = poPurchaseReturnController.PurchaseOrderReturn().OpenTransaction(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionNo());
                                 loadRecordMaster();
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
@@ -352,7 +353,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                 initButton(pnEditMode);
 
                 if (lsButton.equals("btnUpdate")) {
-                    if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId())) {
+                    if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId())) {
                         tfReturnQuantity.requestFocus();
                     } else {
                         tfBarcode.requestFocus();
@@ -385,7 +386,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
             switch (lsID) {
 
                 case "taRemarks"://Remarks
-                    poJSON = poPurchaseReturnController.Master().setRemarks(lsValue);
+                    poJSON = poPurchaseReturnController.PurchaseOrderReturn().Master().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -417,7 +418,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                 case "tfBarcode":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
-                        poJSON = poPurchaseReturnController.Detail(pnDetail).setStockId("");
+                        poJSON = poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).setStockId("");
                     }
 
                     break;
@@ -426,17 +427,17 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                         lsValue = "0";
                     }
                     lsValue = JFXUtil.removeComma(lsValue);
-                    if (poPurchaseReturnController.Detail(pnDetail).getQuantity() != null
-                            && !"".equals(poPurchaseReturnController.Detail(pnDetail).getQuantity())) {
-                        if (poPurchaseReturnController.getReceiveQty(pnDetail).doubleValue() < Double.valueOf(lsValue)) {
+                    if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity() != null
+                            && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity())) {
+                        if (poPurchaseReturnController.PurchaseOrderReturn().getReceiveQty(pnDetail).doubleValue() < Double.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Return quantity cannot be greater than the receive quantity.");
-                            poPurchaseReturnController.Detail(pnDetail).setQuantity(0);
+                            poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).setQuantity(0);
                             tfReturnQuantity.requestFocus();
                             break;
                         }
                     }
 
-                    poJSON = poPurchaseReturnController.Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
+                    poJSON = poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -474,11 +475,11 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     case "tfSupplier":
                         if (lsValue.isEmpty()) {
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.Master().getSupplierId() != null && !"".equals(poPurchaseReturnController.Master().getSupplierId())) {
-                                    if (poPurchaseReturnController.getDetailCount() > 1) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Master().getSupplierId() != null && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Master().getSupplierId())) {
+                                    if (poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() > 1) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
-                                            poPurchaseReturnController.removeDetails();
+                                            poPurchaseReturnController.PurchaseOrderReturn().removeDetails();
                                             loadTableDetail();
                                         } else {
                                             loadRecordMaster();
@@ -488,19 +489,19 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                 }
                             }
 
-                            poJSON = poPurchaseReturnController.Master().setSupplierId("");
-                            poJSON = poPurchaseReturnController.Master().setSourceNo("");
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().Master().setSupplierId("");
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().Master().setSourceNo("");
                         }
                         break;
                     case "tfReferenceNo":
                         if (!lsValue.isEmpty()) {
                         } else {
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo() != null && !"".equals(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo())) {
-                                    if (poPurchaseReturnController.getDetailCount() > 1) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Master().PurchaseOrderReceivingMaster().getReferenceNo() != null && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Master().PurchaseOrderReceivingMaster().getReferenceNo())) {
+                                    if (poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() > 1) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the reference no?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
-                                            poPurchaseReturnController.removeDetails();
+                                            poPurchaseReturnController.PurchaseOrderReturn().removeDetails();
                                             loadTableDetail();
                                         } else {
                                             loadRecordMaster();
@@ -510,8 +511,8 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                 }
                             }
 
-                            poJSON = poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().setReferenceNo("");
-                            poJSON = poPurchaseReturnController.Master().setSourceNo("");
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().Master().PurchaseOrderReceivingMaster().setReferenceNo("");
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().Master().setSourceNo("");
                         }
                         if ("error".equals(poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -524,11 +525,11 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                         if (!lsValue.isEmpty()) {
                         } else {
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
-                                    if (poPurchaseReturnController.getDetailCount() > 1) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Master().getSourceNo())) {
+                                    if (poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() > 1) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the reference no?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
-                                            poPurchaseReturnController.removeDetails();
+                                            poPurchaseReturnController.PurchaseOrderReturn().removeDetails();
                                             loadTableDetail();
                                         } else {
                                             loadRecordMaster();
@@ -538,7 +539,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                 }
                             }
 
-                            poJSON = poPurchaseReturnController.Master().setSourceNo("");
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().Master().setSourceNo("");
                         }
                         if ("error".equals(poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -559,17 +560,17 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
     };
 
     public void moveNext() {
-        double lnReceiveQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        double lnReceiveQty = Double.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity().toString());
         apDetail.requestFocus();
-        double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+        double lnNewvalue = Double.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity().toString());
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
+                && poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null
+                && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId()))) {
             tfReturnQuantity.requestFocus();
         } else {
             pnDetail = JFXUtil.moveToNextRow(tblViewDetails);
             loadRecordDetail();
-            if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+            if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId().equals("")) {
                 tfReturnQuantity.requestFocus();
             } else {
                 tfBarcode.requestFocus();
@@ -598,17 +599,17 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReturnQuantity":
-                            double lnQty = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            double lnQty = Double.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
-                            double lnNewvalue = Double.valueOf(poPurchaseReturnController.Detail(pnDetail).getQuantity().toString());
+                            double lnNewvalue = Double.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity().toString());
                             if (lnQty != lnNewvalue && (lnQty > 0
-                                    && poPurchaseReturnController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReturnController.Detail(pnDetail).getStockId()))) {
+                                    && poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId()))) {
                                 tfReturnQuantity.requestFocus();
                             } else {
                                 pnDetail = JFXUtil.moveToPreviousRow(currentTable);
                                 loadRecordDetail();
-                                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId().equals("")) {
                                     tfReturnQuantity.requestFocus();
                                 } else {
                                     tfBarcode.requestFocus();
@@ -633,10 +634,10 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     switch (lsID) {
                         case "tfSupplier":
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.getDetailCount() > 1) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() > 1) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
-                                        poPurchaseReturnController.removeDetails();
+                                        poPurchaseReturnController.PurchaseOrderReturn().removeDetails();
                                         loadTableDetail();
                                     } else {
                                         return;
@@ -644,22 +645,22 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                 }
                             }
 
-                            poJSON = poPurchaseReturnController.SearchSupplier(lsValue, false);
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             }
-                            psSupplierId = poPurchaseReturnController.Master().getSupplierId();
+                            psSupplierId = poPurchaseReturnController.PurchaseOrderReturn().Master().getSupplierId();
                             loadRecordMaster();
                             break;
                         case "tfReferenceNo":
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.getDetailCount() > 1) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() > 1) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the reference no?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
-                                        poPurchaseReturnController.removeDetails();
+                                        poPurchaseReturnController.PurchaseOrderReturn().removeDetails();
                                         loadTableDetail();
                                     } else {
                                         return;
@@ -667,7 +668,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                 }
                             }
 
-                            poJSON = poPurchaseReturnController.SearchPOReceiving(lsValue, false);
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchPOReceiving(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfReferenceNo.setText("");
@@ -678,10 +679,10 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                             break;
                         case "tfPOReceivingNo":
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReturnController.getDetailCount() > 1) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() > 1) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the po receiving no?\nPlease note that doing so will delete all transaction details.\n\nDo you wish to proceed?") == true) {
-                                        poPurchaseReturnController.removeDetails();
+                                        poPurchaseReturnController.PurchaseOrderReturn().removeDetails();
                                         loadTableDetail();
                                     } else {
                                         return;
@@ -689,7 +690,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                 }
                             }
 
-                            poJSON = poPurchaseReturnController.SearchPOReceiving(lsValue, true);
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchPOReceiving(lsValue, true);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfPOReceivingNo.setText("");
@@ -699,7 +700,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                             loadRecordMaster();
                             break;
                         case "tfBarcode":
-                            poJSON = poPurchaseReturnController.SearchBarcode(lsValue, pnDetail);
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchBarcode(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -723,7 +724,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                             });
                             break;
                         case "tfDescription":
-                            poJSON = poPurchaseReturnController.SearchDescription(lsValue, pnDetail);
+                            poJSON = poPurchaseReturnController.PurchaseOrderReturn().SearchDescription(lsValue, pnDetail);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -801,18 +802,18 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     loadRecordMaster();
                     return;
                 }
-                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                if (inputText == null || "".equals(inputText) || "01/01/1900".equals(inputText)) {
                     return;
                 }
                 selectedDate = ldtResult.selectedDate;
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (poPurchaseReturnController.getEditMode() == EditMode.ADDNEW
-                                || poPurchaseReturnController.getEditMode() == EditMode.UPDATE) {
+                        if (poPurchaseReturnController.PurchaseOrderReturn().getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReturnController.PurchaseOrderReturn().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate = sdfFormat.format(poPurchaseReturnController.Master().getTransactionDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsTransDate = sdfFormat.format(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText),  SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
 
@@ -821,8 +822,8 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                 poJSON.put("message", "Future dates are not allowed.");
                                 pbSuccess = false;
                             }
-                            if (poPurchaseReturnController.Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.Master().getSourceNo())) {
-                                lsReceivingDate = sdfFormat.format(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getTransactionDate());
+                            if (poPurchaseReturnController.PurchaseOrderReturn().Master().getSourceNo() != null && !"".equals(poPurchaseReturnController.PurchaseOrderReturn().Master().getSourceNo())) {
+                                lsReceivingDate = sdfFormat.format(poPurchaseReturnController.PurchaseOrderReturn().Master().PurchaseOrderReceivingMaster().getTransactionDate());
                                 receivingDate = LocalDate.parse(lsReceivingDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                                 if (selectedDate.isBefore(receivingDate)) {
                                     poJSON.put("result", "error");
@@ -836,7 +837,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                     pbSuccess = false;
                                 }
                             }
-                            if (pbSuccess && ((poPurchaseReturnController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                            if (pbSuccess && ((poPurchaseReturnController.PurchaseOrderReturn().getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 pbSuccess = false;
                                 if (oApp.getUserLevel() <= UserRight.ENCODER) {
@@ -852,14 +853,14 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                                                 poJSON.put("message", "User is not an authorized approving officer.");
                                                 pbSuccess = false;
                                             } else {
-                                                poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                                poPurchaseReturnController.PurchaseOrderReturn().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                                             }
                                         }
                                     } else {
                                         pbSuccess = false;
                                     }
                                 } else {
-                                    poPurchaseReturnController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                    poPurchaseReturnController.PurchaseOrderReturn().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                                 }
                             }
 
@@ -890,7 +891,8 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
     }
 
     public void initDatePickers() {
-        JFXUtil.setDatePickerFormat(dpTransactionDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy",
+dpTransactionDate);
 
         JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate);
 
@@ -923,7 +925,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReturnController.Master().Company().getCompanyName() + " - " + poPurchaseReturnController.Master().Industry().getDescription());
+            lblSource.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().Company().getCompanyName() + " - " + poPurchaseReturnController.PurchaseOrderReturn().Master().Industry().getDescription());
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(PurchaseOrderReturn_EntryLPController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -931,23 +933,23 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
 
     public void loadRecordDetail() {
         try {
-            if (pnDetail < 0 || pnDetail > poPurchaseReturnController.getDetailCount() - 1) {
+            if (pnDetail < 0 || pnDetail > poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1) {
                 return;
             }
-            boolean lbDisable = poPurchaseReturnController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
+            boolean lbDisable = poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             JFXUtil.setDisabled(!lbDisable, tfBarcode, tfDescription);
 
-            tfBarcode.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getBarCode());
-            tfDescription.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().getDescription());
-            tfBrand.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Brand().getDescription());
-            tfModel.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Model().getDescription());
-            tfColor.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Color().getDescription());
-            tfInventoryType.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().InventoryType().getDescription());
-            tfMeasure.setText(poPurchaseReturnController.Detail(pnDetail).Inventory().Measure().getDescription());
+            tfBarcode.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().getBarCode());
+            tfDescription.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().getDescription());
+            tfBrand.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Brand().getDescription());
+            tfModel.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Model().getDescription());
+            tfColor.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Color().getDescription());
+            tfInventoryType.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().InventoryType().getDescription());
+            tfMeasure.setText(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getUnitPrce(), true));
-            tfReceiveQuantity.setText(String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(pnDetail))));
-            tfReturnQuantity.setText(String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(pnDetail).getQuantity())));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getUnitPrce(), true));
+            tfReceiveQuantity.setText(String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().getReceiveQty(pnDetail))));
+            tfReturnQuantity.setText(String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getQuantity())));
 
             JFXUtil.updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -965,7 +967,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
 
             Platform.runLater(() -> {
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
-                String lsActive = poPurchaseReturnController.Master().getTransactionStatus();
+                String lsActive = poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionStatus();
                 String lsStat = "UNKNOWN";
                 switch (lsActive) {
                     case PurchaseOrderReturnStatus.POSTED:
@@ -999,19 +1001,19 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                 JFXUtil.setButtonsVisibility(lbPrintStat, btnPrint);
             });
 
-            poPurchaseReturnController.computeFields();
+            poPurchaseReturnController.PurchaseOrderReturn().computeFields();
 
             // Transaction Date
-            tfTransactionNo.setText(poPurchaseReturnController.Master().getTransactionNo());
-            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReturnController.Master().getTransactionDate());
+            tfTransactionNo.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionNo());
+            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
 
-            tfSupplier.setText(poPurchaseReturnController.Master().Supplier().getCompanyName());
-            tfReferenceNo.setText(poPurchaseReturnController.Master().PurchaseOrderReceivingMaster().getReferenceNo());
-            tfPOReceivingNo.setText(poPurchaseReturnController.Master().getSourceNo());
-            taRemarks.setText(poPurchaseReturnController.Master().getRemarks());
+            tfSupplier.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().Supplier().getCompanyName());
+            tfReferenceNo.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().PurchaseOrderReceivingMaster().getReferenceNo());
+            tfPOReceivingNo.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().getSourceNo());
+            taRemarks.setText(poPurchaseReturnController.PurchaseOrderReturn().Master().getRemarks());
 
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Master().getTransactionTotal().doubleValue(), true));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionTotal().doubleValue(), true));
 
             JFXUtil.updateCaretPositions(apMaster);
         } catch (SQLException | GuanzonException ex) {
@@ -1038,7 +1040,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                         break;
                 }
                 loadRecordDetail();
-                if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId().equals("")) {
                     tfReturnQuantity.requestFocus();
                 } else {
                     tfBarcode.requestFocus();
@@ -1054,7 +1056,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if (poPurchaseReturnController.Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.Detail(pnDetail).getStockId().equals("")) {
+                    if (poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(pnDetail).getStockId().equals("")) {
                         tfReturnQuantity.requestFocus();
                     } else {
                         tfBarcode.requestFocus();
@@ -1092,39 +1094,39 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
                     try {
 
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnCtr = poPurchaseReturnController.getDetailCount() - 1;
+                            lnCtr = poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poPurchaseReturnController.Detail(lnCtr).getStockId() == null || poPurchaseReturnController.Detail(lnCtr).getStockId().equals("")) {
-                                    poPurchaseReturnController.Detail().remove(lnCtr);
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getStockId() == null || poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getStockId().equals("")) {
+                                    poPurchaseReturnController.PurchaseOrderReturn().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;
                             }
 
-                            if ((poPurchaseReturnController.getDetailCount() - 1) >= 0) {
-                                if (poPurchaseReturnController.Detail(poPurchaseReturnController.getDetailCount() - 1).getStockId() != null && !poPurchaseReturnController.Detail(poPurchaseReturnController.getDetailCount() - 1).getStockId().equals("")) {
-                                    poPurchaseReturnController.AddDetail();
+                            if ((poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReturnController.PurchaseOrderReturn().Detail(poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1).getStockId() != null && !poPurchaseReturnController.PurchaseOrderReturn().Detail(poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1).getStockId().equals("")) {
+                                    poPurchaseReturnController.PurchaseOrderReturn().AddDetail();
                                 }
                             }
 
-                            if ((poPurchaseReturnController.getDetailCount() - 1) < 0) {
-                                poPurchaseReturnController.AddDetail();
+                            if ((poPurchaseReturnController.PurchaseOrderReturn().getDetailCount() - 1) < 0) {
+                                poPurchaseReturnController.PurchaseOrderReturn().AddDetail();
                             }
                         }
 
                         double lnTotal = 0.0;
-                        for (lnCtr = 0; lnCtr < poPurchaseReturnController.getDetailCount(); lnCtr++) {
+                        for (lnCtr = 0; lnCtr < poPurchaseReturnController.PurchaseOrderReturn().getDetailCount(); lnCtr++) {
                             try {
-                                lnTotal = poPurchaseReturnController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.Detail(lnCtr).getQuantity().doubleValue();
+                                lnTotal = poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getQuantity().doubleValue();
                             } catch (Exception e) {
                             }
 
                             details_data.add(
                                     new ModelPurchaseOrderReturn_Detail(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getBarCode()),
-                                            String.valueOf(poPurchaseReturnController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getUnitPrce(), true)),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.getReceiveQty(lnCtr))),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.Detail(lnCtr).getQuantity())),
+                                            String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).Inventory().getBarCode()),
+                                            String.valueOf(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).Inventory().getDescription()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().getReceiveQty(lnCtr))),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReturnController.PurchaseOrderReturn().Detail(lnCtr).getQuantity())),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true))) //identify total
                             );
                         }
@@ -1191,7 +1193,7 @@ public class PurchaseOrderReturn_EntryLPController implements Initializable, Scr
 //        apMaster.setDisable(!lbShow);
         JFXUtil.setDisabled(!lbShow, dpTransactionDate, taRemarks, apDetail);
 
-        switch (poPurchaseReturnController.Master().getTransactionStatus()) {
+        switch (poPurchaseReturnController.PurchaseOrderReturn().Master().getTransactionStatus()) {
             case PurchaseOrderReturnStatus.POSTED:
             case PurchaseOrderReturnStatus.PAID:
                 JFXUtil.setButtonsVisibility(false, btnUpdate);

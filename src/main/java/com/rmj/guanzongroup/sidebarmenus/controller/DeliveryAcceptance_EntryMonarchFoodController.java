@@ -95,7 +95,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     int pnMain = 0;
     boolean lsIsSaved = false;
     private final String pxeModuleName = "Purchase Order Receiving Entry MF";
-    static PurchaseOrderReceiving poPurchaseReceivingController;
+    static PurchaseOrderReceivingControllers poPurchaseReceivingController;
     public int pnEditMode;
 
     private String psIndustryId = "";
@@ -161,9 +161,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        poPurchaseReceivingController = new PurchaseOrderReceivingControllers(oApp, null).PurchaseOrderReceiving();
+        poPurchaseReceivingController = new PurchaseOrderReceivingControllers(oApp, null);
         poJSON = new JSONObject();
-        poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
+        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -177,14 +177,15 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         loadRecordMaster();
         loadTableDetail();
         pgPagination.setPageCount(1);
-        pnEditMode = poPurchaseReceivingController.getEditMode();
+        pnEditMode = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode();
         initButton(pnEditMode);
         Platform.runLater(() -> {
-            poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
-            poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
-            poPurchaseReceivingController.setIndustryId(psIndustryId);
-            poPurchaseReceivingController.setCompanyId(psCompanyId);
-            poPurchaseReceivingController.setCategoryId(psCategoryId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().setIndustryId(psIndustryId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().setCategoryId(psCategoryId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().setWithUI(true);
             loadRecordSearch();
 
             btnNew.fire();
@@ -222,20 +223,20 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnBrowse":
-                        poPurchaseReceivingController.setTransactionStatus(PurchaseOrderReceivingStatus.RETURNED + "" + PurchaseOrderReceivingStatus.OPEN);
-                        poJSON = poPurchaseReceivingController.searchTransaction();
+                        poPurchaseReceivingController.PurchaseOrderReceiving().setTransactionStatus(PurchaseOrderReceivingStatus.RETURNED + "" + PurchaseOrderReceivingStatus.OPEN);
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().searchTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             tfTransactionNo.requestFocus();
                             return;
                         }
                         showRetainedHighlight(false);
-                        pnEditMode = poPurchaseReceivingController.getEditMode();
-//                        psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                        psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                        pnEditMode = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode();
+//                        psCompanyId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId();
+                        psSupplierId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId();
                         break;
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord(() -> {
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().printRecord(() -> {
                             if (lsIsSaved) {
                                 Platform.runLater(() -> {
                                     btnNew.fire();
@@ -259,36 +260,36 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         break;
                     case "btnNew":
                         //Clear data
-                        poPurchaseReceivingController.resetMaster();
-                        poPurchaseReceivingController.resetOthers();
-                        poPurchaseReceivingController.Detail().clear();
+                        poPurchaseReceivingController.PurchaseOrderReceiving().resetMaster();
+                        poPurchaseReceivingController.PurchaseOrderReceiving().resetOthers();
+                        poPurchaseReceivingController.PurchaseOrderReceiving().Detail().clear();
                         clearTextFields();
 
-                        poJSON = poPurchaseReceivingController.NewTransaction();
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().NewTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
 
-                        poPurchaseReceivingController.initFields();
+                        poPurchaseReceivingController.PurchaseOrderReceiving().initFields();
 
                         if (!psCompanyId.isEmpty()) {
-                            poPurchaseReceivingController.SearchCompany(psCompanyId, true);
+                            poPurchaseReceivingController.PurchaseOrderReceiving().SearchCompany(psCompanyId, true);
                         }
                         if (!psSupplierId.isEmpty()) {
-                            poPurchaseReceivingController.SearchSupplier(psSupplierId, true);
+                            poPurchaseReceivingController.PurchaseOrderReceiving().SearchSupplier(psSupplierId, true);
                         }
-                        pnEditMode = poPurchaseReceivingController.getEditMode();
+                        pnEditMode = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode();
                         showRetainedHighlight(false);
                         break;
                     case "btnUpdate":
-                        poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
-                        poJSON = poPurchaseReceivingController.UpdateTransaction();
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
-                        pnEditMode = poPurchaseReceivingController.getEditMode();
+                        pnEditMode = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode();
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
@@ -323,18 +324,18 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
                             //get last retrieved Company and Supplier
-//                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+//                            psCompanyId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId();
+                            psSupplierId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId();
 
                             //Clear data
-                            poPurchaseReceivingController.resetMaster();
-                            poPurchaseReceivingController.resetOthers();
-                            poPurchaseReceivingController.Detail().clear();
+                            poPurchaseReceivingController.PurchaseOrderReceiving().resetMaster();
+                            poPurchaseReceivingController.PurchaseOrderReceiving().resetOthers();
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Detail().clear();
                             clearTextFields();
 
-                            poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
-                            poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
-                            poPurchaseReceivingController.Master().setSupplierId(psSupplierId);
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setSupplierId(psSupplierId);
                             pnEditMode = EditMode.UNKNOWN;
                             showRetainedHighlight(false);
                             break;
@@ -363,24 +364,24 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         //Validator
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.SaveTransaction();
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                poPurchaseReceivingController.AddDetail();
+                                poPurchaseReceivingController.PurchaseOrderReceiving().AddDetail();
                                 loadTableDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
                                 //get last retrieved Company and Supplier
-//                                psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+//                                psCompanyId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId();
+                                psSupplierId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId();
 
                                 // Confirmation Prompt
-                                JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
+                                JSONObject loJSON = poPurchaseReceivingController.PurchaseOrderReceiving().OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if (poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
+                                    if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
-                                            loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
+                                            loJSON = poPurchaseReceivingController.PurchaseOrderReceiving().ConfirmTransaction("");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                             } else {
@@ -393,8 +394,8 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 showRetainedHighlight(true);
                                 // Print Transaction Prompt
                                 lsIsSaved = false;
-                                loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
-                                poPurchaseReceivingController.loadAttachments();
+                                loJSON = poPurchaseReceivingController.PurchaseOrderReceiving().OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
+                                poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
                                 loadRecordMaster();
                                 if ("success".equals(loJSON.get("result"))) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to print this transaction?")) {
@@ -425,7 +426,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 initButton(pnEditMode);
 
                 if (lsButton.equals("btnUpdate")) {
-                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                    if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                         tfReceiveQuantity.requestFocus();
                     } else {
                         tfBarcode.requestFocus();
@@ -466,21 +467,21 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         String lsMessage = "";
         poJSON.put("result", "success");
 
-        if (poPurchaseReceivingController.Master().getIndustryId().equals("")) {
+        if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getIndustryId().equals("")) {
             poJSON.put("result", "error");
             lsMessage = "Industry";
         }
-        if (poPurchaseReceivingController.Master().getCompanyId().equals("")) {
+        if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId().equals("")) {
             poJSON.put("result", "error");
             lsMessage += lsMessage.isEmpty() ? "Company" : " & Company";
         }
-//        if (poPurchaseReceivingController.Master().getSupplierId().equals("")) {
+//        if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId().equals("")) {
 //            poJSON.put("result", "error");
 //            lsMessage += lsMessage.isEmpty() ? "Supplier" : " & Supplier";
 //        }
 
         if ("success".equals((String) poJSON.get("result"))) {
-            poJSON = poPurchaseReceivingController.getApprovedPurchaseOrder();
+            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().getApprovedPurchaseOrder();
             loadTableMain();
         } else {
             poJSON.put("result", "error");
@@ -509,7 +510,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             switch (lsID) {
 
                 case "taRemarks"://Remarks
-                    poJSON = poPurchaseReceivingController.Master().setRemarks(lsValue);
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -541,14 +542,14 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 case "tfBarcode":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setStockId("");
                     }
 
                     break;
                 case "tfSupersede":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setReplaceId("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setReplaceId("");
                     }
 
                     break;
@@ -562,22 +563,22 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         return;
                     }
 
-                    double ldblOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
+                    double ldblOldVal = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce().doubleValue();
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
                         return;
                     }
 
                     try {
-                        poJSON = poPurchaseReceivingController.computeFields();
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            poPurchaseReceivingController.Detail(pnDetail).setUnitPrce(ldblOldVal);
-                            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setUnitPrce(ldblOldVal);
+                            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
                             return;
                         }
                     } catch (SQLException | GuanzonException ex) {
@@ -590,30 +591,30 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         lsValue = "0";
                     }
                     lsValue = JFXUtil.removeComma(lsValue);
-                    if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
-                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
-                        if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().doubleValue() < Double.valueOf(lsValue)) {
+                    if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() != null
+                            && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo())) {
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().doubleValue() < Double.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
-                            poPurchaseReceivingController.Detail(pnDetail).setQuantity(0);
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(0);
                             tfReceiveQuantity.requestFocus();
                             break;
                         }
                     }
 
-                    double lnOldVal = poPurchaseReceivingController.Detail(pnDetail).getQuantity().doubleValue();
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
+                    double lnOldVal = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().doubleValue();
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Double.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     }
 
                     try {
-                        poJSON = poPurchaseReceivingController.computeFields();
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            poPurchaseReceivingController.Detail(pnDetail).setQuantity(lnOldVal);
-                            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
+                            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity()));
                             return;
                         }
                     } catch (SQLException | GuanzonException ex) {
@@ -653,12 +654,12 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 case "tfSupplier":
                     if (lsValue.isEmpty()) {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            if (poPurchaseReceivingController.Master().getSupplierId() != null && !"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
-                                if (poPurchaseReceivingController.getDetailCount() > 1) {
-                                    if(!pbKeyPressed){
+                            if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId() != null && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId())) {
+                                if (poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() > 1) {
+                                    if (!pbKeyPressed) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName,
                                                 "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
-                                            poPurchaseReceivingController.removePORDetails();
+                                            poPurchaseReceivingController.PurchaseOrderReceiving().removePORDetails();
                                             showRetainedHighlight(false);
                                             loadTableDetail();
                                         } else {
@@ -673,26 +674,26 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             }
                         }
 
-                        poJSON = poPurchaseReceivingController.Master().setSupplierId("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setSupplierId("");
                     }
                     break;
                 case "tfTrucking":
                     if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setTruckingId("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTruckingId("");
                     }
                     break;
                 case "tfAreaRemarks":
                     break;
                 case "tfTerm":
                     if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setTermCode("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTermCode("");
                     }
                     break;
                 case "tfReferenceNo":
                     if (!lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setReferenceNo(lsValue);
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setReferenceNo(lsValue);
                     } else {
-                        poJSON = poPurchaseReceivingController.Master().setReferenceNo("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setReferenceNo("");
                     }
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -704,12 +705,12 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    poJSON = poPurchaseReceivingController.computeDiscount(Double.valueOf(lsValue.replace(",", "")));
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().computeDiscount(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -721,12 +722,12 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         lsValue = "0.00";
                     }
 
-                    poJSON = poPurchaseReceivingController.computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -742,18 +743,18 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     };
 
     public void moveNext() {
-        double lnReceiveQty = Double.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        double lnReceiveQty = Double.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().toString());
         apDetail.requestFocus();
-        double lnNewvalue = Double.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+        double lnNewvalue = Double.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().toString());
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
-                && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null
+                && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId()))) {
             tfReceiveQuantity.requestFocus();
         } else {
             pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
             loadRecordDetail();
             tfOrderNo.setText("");
-            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+            if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                 tfReceiveQuantity.requestFocus();
             } else {
                 tfBarcode.requestFocus();
@@ -782,18 +783,18 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     switch (lsID) {
                         case "tfBarcode":
                         case "tfReceiveQuantity":
-                            double lnReceiveQty = Double.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            double lnReceiveQty = Double.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().toString());
                             apDetail.requestFocus();
-                            double lnNewvalue = Double.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().toString());
+                            double lnNewvalue = Double.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().toString());
                             if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId()))) {
                                 tfReceiveQuantity.requestFocus();
                             } else {
                                 pnDetail = moveToPreviousRow(currentTable, focusedCell);
                                 loadRecordDetail();
                                 tfOrderNo.setText("");
-                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                                     tfReceiveQuantity.requestFocus();
                                 } else {
                                     tfBarcode.requestFocus();
@@ -831,12 +832,12 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     switch (lsID) {
 //                        case "tfCompany":
 //                            if (pnEditMode == EditMode.ADDNEW) {
-//                                if (poPurchaseReceivingController.Master().getCompanyId() != null
-//                                        && !"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
-//                                    if (poPurchaseReceivingController.getDetailCount() > 1) {
+//                                if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId() != null
+//                                        && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId())) {
+//                                    if (poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() > 1) {
 //                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
 //                                                "Are you sure you want to change the company name? Please note that doing so will delete all purchase order receiving details. Do you wish to proceed?") == true) {
-//                                            poPurchaseReceivingController.removePORDetails();
+//                                            poPurchaseReceivingController.PurchaseOrderReceiving().removePORDetails();
 //                                            loadTableDetail();
 //                                        } else {
 //                                            return;
@@ -845,18 +846,18 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 //                                }
 //                            }
 //
-//                            poJSON = poPurchaseReceivingController.SearchCompany(lsValue, false);
+//                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchCompany(lsValue, false);
 //                            if ("error".equals(poJSON.get("result"))) {
 //                                ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
 //
 //                                psCompanyId = "";
 //                                break;
 //                            }
-//                            psCompanyId = poPurchaseReceivingController.Master().getCompanyId();
+//                            psCompanyId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId();
 //                            Platform.runLater(() -> {
 //                                PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
 //                                delay.setOnFinished(e -> {
-//                                    if (!"".equals(poPurchaseReceivingController.Master().getSupplierId())) {
+//                                    if (!"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId())) {
 //                                        poJSON = retrievePO();
 //                                        if ("error".equals((String) poJSON.get("result"))) {
 //                                            if (!(boolean) poJSON.get("continue")) {
@@ -871,18 +872,18 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 //                            break;
 
                         case "tfSupplier":
-                            if (poPurchaseReceivingController.Master().getCompanyId() == null
-                                    || "".equals(poPurchaseReceivingController.Master().getCompanyId())) {
+                            if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId() == null
+                                    || "".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId())) {
                                 ShowMessageFX.Warning(null, pxeModuleName, "Company Name is not set.");
                                 return;
                             }
 
                             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                                if (poPurchaseReceivingController.getDetailCount() > 1) {
+                                if (poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() > 1) {
                                     pbKeyPressed = true;
                                     if (ShowMessageFX.YesNo(null, pxeModuleName,
                                             "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
-                                        poPurchaseReceivingController.removePORDetails();
+                                        poPurchaseReceivingController.PurchaseOrderReceiving().removePORDetails();
                                         loadTableDetail();
                                     } else {
                                         return;
@@ -891,19 +892,19 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 }
                             }
 
-                            poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             }
-                            psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                            psSupplierId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId();
 
                             Platform.runLater(() -> {
                                 PauseTransition delay = new PauseTransition(Duration.seconds(0.50));
                                 delay.setOnFinished(e -> {
-                                    if (!"".equals(poPurchaseReceivingController.Master().getCompanyId())) {
+                                    if (!"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getCompanyId())) {
                                         poJSON = retrievePO();
                                         if ("error".equals((String) poJSON.get("result"))) {
                                             if (!(boolean) poJSON.get("continue")) {
@@ -917,7 +918,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             loadRecordMaster();
                             break;
                         case "tfTrucking":
-                            poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchTrucking(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfTrucking.setText("");
@@ -926,7 +927,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             loadRecordMaster();
                             break;
                         case "tfTerm":
-                            poJSON = poPurchaseReceivingController.SearchTerm(lsValue, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchTerm(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfTerm.setText("");
@@ -938,7 +939,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
                             break;
                         case "tfBarcode":
-                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail, true);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchBarcode(lsValue, true, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -962,7 +963,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             break;
 
                         case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, true, pnDetail, true);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchDescription(lsValue, true, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -985,7 +986,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             });
                             break;
                         case "tfSupersede":
-                            poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail, true);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchSupersede(lsValue, true, pnDetail, true);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupersede.setText("");
@@ -999,12 +1000,12 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 case F4:
                     switch (lsID) {
                         case "tfBarcode":
-                            poJSON = poPurchaseReceivingController.SearchBarcode(lsValue, true, pnDetail, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchBarcode(lsValue, true, pnDetail, false);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 if (pnDetail != lnRow) {
-                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
                                     tfReceiveQuantity.requestFocus();
@@ -1023,12 +1024,12 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             });
                             break;
                         case "tfDescription":
-                            poJSON = poPurchaseReceivingController.SearchDescription(lsValue, false, pnDetail, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchDescription(lsValue, false, pnDetail, false);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 if (pnDetail != lnRow) {
-                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
                                     tfReceiveQuantity.requestFocus();
@@ -1047,7 +1048,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             });
                             break;
                         case "tfSupersede":
-                            poJSON = poPurchaseReceivingController.SearchSupersede(lsValue, true, pnDetail, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchSupersede(lsValue, true, pnDetail, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSupersede.setText("");
@@ -1119,42 +1120,26 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE);
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
-                        datePicker.setValue(parsedDate);
-                        datePicker.getEditor().setText(formatter.format(parsedDate));
-                        inputText = datePicker.getEditor().getText();
-                    } catch (DateTimeParseException ignored) {
-                    }
-                }
-                // Check if the user typed something in the text field
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        selectedDate = LocalDate.parse(inputText, formatter);
-                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
-                    } catch (Exception ex) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid date format. Please use yyyy-mm-dd format.");
-                        loadRecordMaster();
-                        return;
-                    }
-                }
-
-                System.out.println("input text : " + inputText);
-
-                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
+                poJSON = ldtResult.poJSON;
+                if ("error".equals(poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    loadRecordMaster();
                     return;
                 }
+                if (inputText == null || "".equals(inputText) || "01/01/1900".equals(inputText)) {
+                    return;
+                }
+                selectedDate = ldtResult.selectedDate;
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
-                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             referenceDate = LocalDate.parse(lsRefDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
@@ -1171,17 +1156,17 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                                 pbSuccess = false;
                             }
 
-                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                            if (pbSuccess && ((poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 if (oApp.getUserLevel() <= UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
-                                        + "If YES, please seek approval to proceed with the new selected date.\n"
-                                        + "If NO, the previous transaction date will be retained.") == true) {
+                                            + "If YES, please seek approval to proceed with the new selected date.\n"
+                                            + "If NO, the previous transaction date will be retained.") == true) {
                                         poJSON = ShowDialogFX.getUserApproval(oApp);
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
-                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+                                            if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
                                                 poJSON.put("result", "error");
                                                 poJSON.put("message", "User is not an authorized approving officer.");
                                                 pbSuccess = false;
@@ -1194,7 +1179,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             }
 
                             if (pbSuccess) {
-                                poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1208,12 +1193,12 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         }
                         break;
                     case "dpReferenceDate":
-                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
-                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
@@ -1231,7 +1216,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             }
 
                             if (pbSuccess) {
-                                poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1240,6 +1225,32 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
                             pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
                             loadRecordMaster();
+                            pbSuccess = true; //Set to original value
+                        }
+                        break;
+                    case "dpExpiryDate":
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE) {
+                            lsServerDate = sdfFormat.format(oApp.getServerDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
+                            currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+                            selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
+
+                            if (selectedDate.isBefore(currentDate)) {
+                                poJSON.put("result", "error");
+                                poJSON.put("message", "The selected date cannot be earlier than the current date.");
+                                pbSuccess = false;
+                            }
+                            if (pbSuccess) {
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setExpiryDate(SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE));
+                            } else {
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                                }
+                            }
+
+                            pbSuccess = false; //Set to false to prevent multiple message box: Conflict with server date vs transaction date validation
+                            loadRecordDetail();
                             pbSuccess = true; //Set to original value
                         }
                         break;
@@ -1271,7 +1282,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
                         datePicker.setValue(parsedDate);
                         datePicker.getEditor().setText(formatter.format(parsedDate));
                         inputText = datePicker.getEditor().getText();
@@ -1286,7 +1297,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
                         poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
+                        poJSON.put("message", "Invalid date format. Please use MM/dd/yyyy format.");
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         loadRecordMaster();
                         // datePicker.requestFocus();
@@ -1307,7 +1318,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
                         } else {
-                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
                         }
                         break;
                     case "dpReferenceDate":
@@ -1318,7 +1329,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
                         } else {
-                            poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
                         break;
                     case "dpExpiryDate":
@@ -1329,7 +1340,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                             poJSON.put("result", "error");
                             poJSON.put("message", "The selected date cannot be earlier than the current date.");
                         } else {
-                            poPurchaseReceivingController.Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setExpiryDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
                         break;
                     default:
@@ -1389,20 +1400,9 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
     }
 
     public void initDatePickers() {
-        setDatePickerFormat(dpTransactionDate);
-        setDatePickerFormat(dpReferenceDate);
-        setDatePickerFormat(dpExpiryDate);
 
-        dpTransactionDate.setOnAction(this::datepicker_Action);
-        dpReferenceDate.setOnAction(this::datepicker_Action);
-
-//        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
-//        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
-        dpExpiryDate.focusedProperty().addListener(datepicker_Focus);
-
-//        addKeyEventFilter(dpTransactionDate);
-//        addKeyEventFilter(dpReferenceDate);
-        addKeyEventFilter(dpExpiryDate);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate, dpExpiryDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate, dpExpiryDate);
     }
 
     public void initDetailsGrid() {
@@ -1504,7 +1504,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
+            lblSource.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.PurchaseOrderReceiving().Master().Industry().getDescription());
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(DeliveryAcceptance_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1513,10 +1513,10 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
     public void loadRecordDetail() {
         try {
-            if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
+            if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1) {
                 return;
             }
-            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null) && poPurchaseReceivingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
+            boolean lbFields = (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() == null) && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
             tfBarcode.setDisable(!lbFields);
             tfDescription.setDisable(!lbFields);
             if (lbFields) {
@@ -1540,22 +1540,22 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
             }
 
             // Expiry Date
-            String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Detail(pnDetail).getExpiryDate());
+            String lsExpiryDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getExpiryDate());
             dpExpiryDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsExpiryDate, "yyyy-MM-dd"));
 
-            tfBarcode.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBarCode());
-            tfDescription.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().getDescription());
-            tfSupersede.setText(poPurchaseReceivingController.Detail(pnDetail).Supersede().getBarCode());
-            tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Brand().getDescription());
-            tfModel.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Model().getDescription());
-            tfColor.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Color().getDescription());
-            tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
-            tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
+            tfBarcode.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBarCode());
+            tfDescription.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getDescription());
+            tfSupersede.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Supersede().getBarCode());
+            tfBrand.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Brand().getDescription());
+            tfModel.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Model().getDescription());
+            tfColor.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Color().getDescription());
+            tfInventoryType.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().InventoryType().getDescription());
+            tfMeasure.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
-//            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
-            tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getOrderQty()));
-            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getQuantity()));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
+//            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce()));
+            tfOrderQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty()));
+            tfReceiveQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity()));
 
             updateCaretPositions(apDetail);
         } catch (SQLException ex) {
@@ -1580,7 +1580,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
         tfSupplier.setDisable(lbDisable);
 
-//        boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
+//        boolean lbIsReprint = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getPrint().equals("1") ? true : false;
 //        if (lbIsReprint) {
 //            btnPrint.setText("Reprint");
 //        } else {
@@ -1589,7 +1589,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
         try {
             Platform.runLater(() -> {
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
-                String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
+                String lsActive = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionStatus();
                 String lsStat = "UNKNOWN";
                 switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
@@ -1627,41 +1627,41 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 btnPrint.setManaged(lbPrintStat);
             });
 
-            if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
-                poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
+            if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate().doubleValue() > 0.00) {
+                poPurchaseReceivingController.PurchaseOrderReceiving().computeDiscount(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate().doubleValue());
             } else {
-                if (poPurchaseReceivingController.Master().getDiscount().doubleValue() > 0.00) {
-                    poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
+                if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount().doubleValue() > 0.00) {
+                    poPurchaseReceivingController.PurchaseOrderReceiving().computeDiscountRate(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount().doubleValue());
                 }
             }
-            poPurchaseReceivingController.computeFields();
+            poPurchaseReceivingController.PurchaseOrderReceiving().computeFields();
 
             // Transaction Date
-            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
+            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
             //ReferenceDate
-            String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getReferenceDate());
+            String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
-            tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
+            tfTransactionNo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
 
-            tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
-            tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
-            tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
-            tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
-            taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
+            tfSupplier.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Supplier().getCompanyName());
+            tfTrucking.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Trucking().getCompanyName());
+            tfTerm.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Term().getDescription());
+            tfReferenceNo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceNo());
+            taRemarks.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getRemarks());
 
             Platform.runLater(() -> {
-                double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
+                double lnValue = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscountRate(), false));
+                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate(), false));
                 } else {
                     tfDiscountRate.setText("0.00");
                 }
             });
 
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount(), true));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionTotal(), true));
 
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
@@ -1742,7 +1742,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                 }
                 loadRecordDetail();
                 tfOrderNo.setText("");
-                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                     tfReceiveQuantity.requestFocus();
                 } else {
                     tfBarcode.requestFocus();
@@ -1760,7 +1760,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     if (selected != null) {
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
-                        if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                             tfReceiveQuantity.requestFocus();
                         } else {
                             tfBarcode.requestFocus();
@@ -1850,8 +1850,8 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
                     // Simulate loading delay
                     try {
-                        if (!poPurchaseReceivingController.Master().getTransactionDate().equals("")) {
-                            Object loDate = poPurchaseReceivingController.Master().getTransactionDate();
+                        if (!poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate().equals("")) {
+                            Object loDate = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate();
                             if (loDate == null) {
                                 lsMainDate = LocalDate.now().format(formatter); // Convert to String
 
@@ -1871,13 +1871,13 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     } catch (Exception e) {
 
                     }
-                    if (poPurchaseReceivingController.getPurchaseOrderCount() > 0) {
-                        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderCount() - 1; lnCtr++) {
+                    if (poPurchaseReceivingController.PurchaseOrderReceiving().getPurchaseOrderCount() > 0) {
+                        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.PurchaseOrderReceiving().getPurchaseOrderCount() - 1; lnCtr++) {
                             try {
                                 main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
-                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderList(lnCtr).Supplier().getCompanyName()),
-                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderList(lnCtr).getTransactionDate()),
-                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderList(lnCtr).getTransactionNo())
+                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().PurchaseOrderList(lnCtr).Supplier().getCompanyName()),
+                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().PurchaseOrderList(lnCtr).getTransactionDate()),
+                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().PurchaseOrderList(lnCtr).getTransactionNo())
                                 ));
                             } catch (Exception e) {
 
@@ -1973,7 +1973,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     int pnRowMain = Integer.parseInt(selected.getIndex01()) - 1;
                     pnMain = pnRowMain;
 
-                    poJSON = poPurchaseReceivingController.addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderList(pnMain).getTransactionNo());
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().addPurchaseOrderToPORDetail(poPurchaseReceivingController.PurchaseOrderReceiving().PurchaseOrderList(pnMain).getTransactionNo());
                     if ("error".equals((String) poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         return;
@@ -2033,49 +2033,49 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
                     plOrderNoPartial.clear();
                     try {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
-                            lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
+                            lnCtr = poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.Detail(lnCtr).getStockId().equals("")) {
-                                    poPurchaseReceivingController.Detail().remove(lnCtr);
+                                if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getStockId() == null || poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getStockId().equals("")) {
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().Detail().remove(lnCtr);
                                 }
                                 lnCtr--;
                             }
 
-                            if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
-                                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId().equals("")) {
-                                    poPurchaseReceivingController.AddDetail();
+                            if ((poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1).getStockId().equals("")) {
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().AddDetail();
                                 }
                             }
 
-                            if ((poPurchaseReceivingController.getDetailCount() - 1) < 0) {
-                                poPurchaseReceivingController.AddDetail();
+                            if ((poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1) < 0) {
+                                poPurchaseReceivingController.PurchaseOrderReceiving().AddDetail();
                             }
                         }
                         List<String> lOrderNo = new ArrayList<>();
                         double lnTotal = 0.0;
-                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount(); lnCtr++) {
                             try {
 
-                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue();
+                                lnTotal = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue();
                             } catch (Exception e) {
                             }
 
-                            if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().doubleValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue()
-                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue() != 0) {
+                            if ((!poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() != null)
+                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().doubleValue() != poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue()
+                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue() != 0) {
                                 highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
-                            plOrderNoPartial.add(new Pair<>(poPurchaseReceivingController.Detail(lnCtr).getOrderNo(), String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().doubleValue())));
+                            plOrderNoPartial.add(new Pair<>(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo(), String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().doubleValue())));
 
                             details_data.add(
                                     new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getBarCode()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getOrderQty())),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getQuantity())),
+                                            String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo()),
+                                            String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).Inventory().getBarCode()),
+                                            String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).Inventory().getDescription()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty())),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity())),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                     ));
                         }
@@ -2179,7 +2179,7 @@ public class DeliveryAcceptance_EntryMonarchFoodController implements Initializa
 
         apDetail.setDisable(!lbShow);
 
-        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
+        switch (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionStatus()) {
             case PurchaseOrderReceivingStatus.POSTED:
             case PurchaseOrderReceivingStatus.PAID:
                 btnUpdate.setVisible(false);

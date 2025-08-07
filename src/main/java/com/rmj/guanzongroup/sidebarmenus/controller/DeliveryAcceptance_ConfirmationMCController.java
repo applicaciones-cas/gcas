@@ -114,7 +114,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     int pnDetail = 0;
     int pnMain = 0;
     private final String pxeModuleName = "Purchase Order Receiving Confirmation MC";
-    static PurchaseOrderReceiving poPurchaseReceivingController;
+    static PurchaseOrderReceivingControllers poPurchaseReceivingController;
     public int pnEditMode;
 
     private String psIndustryId = "";
@@ -200,9 +200,9 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        poPurchaseReceivingController = new PurchaseOrderReceivingControllers(oApp, null).PurchaseOrderReceiving();
+        poPurchaseReceivingController = new PurchaseOrderReceivingControllers(oApp, null);
         poJSON = new JSONObject();
-        poJSON = poPurchaseReceivingController.InitTransaction(); // Initialize transaction
+        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().InitTransaction(); // Initialize transaction
         if (!"success".equals((String) poJSON.get("result"))) {
             System.err.println((String) poJSON.get("message"));
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -216,12 +216,13 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
         clearTextFields();
 
         Platform.runLater(() -> {
-            poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
-            poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
-            poPurchaseReceivingController.setIndustryId(psIndustryId);
-            poPurchaseReceivingController.setCompanyId(psCompanyId);
-            poPurchaseReceivingController.setCategoryId(psCategoryId);
-            poPurchaseReceivingController.initFields();
+            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().setIndustryId(psIndustryId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().setCompanyId(psCompanyId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().setCategoryId(psCategoryId);
+            poPurchaseReceivingController.PurchaseOrderReceiving().initFields();
+            poPurchaseReceivingController.PurchaseOrderReceiving().setWithUI(true);
             loadRecordSearch();
         });
 
@@ -266,27 +267,27 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 String lsButton = clickedButton.getId();
                 switch (lsButton) {
                     case "btnPrint":
-                        poJSON = poPurchaseReceivingController.printRecord(() -> {
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().printRecord(() -> {
                             if (isPrinted) {
                                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
-                                poPurchaseReceivingController.resetMaster();
-                                poPurchaseReceivingController.resetOthers();
-                                poPurchaseReceivingController.Detail().clear();
+                                poPurchaseReceivingController.PurchaseOrderReceiving().resetMaster();
+                                poPurchaseReceivingController.PurchaseOrderReceiving().resetOthers();
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Detail().clear();
                                 imageView.setImage(null);
                                 pnEditMode = EditMode.UNKNOWN;
                                 clearTextFields();
                                 initButton(pnEditMode);
-                                
-                                poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
-                                poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
-                                poPurchaseReceivingController.Master().setCategoryCode(psCategoryId);
-                                
+
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCategoryCode(psCategoryId);
+
                             }
                             Platform.runLater(() -> {
                                 try {
                                     if (!isPrinted) {
-                                        poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
-                                        poPurchaseReceivingController.loadAttachments();
+                                        poPurchaseReceivingController.PurchaseOrderReceiving().OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceiving().PurchaseOrderReceivingList(pnMain).getTransactionNo());
+                                        poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
                                     }
                                     loadRecordMaster();
                                     loadTableDetail();
@@ -315,27 +316,27 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                         }
                         break;
                     case "btnSerials":
-                        if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
+                        if (!poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).isSerialized()) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Selected item is not serialized.");
                             return;
                         }
                         showSerialDialog();
                         return;
                     case "btnUpdate":
-                        poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
-                        poJSON = poPurchaseReceivingController.UpdateTransaction();
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().UpdateTransaction();
                         if ("error".equals((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             return;
                         }
 
                         //Populate purhcase receiving serials
-                        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getDetailCount() - 1; lnCtr++) {
-                            poPurchaseReceivingController.getPurchaseOrderReceivingSerial(poPurchaseReceivingController.Detail(lnCtr).getEntryNo());
+                        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1; lnCtr++) {
+                            poPurchaseReceivingController.PurchaseOrderReceiving().getPurchaseOrderReceivingSerial(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getEntryNo());
                         }
-                        poPurchaseReceivingController.loadAttachments();
+                        poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
 
-                        pnEditMode = poPurchaseReceivingController.getEditMode();
+                        pnEditMode = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode();
                         break;
                     case "btnSearch":
                         String lsMessage = "Focus a searchable textfield to search";
@@ -391,21 +392,21 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                         //Validator
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.SaveTransaction();
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                poPurchaseReceivingController.AddDetail();
+                                poPurchaseReceivingController.PurchaseOrderReceiving().AddDetail();
                                 loadTableDetail();
                                 return;
                             } else {
                                 ShowMessageFX.Information(null, pxeModuleName, (String) poJSON.get("message"));
 
                                 // Confirmation Prompt
-                                JSONObject loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
+                                JSONObject loJSON = poPurchaseReceivingController.PurchaseOrderReceiving().OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
                                 if ("success".equals(loJSON.get("result"))) {
-                                    if (poPurchaseReceivingController.Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
+                                    if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionStatus().equals(PurchaseOrderReceivingStatus.OPEN)) {
                                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to confirm this transaction?")) {
-                                            loJSON = poPurchaseReceivingController.ConfirmTransaction("Confirmed");
+                                            loJSON = poPurchaseReceivingController.PurchaseOrderReceiving().ConfirmTransaction("");
                                             if ("success".equals((String) loJSON.get("result"))) {
                                                 ShowMessageFX.Information((String) loJSON.get("message"), pxeModuleName, null);
                                                 highlight(tblViewPuchaseOrder, pnMain + 1, "#C1E1C1", highlightedRowsMain);
@@ -417,8 +418,8 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                                 }
 
                                 // Print Transaction Prompt
-                                loJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.Master().getTransactionNo());
-                                poPurchaseReceivingController.loadAttachments();
+                                loJSON = poPurchaseReceivingController.PurchaseOrderReceiving().OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
+                                poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
                                 loadRecordMaster();
                                 isPrinted = false;
                                 if ("success".equals(loJSON.get("result"))) {
@@ -439,7 +440,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     case "btnConfirm":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Are you sure you want to confirm transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.ConfirmTransaction("");
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().ConfirmTransaction("");
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
@@ -455,10 +456,10 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     case "btnVoid":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to void transaction?") == true) {
-                            if (PurchaseOrderReceivingStatus.CONFIRMED.equals(poPurchaseReceivingController.Master().getTransactionStatus())) {
-                                poJSON = poPurchaseReceivingController.CancelTransaction("Cancel");
+                            if (PurchaseOrderReceivingStatus.CONFIRMED.equals(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionStatus())) {
+                                poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().CancelTransaction("");
                             } else {
-                                poJSON = poPurchaseReceivingController.VoidTransaction("Void");
+                                poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().VoidTransaction("");
                             }
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -475,7 +476,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     case "btnReturn":
                         poJSON = new JSONObject();
                         if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to return transaction?") == true) {
-                            poJSON = poPurchaseReceivingController.ReturnTransaction("");
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().ReturnTransaction("");
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 return;
@@ -503,8 +504,8 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             imageView.setImage(loimage);
 
                             String imgPath2 = selectedFile.getName().toString();
-                            for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getTransactionAttachmentCount() - 1; lnCtr++) {
-                                if (imgPath2.equals(poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getFileName())) {
+                            for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.PurchaseOrderReceiving().getTransactionAttachmentCount() - 1; lnCtr++) {
+                                if (imgPath2.equals(poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(lnCtr).getModel().getFileName())) {
                                     ShowMessageFX.Warning(null, pxeModuleName, "File name already exists.");
                                     pnAttachment = lnCtr;
                                     loadRecordAttachment(true);
@@ -519,13 +520,13 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                                 imageinfo_temp.put(selectedFile.getName().toString(), imgPath.toString());
                             }
 
-                            poJSON = poPurchaseReceivingController.addAttachment();
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().addAttachment();
                             if ("error".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                             }
-                            pnAttachment = poPurchaseReceivingController.getTransactionAttachmentCount() - 1;
-                            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setFileName(imgPath2);
-                            poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setSourceNo(poPurchaseReceivingController.Master().getTransactionNo());
+                            pnAttachment = poPurchaseReceivingController.PurchaseOrderReceiving().getTransactionAttachmentCount() - 1;
+                            poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().setFileName(imgPath2);
+                            poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().setSourceNo(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
                             loadTableAttachment();
                             tblAttachments.getFocusModel().focus(pnAttachment);
                             tblAttachments.getSelectionModel().select(pnAttachment);
@@ -553,16 +554,16 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
 
                 if (lsButton.equals("btnSave") || lsButton.equals("btnConfirm") || lsButton.equals("btnReturn")
                         || lsButton.equals("btnVoid") || lsButton.equals("btnCancel")) {
-                    poPurchaseReceivingController.resetMaster();
-                    poPurchaseReceivingController.resetOthers();
-                    poPurchaseReceivingController.Detail().clear();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().resetMaster();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().resetOthers();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().Detail().clear();
                     imageView.setImage(null);
                     pnEditMode = EditMode.UNKNOWN;
                     clearTextFields();
-                    
-                    poPurchaseReceivingController.Master().setIndustryId(psIndustryId);
-                    poPurchaseReceivingController.Master().setCompanyId(psCompanyId);
-                    poPurchaseReceivingController.Master().setCategoryCode(psCategoryId);
+
+                    poPurchaseReceivingController.PurchaseOrderReceiving().Master().setIndustryId(psIndustryId);
+                    poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCompanyId(psCompanyId);
+                    poPurchaseReceivingController.PurchaseOrderReceiving().Master().setCategoryCode(psCategoryId);
                 }
 
                 if (lsButton.equals("btnPrint") || lsButton.equals("btnAddAttachment") || lsButton.equals("btnRemoveAttachment")
@@ -575,7 +576,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
 
                 initButton(pnEditMode);
                 if (lsButton.equals("btnUpdate")) {
-                    if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                    if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                         tfReceiveQuantity.requestFocus();
                     } else {
                         tfBrand.requestFocus();
@@ -590,7 +591,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
 
     public void retrievePOR() {
         poJSON = new JSONObject();
-        poJSON = poPurchaseReceivingController.loadPurchaseOrderReceiving("confirmation", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
+        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().loadPurchaseOrderReceiving("confirmation", psCompanyId, psSupplierId, tfSearchReferenceNo.getText());
         if (!"success".equals((String) poJSON.get("result"))) {
             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
         } else {
@@ -601,17 +602,17 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     public void showSerialDialog() {
         poJSON = new JSONObject();
         try {
-            if (!poPurchaseReceivingController.Detail(pnDetail).isSerialized()) {
+            if (!poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).isSerialized()) {
                 return;
             }
 
-            if (poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue() == 0) {
+            if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue() == 0) {
                 ShowMessageFX.Warning(null, pxeModuleName, "Received quantity cannot be empty.");
                 return;
             }
 
             //Populate Purchase Order Receiving Detail
-            poJSON = poPurchaseReceivingController.getPurchaseOrderReceivingSerial(pnDetail + 1);
+            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().getPurchaseOrderReceivingSerial(pnDetail + 1);
             if ("error".equals((String) poJSON.get("result"))) {
                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                 return;
@@ -631,7 +632,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
 
             if (controller != null) {
                 controller.setGRider(oApp);
-                controller.setObject(poPurchaseReceivingController);
+                controller.setObject(poPurchaseReceivingController.PurchaseOrderReceiving());
                 controller.setEntryNo(pnDetail + 1);
             }
 
@@ -698,26 +699,26 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
             switch (lsTxtFieldID) {
                 case "tfSupplier":
                     if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setSupplierId("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setSupplierId("");
                     }
                     break;
                 case "tfTrucking":
                     if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setTruckingId("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTruckingId("");
                     }
                     break;
                 case "tfAreaRemarks":
                     break;
                 case "tfTerm":
                     if (lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setTermCode("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTermCode("");
                     }
                     break;
                 case "tfReferenceNo":
                     if (!lsValue.isEmpty()) {
-                        poJSON = poPurchaseReceivingController.Master().setReferenceNo(lsValue);
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setReferenceNo(lsValue);
                     } else {
-                        poJSON = poPurchaseReceivingController.Master().setReferenceNo("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setReferenceNo("");
                     }
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -729,12 +730,12 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     if (lsValue.isEmpty()) {
                         lsValue = "0.00";
                     }
-                    poJSON = poPurchaseReceivingController.computeDiscount(Double.valueOf(lsValue.replace(",", "")));
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().computeDiscount(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setDiscountRate((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -746,12 +747,12 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                         lsValue = "0.00";
                     }
 
-                    poJSON = poPurchaseReceivingController.computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().computeDiscountRate(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
-                    poJSON = poPurchaseReceivingController.Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setDiscount(Double.valueOf(lsValue.replace(",", "")));
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
@@ -784,7 +785,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
             switch (lsID) {
 
                 case "taRemarks"://Remarks
-                    poJSON = poPurchaseReceivingController.Master().setRemarks(lsValue);
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setRemarks(lsValue);
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -815,13 +816,13 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 case "tfBrand":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
-                        poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
+                        poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setStockId("");
                     }
                 case "tfModel":
                     //if value is blank then reset
                     if (lsValue.equals("")) {
-                        poJSON = poPurchaseReceivingController.Detail(pnDetail).setStockId("");
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setStockId("");
                     }
                     break;
                 case "tfCost":
@@ -834,22 +835,22 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                         break;
                     }
 
-                    double ldblOldVal = poPurchaseReceivingController.Detail(pnDetail).getUnitPrce().doubleValue();
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
+                    double ldblOldVal = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce().doubleValue();
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setUnitPrce((Double.valueOf(lsValue.replace(",", ""))));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                        tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
                         return;
                     }
 
                     try {
-                        poJSON = poPurchaseReceivingController.computeFields();
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            poPurchaseReceivingController.Detail(pnDetail).setUnitPrce(ldblOldVal);
-                            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setUnitPrce(ldblOldVal);
+                            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
                             return;
                         }
                     } catch (SQLException | GuanzonException ex) {
@@ -862,26 +863,26 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                         lsValue = "0";
                     }
                     lsValue = JFXUtil.removeComma(lsValue);
-                    if (poPurchaseReceivingController.Detail(pnDetail).getOrderNo() != null
-                            && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getOrderNo())) {
-                        if (poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
+                    if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() != null
+                            && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo())) {
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue() < Integer.valueOf(lsValue)) {
                             ShowMessageFX.Warning(null, pxeModuleName, "Receive quantity cannot be greater than the order quantity.");
-                            poPurchaseReceivingController.Detail(pnDetail).setQuantity(0);
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(0);
                             tfReceiveQuantity.requestFocus();
                             break;
                         }
                     }
 
-                    poJSON = poPurchaseReceivingController.checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().checkPurchaseOrderReceivingSerial(pnDetail + 1, Integer.valueOf(lsValue));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         break;
                     }
                     int lnNewVal = Integer.valueOf(lsValue);
-                    int lnOldVal = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
+                    int lnOldVal = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
 
-                    poJSON = poPurchaseReceivingController.Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
+                    poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity((Integer.valueOf(lsValue)));
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -889,12 +890,12 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     }
 
                     try {
-                        poJSON = poPurchaseReceivingController.computeFields();
+                        poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().computeFields();
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                            poPurchaseReceivingController.Detail(pnDetail).setQuantity(lnOldVal);
-                            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setQuantity(lnOldVal);
+                            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
                             return;
                         }
                     } catch (SQLException | GuanzonException ex) {
@@ -904,8 +905,8 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     if (pbEntered) {
                         if (lnNewVal != lnOldVal) {
                             if ((Integer.valueOf(lsValue) > 0
-                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId()))) {
                                 showSerialDialog();
                             } else {
                                 moveNext();
@@ -961,18 +962,18 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     };
 
     public void moveNext() {
-        int lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
+        int lnReceiveQty = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
         apDetail.requestFocus();
-        int lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
+        int lnNewvalue = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
         if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
-                && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null
+                && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId()))) {
             tfReceiveQuantity.requestFocus();
         } else {
             pnDetail = JFXUtil.moveToNextRow(tblViewOrderDetails);
             loadRecordDetail();
             tfOrderNo.setText("");
-            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+            if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                 tfReceiveQuantity.requestFocus();
             } else {
                 tfBrand.requestFocus();
@@ -1002,18 +1003,18 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     switch (lsID) {
                         case "tfBrand":
                         case "tfReceiveQuantity":
-                            int lnReceiveQty = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
+                            int lnReceiveQty = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
                             apDetail.requestFocus();
-                            int lnNewvalue = poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue();
+                            int lnNewvalue = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue();
                             if (lnReceiveQty != lnNewvalue && (lnReceiveQty > 0
-                                    && poPurchaseReceivingController.Detail(pnDetail).getStockId() != null
-                                    && !"".equals(poPurchaseReceivingController.Detail(pnDetail).getStockId()))) {
+                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null
+                                    && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId()))) {
                                 tfReceiveQuantity.requestFocus();
                             } else {
                                 pnDetail = moveToNextRow(currentTable, focusedCell);
                                 loadRecordDetail();
                                 tfOrderNo.setText("");
-                                if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                                if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                                     tfReceiveQuantity.requestFocus();
                                 } else {
                                     tfBrand.requestFocus();
@@ -1050,14 +1051,14 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 case F3:
                     switch (lsID) {
                         case "tfSearchSupplier":
-                            poJSON = poPurchaseReceivingController.SearchSupplier(lsValue, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchSupplier(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfSearchSupplier.setText("");
                                 psSupplierId = "";
                                 break;
                             } else {
-                                psSupplierId = poPurchaseReceivingController.Master().getSupplierId();
+                                psSupplierId = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSupplierId();
                             }
                             retrievePOR();
                             loadRecordSearch();
@@ -1066,7 +1067,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             retrievePOR();
                             return;
                         case "tfTrucking":
-                            poJSON = poPurchaseReceivingController.SearchTrucking(lsValue, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchTrucking(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfTrucking.setText("");
@@ -1075,7 +1076,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             loadRecordMaster();
                             break;
                         case "tfTerm":
-                            poJSON = poPurchaseReceivingController.SearchTerm(lsValue, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchTerm(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfTerm.setText("");
@@ -1087,7 +1088,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
 
                             break;
                         case "tfBrand":
-                            poJSON = poPurchaseReceivingController.SearchBrand(lsValue, false, pnDetail);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchBrand(lsValue, false, pnDetail);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 tfBrand.setText("");
@@ -1103,12 +1104,12 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             });
                             break;
                         case "tfModel":
-                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail, true);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchModel(lsValue, false, pnDetail, true);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 if (pnDetail != lnRow) {
-                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
                                     tfReceiveQuantity.requestFocus();
@@ -1133,12 +1134,12 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                         case "tfBrand":
                             tfModel.requestFocus();
                         case "tfModel":
-                            poJSON = poPurchaseReceivingController.SearchModel(lsValue, false, pnDetail, false);
+                            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().SearchModel(lsValue, false, pnDetail, false);
                             lnRow = (int) poJSON.get("row");
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                                 if (pnDetail != lnRow) {
-                                    poPurchaseReceivingController.Detail(pnDetail).setBrandId("");
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId("");
                                     pnDetail = lnRow;
                                     loadRecordDetail();
                                     tfReceiveQuantity.requestFocus();
@@ -1194,42 +1195,26 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 lastFocusedTextField = datePicker;
                 previousSearchedTextField = null;
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE);
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
-                        datePicker.setValue(parsedDate);
-                        datePicker.getEditor().setText(formatter.format(parsedDate));
-                        inputText = datePicker.getEditor().getText();
-                    } catch (DateTimeParseException ignored) {
-                    }
-                }
-                // Check if the user typed something in the text field
-                if (inputText != null && !inputText.trim().isEmpty()) {
-                    try {
-                        selectedDate = LocalDate.parse(inputText, formatter);
-                        datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
-                    } catch (Exception ex) {
-                        ShowMessageFX.Warning(null, pxeModuleName, "Invalid date format. Please use yyyy-mm-dd format.");
-                        loadRecordMaster();
-                        return;
-                    }
-                }
-
-                System.out.println("input text : " + inputText);
-
-                if (inputText == null || "".equals(inputText) || "1900-01-01".equals(inputText)) {
+                JFXUtil.JFXUtilDateResult ldtResult = JFXUtil.processDate(inputText, datePicker);
+                poJSON = ldtResult.poJSON;
+                if ("error".equals(poJSON.get("result"))) {
+                    ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
+                    loadRecordMaster();
                     return;
                 }
+                if (inputText == null || "".equals(inputText) || "01/01/1900".equals(inputText)) {
+                    return;
+                }
+                selectedDate = ldtResult.selectedDate;
 
                 switch (datePicker.getId()) {
                     case "dpTransactionDate":
-                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
-                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             referenceDate = LocalDate.parse(lsRefDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
@@ -1246,7 +1231,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                                 pbSuccess = false;
                             }
 
-                            if (pbSuccess && ((poPurchaseReceivingController.getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
+                            if (pbSuccess && ((poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE && !lsTransDate.equals(lsSelectedDate))
                                     || !lsServerDate.equals(lsSelectedDate))) {
                                 if (oApp.getUserLevel() <= UserRight.ENCODER) {
                                     if (ShowMessageFX.YesNo(null, pxeModuleName, "Change in Transaction Date Detected\n\n"
@@ -1256,7 +1241,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                                         if (!"success".equals((String) poJSON.get("result"))) {
                                             pbSuccess = false;
                                         } else {
-                                            if(Integer.parseInt(poJSON.get("nUserLevl").toString())<= UserRight.ENCODER){
+                                            if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
                                                 poJSON.put("result", "error");
                                                 poJSON.put("message", "User is not an authorized approving officer.");
                                                 pbSuccess = false;
@@ -1269,7 +1254,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             }
 
                             if (pbSuccess) {
-                                poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1283,12 +1268,12 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                         }
                         break;
                     case "dpReferenceDate":
-                        if (poPurchaseReceivingController.getEditMode() == EditMode.ADDNEW
-                                || poPurchaseReceivingController.getEditMode() == EditMode.UPDATE) {
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.ADDNEW
+                                || poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE) {
                             lsServerDate = sdfFormat.format(oApp.getServerDate());
-                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.Master().getTransactionDate());
-                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.Master().getReferenceDate());
-                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(inputText, SQLUtil.FORMAT_SHORT_DATE));
+                            lsTransDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
+                            lsRefDate = sdfFormat.format(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
+                            lsSelectedDate = sdfFormat.format(SQLUtil.toDate(JFXUtil.convertToIsoFormat(inputText), SQLUtil.FORMAT_SHORT_DATE));
                             currentDate = LocalDate.parse(lsServerDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             selectedDate = LocalDate.parse(lsSelectedDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
                             transactionDate = LocalDate.parse(lsTransDate, DateTimeFormatter.ofPattern(SQLUtil.FORMAT_SHORT_DATE));
@@ -1306,7 +1291,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             }
 
                             if (pbSuccess) {
-                                poPurchaseReceivingController.Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Master().setReferenceDate((SQLUtil.toDate(lsSelectedDate, SQLUtil.FORMAT_SHORT_DATE)));
                             } else {
                                 if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
@@ -1346,7 +1331,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 if (inputText != null && !inputText.trim().isEmpty()) {
                     try {
-                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("yyyy-M-d"));
+                        LocalDate parsedDate = LocalDate.parse(inputText, DateTimeFormatter.ofPattern("MM/dd/yyyy"));
                         datePicker.setValue(parsedDate);
                         datePicker.getEditor().setText(formatter.format(parsedDate));
                         inputText = datePicker.getEditor().getText();
@@ -1361,7 +1346,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                         datePicker.setValue(selectedDate); // Update the DatePicker with the valid date
                     } catch (Exception ex) {
                         poJSON.put("result", "error");
-                        poJSON.put("message", "Invalid date format. Please use yyyy-mm-dd format.");
+                        poJSON.put("message", "Invalid date format. Please use MM/dd/yyyy format.");
                         loadRecordMaster();
                         // datePicker.requestFocus();
                         return;
@@ -1383,7 +1368,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             poJSON.put("message", "Future dates are not allowed.");
                             break;
                         } else {
-                            poPurchaseReceivingController.Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setTransactionDate((SQLUtil.toDate(formattedDate, "yyyy-MM-dd")));
                         }
                         break;
                     case "dpReferenceDate":
@@ -1394,7 +1379,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                             poJSON.put("result", "error");
                             poJSON.put("message", "Future dates are not allowed.");
                         } else {
-                            poPurchaseReceivingController.Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
+                            poPurchaseReceivingController.PurchaseOrderReceiving().Master().setReferenceDate(SQLUtil.toDate(formattedDate, "yyyy-MM-dd"));
                         }
                         break;
                     default:
@@ -1470,8 +1455,8 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define the format
 
                     try {
-                        if (!poPurchaseReceivingController.Master().getTransactionDate().equals("")) {
-                            Object loDate = poPurchaseReceivingController.Master().getTransactionDate();
+                        if (!poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate().equals("")) {
+                            Object loDate = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate();
                             if (loDate == null) {
                                 lsMainDate = LocalDate.now().format(formatter); // Convert to String
 
@@ -1492,15 +1477,15 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
 
                     }
 
-                    if (poPurchaseReceivingController.getPurchaseOrderReceivingCount() > 0) {
+                    if (poPurchaseReceivingController.PurchaseOrderReceiving().getPurchaseOrderReceivingCount() > 0) {
                         //pending
                         //retreiving using column index
-                        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.getPurchaseOrderReceivingCount() - 1; lnCtr++) {
+                        for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.PurchaseOrderReceiving().getPurchaseOrderReceivingCount() - 1; lnCtr++) {
                             try {
                                 main_data.add(new ModelDeliveryAcceptance_Main(String.valueOf(lnCtr + 1),
-                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).Supplier().getCompanyName()),
-                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionDate()),
-                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionNo())
+                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().PurchaseOrderReceivingList(lnCtr).Supplier().getCompanyName()),
+                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().PurchaseOrderReceivingList(lnCtr).getTransactionDate()),
+                                        String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().PurchaseOrderReceivingList(lnCtr).getTransactionNo())
                                 ));
                             } catch (SQLException ex) {
                                 Logger.getLogger(DeliveryAcceptance_ConfirmationMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
@@ -1508,7 +1493,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                                 Logger.getLogger(DeliveryAcceptance_ConfirmationMCController.class.getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
                             }
 
-                            if (poPurchaseReceivingController.PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.CONFIRMED)) {
+                            if (poPurchaseReceivingController.PurchaseOrderReceiving().PurchaseOrderReceivingList(lnCtr).getTransactionStatus().equals(PurchaseOrderReceivingStatus.CONFIRMED)) {
                                 highlight(tblViewPuchaseOrder, lnCtr + 1, "#C1E1C1", highlightedRowsMain);
                             }
                         }
@@ -1527,7 +1512,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                         tblViewPuchaseOrder.getSelectionModel().select(pnMain);
                         tblViewPuchaseOrder.getFocusModel().focus(pnMain);
                     }
-                    if (poPurchaseReceivingController.getPurchaseOrderCount() < 1) {
+                    if (poPurchaseReceivingController.PurchaseOrderReceiving().getPurchaseOrderCount() < 1) {
                         loadTab();
                     }
                 });
@@ -1560,12 +1545,12 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
 
     public void loadRecordSearch() {
         try {
-            lblSource.setText(poPurchaseReceivingController.Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.Master().Industry().getDescription());
+            lblSource.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Company().getCompanyName() + " - " + poPurchaseReceivingController.PurchaseOrderReceiving().Master().Industry().getDescription());
 
             if (psSupplierId.equals("")) {
                 tfSearchSupplier.setText("");
             } else {
-                tfSearchSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
+                tfSearchSupplier.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Supplier().getCompanyName());
             }
             try {
                 if (tfSearchReferenceNo.getText() == null || tfSearchReferenceNo.getText().equals("")) {
@@ -1586,10 +1571,10 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
         try {
             if (attachment_data.size() > 0) {
                 tfAttachmentNo.setText(String.valueOf(pnAttachment + 1));
-                String lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                String lsAttachmentType = poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 if (lsAttachmentType.equals("")) {
-                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
-                    lsAttachmentType = poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
+                    poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().setDocumentType(DocumentType.OTHER);
+                    lsAttachmentType = poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().getDocumentType();
                 }
                 int lnAttachmentType = 0;
                 lnAttachmentType = Integer.parseInt(lsAttachmentType);
@@ -1635,11 +1620,11 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
 
     public void loadRecordDetail() {
         try {
-            if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.getDetailCount() - 1) {
+            if (pnDetail < 0 || pnDetail > poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1) {
                 return;
             }
-            boolean lbFields = (poPurchaseReceivingController.Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.Detail(pnDetail).getOrderNo() == null) && poPurchaseReceivingController.Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
-            poJSON = poPurchaseReceivingController.checkExistingSerialId(pnDetail + 1);
+            boolean lbFields = (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo().equals("") || poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderNo() == null) && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getEditMode() == EditMode.ADDNEW;
+            poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().checkExistingSerialId(pnDetail + 1);
             if ("error".equals((String) poJSON.get("result"))) {
                 lbFields = false;
             }
@@ -1667,22 +1652,22 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 tfCost.setDisable(false);
             }
 
-            if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
-                poPurchaseReceivingController.Detail(pnDetail).setBrandId(poPurchaseReceivingController.Detail(pnDetail).Inventory().getBrandId());
+            if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
+                poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).setBrandId(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().getBrandId());
             }
 
-            tfBrand.setText(poPurchaseReceivingController.Detail(pnDetail).Brand().getDescription()); //TODO
-            tfModelVariant.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Variant().getDescription()); //TODO
+            tfBrand.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Brand().getDescription()); //TODO
+            tfModelVariant.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Variant().getDescription()); //TODO
 
-            tfModel.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Model().getDescription());
-            tfColor.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Color().getDescription());
-            tfInventoryType.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().InventoryType().getDescription());
-            tfMeasure.setText(poPurchaseReceivingController.Detail(pnDetail).Inventory().Measure().getDescription());
+            tfModel.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Model().getDescription());
+            tfColor.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Color().getDescription());
+            tfInventoryType.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().InventoryType().getDescription());
+            tfMeasure.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).Inventory().Measure().getDescription());
 
-            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce(), true));
-//            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(pnDetail).getUnitPrce()));
-            tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getOrderQty().intValue()));
-            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.Detail(pnDetail).getQuantity().intValue()));
+            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce(), true));
+//            tfCost.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getUnitPrce()));
+            tfOrderQuantity.setText(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getOrderQty().intValue()));
+            tfReceiveQuantity.setText(String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getQuantity().intValue()));
 
             updateCaretPositions(apDetail);
         } catch (SQLException | GuanzonException ex) {
@@ -1692,7 +1677,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     }
 
     public void loadRecordMaster() {
-        boolean lbDisable = poPurchaseReceivingController.getEditMode() == EditMode.UPDATE;
+        boolean lbDisable = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode() == EditMode.UPDATE;
         if (lbDisable) {
 
             tfSupplier.getStyleClass().add("DisabledTextField");
@@ -1705,7 +1690,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
 
         tfSupplier.setDisable(lbDisable);
 
-        boolean lbIsReprint = poPurchaseReceivingController.Master().getPrint().equals("1") ? true : false;
+        boolean lbIsReprint = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getPrint().equals("1") ? true : false;
         if (lbIsReprint) {
             btnPrint.setText("Reprint");
         } else {
@@ -1715,7 +1700,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
         try {
             Platform.runLater(() -> {
                 boolean lbPrintStat = pnEditMode == EditMode.READY;
-                String lsActive = poPurchaseReceivingController.Master().getTransactionStatus();
+                String lsActive = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionStatus();
                 String lsStat = "UNKNOWN";
                 switch (lsActive) {
 //                case PurchaseOrderReceivingStatus.APPROVED:
@@ -1753,41 +1738,41 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 btnPrint.setManaged(lbPrintStat);
             });
 
-            if (poPurchaseReceivingController.Master().getDiscountRate().doubleValue() > 0.00) {
-                poPurchaseReceivingController.computeDiscount(poPurchaseReceivingController.Master().getDiscountRate().doubleValue());
+            if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate().doubleValue() > 0.00) {
+                poPurchaseReceivingController.PurchaseOrderReceiving().computeDiscount(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate().doubleValue());
             } else {
-                if (poPurchaseReceivingController.Master().getDiscount().doubleValue() > 0.00) {
-                    poPurchaseReceivingController.computeDiscountRate(poPurchaseReceivingController.Master().getDiscount().doubleValue());
+                if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount().doubleValue() > 0.00) {
+                    poPurchaseReceivingController.PurchaseOrderReceiving().computeDiscountRate(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount().doubleValue());
                 }
             }
-            poPurchaseReceivingController.computeFields();
+            poPurchaseReceivingController.PurchaseOrderReceiving().computeFields();
 
             // Transaction Date
-            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getTransactionDate());
+            String lsTransactionDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionDate());
             dpTransactionDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTransactionDate, "yyyy-MM-dd"));
             //ReferenceDate
-            String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.Master().getReferenceDate());
+            String lsReferenceDate = CustomCommonUtil.formatDateToShortString(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceDate());
             dpReferenceDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsReferenceDate, "yyyy-MM-dd"));
 
-            tfTransactionNo.setText(poPurchaseReceivingController.Master().getTransactionNo());
+            tfTransactionNo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionNo());
 
-            tfSupplier.setText(poPurchaseReceivingController.Master().Supplier().getCompanyName());
-            tfTrucking.setText(poPurchaseReceivingController.Master().Trucking().getCompanyName());
-            tfTerm.setText(poPurchaseReceivingController.Master().Term().getDescription());
-            tfReferenceNo.setText(poPurchaseReceivingController.Master().getReferenceNo());
-            taRemarks.setText(poPurchaseReceivingController.Master().getRemarks());
+            tfSupplier.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Supplier().getCompanyName());
+            tfTrucking.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Trucking().getCompanyName());
+            tfTerm.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().Term().getDescription());
+            tfReferenceNo.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getReferenceNo());
+            taRemarks.setText(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getRemarks());
 
             Platform.runLater(() -> {
-                double lnValue = poPurchaseReceivingController.Master().getDiscountRate().doubleValue();
+                double lnValue = poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate().doubleValue();
                 if (!Double.isNaN(lnValue)) {
-                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscountRate(), false));
+                    tfDiscountRate.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscountRate(), false));
                 } else {
                     tfDiscountRate.setText("0.00");
                 }
             });
 
-            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getDiscount(), true));
-            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Master().getTransactionTotal(), true));
+            tfDiscountAmount.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getDiscount(), true));
+            tfTotal.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionTotal(), true));
 
             updateCaretPositions(apMaster);
         } catch (SQLException ex) {
@@ -1883,14 +1868,14 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 disableAllHighlightByColor(tblViewPuchaseOrder, "#A7C7E7", highlightedRowsMain);
                 highlight(tblViewPuchaseOrder, pnRowMain + 1, "#A7C7E7", highlightedRowsMain);
 
-                poJSON = poPurchaseReceivingController.OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceivingList(pnMain).getTransactionNo());
+                poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().OpenTransaction(poPurchaseReceivingController.PurchaseOrderReceiving().PurchaseOrderReceivingList(pnMain).getTransactionNo());
                 if ("error".equals((String) poJSON.get("result"))) {
                     ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                     return;
                 }
                 goToPageBasedOnSelectedRow(String.valueOf(pnMain));
             }
-            poPurchaseReceivingController.loadAttachments();
+            poPurchaseReceivingController.PurchaseOrderReceiving().loadAttachments();
             Platform.runLater(() -> {
                 loadTableDetail();
             });
@@ -1950,66 +1935,66 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     try {
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             String lsBrandId = "";
-                            lnCtr = poPurchaseReceivingController.getDetailCount() - 1;
+                            lnCtr = poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1;
                             while (lnCtr >= 0) {
-                                if (poPurchaseReceivingController.Detail(lnCtr).getStockId() == null || "".equals(poPurchaseReceivingController.Detail(lnCtr).getStockId())) {
-                                    if (poPurchaseReceivingController.Detail(lnCtr).getBrandId() != null
-                                            || !"".equals(poPurchaseReceivingController.Detail(lnCtr).getBrandId())) {
-                                        lsBrandId = poPurchaseReceivingController.Detail(lnCtr).getBrandId();
+                                if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getStockId() == null || "".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getStockId())) {
+                                    if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getBrandId() != null
+                                            || !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getBrandId())) {
+                                        lsBrandId = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getBrandId();
                                     }
                                     //remove por detail
-                                    poPurchaseReceivingController.Detail().remove(lnCtr);
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().Detail().remove(lnCtr);
                                     //remove por serial
-                                    poPurchaseReceivingController.removePurchaseOrderReceivingSerial(lnCtr + 1);
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().removePurchaseOrderReceivingSerial(lnCtr + 1);
                                 }
                                 lnCtr--;
                             }
 
-                            if ((poPurchaseReceivingController.getDetailCount() - 1) >= 0) {
-                                if (poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId() != null && !"".equals(poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).getStockId())) {
-                                    poPurchaseReceivingController.AddDetail();
+                            if ((poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1) >= 0) {
+                                if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1).getStockId() != null && !"".equals(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1).getStockId())) {
+                                    poPurchaseReceivingController.PurchaseOrderReceiving().AddDetail();
                                 }
                             }
 
-                            if ((poPurchaseReceivingController.getDetailCount() - 1) < 0) {
-                                poPurchaseReceivingController.AddDetail();
+                            if ((poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1) < 0) {
+                                poPurchaseReceivingController.PurchaseOrderReceiving().AddDetail();
                             }
 
                             //Set brand Id to last row
                             if (!lsBrandId.isEmpty()) {
-                                poPurchaseReceivingController.Detail(poPurchaseReceivingController.getDetailCount() - 1).setBrandId(lsBrandId);
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Detail(poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1).setBrandId(lsBrandId);
                             }
                             //Check for PO Serial Update Entry No TODO
                         }
 
                         double lnTotal = 0.00;
-                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getDetailCount(); lnCtr++) {
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount(); lnCtr++) {
                             try {
 
-                                lnTotal = poPurchaseReceivingController.Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue();
+                                lnTotal = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce().doubleValue() * poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue();
 
                             } catch (Exception e) {
 
                             }
 
-                            if ((!poPurchaseReceivingController.Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.Detail(lnCtr).getOrderNo() != null)
-                                    && poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()
-                                    && poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue() != 0) {
+                            if ((!poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo().equals("") && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo() != null)
+                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().intValue() != poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue()
+                                    && poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue() != 0) {
                                 highlight(tblViewOrderDetails, lnCtr + 1, "#FAA0A0", highlightedRowsDetail);
                             }
 
                             String lsBrand = "";
-                            if (poPurchaseReceivingController.Detail(lnCtr).Brand().getDescription() != null) {
-                                lsBrand = poPurchaseReceivingController.Detail(lnCtr).Brand().getDescription();
+                            if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).Brand().getDescription() != null) {
+                                lsBrand = poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).Brand().getDescription();
                             }
                             details_data.add(
                                     new ModelDeliveryAcceptance_Detail(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderNo()),
+                                            String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderNo()),
                                             lsBrand,
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).Inventory().getDescription()),
-                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.Detail(lnCtr).getUnitPrce(), true)),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getOrderQty().intValue()),
-                                            String.valueOf(poPurchaseReceivingController.Detail(lnCtr).getQuantity().intValue()),
+                                            String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).Inventory().getDescription()),
+                                            String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getUnitPrce(), true)),
+                                            String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getOrderQty().intValue()),
+                                            String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).getQuantity().intValue()),
                                             String.valueOf(CustomCommonUtil.setIntegerValueToDecimalFormat(lnTotal, true)) //identify total
                                     ));
                         }
@@ -2088,10 +2073,10 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     try {
                         attachment_data.clear();
                         int lnCtr;
-                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.getTransactionAttachmentCount(); lnCtr++) {
+                        for (lnCtr = 0; lnCtr < poPurchaseReceivingController.PurchaseOrderReceiving().getTransactionAttachmentCount(); lnCtr++) {
                             attachment_data.add(
                                     new ModelDeliveryAcceptance_Attachment(String.valueOf(lnCtr + 1),
-                                            String.valueOf(poPurchaseReceivingController.TransactionAttachmentList(lnCtr).getModel().getFileName())
+                                            String.valueOf(poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(lnCtr).getModel().getFileName())
                                     ));
                         }
                         if (pnAttachment < 0 || pnAttachment
@@ -2181,11 +2166,9 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
     }
 
     public void initDatePickers() {
-        setDatePickerFormat(dpTransactionDate);
-        setDatePickerFormat(dpReferenceDate);
 
-        dpTransactionDate.setOnAction(this::datepicker_Action);
-        dpReferenceDate.setOnAction(this::datepicker_Action);
+        JFXUtil.setDatePickerFormat("MM/dd/yyyy", dpTransactionDate, dpReferenceDate);
+        JFXUtil.setActionListener(this::datepicker_Action, dpTransactionDate, dpReferenceDate);
 
 //        dpTransactionDate.focusedProperty().addListener(datepicker_Focus);
 //        dpReferenceDate.focusedProperty().addListener(datepicker_Focus);
@@ -2230,7 +2213,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
             if (attachment_data.size() > 0) {
                 try {
                     int selectedIndex = cmbAttachmentType.getSelectionModel().getSelectedIndex();
-                    poPurchaseReceivingController.TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
+                    poPurchaseReceivingController.PurchaseOrderReceiving().TransactionAttachmentList(pnAttachment).getModel().setDocumentType("000" + String.valueOf(selectedIndex));
                     cmbAttachmentType.getSelectionModel().select(selectedIndex);
                 } catch (Exception e) {
                 }
@@ -2255,7 +2238,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                     if (selected != null) {
                         pnDetail = Integer.parseInt(selected.getIndex01()) - 1;
                         loadRecordDetail();
-                        if (poPurchaseReceivingController.Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.Detail(pnDetail).getStockId().equals("")) {
+                        if (poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId() != null && !poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).getStockId().equals("")) {
                             tfReceiveQuantity.requestFocus();
                         } else {
                             tfBrand.requestFocus();
@@ -2271,7 +2254,7 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
                 if (event.getClickCount() == 2) {
                     tfOrderNo.setText("");
                     loadTableDetailFromMain();
-                    pnEditMode = poPurchaseReceivingController.getEditMode();
+                    pnEditMode = poPurchaseReceivingController.PurchaseOrderReceiving().getEditMode();
                     initButton(pnEditMode);
                 }
             }
@@ -2423,11 +2406,11 @@ public class DeliveryAcceptance_ConfirmationMCController implements Initializabl
         btnReturn.setVisible(false);
         btnReturn.setManaged(false);
 
-        switch (poPurchaseReceivingController.Master().getTransactionStatus()) {
+        switch (poPurchaseReceivingController.PurchaseOrderReceiving().Master().getTransactionStatus()) {
             case PurchaseOrderReceivingStatus.CONFIRMED:
                 btnConfirm.setVisible(false);
                 btnConfirm.setManaged(false);
-                if (poPurchaseReceivingController.Master().isProcessed()) {
+                if (poPurchaseReceivingController.PurchaseOrderReceiving().Master().isProcessed()) {
                     btnUpdate.setVisible(false);
                     btnUpdate.setManaged(false);
                     btnVoid.setVisible(false);
