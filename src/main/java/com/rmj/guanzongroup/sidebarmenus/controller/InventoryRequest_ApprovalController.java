@@ -223,7 +223,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
                     return;
 
                 }
-                loadSelectedTransactionDetail();
+                getLoadedTransaction();
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
                 Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " :" + ex.getMessage());
@@ -497,7 +497,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
         pnEditMode = poAppController.getEditMode();
 
         initButtonDisplay(poAppController.getEditMode());
-        laTransactionDetail.clear();
+        //laTransactionDetail.clear();
     }
     
     private void controllerFocusTracker(Control control) {
@@ -872,6 +872,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
         tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
         reloadTableDetail();
         loadSelectedTransactionDetail();
+        loadSelectedDetail(pnCTransactionDetail);
     }
     
     private void reloadTableDetail() {
