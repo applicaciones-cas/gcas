@@ -57,11 +57,7 @@ import org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Master;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.InventoryRequestApproval;
-import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleTruck;
-import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Delivery_Schedule_Master;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryScheduleControllers;
-import ph.com.guanzongroup.cas.inv.warehouse.t4.parameter.model.Model_Branch_Cluster_Delivery;
-import ph.com.guanzongroup.cas.inv.warehouse.t4.parameter.model.Model_Branch_Others;
 
 /**
  *
@@ -75,7 +71,8 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
     private String psFormName = "Inventory Request Approval";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
-    private int pnTransaction, pnClusterDetail, pnEditMode;
+    private ObservableList<Model_Inv_Stock_Request_Detail> laTransactionDetail;
+    private int pnTransaction, pnCTransactionDetail, pnEditMode;
     
     @FXML
     private AnchorPane apMainAnchor, apButton, apBrowse, apCenter, apDetailField, apMaster, apDetail, apDetailTable, apTransactionTable;
@@ -87,8 +84,8 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
     private Button btnSearch, btnSave, btnCancel, btnRetrieve, btnClose;
 
     @FXML
-    private TextField tfClusterName, tfBrand, tfModel, tfVariant, tfInventoryType, tfRequestQty, tfApprovedQty, tfQOH, tfColor, tfClassification, tfROQ,
-            tfBarcode, tfDescription, tfBranchName, tfCancelQty;
+    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfInventoryType, tfRequestQty, 
+            tfApprovedQty, tfQOH, tfColor, tfClassification, tfROQ, tfCancelQty;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -100,7 +97,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
     private TableColumn<Model_Inv_Stock_Request_Master, String> tblColStockRequestNo, tblColBranch, tblColTransaction, tblColTransactionDate; 
     
     @FXML
-    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColNo, tblColBrand, tblColBarcode, tblColDescription, tblColModel, tblColVariant, tblColColor, tblColQOH,
+    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColColor, tblColQOH,
             tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
@@ -133,7 +130,6 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
                             if (!isJSONSuccess(poAppController.searchClusterBranch(tfClusterName.getText(), false), "Initialize Search Cluster")) {
                                 return;
                             }
-                            
                             loadSelectedBranchClusterDelivery();
                             break;
                         default:
@@ -145,18 +141,64 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
                     }
                     break;
                     
+                case "btnUpdate":
+                    
+                    if (poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
+                        return;
+                    }
+
+                    if (!isJSONSuccess(poAppController.UpdateTransaction(), "Initialize Update Transaction")) {
+                        return;
+                    }
+                    pnEditMode = poAppController.getEditMode();
+                    break;
+                    
                 case "btnSave":
+                    if (poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
+                        return;
+                    }
+                    
+                    if (!isJSONSuccess(poAppController.SaveTransaction(), "Initialize Save Transaction")) {
+                        return;
+                    }
+                    reloadTableDetail();
+                    clearAllInputs();
+                    pnEditMode = poAppController.getEditMode();
                     break;
                     
-                    case "btnCancel":
+                case "btnCancel":
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
+                        
+                        if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
+                            unloadForm appUnload = new unloadForm();
+                            appUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                        }
+
+                        Platform.runLater(() -> {
+                            poAppController.getMaster().setIndustryId(psIndustryID);
+                            poAppController.setIndustryID(psIndustryID);
+                            poAppController.setCompanyID(psCompanyID);
+                            poAppController.setCategoryID(psCategoryID);
+                            clearAllInputs();
+                        });
+                        pnEditMode = poAppController.getEditMode();
+                        break;
+                    }
                     break;
-                    
-                    case "btnRetrieve":
-                    break;
-                    
-                    case "btnClose":
+
+                case "btnClose":
+                    unloadForm appUnload = new unloadForm();
+                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                        appUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                    } else {
+                        return;
+                    }
                     break;
             }
+            
+            initButtonDisplay(poAppController.getEditMode());
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -174,16 +216,46 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
                     return;
                 }
             }
-            
+            try {
+                event.consume();
+                if (!isJSONSuccess(poAppController.OpenTransaction(tblColTransaction.getCellData(pnTransaction)),
+                        "Initialize Open Transaction")) {
+                    return;
 
+                }
+                loadSelectedTransactionDetail();
+            } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+                Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                poLogWrapper.severe(psFormName + " :" + ex.getMessage());
+
+            }
         }
         return;
     }
 
     @FXML
     void tblRequestDetail_MouseClicked(MouseEvent event) {
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex();
+        if (pnCTransactionDetail < 0) {
+            return;
+        }
         
-        
+        if (event.getClickCount() == 2 && !event.isConsumed()) {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
+                    return;
+                }
+            }
+            try {
+                event.consume();
+                loadSelectedDetail(pnCTransactionDetail);
+            } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
+                Logger.getLogger(DeliverySchedule_EntryController.class.getName()).log(Level.SEVERE, null, ex);
+                poLogWrapper.severe(psFormName + " :" + ex.getMessage());
+
+            }
+        }
+        return;
     }
     
     final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
@@ -198,7 +270,16 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
         if (!nv) {
             /*Lost Focus*/
             switch (lsTextFieldID) {
+                
+                case "tfApprovedQty":
+                    poAppController.getDetail(pnCTransactionDetail).setApproved(Double.parseDouble(lsValue));
+                    break;
+                case "tfCancelQty":
+                    poAppController.getDetail(pnCTransactionDetail).setCancelled(Double.parseDouble(lsValue));
+                    break;
             }
+            
+            reloadTableDetail();
         } else {
             loTextField.selectAll();
         }
@@ -251,7 +332,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
             });
             
             initControlEvents();
-            
+            initializeTableDetail();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -416,6 +497,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
         pnEditMode = poAppController.getEditMode();
 
         initButtonDisplay(poAppController.getEditMode());
+        laTransactionDetail.clear();
     }
     
     private void controllerFocusTracker(Control control) {
@@ -446,7 +528,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
                                 if (!isJSONSuccess(poAppController.searchClusterBranch(lsValue, false), " Search Cluster! ")) {
                                     return;
                                 }
-                                poAppController.loadTransactionList();
+                                loadSelectedBranchClusterDelivery();
                                 return;
 
                             default:
@@ -470,7 +552,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
     }
     
     private void loadSelectedBranchClusterDelivery() throws CloneNotSupportedException {
-         StackPane overlay = getOverlayProgress(apTransactionTable);
+        StackPane overlay = getOverlayProgress(apTransactionTable);
         ProgressIndicator pi = (ProgressIndicator) overlay.getChildren().get(0);
         overlay.setVisible(true);
         pi.setVisible(true);
@@ -504,19 +586,23 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
                             -> new SimpleStringProperty(loModel.getValue().getTransactionNo()));
                     tblColBranch.setCellValueFactory(loModel
                             -> {
-                    try {
-                        new SimpleStringProperty(loModel.getValue().Branch().getBranchName());
-                    } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                        return new SimpleStringProperty("");
-                    }
-                    
-                    return new SimpleStringProperty("");
-                }
+                        try {
+                            return new SimpleStringProperty(loModel.getValue().Branch().getBranchName());
+                        } catch (SQLException | GuanzonException ex) {
+                            Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                            return new SimpleStringProperty("");
+                        }
+                       }
                     );
                     tblColTransactionDate.setCellValueFactory(loModel
                             -> new SimpleStringProperty(SQLUtil.dateFormat(loModel.getValue().getTransactionDate(), SQLUtil.FORMAT_LONG_DATE)));
 
+                    try {
+                        getLoadedTransaction();
+                    } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
+                        Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
                     overlay.setVisible(false);
                     pi.setVisible(false);
             }
@@ -527,7 +613,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
                 pi.setVisible(false);
                 Throwable ex = getException();
                 Logger
-                        .getLogger(DeliverySchedule_EntryController.class
+                        .getLogger(InventoryRequest_ApprovalController.class
                                 .getName()).log(Level.SEVERE, null, ex);
                 poLogWrapper.severe(psFormName + " : " + ex.getMessage());
             }
@@ -542,5 +628,264 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
         Thread thread = new Thread(loadTransactionTask);
         thread.setDaemon(true);
         thread.start();
+    }
+    
+    private void initializeTableDetail() {
+        if (laTransactionDetail == null) {
+            
+            laTransactionDetail = FXCollections.observableArrayList();
+            
+            tblRequestDetail.setItems(laTransactionDetail);
+            tblColQOH.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+            tblColRequestQty.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+            tblColCancelQty.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+            tblColApprovedQty.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+
+            tblColNo.setCellValueFactory(loModel -> {
+                    int index = tblRequestDetail.getItems().indexOf(loModel.getValue()) + 1;
+                    return new SimpleStringProperty(String.valueOf(index));
+                });
+
+                tblColBrand.setCellValueFactory(loModel -> {
+                try {
+                    return new SimpleStringProperty(loModel.getValue().Inventory().Brand().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColBarcode.setCellValueFactory(loModel -> {
+                try {
+                     return new SimpleStringProperty(loModel.getValue().Inventory().getBarCode());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColDescription.setCellValueFactory(loModel -> {
+                try {
+                     return new SimpleStringProperty(loModel.getValue().Inventory().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColModel.setCellValueFactory(loModel -> {
+                try {
+                     return new SimpleStringProperty(loModel.getValue().Inventory().Model().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColVariant.setCellValueFactory(loModel -> {
+                try {
+                     return new SimpleStringProperty(loModel.getValue().Inventory().Variant().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColColor.setCellValueFactory(loModel -> {
+                try {
+                     return new SimpleStringProperty(loModel.getValue().Inventory().Color().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColQOH.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
+                });
+
+                tblColRequestQty.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantity()));
+                });
+
+                tblColCancelQty.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getCancelled()));
+                });
+
+                tblColApprovedQty.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getApproved()));
+                });
+
+        }
+    }
+    
+    private void loadSelectedTransactionDetail() throws CloneNotSupportedException {
+        
+        if (laTransactionDetail == null) {
+            laTransactionDetail = FXCollections.observableArrayList();
+            tblRequestDetail.setItems(laTransactionDetail);
+        }
+        
+        tblColQOH.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+        tblColRequestQty.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+        tblColCancelQty.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+        tblColApprovedQty.setStyle("-fx-alignment: CENTER-RIGHT; -fx-padding: 0 5 0 0;");
+
+        StackPane overlay = getOverlayProgress(apDetailTable);
+        ProgressIndicator pi = (ProgressIndicator) overlay.getChildren().get(0);
+        overlay.setVisible(true);
+        pi.setVisible(true);
+
+        Task<ObservableList<Model_Inv_Stock_Request_Detail>> loadDetailTask = new Task<ObservableList<Model_Inv_Stock_Request_Detail>>() {
+            @Override
+            protected ObservableList<Model_Inv_Stock_Request_Detail> call() throws Exception {
+
+                List<Model_Inv_Stock_Request_Detail> rawList = poAppController.getDetailList();
+                return FXCollections.observableArrayList(new ArrayList<>(rawList));
+            }
+
+            @Override
+            protected void succeeded() {
+
+                ObservableList<Model_Inv_Stock_Request_Detail> laDetailList = getValue();
+
+                tblRequestDetail.setItems(laDetailList);
+
+                tblColNo.setCellValueFactory(loModel -> {
+                    int index = tblRequestDetail.getItems().indexOf(loModel.getValue()) + 1;
+                    return new SimpleStringProperty(String.valueOf(index));
+                });
+
+                tblColBrand.setCellValueFactory(loModel -> {
+                try {
+                    return new SimpleStringProperty(loModel.getValue().Inventory().Brand().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColBarcode.setCellValueFactory(loModel -> {
+                try {
+                     return new SimpleStringProperty(loModel.getValue().Inventory().getBarCode());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColDescription.setCellValueFactory(loModel -> {
+                try {
+                     return new SimpleStringProperty(loModel.getValue().Inventory().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColModel.setCellValueFactory(loModel -> {
+                try {
+                     return new SimpleStringProperty(loModel.getValue().Inventory().Model().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColVariant.setCellValueFactory(loModel -> {
+                try {
+                     return new SimpleStringProperty(loModel.getValue().Inventory().Variant().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColColor.setCellValueFactory(loModel -> {
+                try {
+                     return new SimpleStringProperty(loModel.getValue().Inventory().Color().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+                });
+
+                tblColQOH.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
+                });
+
+                tblColRequestQty.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantity()));
+                });
+
+                tblColCancelQty.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getCancelled()));
+                });
+
+                tblColApprovedQty.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getApproved()));
+                });
+
+                overlay.setVisible(false);
+                pi.setVisible(false);
+            }
+
+            @Override
+            protected void failed() {
+                overlay.setVisible(false);
+                pi.setVisible(false);
+                Throwable ex = getException();
+                Logger
+                        .getLogger(InventoryRequest_ApprovalController.class
+                                .getName()).log(Level.SEVERE, null, ex);
+                poLogWrapper.severe(psFormName + " : " + ex.getMessage());
+            }
+
+            @Override
+            protected void cancelled() {
+                overlay.setVisible(false);
+                pi.setVisible(false);
+            }
+        };
+
+        Thread thread = new Thread(loadDetailTask);
+        thread.setDaemon(true);
+        thread.start();
+    }
+    
+    private void loadSelectedDetail(int fnRow) throws SQLException, GuanzonException, CloneNotSupportedException {
+        
+        tfBranchName.setText(tblColBranch.getCellData(fnRow));
+        tfBrand.setText(tblColBrand.getCellData(fnRow));
+        tfBarcode.setText(tblColBarcode.getCellData(fnRow));
+        tfDescription.setText(tblColDescription.getCellData(fnRow));
+        tfModel.setText(tblColModel.getCellData(fnRow));
+        tfVariant.setText(tblColVariant.getCellData(fnRow));
+        tfColor.setText(tblColColor.getCellData(fnRow));
+        tfQOH.setText(tblColQOH.getCellData(fnRow));
+        tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
+        tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));
+        tfApprovedQty.setText(tblColApprovedQty.getCellData(fnRow));
+    }
+
+    private void getLoadedTransaction() throws CloneNotSupportedException, SQLException, GuanzonException {
+        tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
+        reloadTableDetail();
+        loadSelectedTransactionDetail();
+    }
+    
+    private void reloadTableDetail() {
+        List<Model_Inv_Stock_Request_Detail> rawDetail = poAppController.getDetailList();
+        laTransactionDetail.setAll(rawDetail);
+
+        // Restore or select last row
+        int indexToSelect = (pnCTransactionDetail >= 0 && pnCTransactionDetail < laTransactionDetail.size())
+                ? pnCTransactionDetail
+                : laTransactionDetail.size() - 1;
+
+        tblRequestDetail.getSelectionModel().select(indexToSelect);
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex(); // Not focusedIndex
+
+        tblRequestDetail.refresh();
     }
    }
