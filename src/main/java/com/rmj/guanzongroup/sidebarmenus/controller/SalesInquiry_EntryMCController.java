@@ -681,21 +681,23 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                             if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
                                 if (poSalesInquiryController.SalesInquiry().getDetailCount() > 0) {
-                                    if (!pbKeyPressed) {
-                                        if (ShowMessageFX.YesNo(null, pxeModuleName,
-                                                "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
-                                            poJSON = poSalesInquiryController.SalesInquiry().Master().setClientId("");
-                                            poJSON = poSalesInquiryController.SalesInquiry().Master().setAddressId("");
-                                            poJSON = poSalesInquiryController.SalesInquiry().Master().setContactId("");
-                                            poSalesInquiryController.SalesInquiry().removeDetails();
-                                            loadTableDetail();
+                                    if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(0).getBrandId(), null, "")) {
+                                        if (!pbKeyPressed) {
+                                            if (ShowMessageFX.YesNo(null, pxeModuleName,
+                                                    "Are you sure you want to change the supplier name?\nPlease note that doing so will delete all purchase order receiving details.\n\nDo you wish to proceed?") == true) {
+                                                poJSON = poSalesInquiryController.SalesInquiry().Master().setClientId("");
+                                                poJSON = poSalesInquiryController.SalesInquiry().Master().setAddressId("");
+                                                poJSON = poSalesInquiryController.SalesInquiry().Master().setContactId("");
+                                                poSalesInquiryController.SalesInquiry().removeDetails();
+                                                loadTableDetail();
+                                            } else {
+                                                loadRecordMaster();
+                                                return;
+                                            }
                                         } else {
                                             loadRecordMaster();
                                             return;
                                         }
-                                    } else {
-                                        loadRecordMaster();
-                                        return;
                                     }
                                 }
                             }
