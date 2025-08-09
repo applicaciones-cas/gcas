@@ -672,9 +672,9 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
     };
 
     public void moveNext(boolean isUp) {
-        String lsBrand = poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId();
+        
         apDetail.requestFocus();
-        String ldblNewValue = poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId();
+        
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
 
