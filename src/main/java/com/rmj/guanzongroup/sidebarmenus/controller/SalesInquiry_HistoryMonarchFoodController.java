@@ -301,9 +301,6 @@ public class SalesInquiry_HistoryMonarchFoodController implements Initializable,
                         break;
                 }
                 loadRecordDetail();
-                if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-                    tfBarcode.requestFocus();
-                }
                 event.consume();
             }
         }

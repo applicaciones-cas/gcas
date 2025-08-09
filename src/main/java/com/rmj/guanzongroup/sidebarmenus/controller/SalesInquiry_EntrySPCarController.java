@@ -402,9 +402,6 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
                         break;
                 }
                 loadRecordDetail();
-                if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-                    tfBarcode.requestFocus();
-                }
                 event.consume();
             }
         }

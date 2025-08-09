@@ -407,9 +407,6 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                         break;
                 }
                 loadRecordDetail();
-                if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-                    tfBarcode.requestFocus();
-                }
                 event.consume();
             }
         }

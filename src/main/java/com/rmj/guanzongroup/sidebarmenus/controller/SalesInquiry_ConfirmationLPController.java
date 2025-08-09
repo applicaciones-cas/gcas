@@ -1141,9 +1141,6 @@ public class SalesInquiry_ConfirmationLPController implements Initializable, Scr
                                 break;
                         }
                         loadRecordDetail();
-                        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-                            tfBarcode.requestFocus();
-                        }
                         event.consume();
                     }
                     break;

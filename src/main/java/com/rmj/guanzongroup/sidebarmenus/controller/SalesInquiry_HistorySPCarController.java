@@ -290,11 +290,6 @@ public class SalesInquiry_HistorySPCarController implements Initializable, Scree
                         break;
                 }
                 loadRecordDetail();
-                if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && !poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId().equals("")) {
-                    tfBrand.requestFocus();
-                } else {
-                    tfBrand.requestFocus();
-                }
                 event.consume();
             }
         }

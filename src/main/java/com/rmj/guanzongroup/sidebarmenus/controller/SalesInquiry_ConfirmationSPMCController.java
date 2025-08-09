@@ -1140,9 +1140,6 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
                                 break;
                         }
                         loadRecordDetail();
-                        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-                            tfBarcode.requestFocus();
-                        }
                         event.consume();
                     }
                     break;
