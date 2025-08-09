@@ -710,9 +710,9 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
     };
 
     public void moveNext(boolean isUp) {
-        
+
         apDetail.requestFocus();
-        
+
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
         if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
@@ -799,7 +799,7 @@ public class SalesInquiry_EntryMPController implements Initializable, ScreenInte
                                 tfSalesPerson.setText("");
                                 break;
                             } else {
-
+                                JFXUtil.textFieldMoveNext(tfInquiryType);
                             }
                             loadRecordMaster();
                             return;

@@ -647,9 +647,9 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
     };
 
     public void moveNext(boolean isUp) {
-        
+
         apDetail.requestFocus();
-        
+
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
 
@@ -716,7 +716,7 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
                                 tfSalesPerson.setText("");
                                 break;
                             } else {
-
+                                JFXUtil.textFieldMoveNext(tfInquiryType);
                             }
                             loadRecordMaster();
                             return;

@@ -646,9 +646,9 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
     };
 
     public void moveNext(boolean isUp) {
-        
+
         apDetail.requestFocus();
-        
+
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
 
@@ -715,7 +715,7 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
                                 tfSalesPerson.setText("");
                                 break;
                             } else {
-
+                                JFXUtil.textFieldMoveNext(tfInquiryType);
                             }
                             loadRecordMaster();
                             return;

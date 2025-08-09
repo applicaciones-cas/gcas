@@ -345,7 +345,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
             tfContactNo.setText(poSalesInquiryController.SalesInquiry().Master().ClientMobile().getMobileNo());
             tfInquiryType.setText(poSalesInquiryController.SalesInquiry().Master().Source().getDescription());
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
-            
+
             if (pnEditMode != EditMode.UNKNOWN) {
 
                 cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
@@ -714,9 +714,9 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
     };
 
     public void moveNext(boolean isUp) {
-        
+
         apDetail.requestFocus();
-        
+
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
         if (!JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getBrandId(), null, "")) {
@@ -803,7 +803,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                 tfSalesPerson.setText("");
                                 break;
                             } else {
-
+                                JFXUtil.textFieldMoveNext(tfInquiryType);
                             }
                             loadRecordMaster();
                             return;
