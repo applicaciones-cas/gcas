@@ -103,7 +103,7 @@ public class SalesInquiry_EntryMonarchFoodController implements Initializable, S
     @FXML
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnHistory, btnClose;
     @FXML
-    private TextField tfTransactionNo, tfBranch, tfSalesPerson, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfInquiryType, tfBarcode, tfDescription, tfBrand, tfModel, tfColor;
+    private TextField tfTransactionNo, tfBranch, tfSalesPerson, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfInquiryType, tfBarcode, tfDescription, tfBrand, tfModel, tfColor;
     @FXML
     private DatePicker dpTransactionDate, dpTargetDate;
     @FXML
