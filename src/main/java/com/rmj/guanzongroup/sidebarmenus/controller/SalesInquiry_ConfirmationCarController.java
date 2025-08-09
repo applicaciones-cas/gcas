@@ -449,7 +449,7 @@ public class SalesInquiry_ConfirmationCarController implements Initializable, Sc
                     break;
                 case "tfInquiryType":
                     if (lsValue.isEmpty()) {
-                        poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceNo("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceCode("");
                     }
                     break;
                 case "tfClient":

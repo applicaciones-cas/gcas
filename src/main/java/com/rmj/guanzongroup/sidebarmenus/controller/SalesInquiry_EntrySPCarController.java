@@ -627,7 +627,7 @@ public class SalesInquiry_EntrySPCarController implements Initializable, ScreenI
                     break;
                 case "tfInquiryType":
                     if (lsValue.isEmpty()) {
-                        poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceNo("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceCode("");
                     }
                     break;
                 case "tfClient":

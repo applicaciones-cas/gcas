@@ -437,7 +437,7 @@ public class SalesInquiry_ConfirmationMonarchFoodController implements Initializ
                     break;
                 case "tfInquiryType":
                     if (lsValue.isEmpty()) {
-                        poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceNo("");
+                        poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceCode("");
                     }
                     break;
                 case "tfClient":
