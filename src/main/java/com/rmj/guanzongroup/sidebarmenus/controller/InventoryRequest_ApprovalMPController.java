@@ -63,7 +63,7 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryScheduleC
  *
  * @author User
  */
-public class InventoryRequest_ApprovalController implements Initializable, ScreenInterface{
+public class InventoryRequest_ApprovalMPController implements Initializable, ScreenInterface{
     
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;

@@ -4,7 +4,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -80,7 +79,7 @@
                                     <Blend />
                                  </effect>
                                  <graphic>
-                                    <FontAwesomeIconView fx:id="btnUpdate" glyphName="EDIT" size="20" />
+                                    <FontAwesomeIconView glyphName="EDIT" size="20" />
                                  </graphic>
                                  <font>
                                     <Font size="12.0" />
@@ -110,7 +109,7 @@
                               </Button>
                               <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" onAction="#cmdButton_Click" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Print">
                                  <graphic>
-                                    <FontAwesomeIconView fx:id="btnPrint" glyphName="PRINT" size="20" />
+                                    <FontAwesomeIconView glyphName="PRINT" size="20" />
                                  </graphic>
                                  <effect>
                                     <Blend />
@@ -301,7 +300,6 @@
                                     <rowConstraints>
                                         <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                                         <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="30.0" vgrow="SOMETIMES" />
-                                          <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="70.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
                                         <AnchorPane minHeight="-Infinity" prefHeight="28.0" prefWidth="402.0" style="-fx-background-color: FF8201;">
@@ -330,7 +328,6 @@
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                              </columnResizePolicy>
                                         </TableView>
-                                          <Pagination fx:id="pgPagination" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS" />
                                     </children>
                                 </GridPane>
                                  </children>
