@@ -12,6 +12,7 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,13 +35,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -81,7 +87,8 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
     private int pnEditMode;
     private int pnSourceRow = -1;
     private int pnDetailRow = -1;
-    String prevCustomer ="";
+    private String prevCustomer ="";
+    private String psOldDate = "";
     private static final int ROWS_PER_PAGE = 50;
     
     private ObservableList<ModelSalesReservationSource> source_data = FXCollections.observableArrayList();
@@ -207,6 +214,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
          initTableSourceList();
          initTableDetailList();
          pagination.setPageCount(0);
+         initDatePickerActions();
         // TODO
     }
     
@@ -266,7 +274,9 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             tfTransactionNo,
             tfCustomerName,
             tfAmountPaid,
-            tfQuantity
+            tfQuantity,
+            tfModel,
+            tfBrand
         };
         /*this is to initialize all text field*/
         for (Node txtInput : txtFieldInputs) {
@@ -280,12 +290,42 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
         for (TextInputControl input : keyPressFields) {
             input.setOnKeyPressed(this::txtField_KeyPressed);
         }
+         for (Node txtAreaInput : txtAreaInputs) {
+            txtAreaInput.setOnKeyPressed(this::txtArea_KeyPressed);
+        }
         if (tblSourceList.getItems().isEmpty()) {
             pagination.setVisible(false);
             pagination.setManaged(false);
         }
         tblSourceList.setOnMouseClicked(this::tblSourceList_Clicked);
         tblDetailList.setOnMouseClicked(this::tblDetail_Clicked);
+        tblDetailList.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        
+    }
+    private void tableKeyEvents(KeyEvent event) {
+        if (detail_data.size() > 0) {
+            TableView<?> currentTable = (TableView<?>) event.getSource();
+            TablePosition<?, ?> focusedCell = currentTable.getFocusModel().getFocusedCell();
+            switch (currentTable.getId()) {
+                case "tblDetailList":
+                    if (focusedCell != null) {
+                        switch (event.getCode()) {
+                            case TAB:
+                            case DOWN:
+                                pnDetailRow = JFXUtil.moveToNextRow(currentTable);
+                                break;
+                            case UP:
+                                pnDetailRow = JFXUtil.moveToPreviousRow(currentTable);
+                                break;
+                            default:
+                                break;
+                        }
+                        loadRecordDetail();
+                        event.consume();
+                    }
+                    break;
+            }
+        }
     }
     
     final ChangeListener<Boolean> txtField_Focus = (obs, oldVal, newVal) -> {
@@ -303,25 +343,25 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     case "tfCustomerName":
                         prevCustomer = tfCustomerName.getText();
                         break;
-                    case "tfBrand":
-
+                    case "tfModel":
+                        loadTableDetailList();
                         break;
                     case "tfQuantity":
                         poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).setQuantity(Double.parseDouble(lsValue));
                         tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue, false));
-                        detail_data.get(pnDetailRow).setIndex04(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue, false));
+//                        detail_data.get(pnDetailRow).setIndex04(CustomCommonUtil.setIntegerValueToDecimalFormat(lsValue, false));
+                        loadTableDetailList();
                         break;
                     default:
                         break;
                 }
+                
                 tblDetailList.refresh();
                 
             } catch (Exception e) {
                 System.err.println("Error processing input [" + lsTextFieldID + "]: " + e.getMessage());
             }
-        } else { // focus gained
-            loTextField.selectAll();
-        }
+        } 
     };
     
     final ChangeListener<Boolean> txtArea_Focus = (obs, oldVal, newVal) -> {
@@ -352,7 +392,6 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             loTextArea.selectAll();
         }
     };
-    
     private void txtField_KeyPressed(KeyEvent event) {
         TextField lsTxtField = (TextField) event.getSource();
         String txtFieldID = ((TextField) event.getSource()).getId();
@@ -377,18 +416,49 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                                     break;
                                 }
                                 tfCustomerName.setText( poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName());
+                                poSalesReservationControllers.SalesReservation().Master().setAddressID(
+                                        poSalesReservationControllers.SalesReservation().Master().Client_Address().getAddressId());
                                 tfAddress.setText(poSalesReservationControllers.SalesReservation().Master().Client_Address().getAddress());
 //                                if (tfTerm.getText().isEmpty()) {
 //                                    tfTerm.requestFocus();
 //                                }
                                 prevCustomer = tfCustomerName.getText();
+                                loadTableSourceList();
                                 break;
                             case "tfDestination":
                             case "tfTerm":
                             case "tfBrand":
+                                poJSON = poSalesReservationControllers.SalesReservation().SearchBrand(lsValue, false, pnDetailRow
+                                );
+                                if ("error".equals(poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    tfBrand.setText("");
+                                    break;
+                                }
+                                tfBrand.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Brand().getDescription());
+                                tfModel.requestFocus();
+                                
+                                break;
                             case "tfModel":
+                                poJSON = poSalesReservationControllers.SalesReservation().SearchModel(lsValue, false, pnDetailRow);
+                                if ("error".equals(poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+//                                    
+                                    if (poJSON.get("tableRow") != null) {
+                                            pnDetailRow = (int) poJSON.get("tableRow");
+                                            fakeClickOnTable(tblDetailList, pnDetailRow);
+                                            loadRecordDetail();
+                                    }
+                                    tfModel.setText("");
+                                }
+                                tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
+                                tfQuantity.requestFocus();
+                                
+                                break;
                             case "tfQuantity":
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
+//                                fakeClickOnTable(tblDetailList, pnDetailRow + 1);
+                                    
                                 break;
                         }
                         
@@ -406,9 +476,76 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
         } catch (ExceptionInInitializerError | NullPointerException | SQLException | GuanzonException ex) {
             Logger.getLogger(SalesReservation_EntryMCController.class
                     .getName()).log(Level.SEVERE, null, ex);
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
+    private void txtArea_KeyPressed(KeyEvent event) {
+        TextArea lsTxtArea = (TextArea) event.getSource();
+        String lsTxtAreaID = ((TextArea) event.getSource()).getId();
+        String lsValue = "";
+        if (lsTxtArea.getText() == null) {
+            lsValue = "";
+        } else {
+            lsValue = lsTxtArea.getText();
+        }
+        try {
+            if (null != event.getCode()) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case ENTER:
+                        switch (lsTxtAreaID) {
+                            case "taRemarks":
+                                tfModel.requestFocus();
+                                break;
+                            case "taNotes":
+                                fakeClickOnTable(tblDetailList, pnDetailRow + 1);
+                                break;
+                        }
+                        
+                        break;
+                    case F4:
+                        break;
+                    case UP:
+                        break;
+                    case DOWN:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } catch (ExceptionInInitializerError | NullPointerException   ex) {
+            Logger.getLogger(SalesReservation_EntryMCController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private void fakeClickOnTable(TableView<?> tableView, int rowIndex) {
+    if (rowIndex < 0 || rowIndex >= tableView.getItems().size()) {
+        return; // Index out of bounds
+    }
+
+    // Select the row
+    tableView.getSelectionModel().clearAndSelect(rowIndex);
+    tableView.scrollTo(rowIndex);
+
+    // Fire the selection change listener manually
+    if (tableView.getOnMouseClicked() != null) {
+        MouseEvent fakeClick = new MouseEvent(
+                MouseEvent.MOUSE_CLICKED,
+                0, 0, 0, 0,
+                MouseButton.PRIMARY,
+                1,
+                false, false, false, false,
+                true, false, false,
+                true, false, false,
+                null
+        );
+        tableView.getOnMouseClicked().handle(fakeClick);
+        tfQuantity.requestFocus();
+        
+    }
+}
     
     private void ClickButton() {
         Button[] buttons = {
@@ -499,9 +636,15 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                                 break;
                             }
                             
-                            if(pnEditMode == EditMode.ADDNEW){
-                                source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).setIndex05(Sales_Reservation_Static.highlighter.default_green);
-                                tblSourceList.refresh();
+                            if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
+                                for(int x = 0; x > source_data.size(); x++){
+                                    String sourceNo = source_data.get(x).getIndex03();
+                                     if (poSalesReservationControllers.SalesReservation().Master().getSourceNo().equals(sourceNo) ){
+                                        source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
+                                                setIndex05(Sales_Reservation_Static.highlighter.default_green);
+                                        tblSourceList.refresh();
+                                    }
+                                }
                             }
                             
                             ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
@@ -509,15 +652,21 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                             if (ShowMessageFX.YesNo("Do you want to Confirm Transaction?",
                                     "Computerized Acounting System", psFormName)) {
                                 poJSON = poSalesReservationControllers.SalesReservation().OpenTransaction(toConfirm);
+                                
                                 if (!"success".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                    break;
+                                    return;
                                 }
                                 poSalesReservationControllers.SalesReservation().setWithUI(true);
                                 poJSON = poSalesReservationControllers.SalesReservation().ConfirmTransaction("");
                                 if (!"success".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                    break;
+                                    clearMaster();
+                                    clearDetail();
+                                    detail_data.clear();
+                                    pnEditMode = EditMode.READY;
+                                    initButton(pnEditMode);
+                                    return;
                                 }
                                 ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                             }
@@ -626,12 +775,12 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                 default:
                     lsStatus = "UNKNOWN";
                     break;
-                    
+
             }
             lblStatus.setText(lsStatus);
-            
+
             tfTransactionNo.setText(poSalesReservationControllers.SalesReservation().Master().getTransactionNo());
-           
+
             tfCustomerName.setText(poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName() != null
                     ? poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName() : "");
             tfCustomerName.setText(poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName() != null
@@ -648,67 +797,14 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     poSalesReservationControllers.SalesReservation().Master().getAmountPaid(), true));
             taRemarks.setText(poSalesReservationControllers.SalesReservation().Master().getRemarks() != null
                     ? poSalesReservationControllers.SalesReservation().Master().getRemarks() : "");
-            
-            LocalDate today = CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
-                    poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE));
-            
-                    
-            dpTransaction.setValue(today);
-            dpExpedtedDate.setValue(today.plusMonths(1));
-            dpTransaction.valueProperty().addListener((obs, oldVal, newVal) -> {
-    if (newVal != null) {
-        // Automatically set dpExpected 1 month after dpTrans
-        dpExpedtedDate.setValue(newVal.plusMonths(1));
-
-        // Check if new dpTrans is before today
-        if (newVal.isBefore(LocalDate.now())) {
-            if (ShowMessageFX.YesNo(
-                    "System approval is required for backdated transactions.\nDo you want to proceed?",
-                    psFormName, null)) {
-
-                if (poApp.getUserLevel() <= UserRight.ENCODER) {
-                    poJSON = ShowDialogFX.getUserApproval(poApp);
-                    if (!"success".equals((String) poJSON.get("result"))) {
-                        ShowMessageFX.Warning(
-                                "Approval denied: User is either invalid or not an authorized approving officer.",
-                                psFormName, null
-                        );
-                        dpTransaction.setValue(oldVal); // revert change
-                        return;
-                    }
-                }
-            } else {
-                dpTransaction.setValue(oldVal); // revert change
-            }
-        }
-    }
-});
-
-// Expected Date Change Listener - Allow backdate but limit to 7 days after transaction date
-dpExpedtedDate.valueProperty().addListener((obs, oldVal, newVal) -> {
-    if (newVal != null && dpTransaction.getValue() != null) {
-        LocalDate transactionDate = dpTransaction.getValue();
-        LocalDate maxAllowedBackdate = transactionDate.plusDays(7);
-
-        if (newVal.isBefore(transactionDate)) {
-            ShowMessageFX.Warning(
-                "Expected date cannot be earlier than the transaction date.",
-                psFormName, null
-            );
-            dpExpedtedDate.setValue(oldVal); // revert change
-        }
-        if (dpTransaction.getValue().plusDays(7).isAfter(dpExpedtedDate.getValue())) {
-            ShowMessageFX.Warning(
-                "Expected date can only be set within 7 days after the transaction date.",
-                psFormName, null
-            );
-            dpExpedtedDate.setValue(oldVal); // revert change
-        }
-    }
-});
+            dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
+                    poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+            dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
+                    poSalesReservationControllers.SalesReservation().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
     private void loadRecordDetail(){
         try {
@@ -776,7 +872,7 @@ dpExpedtedDate.valueProperty().addListener((obs, oldVal, newVal) -> {
 //                        showRetainedHighlight(true);
                         if (source_data.isEmpty()) {
                             tblSourceList.setPlaceholder(new Label("NO RECORD TO LOAD"));
-                            ShowMessageFX.Warning("No Record Found", psFormName, null);
+                            ShowMessageFX.Warning("This customer has no inquiries or quotations on record.", psFormName, null);
                             return;
                         }
                         tblSourceList.setItems(source_data);
@@ -931,34 +1027,24 @@ dpExpedtedDate.valueProperty().addListener((obs, oldVal, newVal) -> {
                             lnCtr = poSalesReservationControllers.SalesReservation().getDetailCount() - 1;
                             if (lnCtr >= 0) {
                                 String lsSourceNo = poSalesReservationControllers.SalesReservation().Master().getSourceNo();
-                                if (!lsSourceNo.isEmpty() || poSalesReservationControllers.SalesReservation().Master() == null) {
-                                    try {
-                                        poSalesReservationControllers.SalesReservation().AddDetail();
-
-                                    } catch (CloneNotSupportedException ex) {
-                                        Logger.getLogger(DisbursementVoucher_EntryController.class
-                                                .getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                }
+                                poSalesReservationControllers.SalesReservation().AddDetail();
                             }
                         }
                         double lnNetTotal = 0.0000;
                         for (lnCtr = 0; lnCtr < poSalesReservationControllers.SalesReservation().getDetailCount(); lnCtr++) {
-                            try {
+
                                 double unitprice = Double.parseDouble(poSalesReservationControllers.SalesReservation().Detail(lnCtr).Inventory().getCost().toString());
                                 lnNetTotal = poSalesReservationControllers.SalesReservation().Detail(lnCtr).getQuantity() * unitprice;
                                 detail_data.add(
                                         new ModelSalesReservationDetail(String.valueOf(lnCtr + 1),
-                                                poSalesReservationControllers.SalesReservation().Detail(lnCtr).getStockID(),
+                                                poSalesReservationControllers.SalesReservation().Detail(lnCtr).Inventory().getDescription(),
                                                 "F",
                                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poSalesReservationControllers.SalesReservation().Detail(lnCtr).getQuantity(),false),
                                                 CustomCommonUtil.setIntegerValueToDecimalFormat(poSalesReservationControllers.SalesReservation().Detail(lnCtr).Inventory().getCost(), true),
                                                 "0.0000",
                                                 CustomCommonUtil.setIntegerValueToDecimalFormat(lnNetTotal, true)
                                         ));
-                            } catch (SQLException | GuanzonException ex) {
-                                Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+
                         }
                         if (pnDetailRow < 0 || pnDetailRow
                                 >= detail_data.size()) {
@@ -980,6 +1066,8 @@ dpExpedtedDate.valueProperty().addListener((obs, oldVal, newVal) -> {
                     } catch (SQLException ex) {
                         Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
+                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (CloneNotSupportedException ex) {
                         Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
@@ -1012,15 +1100,16 @@ dpExpedtedDate.valueProperty().addListener((obs, oldVal, newVal) -> {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE || pnEditMode == EditMode.READY) {
             pnDetailRow = tblDetailList.getSelectionModel().getSelectedIndex();
             ModelSalesReservationDetail selectedItem = (ModelSalesReservationDetail) tblDetailList.getSelectionModel().getSelectedItem();
-            if (event.getClickCount() == 1) {
                 clearDetail();
                 if (selectedItem != null) {
                     if (pnDetailRow >= 0) {
                         loadRecordDetail();
-                        tfQuantity.requestFocus();
+                        if (event.getClickCount() == 2) {
+                            tfQuantity.requestFocus();
+                        }
                     }
                 }
-            }
+            
         }
     }
     
@@ -1097,5 +1186,143 @@ dpExpedtedDate.valueProperty().addListener((obs, oldVal, newVal) -> {
 //        detail_data.clear();
     }
     
+    private void initDatePickerActions() {
+        dpTransaction.setOnAction(e -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                try {
+                    LocalDate selectedLocalDate = dpTransaction.getValue();
+                    LocalDate transactionDate = new java.sql.Date(poSalesReservationControllers.SalesReservation().Master().getTransactionDate().getTime()).toLocalDate();
+                    if (selectedLocalDate == null) {
+                        return;
+                    }
+                    
+                    LocalDate dateNow = LocalDate.now();
+                    psOldDate = CustomCommonUtil.formatLocalDateToShortString(transactionDate);
+                    
+                    boolean approved = true;
+                    if (pnEditMode == EditMode.UPDATE) {
+                        psOldDate = CustomCommonUtil.formatLocalDateToShortString(transactionDate);
+                        if (selectedLocalDate.isAfter(dateNow)) {
+                            ShowMessageFX.Warning("Invalid to future date.", psFormName, null);
+                            approved = false;
+                        }
+                        
+//                        if (selectedLocalDate.isBefore(transactionDate) && lsReferNo.isEmpty()) {
+//                            ShowMessageFX.Warning("Invalid to backdate. Please enter a reference number first.", psFormName, null);
+//                            approved = false;
+//                        }
+                        if (selectedLocalDate.isBefore(transactionDate)) {
+                            boolean proceed = ShowMessageFX.YesNo(
+                                    "You are changing the transaction date\n"
+                                            + "If YES, seek approval to proceed with the changed date.\n"
+                                            + "If NO, the transaction date will be remain.",
+                                    psFormName, null
+                            );
+                            if (proceed) {
+                                if (poApp.getUserLevel() <= UserRight.ENCODER) {
+                                    poJSON = ShowDialogFX.getUserApproval(poApp);
+                                    if (!"success".equals((String) poJSON.get("result"))) {
+                                        approved = false;
+                                        return;
+                                    } else {
+                                        if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
+                                            ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
+                                            approved = false;
+                                            return;
+                                        }
+                                    }
+                                }
+                            } else {
+                                approved = false;
+                            }
+                        }
+                    }
+                    if (pnEditMode == EditMode.ADDNEW) {
+                        if (selectedLocalDate.isAfter(dateNow)) {
+                            ShowMessageFX.Warning("Invalid to future date.", psFormName, null);
+                            approved = false;
+                        }
+//                        if (selectedLocalDate.isBefore(dateNow) && lsReferNo.isEmpty()) {
+//                            ShowMessageFX.Warning("Invalid to backdate. Please enter a reference number first.", psFormName, null);
+//                            approved = false;
+//                        }
+                        
+                        if (selectedLocalDate.isBefore(dateNow)) {
+                            boolean proceed = ShowMessageFX.YesNo(
+                                    "You selected a backdate with a reference number.\n\n"
+                                            + "If YES, seek approval to proceed with the backdate.\n"
+                                            + "If NO, the transaction date will be reset to today.",
+                                    "Backdate Confirmation", null
+                            );
+                            if (proceed) {
+                                if (poApp.getUserLevel() <= UserRight.ENCODER) {
+                                    poJSON = ShowDialogFX.getUserApproval(poApp);
+                                    if (!"success".equals((String) poJSON.get("result"))) {
+                                        approved = false;
+                                        return;
+                                    } else {
+                                        if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
+                                            ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
+                                            approved = false;
+                                            return;
+                                        }
+                                    }
+                                }
+                            } else {
+                                approved = false;
+                            }
+                        }
+                    }
+                    if (approved) {
+                        poSalesReservationControllers.SalesReservation().Master().setTransactionDate(
+                                SQLUtil.toDate(selectedLocalDate.toString(), SQLUtil.FORMAT_SHORT_DATE));
+                    } else {
+                        if (pnEditMode == EditMode.ADDNEW) {
+                            dpTransaction.setValue(dateNow);
+                            poSalesReservationControllers.SalesReservation().Master().setTransactionDate(
+                                    SQLUtil.toDate(dateNow.toString(), SQLUtil.FORMAT_SHORT_DATE));
+                        } else if (pnEditMode == EditMode.UPDATE) {
+                            poSalesReservationControllers.SalesReservation().Master().setTransactionDate(
+                                    SQLUtil.toDate(psOldDate, SQLUtil.FORMAT_SHORT_DATE));
+                        }
+                        
+                    }
+                    dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(
+                            SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
+                } catch (SQLException ex) {
+                    Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (GuanzonException ex) {
+                    Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        );
+
+        dpExpedtedDate.setOnAction(e
+                -> {
+            if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+                if (dpExpedtedDate.getValue() != null) {
+                    try {
+                        LocalDate selectedLocalDate = dpExpedtedDate.getValue();
+                        Date selectedDate = SQLUtil.toDate(selectedLocalDate.toString(), SQLUtil.FORMAT_SHORT_DATE);
+                        Date transactionDate = poSalesReservationControllers.SalesReservation().Master().getTransactionDate();
+                        LocalDate transactionLocalDate = LocalDate.now();
+                        
+                        if (selectedDate.before(transactionDate)) {
+                            ShowMessageFX.Warning("Please select an expected  date that is on or after the transaction date.", "Invalid Expected Date", null);
+                            dpExpedtedDate.setValue(transactionLocalDate);
+                            poSalesReservationControllers.SalesReservation().Master().setExpectedDate(transactionDate);
+                            return;
+                        }
+                        
+                        poSalesReservationControllers.SalesReservation().Master().setExpectedDate(selectedDate);
+                    } catch (SQLException | GuanzonException ex) {
+                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+        );
+    }
     
 }
