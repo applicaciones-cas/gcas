@@ -233,7 +233,7 @@ public class SalesInquiry_EntryLPController implements Initializable, ScreenInte
                             poSalesInquiryController.SalesInquiry().Master().setIndustryId(psIndustryId);
                             poSalesInquiryController.SalesInquiry().Master().setCompanyId(psCompanyId);
                             poSalesInquiryController.SalesInquiry().Master().setCategoryCode(psCategoryId);
-                            poSalesInquiryController.SalesInquiry().initFields();
+//                            poSalesInquiryController.SalesInquiry().initFields();
                             pnEditMode = EditMode.UNKNOWN;
 
                             break;

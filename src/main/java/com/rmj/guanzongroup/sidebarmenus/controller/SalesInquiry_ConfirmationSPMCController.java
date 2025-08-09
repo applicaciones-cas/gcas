@@ -147,7 +147,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
             poSalesInquiryController.SalesInquiry().setIndustryId(psIndustryId);
             poSalesInquiryController.SalesInquiry().setCompanyId(psCompanyId);
             poSalesInquiryController.SalesInquiry().setCategoryId(psCategoryId);
-            poSalesInquiryController.SalesInquiry().initFields();
+//            poSalesInquiryController.SalesInquiry().initFields();
             poSalesInquiryController.SalesInquiry().setWithUI(true);
             loadRecordSearch();
             loadRecordMaster();
@@ -311,7 +311,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
                     poSalesInquiryController.SalesInquiry().Master().setIndustryId(psIndustryId);
                     poSalesInquiryController.SalesInquiry().Master().setCompanyId(psCompanyId);
                     poSalesInquiryController.SalesInquiry().Master().setCategoryCode(psCategoryId);
-                    poSalesInquiryController.SalesInquiry().initFields();
+//                    poSalesInquiryController.SalesInquiry().initFields();
                 }
 
                 if (JFXUtil.isObjectEqualTo(lsButton, "btnPrint", "btnAddAttachment", "btnRemoveAttachment",
