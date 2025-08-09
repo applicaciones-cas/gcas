@@ -869,9 +869,14 @@ public class InvRequest_EntryMcSpController implements Initializable, ScreenInte
                  @Override
             protected List<ModelInvOrderDetail> call() throws Exception {
                 try {
-                    
-                     int detailCount = invRequestController.StockRequest().getDetailCount();   
-                    
+                   int detailCount = invRequestController.StockRequest().getDetailCount();      
+                    if ((pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE)) {
+                        Model_Inv_Stock_Request_Detail lastDetail = invRequestController.StockRequest().Detail(detailCount - 1);
+                        if (lastDetail.getStockId() != null && !lastDetail.getStockId().isEmpty()) {
+                            invRequestController.StockRequest().AddDetail();
+                            detailCount++;
+                        }
+                    }     
                     List<ModelInvOrderDetail> detailsList = new ArrayList<>();
                     
                     for (int i = 0; i < detailCount; i++) {

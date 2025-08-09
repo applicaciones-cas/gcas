@@ -137,6 +137,14 @@
                                     <Blend />
                                  </effect>
                               </Button>
+                              <Button fx:id="btnVoid" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="TIMES" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
                                     </children>
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" top="5.0" />
