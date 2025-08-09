@@ -87,12 +87,12 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
     AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
     AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
     private boolean pbEntered = false;
+    private final JFXUtil.RowDragLock dragLock = new JFXUtil.RowDragLock(true);
 
     ObservableList<String> ClientType = ModelSalesInquiry_Detail.ClientType;
-    ObservableList<String> InquiryType = ModelSalesInquiry_Detail.InquiryType;
+    
     ObservableList<String> PurchaseType = ModelSalesInquiry_Detail.PurchaseType;
     ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
-    private final JFXUtil.RowDragLock dragLock = new JFXUtil.RowDragLock(true);
 
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apTransactionInfo, apMaster, apDetail;
@@ -103,11 +103,11 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
     @FXML
     private Button btnBrowse, btnNew, btnUpdate, btnSearch, btnSave, btnCancel, btnHistory, btnClose;
     @FXML
-    private TextField tfTransactionNo, tfBranch, tfSalesPerson, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfBarcode, tfColor, tfDescription;
+    private TextField tfTransactionNo, tfBranch, tfSalesPerson, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfInquiryType, tfBarcode, tfDescription, tfBrand, tfModel, tfColor;
     @FXML
     private DatePicker dpTransactionDate, dpTargetDate;
     @FXML
-    private ComboBox cmbClientType, cmbInquiryType, cmbPurchaseType;
+    private ComboBox cmbClientType, cmbPurchaseType;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -356,7 +356,6 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
             tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getFullName());
-            tfInquirySource.setText(poSalesInquiryController.SalesInquiry().Master().Source().getCompanyName());
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
@@ -365,7 +364,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
 
             if (pnEditMode != EditMode.UNKNOWN) {
-                cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
+
                 cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
                 if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
                     cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().Client().getClientType()));
@@ -373,7 +372,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
                     cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getClientType()));
                 }
             } else {
-                cmbInquiryType.getSelectionModel().select(0);
+
                 cmbPurchaseType.getSelectionModel().select(0);
                 cmbClientType.getSelectionModel().select(0);
             }
@@ -647,7 +646,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
                         poJSON = poSalesInquiryController.SalesInquiry().Master().setSalesMan("");
                     }
                     break;
-                case "tfInquirySource":
+                case "tfInquiryType":
                     if (lsValue.isEmpty()) {
                         poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceNo("");
                     }
@@ -738,15 +737,15 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
                                 tfSalesPerson.setText("");
                                 break;
                             } else {
-                                JFXUtil.textFieldMoveNext(tfInquirySource);
+
                             }
                             loadRecordMaster();
                             return;
-                        case "tfInquirySource":
+                        case "tfInquiryType":
                             poJSON = poSalesInquiryController.SalesInquiry().SearchSource(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfInquirySource.setText("");
+
                                 break;
                             } else {
                                 JFXUtil.textFieldMoveNext(tfClient);
@@ -879,9 +878,6 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
                 }
                 poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
                 break;
-            case "cmbInquiryType":
-                poSalesInquiryController.SalesInquiry().Master().setSourceCode(String.valueOf(selectedIndex));
-                break;
             case "cmbPurchaseType":
                 poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
                 break;
@@ -897,10 +893,10 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
 
     private void initComboBoxes() {
         // Set the items of the ComboBox to the list of genders
-        JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType), new JFXUtil.Pairs<>(InquiryType, cmbInquiryType),
+        JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType),
                 new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType));
-        JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbInquiryType, cmbPurchaseType);
-        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbInquiryType, cmbPurchaseType);
+        JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbPurchaseType);
+        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbPurchaseType);
     }
 
     public void initDatePickers() {
@@ -910,7 +906,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
 
     public void initTextFields() {
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfInquirySource);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfInquiryType);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);

@@ -97,14 +97,14 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
     AtomicReference<Object> lastFocusedTextField = new AtomicReference<>();
     AtomicReference<Object> previousSearchedTextField = new AtomicReference<>();
     ObservableList<String> ClientType = ModelSalesInquiry_Detail.ClientType;
-    ObservableList<String> InquiryType = ModelSalesInquiry_Detail.InquiryType;
+    
     ObservableList<String> PurchaseType = ModelSalesInquiry_Detail.PurchaseType;
     ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
     private final JFXUtil.RowDragLock dragLock = new JFXUtil.RowDragLock(true);
     @FXML
     private AnchorPane apMainAnchor, apBrowse, apButton, apMaster, apDetail;
     @FXML
-    private TextField tfSearchClient, tfSearchReferenceNo, tfTransactionNo, tfBranch, tfSalesPerson, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfBarcode, tfColor, tfDescription;
+    private TextField tfSearchClient, tfSearchReferenceNo, tfTransactionNo, tfBranch, tfSalesPerson, tfInquiryType, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfBarcode, tfColor, tfDescription;
     @FXML
     private Label lblSource, lblStatus;
     @FXML
@@ -114,7 +114,7 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
     @FXML
     private DatePicker dpTransactionDate, dpTargetDate;
     @FXML
-    private ComboBox cmbClientType, cmbInquiryType, cmbPurchaseType;
+    private ComboBox cmbClientType, cmbPurchaseType;
     @FXML
     private TextArea taRemarks;
     @FXML
@@ -455,7 +455,7 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
                         poJSON = poSalesInquiryController.SalesInquiry().Master().setSalesMan("");
                     }
                     break;
-                case "tfInquirySource":
+                case "tfInquiryType":
                     if (lsValue.isEmpty()) {
                         poJSON = poSalesInquiryController.SalesInquiry().Master().setSourceNo("");
                     }
@@ -586,11 +586,11 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
                             }
                             loadRecordMaster();
                             return;
-                        case "tfInquirySource":
+                        case "tfInquiryType":
                             poJSON = poSalesInquiryController.SalesInquiry().SearchSource(lsValue, false);
                             if ("error".equals(poJSON.get("result"))) {
                                 ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                                tfInquirySource.setText("");
+                                
                                 break;
                             }
                             loadRecordMaster();
@@ -845,7 +845,7 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
             tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getFullName());
-            tfInquirySource.setText(poSalesInquiryController.SalesInquiry().Master().Source().getCompanyName());
+            
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
@@ -853,7 +853,7 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
 
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
             if (pnEditMode != EditMode.UNKNOWN) {
-                cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
+                
                 cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
                 if (poSalesInquiryController.SalesInquiry().Master().getClientId() != null && !"".equals(poSalesInquiryController.SalesInquiry().Master().getClientId())) {
                     cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().Client().getClientType()));
@@ -861,7 +861,7 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
                     cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getClientType()));
                 }
             } else {
-                cmbInquiryType.getSelectionModel().select(0);
+                
                 cmbPurchaseType.getSelectionModel().select(0);
                 cmbClientType.getSelectionModel().select(0);
             }
@@ -1000,9 +1000,6 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
                 }
                 poSalesInquiryController.SalesInquiry().Master().setClientType(String.valueOf(selectedIndex));
                 break;
-            case "cmbInquiryType":
-                poSalesInquiryController.SalesInquiry().Master().setSourceCode(String.valueOf(selectedIndex));
-                break;
             case "cmbPurchaseType":
                 poSalesInquiryController.SalesInquiry().Master().setPurchaseType(String.valueOf(selectedIndex));
                 break;
@@ -1015,10 +1012,10 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
 
     private void initComboBoxes() {
         // Set the items of the ComboBox to the list of genders
-        JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType), new JFXUtil.Pairs<>(InquiryType, cmbInquiryType),
+        JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType),
                 new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType));
-        JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbInquiryType, cmbPurchaseType);
-        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbInquiryType, cmbPurchaseType);
+        JFXUtil.setComboBoxActionListener(comboBoxActionListener, cmbClientType, cmbPurchaseType);
+        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbPurchaseType);
 
     }
 
@@ -1031,7 +1028,7 @@ public class SalesInquiry_ConfirmationSPCarController implements Initializable, 
     public void initTextFields() {
         JFXUtil.setFocusListener(txtField_Focus, tfSearchClient, tfSearchReferenceNo);
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
-        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfInquirySource, tfInquirySource);
+        JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfInquiryType, tfInquiryType);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
