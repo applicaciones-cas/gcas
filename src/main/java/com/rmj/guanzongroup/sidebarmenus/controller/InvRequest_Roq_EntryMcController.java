@@ -208,11 +208,23 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //st();
+                    invRequestController.StockRequest().Master().setTransactionNo("");
+                    tfSearchTransNo.setText("");
+                    loadTableList();
                 }
 
             }
-        });}
+        });
+        tfSearchReferenceNo.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (newValue.isEmpty()) {
+                    invRequestController.StockRequest().Master().setReferenceNo("");
+                    tfSearchReferenceNo.setText("");
+                    loadTableList();
+                }
+            }
+        });
+    }
     private void loadRecordSearch() {
         try {
             System.out.print("LBL SOURCE: " + invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
@@ -1001,6 +1013,7 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
                                         loadMaster();
                                         pnEditMode = invRequestController.StockRequest().getEditMode();
                                         loadDetail();
+                                        loadTableList();
                                         loadTableInvDetail();
                                         initButtons(pnEditMode);
                                     } else {
@@ -1028,6 +1041,7 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
                                     loadMaster();
                                     pnEditMode = invRequestController.StockRequest().getEditMode();
                                     loadDetail();
+                                    loadTableList();
                                     loadTableInvDetail();
                                     initButtons(pnEditMode);
                                 } else {

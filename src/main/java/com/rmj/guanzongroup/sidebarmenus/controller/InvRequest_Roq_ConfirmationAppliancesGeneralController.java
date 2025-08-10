@@ -208,7 +208,9 @@ public class InvRequest_Roq_ConfirmationAppliancesGeneralController implements I
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    invRequestController.StockRequest().Master().setTransactionNo("");
+                    tfSearchTransNo.setText("");
+                    loadTableList();
                 }
 
             }
@@ -218,7 +220,7 @@ public class InvRequest_Roq_ConfirmationAppliancesGeneralController implements I
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    //loadTableList();
+                    loadTableList();
                 }
             }
         });
@@ -1056,6 +1058,7 @@ public class InvRequest_Roq_ConfirmationAppliancesGeneralController implements I
                                         loadMaster();
                                         pnEditMode = invRequestController.StockRequest().getEditMode();
                                         loadDetail();
+                                        loadTableList();
                                         loadTableInvDetail();
                                         initButtons(pnEditMode);
                                     } else {
@@ -1074,6 +1077,7 @@ public class InvRequest_Roq_ConfirmationAppliancesGeneralController implements I
                                     loadMaster();
                                     pnEditMode = invRequestController.StockRequest().getEditMode();
                                     loadDetail();
+                                    loadTableList();
                                     loadTableInvDetail();
                                     initButtons(pnEditMode);
                                 } else {

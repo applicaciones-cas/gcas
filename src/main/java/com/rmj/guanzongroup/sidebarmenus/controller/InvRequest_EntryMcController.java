@@ -208,7 +208,9 @@ public class InvRequest_EntryMcController implements Initializable, ScreenInterf
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    invRequestController.StockRequest().Master().setTransactionNo("");
+                    tfSearchTransNo.setText("");
+                    loadTableList();
                 }
 
             }
@@ -218,7 +220,7 @@ public class InvRequest_EntryMcController implements Initializable, ScreenInterf
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    //loadTableList();
+                    loadTableList();
                 }
             }
         });
@@ -1025,29 +1027,31 @@ public class InvRequest_EntryMcController implements Initializable, ScreenInterf
                                         pnEditMode = invRequestController.StockRequest().getEditMode();
                                         loadDetail();
                                         loadTableInvDetail();
+                                        loadTableList();
                                         initButtons(pnEditMode);
                                     } else {
                                         ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
                                     }
                                     break;
                                     case "tfSearchReferenceNo":
-                            System.out.print("Enter pressed");
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
-                            invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
-                            invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                            invRequestController.StockRequest().setTransactionStatus("102");
-                            poJSON = invRequestController.StockRequest().searchTransaction();
-                            if (!"error".equals((String) poJSON.get("result"))) {
-                                pnTblInvDetailRow = -1;
-                                loadMaster();
-                                pnEditMode = invRequestController.StockRequest().getEditMode();
-                                loadDetail();
-                                loadTableInvDetail();
-                                initButtons(pnEditMode);
-                            } else {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
-                            }
-                            break;
+                                        System.out.print("Enter pressed");
+                                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
+                                        invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
+                                        invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
+                                        invRequestController.StockRequest().setTransactionStatus("102");
+                                        poJSON = invRequestController.StockRequest().searchTransaction();
+                                        if (!"error".equals((String) poJSON.get("result"))) {
+                                            pnTblInvDetailRow = -1;
+                                            loadMaster();
+                                            pnEditMode = invRequestController.StockRequest().getEditMode();
+                                            loadDetail();
+                                            loadTableInvDetail();
+                                            loadTableList();
+                                            initButtons(pnEditMode);
+                                        } else {
+                                            ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
+                                        }
+                                        break;
                                     case "tfBrand":
                                     if (pnTblInvDetailRow < 0) {
                                         ShowMessageFX.Warning("Invalid row to update.", psFormName, null);

@@ -297,6 +297,7 @@ public class InvRequest_HistoryAppliancesGeneralController implements Initializa
                                 loadMaster();
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
                                 loadDetail();
+                                loadTableList();
                                 loadTableInvDetail();
                                 initButtons(pnEditMode);
                             } else {
@@ -315,6 +316,7 @@ public class InvRequest_HistoryAppliancesGeneralController implements Initializa
                                 loadMaster();
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
                                 loadDetail();
+                                loadTableList();
                                 loadTableInvDetail();
                                 initButtons(pnEditMode);
                             } else {
@@ -465,7 +467,9 @@ public class InvRequest_HistoryAppliancesGeneralController implements Initializa
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableMain();
+                    invRequestController.StockRequest().Master().setTransactionNo("");
+                    tfSearchTransNo.setText("");
+                    loadTableList();
                 }
 
             }
@@ -475,7 +479,7 @@ public class InvRequest_HistoryAppliancesGeneralController implements Initializa
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    //loadTableMain();
+                    loadTableList();
                 }
             }
         });
