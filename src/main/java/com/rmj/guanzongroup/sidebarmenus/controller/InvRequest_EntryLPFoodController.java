@@ -119,7 +119,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
         private TableView<ModelInvTableListInformation> tableListInformation;
 
         @FXML
-        private Button btnClose,btnSave,btnCancel,btnBrowse,btnUpdate,btnRetrieve,btnNew;
+        private Button btnClose,btnSave,btnCancel,btnBrowse,btnUpdate,btnRetrieve,btnNew, btnVoid;
 
         @FXML
         private TableColumn<ModelInvOrderDetail, String> tblBrandDetail
@@ -213,7 +213,9 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    invRequestController.StockRequest().Master().setTransactionNo("");
+                    tfSearchTransNo.setText("");
+                    loadTableList();
                 }
 
             }
@@ -223,7 +225,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    //loadTableList();
+                    loadTableList();
                 }
             }
         });
@@ -497,7 +499,37 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
             JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId(); 
             switch (lsButton) {
+                        case "btnVoid":
+                            String status = invRequestController.StockRequest().Master().getTransactionStatus();
 
+                            if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return this transaction?")) {
+                                return;
+                            }
+
+                            if (StockRequestStatus.CONFIRMED.equals(status) || StockRequestStatus.PROCESSED.equals(status)) {
+                                // Require user approval
+                                JSONObject approvalResult = ShowDialogFX.getUserApproval(poApp);
+                                if (!"success".equals(approvalResult.get("result"))) {
+                                    ShowMessageFX.Warning((String) approvalResult.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
+
+                            // Proceed to void the transaction
+                            poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
+
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                break;
+                            }
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                            clearMasterFields();
+                            clearDetailFields();
+                            invOrderDetail_data.clear();
+                            pnEditMode = EditMode.UNKNOWN;
+
+                            break;
                         case "btnBrowse":
                             invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
@@ -554,29 +586,7 @@ public class InvRequest_EntryLPFoodController implements Initializable, ScreenIn
                         initFields(pnEditMode);
                         tableListInformation.toFront();
                         break;
-case "btnVoid":
-                        if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
-                            try {
-                                poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
-                            } catch (ParseException ex) {
-                                Logger.getLogger(InvRequest_EntryMPGeneralController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                                    if (!"success".equals((String) poJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                        break;
-                                    }
-                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                                    clearMasterFields();
-                                    clearDetailFields();
-                                    invOrderDetail_data.clear();
-                                    pnEditMode = EditMode.UNKNOWN;
 
-                                    tblViewOrderDetails.refresh();
-
-                                } else {
-                                    return;
-                                }
-                                break;
                       case "btnSave":
                             if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                                 return;
@@ -747,7 +757,7 @@ case "btnVoid":
             }
             initButtons(pnEditMode);
             initFields(pnEditMode);
-            }catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | NullPointerException e) {
+            }catch (CloneNotSupportedException | ParseException | ExceptionInInitializerError | SQLException | GuanzonException | NullPointerException e) {
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
                 System.exit(1);
             }
@@ -1007,7 +1017,7 @@ case "btnVoid":
         }  
         private void initButtonsClickActions() {
             List<Button> buttons = Arrays.asList( btnSave, btnCancel,
-                    btnClose,btnBrowse,btnUpdate,btnRetrieve,btnNew);
+                    btnClose,btnBrowse,btnUpdate,btnRetrieve,btnNew, btnVoid);
 
             buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
         }    
@@ -1037,6 +1047,7 @@ case "btnVoid":
                                         loadMaster();
                                         pnEditMode = invRequestController.StockRequest().getEditMode();
                                         loadDetail();
+                                        loadTableList();
                                         loadTableInvDetail();
                                         initButtons(pnEditMode);
                                     } else {
@@ -1055,6 +1066,7 @@ case "btnVoid":
                                 loadMaster();
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
                                 loadDetail();
+                                loadTableList();
                                 loadTableInvDetail();
                                 initButtons(pnEditMode);
                             } else {
@@ -1375,21 +1387,24 @@ case "btnVoid":
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
-        CustomCommonUtil.setVisible(false, btnUpdate);
-        CustomCommonUtil.setManaged(false, btnUpdate);
+        CustomCommonUtil.setVisible(false, btnUpdate, btnVoid);
+        CustomCommonUtil.setManaged(false, btnUpdate, btnVoid);
 
         
         if (fnEditMode == EditMode.READY) {
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
-                    CustomCommonUtil.setVisible(true,  btnUpdate);
-                    CustomCommonUtil.setManaged(true,  btnUpdate);
+                    CustomCommonUtil.setVisible(true,  btnUpdate, btnVoid);
+                    CustomCommonUtil.setManaged(true,  btnUpdate, btnVoid);
                     break;
                 case StockRequestStatus.CONFIRMED:
-                    CustomCommonUtil.setVisible(true,btnUpdate);
-                    CustomCommonUtil.setManaged(true, btnUpdate);
+                    CustomCommonUtil.setVisible(true,btnUpdate, btnVoid);
+                    CustomCommonUtil.setManaged(true, btnUpdate, btnVoid);
                     break;
-               
+                case StockRequestStatus.PROCESSED:
+                    CustomCommonUtil.setVisible(true, btnVoid );
+                    CustomCommonUtil.setManaged(true, btnVoid);
+                    break;
             }
         }
     }

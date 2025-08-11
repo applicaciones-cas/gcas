@@ -211,7 +211,9 @@ public class InvRequest_ConfirmationMcSpController implements Initializable, Scr
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    invRequestController.StockRequest().Master().setTransactionNo("");
+                    tfSearchTransNo.setText("");
+                    loadTableList();
                 }
 
             }
@@ -221,7 +223,7 @@ public class InvRequest_ConfirmationMcSpController implements Initializable, Scr
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    //loadTableList();
+                    loadTableList();
                 }
             }
         });
@@ -611,6 +613,7 @@ public class InvRequest_ConfirmationMcSpController implements Initializable, Scr
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
 
+
                     if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                 try {
@@ -626,12 +629,11 @@ public class InvRequest_ConfirmationMcSpController implements Initializable, Scr
                             return;
                         }
                     }
-
                     loadMaster();
                     loadDetail();
                     loadTableInvDetail();
                     pnEditMode = invRequestController.StockRequest().getEditMode();
-                    
+                            break;
                       case "btnConfirm":
                                 if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                                     try {
@@ -1014,6 +1016,7 @@ public class InvRequest_ConfirmationMcSpController implements Initializable, Scr
                                         loadMaster();
                                         pnEditMode = invRequestController.StockRequest().getEditMode();
                                         loadDetail();
+                                        loadTableList();
                                         loadTableInvDetail();
                                         initButtons(pnEditMode);
                                     } else {
@@ -1032,6 +1035,7 @@ public class InvRequest_ConfirmationMcSpController implements Initializable, Scr
                                 loadMaster();
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
                                 loadDetail();
+                                loadTableList();
                                 loadTableInvDetail();
                                 initButtons(pnEditMode);
                             } else {

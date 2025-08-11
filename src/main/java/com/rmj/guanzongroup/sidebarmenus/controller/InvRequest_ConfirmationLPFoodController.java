@@ -210,7 +210,9 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    invRequestController.StockRequest().Master().setTransactionNo("");
+                    tfSearchTransNo.setText("");
+                    loadTableList();
                 }
 
             }
@@ -220,7 +222,7 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    //loadTableList();
+                    loadTableList();
                 }
             }
         });
@@ -560,19 +562,16 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
                                 return;
                             }
 
-                            for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
-                            double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
-                            String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
+                            for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
+                                double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
+                                String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
-                            if (stockID == null || stockID.trim().isEmpty()) {
-                                continue; 
-                            }
-
-                            if (quantity > 0) {
+                                if (detailCount == 1 && (stockID == null || stockID.trim().isEmpty() || quantity == 0)) {
+                                    ShowMessageFX.Warning("Invalid item in order. Ensure all items have a valid Stock ID and quantity greater than 0.", psFormName, null);
+                                    return;
+                                }
                                 hasValidItem = true;
-                                break; 
                             }
-                        }
 
                             if (!hasValidItem) {
                                 ShowMessageFX.Warning("Your order must have at least one valid item with a Stock ID and quantity greater than 0.", psFormName, null);
@@ -617,6 +616,8 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
 
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction now?")) {
                                 try {
+                                    
+
                                     loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed");
                                     if (!"success".equals((String) loJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -633,6 +634,7 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
                                     pnTblInvDetailRow = -1;
                                     tblViewOrderDetails.getSelectionModel().clearSelection();
 
+//                                    Platform.runLater(() -> btnNew.fire());
                                 } catch (ParseException ex) {
                                     Logger.getLogger(InvRequest_EntryMcGeneralController.class.getName()).log(Level.SEVERE, null, ex);
                                     ShowMessageFX.Error("Error confirming transaction", psFormName, null);
@@ -660,6 +662,7 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
                                 tblViewOrderDetails.getSelectionModel().clearSelection();
                             }
                             break;
+
                       case "btnConfirm":
                                 if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                                     try {
@@ -1042,6 +1045,7 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
                                         loadMaster();
                                         pnEditMode = invRequestController.StockRequest().getEditMode();
                                         loadDetail();
+                                        loadTableList();
                                         loadTableInvDetail();
                                         initButtons(pnEditMode);
                                     } else {
@@ -1060,6 +1064,7 @@ public class InvRequest_ConfirmationLPFoodController implements Initializable, S
                                             loadMaster();
                                             pnEditMode = invRequestController.StockRequest().getEditMode();
                                             loadDetail();
+                                            loadTableList();
                                             loadTableInvDetail();
                                             initButtons(pnEditMode);
                                         } else {

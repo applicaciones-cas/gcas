@@ -211,7 +211,9 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    invRequestController.StockRequest().Master().setTransactionNo("");
+                    tfSearchTransNo.setText("");
+                    loadTableList();
                 }
 
             }
@@ -221,7 +223,7 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    //loadTableList();
+                    loadTableList();
                 }
             }
         });
@@ -596,6 +598,7 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
                     }
                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
 
+
                     if (invRequestController.StockRequest().Master().getTransactionStatus().equals(StockRequestStatus.OPEN)
                             && ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                 try {
@@ -611,12 +614,12 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
                             return;
                         }
                     }
-
                     loadMaster();
                     loadDetail();
                     loadTableInvDetail();
                     pnEditMode = invRequestController.StockRequest().getEditMode();
-                    
+                            break;
+
                       case "btnConfirm":
                                 if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                                     try {
@@ -999,6 +1002,7 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
                                         loadMaster();
                                         pnEditMode = invRequestController.StockRequest().getEditMode();
                                         loadDetail();
+                                        loadTableList();
                                         loadTableInvDetail();
                                         initButtons(pnEditMode);
                                     } else {
@@ -1017,6 +1021,7 @@ public class InvRequest_ConfirmationMonarchFoodController implements Initializab
                                 loadMaster();
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
                                 loadDetail();
+                                loadTableList();
                                 loadTableInvDetail();
                                 initButtons(pnEditMode);
                             } else {

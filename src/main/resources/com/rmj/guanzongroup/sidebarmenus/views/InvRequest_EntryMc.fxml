@@ -137,7 +137,7 @@
                                     <Blend />
                                  </effect>
                               </Button>
-                              <Button fx:id="btnVoid" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
+                               <Button fx:id="btnVoid" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="70.0" prefWidth="70.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" text="Void">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="TIMES" size="20" />
                                  </graphic>

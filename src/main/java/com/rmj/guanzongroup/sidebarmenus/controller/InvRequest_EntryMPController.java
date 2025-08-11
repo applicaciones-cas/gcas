@@ -8,7 +8,7 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvOrderDetail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvTableListInformation;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import javafx.fxml.FXML;import java.net.URL;
+import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,21 +47,21 @@ import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-import org.guanzon.appdriver.base.GRiderCAS;
-import org.guanzon.appdriver.base.LogWrapper;
-import org.guanzon.cas.inv.warehouse.services.InvWarehouseControllers;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
+import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
+import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Detail;
+import org.guanzon.cas.inv.warehouse.services.InvWarehouseControllers;
 import org.guanzon.cas.inv.warehouse.status.StockRequestStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -71,7 +71,6 @@ import org.json.simple.parser.ParseException;
  * @author User
  */
 public class InvRequest_EntryMPController implements Initializable, ScreenInterface{
-    
     @FXML
     private String psFormName = "Inv Stock Request Entry MP";
     @FXML
@@ -211,7 +210,9 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableList();
+                    invRequestController.StockRequest().Master().setTransactionNo("");
+                    tfSearchTransNo.setText("");
+                    loadTableList();
                 }
 
             }
@@ -221,7 +222,7 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    //loadTableList();
+                    loadTableList();
                 }
             }
         });
@@ -509,7 +510,37 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
             JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId(); 
             switch (lsButton) {
+                        case "btnVoid":
+                            String status = invRequestController.StockRequest().Master().getTransactionStatus();
 
+                            if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return this transaction?")) {
+                                return;
+                            }
+
+                            if (StockRequestStatus.CONFIRMED.equals(status) || StockRequestStatus.PROCESSED.equals(status)) {
+                                // Require user approval
+                                JSONObject approvalResult = ShowDialogFX.getUserApproval(poApp);
+                                if (!"success".equals(approvalResult.get("result"))) {
+                                    ShowMessageFX.Warning((String) approvalResult.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
+
+                            // Proceed to void the transaction
+                            poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
+
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                break;
+                            }
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                            clearMasterFields();
+                            clearDetailFields();
+                            invOrderDetail_data.clear();
+                            pnEditMode = EditMode.UNKNOWN;
+
+                            break;
                         case "btnBrowse":
                             invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
@@ -567,29 +598,7 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
                         tableListInformation.toFront();
                         break;
 
-                       case "btnVoid":
-                        if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
-                            try {
-                                poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
-                            } catch (ParseException ex) {
-                                Logger.getLogger(InvRequest_EntryMPGeneralController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                                    if (!"success".equals((String) poJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                        break;
-                                    }
-                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                                    clearMasterFields();
-                                    clearDetailFields();
-                                    invOrderDetail_data.clear();
-                                    pnEditMode = EditMode.UNKNOWN;
-
-                                    tblViewOrderDetails.refresh();
-
-                                } else {
-                                    return;
-                                }
-                                break;
+                       
                       case "btnSave":
                             if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                                 return;
@@ -759,7 +768,7 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
             }
             initButtons(pnEditMode);
             initFields(pnEditMode);
-            }catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | NullPointerException e) {
+            }catch (CloneNotSupportedException | ExceptionInInitializerError | ParseException | SQLException | GuanzonException | NullPointerException e) {
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
                 System.exit(1);
             }
@@ -1048,6 +1057,7 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
                                         loadMaster();
                                         pnEditMode = invRequestController.StockRequest().getEditMode();
                                         loadDetail();
+                                        loadTableList();
                                         loadTableInvDetail();
                                         initButtons(pnEditMode);
                                     } else {
@@ -1066,6 +1076,7 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
                                 loadMaster();
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
                                 loadDetail();
+                                loadTableList();
                                 loadTableInvDetail();
                                 initButtons(pnEditMode);
                             } else {
@@ -1459,14 +1470,17 @@ public class InvRequest_EntryMPController implements Initializable, ScreenInterf
         if (fnEditMode == EditMode.READY) {
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
-                    CustomCommonUtil.setVisible(true,  btnUpdate,btnVoid);
-                    CustomCommonUtil.setManaged(true,  btnUpdate,btnVoid);
+                    CustomCommonUtil.setVisible(true,  btnUpdate, btnVoid);
+                    CustomCommonUtil.setManaged(true,  btnUpdate, btnVoid);
                     break;
                 case StockRequestStatus.CONFIRMED:
-                    CustomCommonUtil.setVisible(true,btnUpdate,btnVoid);
-                    CustomCommonUtil.setManaged(true, btnUpdate,btnVoid);
+                    CustomCommonUtil.setVisible(true,btnUpdate, btnVoid);
+                    CustomCommonUtil.setManaged(true, btnUpdate, btnVoid);
                     break;
-               
+                case StockRequestStatus.PROCESSED:
+                    CustomCommonUtil.setVisible(true, btnVoid );
+                    CustomCommonUtil.setManaged(true, btnVoid);
+                    break;
             }
         }
     }

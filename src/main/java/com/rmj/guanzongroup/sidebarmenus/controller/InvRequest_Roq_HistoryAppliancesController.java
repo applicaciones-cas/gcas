@@ -301,6 +301,7 @@ public class InvRequest_Roq_HistoryAppliancesController implements Initializable
                                 loadMaster();
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
                                 loadDetail();
+                                loadTableList();
                                 loadTableInvDetail();
                                 initButtons(pnEditMode);
                             } else {
@@ -319,6 +320,7 @@ public class InvRequest_Roq_HistoryAppliancesController implements Initializable
                                 loadMaster();
                                 pnEditMode = invRequestController.StockRequest().getEditMode();
                                 loadDetail();
+                                loadTableList();
                                 loadTableInvDetail();
                                 initButtons(pnEditMode);
                             } else {
@@ -470,7 +472,9 @@ public class InvRequest_Roq_HistoryAppliancesController implements Initializable
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    //loadTableMain();
+                    invRequestController.StockRequest().Master().setTransactionNo("");
+                    tfSearchTransNo.setText("");
+                    loadTableList();
                 }
 
             }
@@ -480,12 +484,11 @@ public class InvRequest_Roq_HistoryAppliancesController implements Initializable
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    //loadTableMain();
+                    loadTableList();
                 }
             }
         });
     }
-
     
 
     private void initButtons(int fnEditMode) {
