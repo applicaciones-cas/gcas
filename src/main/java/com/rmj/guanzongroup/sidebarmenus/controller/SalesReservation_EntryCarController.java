@@ -72,11 +72,11 @@ import ph.com.guanzongroup.cas.sales.status.Sales_Reservation_Static;
  *
  * @author user
  */
-public class SalesReservation_EntryMCController implements Initializable, ScreenInterface {
+public class SalesReservation_EntryCarController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private SalesReservationControllers poSalesReservationControllers;
-    private String psFormName = "Sales Reservation Entry MC";
+    private String psFormName = "Sales Reservation Entry Car";
     private LogWrapper logWrapper;
     private JSONObject poJSON;
     
@@ -236,12 +236,12 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     System.out.println("inits : " + psIndustryID + " " +  poSalesReservationControllers.SalesReservation().Master().getIndustryID());
                     //                loadRecordSearch();
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }));
             Platform.runLater(() -> btnNew.fire());
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
     }
     
@@ -481,10 +481,10 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_EntryMCController.class
+            Logger.getLogger(SalesReservation_EntryCarController.class
                     .getName()).log(Level.SEVERE, null, ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -523,7 +523,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException   ex) {
-            Logger.getLogger(SalesReservation_EntryMCController.class
+            Logger.getLogger(SalesReservation_EntryCarController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -648,6 +648,13 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                 return;
+//                                if("noitem".equals((String) poJSON.get("noitem"))){
+//                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+////                                    tblDetailList.refresh ();
+//                                    return;
+//                                }
+//                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+//                                return;
                             }
                             
                             if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
@@ -695,7 +702,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         break;   
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-                Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -816,7 +823,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
                     poSalesReservationControllers.SalesReservation().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -841,7 +848,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getQuantity(), false));
            
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -977,7 +984,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                                     .getName()).log(Level.SEVERE, null, ex);
                             ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
                         } catch (CloneNotSupportedException ex) {
-                            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
             }
@@ -1078,11 +1085,11 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
 //                        }
                         loadRecordDetail();
                     } catch (SQLException ex) {
-                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
                 return null;
@@ -1131,8 +1138,8 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
     
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        btnRetrieve.setVisible(true);
-        btnRetrieve.setManaged(true);
+        btnRetrieve.setVisible(lbShow);
+        btnRetrieve.setManaged(lbShow);
         btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
         btnSave.setVisible(lbShow);
@@ -1304,9 +1311,9 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                             SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
                 } catch (SQLException ex) {
-                    Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1331,7 +1338,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         
                         poSalesReservationControllers.SalesReservation().Master().setExpectedDate(selectedDate);
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryCarController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }

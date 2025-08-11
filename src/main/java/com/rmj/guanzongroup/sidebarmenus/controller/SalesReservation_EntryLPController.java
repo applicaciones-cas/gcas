@@ -72,11 +72,11 @@ import ph.com.guanzongroup.cas.sales.status.Sales_Reservation_Static;
  *
  * @author user
  */
-public class SalesReservation_EntryMCController implements Initializable, ScreenInterface {
+public class SalesReservation_EntryLPController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private SalesReservationControllers poSalesReservationControllers;
-    private String psFormName = "Sales Reservation Entry MC";
+    private String psFormName = "Sales Reservation Entry LP";
     private LogWrapper logWrapper;
     private JSONObject poJSON;
     
@@ -161,17 +161,20 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
     @FXML private TextField tfAmountPaid;
     @FXML private TextField tfDownPayment;
 
-    // ──────────────────────────────
+   // ──────────────────────────────
     // Item / Product Fields
     // ──────────────────────────────
+    @FXML private TextField tfBarcode;
+    @FXML private TextField tfDescription;
     @FXML private TextField tfBrand;
     @FXML private TextField tfModel;
-    @FXML private TextField tfVariant;
-    @FXML private TextField tfInvType;
-    @FXML private TextField tfCategory;
     @FXML private TextField tfColor;
+    @FXML private TextField tfCategory;
+    @FXML private TextField tfInvType;
+    @FXML private TextField tfMeasure;
     @FXML private TextField tfUnitPrice;
     @FXML private TextField tfQuantity;
+    @FXML private TextField tfDownpayment;
     @FXML private TextArea  taNotes;
 
     // ──────────────────────────────
@@ -236,12 +239,12 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     System.out.println("inits : " + psIndustryID + " " +  poSalesReservationControllers.SalesReservation().Master().getIndustryID());
                     //                loadRecordSearch();
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }));
             Platform.runLater(() -> btnNew.fire());
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
     }
     
@@ -258,11 +261,13 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             tfModel,
             tfUnitPrice,
             tfQuantity,
-            tfDownPayment,
-            tfVariant,
+            tfDownpayment,
             tfInvType,
             tfCategory,
-            tfColor
+            tfColor,
+            tfMeasure,
+            tfBarcode,
+            tfDescription
         };
 
         Node[] txtAreaInputs = {
@@ -276,7 +281,9 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             tfAmountPaid,
             tfQuantity,
             tfModel,
-            tfBrand
+            tfBrand,
+            tfBarcode,
+            tfDescription
         };
         /*this is to initialize all text field*/
         for (Node txtInput : txtFieldInputs) {
@@ -350,7 +357,10 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
 //                            loadTableSourceList();
                         }
                         break;
-                    case "tfModel":
+                    case "tfBarcode":
+                        loadTableDetailList();
+                        break;
+                    case "tfDescription":
                         loadTableDetailList();
                         break;
                     case "tfQuantity":
@@ -435,19 +445,35 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                             case "tfDestination":
                             case "tfTerm":
                             case "tfBrand":
-                                poJSON = poSalesReservationControllers.SalesReservation().SearchBrand(lsValue, false, pnDetailRow
-                                );
-                                if ("error".equals(poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                    tfBrand.setText("");
-                                    break;
-                                }
-                                tfBrand.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Brand().getDescription());
-                                tfModel.requestFocus();
+//                                poJSON = poSalesReservationControllers.SalesReservation().SearchBrand(lsValue, false, pnDetailRow
+//                                );
+//                                if ("error".equals(poJSON.get("result"))) {
+//                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+//                                    tfBrand.setText("");
+//                                    break;
+//                                }
+//                                tfBrand.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Brand().getDescription());
+//                                tfModel.requestFocus();
                                 
                                 break;
                             case "tfModel":
-                                poJSON = poSalesReservationControllers.SalesReservation().SearchModel(lsValue, false, pnDetailRow);
+//                                poJSON = poSalesReservationControllers.SalesReservation().SearchModel(lsValue, false, pnDetailRow);
+//                                if ("error".equals(poJSON.get("result"))) {
+//                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+////                                    
+//                                    if (poJSON.get("tableRow") != null) {
+//                                            pnDetailRow = (int) poJSON.get("tableRow");
+//                                            fakeClickOnTable(tblDetailList, pnDetailRow);
+//                                            loadRecordDetail();
+//                                    }
+//                                    tfModel.setText("");
+//                                }
+//                                tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
+//                                tfQuantity.requestFocus();
+                                
+                                break;
+                            case "tfBarcode":
+                                poJSON = poSalesReservationControllers.SalesReservation().SearchBarcode(lsValue, false, pnDetailRow);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
 //                                    
@@ -456,12 +482,27 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                                             fakeClickOnTable(tblDetailList, pnDetailRow);
                                             loadRecordDetail();
                                     }
-                                    tfModel.setText("");
+                                    tfBarcode.setText("");
                                 }
-                                tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
+                                tfBarcode.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
                                 tfQuantity.requestFocus();
-                                
-                                break;
+                                 break;
+                                 
+                            case "tfDescription":
+                                poJSON = poSalesReservationControllers.SalesReservation().SearchDescription(lsValue, false, pnDetailRow);
+                                if ("error".equals(poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+//                                    
+                                    if (poJSON.get("tableRow") != null) {
+                                            pnDetailRow = (int) poJSON.get("tableRow");
+                                            fakeClickOnTable(tblDetailList, pnDetailRow);
+                                            loadRecordDetail();
+                                    }
+                                    tfDescription.setText("");
+                                }
+                                tfDescription.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
+                                tfQuantity.requestFocus();
+                                 break;
                             case "tfQuantity":
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
 //                                fakeClickOnTable(tblDetailList, pnDetailRow + 1);
@@ -481,10 +522,10 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_EntryMCController.class
+            Logger.getLogger(SalesReservation_EntryLPController.class
                     .getName()).log(Level.SEVERE, null, ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -523,7 +564,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException   ex) {
-            Logger.getLogger(SalesReservation_EntryMCController.class
+            Logger.getLogger(SalesReservation_EntryLPController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -695,7 +736,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         break;   
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-                Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -816,18 +857,22 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
                     poSalesReservationControllers.SalesReservation().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
     private void loadRecordDetail(){
         try {
+            tfBarcode.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getBarCode() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getBarCode() : "");
+            tfDescription.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getDescription() : "");
+//            
             tfBrand.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() : "");
             tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() : "");
-            tfVariant.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Variant().getDescription() != null
-                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Variant().getDescription() : "");
+            
             tfCategory.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() : "");
             tfColor.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Color().getDescription() != null
@@ -835,13 +880,18 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             
             tfUnitPrice.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getCost(), true));
-            tfDownPayment.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
+            tfDownpayment.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getMinimumDown(), true));
             tfQuantity.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getQuantity(), false));
+            
+            tfInvType.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().InventoryType().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().InventoryType().getDescription() : "");
+            tfMeasure.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Measure().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Measure().getDescription() : "");
            
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -977,7 +1027,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                                     .getName()).log(Level.SEVERE, null, ex);
                             ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
                         } catch (CloneNotSupportedException ex) {
-                            Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
             }
@@ -1078,11 +1128,11 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
 //                        }
                         loadRecordDetail();
                     } catch (SQLException ex) {
-                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
                 return null;
@@ -1131,8 +1181,8 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
     
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        btnRetrieve.setVisible(true);
-        btnRetrieve.setManaged(true);
+        btnRetrieve.setVisible(lbShow);
+        btnRetrieve.setManaged(lbShow);
         btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
         btnSave.setVisible(lbShow);
@@ -1149,7 +1199,8 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
         btnClose.setManaged(true);
         
         tfQuantity.setEditable(lbShow);
-        tfBrand.setEditable(lbShow);
+        tfBarcode.setEditable(lbShow);
+        tfDescription.setEditable(lbShow);
         taNotes.setEditable(lbShow);
         taRemarks.setEditable(lbShow);
         dpTransaction.setDisable(!lbShow);
@@ -1184,12 +1235,13 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
             TextInputControl[] txtFieldInputs = {
             tfBrand,
             tfModel,
-            tfVariant,
+            tfBarcode,
+            tfDescription,
             tfInvType,
             tfCategory,
             tfColor,
             tfUnitPrice,
-            tfDownPayment,
+            tfDownpayment,
             tfQuantity
         };
 
@@ -1304,9 +1356,9 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                     dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                             SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
                 } catch (SQLException ex) {
-                    Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1331,7 +1383,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         
                         poSalesReservationControllers.SalesReservation().Master().setExpectedDate(selectedDate);
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
