@@ -115,7 +115,6 @@ public class SalesagentController implements Initializable, ScreenInterface {
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                        pnEditMode = EditMode.UNKNOWN;
                         return;
                     }
                     
@@ -170,6 +169,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
                     }
                     
                     ShowMessageFX.Information("Record updated successfully", pxeModuleName, null);
+                    pnEditMode = EditMode.UNKNOWN;
                     break;
                 case "btnClose":
                     unloadForm appUnload = new unloadForm();
