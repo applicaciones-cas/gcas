@@ -72,7 +72,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_Roq_EntryCarGeneralController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request ROQ Entry Car General";
-     @FXML
+    @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();
         private InvWarehouseControllers invRequestController;
@@ -171,7 +171,6 @@ public class InvRequest_Roq_EntryCarGeneralController implements Initializable, 
                     try {
                         //set edit mode to new transaction temporily to assign industry and company
                         invRequestController.StockRequest().NewTransaction();
-                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                         loadRecordSearch();
@@ -499,7 +498,6 @@ public class InvRequest_Roq_EntryCarGeneralController implements Initializable, 
             switch (lsButton) {
 
                         case "btnBrowse":
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             
@@ -521,7 +519,6 @@ public class InvRequest_Roq_EntryCarGeneralController implements Initializable, 
                             }
                             break;
                         case "btnRetrieve":
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
@@ -675,7 +672,6 @@ public class InvRequest_Roq_EntryCarGeneralController implements Initializable, 
                             tableListInformation.refresh();
                                     
                             invRequestController.StockRequest().setTransactionStatus(StockRequestStatus.OPEN);
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         }
                         break;
@@ -686,7 +682,6 @@ public class InvRequest_Roq_EntryCarGeneralController implements Initializable, 
                     invOrderDetail_data.clear();
                     loJSON = invRequestController.StockRequest().NewTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
-                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode());
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
@@ -995,7 +990,6 @@ public class InvRequest_Roq_EntryCarGeneralController implements Initializable, 
                         switch (fieldId) {
                             case "tfSearchTransNo":
                                     System.out.print("Company ID" + psCompanyID);
-                                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                     invRequestController.StockRequest().setTransactionStatus("102");
@@ -1021,8 +1015,6 @@ public class InvRequest_Roq_EntryCarGeneralController implements Initializable, 
                                           loadTableInvDetailAndSelectedRow();
                                           break;
                             case "tfSearchReferenceNo":
-                                System.out.print("Enter pressed");
-                                invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                 invRequestController.StockRequest().setTransactionStatus("102");

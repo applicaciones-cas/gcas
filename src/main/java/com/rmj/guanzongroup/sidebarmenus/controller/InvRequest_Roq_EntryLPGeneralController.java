@@ -171,7 +171,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                     try {
                         //set edit mode to new transaction temporily to assign industry and company
                         invRequestController.StockRequest().NewTransaction();
-                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                         loadRecordSearch();
@@ -499,7 +498,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
             switch (lsButton) {
 
                         case "btnBrowse":
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             
@@ -521,7 +519,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                             }
                             break;
                         case "btnRetrieve":
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
@@ -651,8 +648,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                             }
                             Platform.runLater(() -> btnNew.fire());
                             break;
-
-                
                case "btnCancel":
                         if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
                            
@@ -677,7 +672,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                             tableListInformation.refresh();
                                     
                             invRequestController.StockRequest().setTransactionStatus(StockRequestStatus.OPEN);
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         }
                         break;
@@ -688,7 +682,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                     invOrderDetail_data.clear();
                     loJSON = invRequestController.StockRequest().NewTransaction();
                     if ("success".equals((String) loJSON.get("result"))) {
-                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setBranchCode(poApp.getBranchCode());
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
@@ -910,7 +903,7 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                     break;
                 case "tfSearchReferenceNo":
                      psReferID = tfSearchReferenceNo.getText();
-                    
+                    //loadTableList();
                     break;
             }
         } else {
@@ -997,7 +990,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                         switch (fieldId) {
                             case "tfSearchTransNo":
                                     System.out.print("Company ID" + psCompanyID);
-                                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                     invRequestController.StockRequest().setTransactionStatus("102");
@@ -1023,8 +1015,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                                           loadTableInvDetailAndSelectedRow();
                                           break;
                             case "tfSearchReferenceNo":
-                                System.out.print("Enter pressed");
-                                invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                 invRequestController.StockRequest().setTransactionStatus("102");
@@ -1091,7 +1081,6 @@ public class InvRequest_Roq_EntryLPGeneralController implements Initializable, S
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error", psFormName);
             }
         }
-
        
 
 

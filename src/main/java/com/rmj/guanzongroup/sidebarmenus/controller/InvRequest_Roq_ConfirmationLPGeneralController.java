@@ -172,7 +172,6 @@ public class InvRequest_Roq_ConfirmationLPGeneralController implements Initializ
                     try {
                         //set edit mode to new transaction temporily to assign industry and company
                         invRequestController.StockRequest().NewTransaction();
-                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                         loadRecordSearch();
@@ -509,7 +508,6 @@ public class InvRequest_Roq_ConfirmationLPGeneralController implements Initializ
             switch (lsButton) {
 
                         case "btnBrowse":
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             
@@ -531,7 +529,6 @@ public class InvRequest_Roq_ConfirmationLPGeneralController implements Initializ
                             }
                             break;
                         case "btnRetrieve":
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
@@ -752,7 +749,6 @@ public class InvRequest_Roq_ConfirmationLPGeneralController implements Initializ
                             tableListInformation.refresh();
                                     
                             invRequestController.StockRequest().setTransactionStatus(StockRequestStatus.OPEN);
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         }
                         break;
@@ -1045,8 +1041,6 @@ public class InvRequest_Roq_ConfirmationLPGeneralController implements Initializ
                   case F3:
                       switch (fieldId) {
                                 case "tfSearchTransNo":
-                                    System.out.print("Company ID" + psCompanyID);
-                                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                     invRequestController.StockRequest().setTransactionStatus("102");
@@ -1063,8 +1057,6 @@ public class InvRequest_Roq_ConfirmationLPGeneralController implements Initializ
                                     }
                                     break;
                                 case "tfSearchReferenceNo":
-                                System.out.print("Enter pressed");
-                                invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                 invRequestController.StockRequest().setTransactionStatus("102");
@@ -1136,7 +1128,6 @@ public class InvRequest_Roq_ConfirmationLPGeneralController implements Initializ
                   System.exit(1);
               }
       }
-       
 
 
    private void loadTableInvDetailAndSelectedRow() {
@@ -1186,6 +1177,7 @@ public class InvRequest_Roq_ConfirmationLPGeneralController implements Initializ
             invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Double.valueOf(fsValue));
            
       }
+
         private void initTableList() {
         
         tblTransactionNo.setCellValueFactory(new PropertyValueFactory<>("index01"));

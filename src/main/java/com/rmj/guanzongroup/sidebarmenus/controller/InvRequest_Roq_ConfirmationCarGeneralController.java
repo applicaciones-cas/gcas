@@ -73,7 +73,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_Roq_ConfirmationCarGeneralController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request ROQ Confirmation Car General";
-   @FXML
+  @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();
         private InvWarehouseControllers invRequestController;
@@ -172,7 +172,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                     try {
                         //set edit mode to new transaction temporily to assign industry and company
                         invRequestController.StockRequest().NewTransaction();
-                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                         loadRecordSearch();
@@ -509,7 +508,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
             switch (lsButton) {
 
                         case "btnBrowse":
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             
@@ -531,7 +529,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                             }
                             break;
                         case "btnRetrieve":
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
@@ -574,7 +571,7 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                                 return;
                             }
 
-                           for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
+                            for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
                             double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
                             String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
@@ -752,7 +749,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                             tableListInformation.refresh();
                                     
                             invRequestController.StockRequest().setTransactionStatus(StockRequestStatus.OPEN);
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         }
                         break;
@@ -1023,7 +1019,7 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                     );
 
             loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-        }  
+        } 
         private void initButtonsClickActions() {
             List<Button> buttons = Arrays.asList( btnSave, btnCancel,
                     btnClose,btnBrowse,btnUpdate,btnRetrieve,btnConfirm,btnVoid);
@@ -1045,8 +1041,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                   case F3:
                       switch (fieldId) {
                                 case "tfSearchTransNo":
-                                    System.out.print("Company ID" + psCompanyID);
-                                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                     invRequestController.StockRequest().setTransactionStatus("102");
@@ -1063,8 +1057,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                                     }
                                     break;
                                 case "tfSearchReferenceNo":
-                                System.out.print("Enter pressed");
-                                invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                 invRequestController.StockRequest().setTransactionStatus("102");
@@ -1136,7 +1128,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                   System.exit(1);
               }
       }
-       
 
 
    private void loadTableInvDetailAndSelectedRow() {
@@ -1155,7 +1146,7 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
             }
         }
     
-     private void setOrderQuantityToDetail(String fsValue) {
+    private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
