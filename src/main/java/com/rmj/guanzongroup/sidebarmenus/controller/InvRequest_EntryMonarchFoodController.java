@@ -74,7 +74,7 @@ import org.json.simple.parser.ParseException;
  */
 public class InvRequest_EntryMonarchFoodController implements Initializable, ScreenInterface{
     @FXML
-    private String psFormName = "Inv Stock Request Entry LP Food";
+    private String psFormName = "Inv Stock Request Entry Monarch Food";
         @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();
@@ -586,29 +586,7 @@ public class InvRequest_EntryMonarchFoodController implements Initializable, Scr
                         initFields(pnEditMode);
                         tableListInformation.toFront();
                         break;
-case "btnVoid":
-                        if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
-                            try {
-                                poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
-                            } catch (ParseException ex) {
-                                Logger.getLogger(InvRequest_EntryMPGeneralController.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                                    if (!"success".equals((String) poJSON.get("result"))) {
-                                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                        break;
-                                    }
-                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                                    clearMasterFields();
-                                    clearDetailFields();
-                                    invOrderDetail_data.clear();
-                                    pnEditMode = EditMode.UNKNOWN;
 
-                                    tblViewOrderDetails.refresh();
-
-                                } else {
-                                    return;
-                                }
-                                break;
                       case "btnSave":
                             if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to save?")) {
                                 return;

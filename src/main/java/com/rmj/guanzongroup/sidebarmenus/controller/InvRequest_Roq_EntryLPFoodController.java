@@ -73,7 +73,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_Roq_EntryLPFoodController implements Initializable, ScreenInterface {
 
     @FXML
-    private String psFormName = "Inv Stock Request ROQ Entry Monarch Food";
+    private String psFormName = "Inv Stock Request ROQ Entry LP Food";
 
      @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
