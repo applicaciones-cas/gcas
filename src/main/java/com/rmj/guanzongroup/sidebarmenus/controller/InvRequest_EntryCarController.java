@@ -72,9 +72,9 @@ import org.json.simple.parser.ParseException;
  */
 public class InvRequest_EntryCarController implements Initializable, ScreenInterface{
     
-    @FXML
-    private String psFormName = "Inv Stock Request Entry Car";
-     
+        @FXML
+        private String psFormName = "Inv Stock Request Entry Mc";
+        
         @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();
@@ -103,8 +103,7 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
         @FXML
         private TextField tfTransactionNo,tfBrand,tfModel,tfInvType,
                 tfVariant,tfColor,tfROQ,tfClassification,tfQOH,tfReferenceNo,tfReservationQTY,tfOrderQuantity,tfSearchTransNo,tfSearchReferenceNo;
-       
-
+        
         @FXML
         private Label lblTransactionStatus,lblSource;
 
@@ -118,7 +117,7 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
         private TableView<ModelInvTableListInformation> tableListInformation;
 
         @FXML
-        private Button btnClose,btnSave,btnCancel,btnBrowse,btnUpdate,btnRetrieve,btnNew;
+        private Button btnClose,btnSave,btnCancel,btnBrowse,btnUpdate,btnRetrieve,btnNew, btnVoid;
 
         @FXML
         private TableColumn<ModelInvOrderDetail, String> tblBrandDetail, tblModelDetail,tblVariantDetail,tblColorDetail,tblInvTypeDetail,tblROQDetail,tblClassificationDetail,tblQOHDetail,tblReservationQtyDetail,tblOrderQuantityDetail;
@@ -155,7 +154,7 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
         @Override
         public void initialize(URL url, ResourceBundle rb) {
             try{
-                
+                System.out.print("The company ID: " + psCompanyID);
             invRequestController = new InvWarehouseControllers(poApp,logWrapper);
             invRequestController.StockRequest().setTransactionStatus(StockRequestStatus.OPEN);
             
@@ -228,7 +227,7 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
     }
         private void loadRecordSearch() {
             try {
-              
+                System.out.print("LBL SOURCE: "+invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
                 lblSource.setText(invRequestController.StockRequest().Master().Company().getCompanyName() + " - " + invRequestController.StockRequest().Master().Industry().getDescription());
 
             } catch (GuanzonException | SQLException ex) {
@@ -495,7 +494,37 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
             JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId(); 
             switch (lsButton) {
+                        case "btnVoid":
+                            String status = invRequestController.StockRequest().Master().getTransactionStatus();
 
+                            if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return this transaction?")) {
+                                return;
+                            }
+
+                            if (StockRequestStatus.CONFIRMED.equals(status) || StockRequestStatus.PROCESSED.equals(status)) {
+                                // Require user approval
+                                JSONObject approvalResult = ShowDialogFX.getUserApproval(poApp);
+                                if (!"success".equals(approvalResult.get("result"))) {
+                                    ShowMessageFX.Warning((String) approvalResult.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
+
+                            // Proceed to void the transaction
+                            poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
+
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                break;
+                            }
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                            clearMasterFields();
+                            clearDetailFields();
+                            invOrderDetail_data.clear();
+                            pnEditMode = EditMode.UNKNOWN;
+
+                            break;
                         case "btnBrowse":
                             invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
@@ -566,19 +595,16 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
                                 return;
                             }
 
-                            for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
-                            double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
-                            String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
+                            for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
+                                double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
+                                String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
-                            if (stockID == null || stockID.trim().isEmpty()) {
-                                continue; 
-                            }
-
-                            if (quantity > 0) {
+                                if (detailCount == 1 && (stockID == null || stockID.trim().isEmpty() || quantity == 0)) {
+                                    ShowMessageFX.Warning("Invalid item in order. Ensure all items have a valid Stock ID and quantity greater than 0.", psFormName, null);
+                                    return;
+                                }
                                 hasValidItem = true;
-                                break; 
                             }
-                        }
 
                             if (!hasValidItem) {
                                 ShowMessageFX.Warning("Your order must have at least one valid item with a Stock ID and quantity greater than 0.", psFormName, null);
@@ -742,7 +768,7 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
             }
             initButtons(pnEditMode);
             initFields(pnEditMode);
-            }catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | NullPointerException e) {
+            }catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | ParseException | GuanzonException | NullPointerException e) {
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error",psFormName);
                 System.exit(1);
             }
@@ -1000,7 +1026,7 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
         }  
         private void initButtonsClickActions() {
             List<Button> buttons = Arrays.asList( btnSave, btnCancel,
-                    btnClose,btnBrowse,btnUpdate,btnRetrieve,btnNew);
+                    btnClose,btnBrowse,btnUpdate,btnRetrieve,btnNew, btnVoid);
 
             buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
         }    
@@ -1030,8 +1056,8 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
                                         loadMaster();
                                         pnEditMode = invRequestController.StockRequest().getEditMode();
                                         loadDetail();
-                                        loadTableList();
                                         loadTableInvDetail();
+                                        loadTableList();
                                         initButtons(pnEditMode);
                                     } else {
                                         ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
@@ -1049,8 +1075,8 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
                                             loadMaster();
                                             pnEditMode = invRequestController.StockRequest().getEditMode();
                                             loadDetail();
-                                            loadTableList();
                                             loadTableInvDetail();
+                                            loadTableList();
                                             initButtons(pnEditMode);
                                         } else {
                                             ShowMessageFX.Warning((String) poJSON.get("message"), "Search Information", null);
@@ -1132,7 +1158,7 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
                                         CommonUtils.SetNextFocus((TextField) event.getSource());
                                         break;
                                     case "tfOrderQuantity":
-                                        setOrderQuantityToDetail(tfOrderQuantity.getText(),tfROQ.getText());
+                                        setOrderQuantityToDetail(tfOrderQuantity.getText());
                                         if (!invOrderDetail_data.isEmpty() && pnTblInvDetailRow < invOrderDetail_data.size() - 1) {
                                             pnTblInvDetailRow++;
                                         }
@@ -1144,7 +1170,7 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
                                 break;
                                 
                  case UP:
-                        setOrderQuantityToDetail(tfOrderQuantity.getText(),tfROQ.getText());
+                        setOrderQuantityToDetail(tfOrderQuantity.getText());
 
                         if (!fieldId.equals("tfBrand") && !fieldId.equals("tfModel")) {
                             if (pnTblInvDetailRow > 0 && !invOrderDetail_data.isEmpty()) {
@@ -1168,7 +1194,7 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
 
 
                     case DOWN:
-                        setOrderQuantityToDetail(lsValue,tfROQ.getText());
+                        setOrderQuantityToDetail(lsValue);
                         if ("tfBrand".equals(fieldId)) {
                             tfModel.requestFocus();
                         } else if ("tfModel".equals(fieldId)) {
@@ -1214,8 +1240,9 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
             }
         }
     
-    private void setOrderQuantityToDetail(String fsValue,String fsROQ) {
-      
+     private void setOrderQuantityToDetail(String fsValue) {
+         double roq = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getRecommendedOrder();
+        double quantity = invRequestController.StockRequest().Detail(pnTblInvDetailRow).getQuantity();
        
             if (fsValue.isEmpty()) {
                 fsValue = "0";
@@ -1234,9 +1261,8 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
                     ShowMessageFX.Warning("Invalid action, Please enter brand first then model. ", psFormName, null);
                     fsValue = "0";
                 }
-            
-                 if( Double.parseDouble(fsROQ) != 0){
-                    if (Double.parseDouble(fsValue) > Double.parseDouble(fsROQ)) {
+                 if( roq != 0){
+                    if (quantity > roq) {
                         if (!"success".equals((poJSON = ShowDialogFX.getUserApproval(poApp)).get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             tfOrderQuantity.setText("0");
@@ -1256,6 +1282,7 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
             invRequestController.StockRequest().Detail(pnTblInvDetailRow).setQuantity(Double.valueOf(fsValue));
 
         }
+
         private void initTableList() {
         
         tblTransactionNo.setCellValueFactory(new PropertyValueFactory<>("index01"));
@@ -1360,21 +1387,24 @@ public class InvRequest_EntryCarController implements Initializable, ScreenInter
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
-        CustomCommonUtil.setVisible(false, btnUpdate);
-        CustomCommonUtil.setManaged(false, btnUpdate);
+        CustomCommonUtil.setVisible(false, btnUpdate, btnVoid);
+        CustomCommonUtil.setManaged(false, btnUpdate, btnVoid);
 
         
         if (fnEditMode == EditMode.READY) {
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
-                    CustomCommonUtil.setVisible(true,  btnUpdate);
-                    CustomCommonUtil.setManaged(true,  btnUpdate);
+                    CustomCommonUtil.setVisible(true,  btnUpdate, btnVoid);
+                    CustomCommonUtil.setManaged(true,  btnUpdate, btnVoid);
                     break;
                 case StockRequestStatus.CONFIRMED:
-                    CustomCommonUtil.setVisible(true,btnUpdate);
-                    CustomCommonUtil.setManaged(true, btnUpdate);
+                    CustomCommonUtil.setVisible(true,btnUpdate, btnVoid);
+                    CustomCommonUtil.setManaged(true, btnUpdate, btnVoid);
                     break;
-               
+                case StockRequestStatus.PROCESSED:
+                    CustomCommonUtil.setVisible(true, btnVoid );
+                    CustomCommonUtil.setManaged(true, btnVoid);
+                    break;
             }
         }
     }
