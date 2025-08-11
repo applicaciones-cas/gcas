@@ -8,6 +8,7 @@ import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvOrderDetail;
 import com.rmj.guanzongroup.sidebarmenus.table.model.ModelInvTableListInformation;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import javafx.fxml.FXML;
 import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -28,6 +29,13 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.stage.Stage;
+import org.guanzon.appdriver.base.GRiderCAS;
+import org.guanzon.appdriver.base.LogWrapper;
+import org.guanzon.cas.inv.warehouse.services.InvWarehouseControllers;
+import javafx.scene.layout.AnchorPane;
+import org.json.simple.JSONObject;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
@@ -46,34 +54,29 @@ import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.guanzon.appdriver.agent.ShowDialogFX;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 import org.guanzon.appdriver.base.CommonUtils;
-import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.GuanzonException;
-import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.UserRight;
 import org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Detail;
-import org.guanzon.cas.inv.warehouse.services.InvWarehouseControllers;
 import org.guanzon.cas.inv.warehouse.status.StockRequestStatus;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
 /**
  *
  * @author User
  */
-public class InvRequest_Roq_EntryCarController implements Initializable, ScreenInterface{
+public class InvRequest_Roq_EntryCarController implements Initializable, ScreenInterface {
+
     @FXML
-    private String psFormName = "Inv Stock Request ROQ Entry Car";
-    
-     @FXML
+    private String psFormName = "Inv Stock Request ROQ Entry Mc";
+
+    @FXML
     private AnchorPane AnchorMain, AnchorDetailMaster;
     unloadForm poUnload = new unloadForm();
     private InvWarehouseControllers invRequestController;
@@ -114,7 +117,7 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
     private TableView<ModelInvTableListInformation> tableListInformation;
 
     @FXML
-    private Button btnClose, btnSave, btnCancel, btnBrowse, btnUpdate, btnRetrieve, btnNew;
+    private Button btnClose, btnSave, btnCancel, btnBrowse, btnUpdate, btnRetrieve, btnNew, btnVoid;
 
     @FXML
     private TableColumn<ModelInvOrderDetail, String> tblBrandDetail, tblModelDetail, tblVariantDetail, tblColorDetail, tblInvTypeDetail, tblROQDetail, tblClassificationDetail, tblQOHDetail, tblReservationQtyDetail, tblOrderQuantityDetail;
@@ -491,7 +494,37 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
             JSONObject loJSON = new JSONObject();
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
+                case "btnVoid":
+                            String status = invRequestController.StockRequest().Master().getTransactionStatus();
 
+                            if (!ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to return this transaction?")) {
+                                return;
+                            }
+
+                            if (StockRequestStatus.CONFIRMED.equals(status) || StockRequestStatus.PROCESSED.equals(status)) {
+                                // Require user approval
+                                JSONObject approvalResult = ShowDialogFX.getUserApproval(poApp);
+                                if (!"success".equals(approvalResult.get("result"))) {
+                                    ShowMessageFX.Warning((String) approvalResult.get("message"), psFormName, null);
+                                    return;
+                                }
+                            }
+
+                            // Proceed to void the transaction
+                            poJSON = invRequestController.StockRequest().VoidTransaction("Voided");
+
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                break;
+                            }
+
+                            ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                            clearMasterFields();
+                            clearDetailFields();
+                            invOrderDetail_data.clear();
+                            pnEditMode = EditMode.UNKNOWN;
+
+                            break;
                 case "btnBrowse":
                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
@@ -518,7 +551,7 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                     invRequestController.StockRequest().setTransactionStatus("102");
-                    //loadTableList();
+                    loadTableList();
                     
                     pnEditMode = EditMode.UNKNOWN;
                     initFields(pnEditMode); // This will disable all detail fields
@@ -663,6 +696,7 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
                             }
                             break;
 
+
                 case "btnCancel":
                     if (ShowMessageFX.YesNo(null, "Cancel Confirmation", "Are you sure you want to cancel?")) {
 
@@ -727,7 +761,7 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
             }
             initButtons(pnEditMode);
             initFields(pnEditMode);
-        } catch (CloneNotSupportedException | ExceptionInInitializerError | SQLException | GuanzonException | NullPointerException e) {
+        } catch (CloneNotSupportedException |ParseException | ExceptionInInitializerError | SQLException | GuanzonException | NullPointerException e) {
             ShowMessageFX.Error(getStage(), e.getMessage(), "Error", psFormName);
             System.exit(1);
         }
@@ -912,7 +946,7 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
                     break;
                 case "tfSearchReferenceNo":
                     psReferID = tfSearchReferenceNo.getText();
-                    //loadTableList();
+                    //st();
                     break;
             }
         } else {
@@ -978,10 +1012,9 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
 
         loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
     }
-
     private void initButtonsClickActions() {
         List<Button> buttons = Arrays.asList(btnSave, btnCancel,
-                btnClose, btnBrowse, btnUpdate, btnRetrieve, btnNew);
+                btnClose, btnBrowse, btnUpdate, btnRetrieve, btnNew, btnVoid);
 
         buttons.forEach(button -> button.setOnAction(this::handleButtonAction));
     }
@@ -1096,6 +1129,8 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
                 ShowMessageFX.Error(getStage(), e.getMessage(), "Error", psFormName);
             }
         }
+
+
     private void loadTableInvDetailAndSelectedRow() {
         if (pnTblInvDetailRow >= 0) {
             Platform.runLater(() -> {
@@ -1243,33 +1278,36 @@ public class InvRequest_Roq_EntryCarController implements Initializable, ScreenI
     }
 
     private void initButtons(int fnEditMode) {
-        boolean lbShow = (fnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
-        CustomCommonUtil.setVisible(!lbShow, btnClose, btnNew);
-        CustomCommonUtil.setManaged(!lbShow, btnClose, btnNew);
+         boolean lbShow = (fnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE);
+         CustomCommonUtil.setVisible(!lbShow ,btnClose, btnNew);
+         CustomCommonUtil.setManaged(!lbShow ,btnClose, btnNew);
+
+    
 
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
-        CustomCommonUtil.setVisible(false, btnUpdate);
-        CustomCommonUtil.setManaged(false, btnUpdate);
+        CustomCommonUtil.setVisible(false, btnUpdate, btnVoid);
+        CustomCommonUtil.setManaged(false, btnUpdate, btnVoid);
 
+        
         if (fnEditMode == EditMode.READY) {
             switch (invRequestController.StockRequest().Master().getTransactionStatus()) {
                 case StockRequestStatus.OPEN:
-                    CustomCommonUtil.setVisible(true, btnUpdate);
-                    CustomCommonUtil.setManaged(true, btnUpdate);
+                    CustomCommonUtil.setVisible(true,  btnUpdate, btnVoid);
+                    CustomCommonUtil.setManaged(true,  btnUpdate, btnVoid);
                     break;
                 case StockRequestStatus.CONFIRMED:
-                    CustomCommonUtil.setVisible(true, btnUpdate);
-                    CustomCommonUtil.setManaged(true, btnUpdate);
+                    CustomCommonUtil.setVisible(true,btnUpdate, btnVoid);
+                    CustomCommonUtil.setManaged(true, btnUpdate, btnVoid);
                     break;
-
+                case StockRequestStatus.PROCESSED:
+                    CustomCommonUtil.setVisible(true, btnVoid );
+                    CustomCommonUtil.setManaged(true, btnVoid);
+                    break;
             }
         }
-        
-        
     }
-
     private void initDetailFocus() {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 
