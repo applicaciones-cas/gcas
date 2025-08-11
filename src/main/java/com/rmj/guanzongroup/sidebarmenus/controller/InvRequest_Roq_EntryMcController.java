@@ -996,6 +996,9 @@ public class InvRequest_Roq_EntryMcController implements Initializable, ScreenIn
         if (!nv) {
             /*Lost Focus*/
             switch (lsTextAreaID) {
+                case "tfReferenceNo":
+                    invRequestController.StockRequest().Master().setReferenceNo(lsValue);
+                    break;
                 case "taRemarks":
                     invRequestController.StockRequest().Master().setRemarks(lsValue);
                     break;
