@@ -258,7 +258,6 @@ public class Log_InController implements Initializable, ScreenInterface {
                         dashboardController.setUserCompany(psCompanyID);
                         dashboardController.changeUserInfo(psIndustryID);
                         LoginControllerHolder.setLogInStatus(true);
-                        dashboardController.loadUserInfo();
 
                     }
                     break;
