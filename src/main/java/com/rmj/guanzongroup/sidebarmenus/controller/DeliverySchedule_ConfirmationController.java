@@ -75,7 +75,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
     private LogWrapper poLogWrapper;
     private int pnEditMode;
     private DeliverySchedule poAppController;
-    private String psFormName = "Delivery Schedule Entry";
+    private String psFormName = "Delivery Schedule Confirmation";
 
     private String psClusterNameOld = "";
 

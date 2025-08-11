@@ -75,7 +75,7 @@ public class DeliverySchedule_HistoryController implements Initializable, Screen
     private LogWrapper poLogWrapper;
     private int pnEditMode;
     private DeliverySchedule poAppController;
-    private String psFormName = "Delivery Schedule Entry";
+    private String psFormName = "Delivery Schedule History";
 
     private String psClusterNameOld = "";
 

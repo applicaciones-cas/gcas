@@ -2882,3 +2882,821 @@ Aug 09, 2025 5:03:40 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Inventory Request Approval :null
 Aug 09, 2025 5:03:40 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 09, 2025 5:06:52 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:06:52 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 09, 2025 5:07:01 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 09, 2025 5:07:01 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 09, 2025 5:07:02 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:02 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 09, 2025 5:07:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:07 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 09, 2025 5:07:09 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:09 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 09, 2025 5:07:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:10 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 09, 2025 5:07:11 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:11 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 09, 2025 5:07:12 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:12 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 09, 2025 5:07:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 09, 2025 5:07:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 09, 2025 5:07:25 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:25 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 09, 2025 5:07:26 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:26 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 09, 2025 5:07:26 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:07:26 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 09, 2025 5:15:03 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:15:03 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 09, 2025 5:15:09 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 09, 2025 5:15:09 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 09, 2025 5:15:10 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:15:10 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 09, 2025 5:15:13 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 09, 2025 5:15:13 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:15:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:15:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:15:12 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:15:12 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Search Cluster
+Aug 11, 2025 9:15:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:15:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 9:15:21 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:15:21 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:15:36 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:15:36 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:15:46 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:15:46 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Search Cluster
+Aug 11, 2025 9:15:46 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:15:46 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 9:15:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:15:56 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:16:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:16:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 9:16:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:16:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 9:16:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:16:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:18:34 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:18:34 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:18:35 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:18:35 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:20:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:20:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:21:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:21:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Search Cluster
+Aug 11, 2025 9:21:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:21:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 9:31:21 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:31:21 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:31:28 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:31:28 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:31:34 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:31:34 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 9:31:34 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:31:34 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 9:31:37 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:31:37 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:31:41 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:31:41 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:31:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:31:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:31:44 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:31:44 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:35:33 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:35:33 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:35:40 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:35:40 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 9:35:40 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:35:40 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 9:35:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:35:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:36:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:36:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:36:07 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:36:07 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 9:36:07 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:36:07 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 9:36:11 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:36:11 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:49:23 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:49:23 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:49:35 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :No record loaded.
+Aug 11, 2025 9:49:42 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :No record loaded.
+Aug 11, 2025 9:49:57 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:49:57 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:50:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :No record loaded.
+Aug 11, 2025 9:50:52 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:50:52 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:50:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:50:56 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 9:50:57 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:50:57 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 9:50:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:50:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:51:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:51:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:51:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:51:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 9:51:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:51:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 9:51:22 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:51:22 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 9:55:09 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:55:09 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:55:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:55:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 9:55:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:55:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 9:55:26 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:55:26 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 9:55:33 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 9:55:33 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 9:55:33 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 9:55:33 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 10:08:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:08:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 10:08:22 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 10:08:22 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 10:08:22 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:08:22 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 10:50:07 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:07 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 10:50:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 10:50:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 10:50:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 10:50:25 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:25 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 10:50:29 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 10:50:29 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 10:50:29 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:29 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 10:50:33 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:33 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:50:36 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:36 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:50:38 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:38 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:50:39 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:39 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:50:42 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:42 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:50:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:50:44 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:44 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:50:45 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:50:45 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:51:22 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:51:22 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Update Transaction
+Aug 11, 2025 10:51:41 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:51:41 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Transaction
+Aug 11, 2025 10:53:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:53:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 10:53:48 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 10:53:48 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 10:53:48 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:53:48 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 10:53:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:53:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:54:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:54:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:54:02 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:54:02 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:54:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:54:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 10:54:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 10:54:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 11:03:29 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:03:29 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:03:47 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:03:47 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:03:47 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:03:47 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:07:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:07:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:07:29 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:07:29 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:07:30 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:07:30 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:13:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:13:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:13:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:13:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:13:09 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:13:09 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:13:12 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:13:12 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 11:13:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:13:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 11:13:16 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:13:16 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 11:13:17 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:13:17 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 11:17:56 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:17:56 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:18:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:18:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:18:01 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:18:01 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:20:15 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:20:15 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:20:21 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:20:21 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:20:26 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:20:26 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:20:27 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:20:27 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:21:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:21:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:21:12 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:21:12 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:21:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:21:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:25:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:25:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:25:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:25:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:25:08 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:25:08 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:30:59 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:30:59 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:31:03 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:31:03 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:31:04 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:31:04 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:37:06 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:37:06 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:37:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:37:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:37:13 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:37:13 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:37:38 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:37:38 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 11:39:38 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:39:38 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:39:43 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:39:43 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:39:44 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:39:44 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:42:14 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:42:14 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:42:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:42:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:42:20 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:42:20 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 11:59:32 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:59:32 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 11:59:38 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 11:59:38 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 11:59:38 AM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 11:59:38 AM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 1:09:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:09:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:09:49 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 1:09:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 1:09:49 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:09:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 1:09:52 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:09:52 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:11:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:11:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:11:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 1:11:41 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 1:11:42 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:11:42 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 1:11:44 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:11:44 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:16:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:16:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:16:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 1:16:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 1:16:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:16:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 1:16:34 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:16:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:16:52 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:16:52 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:16:53 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:16:53 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:17:03 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:17:03 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:18:17 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:18:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:18:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 1:18:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 1:18:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:18:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 1:18:24 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:18:24 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:20:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:20:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:20:25 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 1:20:25 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 1:20:25 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:20:25 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 1:22:12 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:22:12 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:22:16 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 1:22:16 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 1:22:16 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:22:16 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 1:22:18 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:22:18 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:24:01 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:24:01 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:24:05 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 1:24:05 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 1:24:05 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:24:05 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 1:24:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:24:07 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:24:34 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:24:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:24:39 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :No record loaded.
+Aug 11, 2025 1:24:43 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 1:24:43 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Search Cluster
+Aug 11, 2025 1:24:44 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:24:44 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 1:24:46 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:24:46 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:31:29 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:31:29 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:31:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 1:31:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 1:31:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :No record found.
+Aug 11, 2025 1:31:45 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 1:31:45 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Search Cluster
+Aug 11, 2025 1:31:45 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:31:45 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 1:31:47 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:31:47 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 1:32:08 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:32:08 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Update Transaction
+Aug 11, 2025 1:32:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:32:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:36:52 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:36:52 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 1:51:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 1:51:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 2:18:20 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:18:20 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 2:18:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 2:18:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 2:18:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:18:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 2:20:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:20:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 2:20:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 2:20:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 2:20:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:20:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 2:20:36 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:20:36 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 2:20:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:20:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 2:20:38 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:20:38 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 2:20:40 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:20:40 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 2:20:41 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:20:41 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 2:21:04 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:21:04 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 2:21:12 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 2:21:12 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 2:21:12 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 2:21:12 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 3:37:49 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 3:37:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 3:37:56 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 3:37:56 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Search Cluster
+Aug 11, 2025 3:37:57 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 3:37:57 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 3:37:59 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 3:37:59 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 3:38:08 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 3:38:08 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Update Transaction
+Aug 11, 2025 3:56:16 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 3:56:16 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 3:56:23 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :Record loaded successfully.
+Aug 11, 2025 3:56:23 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on  Search Cluster! 
+Aug 11, 2025 3:56:23 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 3:56:23 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize : Load of Transaction List
+Aug 11, 2025 3:56:25 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 3:56:25 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Initialize Open Transaction
+Aug 11, 2025 4:17:23 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 4:17:23 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval
+Aug 11, 2025 4:20:31 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Inventory Request Approval :null
+Aug 11, 2025 4:20:31 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Inventory Request Approval : Success on Inventory Request Approval

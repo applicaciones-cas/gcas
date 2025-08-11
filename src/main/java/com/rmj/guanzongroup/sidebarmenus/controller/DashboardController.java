@@ -1660,11 +1660,11 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_Approval.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
-                    return "Stock Request Approval";
+                    return "Inventory Request Approval";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalAppliance.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
-                    return "Stock Request Approval Appliance";
+                    return "Inventory Request Appliance Approval";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalCar.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";

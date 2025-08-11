@@ -1,0 +1,46 @@
+Aug 11, 2025 4:08:31 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :null
+Aug 11, 2025 4:08:31 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on Stock Request Approval Monarch Hospitality
+Aug 11, 2025 4:08:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :Record loaded successfully.
+Aug 11, 2025 4:08:37 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on Initialize Search Cluster
+Aug 11, 2025 4:08:37 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :No record found.
+Aug 11, 2025 4:08:46 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :Record loaded successfully.
+Aug 11, 2025 4:08:46 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on Initialize Search Cluster
+Aug 11, 2025 4:08:46 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :null
+Aug 11, 2025 4:08:46 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on Initialize : Load of Transaction List
+Aug 11, 2025 4:08:49 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :null
+Aug 11, 2025 4:08:49 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on Initialize Open Transaction
+Aug 11, 2025 4:08:52 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :null
+Aug 11, 2025 4:08:52 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on Initialize Open Transaction
+Aug 11, 2025 4:45:07 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :null
+Aug 11, 2025 4:45:07 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on Stock Request Approval Monarch Hospitality
+Aug 11, 2025 4:45:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :Record loaded successfully.
+Aug 11, 2025 4:45:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on  Search Cluster! 
+Aug 11, 2025 4:45:21 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :null
+Aug 11, 2025 4:45:21 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on Initialize : Load of Transaction List
+Aug 11, 2025 4:45:23 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :null
+Aug 11, 2025 4:45:23 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on Initialize Open Transaction
+Aug 11, 2025 4:45:27 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Monarch Hospitality :null
+Aug 11, 2025 4:45:27 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Monarch Hospitality : Success on Initialize Update Transaction

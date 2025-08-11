@@ -75,7 +75,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
     private LogWrapper poLogWrapper;
     private int pnEditMode;
     private DeliverySchedule poAppController;
-    private String psFormName = "Delivery Schedule Entry";
+    private String psFormName = "Delivery Schedule Request";
 
     private String psClusterNameOld = "";
 
@@ -338,10 +338,8 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     break;
                 case "btnClose":
                     unloadForm appUnload = new unloadForm();
-                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                         appUnload.unloadForm(apMainAnchor, poApp, psFormName);
-                    } else {
-                        return;
                     }
                     break;
 

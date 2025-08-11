@@ -31,7 +31,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -68,24 +67,24 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
     private InventoryRequestApproval poAppController;
-    private String psFormName = "Inventory Request Approval";
+    private String psFormName = "Stock Request Approval Monarch Food";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private ObservableList<Model_Inv_Stock_Request_Detail> laTransactionDetail;
     private int pnTransaction, pnCTransactionDetail, pnEditMode;
     
     @FXML
-    private AnchorPane apMainAnchor, apButton, apBrowse, apCenter, apDetailField, apMaster, apDetail, apDetailTable, apTransactionTable;
+    private AnchorPane apMainAnchor, apDetail, apTransactionTable;
 
     @FXML
     private Label lblSource;
 
     @FXML
-    private Button btnSearch, btnSave, btnCancel, btnUpdate, btnPrint, btnClose;
-
+    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfMeasure, tfInventoryType, tfRequestQty, 
+            tfApprovedQty, tfQOH, tfClassification, tfROQ, tfCancelQty;
+    
     @FXML
-    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfInventoryType, tfRequestQty, 
-            tfApprovedQty, tfQOH, tfColor, tfClassification, tfROQ, tfCancelQty;
+    private Button btnSearch, btnSave, btnCancel, btnUpdate, btnPrint, btnClose;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -751,9 +750,15 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
         tfBrand.setText(tblColBrand.getCellData(fnRow));
         tfBarcode.setText(tblColBarcode.getCellData(fnRow));
         tfDescription.setText(tblColDescription.getCellData(fnRow));
-        tfModel.setText(tblColModel.getCellData(fnRow));
-        tfVariant.setText(tblColVariant.getCellData(fnRow));
-        tfColor.setText(tblColColor.getCellData(fnRow));
+        
+        //check if row is valid
+        if (fnRow >= 0) {    
+            tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
+            tfClassification.setText(poAppController.getDetail(fnRow).getClassification());
+            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
+            tfMeasure.setText(poAppController.getDetail(fnRow).Inventory().Measure().getDescription());
+        }
+        
         tfQOH.setText(tblColQOH.getCellData(fnRow));
         tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
         tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));
@@ -762,6 +767,9 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
 
     private void getLoadedTransaction() throws CloneNotSupportedException, SQLException, GuanzonException {
         tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
+        lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "": (poAppController.getMaster().Company().getCompanyName() + " - ") + 
+                poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());
+        
         reloadTableDetail();
         loadSelectedDetail(pnCTransactionDetail);
     }
@@ -775,7 +783,7 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
                 ? pnCTransactionDetail
                 : laTransactionDetail.size() - 1;
   
-        tblRequestDetail.getSelectionModel().selectLast();
+        tblRequestDetail.getSelectionModel().select(indexToSelect);
     
         pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex(); // Not focusedIndex
 

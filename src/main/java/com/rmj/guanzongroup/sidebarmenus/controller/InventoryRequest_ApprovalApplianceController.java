@@ -31,7 +31,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -68,14 +67,14 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
     private InventoryRequestApproval poAppController;
-    private String psFormName = "Inventory Request Approval";
+    private String psFormName = "Inventory Request Appliance Approval";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private ObservableList<Model_Inv_Stock_Request_Detail> laTransactionDetail;
     private int pnTransaction, pnCTransactionDetail, pnEditMode;
     
     @FXML
-    private AnchorPane apMainAnchor, apButton, apBrowse, apCenter, apDetailField, apMaster, apDetail, apDetailTable, apTransactionTable;
+    private AnchorPane apMainAnchor, apDetail, apTransactionTable;
 
     @FXML
     private Label lblSource;
@@ -188,9 +187,8 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
 
                 case "btnClose":
                     unloadForm appUnload = new unloadForm();
-                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                         appUnload.unloadForm(apMainAnchor, poApp, psFormName);
-                        break;
                     }
                     break;
             }
@@ -341,8 +339,8 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
                         + "\nCategory:" + psCategoryID);
             });
             
-            initControlEvents();
             initializeTableDetail();
+            initControlEvents();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -472,9 +470,6 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
 
         // Always show these buttons
         initButtonControls(true, "btnSearch", "btnClose");
-        
-        System.out.print(!lbShow);
-        System.out.print(!lbShow);
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
@@ -754,6 +749,14 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
         tfModel.setText(tblColModel.getCellData(fnRow));
         tfVariant.setText(tblColVariant.getCellData(fnRow));
         tfColor.setText(tblColColor.getCellData(fnRow));
+        
+        //check if row is valid
+        if (fnRow >= 0) {    
+            tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
+            tfClassification.setText(poAppController.getDetail(fnRow).getClassification());
+            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
+        }
+        
         tfQOH.setText(tblColQOH.getCellData(fnRow));
         tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
         tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));
@@ -762,6 +765,9 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
 
     private void getLoadedTransaction() throws CloneNotSupportedException, SQLException, GuanzonException {
         tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
+        lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "": (poAppController.getMaster().Company().getCompanyName() + " - ") + 
+                poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());
+        
         reloadTableDetail();
         loadSelectedDetail(pnCTransactionDetail);
     }
@@ -775,7 +781,7 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
                 ? pnCTransactionDetail
                 : laTransactionDetail.size() - 1;
   
-        tblRequestDetail.getSelectionModel().selectLast();
+        tblRequestDetail.getSelectionModel().select(indexToSelect);
     
         pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex(); // Not focusedIndex
 
