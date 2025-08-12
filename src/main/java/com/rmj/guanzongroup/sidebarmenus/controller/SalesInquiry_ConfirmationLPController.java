@@ -485,14 +485,12 @@ public class SalesInquiry_ConfirmationLPController implements Initializable, Scr
     };
 
     public void moveNext(boolean isUp) {
-        
+
         apDetail.requestFocus();
-        
+
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
-        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-            tfBarcode.requestFocus();
-        }
+        tfBarcode.requestFocus();
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -1022,9 +1020,7 @@ public class SalesInquiry_ConfirmationLPController implements Initializable, Scr
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-                        tfBarcode.requestFocus();
-                    }
+                    tfBarcode.requestFocus();
                 }
             }
         });

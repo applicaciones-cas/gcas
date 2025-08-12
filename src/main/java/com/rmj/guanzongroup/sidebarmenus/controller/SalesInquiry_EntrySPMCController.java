@@ -414,9 +414,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-                        tfBarcode.requestFocus();
-                    }
+                    tfBarcode.requestFocus();
                 }
             }
         });
@@ -654,9 +652,7 @@ public class SalesInquiry_EntrySPMCController implements Initializable, ScreenIn
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
 
-        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-            tfBarcode.requestFocus();
-        }
+        tfBarcode.requestFocus();
     }
 
     private void txtField_KeyPressed(KeyEvent event) {

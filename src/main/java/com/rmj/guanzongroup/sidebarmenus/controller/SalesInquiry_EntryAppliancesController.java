@@ -61,6 +61,7 @@ import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.sales.t1.services.SalesControllers;
 import ph.com.guanzongroup.cas.sales.t1.status.SalesInquiryStatic;
 import org.guanzon.appdriver.constant.UserRight;
+
 /**
  *
  * @author Arsiela
@@ -420,9 +421,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
                 if (event.getClickCount() == 1) {  // Detect single click (or use another condition for double click)
                     pnDetail = tblViewTransDetails.getSelectionModel().getSelectedIndex();
                     loadRecordDetail();
-                    if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-                        tfBarcode.requestFocus();
-                    }
+                    tfBarcode.requestFocus();
                 }
             }
         });
@@ -682,9 +681,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
         pnDetail = isUp ? JFXUtil.moveToPreviousRow(tblViewTransDetails) : JFXUtil.moveToNextRow(tblViewTransDetails);
         loadRecordDetail();
 
-        if (JFXUtil.isObjectEqualTo(poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId(), null, "")) {
-            tfBarcode.requestFocus();
-        }
+        tfBarcode.requestFocus();
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
