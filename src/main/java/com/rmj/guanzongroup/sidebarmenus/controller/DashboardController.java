@@ -1733,6 +1733,10 @@ public class DashboardController implements Initializable {
                     return "Relationship";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml":
                     return "Salesman";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Salesagent.fxml":
+                    return "Sales Agent";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InquirySource.fxml":
+                    return "Sales Inquiry Source";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml":
                     return "Section";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml":
@@ -3353,8 +3357,12 @@ public class DashboardController implements Initializable {
                     return new MeasureController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml":
                     return new RelationshipController();
-//                case "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml":
-//                    return new SalesmanController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml":
+                    return new SalesmanController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/Salesagent.fxml":
+                    return new SalesagentController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InquirySource.fxml":
+                    return new InquirySourceController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml":
                     return new SectionController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml":
@@ -4783,7 +4791,9 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Model\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Model.fxml\", \"controller_path\": \"\", \"menu_id\": \"033\", \"menu_parent\": \"030\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Measure\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Measure.fxml\", \"controller_path\": \"\", \"menu_id\": \"034\", \"menu_parent\": \"030\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Relationship\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Relationship.fxml\", \"controller_path\": \"\", \"menu_id\": \"035\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Sales Agent\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Salesagent.fxml\", \"controller_path\": \"\", \"menu_id\": \"041\", \"menu_parent\": \"030\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Salesman\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Salesman.fxml\", \"controller_path\": \"\", \"menu_id\": \"036\", \"menu_parent\": \"030\"},"
+                + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Sales Inquiry Source\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/InquirySource.fxml\", \"controller_path\": \"\", \"menu_id\": \"042\", \"menu_parent\": \"030\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Section\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Section.fxml\", \"controller_path\": \"\", \"menu_id\": \"037\", \"menu_parent\": \"030\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Size\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Size.fxml\", \"controller_path\": \"\", \"menu_id\": \"038\", \"menu_parent\": \"030\"},"
                 + "{\"access_level\": \"01 02 03 04 05 06\", \"menu_name\": \"Term\", \"fxml_path\": \"/com/rmj/guanzongroup/sidebarmenus/views/Term.fxml\", \"controller_path\": \"\", \"menu_id\": \"039\", \"menu_parent\": \"030\"},"
