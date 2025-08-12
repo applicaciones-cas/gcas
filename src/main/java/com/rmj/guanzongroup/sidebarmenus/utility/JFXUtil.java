@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -37,6 +38,7 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -110,6 +112,12 @@ import javafx.util.StringConverter;
 import org.apache.poi.ss.formula.functions.T;
 import org.json.simple.JSONObject;
 import javafx.concurrent.Task;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.OverrunStyle;
+import javafx.scene.control.TableCell;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 
 /**
@@ -632,27 +640,66 @@ public class JFXUtil {
         }
     }
 
-    public static void setColumnsIndexAndDisableReordering(TableView<?> tableView) {
+    public static void setColumnsIndexAndDisableReordering(final TableView<?> tableView) {
         int counter = 1;
         for (Object obj : tableView.getColumns()) {
             if (obj instanceof TableColumn) {
                 @SuppressWarnings("unchecked")
-                TableColumn<?, ?> column = (TableColumn<?, ?>) obj;
-                String indexName = String.format("index%02d", counter);
-                column.setCellValueFactory(new PropertyValueFactory(indexName));
-                counter++;
+                final TableColumn<Object, Object> column = (TableColumn<Object, Object>) obj;
+
+                final String indexName = String.format("index%02d", counter++);
+                column.setCellValueFactory(new PropertyValueFactory<Object, Object>(indexName));
+
+                // Cell factory that prevents wrapping, ellipsizes and removes newline chars
+                column.setCellFactory(new Callback<TableColumn<Object, Object>, TableCell<Object, Object>>() {
+                    @Override
+                    public TableCell<Object, Object> call(final TableColumn<Object, Object> param) {
+                        return new TableCell<Object, Object>() {
+                            private final Label label = new Label();
+
+                            {
+                                // Prevent multiline and enable ellipsis on overflow
+                                label.setWrapText(false);
+                                label.setTextOverrun(OverrunStyle.ELLIPSIS);
+                                label.setMaxWidth(Double.MAX_VALUE);
+                                // bind label width to column width (subtract small padding)
+                                label.maxWidthProperty().bind(param.widthProperty().subtract(10));
+                                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                                setGraphic(label);
+                            }
+
+                            @Override
+                            protected void updateItem(Object item, boolean empty) {
+                                super.updateItem(item, empty);
+                                if (empty || item == null) {
+                                    label.setText(null);
+                                } else {
+                                    // remove newline characters so they cannot force multiline
+                                    String text = item.toString().replaceAll("\\r?\\n", " ");
+                                    label.setText(text);
+                                }
+                            }
+                        };
+                    }
+                });
             }
         }
 
-        tableView.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
-            if (header != null) {
-                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                    header.setReordering(false);
-                });
+        // disable column reordering (same approach as before)
+        tableView.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
+                TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
+                if (header != null) {
+                    header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                            header.setReordering(false);
+                        }
+                    });
+                }
             }
         });
-
     }
 
     public static void clearTextFields(AnchorPane... anchorPanes) {
@@ -2026,7 +2073,6 @@ public class JFXUtil {
             AnchorPane... anchorPanes
     ) {
         String lsMessage = "Focus a searchable textfield to search";
-
         Object lastNode = lastFocusedTextField.get();
 
         if (lastNode instanceof TextField) {
@@ -2057,4 +2103,29 @@ public class JFXUtil {
             ShowMessageFX.Information(null, pxeModuleName, lsMessage);
         }
     }
+
+//    ChangeListener<Boolean> txtArea_Focus = JFXUtil.createFocusListener(TextArea.class,
+//            (lsID, lsValue) -> {
+//            });
+    public static ChangeListener<Boolean> createFocusListener(Class<? extends TextInputControl> nodeType, BiConsumer<String, String> onLostFocus) {
+        return (observable, oldValue, newValue) -> {
+            Object bean = ((ReadOnlyBooleanPropertyBase) observable).getBean();
+            if (!nodeType.isInstance(bean)) {
+                return;
+            }
+
+            TextInputControl control = nodeType.cast(bean);
+            String id = control.getId();
+            String value = control.getText();
+
+            if (value == null) {
+                return;
+            }
+
+            if (!newValue) { // Lost focus
+                onLostFocus.accept(id, value.trim());
+            }
+        };
+    }
+
 }
