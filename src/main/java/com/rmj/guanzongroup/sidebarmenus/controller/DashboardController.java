@@ -1,6 +1,7 @@
 package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.utility.JFXUtil;
+import com.rmj.guanzongroup.sidebarmenus.views.InventoryStockTransferIssuanceController;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -1697,6 +1698,10 @@ public class DashboardController implements Initializable {
                     psIndustryID = "02";
                     psCategoryID = "0003";
                     return "Stock Request Approval Monarch Hospitality";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance_Controlle.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Stock Transfer Issuance";
                     
 
                 //Update
@@ -3022,6 +3027,7 @@ public class DashboardController implements Initializable {
                    return new DeliverySchedule_HistoryController();
                    
                 /*Stock Request Transfer*/
+                
                 //Approval
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_Approval.fxml":
                     return new InventoryRequest_ApprovalController();
@@ -3043,6 +3049,10 @@ public class DashboardController implements Initializable {
                     return new InventoryRequest_ApprovalMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchHospitality.fxml":
                     return new InventoryRequest_ApprovalMonarchHospitalityController();
+                    
+                //Issuance
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml":
+                    return new InventoryStockTransferIssuanceController();
 
 //                UPDATE
                 case "/com/rmj/guanzongroup/sidebarmenus/views/CheckStatusUpdate.fxml":
@@ -4797,6 +4807,9 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval MP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMP.fxml\",\"controller_path\":\"\",\"menu_id\":\"016\",\"menu_parent\":\"008\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval Monarch Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchFood.fxml\",\"controller_path\":\"\",\"menu_id\":\"017\",\"menu_parent\":\"008\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchHospitality.fxml\",\"controller_path\":\"\",\"menu_id\":\"018\",\"menu_parent\":\"008\"},"
+                //Stock Transfer
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Stock Transfer\",\"fxml_path\":\"Stock Transfer\",\"controller_path\":\"stocktransfer.controller\",\"menu_id\":\"019\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml\",\"controller_path\":\"\",\"menu_id\":\"020\",\"menu_parent\":\"008\"},"
                 + "]";
         JSONParser parser = new JSONParser();
         try {
