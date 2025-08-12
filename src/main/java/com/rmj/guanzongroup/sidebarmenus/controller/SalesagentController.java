@@ -64,7 +64,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
     @FXML
     private TableColumn tblClientId, tblSalesAgent;
     @FXML
-    private TextField tfSalesAgent, tfProfession, tfCompany, tfPostion, tfSearchSalesAgent;
+    private TextField tfSalesAgent, tfProfession, tfCompany, tfPosition, tfSearchSalesAgent;
 
     
     @Override
@@ -225,7 +225,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
 
     private void initTextFields() {
         /*textFields FOCUSED PROPERTY*/
-        JFXUtil.setFocusListener(txtField_Focus, tfSalesAgent, tfProfession, tfCompany, tfPostion);
+        JFXUtil.setFocusListener(txtField_Focus, tfSalesAgent, tfProfession, tfCompany, tfPosition);
         /*textFields KeyPressed PROPERTY*/
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apSearchMaster);
 
@@ -345,7 +345,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
             tfSalesAgent.setText(oTrans.SalesAgent().getModel().Client().getCompanyName());
             tfProfession.setText(oTrans.SalesAgent().getModel().getProfession());
             tfCompany.setText(oTrans.SalesAgent().getModel().getCompany());
-            tfPostion.setText(oTrans.SalesAgent().getModel().getPosition());
+            tfPosition.setText(oTrans.SalesAgent().getModel().getPosition());
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }

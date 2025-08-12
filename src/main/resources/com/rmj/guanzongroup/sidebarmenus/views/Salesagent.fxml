@@ -170,7 +170,7 @@
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
                                           </Label>
-                                          <TextField fx:id="tfPostion" layoutX="152.0" layoutY="105.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                                          <TextField fx:id="tfPosition" layoutX="152.0" layoutY="105.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
