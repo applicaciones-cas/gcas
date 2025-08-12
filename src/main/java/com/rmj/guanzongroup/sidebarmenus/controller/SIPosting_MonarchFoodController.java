@@ -345,6 +345,11 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
             switch (checkedBox.getId()) {
                 case "cbVatInclusive":
                     poPurchaseReceivingController.PurchaseOrderReceiving().Master().isVatTaxable(cbVatInclusive.isSelected());
+                    //update all detail base on vat inclusive value
+                    for (int lnCtr = 0; lnCtr <= poPurchaseReceivingController.PurchaseOrderReceiving().getDetailCount() - 1; lnCtr++) {
+                        poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).isVatable(cbVatInclusive.isSelected());
+                    }
+                    loadTableDetail();
                     loadRecordMaster();
                     break;
                 case "cbVatable":
@@ -561,6 +566,7 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
                         poJSON = poPurchaseReceivingController.PurchaseOrderReceiving().Master().setSalesInvoice("");
                     }
                     loadTableDetail();
+                    loadRecordMaster();
                     if ("error".equals(poJSON.get("result"))) {
                         ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
                         tfSINo.setText("");
@@ -1719,9 +1725,10 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
 
                             if (JFXUtil.isObjectEqualTo(poPurchaseReceivingController.PurchaseOrderReceiving().Master().getSalesInvoice(), null, "")) {
                                 poPurchaseReceivingController.PurchaseOrderReceiving().Detail(lnCtr).isVatable(false);
-                                JFXUtil.setDisabled(true, cbVatable);
+                                poPurchaseReceivingController.PurchaseOrderReceiving().Master().isVatTaxable(false);
+                                JFXUtil.setDisabled(true, cbVatable, cbVatInclusive);
                             } else {
-                                JFXUtil.setDisabled(false, cbVatable);
+                                JFXUtil.setDisabled(false, cbVatable, cbVatInclusive);
                             }
 
                             try {

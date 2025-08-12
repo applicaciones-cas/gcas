@@ -19,11 +19,6 @@ public class ModelSalesInquiry_Detail {
             "Individual",
             "Corporate"
     );
-    public static ObservableList<String> InquiryType = FXCollections.observableArrayList(
-            "Walk-in",
-            "Referral",
-            "Activity"
-    );
     public static ObservableList<String> PurchaseType = FXCollections.observableArrayList(
             "Cash",
             "Cash Balance",

@@ -85,13 +85,13 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
     @FXML
     private Button btnBrowse, btnHistory, btnClose;
     @FXML
-    private TextField tfSearchClient, tfSearchReferenceNo, tfTransactionNo, tfBranch, tfSalesPerson, tfReferralAgent, tfInquirySource, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfColor, tfModelVariant;
+    private TextField tfSearchClient, tfSearchReferenceNo, tfTransactionNo, tfBranch, tfSalesPerson, tfReferralAgent, tfInquiryType, tfClient, tfAddress, tfInquiryStatus, tfContactNo, tfBrand, tfModel, tfColor, tfModelVariant;
     @FXML
     private TextArea taRemarks;
     @FXML
-    private ComboBox cmbClientType, cmbInquiryType, cmbPurchaseType, cmbCategoryType;
+    private ComboBox cmbClientType, cmbPurchaseType, cmbCategoryType;
     ObservableList<String> ClientType = ModelSalesInquiry_Detail.ClientType;
-    ObservableList<String> InquiryType = ModelSalesInquiry_Detail.InquiryType;
+    
     ObservableList<String> PurchaseType = ModelSalesInquiry_Detail.PurchaseType;
     ObservableList<String> CategoryType = ModelSalesInquiry_Detail.CategoryType;
     @FXML
@@ -193,7 +193,7 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
 
                 initButton(pnEditMode);
             } catch (CloneNotSupportedException | SQLException | GuanzonException ex) {
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
             }
 
         }
@@ -232,17 +232,18 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
             dpTargetDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(lsTargetDate, "yyyy-MM-dd"));
 
             tfBranch.setText(poSalesInquiryController.SalesInquiry().Master().Branch().getBranchName());
-            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getCompanyName());
+            tfSalesPerson.setText(poSalesInquiryController.SalesInquiry().Master().SalesPerson().getFullName());
             tfReferralAgent.setText(poSalesInquiryController.SalesInquiry().Master().ReferralAgent().getCompanyName());
-            tfInquirySource.setText(poSalesInquiryController.SalesInquiry().Master().Source().getCompanyName());
+            
 
             tfClient.setText(poSalesInquiryController.SalesInquiry().Master().Client().getCompanyName());
             tfAddress.setText(poSalesInquiryController.SalesInquiry().Master().ClientAddress().getAddress());
             tfContactNo.setText(poSalesInquiryController.SalesInquiry().Master().ClientMobile().getMobileNo());
+            tfInquiryType.setText(poSalesInquiryController.SalesInquiry().Master().Source().getDescription());
 
             taRemarks.setText(poSalesInquiryController.SalesInquiry().Master().getRemarks());
 
-            cmbInquiryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getSourceCode()));
+            
             cmbPurchaseType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getPurchaseType()));
             cmbClientType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().Client().getClientType()));
             cmbCategoryType.getSelectionModel().select(Integer.parseInt(poSalesInquiryController.SalesInquiry().Master().getCategoryType()));
@@ -265,10 +266,8 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
             tfModelVariant.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).ModelVariant().getDescription());
             tfColor.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getDescription());
             JFXUtil.updateCaretPositions(apDetail);
-        } catch (SQLException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-        } catch (GuanzonException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
 
@@ -290,11 +289,6 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                         break;
                 }
                 loadRecordDetail();
-                if (poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId() != null && !poSalesInquiryController.SalesInquiry().Detail(pnDetail).getStockId().equals("")) {
-                    tfBrand.requestFocus();
-                } else {
-                    tfBrand.requestFocus();
-                }
                 event.consume();
             }
         }
@@ -371,7 +365,7 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             lsBrand,
-                                            lsDescription.trim()
+                                            lsDescription.trim().replaceAll("\\r?\\n", " ")
                                     ));
                             lsBrand = "";
                             lsModel = "";
@@ -449,34 +443,6 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
         }
     };
 
-    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
-        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
-        String lsID = (txtField.getId());
-        String lsValue = txtField.getText();
-
-        if (lsValue == null) {
-            return;
-        }
-        poJSON = new JSONObject();
-        if (!nv) {
-            /*Lost Focus*/
-            lsValue = lsValue.trim();
-            switch (lsID) {
-                case "taRemarks"://Remarks
-                    poJSON = poSalesInquiryController.SalesInquiry().Master().setRemarks(lsValue);
-                    if ("error".equals((String) poJSON.get("result"))) {
-                        System.err.println((String) poJSON.get("message"));
-                        ShowMessageFX.Warning(null, pxeModuleName, (String) poJSON.get("message"));
-                        return;
-                    }
-                    break;
-            }
-            loadRecordMaster();
-        } else {
-            txtField.selectAll();
-        }
-    };
-
     private void txtField_KeyPressed(KeyEvent event) {
         try {
             TextField txtField = (TextField) event.getSource();
@@ -527,19 +493,17 @@ public class SalesInquiry_HistoryCarController implements Initializable, ScreenI
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
             }
-        } catch (GuanzonException | SQLException ex) {
+        } catch (GuanzonException | SQLException | CloneNotSupportedException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private void initComboBoxes() {
         // Set the items of the ComboBox to the list of genders
-        JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType), new JFXUtil.Pairs<>(InquiryType, cmbInquiryType),
+        JFXUtil.setComboBoxItems(new JFXUtil.Pairs<>(ClientType, cmbClientType),
                 new JFXUtil.Pairs<>(PurchaseType, cmbPurchaseType), new JFXUtil.Pairs<>(CategoryType, cmbCategoryType)
         );
-        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbInquiryType, cmbPurchaseType, cmbCategoryType);
+        JFXUtil.initComboBoxCellDesignColor("#FF8201", cmbClientType, cmbPurchaseType, cmbCategoryType);
     }
 
     public void initDatePickers() {

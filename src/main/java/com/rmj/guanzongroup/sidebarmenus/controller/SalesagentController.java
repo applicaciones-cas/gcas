@@ -38,9 +38,9 @@ import ph.com.guanzongroup.cas.sales.t1.services.SalesControllers;
  *
  * @author Maynard / Arsiela
  */
-public class SalesmanController implements Initializable, ScreenInterface {
+public class SalesagentController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Salesman";
+    private final String pxeModuleName = "Sales Agent";
     private GRiderCAS oApp;
     private SalesControllers oTrans;
     private JSONObject poJSON;
@@ -58,13 +58,14 @@ public class SalesmanController implements Initializable, ScreenInterface {
     @FXML
     private FontAwesomeIconView faActivate;
     @FXML
-    private TextField tfEmployee, tfBranch, tfLastname, tfFirstname, tfMiddlename, tfSearchSalesman;
-    @FXML
     private CheckBox cbActive;
     @FXML
     private TableView tblList;
     @FXML
-    private TableColumn tblEmployeeId, tblSalesman;
+    private TableColumn tblClientId, tblSalesAgent;
+    @FXML
+    private TextField tfSalesAgent, tfProfession, tfCompany, tfPosition, tfSearchSalesAgent;
+
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -100,28 +101,28 @@ public class SalesmanController implements Initializable, ScreenInterface {
             String lsButton = ((Button) event.getSource()).getId();
             switch (lsButton) {
                 case "btnNew":
-                    poJSON = oTrans.Salesman().newRecord();
+                    poJSON = oTrans.SalesAgent().newRecord();
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         pnEditMode = EditMode.UNKNOWN;
                         return;
                     }
-                    pnEditMode = oTrans.Salesman().getEditMode();
+                    pnEditMode = oTrans.SalesAgent().getEditMode();
                     break;
                 case "btnUpdate":
-                    poJSON = oTrans.Salesman().updateRecord();
+                    poJSON = oTrans.SalesAgent().updateRecord();
                     if ("error".equals((String) poJSON.get("result"))) {
                         System.err.println((String) poJSON.get("message"));
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
                     }
                     
-                    pnEditMode = oTrans.Salesman().getEditMode();
+                    pnEditMode = oTrans.SalesAgent().getEditMode();
                     break;
                 case "btnSave":
                     if (ShowMessageFX.YesNo(null, "Close Tab", "Are you sure you want to save the record?") == true) {
-                        poJSON = oTrans.Salesman().saveRecord();
+                        poJSON = oTrans.SalesAgent().saveRecord();
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -145,7 +146,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
                 case "btnActivate":
                     if (btnActivate.getText().equals("Activate")) {
                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Activate this Parameter?") == true) {
-                            poJSON = oTrans.Salesman().activateRecord();
+                            poJSON = oTrans.SalesAgent().activateRecord();
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
                                 ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -156,7 +157,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
                         }
                     } else {
                         if (ShowMessageFX.YesNo(null, pxeModuleName, "Do you want to Deactivate this Parameter?") == true) {
-                            poJSON = oTrans.Salesman().deactivateRecord();
+                            poJSON = oTrans.SalesAgent().deactivateRecord();
                             if ("error".equals((String) poJSON.get("result"))) {
                                 System.err.println((String) poJSON.get("message"));
                                 ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -180,7 +181,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
 
                     break;
 //                case "btnBrowse":
-//                    poJSON = oTrans.Salesman().searchRecord(tfSearchSalesman.getText(), false);
+//                    poJSON = oTrans.SalesAgent().searchRecord(tfSearchSalesman.getText(), false);
 //                    pnEditMode = EditMode.READY;
 //                    if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
 //                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -196,7 +197,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
             }
             
             if(lsButton.equals("btnSave") || lsButton.equals("btnCancel") || lsButton.equals("btnActivate")){
-                oTrans.Salesman().resetModel();
+                oTrans.SalesAgent().resetModel();
                 clearFields();
             }
             
@@ -224,7 +225,7 @@ public class SalesmanController implements Initializable, ScreenInterface {
 
     private void initTextFields() {
         /*textFields FOCUSED PROPERTY*/
-        JFXUtil.setFocusListener(txtField_Focus, tfEmployee, tfBranch, tfLastname, tfFirstname, tfMiddlename);
+        JFXUtil.setFocusListener(txtField_Focus, tfSalesAgent, tfProfession, tfCompany, tfPosition);
         /*textFields KeyPressed PROPERTY*/
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apSearchMaster);
 
@@ -238,32 +239,22 @@ public class SalesmanController implements Initializable, ScreenInterface {
             switch (event.getCode()) {
                 case F3:
                     switch (lsTextField) {
-                        case "tfSearchSalesman":
+                        case "tfSearchSalesAgent":
                             /*Browse Primary*/
-                            poJSON = oTrans.Salesman().searchRecord(lsValue, false);
+                            poJSON = oTrans.SalesAgent().searchRecord(lsValue, false);
                             if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                                tfSearchSalesman.requestFocus();
+                                tfSearchSalesAgent.requestFocus();
                             } else {
                                 loadRecord();
                             }
                             break;
-                        case "tfEmployee":
+                        case "tfSalesAgent":
                             /*search employee*/
-                            poJSON = oTrans.Salesman().searchEmployee(lsValue, false);
+                            poJSON = oTrans.SalesAgent().SearchClient(lsValue, false);
                             if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                                tfEmployee.requestFocus();
-                            } else {
-                                loadRecord();
-                            }
-                            break;
-                        case "tfBranch":
-                            /*search employee*/
-                            poJSON = oTrans.Salesman().SearchBranch(lsValue, false);
-                            if ("error".equalsIgnoreCase(poJSON.get("result").toString())) {
-                                ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                                tfEmployee.requestFocus();
+                                tfSalesAgent.requestFocus();
                             } else {
                                 loadRecord();
                             }
@@ -296,9 +287,9 @@ public class SalesmanController implements Initializable, ScreenInterface {
         if (!nv) {
             /*Lost Focus*/
             switch (lsTextField) {
-                case "tfBranch":
+                case "tfSalesAgent":
                     if(lsValue.isEmpty()){
-                        poJSON = oTrans.Salesman().getModel().setBranchCode("");
+                        poJSON = oTrans.SalesAgent().getModel().setClientId("");
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
@@ -306,45 +297,30 @@ public class SalesmanController implements Initializable, ScreenInterface {
                         }
                     }
                     break;
-                case "tfEmployee":
-                    if(lsValue.isEmpty()){
-                        poJSON = oTrans.Salesman().getModel().setEmployeeId("");
-                        if ("error".equals((String) poJSON.get("result"))) {
-                            System.err.println((String) poJSON.get("message"));
-                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-                            return;
-                        }
+                case "tfProfession":
+                    poJSON = oTrans.SalesAgent().getModel().setProfession(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        return;
                     }
                     break;
-//                case "tfFirstname":
-//                    if(lsValue.isEmpty()){
-//                        poJSON = oTrans.Salesman().getModel().setFirstName("");
-//                        if ("error".equals((String) poJSON.get("result"))) {
-//                            System.err.println((String) poJSON.get("message"));
-//                            ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
-//                            return;
-//                        }
-//                    }
-//                    break;
-//                case 4:
-//                    poJSON = oTrans.Salesman().getModel().setFristName(lsValue);
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        System.err.println((String) poJSON.get("message"));
-//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//
-//                        return;
-//                    }
-//                    break;
-//
-//                case 5:
-//                    poJSON = oTrans.Salesman().getModel().setMiddleName(lsValue);
-//                    if ("error".equals((String) poJSON.get("result"))) {
-//                        System.err.println((String) poJSON.get("message"));
-//                        ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
-//
-//                        return;
-//                    }
-//                    break;
+                case "tfCompany":
+                    poJSON = oTrans.SalesAgent().getModel().setCompany(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        return;
+                    }
+                    break;
+                case "tfPosition":
+                    poJSON = oTrans.SalesAgent().getModel().setPosition(lsValue);
+                    if ("error".equals((String) poJSON.get("result"))) {
+                        System.err.println((String) poJSON.get("message"));
+                        ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
+                        return;
+                    }
+                    break;
             }
         } else {
             txtField.selectAll();
@@ -354,9 +330,9 @@ public class SalesmanController implements Initializable, ScreenInterface {
     private void loadRecord() {
         try {
             boolean lbDisable = pnEditMode == EditMode.ADDNEW;
-            JFXUtil.setDisabled(!lbDisable, tfEmployee);
+            JFXUtil.setDisabled(!lbDisable, tfSalesAgent);
             
-            boolean lbActive = oTrans.Salesman().getModel().getRecordStatus();
+            boolean lbActive = oTrans.SalesAgent().getModel().getRecordStatus();
             cbActive.setSelected(lbActive);
             if (lbActive) {
                 btnActivate.setText("Deactivate");
@@ -366,11 +342,10 @@ public class SalesmanController implements Initializable, ScreenInterface {
                 faActivate.setGlyphName("CHECK");
             }
             
-            tfEmployee.setText(oTrans.Salesman().getModel().getFullName());
-            tfBranch.setText(oTrans.Salesman().getModel().Branch().getBranchName());
-            tfLastname.setText(oTrans.Salesman().getModel().getLastName());
-            tfFirstname.setText(oTrans.Salesman().getModel().getFirstName());
-            tfMiddlename.setText(oTrans.Salesman().getModel().getMiddleName());
+            tfSalesAgent.setText(oTrans.SalesAgent().getModel().Client().getCompanyName());
+            tfProfession.setText(oTrans.SalesAgent().getModel().getProfession());
+            tfCompany.setText(oTrans.SalesAgent().getModel().getCompany());
+            tfPosition.setText(oTrans.SalesAgent().getModel().getPosition());
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -387,34 +362,39 @@ public class SalesmanController implements Initializable, ScreenInterface {
     private void loadTableDetail() {
         int lnCtr;
         ListData.clear();
+        try {
 
-        poJSON = oTrans.Salesman().loadModelList();
-        if ("error".equals((String) poJSON.get("result"))) {
-            System.err.println((String) poJSON.get("message"));
-            ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
+            poJSON = oTrans.SalesAgent().loadModelList();
+            if ("error".equals((String) poJSON.get("result"))) {
+                System.err.println((String) poJSON.get("message"));
+                ShowMessageFX.Information((String) poJSON.get("message"), "Computerized Acounting System", pxeModuleName);
 
-            return;
+                return;
+            }
+
+            int lnItem = oTrans.SalesAgent().getModelCount();
+            if (lnItem <= 0) {
+                return;
+            }
+
+            for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
+                    ListData.add(new ModelListParameter(
+                            (String) oTrans.SalesAgent().ModelList(lnCtr).getClientId(),
+                            (String) oTrans.SalesAgent().ModelList(lnCtr).Client().getCompanyName(),
+                            "",
+                            ""));
+
+            }
+
+            initListGrid();
+        
+        } catch (SQLException | GuanzonException ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
-
-        int lnItem = oTrans.Salesman().getModelCount();
-        if (lnItem <= 0) {
-            return;
-        }
-
-        for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
-            ListData.add(new ModelListParameter(
-                    (String) oTrans.Salesman().ModelList(lnCtr).getEmployeeId(),
-                    (String) oTrans.Salesman().ModelList(lnCtr).getFullName(),
-                    "",
-                    ""));
-
-        }
-
-        initListGrid();
     }
     
     public void initListGrid() {
-        JFXUtil.setColumnLeft(tblEmployeeId, tblSalesman);
+        JFXUtil.setColumnLeft(tblClientId, tblSalesAgent);
         JFXUtil.setColumnsIndexAndDisableReordering(tblList);
 
         tblList.setItems(ListData);
@@ -426,9 +406,9 @@ public class SalesmanController implements Initializable, ScreenInterface {
         try {
             pnListRow = tblList.getSelectionModel().getSelectedIndex();
             if (pnListRow >= 0) {
-                    oTrans.Salesman().openRecord(ListData.get(pnListRow).getIndex01());
+                    oTrans.SalesAgent().openRecord(ListData.get(pnListRow).getIndex01());
                     loadRecord();
-                    pnEditMode = oTrans.Salesman().getEditMode();
+                    pnEditMode = oTrans.SalesAgent().getEditMode();
                     initButton(pnEditMode);
             }
         } catch (SQLException | GuanzonException ex) {
