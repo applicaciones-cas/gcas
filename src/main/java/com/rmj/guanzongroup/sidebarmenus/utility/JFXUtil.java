@@ -648,56 +648,34 @@ public class JFXUtil {
                 final TableColumn<Object, Object> column = (TableColumn<Object, Object>) obj;
 
                 final String indexName = String.format("index%02d", counter++);
-                column.setCellValueFactory(new PropertyValueFactory<Object, Object>(indexName));
+                column.setCellValueFactory(new PropertyValueFactory<>(indexName));
 
-                // Cell factory that prevents wrapping, ellipsizes and removes newline chars
-                column.setCellFactory(new Callback<TableColumn<Object, Object>, TableCell<Object, Object>>() {
-                    @Override
-                    public TableCell<Object, Object> call(final TableColumn<Object, Object> param) {
-                        return new TableCell<Object, Object>() {
-                            private final Label label = new Label();
-
-                            {
-                                // Prevent multiline and enable ellipsis on overflow
-                                label.setWrapText(false);
-                                label.setTextOverrun(OverrunStyle.ELLIPSIS);
-                                label.setMaxWidth(Double.MAX_VALUE);
-                                // bind label width to column width (subtract small padding)
-                                label.maxWidthProperty().bind(param.widthProperty().subtract(10));
-                                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-                                setGraphic(label);
+                // Directly set cell factory without Label
+                column.setCellFactory(col -> {
+                    TableCell<Object, Object> cell = new TableCell<Object, Object>() {
+                        @Override
+                        protected void updateItem(Object item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty || item == null) {
+                                setText(null);
+                            } else {
+                                String text = item.toString().replaceAll("\\r?\\n", " ");
+                                setText(text);
                             }
-
-                            @Override
-                            protected void updateItem(Object item, boolean empty) {
-                                super.updateItem(item, empty);
-                                if (empty || item == null) {
-                                    label.setText(null);
-                                } else {
-                                    // remove newline characters so they cannot force multiline
-                                    String text = item.toString().replaceAll("\\r?\\n", " ");
-                                    label.setText(text);
-                                }
-                            }
-                        };
-                    }
+                        }
+                    };
+                    cell.setWrapText(false);
+                    cell.setTextOverrun(OverrunStyle.ELLIPSIS);
+                    return cell;
                 });
             }
         }
 
-        // disable column reordering (same approach as before)
-        tableView.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) {
-                TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
-                if (header != null) {
-                    header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                            header.setReordering(false);
-                        }
-                    });
-                }
+        // disable column reordering
+        tableView.widthProperty().addListener((obs, oldWidth, newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tableView.lookup("TableHeaderRow");
+            if (header != null) {
+                header.reorderingProperty().addListener((o, oldVal, newVal) -> header.setReordering(false));
             }
         });
     }
