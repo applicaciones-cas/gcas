@@ -73,11 +73,11 @@ import ph.com.guanzongroup.cas.sales.status.Sales_Reservation_Static;
  *
  * @author user
  */
-public class SalesReservation_ConfirmationMCController implements Initializable, ScreenInterface {
+public class SalesReservation_ConfirmationCar implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private SalesReservationControllers poSalesReservationControllers;
-    private String psFormName = "Sales Reservation Confirmation MC";
+    private String psFormName = "Sales Reservation Confirmation Car";
     private LogWrapper logWrapper;
     private JSONObject poJSON;
     
@@ -247,7 +247,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                     System.out.println("inits : " + psIndustryID + " " +  poSalesReservationControllers.SalesReservation().Master().getIndustryID());
                     //                loadRecordSearch();
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }));
                 pnEditMode =  poSalesReservationControllers.SalesReservation().getEditMode();
@@ -257,7 +257,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                 System.out.println("psCompanyID : " + psIndustryID);
                 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                 }
     }
     
@@ -506,10 +506,10 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationMCController.class
+            Logger.getLogger(SalesReservation_ConfirmationCar.class
                     .getName()).log(Level.SEVERE, null, ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -548,7 +548,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException   ex) {
-            Logger.getLogger(SalesReservation_ConfirmationMCController.class
+            Logger.getLogger(SalesReservation_ConfirmationCar.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -797,7 +797,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                         break;
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-                Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
             }
         }   
     }
@@ -919,7 +919,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
             dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
                     poSalesReservationControllers.SalesReservation().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -946,7 +946,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getQuantity(), false));
            
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -1078,7 +1078,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
 
                     }
                 } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                 }
                     
                 }
@@ -1181,11 +1181,11 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
 //                        }
                         loadRecordDetail();
                     } catch (SQLException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
                 return null;
@@ -1272,17 +1272,17 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
         taRemarks.setEditable(lbShow);
         dpTransaction.setDisable(!lbShow);
         dpExpedtedDate.setDisable(!lbShow);
+        btnReturn.setVisible(false);
+        btnReturn.setManaged(false);
         
         btnClose.setVisible(!lbShow);
         btnClose.setManaged(!lbShow);
-        btnClose.setVisible(false);
-        btnClose.setManaged(false);
 
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
-        CustomCommonUtil.setVisible(false, btnConfirm,  btnVoid, btnUpdate);
-        CustomCommonUtil.setManaged(false, btnConfirm,  btnVoid, btnUpdate);
+        CustomCommonUtil.setVisible(false, btnConfirm, btnVoid, btnUpdate);
+        CustomCommonUtil.setManaged(false, btnConfirm , btnVoid, btnUpdate);
 
         btnHistory.setVisible(fnEditMode != EditMode.UNKNOWN);
         btnHistory.setManaged(fnEditMode != EditMode.UNKNOWN);
@@ -1295,12 +1295,12 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                         CustomCommonUtil.setManaged(true, btnConfirm, btnVoid, btnUpdate);
                         break;
                     case Sales_Reservation_Static.CONFIRMED:
-                        CustomCommonUtil.setVisible(true, btnVoid, btnUpdate,btnHistory);
+                        CustomCommonUtil.setVisible(true,  btnVoid, btnUpdate,btnHistory);
                         CustomCommonUtil.setManaged(true,  btnVoid, btnUpdate,btnHistory);
                         break;
                 }
             } catch (SQLException | GuanzonException ex) {
-                Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -1447,9 +1447,9 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                     dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                             SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
                 } catch (SQLException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1474,7 +1474,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                         
                         poSalesReservationControllers.SalesReservation().Master().setExpectedDate(selectedDate);
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
