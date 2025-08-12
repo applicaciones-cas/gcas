@@ -684,7 +684,6 @@ public class SalesReservation_EntryLPController implements Initializable, Screen
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                 return;
                             }
-                            
                             poJSON = poSalesReservationControllers.SalesReservation().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -712,7 +711,16 @@ public class SalesReservation_EntryLPController implements Initializable, Screen
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     return;
                                 }
+                               
+                                poJSON = poSalesReservationControllers.SalesReservation().checkExistingTrans(
+                                        poSalesReservationControllers.SalesReservation().Master().getSourceCode(),
+                                        poSalesReservationControllers.SalesReservation().Master().getSourceNo());
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
                                 poSalesReservationControllers.SalesReservation().setWithUI(true);
+
                                 poJSON = poSalesReservationControllers.SalesReservation().ConfirmTransaction("");
                                 if (!"success".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);

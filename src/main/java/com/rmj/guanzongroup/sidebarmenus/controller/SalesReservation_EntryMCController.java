@@ -643,7 +643,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                 return;
                             }
-                            
+                           
                             poJSON = poSalesReservationControllers.SalesReservation().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -668,6 +668,13 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                                 poJSON = poSalesReservationControllers.SalesReservation().OpenTransaction(toConfirm);
                                 
                                 if (!"success".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                                 poJSON = poSalesReservationControllers.SalesReservation().checkExistingTrans(
+                                        poSalesReservationControllers.SalesReservation().Master().getSourceCode(),
+                                        poSalesReservationControllers.SalesReservation().Master().getSourceNo());
+                                if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     return;
                                 }
@@ -939,7 +946,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
     private void tblSourceList_Clicked(MouseEvent event) {
         if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
             pnSourceRow = tblSourceList.getSelectionModel().getSelectedIndex();
-            if (event.getClickCount() == 2) {
+//            if (event.getClickCount() == 2) {
               
                     ModelSalesReservationSource loSourceSelected = (ModelSalesReservationSource) tblSourceList.getSelectionModel().getSelectedItem();
                     if (loSourceSelected != null) {
@@ -980,7 +987,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                             Logger.getLogger(SalesReservation_EntryMCController.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-            }
+//            }
         }
     }
     private void loadTableDetailAndSelectedRow() {

@@ -686,6 +686,8 @@ public class SalesReservation_EntryAppliancesController implements Initializable
                                 return;
                             }
                             
+                            
+                            
                             poJSON = poSalesReservationControllers.SalesReservation().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -710,6 +712,13 @@ public class SalesReservation_EntryAppliancesController implements Initializable
                                 poJSON = poSalesReservationControllers.SalesReservation().OpenTransaction(toConfirm);
                                 
                                 if (!"success".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                } 
+                                poJSON = poSalesReservationControllers.SalesReservation().checkExistingTrans(
+                                        poSalesReservationControllers.SalesReservation().Master().getSourceCode(),
+                                        poSalesReservationControllers.SalesReservation().Master().getSourceNo());
+                                if ("error".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     return;
                                 }

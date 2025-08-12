@@ -690,6 +690,7 @@ public class SalesReservation_EntrySPCarController implements Initializable, Scr
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                 return;
                             }
+                                
                             
                             if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
                                 for(int x = 0; x > source_data.size(); x++){
@@ -712,6 +713,14 @@ public class SalesReservation_EntrySPCarController implements Initializable, Scr
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     return;
                                 }
+                                poJSON = poSalesReservationControllers.SalesReservation().checkExistingTrans(
+                                        poSalesReservationControllers.SalesReservation().Master().getSourceCode(),
+                                        poSalesReservationControllers.SalesReservation().Master().getSourceNo());
+                                if ("error".equals((String) poJSON.get("result"))) {
+                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                    return;
+                                }
+                                
                                 poSalesReservationControllers.SalesReservation().setWithUI(true);
                                 poJSON = poSalesReservationControllers.SalesReservation().ConfirmTransaction("");
                                 if (!"success".equals((String) poJSON.get("result"))) {

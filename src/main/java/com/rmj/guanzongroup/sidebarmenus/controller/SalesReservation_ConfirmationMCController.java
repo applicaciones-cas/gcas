@@ -61,6 +61,7 @@ import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.appdriver.constant.UserRight;
+import org.guanzon.cas.purchasing.status.PurchaseOrderStatus;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -137,15 +138,17 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
     // ──────────────────────────────
     // Buttons
     // ──────────────────────────────
-    @FXML private Button btnBrowse;
-    @FXML private Button btnNew;
     @FXML private Button btnUpdate;
     @FXML private Button btnSearch;
     @FXML private Button btnSave;
     @FXML private Button btnCancel;
-    @FXML private Button btnHistory;
+    @FXML private Button btnConfirm;
+    @FXML private Button btnReturn;
+    @FXML private Button btnVoid;
     @FXML private Button btnRetrieve;
+    @FXML private Button btnHistory;
     @FXML private Button btnClose;
+
 
     // ──────────────────────────────
     // Transaction Fields
@@ -228,8 +231,8 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
     private void initObject(){
         try {
             poSalesReservationControllers = new SalesReservationControllers(poApp, logWrapper);
-            poSalesReservationControllers.SalesReservation().setTransactionStatus(Sales_Reservation_Static.OPEN);
-            
+            poSalesReservationControllers.SalesReservation().setTransactionStatus(Sales_Reservation_Static.OPEN + Sales_Reservation_Static.CONFIRMED);
+            poSalesReservationControllers.SalesReservation().setWithUI(true);
             poJSON = poSalesReservationControllers.SalesReservation().InitTransaction();
             if (!"success".equals(poJSON.get("result"))) {
                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -357,7 +360,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
         if (!newVal) {
             try {
                 switch (lsTextFieldID) {
-                    case "tfCustomerName":
+                    case "tfsCustomerName":
                         prevCustomer = tfCustomerName.getText();
                         if(tfCustomerName.getText().isEmpty() || tfCustomerName.getText()== null){
                             tfCustomerName.setText(Sales_Reservation_Static.DefaultValues.default_empty_string);
@@ -432,7 +435,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                     case ENTER:
                     case F3:
                         switch (txtFieldID) {
-                            case "tfCustomerName":
+                            case "tfsCustomerName":
                                 poJSON = poSalesReservationControllers.SalesReservation().SearchClient(lsValue, false);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -485,8 +488,9 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                                     
                                 break;
                             case "tfsTransactionNo":
-                            case "tfsCustomerName":
+                                loadTableSourceList();
                                 break;
+                            
                         }
                         
                         
@@ -577,14 +581,15 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
     
     private void ClickButton() {
         Button[] buttons = {
-            btnBrowse,
-            btnNew,
             btnUpdate,
             btnSearch,
             btnSave,
             btnCancel,
-            btnHistory,
+            btnConfirm,
+            btnReturn,
+            btnVoid,
             btnRetrieve,
+            btnHistory,
             btnClose
         };
         for (Button btn : buttons) {
@@ -608,40 +613,97 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                             appUnload.unloadForm(AnchorMain, poApp, psFormName);
                         }
                         break;
-                    case "btnNew":
-                        poJSON = poSalesReservationControllers.SalesReservation().initFields();
-                        if("error".equals(poJSON.get("result"))){
-                            ShowMessageFX.Error((String) poJSON.get("message"), psFormName, null);
-                            break;
+                    case "btnConfirm":
+                        if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to confirm transaction?")) {
+                            
+                            poJSON = poSalesReservationControllers.SalesReservation().checkExistingTrans(
+                                    poSalesReservationControllers.SalesReservation().Master().getSourceCode(),
+                                    poSalesReservationControllers.SalesReservation().Master().getSourceNo());
+                            if ("error".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                return;
+                            }
+                            
+                            poJSON = poSalesReservationControllers.SalesReservation().ConfirmTransaction("");
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                return;
+                            }
+                            source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
+                                                setIndex06(Sales_Reservation_Static.highlighter.default_green);
+                                                tblSourceList.refresh();
                         }
-                        poSalesReservationControllers.SalesReservation().NewTransaction();
-                        loadRecordMaster();
-                        loadTableDetailList();
-                        pnEditMode =poSalesReservationControllers.SalesReservation().getEditMode();
-                        initButton(pnEditMode);
+                        clearMaster();
+                        clearDetail();
+                        detail_data.clear();
                         break;
-                    case "btnBrowse":
-                         
-                        poJSON = poSalesReservationControllers.SalesReservation().SearchTransaction(tfCustomerName.getText());
-                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning( (String) poJSON.get("message"), psFormName,null);
-                            tfCustomerName.setText(prevCustomer);
-                            tfCustomerName.selectAll();
-                            return;
-                        }
-                        loadRecordMaster();
-                        loadRecordDetail();
-                        loadTableDetailList();
-                        pnEditMode = EditMode.READY;
-                        initButton(pnEditMode);
-                        break;
+//                    case "btnNew":
+//                        poJSON = poSalesReservationControllers.SalesReservation().initFields();
+//                        if("error".equals(poJSON.get("result"))){
+//                            ShowMessageFX.Error((String) poJSON.get("message"), psFormName, null);
+//                            break;
+//                        }
+//                        poSalesReservationControllers.SalesReservation().NewTransaction();
+//                        loadRecordMaster();
+//                        loadTableDetailList();
+//                        pnEditMode =poSalesReservationControllers.SalesReservation().getEditMode();
+//                        initButton(pnEditMode);
+//                        break;
+//                    case "btnBrowse":
+//                         
+//                        poJSON = poSalesReservationControllers.SalesReservation().SearchTransaction(tfCustomerName.getText());
+//                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
+//                            ShowMessageFX.Warning( (String) poJSON.get("message"), psFormName,null);
+//                            tfCustomerName.setText(prevCustomer);
+//                            tfCustomerName.selectAll();
+//                            return;
+//                        }
+//                        loadRecordMaster();
+//                        loadRecordDetail();
+//                        loadTableDetailList();
+//                        pnEditMode = EditMode.READY;
+//                        initButton(pnEditMode);
+//                        break;
                     case "btnUpdate":
+                        
+                       poJSON = poSalesReservationControllers.SalesReservation().validateConfirmedTransactionApproval();
+                       if("error".equals(poJSON.get("result"))){
+                           ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                           return;
+                       }
+                
+//                        if (poSalesReservationControllers.SalesReservation().Master().getTransactionStatus().equals(Sales_Reservation_Static.CONFIRMED)) {
+//                            if (!ShowMessageFX.YesNo("Updating a confirmed transaction requires system user approval. \n"
+//                                    + "Do you want to proceed??", "Computerized Acounting System", psFormName)) {
+//                                return;
+//                            }
+//                            if (poApp.getUserLevel() <= UserRight.ENCODER) {
+//                                poJSON = ShowDialogFX.getUserApproval(poApp);
+//                                if (!"success".equals((String) poJSON.get("result"))) {
+//                                    return;
+//                                } else {
+//                                    if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
+//                                        ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
+//                                        return;
+//                                    }
+//                                }
+//                            }
+//                            poJSON = poSalesReservationControllers.SalesReservation().UpdateTransaction();
+//                            if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
+//                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+//                                return;
+//                            }
+//
+//                            pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
+//                            initButton(pnEditMode);
+//                        }
+
                         poJSON = poSalesReservationControllers.SalesReservation().UpdateTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
-                            ShowMessageFX.Warning( (String) poJSON.get("message"), psFormName,null);
+                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             return;
                         }
-                        
+
                         pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
                         initButton(pnEditMode);
                         break;
@@ -672,53 +734,72 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                             }
                             
                             if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
-                                for(int x = 0; x > source_data.size(); x++){
-                                    String sourceNo = source_data.get(x).getIndex03();
-                                     if (poSalesReservationControllers.SalesReservation().Master().getSourceNo().equals(sourceNo) ){
+                                for (int x = 0; x < source_data.size(); x++) {
                                         source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
-                                                setIndex05(Sales_Reservation_Static.highlighter.default_green);
-                                        tblSourceList.refresh();
-                                    }
+                                                setIndex06(Sales_Reservation_Static.highlighter.default_green);
+                                                tblSourceList.refresh();
                                 }
                             }
                             
                             ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
-                        
-                            if (ShowMessageFX.YesNo("Do you want to Confirm Transaction?",
-                                    "Computerized Acounting System", psFormName)) {
-                                poJSON = poSalesReservationControllers.SalesReservation().OpenTransaction(toConfirm);
-                                
-                                if (!"success".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                    return;
+                            poJSON = poSalesReservationControllers.SalesReservation().OpenTransaction(toConfirm);
+                            if (!poSalesReservationControllers.SalesReservation().Master().getTransactionStatus().equals(Sales_Reservation_Static.CONFIRMED)) {
+                                if (ShowMessageFX.YesNo("Do you want to Confirm Transaction?",
+                                        "Computerized Acounting System", psFormName)) {
+                                    if (!"success".equals((String) poJSON.get("result"))) {
+                                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                        return;
+                                    }
+                                    
+                                    poJSON = poSalesReservationControllers.SalesReservation().ConfirmTransaction("");
+                                    if (!"success".equals((String) poJSON.get("result"))) {
+                                        ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                        clearMaster();
+                                        clearDetail();
+                                        detail_data.clear();
+                                        pnEditMode = EditMode.READY;
+                                        initButton(pnEditMode);
+                                        return;
+                                    }
+                                    ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                                 }
-                                poSalesReservationControllers.SalesReservation().setWithUI(true);
-                                poJSON = poSalesReservationControllers.SalesReservation().ConfirmTransaction("");
-                                if (!"success".equals((String) poJSON.get("result"))) {
-                                    ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                    clearMaster();
-                                    clearDetail();
-                                    detail_data.clear();
-                                    pnEditMode = EditMode.READY;
-                                    initButton(pnEditMode);
-                                    return;
-                                }
-                                ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                             }
                         }
-                        btnNew.fire();
+                        initObject();
+                        clearMaster();
+                        clearDetail();
+                        detail_data.clear();
+                        pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
+                        initButton(pnEditMode);
                         break;
                     case "btnRetrieve":
                         loadTableSourceList();
+                        tblSourceList.refresh();
                         break;
                     case "btnSearch":
                         loadTableSourceList();
                         break;   
+                    case "btnVoid":
+                        if (ShowMessageFX.YesNo(null, psFormName, "Are you sure you want to void transaction?")) {
+                            poJSON = poSalesReservationControllers.SalesReservation().VoidTransaction("");
+                            if (!"success".equals((String) poJSON.get("result"))) {
+                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
+                                return;
+                            }
+                            source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
+                                                setIndex06(Sales_Reservation_Static.highlighter.default_red);
+                                                tblSourceList.refresh();
+
+                            clearMaster();
+                            clearDetail();
+                            detail_data.clear();
+                        }
+                        break;
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
                 Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        }   
     }
     
     private void initTableSourceList() {
@@ -747,7 +828,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                     if (item == null || empty) {
                         setStyle("");
                     } else {
-                        String lsStatus = item.getIndex05();
+                        String lsStatus = item.getIndex06();
                         switch (lsStatus) {
                             case Sales_Reservation_Static.highlighter.default_blue:
                                 setStyle("-fx-background-color: #A7C7E7;"); // light blue
@@ -891,6 +972,19 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                         if ("success".equals(poJSON.get("result"))) {
                             if (poSalesReservationControllers.SalesReservation().getSalesReservationCount() > 0) {
                                 for (int lnCntr = 0; lnCntr < poSalesReservationControllers.SalesReservation().getSalesReservationCount(); lnCntr++) {
+                                    
+                                    String Status = Sales_Reservation_Static.highlighter.default_default;
+                                    String MasterStatus = poSalesReservationControllers.SalesReservation().poSalesReservationMasterList(lnCntr).getTransactionStatus();
+                                    switch (MasterStatus) {
+                                        case Sales_Reservation_Static.OPEN:
+                                            Status = Sales_Reservation_Static.highlighter.default_default;
+                                            break;
+                                        case Sales_Reservation_Static.CONFIRMED:
+                                            Status = Sales_Reservation_Static.highlighter.default_green;
+                                            break;
+                                        default:
+                                            throw new AssertionError();
+                                    }
                                     source_data.add(new ModelSalesReservationSource(
                                             String.valueOf(lnCntr + 1),
                                             poSalesReservationControllers.SalesReservation().poSalesReservationMasterList(lnCntr).getTransactionNo(),
@@ -898,7 +992,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                                             poSalesReservationControllers.SalesReservation().poSalesReservationMasterList(lnCntr).Client_Master().getCompanyName(),
                                            CustomCommonUtil.setIntegerValueToDecimalFormat(
                                                     poSalesReservationControllers.SalesReservation().poSalesReservationMasterList(lnCntr).getAmountPaid(), true),
-                                            "", "", "", "", ""));
+                                            Status, "", "", "", ""));
                                 }
                             } else {
                                 source_data.clear();
@@ -971,8 +1065,10 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                     if ("success".equals((String) poJSON.get("result"))) {
                         poJSON = poSalesReservationControllers.SalesReservation().OpenTransaction(lsTransactionNo);
                         if ("success".equals((String) poJSON.get("result"))) {
+                            source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).setIndex06(Sales_Reservation_Static.highlighter.default_blue);
                             loadRecordMaster();
                             loadTableDetailList();
+                            tblSourceList.refresh();
                             pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
                         } else {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -1136,38 +1232,76 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
     
     
     
-    private void initButton(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        btnRetrieve.setVisible(true);
-        btnRetrieve.setManaged(true);
-        btnCancel.setVisible(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnSave.setVisible(lbShow);
-        btnSave.setManaged(lbShow);
-        btnSearch.setVisible(false);
-        btnSearch.setManaged(false);
-        btnUpdate.setVisible(false);
-        btnUpdate.setManaged(false);
-        btnBrowse.setVisible(!lbShow);
-        btnBrowse.setManaged(!lbShow);
-        btnNew.setVisible(false);
-        btnNew.setManaged(false);
-        btnClose.setVisible(true);
-        btnClose.setManaged(true);
-        
+//    private void initButton(int fnValue) {
+//        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+//        btnRetrieve.setVisible(true);
+//        btnRetrieve.setManaged(true);
+//        btnCancel.setVisible(lbShow);
+//        btnCancel.setManaged(lbShow);
+//        btnSave.setVisible(lbShow);
+//        btnSave.setManaged(lbShow);
+//        btnSearch.setVisible(false);
+//        btnSearch.setManaged(false);
+//        btnUpdate.setVisible(false);
+//        btnUpdate.setManaged(false);
+//        btnBrowse.setVisible(!lbShow);
+//        btnBrowse.setManaged(!lbShow);
+//        btnNew.setVisible(false);
+//        btnNew.setManaged(false);
+//        btnClose.setVisible(true);
+//        btnClose.setManaged(true);
+//        
+//        tfQuantity.setEditable(lbShow);
+//        tfBrand.setEditable(lbShow);
+//        taNotes.setEditable(lbShow);
+//        taRemarks.setEditable(lbShow);
+//        dpTransaction.setDisable(!lbShow);
+//        dpExpedtedDate.setDisable(!lbShow);
+//        if (pnEditMode == EditMode.READY){
+//            btnUpdate.setVisible(true);
+//            btnUpdate.setManaged(true);
+//        }
+//        
+//    }
+    
+     private void initButton(int fnEditMode) {
+        boolean lbShow = (pnEditMode == EditMode.UPDATE);
         tfQuantity.setEditable(lbShow);
         tfBrand.setEditable(lbShow);
         taNotes.setEditable(lbShow);
         taRemarks.setEditable(lbShow);
         dpTransaction.setDisable(!lbShow);
         dpExpedtedDate.setDisable(!lbShow);
-        if (pnEditMode == EditMode.READY){
-            btnUpdate.setVisible(true);
-            btnUpdate.setManaged(true);
-        }
         
+        btnClose.setVisible(!lbShow);
+        btnClose.setManaged(!lbShow);
+
+        CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
+        CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
+
+        CustomCommonUtil.setVisible(false, btnConfirm, btnReturn, btnVoid, btnUpdate);
+        CustomCommonUtil.setManaged(false, btnConfirm, btnReturn, btnVoid, btnUpdate);
+
+        btnHistory.setVisible(fnEditMode != EditMode.UNKNOWN);
+        btnHistory.setManaged(fnEditMode != EditMode.UNKNOWN);
+//        
+        if (fnEditMode == EditMode.READY) {
+            try {
+                switch (poSalesReservationControllers.SalesReservation().Master().getTransactionStatus()) {
+                    case Sales_Reservation_Static.OPEN:
+                        CustomCommonUtil.setVisible(true, btnConfirm, btnVoid, btnUpdate);
+                        CustomCommonUtil.setManaged(true, btnConfirm, btnVoid, btnUpdate);
+                        break;
+                    case Sales_Reservation_Static.CONFIRMED:
+                        CustomCommonUtil.setVisible(true, btnReturn, btnVoid, btnUpdate,btnHistory);
+                        CustomCommonUtil.setManaged(true, btnReturn, btnVoid, btnUpdate,btnHistory);
+                        break;
+                }
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
-    
     private void clearMaster() {
         TextInputControl[] txtFieldInputs = {
             tfTransactionNo,
