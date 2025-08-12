@@ -62,6 +62,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import ph.com.guanzongroup.cas.sales.t1.services.SalesControllers;
 import ph.com.guanzongroup.cas.sales.t1.status.SalesInquiryStatic;
+import org.guanzon.appdriver.constant.UserRight;
 
 /**
  * FXML Controller class
@@ -789,7 +790,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
 
     public void loadRecordMaster() {
         boolean lbDisable = pnEditMode == EditMode.ADDNEW;
-        JFXUtil.setDisabled(!lbDisable, tfClient, tfSalesPerson, cmbClientType);
+        JFXUtil.setDisabled(!lbDisable, tfClient, cmbClientType);
         try {
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
@@ -1010,6 +1011,7 @@ public class SalesInquiry_ConfirmationSPMCController implements Initializable, S
         JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
+        JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfSalesPerson);
     }
 
     public void initTableOnClick() {

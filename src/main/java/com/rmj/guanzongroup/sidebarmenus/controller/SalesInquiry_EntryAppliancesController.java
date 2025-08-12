@@ -60,7 +60,7 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.sales.t1.services.SalesControllers;
 import ph.com.guanzongroup.cas.sales.t1.status.SalesInquiryStatic;
-
+import org.guanzon.appdriver.constant.UserRight;
 /**
  *
  * @author Arsiela
@@ -301,8 +301,10 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
     }
 
     public void loadRecordMaster() {
+
         boolean lbDisable = pnEditMode == EditMode.ADDNEW;
-        JFXUtil.setDisabled(!lbDisable, tfClient, tfSalesPerson, cmbClientType, cmbCategoryType);
+        JFXUtil.setDisabled(!lbDisable, tfClient, cmbClientType, cmbCategoryType);
+
         try {
             Platform.runLater(() -> {
                 String lsActive = pnEditMode == EditMode.UNKNOWN ? "-1" : poSalesInquiryController.SalesInquiry().Master().getTransactionStatus();
@@ -941,11 +943,13 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
     }
 
     public void initTextFields() {
+
         JFXUtil.setFocusListener(txtArea_Focus, taRemarks);
         JFXUtil.setFocusListener(txtMaster_Focus, tfClient, tfSalesPerson, tfInquiryType);
         JFXUtil.setFocusListener(txtDetail_Focus, tfBarcode, tfDescription);
 
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apBrowse, apMaster, apDetail);
+        JFXUtil.setDisabled(oApp.getUserLevel() <= UserRight.ENCODER, tfSalesPerson);
     }
 
     private void initButton(int fnValue) {
@@ -953,6 +957,7 @@ public class SalesInquiry_EntryAppliancesController implements Initializable, Sc
         boolean lbShow2 = fnValue == EditMode.READY;
         boolean lbShow3 = (fnValue == EditMode.READY || fnValue == EditMode.UNKNOWN);
         dragLock.isEnabled = lbShow;
+
         // Manage visibility and managed state of other buttons
         JFXUtil.setButtonsVisibility(!lbShow, btnNew);
         JFXUtil.setButtonsVisibility(lbShow, btnSearch, btnSave, btnCancel);
