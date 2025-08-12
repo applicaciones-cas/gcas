@@ -366,7 +366,7 @@ public class SalesInquiry_HistoryMCController implements Initializable, ScreenIn
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             lsBrand,
-                                            lsDescription.trim()
+                                            lsDescription.trim().replaceAll("\\r?\\n", " ")
                                     ));
                             lsBrand = "";
                             lsModel = "";

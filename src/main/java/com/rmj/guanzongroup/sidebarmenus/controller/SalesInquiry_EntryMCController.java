@@ -521,7 +521,7 @@ public class SalesInquiry_EntryMCController implements Initializable, ScreenInte
                                     new ModelSalesInquiry_Detail(
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getPriority()),
                                             lsBrand,
-                                            lsDescription.trim(),
+                                            lsDescription.trim().replaceAll("\\r?\\n", " "),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getBrandId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getModelId()),
                                             String.valueOf(poSalesInquiryController.SalesInquiry().Detail(lnCtr).getColorId()),
