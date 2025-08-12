@@ -129,7 +129,7 @@ public class InquirySourceController implements Initializable, ScreenInterface {
     public void loadRecordSearch() {
         try {
             tfSearchInquiry.setText(poInquirySourceController.SalesInquirySources().getModel().getDescription());
-        } catch (SQLException ex ) {
+        } catch (SQLException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         } catch (GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -161,9 +161,7 @@ public class InquirySourceController implements Initializable, ScreenInterface {
                 /*Lost Focus*/
                 switch (lsTxtFieldID) {
                     case "tfDescription":
-                        if (lsValue.isEmpty()) {
-                            poInquirySourceController.SalesInquirySources().getModel().setDescription(lsValue);
-                        }
+                        poInquirySourceController.SalesInquirySources().getModel().setDescription(lsValue);
                         loadRecordMaster();
                         break;
                     case "tfSearchInquiry":
