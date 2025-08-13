@@ -73,7 +73,7 @@ import org.json.simple.parser.ParseException;
 public class InvRequest_Roq_ConfirmationCarGeneralController implements Initializable, ScreenInterface{
     @FXML
     private String psFormName = "Inv Stock Request ROQ Confirmation Car General";
-   @FXML
+  @FXML
         private AnchorPane AnchorMain,AnchorDetailMaster;
         unloadForm poUnload = new unloadForm();
         private InvWarehouseControllers invRequestController;
@@ -172,7 +172,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                     try {
                         //set edit mode to new transaction temporily to assign industry and company
                         invRequestController.StockRequest().NewTransaction();
-                        invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                         invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                         loadRecordSearch();
@@ -209,9 +208,7 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
         tfSearchTransNo.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 if (newValue.isEmpty()) {
-                    invRequestController.StockRequest().Master().setTransactionNo("");
-                    tfSearchTransNo.setText("");
-                    loadTableList();
+                    //loadTableList();
                 }
 
             }
@@ -221,7 +218,7 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                 if (newValue.isEmpty()) {
                     invRequestController.StockRequest().Master().setReferenceNo("");
                     tfSearchReferenceNo.setText("");
-                    loadTableList();
+                    //loadTableList();
                 }
             }
         });
@@ -511,7 +508,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
             switch (lsButton) {
 
                         case "btnBrowse":
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             
@@ -533,7 +529,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                             }
                             break;
                         case "btnRetrieve":
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                             invRequestController.StockRequest().setTransactionStatus("102");
@@ -576,16 +571,19 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                                 return;
                             }
 
-                            for (int lnCntr = 0; lnCntr <= detailCount - 1; lnCntr++) {
-                                double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
-                                String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
+                            for (int lnCntr = 0; lnCntr < detailCount; lnCntr++) {
+                            double quantity = ((Number) invRequestController.StockRequest().Detail(lnCntr).getValue("nQuantity")).doubleValue();
+                            String stockID = (String) invRequestController.StockRequest().Detail(lnCntr).getValue("sStockIDx");
 
-                                if (detailCount == 1 && (stockID == null || stockID.trim().isEmpty() || quantity == 0)) {
-                                    ShowMessageFX.Warning("Invalid item in order. Ensure all items have a valid Stock ID and quantity greater than 0.", psFormName, null);
-                                    return;
-                                }
-                                hasValidItem = true;
+                            if (stockID == null || stockID.trim().isEmpty()) {
+                                continue; 
                             }
+
+                            if (quantity > 0) {
+                                hasValidItem = true;
+                                break; 
+                            }
+                        }
 
                             if (!hasValidItem) {
                                 ShowMessageFX.Warning("Your order must have at least one valid item with a Stock ID and quantity greater than 0.", psFormName, null);
@@ -630,8 +628,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
 
                             if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction now?")) {
                                 try {
-                                    
-
                                     loJSON = invRequestController.StockRequest().ConfirmTransaction("Confirmed");
                                     if (!"success".equals((String) loJSON.get("result"))) {
                                         ShowMessageFX.Warning((String) loJSON.get("message"), psFormName, null);
@@ -648,7 +644,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                                     pnTblInvDetailRow = -1;
                                     tblViewOrderDetails.getSelectionModel().clearSelection();
 
-//                                    Platform.runLater(() -> btnNew.fire());
                                 } catch (ParseException ex) {
                                     Logger.getLogger(InvRequest_EntryMcGeneralController.class.getName()).log(Level.SEVERE, null, ex);
                                     ShowMessageFX.Error("Error confirming transaction", psFormName, null);
@@ -676,7 +671,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                                 tblViewOrderDetails.getSelectionModel().clearSelection();
                             }
                             break;
-
                       case "btnConfirm":
                                 if (ShowMessageFX.YesNo(null, psFormName, "Do you want to confirm this transaction?")) {
                                     try {
@@ -755,7 +749,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                             tableListInformation.refresh();
                                     
                             invRequestController.StockRequest().setTransactionStatus(StockRequestStatus.OPEN);
-                            invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                         }
                         break;
@@ -1026,7 +1019,7 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                     );
 
             loTxtField.forEach(tf -> tf.setOnKeyPressed(event -> txtField_KeyPressed(event)));
-        }  
+        } 
         private void initButtonsClickActions() {
             List<Button> buttons = Arrays.asList( btnSave, btnCancel,
                     btnClose,btnBrowse,btnUpdate,btnRetrieve,btnConfirm,btnVoid);
@@ -1048,8 +1041,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                   case F3:
                       switch (fieldId) {
                                 case "tfSearchTransNo":
-                                    System.out.print("Company ID" + psCompanyID);
-                                    invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                     invRequestController.StockRequest().setTransactionStatus("102");
@@ -1059,7 +1050,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                                         loadMaster();
                                         pnEditMode = invRequestController.StockRequest().getEditMode();
                                         loadDetail();
-                                        loadTableList();
                                         loadTableInvDetail();
                                         initButtons(pnEditMode);
                                     } else {
@@ -1067,8 +1057,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                                     }
                                     break;
                                 case "tfSearchReferenceNo":
-                                System.out.print("Enter pressed");
-                                invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                                 invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                                 invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
                                 invRequestController.StockRequest().setTransactionStatus("102");
@@ -1078,7 +1066,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                                     loadMaster();
                                     pnEditMode = invRequestController.StockRequest().getEditMode();
                                     loadDetail();
-                                    loadTableList();
                                     loadTableInvDetail();
                                     initButtons(pnEditMode);
                                 } else {
@@ -1141,7 +1128,6 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
                   System.exit(1);
               }
       }
-       
 
 
    private void loadTableInvDetailAndSelectedRow() {
@@ -1160,7 +1146,7 @@ public class InvRequest_Roq_ConfirmationCarGeneralController implements Initiali
             }
         }
     
-     private void setOrderQuantityToDetail(String fsValue) {
+    private void setOrderQuantityToDetail(String fsValue) {
             if (fsValue.isEmpty()) {
                 fsValue = "0";
             }
