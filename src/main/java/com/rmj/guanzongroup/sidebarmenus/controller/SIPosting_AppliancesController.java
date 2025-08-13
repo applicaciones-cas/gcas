@@ -405,6 +405,7 @@ public class SIPosting_AppliancesController implements Initializable, ScreenInte
                     break;
                 case "cbVatable":
                     poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).isVatable(cbVatable.isSelected());
+                    loadRecordMaster();
                     break;
             }
         }

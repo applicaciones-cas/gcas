@@ -406,6 +406,7 @@ public class SIPosting_MPController implements Initializable, ScreenInterface {
                     break;
                 case "cbVatable":
                     poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).isVatable(cbVatable.isSelected());
+                    loadRecordMaster();
                     break;
             }
         }

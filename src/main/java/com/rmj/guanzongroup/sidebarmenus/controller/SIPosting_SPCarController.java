@@ -353,6 +353,7 @@ public class SIPosting_SPCarController implements Initializable, ScreenInterface
                     break;
                 case "cbVatable":
                     poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).isVatable(cbVatable.isSelected());
+                    loadRecordMaster();
                     break;
             }
         }

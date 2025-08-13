@@ -354,6 +354,7 @@ public class SIPosting_MonarchFoodController implements Initializable, ScreenInt
                     break;
                 case "cbVatable":
                     poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).isVatable(cbVatable.isSelected());
+                    loadRecordMaster();
                     break;
             }
         }

@@ -354,6 +354,7 @@ public class SIPosting_MonarchHospitalityController implements Initializable, Sc
                     break;
                 case "cbVatable":
                     poPurchaseReceivingController.PurchaseOrderReceiving().Detail(pnDetail).isVatable(cbVatable.isSelected());
+                    loadRecordMaster();
                     break;
             }
         }
