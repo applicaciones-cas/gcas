@@ -231,7 +231,8 @@ public class SalesmanController implements Initializable, ScreenInterface {
         JFXUtil.setFocusListener(txtField_Focus, tfEmployee, tfBranch, tfLastname, tfFirstname, tfMiddlename);
         /*textFields KeyPressed PROPERTY*/
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apSearchMaster);
-        tblList.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        
+        JFXUtil.disableArrowNavigation(tblList);
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -369,12 +370,11 @@ public class SalesmanController implements Initializable, ScreenInterface {
                 btnActivate.setText("Activate");
                 faActivate.setGlyphName("CHECK");
             }
-
-            tfEmployee.setText(oTrans.Salesman().ModelList(pnListRow).getFullName());
-            tfBranch.setText(oTrans.Salesman().ModelList(pnListRow).Branch().getBranchName());
-            tfLastname.setText(oTrans.Salesman().ModelList(pnListRow).getLastName());
-            tfFirstname.setText(oTrans.Salesman().ModelList(pnListRow).getFirstName());
-            tfMiddlename.setText(oTrans.Salesman().ModelList(pnListRow).getMiddleName());
+            tfEmployee.setText(oTrans.Salesman().getModel().getFullName());
+            tfBranch.setText(oTrans.Salesman().getModel().Branch().getBranchName());
+            tfLastname.setText(oTrans.Salesman().getModel().getLastName());
+            tfFirstname.setText(oTrans.Salesman().getModel().getFirstName());
+            tfMiddlename.setText(oTrans.Salesman().getModel().getMiddleName());
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -438,28 +438,6 @@ public class SalesmanController implements Initializable, ScreenInterface {
         tblList.autosize();
     }
 
-    private void tableKeyEvents(KeyEvent event) {
-        if (ListData.size() > 0) {
-            TableView currentTable = (TableView) event.getSource();
-            TablePosition focusedCell = currentTable.getFocusModel().getFocusedCell();
-            if (focusedCell != null) {
-                switch (event.getCode()) {
-                    case TAB:
-                    case DOWN:
-                        pnListRow = JFXUtil.moveToNextRow(currentTable);
-                        break;
-                    case UP:
-                        pnListRow = JFXUtil.moveToPreviousRow(currentTable);
-                        break;
-
-                    default:
-                        break;
-                }
-                loadRecord();
-                event.consume();
-            }
-        }
-    }
 
     @FXML
     void tblList_Clicked(MouseEvent event) {

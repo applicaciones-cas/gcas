@@ -9,7 +9,6 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -43,7 +42,6 @@ import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -105,19 +103,14 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
 import org.apache.poi.ss.formula.functions.T;
 import org.json.simple.JSONObject;
 import javafx.concurrent.Task;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TableCell;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import org.guanzon.appdriver.agent.ShowMessageFX;
 
 /**
@@ -313,7 +306,6 @@ public class JFXUtil {
 
     public static void setDatePickerFormat(DatePicker... datePickers) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
         for (DatePicker datePicker : datePickers) {
             datePicker.setConverter(new StringConverter<LocalDate>() {
                 @Override
@@ -659,7 +651,7 @@ public class JFXUtil {
                             if (empty || item == null) {
                                 setText(null);
                             } else {
-                                String text = item.toString().replaceAll("\\r?\\n", " ");
+                                String text = item.toString().replaceAll("\\r?\\n", "");
                                 setText(text);
                             }
                         }
@@ -2082,10 +2074,11 @@ public class JFXUtil {
         }
     }
 
-//    ChangeListener<Boolean> txtArea_Focus = JFXUtil.createFocusListener(TextArea.class,
+// sample usage
+//    ChangeListener<Boolean> txtArea_Focus = JFXUtil.FocusListener(TextArea.class,
 //            (lsID, lsValue) -> {
 //            });
-    public static ChangeListener<Boolean> createFocusListener(Class<? extends TextInputControl> nodeType, BiConsumer<String, String> onLostFocus) {
+    public static ChangeListener<Boolean> FocusListener(Class<? extends TextInputControl> nodeType, BiConsumer<String, String> onLostFocus) {
         return (observable, oldValue, newValue) -> {
             Object bean = ((ReadOnlyBooleanPropertyBase) observable).getBean();
             if (!nodeType.isInstance(bean)) {
@@ -2104,6 +2097,14 @@ public class JFXUtil {
                 onLostFocus.accept(id, value.trim());
             }
         };
+    }
+
+    public static <T> void disableArrowNavigation(TableView<T> table) {
+        table.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.UP || event.getCode() == KeyCode.DOWN) {
+                event.consume(); // Prevents moving up/down between rows
+            }
+        });
     }
 
 }

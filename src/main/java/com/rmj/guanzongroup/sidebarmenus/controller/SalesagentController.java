@@ -111,7 +111,6 @@ public class SalesagentController implements Initializable, ScreenInterface {
                         pnEditMode = EditMode.UNKNOWN;
                         return;
                     }
-                     oTrans.SalesAgent().getModelCount();
                     pnEditMode = oTrans.SalesAgent().getEditMode();
                     break;
                 case "btnUpdate":
@@ -232,8 +231,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
         JFXUtil.setFocusListener(txtField_Focus, tfSalesAgent, tfProfession, tfCompany, tfPosition);
         /*textFields KeyPressed PROPERTY*/
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apSearchMaster);
-
-        tblList.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
+        JFXUtil.disableArrowNavigation(tblList);
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -406,29 +404,6 @@ public class SalesagentController implements Initializable, ScreenInterface {
 
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
-        }
-    }
-
-    private void tableKeyEvents(KeyEvent event) {
-        if (ListData.size() > 0) {
-            TableView currentTable = (TableView) event.getSource();
-            TablePosition focusedCell = currentTable.getFocusModel().getFocusedCell();
-            if (focusedCell != null) {
-                switch (event.getCode()) {
-                    case TAB:
-                    case DOWN:
-                        pnListRow = JFXUtil.moveToNextRow(currentTable);
-                        break;
-                    case UP:
-                        pnListRow = JFXUtil.moveToPreviousRow(currentTable);
-                        break;
-
-                    default:
-                        break;
-                }
-                loadRecord();
-                event.consume();
-            }
         }
     }
 
