@@ -18,8 +18,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.TAB;
+import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -66,7 +70,6 @@ public class SalesagentController implements Initializable, ScreenInterface {
     @FXML
     private TextField tfSalesAgent, tfProfession, tfCompany, tfPosition, tfSearchSalesAgent;
 
-    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -108,6 +111,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
                         pnEditMode = EditMode.UNKNOWN;
                         return;
                     }
+                     oTrans.SalesAgent().getModelCount();
                     pnEditMode = oTrans.SalesAgent().getEditMode();
                     break;
                 case "btnUpdate":
@@ -117,7 +121,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
                         ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                         return;
                     }
-                    
+
                     pnEditMode = oTrans.SalesAgent().getEditMode();
                     break;
                 case "btnSave":
@@ -127,7 +131,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
                             System.err.println((String) poJSON.get("message"));
                             ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                             return;
-                        } 
+                        }
                         ShowMessageFX.Information("Record saved successfully", pxeModuleName, null);
                         pnEditMode = EditMode.UNKNOWN;
                     } else {
@@ -151,7 +155,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                 return;
-                            } 
+                            }
                         } else {
                             return;
                         }
@@ -162,12 +166,12 @@ public class SalesagentController implements Initializable, ScreenInterface {
                                 System.err.println((String) poJSON.get("message"));
                                 ShowMessageFX.Warning((String) poJSON.get("message"), pxeModuleName, null);
                                 return;
-                            } 
+                            }
                         } else {
                             return;
                         }
                     }
-                    
+
                     ShowMessageFX.Information("Record updated successfully", pxeModuleName, null);
                     pnEditMode = EditMode.UNKNOWN;
                     break;
@@ -195,16 +199,16 @@ public class SalesagentController implements Initializable, ScreenInterface {
                     ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                     return;
             }
-            
-            if(lsButton.equals("btnSave") || lsButton.equals("btnCancel") || lsButton.equals("btnActivate")){
+
+            if (lsButton.equals("btnSave") || lsButton.equals("btnCancel") || lsButton.equals("btnActivate")) {
                 oTrans.SalesAgent().resetModel();
                 clearFields();
             }
-            
+
             initButton(pnEditMode);
             loadRecord();
             loadTableDetail();
-            
+
         } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -219,7 +223,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
         JFXUtil.setButtonsVisibility(lbShow, btnSave, btnCancel);
         JFXUtil.setButtonsVisibility(lbShow2, btnUpdate, btnActivate);
         JFXUtil.setButtonsVisibility(lbShow3, btnClose);
-        
+
         JFXUtil.setDisabled(!lbShow, apMaster);
     }
 
@@ -229,6 +233,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
         /*textFields KeyPressed PROPERTY*/
         JFXUtil.setKeyPressedListener(this::txtField_KeyPressed, apMaster, apSearchMaster);
 
+        tblList.addEventFilter(KeyEvent.KEY_PRESSED, this::tableKeyEvents);
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -288,7 +293,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
             /*Lost Focus*/
             switch (lsTextField) {
                 case "tfSalesAgent":
-                    if(lsValue.isEmpty()){
+                    if (lsValue.isEmpty()) {
                         poJSON = oTrans.SalesAgent().getModel().setClientId("");
                         if ("error".equals((String) poJSON.get("result"))) {
                             System.err.println((String) poJSON.get("message"));
@@ -331,7 +336,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
         try {
             boolean lbDisable = pnEditMode == EditMode.ADDNEW;
             JFXUtil.setDisabled(!lbDisable, tfSalesAgent);
-            
+
             boolean lbActive = oTrans.SalesAgent().getModel().getRecordStatus();
             cbActive.setSelected(lbActive);
             if (lbActive) {
@@ -341,11 +346,11 @@ public class SalesagentController implements Initializable, ScreenInterface {
                 btnActivate.setText("Activate");
                 faActivate.setGlyphName("CHECK");
             }
-            
-            tfSalesAgent.setText(oTrans.SalesAgent().getModel().Client().getCompanyName());
-            tfProfession.setText(oTrans.SalesAgent().getModel().getProfession());
-            tfCompany.setText(oTrans.SalesAgent().getModel().getCompany());
-            tfPosition.setText(oTrans.SalesAgent().getModel().getPosition());
+
+            tfSalesAgent.setText(oTrans.SalesAgent().ModelList(pnListRow).Client().getCompanyName());
+            tfProfession.setText(oTrans.SalesAgent().ModelList(pnListRow).getProfession());
+            tfCompany.setText(oTrans.SalesAgent().ModelList(pnListRow).getCompany());
+            tfPosition.setText(oTrans.SalesAgent().ModelList(pnListRow).getPosition());
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
@@ -355,7 +360,7 @@ public class SalesagentController implements Initializable, ScreenInterface {
     private void clearFields() {
         btnActivate.setText("Activate");
         cbActive.setSelected(false);
-        
+
         JFXUtil.clearTextFields(apMaster);
     }
 
@@ -376,23 +381,57 @@ public class SalesagentController implements Initializable, ScreenInterface {
             if (lnItem <= 0) {
                 return;
             }
-
             for (lnCtr = 0; lnCtr <= lnItem - 1; lnCtr++) {
-                    ListData.add(new ModelListParameter(
-                            (String) oTrans.SalesAgent().ModelList(lnCtr).getClientId(),
-                            (String) oTrans.SalesAgent().ModelList(lnCtr).Client().getCompanyName(),
-                            "",
-                            ""));
+                ListData.add(new ModelListParameter(
+                        (String) oTrans.SalesAgent().ModelList(lnCtr).getClientId(),
+                        (String) oTrans.SalesAgent().ModelList(lnCtr).Client().getCompanyName(),
+                        "",
+                        ""));
 
             }
-
+            if (pnListRow < 0 || pnListRow
+                    >= ListData.size()) {
+                if (!ListData.isEmpty()) {
+                    /* FOCUS ON FIRST ROW */
+                    JFXUtil.selectAndFocusRow(tblList, 0);
+                    pnListRow = tblList.getSelectionModel().getSelectedIndex();
+                    loadRecord();
+                }
+            } else {
+                /* FOCUS ON THE ROW THAT pnRowDetail POINTS TO */
+                JFXUtil.selectAndFocusRow(tblList, pnListRow);
+                loadRecord();
+            }
             initListGrid();
-        
+
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
     }
-    
+
+    private void tableKeyEvents(KeyEvent event) {
+        if (ListData.size() > 0) {
+            TableView currentTable = (TableView) event.getSource();
+            TablePosition focusedCell = currentTable.getFocusModel().getFocusedCell();
+            if (focusedCell != null) {
+                switch (event.getCode()) {
+                    case TAB:
+                    case DOWN:
+                        pnListRow = JFXUtil.moveToNextRow(currentTable);
+                        break;
+                    case UP:
+                        pnListRow = JFXUtil.moveToPreviousRow(currentTable);
+                        break;
+
+                    default:
+                        break;
+                }
+                loadRecord();
+                event.consume();
+            }
+        }
+    }
+
     public void initListGrid() {
         JFXUtil.setColumnLeft(tblClientId, tblSalesAgent);
         JFXUtil.setColumnsIndexAndDisableReordering(tblList);
@@ -406,10 +445,10 @@ public class SalesagentController implements Initializable, ScreenInterface {
         try {
             pnListRow = tblList.getSelectionModel().getSelectedIndex();
             if (pnListRow >= 0) {
-                    oTrans.SalesAgent().openRecord(ListData.get(pnListRow).getIndex01());
-                    loadRecord();
-                    pnEditMode = oTrans.SalesAgent().getEditMode();
-                    initButton(pnEditMode);
+                oTrans.SalesAgent().openRecord(ListData.get(pnListRow).getIndex01());
+                loadRecord();
+                pnEditMode = oTrans.SalesAgent().getEditMode();
+                initButton(pnEditMode);
             }
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
