@@ -353,14 +353,27 @@ public class InvRequest_HistoryMcSpController implements Initializable, ScreenIn
                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                    invRequestController.StockRequest().setTransactionStatus("102");
+                    if (tfSearchTransNo.getText().isEmpty() && tfSearchReferenceNo.getText().isEmpty()) {
+                        // Empty criteria - show both OPEN and CONFIRMED
+                        invRequestController.StockRequest().setTransactionStatus(
+                            StockRequestStatus.OPEN + "," + StockRequestStatus.CONFIRMED
+                        );
+                    } else {
+                        // Specific search - include VOIDED also
+                        invRequestController.StockRequest().setTransactionStatus(
+                        StockRequestStatus.OPEN + "," + StockRequestStatus.CONFIRMED + "," + StockRequestStatus.VOID);
+//                    invRequestController.StockRequest().setTransactionStatus("102");
+                    }
                     loadTableList();
                     break;
                 case "btnBrowse":
                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                    invRequestController.StockRequest().setTransactionStatus("102");
+                    //invRequestController.StockRequest().setTransactionStatus("102");
+                    invRequestController.StockRequest().setTransactionStatus(
+                    StockRequestStatus.OPEN + "," + StockRequestStatus.CONFIRMED + "," + StockRequestStatus.VOID
+                    );
                     loJSON = invRequestController.StockRequest().searchTransaction();
 
                     if (!"error".equals((String) loJSON.get("result"))) {
