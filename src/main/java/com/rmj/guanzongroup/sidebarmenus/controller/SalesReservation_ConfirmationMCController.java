@@ -43,6 +43,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.F4;
 import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
@@ -217,8 +220,8 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-         initObject();
-         initButton(pnEditMode);
+//         initObject();
+         initButton(EditMode.UNKNOWN);
          ClickButton();
          initFields();
          initTableSourceList();
@@ -247,17 +250,18 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                     System.out.println("inits : " + psIndustryID + " " +  poSalesReservationControllers.SalesReservation().Master().getIndustryID());
                     //                loadRecordSearch();
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }));
                 pnEditMode =  poSalesReservationControllers.SalesReservation().getEditMode();
                 poSalesReservationControllers.SalesReservation().Master().setIndustryID(psIndustryID);
                 poSalesReservationControllers.SalesReservation().Master().setCompanyID(psCompanyID);
+                poSalesReservationControllers.SalesReservation().setCategoryCd(psCategoryID);
                 System.out.println("psIndustryID : " + psIndustryID);
                 System.out.println("psCompanyID : " + psIndustryID);
                 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                 }
     }
     
@@ -289,8 +293,8 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
         };
 
         TextInputControl[] keyPressFields = {
-            tfTransactionNo,
-            tfCustomerName,
+            tfsTransactionNo,
+            tfsCustomerName,
             tfAmountPaid,
             tfQuantity,
             tfModel,
@@ -360,17 +364,9 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
         if (!newVal) {
             try {
                 switch (lsTextFieldID) {
-                    case "tfsCustomerName":
-                        prevCustomer = tfCustomerName.getText();
-                        if(tfCustomerName.getText().isEmpty() || tfCustomerName.getText()== null){
-                            tfCustomerName.setText(Sales_Reservation_Static.DefaultValues.default_empty_string);
-                            tfAddress.setText(Sales_Reservation_Static.DefaultValues.default_empty_string);
-                            poSalesReservationControllers.SalesReservation().Master().setClientID(Sales_Reservation_Static.DefaultValues.default_empty_string);
-                            poSalesReservationControllers.SalesReservation().Master().setAddressID(Sales_Reservation_Static.DefaultValues.default_empty_string);
-//                            loadTableSourceList();
-                        }
-                        break;
-                    case "tfModel":
+
+                    case "tfsTRansactionNo":
+                        initObject();
                         loadTableDetailList();
                         break;
                     case "tfQuantity":
@@ -436,24 +432,18 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                     case F3:
                         switch (txtFieldID) {
                             case "tfsCustomerName":
+                                initObject();
                                 poJSON = poSalesReservationControllers.SalesReservation().SearchClient(lsValue, false);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                    tfCustomerName.selectAll();
+                                    tfsCustomerName.selectAll();
                                     break;
                                 }
-                                tfCustomerName.setText( poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName());
-                                poSalesReservationControllers.SalesReservation().Master().setAddressID(
-                                        poSalesReservationControllers.SalesReservation().Master().Client_Address().getAddressId());
-                                tfAddress.setText(poSalesReservationControllers.SalesReservation().Master().Client_Address().getAddress());
-//                                if (tfTerm.getText().isEmpty()) {
-//                                    tfTerm.requestFocus();
-//                                }
-                                prevCustomer = tfCustomerName.getText();
+                                tfsCustomerName.setText( poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName());
+                                
                                 loadTableSourceList();
                                 break;
-                            case "tfDestination":
-                            case "tfTerm":
+                            
                             case "tfBrand":
                                 poJSON = poSalesReservationControllers.SalesReservation().SearchBrand(lsValue, false, pnDetailRow
                                 );
@@ -488,6 +478,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                                     
                                 break;
                             case "tfsTransactionNo":
+                                initObject();
                                 loadTableSourceList();
                                 break;
                             
@@ -505,11 +496,9 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                         break;
                 }
             }
-        } catch (ExceptionInInitializerError | NullPointerException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationMCController.class
+        } catch (ExceptionInInitializerError | NullPointerException | SQLException | GuanzonException | CloneNotSupportedException ex) {
+            Logger.getLogger(SalesReservation_ConfirmationCar.class
                     .getName()).log(Level.SEVERE, null, ex);
-        } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -548,7 +537,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException   ex) {
-            Logger.getLogger(SalesReservation_ConfirmationMCController.class
+            Logger.getLogger(SalesReservation_ConfirmationCar.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -636,74 +625,22 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                         clearMaster();
                         clearDetail();
                         detail_data.clear();
+                        initButton(EditMode.UNKNOWN);
                         break;
-//                    case "btnNew":
-//                        poJSON = poSalesReservationControllers.SalesReservation().initFields();
-//                        if("error".equals(poJSON.get("result"))){
-//                            ShowMessageFX.Error((String) poJSON.get("message"), psFormName, null);
-//                            break;
-//                        }
-//                        poSalesReservationControllers.SalesReservation().NewTransaction();
-//                        loadRecordMaster();
-//                        loadTableDetailList();
-//                        pnEditMode =poSalesReservationControllers.SalesReservation().getEditMode();
-//                        initButton(pnEditMode);
-//                        break;
-//                    case "btnBrowse":
-//                         
-//                        poJSON = poSalesReservationControllers.SalesReservation().SearchTransaction(tfCustomerName.getText());
-//                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
-//                            ShowMessageFX.Warning( (String) poJSON.get("message"), psFormName,null);
-//                            tfCustomerName.setText(prevCustomer);
-//                            tfCustomerName.selectAll();
-//                            return;
-//                        }
-//                        loadRecordMaster();
-//                        loadRecordDetail();
-//                        loadTableDetailList();
-//                        pnEditMode = EditMode.READY;
-//                        initButton(pnEditMode);
-//                        break;
-                    case "btnUpdate":
                         
+                    case "btnUpdate":
                        poJSON = poSalesReservationControllers.SalesReservation().validateConfirmedTransactionApproval();
                        if("error".equals(poJSON.get("result"))){
                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                            return;
                        }
                 
-//                        if (poSalesReservationControllers.SalesReservation().Master().getTransactionStatus().equals(Sales_Reservation_Static.CONFIRMED)) {
-//                            if (!ShowMessageFX.YesNo("Updating a confirmed transaction requires system user approval. \n"
-//                                    + "Do you want to proceed??", "Computerized Acounting System", psFormName)) {
-//                                return;
-//                            }
-//                            if (poApp.getUserLevel() <= UserRight.ENCODER) {
-//                                poJSON = ShowDialogFX.getUserApproval(poApp);
-//                                if (!"success".equals((String) poJSON.get("result"))) {
-//                                    return;
-//                                } else {
-//                                    if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
-//                                        ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
-//                                        return;
-//                                    }
-//                                }
-//                            }
-//                            poJSON = poSalesReservationControllers.SalesReservation().UpdateTransaction();
-//                            if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
-//                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-//                                return;
-//                            }
-//
-//                            pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
-//                            initButton(pnEditMode);
-//                        }
-
                         poJSON = poSalesReservationControllers.SalesReservation().UpdateTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             return;
                         }
-
+                        loadTableDetailList();
                         pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
                         initButton(pnEditMode);
                         break;
@@ -712,7 +649,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                             clearMaster();
                             clearDetail();
                             detail_data.clear();
-                            pnEditMode = EditMode.READY;
+                            pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
                         }
                         break;
@@ -733,13 +670,13 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                                 return;
                             }
                             
-                            if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
-                                for (int x = 0; x < source_data.size(); x++) {
-                                        source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
-                                                setIndex06(Sales_Reservation_Static.highlighter.default_green);
-                                                tblSourceList.refresh();
-                                }
-                            }
+//                            if(pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE){
+//                                for (int x = 0; x < source_data.size(); x++) {
+//                                        source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
+//                                                setIndex06(Sales_Reservation_Static.highlighter.default_green);
+//                                                tblSourceList.refresh();
+//                                }
+//                            }
                             
                             ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
                             poJSON = poSalesReservationControllers.SalesReservation().OpenTransaction(toConfirm);
@@ -762,6 +699,11 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                                         return;
                                     }
                                     ShowMessageFX.Information((String) poJSON.get("message"), psFormName, null);
+                                    for (int x = 0; x < source_data.size(); x++) {
+                                        source_data.get(tblSourceList.getSelectionModel().getSelectedIndex()).
+                                                setIndex06(Sales_Reservation_Static.highlighter.default_green);
+                                        tblSourceList.refresh();
+                                    }
                                 }
                             }
                         }
@@ -769,10 +711,10 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                         clearMaster();
                         clearDetail();
                         detail_data.clear();
-                        pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
-                        initButton(pnEditMode);
+                        initButton(EditMode.UNKNOWN);   
                         break;
                     case "btnRetrieve":
+                        initObject();
                         loadTableSourceList();
                         tblSourceList.refresh();
                         break;
@@ -793,11 +735,12 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                             clearMaster();
                             clearDetail();
                             detail_data.clear();
+                            initButton(EditMode.UNKNOWN);
                         }
                         break;
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-                Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
             }
         }   
     }
@@ -919,7 +862,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
             dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
                     poSalesReservationControllers.SalesReservation().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -946,7 +889,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getQuantity(), false));
            
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -1052,11 +995,11 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
         new Thread(task).start(); // Run task in background
     }
     private void tblSourceList_Clicked(MouseEvent event) {
-        
+            
             pnSourceRow = tblSourceList.getSelectionModel().getSelectedIndex();
             if (event.getClickCount() == 2) {
-              
-                    ModelSalesReservationSource selectedItem = (ModelSalesReservationSource) tblSourceList.getSelectionModel().getSelectedItem();
+               
+                ModelSalesReservationSource selectedItem = (ModelSalesReservationSource) tblSourceList.getSelectionModel().getSelectedItem();
                 clearDetail();
                 if (selectedItem != null) {
                 try {
@@ -1078,30 +1021,13 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
 
                     }
                 } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                 }
                     
                 }
             
             }
         
-    }
-    private void loadTableDetailAndSelectedRow() {
-        if (pnDetailRow >= 0) {
-            Platform.runLater(() -> {
-                // Run a delay after the UI thread is free
-                PauseTransition delay = new PauseTransition(Duration.millis(10));
-                delay.setOnFinished(event -> {
-                    Platform.runLater(() -> { // Run UI updates in the next cycle
-                        loadTableDetailList();
-                    });
-                });
-                delay.play();
-            });
-            loadRecordMaster();
-            loadRecordDetail();
-//            initDetailFocus();
-        }
     }
     
     private Node createPage(int pageIndex) {
@@ -1174,18 +1100,9 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                             JFXUtil.selectAndFocusRow(tblDetailList, pnDetailRow);
                             loadRecordDetail();
                         }
-//                        poJSON = poSalesReservationControllers.SalesReservation().computeFields();
-//                        if ("error".equals((String) poJSON.get("result"))) {
-//                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-//                            return;
-//                        }
                         loadRecordDetail();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
+                        Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
                 return null;
@@ -1230,40 +1147,6 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
         }
     }
     
-    
-    
-//    private void initButton(int fnValue) {
-//        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-//        btnRetrieve.setVisible(true);
-//        btnRetrieve.setManaged(true);
-//        btnCancel.setVisible(lbShow);
-//        btnCancel.setManaged(lbShow);
-//        btnSave.setVisible(lbShow);
-//        btnSave.setManaged(lbShow);
-//        btnSearch.setVisible(false);
-//        btnSearch.setManaged(false);
-//        btnUpdate.setVisible(false);
-//        btnUpdate.setManaged(false);
-//        btnBrowse.setVisible(!lbShow);
-//        btnBrowse.setManaged(!lbShow);
-//        btnNew.setVisible(false);
-//        btnNew.setManaged(false);
-//        btnClose.setVisible(true);
-//        btnClose.setManaged(true);
-//        
-//        tfQuantity.setEditable(lbShow);
-//        tfBrand.setEditable(lbShow);
-//        taNotes.setEditable(lbShow);
-//        taRemarks.setEditable(lbShow);
-//        dpTransaction.setDisable(!lbShow);
-//        dpExpedtedDate.setDisable(!lbShow);
-//        if (pnEditMode == EditMode.READY){
-//            btnUpdate.setVisible(true);
-//            btnUpdate.setManaged(true);
-//        }
-//        
-//    }
-    
      private void initButton(int fnEditMode) {
         boolean lbShow = (pnEditMode == EditMode.UPDATE);
         tfQuantity.setEditable(lbShow);
@@ -1272,17 +1155,17 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
         taRemarks.setEditable(lbShow);
         dpTransaction.setDisable(!lbShow);
         dpExpedtedDate.setDisable(!lbShow);
+        btnReturn.setVisible(false);
+        btnReturn.setManaged(false);
         
         btnClose.setVisible(!lbShow);
         btnClose.setManaged(!lbShow);
-        btnClose.setVisible(false);
-        btnClose.setManaged(false);
 
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
-        CustomCommonUtil.setVisible(false, btnConfirm,  btnVoid, btnUpdate);
-        CustomCommonUtil.setManaged(false, btnConfirm,  btnVoid, btnUpdate);
+        CustomCommonUtil.setVisible(false, btnConfirm, btnVoid, btnUpdate);
+        CustomCommonUtil.setManaged(false, btnConfirm , btnVoid, btnUpdate);
 
         btnHistory.setVisible(fnEditMode != EditMode.UNKNOWN);
         btnHistory.setManaged(fnEditMode != EditMode.UNKNOWN);
@@ -1295,12 +1178,12 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                         CustomCommonUtil.setManaged(true, btnConfirm, btnVoid, btnUpdate);
                         break;
                     case Sales_Reservation_Static.CONFIRMED:
-                        CustomCommonUtil.setVisible(true, btnVoid, btnUpdate,btnHistory);
+                        CustomCommonUtil.setVisible(true,  btnVoid, btnUpdate,btnHistory);
                         CustomCommonUtil.setManaged(true,  btnVoid, btnUpdate,btnHistory);
                         break;
                 }
             } catch (SQLException | GuanzonException ex) {
-                Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -1447,9 +1330,9 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                     dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                             SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
                 } catch (SQLException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1474,7 +1357,7 @@ public class SalesReservation_ConfirmationMCController implements Initializable,
                         
                         poSalesReservationControllers.SalesReservation().Master().setExpectedDate(selectedDate);
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
