@@ -29,7 +29,7 @@ import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.sales.t1.services.SalesControllers;
 
-public class InquirySourceController implements Initializable, ScreenInterface {
+public class SalesInquirySourceController implements Initializable, ScreenInterface {
 
     private GRiderCAS oApp;
     private final String pxeModuleName = JFXUtil.getFormattedClassTitle(this.getClass());
