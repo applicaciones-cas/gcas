@@ -16,8 +16,10 @@ C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\table\mod
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\table\model\ModelInvLedger.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMCController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryMonarchHospitalityController.java
+C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InventoryStockTransferIssuanceNeoController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvStockRequest_EntryMcSpController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\table\model\ModelResultSet.java
+C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InventoryStockTransferIssuanceController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\RelationshipController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrderReturn_HistoryLPController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_ConfirmationAppliancesController.java
@@ -254,6 +256,7 @@ C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controlle
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\PaymentRequestController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_UpdateAppliancesGeneralController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistorySPCarController.java
+C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InventoryRequest_ApprovalLPFoodController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\DeliveryAcceptance_HistoryMCController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\PurchaseOrder_EntryMPController.java
 C:\Users\User\CAS\gcas\src\main\java\com\rmj\guanzongroup\sidebarmenus\controller\InvRequest_Roq_HistoryLPGeneralController.java

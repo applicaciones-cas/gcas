@@ -2,14 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
-package com.rmj.guanzongroup.sidebarmenus.views;
+package com.rmj.guanzongroup.sidebarmenus.controller;
 
 import com.rmj.guanzongroup.sidebarmenus.controller.DeliverySchedule_EntryController;
 import com.rmj.guanzongroup.sidebarmenus.controller.ScreenInterface;
 import com.rmj.guanzongroup.sidebarmenus.utility.CustomCommonUtil;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,8 +20,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -45,6 +46,7 @@ import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
 import org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Detail;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Detail;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_Master;
 
 /**
@@ -52,11 +54,11 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Inventory_Transfer_M
  *
  * @author User
  */
-public class InventoryStockTransferIssuanceController implements Initializable, ScreenInterface {
+public class InventoryStockTransferIssuanceNeoController implements Initializable, ScreenInterface {
     
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
-    private String psFormName = "Stock Transfer Issuance";
+    private String psFormName = "Issuance without ROQ";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private Model_Inventory_Transfer_Master poAppController;
@@ -89,7 +91,7 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
     AnchorPane apMainAnchor, apMaster, apDetail, apDelivery;
 
     @FXML
-    TextField tfSearchSourceno, tfSeacrchTransNo, tfTransNo, tfClusterName, tfPlateNo, tfDriver, tfAssistant1, tfAssistant2;
+    TextField tfSearchSourceno, tfSeacrchTransNo, tfTransNo, tfClusterName, tfTrucking, tfDiscountRate, tfDiscountAmount, tfTotal;
     
     @FXML
     DatePicker dpTransactionDate, dpDelDate;
@@ -98,30 +100,26 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
     ComboBox cbDelType;
     
     @FXML
-    TextArea taRemarks, taDelRemarks;
+    TextArea taRemarks;
     
     @FXML
-    TextField tfSearchOrderNo, tfSearchSerial, tfSearchBarcode, tfSearchDescription, tfSupersede, tfBrand, tfModel, tfColor,
-            tfVariant, tfMeasure, tfInvType, tfCost, tfOrderQuantity, tfApprovedQty, tfIssuedQty;
+    TextField tfSearchSerial, tfSearchBarcode, tfSearchDescription, tfSupersede, tfBrand, tfModel, tfColor,
+            tfVariant, tfMeasure, tfInvType, tfCost, tfOrderQuantity, tfIssuedQty;
     
     @FXML
-    TextField tfDelTransNo, tfBranch;
+    TableView<Model_Inventory_Transfer_Master> tblViewMaster;
     
     @FXML
-    TableView<?> tblViewMaster, tblViewDeliveryTrans, tblViewDetails;
+    TableView<Model_Inventory_Transfer_Detail> tblViewDetails;
     
     @FXML
-    TableColumn<?, ?> tblColNo, tblColBranch, tblColTransDate, tblColItemQty;
+    TableColumn<?, ?> tblColNo, tblColTransNo, tblColTransDate, tblColBranch;
     
     @FXML
-    TableColumn<?, ?> tblColDelNo, tblColDelTransNo, tblColDelBranch, tblColDelDate, tblColDelItem, tblColDelStatus;
+    TableColumn<?, ?> tblColDetailNo, tblColDetailOrderNo, tblColDetailSerial, tblColDetailBarcode, tblColDetailDescr, tblColDetailBrand, tblColDetailVariant, tblColDetailCost, tblColDetailOrderQty;
     
     @FXML
-    TableColumn<?, ?> tblColDetailNo, tblColDetailOrderNo, tblColDetailSerial, tblColDetailBarcode, tblColDetailDescr, tblColDetailBrand, tblColDetailVariant, tblColDetailCost,
-            tblColDetailOrderQty, tblColDetailApprovedQty, tblColDetailIssuedQty;
-    
-    @FXML
-    Label lblMainStatus, lblDeliveryStatus;
+    Label lblSource;
     
     @Override
     public void setGRider(GRiderCAS foValue) {
@@ -151,6 +149,7 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
         Platform.runLater(() -> {
         
         });
+        initControlEvents();
     }
     
     @FXML
@@ -161,13 +160,9 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
     @FXML
     void ontblDetailClicked(MouseEvent e){
         pnSelectedDetail = tblViewDetails.getSelectionModel().getSelectedIndex();
+        loadSelectedDetail();
     }
     
-    @FXML
-    void ontblDeliveryClicked(MouseEvent e){
-        pnSelectedDelivery = tblViewDeliveryTrans.getSelectionModel().getSelectedIndex();
-    }
-
     @FXML
     private void cmdButton_Click(ActionEvent event) {
         try {
@@ -182,12 +177,12 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
 
                 case "btnSave":
                     break;
-
-                case "btnApprove":
+                    
+                case "btnCancel":
                     break;
 
-                case "btnVoid":
-                 break;
+                case "btnPrint":
+                    break;
 
                 case "btnReturn":
                     break;
@@ -199,15 +194,6 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
                     break;
 
                 case "btnClose":
-                    break;
-                    
-                case "btnSaveDel":
-                    break;
-
-                case "btnPrint":
-                 break;
-
-                case "btnCancelDel":
                     break;
             }
             
@@ -237,17 +223,7 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
                                 break;
                             case "tfClusterName":
                                 break;
-                            case "tfPlateNo":
-                                break;
-                            case "tfDriver":
-                                break;
-                            case "tfAssistant1":
-                                break;
-                            case "tfAssistant2":
-                                break;
-                            case "tfBranch":
-                                break;
-                            case "tfSearchOrderNo":
+                            case "tfTrucking":
                                 break;
                             case "tfSearchSerial":
                                 break;
@@ -268,14 +244,22 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
         }
     }
     
-    private void loadSelectedTableItem(int fnRow, TableView<?> srcTable, HashMap<String, Object> object){
+    private void loadTable(TableView<?> ftblSrc, HashMap<String, String> fmapObject){
+        
         //iterate to table columns
-        for(TableColumn<?, ?> column: srcTable.getColumns()){
-            //get column id
-            String columnID = column.getId();
+        for(TableColumn<?, ?> column: ftblSrc.getColumns()){
+            String lscolumnID = column.getId(); //get column id
+            String lsCellValue = fmapObject.get(lscolumnID); //get assigned cell value
             
-            //get assigned object and validate type of object that will display the cell value
-            Object loField = object.get(columnID);
+            
+        }
+    }
+    
+    private void loadSelectedTableItem(int fnRow, TableView<?> ftblSrc, HashMap<String, Object> fmapObject){
+        //iterate to table columns
+        for(TableColumn<?, ?> column: ftblSrc.getColumns()){
+            String lscolumnID = column.getId(); //get column id
+            Object loField = fmapObject.get(lscolumnID); //get assigned object and validate type of object that will display the cell value
             
             //display value to field if object is not empty
             if(loField instanceof TextField){
@@ -295,7 +279,6 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
     
     private void loadSelectedDetail(){
         HashMap<String, Object> loMapFields = new HashMap<>();
-        loMapFields.put("tblColDetailOrderNo", tfSearchOrderNo);
         loMapFields.put("tblColDetailSerial", tfSearchSerial);
         loMapFields.put("tblColDetailBarcode", tfSearchBarcode);
         loMapFields.put("tblColDetailDescr", tfSearchDescription);
@@ -303,19 +286,8 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
         loMapFields.put("tblColDetailVariant", tfVariant);
         loMapFields.put("tblColDetailCost", tfCost);
         loMapFields.put("tblColDetailOrderQty", tfOrderQuantity);
-        loMapFields.put("tblColDetailApprovedQty", tfApprovedQty);
-        loMapFields.put("tblColDetailIssuedQty", tfIssuedQty);
         
         loadSelectedTableItem(pnSelectedDetail, tblViewDetails, loMapFields);
-    }
-    
-    private void loadSelectedDelivery(){
-        HashMap<String, Object> loMapFields = new HashMap<>();
-        loMapFields.put("tblColDelTransNo", tfDelTransNo);
-        loMapFields.put("tblColDelBranch", tfBranch);
-        loMapFields.put("tblColDelDate", dpDelDate);
-        
-        loadSelectedTableItem(pnSelectedDelivery, tblViewDeliveryTrans, loMapFields);
     }
     
     private void initControlEvents() {
@@ -367,10 +339,10 @@ public class InventoryStockTransferIssuanceController implements Initializable, 
         boolean lbShow = (fnEditMode == EditMode.ADDNEW || fnEditMode == EditMode.UPDATE);
 
         // Always show these buttons
-        initButtonControls(true, "btnSearch", "btnClose");
+        initButtonControls(true, "btnSearch", "btnRetrieve", "btnHistory", "btnClose");
 
         // Show-only based on mode
-        initButtonControls(lbShow, "btnSave", "btnCancel");
+        initButtonControls(lbShow, "btnSave", "btnCancel", "btnReturn");
         initButtonControls(!lbShow, "btnPrint", "btnUpdate");
         apDetail.setDisable(!lbShow);
     }
