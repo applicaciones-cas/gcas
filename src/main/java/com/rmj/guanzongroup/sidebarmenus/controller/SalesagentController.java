@@ -345,10 +345,10 @@ public class SalesagentController implements Initializable, ScreenInterface {
                 faActivate.setGlyphName("CHECK");
             }
 
-            tfSalesAgent.setText(oTrans.SalesAgent().ModelList(pnListRow).Client().getCompanyName());
-            tfProfession.setText(oTrans.SalesAgent().ModelList(pnListRow).getProfession());
-            tfCompany.setText(oTrans.SalesAgent().ModelList(pnListRow).getCompany());
-            tfPosition.setText(oTrans.SalesAgent().ModelList(pnListRow).getPosition());
+            tfSalesAgent.setText(oTrans.SalesAgent().getModel().Client().getCompanyName());
+            tfProfession.setText(oTrans.SalesAgent().getModel().getProfession());
+            tfCompany.setText(oTrans.SalesAgent().getModel().getCompany());
+            tfPosition.setText(oTrans.SalesAgent().getModel().getPosition());
         } catch (SQLException | GuanzonException ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, MiscUtil.getException(ex), ex);
         }
