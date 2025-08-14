@@ -500,8 +500,10 @@ public class SalesReservation_EntryLPController implements Initializable, Screen
                                     }
                                     tfDescription.setText("");
                                 }
-                                tfDescription.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
+                                tfDescription.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getDescription());
                                 tfQuantity.requestFocus();
+                                loadTableDetailList();
+                                loadRecordDetail();
                                  break;
                             case "tfQuantity":
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
@@ -878,8 +880,10 @@ public class SalesReservation_EntryLPController implements Initializable, Screen
 //            
             tfBrand.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() : "");
-            tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() != null
-                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() : "");
+            System.out.println("Inventory MODEL ID : " + poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getModelId());
+            System.out.println("MODEL ID : " + poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getModelId());
+            System.out.println("description  : " + poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
+            tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
             
             tfCategory.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() : "");

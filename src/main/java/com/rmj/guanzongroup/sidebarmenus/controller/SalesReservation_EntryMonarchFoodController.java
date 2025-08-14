@@ -43,6 +43,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.F4;
 import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
@@ -239,12 +242,12 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                     System.out.println("inits : " + psIndustryID + " " +  poSalesReservationControllers.SalesReservation().Master().getIndustryID());
                     //                loadRecordSearch();
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }));
             Platform.runLater(() -> btnNew.fire());
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
     }
     
@@ -500,8 +503,10 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                                     }
                                     tfDescription.setText("");
                                 }
-                                tfDescription.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
+                                tfDescription.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getDescription());
                                 tfQuantity.requestFocus();
+                                loadTableDetailList();
+                                loadRecordDetail();
                                  break;
                             case "tfQuantity":
                                 CommonUtils.SetNextFocus((TextField) event.getSource());
@@ -522,10 +527,10 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_EntryMonarchFoodController.class
+            Logger.getLogger(SalesReservation_EntryLPController.class
                     .getName()).log(Level.SEVERE, null, ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -564,7 +569,7 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException   ex) {
-            Logger.getLogger(SalesReservation_EntryMonarchFoodController.class
+            Logger.getLogger(SalesReservation_EntryLPController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -684,7 +689,6 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                 return;
                             }
-                            
                             poJSON = poSalesReservationControllers.SalesReservation().SaveTransaction();
                             if (!"success".equals((String) poJSON.get("result"))) {
                                 ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -712,6 +716,7 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     return;
                                 }
+                               
                                 poJSON = poSalesReservationControllers.SalesReservation().checkExistingTrans(
                                         poSalesReservationControllers.SalesReservation().Master().getSourceCode(),
                                         poSalesReservationControllers.SalesReservation().Master().getSourceNo());
@@ -719,8 +724,8 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                                     return;
                                 }
-                                
                                 poSalesReservationControllers.SalesReservation().setWithUI(true);
+
                                 poJSON = poSalesReservationControllers.SalesReservation().ConfirmTransaction("");
                                 if (!"success".equals((String) poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
@@ -744,7 +749,7 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                         break;   
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-                Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -865,7 +870,7 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
             dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
                     poSalesReservationControllers.SalesReservation().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -878,8 +883,10 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
 //            
             tfBrand.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() : "");
-            tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() != null
-                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() : "");
+            System.out.println("Inventory MODEL ID : " + poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getModelId());
+            System.out.println("MODEL ID : " + poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getModelId());
+            System.out.println("description  : " + poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
+            tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
             
             tfCategory.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() : "");
@@ -899,7 +906,7 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Measure().getDescription() : "");
            
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -1035,7 +1042,7 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                                     .getName()).log(Level.SEVERE, null, ex);
                             ShowMessageFX.Warning("Error loading data: " + ex.getMessage(), psFormName, null);
                         } catch (CloneNotSupportedException ex) {
-                            Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
             }
@@ -1136,11 +1143,11 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
 //                        }
                         loadRecordDetail();
                     } catch (SQLException ex) {
-                        Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
                 return null;
@@ -1364,9 +1371,9 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                     dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                             SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
                 } catch (SQLException ex) {
-                    Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1391,7 +1398,7 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                         
                         poSalesReservationControllers.SalesReservation().Master().setExpectedDate(selectedDate);
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_EntryMonarchFoodController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_EntryLPController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }

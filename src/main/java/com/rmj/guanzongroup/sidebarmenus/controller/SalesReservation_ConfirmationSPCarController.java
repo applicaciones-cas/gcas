@@ -43,6 +43,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import static javafx.scene.input.KeyCode.F4;
 import static javafx.scene.input.KeyCode.TAB;
 import static javafx.scene.input.KeyCode.UP;
 import javafx.scene.input.KeyEvent;
@@ -114,7 +117,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
    public void setCategoryID(String fsValue) {
         psCategoryID = fsValue;
     }
-        
+         
     // ──────────────────────────────
     // SEARCH Fields
     // ──────────────────────────────
@@ -220,8 +223,8 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-         initObject();
-         initButton(pnEditMode);
+//         initObject();
+         initButton(EditMode.UNKNOWN);
          ClickButton();
          initFields();
          initTableSourceList();
@@ -250,7 +253,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                     System.out.println("inits : " + psIndustryID + " " +  poSalesReservationControllers.SalesReservation().Master().getIndustryID());
                     //                loadRecordSearch();
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }));
                 pnEditMode =  poSalesReservationControllers.SalesReservation().getEditMode();
@@ -261,7 +264,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                 System.out.println("psCompanyID : " + psIndustryID);
                 
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
                 }
     }
     
@@ -368,16 +371,6 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
         if (!newVal) {
             try {
                 switch (lsTextFieldID) {
-                    case "tfsCustomerName":
-                        prevCustomer = tfCustomerName.getText();
-                        if(tfCustomerName.getText().isEmpty() || tfCustomerName.getText()== null){
-                            tfCustomerName.setText(Sales_Reservation_Static.DefaultValues.default_empty_string);
-                            tfAddress.setText(Sales_Reservation_Static.DefaultValues.default_empty_string);
-                            poSalesReservationControllers.SalesReservation().Master().setClientID(Sales_Reservation_Static.DefaultValues.default_empty_string);
-                            poSalesReservationControllers.SalesReservation().Master().setAddressID(Sales_Reservation_Static.DefaultValues.default_empty_string);
-//                            loadTableSourceList();
-                        }
-                        break;
                     case "tfBarcode":
                     case "tfDescription":
                     case "tfModel":
@@ -445,25 +438,19 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                     case ENTER:
                     case F3:
                         switch (txtFieldID) {
-                            case "tfsCustomerName":
+                           case "tfsCustomerName":
+                                initObject();
                                 poJSON = poSalesReservationControllers.SalesReservation().SearchClient(lsValue, false);
                                 if ("error".equals(poJSON.get("result"))) {
                                     ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-                                    tfCustomerName.selectAll();
+                                    tfsCustomerName.selectAll();
                                     break;
                                 }
-                                tfCustomerName.setText( poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName());
-                                poSalesReservationControllers.SalesReservation().Master().setAddressID(
-                                        poSalesReservationControllers.SalesReservation().Master().Client_Address().getAddressId());
-                                tfAddress.setText(poSalesReservationControllers.SalesReservation().Master().Client_Address().getAddress());
-//                                if (tfTerm.getText().isEmpty()) {
-//                                    tfTerm.requestFocus();
-//                                }
-                                prevCustomer = tfCustomerName.getText();
+                                tfsCustomerName.setText( poSalesReservationControllers.SalesReservation().Master().Client_Master().getCompanyName());
+                                
                                 loadTableSourceList();
                                 break;
-                            case "tfDestination":
-                            case "tfTerm":
+                            
                             case "tfBrand":
                                 poJSON = poSalesReservationControllers.SalesReservation().SearchBrand(lsValue, false, pnDetailRow
                                 );
@@ -530,6 +517,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                                     
                                 break;
                             case "tfsTransactionNo":
+                                initObject();
                                 loadTableSourceList();
                                 break;
                             
@@ -548,10 +536,10 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException | SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationSPCarController.class
+            Logger.getLogger(SalesReservation_ConfirmationSPMCController.class
                     .getName()).log(Level.SEVERE, null, ex);
         } catch (CloneNotSupportedException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -590,7 +578,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                 }
             }
         } catch (ExceptionInInitializerError | NullPointerException   ex) {
-            Logger.getLogger(SalesReservation_ConfirmationSPCarController.class
+            Logger.getLogger(SalesReservation_ConfirmationSPMCController.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -678,74 +666,22 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                         clearMaster();
                         clearDetail();
                         detail_data.clear();
+                        initButton(EditMode.UNKNOWN);
                         break;
-//                    case "btnNew":
-//                        poJSON = poSalesReservationControllers.SalesReservation().initFields();
-//                        if("error".equals(poJSON.get("result"))){
-//                            ShowMessageFX.Error((String) poJSON.get("message"), psFormName, null);
-//                            break;
-//                        }
-//                        poSalesReservationControllers.SalesReservation().NewTransaction();
-//                        loadRecordMaster();
-//                        loadTableDetailList();
-//                        pnEditMode =poSalesReservationControllers.SalesReservation().getEditMode();
-//                        initButton(pnEditMode);
-//                        break;
-//                    case "btnBrowse":
-//                         
-//                        poJSON = poSalesReservationControllers.SalesReservation().SearchTransaction(tfCustomerName.getText());
-//                        if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
-//                            ShowMessageFX.Warning( (String) poJSON.get("message"), psFormName,null);
-//                            tfCustomerName.setText(prevCustomer);
-//                            tfCustomerName.selectAll();
-//                            return;
-//                        }
-//                        loadRecordMaster();
-//                        loadRecordDetail();
-//                        loadTableDetailList();
-//                        pnEditMode = EditMode.READY;
-//                        initButton(pnEditMode);
-//                        break;
+//                    
                     case "btnUpdate":
-                        
-                       poJSON = poSalesReservationControllers.SalesReservation().validateConfirmedTransactionApproval();
+                        poJSON = poSalesReservationControllers.SalesReservation().validateConfirmedTransactionApproval();
                        if("error".equals(poJSON.get("result"))){
                            ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                            return;
                        }
                 
-//                        if (poSalesReservationControllers.SalesReservation().Master().getTransactionStatus().equals(Sales_Reservation_Static.CONFIRMED)) {
-//                            if (!ShowMessageFX.YesNo("Updating a confirmed transaction requires system user approval. \n"
-//                                    + "Do you want to proceed??", "Computerized Acounting System", psFormName)) {
-//                                return;
-//                            }
-//                            if (poApp.getUserLevel() <= UserRight.ENCODER) {
-//                                poJSON = ShowDialogFX.getUserApproval(poApp);
-//                                if (!"success".equals((String) poJSON.get("result"))) {
-//                                    return;
-//                                } else {
-//                                    if (Integer.parseInt(poJSON.get("nUserLevl").toString()) <= UserRight.ENCODER) {
-//                                        ShowMessageFX.Warning("User is not an authorized approving officer..", psFormName, null);
-//                                        return;
-//                                    }
-//                                }
-//                            }
-//                            poJSON = poSalesReservationControllers.SalesReservation().UpdateTransaction();
-//                            if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
-//                                ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
-//                                return;
-//                            }
-//
-//                            pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
-//                            initButton(pnEditMode);
-//                        }
-
                         poJSON = poSalesReservationControllers.SalesReservation().UpdateTransaction();
                         if ("error".equalsIgnoreCase((String) poJSON.get("result"))) {
                             ShowMessageFX.Warning((String) poJSON.get("message"), psFormName, null);
                             return;
                         }
-
+                        loadTableDetailList();
                         pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
                         initButton(pnEditMode);
                         break;
@@ -754,7 +690,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                             clearMaster();
                             clearDetail();
                             detail_data.clear();
-                            pnEditMode = EditMode.READY;
+                            pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
                         }
                         break;
@@ -811,14 +747,19 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                         clearMaster();
                         clearDetail();
                         detail_data.clear();
-                        pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
-                        initButton(pnEditMode);
+                        initButton(EditMode.UNKNOWN);   
                         break;
                     case "btnRetrieve":
+                        clearMaster();
+                        clearDetail();
+                        detail_data.clear();
+                        initObject();
                         loadTableSourceList();
                         tblSourceList.refresh();
+                        initButton(EditMode.UNKNOWN); 
                         break;
                     case "btnSearch":
+                        initObject();
                         loadTableSourceList();
                         break;   
                     case "btnVoid":
@@ -835,11 +776,12 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                             clearMaster();
                             clearDetail();
                             detail_data.clear();
+                            initButton(EditMode.UNKNOWN);
                         }
                         break;
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException | ParseException ex) {
-                Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }   
     }
@@ -961,24 +903,30 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
             dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
                     poSalesReservationControllers.SalesReservation().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
     private void loadRecordDetail(){
         try {
+            tfBarcode.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getBarCode()!= null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getBarCode() : "");
+            tfDescription.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getDescription() : "");
+            
             tfBrand.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() : "");
             tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() : "");
-            tfMeasure.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Measure().getDescription() != null
-                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Measure().getDescription() : "");
-            tfCategory.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() != null
-                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() : "");
             tfColor.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Color().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Color().getDescription() : "");
+            
+            tfCategory.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() : "");
             tfInvType.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().InventoryType().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().InventoryType().getDescription() : "");
+            tfMeasure.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Measure().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Measure().getDescription() : "");
             
             tfUnitPrice.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getCost(), true));
@@ -988,7 +936,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getQuantity(), false));
            
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -1094,11 +1042,11 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
         new Thread(task).start(); // Run task in background
     }
     private void tblSourceList_Clicked(MouseEvent event) {
-        
+            
             pnSourceRow = tblSourceList.getSelectionModel().getSelectedIndex();
             if (event.getClickCount() == 2) {
-              
-                    ModelSalesReservationSource selectedItem = (ModelSalesReservationSource) tblSourceList.getSelectionModel().getSelectedItem();
+               
+                ModelSalesReservationSource selectedItem = (ModelSalesReservationSource) tblSourceList.getSelectionModel().getSelectedItem();
                 clearDetail();
                 if (selectedItem != null) {
                 try {
@@ -1120,7 +1068,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
 
                     }
                 } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                     
                 }
@@ -1128,23 +1076,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
             }
         
     }
-    private void loadTableDetailAndSelectedRow() {
-        if (pnDetailRow >= 0) {
-            Platform.runLater(() -> {
-                // Run a delay after the UI thread is free
-                PauseTransition delay = new PauseTransition(Duration.millis(10));
-                delay.setOnFinished(event -> {
-                    Platform.runLater(() -> { // Run UI updates in the next cycle
-                        loadTableDetailList();
-                    });
-                });
-                delay.play();
-            });
-            loadRecordMaster();
-            loadRecordDetail();
-//            initDetailFocus();
-        }
-    }
+    
     
     private Node createPage(int pageIndex) {
         int totalPages = (int) Math.ceil((double) source_data.size() / ROWS_PER_PAGE);
@@ -1223,11 +1155,11 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
 //                        }
                         loadRecordDetail();
                     } catch (SQLException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (CloneNotSupportedException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
                 return null;
@@ -1272,63 +1204,25 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
         }
     }
     
-    
-    
-//    private void initButton(int fnValue) {
-//        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-//        btnRetrieve.setVisible(true);
-//        btnRetrieve.setManaged(true);
-//        btnCancel.setVisible(lbShow);
-//        btnCancel.setManaged(lbShow);
-//        btnSave.setVisible(lbShow);
-//        btnSave.setManaged(lbShow);
-//        btnSearch.setVisible(false);
-//        btnSearch.setManaged(false);
-//        btnUpdate.setVisible(false);
-//        btnUpdate.setManaged(false);
-//        btnBrowse.setVisible(!lbShow);
-//        btnBrowse.setManaged(!lbShow);
-//        btnNew.setVisible(false);
-//        btnNew.setManaged(false);
-//        btnClose.setVisible(true);
-//        btnClose.setManaged(true);
-//        
-//        tfQuantity.setEditable(lbShow);
-//        tfBrand.setEditable(lbShow);
-//        taNotes.setEditable(lbShow);
-//        taRemarks.setEditable(lbShow);
-//        dpTransaction.setDisable(!lbShow);
-//        dpExpedtedDate.setDisable(!lbShow);
-//        if (pnEditMode == EditMode.READY){
-//            btnUpdate.setVisible(true);
-//            btnUpdate.setManaged(true);
-//        }
-//        
-//    }
-    
-     private void initButton(int fnEditMode) {
+    private void initButton(int fnEditMode) {
         boolean lbShow = (pnEditMode == EditMode.UPDATE);
-        tfQuantity.setDisable(!lbShow);
-        tfBrand.setDisable(!lbShow);
-        tfModel.setDisable(!lbShow);
-        tfBarcode.setDisable(!lbShow); 
-        tfDescription.setDisable(!lbShow);
-        taRemarks.setDisable(!lbShow);
+        tfQuantity.setEditable(lbShow);
+        tfBrand.setEditable(lbShow);
+        taNotes.setEditable(lbShow);
+        taRemarks.setEditable(lbShow);
         dpTransaction.setDisable(!lbShow);
         dpExpedtedDate.setDisable(!lbShow);
+        btnReturn.setVisible(false);
+        btnReturn.setManaged(false);
         
         btnClose.setVisible(!lbShow);
         btnClose.setManaged(!lbShow);
-        btnClose.setVisible(false);
-        btnClose.setManaged(false);
-            
-        
 
         CustomCommonUtil.setVisible(lbShow, btnSave, btnCancel);
         CustomCommonUtil.setManaged(lbShow, btnSave, btnCancel);
 
-        CustomCommonUtil.setVisible(false, btnConfirm,  btnVoid, btnUpdate);
-        CustomCommonUtil.setManaged(false, btnConfirm,  btnVoid, btnUpdate);
+        CustomCommonUtil.setVisible(false, btnConfirm, btnVoid, btnUpdate);
+        CustomCommonUtil.setManaged(false, btnConfirm , btnVoid, btnUpdate);
 
         btnHistory.setVisible(fnEditMode != EditMode.UNKNOWN);
         btnHistory.setManaged(fnEditMode != EditMode.UNKNOWN);
@@ -1341,16 +1235,12 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                         CustomCommonUtil.setManaged(true, btnConfirm, btnVoid, btnUpdate);
                         break;
                     case Sales_Reservation_Static.CONFIRMED:
-                        CustomCommonUtil.setVisible(true, btnVoid, btnUpdate,btnHistory);
+                        CustomCommonUtil.setVisible(true,  btnVoid, btnUpdate,btnHistory);
                         CustomCommonUtil.setManaged(true,  btnVoid, btnUpdate,btnHistory);
                         break;
-                    default:
-                        CustomCommonUtil.setVisible(false, btnSearch, btnReturn);
-                        CustomCommonUtil.setManaged(false,  btnSearch, btnReturn);
-                        
                 }
             } catch (SQLException | GuanzonException ex) {
-                Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -1383,7 +1273,9 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
             tfColor,
             tfUnitPrice,
             tfDownPayment,
-            tfQuantity
+            tfQuantity,
+            tfBarcode,
+            tfDescription
         };
 
         for (TextInputControl txtInput : txtFieldInputs) {
@@ -1497,9 +1389,9 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                     dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                             SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
                 } catch (SQLException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -1524,7 +1416,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
                         
                         poSalesReservationControllers.SalesReservation().Master().setExpectedDate(selectedDate);
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_ConfirmationSPCarController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }

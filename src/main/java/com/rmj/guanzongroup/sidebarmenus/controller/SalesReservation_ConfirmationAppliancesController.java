@@ -222,7 +222,7 @@ public class SalesReservation_ConfirmationAppliancesController implements Initia
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 //         initObject();
-         initButton(pnEditMode);
+         initButton(EditMode.UNKNOWN);
          ClickButton();
          initFields();
          initTableSourceList();
@@ -657,6 +657,7 @@ public class SalesReservation_ConfirmationAppliancesController implements Initia
                         clearMaster();
                         clearDetail();
                         detail_data.clear();
+                        initButton(EditMode.UNKNOWN);
                         break;
                     case "btnUpdate":
                        poJSON = poSalesReservationControllers.SalesReservation().validateConfirmedTransactionApproval();
@@ -679,7 +680,7 @@ public class SalesReservation_ConfirmationAppliancesController implements Initia
                             clearMaster();
                             clearDetail();
                             detail_data.clear();
-                            pnEditMode = EditMode.READY;
+                            pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
                         }
                         break;
@@ -736,13 +737,16 @@ public class SalesReservation_ConfirmationAppliancesController implements Initia
                         clearMaster();
                         clearDetail();
                         detail_data.clear();
-                        pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
-                        initButton(pnEditMode);
+                        initButton(EditMode.UNKNOWN);   
                         break;
                     case "btnRetrieve":
+                        clearMaster();
+                        clearDetail();
+                        detail_data.clear();
                         initObject();
                         loadTableSourceList();
                         tblSourceList.refresh();
+                        initButton(EditMode.UNKNOWN); 
                         break;
                     case "btnSearch":
                         initObject();
@@ -762,6 +766,7 @@ public class SalesReservation_ConfirmationAppliancesController implements Initia
                             clearMaster();
                             clearDetail();
                             detail_data.clear();
+                            initButton(EditMode.UNKNOWN);
                         }
                         break;
                 }
@@ -1222,7 +1227,7 @@ public class SalesReservation_ConfirmationAppliancesController implements Initia
                         break;
                 }
             } catch (SQLException | GuanzonException ex) {
-                Logger.getLogger(SalesReservation_ConfirmationCar.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_ConfirmationCarController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

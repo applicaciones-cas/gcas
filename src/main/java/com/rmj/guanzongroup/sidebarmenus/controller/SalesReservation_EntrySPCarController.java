@@ -500,7 +500,7 @@ public class SalesReservation_EntrySPCarController implements Initializable, Scr
                                     }
                                     tfDescription.setText("");
                                 }
-                                tfDescription.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
+                                tfDescription.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getDescription());
                                 tfQuantity.requestFocus();
                                  break;
                             case "tfQuantity":
