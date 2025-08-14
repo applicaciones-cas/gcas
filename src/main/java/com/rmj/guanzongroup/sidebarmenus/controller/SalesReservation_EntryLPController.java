@@ -883,7 +883,7 @@ public class SalesReservation_EntryLPController implements Initializable, Screen
             System.out.println("Inventory MODEL ID : " + poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getModelId());
             System.out.println("MODEL ID : " + poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getModelId());
             System.out.println("description  : " + poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
-            tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription());
+            tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Model().getDescription());
             
             tfCategory.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() : "");
