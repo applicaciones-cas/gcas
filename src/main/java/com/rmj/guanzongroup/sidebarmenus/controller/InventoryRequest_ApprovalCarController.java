@@ -56,7 +56,7 @@ import org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Detail;
 import org.guanzon.cas.inv.warehouse.model.Model_Inv_Stock_Request_Master;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.InventoryRequestApproval;
-import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryScheduleControllers;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceControllers;
 
 /**
  *
@@ -320,7 +320,7 @@ public class InventoryRequest_ApprovalCarController implements Initializable, Sc
         try{
             //initialize class controller
             poLogWrapper = new LogWrapper(psFormName, psFormName);
-            poAppController = new DeliveryScheduleControllers(poApp, poLogWrapper).InventoryRequestApproval();
+            poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).InventoryRequestApproval();
             
             //initlalize and validate transaction objects from class controller
             if (!isJSONSuccess(poAppController.initTransaction(), psFormName)) {

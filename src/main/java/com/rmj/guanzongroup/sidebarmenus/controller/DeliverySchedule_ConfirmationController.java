@@ -53,7 +53,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.DeliverySchedule;
-import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryScheduleControllers;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceControllers;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleStatus;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleTruck;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Delivery_Schedule_Detail;
@@ -147,7 +147,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
 
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName + "Log");
-            poAppController = new DeliveryScheduleControllers(poApp, poLogWrapper).DeliverySchedule();
+            poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).DeliverySchedule();
             poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
             if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                 unloadForm appUnload = new unloadForm();
@@ -311,7 +311,7 @@ public class DeliverySchedule_ConfirmationController implements Initializable, S
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
-                        poAppController = new DeliveryScheduleControllers(poApp, poLogWrapper).DeliverySchedule();
+                        poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).DeliverySchedule();
                         poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
