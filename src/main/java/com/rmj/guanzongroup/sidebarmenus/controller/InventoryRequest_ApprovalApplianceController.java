@@ -67,7 +67,7 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
     private InventoryRequestApproval poAppController;
-    private String psFormName = "Inventory Request Appliance Approval";
+    private String psFormName = "Stock Request Approval Appliance";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private ObservableList<Model_Inv_Stock_Request_Detail> laTransactionDetail;
@@ -80,11 +80,8 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
     private Label lblSource;
 
     @FXML
-    private Button btnSearch, btnSave, btnCancel, btnUpdate, btnPrint, btnClose;
-
-    @FXML
-    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfInventoryType, tfRequestQty, 
-            tfApprovedQty, tfQOH, tfColor, tfClassification, tfROQ, tfCancelQty;
+    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfRequestQty, 
+            tfApprovedQty, tfQOH, tfClassification, tfROQ, tfCancelQty;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -96,7 +93,7 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
     private TableColumn<Model_Inv_Stock_Request_Master, String> tblColStockRequestNo, tblColBranch, tblColTransaction, tblColTransactionDate; 
     
     @FXML
-    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColColor, tblColQOH,
+    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColQOH,
             tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
@@ -136,6 +133,27 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
 
                     }
                     break;
+                    
+                case "btnPrint":
+                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
+                        return;
+                    }
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
+                        if (!isJSONSuccess(poAppController.printRecord(),
+                                "Initialize Print Transaction")) {
+                            return;
+                        }
+                    }
+                    //refresh ui 
+                    clearAllInputs();
+                    reloadTableDetail();
+
+                    if (poAppController.getBranchCluster().getClusterDescription() != null && !poAppController.getBranchCluster().getClusterDescription().isEmpty()) {
+                        loadSelectedBranchClusterDelivery();
+                    }
+                    pnEditMode = poAppController.getEditMode();
+                break;
                     
                 case "btnUpdate":
                     
@@ -206,9 +224,9 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
             return;
         }
         
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex();
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1;
         
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -233,12 +251,12 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
 
     @FXML
     void tblRequestDetail_MouseClicked(MouseEvent event) {
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex();
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1;
         if (pnCTransactionDetail < 0) {
             return;
         }
         
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -339,8 +357,8 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
                         + "\nCategory:" + psCategoryID);
             });
             
-            initializeTableDetail();
             initControlEvents();
+            initializeTableDetail();
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -711,15 +729,6 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
                 }
                 });
 
-                tblColColor.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().Color().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
-
                 tblColQOH.setCellValueFactory(loModel -> {
                     return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
                 });
@@ -748,14 +757,8 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
         tfDescription.setText(tblColDescription.getCellData(fnRow));
         tfModel.setText(tblColModel.getCellData(fnRow));
         tfVariant.setText(tblColVariant.getCellData(fnRow));
-        tfColor.setText(tblColColor.getCellData(fnRow));
-        
-        //check if row is valid
-        if (fnRow >= 0) {    
-            tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
-            tfClassification.setText(poAppController.getDetail(fnRow).getClassification());
-            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
-        }
+        tfClassification.setText(poAppController.getDetail(fnRow).getClassification() == null ? "NONE" : poAppController.getDetail(fnRow).getClassification());
+        tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
         
         tfQOH.setText(tblColQOH.getCellData(fnRow));
         tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
@@ -764,6 +767,7 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
     }
 
     private void getLoadedTransaction() throws CloneNotSupportedException, SQLException, GuanzonException {
+        tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
         tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
         lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "": (poAppController.getMaster().Company().getCompanyName() + " - ") + 
                 poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());
@@ -783,7 +787,7 @@ public class InventoryRequest_ApprovalApplianceController implements Initializab
   
         tblRequestDetail.getSelectionModel().select(indexToSelect);
     
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex(); // Not focusedIndex
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
 
         tblRequestDetail.refresh();
     }

@@ -1660,11 +1660,11 @@ public class DashboardController implements Initializable {
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_Approval.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
-                    return "Inventory Request Approval";
+                    return "Stock Request Approval";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalAppliance.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
-                    return "Inventory Request Appliance Approval";
+                    return "Stock Request Approval Appliance";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalCar.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
@@ -1690,6 +1690,10 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0003";
                     return "Stock Request Approval MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchFood.fxml":
+                    psIndustryID = "02";
+                    psCategoryID = "0003";
+                    return "Stock Request Approval LP Food";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLPFood.fxml":
                     psIndustryID = "02";
                     psCategoryID = "0003";
                     return "Stock Request Approval Monarch Food";
@@ -3048,6 +3052,8 @@ public class DashboardController implements Initializable {
                     return new InventoryRequest_ApprovalMC_SPController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMP.fxml":
                     return new InventoryRequest_ApprovalMPController();
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLPFood.fxml":
+                    return new InventoryRequest_ApprovalLPFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchFood.fxml":
                     return new InventoryRequest_ApprovalMonarchFoodController();
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchHospitality.fxml":
@@ -4812,10 +4818,11 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval MP\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMP.fxml\",\"controller_path\":\"\",\"menu_id\":\"016\",\"menu_parent\":\"008\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval Monarch Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchFood.fxml\",\"controller_path\":\"\",\"menu_id\":\"017\",\"menu_parent\":\"008\"},"
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval Monarch Hospitality\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchHospitality.fxml\",\"controller_path\":\"\",\"menu_id\":\"018\",\"menu_parent\":\"008\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval LP Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLPFood.fxml\",\"controller_path\":\"\",\"menu_id\":\"019\",\"menu_parent\":\"008\"},"
                 //Stock Transfer
-                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Stock Transfer\",\"fxml_path\":\"Stock Transfer\",\"controller_path\":\"stocktransfer.controller\",\"menu_id\":\"019\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml\",\"controller_path\":\"\",\"menu_id\":\"020\",\"menu_parent\":\"019\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance with ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml\",\"controller_path\":\"\",\"menu_id\":\"021\",\"menu_parent\":\"019\"}"
+                + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Stock Transfer\",\"fxml_path\":\"Stock Transfer\",\"controller_path\":\"stocktransfer.controller\",\"menu_id\":\"020\",\"menu_parent\":\"001\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml\",\"controller_path\":\"\",\"menu_id\":\"021\",\"menu_parent\":\"019\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance with ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml\",\"controller_path\":\"\",\"menu_id\":\"022\",\"menu_parent\":\"019\"}"
                 + "]";
         JSONParser parser = new JSONParser();
         try {

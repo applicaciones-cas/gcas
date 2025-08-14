@@ -74,17 +74,14 @@ public class InventoryRequest_ApprovalMC_SPController implements Initializable, 
     private int pnTransaction, pnCTransactionDetail, pnEditMode;
     
     @FXML
-    private AnchorPane apMainAnchor, apButton, apBrowse, apCenter, apDetailField, apMaster, apDetail, apDetailTable, apTransactionTable;
+    private AnchorPane apMainAnchor, apDetail, apTransactionTable;
 
     @FXML
     private Label lblSource;
 
     @FXML
-    private Button btnSearch, btnSave, btnCancel, btnUpdate, btnPrint, btnClose;
-
-    @FXML
-    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfInventoryType, tfRequestQty, 
-            tfApprovedQty, tfQOH, tfColor, tfClassification, tfROQ, tfCancelQty;
+    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfRequestQty, 
+            tfApprovedQty, tfQOH, tfClassification, tfROQ, tfCancelQty;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -136,6 +133,27 @@ public class InventoryRequest_ApprovalMC_SPController implements Initializable, 
 
                     }
                     break;
+                    
+                case "btnPrint":
+                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
+                        return;
+                    }
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
+                        if (!isJSONSuccess(poAppController.printRecord(),
+                                "Initialize Print Transaction")) {
+                            return;
+                        }
+                    }
+                    //refresh ui 
+                    clearAllInputs();
+                    reloadTableDetail();
+
+                    if (poAppController.getBranchCluster().getClusterDescription() != null && !poAppController.getBranchCluster().getClusterDescription().isEmpty()) {
+                        loadSelectedBranchClusterDelivery();
+                    }
+                    pnEditMode = poAppController.getEditMode();
+                break;
                     
                 case "btnUpdate":
                     
@@ -207,9 +225,9 @@ public class InventoryRequest_ApprovalMC_SPController implements Initializable, 
             return;
         }
         
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex();
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1;
         
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -234,12 +252,12 @@ public class InventoryRequest_ApprovalMC_SPController implements Initializable, 
 
     @FXML
     void tblRequestDetail_MouseClicked(MouseEvent event) {
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex();
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1;
         if (pnCTransactionDetail < 0) {
             return;
         }
         
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -715,15 +733,6 @@ public class InventoryRequest_ApprovalMC_SPController implements Initializable, 
                 }
                 });
 
-                tblColColor.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().Color().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
-
                 tblColQOH.setCellValueFactory(loModel -> {
                     return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
                 });
@@ -752,11 +761,9 @@ public class InventoryRequest_ApprovalMC_SPController implements Initializable, 
         tfDescription.setText(tblColDescription.getCellData(fnRow));
         tfModel.setText(tblColModel.getCellData(fnRow));
         tfVariant.setText(tblColVariant.getCellData(fnRow));
-        tfColor.setText(tblColColor.getCellData(fnRow));
         
         //check if row is valid
-        if (fnRow >= 0) {    
-            tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
+        if (fnRow >= 0) {
             tfClassification.setText(poAppController.getDetail(fnRow).getClassification());
             tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
         }
@@ -787,7 +794,7 @@ public class InventoryRequest_ApprovalMC_SPController implements Initializable, 
   
         tblRequestDetail.getSelectionModel().select(indexToSelect);
     
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex(); // Not focusedIndex
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
 
         tblRequestDetail.refresh();
     }

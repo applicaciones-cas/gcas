@@ -70,16 +70,13 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
     private int pnTransaction, pnCTransactionDetail, pnEditMode;
 
     @FXML
-    private AnchorPane apMainAnchor, apButton, apBrowse, apCenter, apDetailField, apMaster, apDetail, apDetailTable, apTransactionTable;
+    private AnchorPane apMainAnchor, apDetail, apTransactionTable;
 
     @FXML
     private Label lblSource;
-
+    
     @FXML
-    private Button btnSearch, btnSave, btnCancel, btnUpdate, btnPrint, btnClose;
-
-    @FXML
-    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfInventoryType, tfRequestQty,
+    private TextField tfClusterName, tfBranchName, tfBrand, tfModel, tfVariant, tfInventoryType, tfRequestQty,
             tfApprovedQty, tfQOH, tfColor, tfClassification, tfROQ, tfCancelQty;
 
     @FXML
@@ -92,8 +89,8 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
     private TableColumn<Model_Inv_Stock_Request_Master, String> tblColStockRequestNo, tblColBranch, tblColTransaction, tblColTransactionDate;
 
     @FXML
-    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColColor, tblColQOH,
-            tblColRequestQty, tblColCancelQty, tblColApprovedQty;
+    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColNo, tblColModel, tblColVariant, tblColColor, tblColQOH,
+            tblColInventoryType, tblColClassification, tblColRequestQty, tblColCancelQty, tblColApprovedQty;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -231,7 +228,7 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
 
         pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1;
 
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -262,7 +259,7 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
             return;
         }
 
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -500,9 +497,6 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
         // Always show these buttons
         initButtonControls(true, "btnSearch", "btnClose");
 
-        System.out.print(!lbShow);
-        System.out.print(!lbShow);
-
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
         initButtonControls(!lbShow, "btnPrint", "btnUpdate");
@@ -733,6 +727,19 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
                     return new SimpleStringProperty("");
                 }
             });
+            
+            tblColInventoryType.setCellValueFactory(loModel -> {
+                try {
+                    return new SimpleStringProperty(loModel.getValue().Inventory().InventoryType().getDescription());
+                } catch (SQLException | GuanzonException ex) {
+                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                    return new SimpleStringProperty("");
+                }
+            });
+            
+            tblColClassification.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(loModel.getValue().getClassification());
+            });
 
             tblColQOH.setCellValueFactory(loModel -> {
                 return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
@@ -766,6 +773,9 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
         tfModel.setText(tblColModel.getCellData(RowForTable));
         tfVariant.setText(tblColVariant.getCellData(RowForTable));
         tfColor.setText(tblColColor.getCellData(RowForTable));
+        tfInventoryType.setText(tblColInventoryType.getCellData(RowForTable));
+        tfClassification.setText(tblColClassification.getCellData(RowForTable));
+        tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
         tfQOH.setText(tblColQOH.getCellData(RowForTable));
         tfRequestQty.setText(tblColRequestQty.getCellData(RowForTable));
         tfCancelQty.setText(tblColCancelQty.getCellData(RowForTable));

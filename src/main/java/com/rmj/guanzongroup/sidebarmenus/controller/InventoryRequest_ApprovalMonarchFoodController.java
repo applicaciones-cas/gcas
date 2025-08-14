@@ -96,7 +96,7 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
     private TableColumn<Model_Inv_Stock_Request_Master, String> tblColStockRequestNo, tblColBranch, tblColTransaction, tblColTransactionDate; 
     
     @FXML
-    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColColor, tblColQOH,
+    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription,  tblColMeasure, tblColInventoryType, tblColQOH,
             tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
@@ -136,6 +136,27 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
 
                     }
                     break;
+                    
+                case "btnPrint":
+                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
+                        return;
+                    }
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
+                        if (!isJSONSuccess(poAppController.printRecord(),
+                                "Initialize Print Transaction")) {
+                            return;
+                        }
+                    }
+                    //refresh ui 
+                    clearAllInputs();
+                    reloadTableDetail();
+
+                    if (poAppController.getBranchCluster().getClusterDescription() != null && !poAppController.getBranchCluster().getClusterDescription().isEmpty()) {
+                        loadSelectedBranchClusterDelivery();
+                    }
+                    pnEditMode = poAppController.getEditMode();
+                break;
                     
                 case "btnUpdate":
                     
@@ -207,9 +228,9 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
             return;
         }
         
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex();
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1;
         
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -234,12 +255,12 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
 
     @FXML
     void tblRequestDetail_MouseClicked(MouseEvent event) {
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex();
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1;
         if (pnCTransactionDetail < 0) {
             return;
         }
         
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -697,27 +718,18 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
                 }
                 });
 
-                tblColModel.setCellValueFactory(loModel -> {
+                tblColMeasure.setCellValueFactory(loModel -> {
                 try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().Model().getDescription());
+                     return new SimpleStringProperty(loModel.getValue().Inventory().Measure().getDescription());
                 } catch (SQLException | GuanzonException ex) {
                     Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
                     return new SimpleStringProperty("");
                 }
                 });
 
-                tblColVariant.setCellValueFactory(loModel -> {
+                tblColInventoryType.setCellValueFactory(loModel -> {
                 try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().Variant().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
-
-                tblColColor.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().Color().getDescription());
+                     return new SimpleStringProperty(loModel.getValue().Inventory().InventoryType().getDescription());
                 } catch (SQLException | GuanzonException ex) {
                     Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
                     return new SimpleStringProperty("");
@@ -785,7 +797,7 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
   
         tblRequestDetail.getSelectionModel().select(indexToSelect);
     
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex(); // Not focusedIndex
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
 
         tblRequestDetail.refresh();
     }

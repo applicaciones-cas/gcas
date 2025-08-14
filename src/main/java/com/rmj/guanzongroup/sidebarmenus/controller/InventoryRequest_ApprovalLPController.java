@@ -74,17 +74,14 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
     private int pnTransaction, pnCTransactionDetail, pnEditMode;
     
     @FXML
-    private AnchorPane apMainAnchor, apButton, apBrowse, apCenter, apDetailField, apMaster, apDetail, apDetailTable, apTransactionTable;
+    private AnchorPane apMainAnchor, apDetail, apTransactionTable;
 
     @FXML
     private Label lblSource;
 
     @FXML
-    private Button btnSearch, btnSave, btnCancel, btnUpdate, btnPrint, btnClose;
-
-    @FXML
-    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfMeasure, tfVariant, tfInventoryType, tfRequestQty, 
-            tfApprovedQty, tfQOH, tfColor, tfClassification, tfROQ, tfCancelQty;
+    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfRequestQty, 
+            tfApprovedQty, tfQOH, tfClassification, tfROQ, tfCancelQty;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -96,7 +93,7 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
     private TableColumn<Model_Inv_Stock_Request_Master, String> tblColStockRequestNo, tblColBranch, tblColTransaction, tblColTransactionDate; 
     
     @FXML
-    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColColor, tblColQOH,
+    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColQOH,
             tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
@@ -136,6 +133,27 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
 
                     }
                     break;
+                    
+                case "btnPrint":
+                    if (poAppController.getMaster().getTransactionNo() == null || poAppController.getMaster().getTransactionNo().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Stock Request Approval", "");
+                        return;
+                    }
+                    if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to print the transaction ?") == true) {
+                        if (!isJSONSuccess(poAppController.printRecord(),
+                                "Initialize Print Transaction")) {
+                            return;
+                        }
+                    }
+                    //refresh ui 
+                    clearAllInputs();
+                    reloadTableDetail();
+
+                    if (poAppController.getBranchCluster().getClusterDescription() != null && !poAppController.getBranchCluster().getClusterDescription().isEmpty()) {
+                        loadSelectedBranchClusterDelivery();
+                    }
+                    pnEditMode = poAppController.getEditMode();
+                break;
                     
                 case "btnUpdate":
                     
@@ -187,9 +205,8 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
 
                 case "btnClose":
                     unloadForm appUnload = new unloadForm();
-                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                         appUnload.unloadForm(apMainAnchor, poApp, psFormName);
-                        break;
                     }
                     break;
             }
@@ -207,9 +224,9 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
             return;
         }
         
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex();
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1;
         
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -234,12 +251,12 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
 
     @FXML
     void tblRequestDetail_MouseClicked(MouseEvent event) {
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex();
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1;
         if (pnCTransactionDetail < 0) {
             return;
         }
         
-        if (event.getClickCount() == 2 && !event.isConsumed()) {
+        if (event.getClickCount() == 1 && !event.isConsumed()) {
             if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
                 if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") != true) {
                     return;
@@ -471,9 +488,6 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
 
         // Always show these buttons
         initButtonControls(true, "btnSearch", "btnClose");
-        
-        System.out.print(!lbShow);
-        System.out.print(!lbShow);
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
@@ -706,9 +720,9 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
                 }
                 });
 
-                tblColColor.setCellValueFactory(loModel -> {
+                tblColVariant.setCellValueFactory(loModel -> {
                 try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().Color().getDescription());
+                     return new SimpleStringProperty(loModel.getValue().Inventory().Variant().getDescription());
                 } catch (SQLException | GuanzonException ex) {
                     Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
                     return new SimpleStringProperty("");
@@ -742,15 +756,9 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
         tfBarcode.setText(tblColBarcode.getCellData(fnRow));
         tfDescription.setText(tblColDescription.getCellData(fnRow));
         tfModel.setText(tblColModel.getCellData(fnRow));
-        tfColor.setText(tblColColor.getCellData(fnRow));
-        
-        //check if row is valid
-        if (fnRow >= 0) {    
-            tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
-            tfClassification.setText(poAppController.getDetail(fnRow).getClassification());
-            tfMeasure.setText(poAppController.getDetail(fnRow).Inventory().Measure().getDescription());
-            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
-        }
+        tfVariant.setText(tblColVariant.getCellData(fnRow));
+        tfClassification.setText(poAppController.getDetail(fnRow).getClassification() == null ? "NONE" : poAppController.getDetail(fnRow).getClassification());
+        tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
         
         tfQOH.setText(tblColQOH.getCellData(fnRow));
         tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
@@ -759,6 +767,7 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
     }
 
     private void getLoadedTransaction() throws CloneNotSupportedException, SQLException, GuanzonException {
+        tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
         tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
         lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "": (poAppController.getMaster().Company().getCompanyName() + " - ") + 
                 poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());
@@ -778,7 +787,7 @@ public class InventoryRequest_ApprovalLPController implements Initializable, Scr
   
         tblRequestDetail.getSelectionModel().select(indexToSelect);
     
-        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex(); // Not focusedIndex
+        pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
 
         tblRequestDetail.refresh();
     }

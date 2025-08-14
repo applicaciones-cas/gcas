@@ -36,12 +36,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import static javafx.scene.input.KeyCode.TAB;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import org.guanzon.appdriver.agent.services.Model;
 import org.guanzon.appdriver.base.GRiderCAS;
 import org.guanzon.appdriver.base.LogWrapper;
 import org.guanzon.appdriver.constant.EditMode;
@@ -241,17 +243,6 @@ public class InventoryStockTransferIssuanceNeoController implements Initializabl
             Logger.getLogger(DeliverySchedule_EntryController.class
                     .getName()).log(Level.SEVERE, null, ex);
             poLogWrapper.severe(psFormName + " :" + ex.getMessage());
-        }
-    }
-    
-    private void loadTable(TableView<?> ftblSrc, HashMap<String, String> fmapObject){
-        
-        //iterate to table columns
-        for(TableColumn<?, ?> column: ftblSrc.getColumns()){
-            String lscolumnID = column.getId(); //get column id
-            String lsCellValue = fmapObject.get(lscolumnID); //get assigned cell value
-            
-            
         }
     }
     

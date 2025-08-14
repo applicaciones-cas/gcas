@@ -231,10 +231,9 @@
                                                    <children>
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Brand" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                       <TextField fx:id="tfBrand" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Measure" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                                      <TextField fx:id="tfMeasure" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Variant" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                      <TextField fx:id="tfVariant" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="7" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Request Qty" GridPane.columnIndex="14" GridPane.rowIndex="5" />
-                                                      <TextField fx:id="tfInventoryType" editable="false" GridPane.columnIndex="8" GridPane.rowIndex="7" />
                                                       <TextField fx:id="tfRequestQty" alignment="CENTER_RIGHT" editable="false" text="0" GridPane.columnIndex="16" GridPane.rowIndex="5" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Approved Qty" GridPane.columnIndex="14" GridPane.rowIndex="7">
                                                          <font>
@@ -244,7 +243,6 @@
                                                       <TextField fx:id="tfApprovedQty" alignment="CENTER_RIGHT" text="0" GridPane.columnIndex="16" GridPane.rowIndex="7" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="QOH" GridPane.columnIndex="10" GridPane.rowIndex="7" />
                                                       <TextField fx:id="tfQOH" editable="false" GridPane.columnIndex="12" GridPane.rowIndex="7" />
-                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Inv. Type" GridPane.columnIndex="6" GridPane.rowIndex="7" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="ROQ" GridPane.columnIndex="10" GridPane.rowIndex="6" />
                                                       <TextField fx:id="tfClassification" alignment="CENTER" editable="false" GridPane.columnIndex="12" GridPane.rowIndex="5" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Classification" GridPane.columnIndex="10" GridPane.rowIndex="5" />
@@ -264,8 +262,6 @@
                                                       <TextField fx:id="tfCancelQty" alignment="CENTER_RIGHT" text="0" GridPane.columnIndex="16" GridPane.rowIndex="6" />
                                                       <TextField fx:id="tfModel" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="6" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                      <TextField fx:id="tfColor" editable="false" GridPane.columnIndex="8" GridPane.rowIndex="6" />
-                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Color" GridPane.columnIndex="6" GridPane.rowIndex="6" />
                                                    </children>
                                                 </GridPane>
                                       </children>
@@ -283,7 +279,6 @@
                                                       <TableColumn fx:id="tblColDescription" editable="false" maxWidth="1.7976931348623157E308" minWidth="120.0" prefWidth="250.0" sortable="false" style="-fx-font-size: 12;" text="Description" />
                                                       <TableColumn fx:id="tblColModel" editable="false" maxWidth="130.0" minWidth="130.0" prefWidth="130.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Model" />
                                                       <TableColumn fx:id="tblColVariant" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Variant" />
-                                                      <TableColumn fx:id="tblColColor" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Color" />
                                                       <TableColumn fx:id="tblColQOH" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="QOH" />
                                                       <TableColumn fx:id="tblColRequestQty" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Request Qty" />
                                                       <TableColumn fx:id="tblColCancelQty" editable="false" maxWidth="80.0" minWidth="80.0" resizable="false" sortable="false" style="-fx-font-size: 12;" text="Canceled Qty" />
