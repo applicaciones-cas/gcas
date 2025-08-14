@@ -263,7 +263,7 @@ public class SalesInquiry_HistorySPMCController implements Initializable, Screen
             tfBarcode.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getBarCode());
             tfDescription.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().getDescription());
 
-            tfBrand.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Brand().getDescription());
+            tfBrand.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Inventory().Brand().getDescription());
             tfModel.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Model().getDescription());
             tfColor.setText(poSalesInquiryController.SalesInquiry().Detail(pnDetail).Color().getDescription());
             JFXUtil.updateCaretPositions(apDetail);
