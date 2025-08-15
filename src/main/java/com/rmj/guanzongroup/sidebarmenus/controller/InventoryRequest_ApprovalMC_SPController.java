@@ -753,25 +753,20 @@ public class InventoryRequest_ApprovalMC_SPController implements Initializable, 
     }
     
     private void loadSelectedDetail(int fnRow) throws SQLException, GuanzonException, CloneNotSupportedException {
-        System.out.print(fnRow);
-        
-        tfBranchName.setText(tblColBranch.getCellData(fnRow));
-        tfBrand.setText(tblColBrand.getCellData(fnRow));
-        tfBarcode.setText(tblColBarcode.getCellData(fnRow));
-        tfDescription.setText(tblColDescription.getCellData(fnRow));
-        tfModel.setText(tblColModel.getCellData(fnRow));
-        tfVariant.setText(tblColVariant.getCellData(fnRow));
-        
-        //check if row is valid
-        if (fnRow >= 0) {
-            tfClassification.setText(poAppController.getDetail(fnRow).getClassification());
+        if(fnRow > 0){
+            tfBranchName.setText(tblColBranch.getCellData(fnRow));
+            tfBrand.setText(tblColBrand.getCellData(fnRow));
+            tfBarcode.setText(tblColBarcode.getCellData(fnRow));
+            tfDescription.setText(tblColDescription.getCellData(fnRow));
+            tfModel.setText(tblColModel.getCellData(fnRow));
+            tfVariant.setText(tblColVariant.getCellData(fnRow));
+            tfClassification.setText(poAppController.getDetail(fnRow).getClassification() == null ? "NONE" : poAppController.getDetail(fnRow).getClassification());
             tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
+            tfQOH.setText(tblColQOH.getCellData(fnRow));
+            tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
+            tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));
+            tfApprovedQty.setText(tblColApprovedQty.getCellData(fnRow));
         }
-        
-        tfQOH.setText(tblColQOH.getCellData(fnRow));
-        tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
-        tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));
-        tfApprovedQty.setText(tblColApprovedQty.getCellData(fnRow));
     }
 
     private void getLoadedTransaction() throws CloneNotSupportedException, SQLException, GuanzonException {

@@ -756,21 +756,14 @@ public class InventoryRequest_ApprovalMonarchFoodController implements Initializ
     }
     
     private void loadSelectedDetail(int fnRow) throws SQLException, GuanzonException, CloneNotSupportedException {
-        System.out.print(fnRow);
-        
         tfBranchName.setText(tblColBranch.getCellData(fnRow));
         tfBrand.setText(tblColBrand.getCellData(fnRow));
         tfBarcode.setText(tblColBarcode.getCellData(fnRow));
         tfDescription.setText(tblColDescription.getCellData(fnRow));
-        
-        //check if row is valid
-        if (fnRow >= 0) {    
-            tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
-            tfClassification.setText(poAppController.getDetail(fnRow).getClassification());
-            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
-            tfMeasure.setText(poAppController.getDetail(fnRow).Inventory().Measure().getDescription());
-        }
-        
+        tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
+        tfClassification.setText(poAppController.getDetail(fnRow).getClassification());
+        tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
+        tfMeasure.setText(poAppController.getDetail(fnRow).Inventory().Measure().getDescription());
         tfQOH.setText(tblColQOH.getCellData(fnRow));
         tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
         tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));

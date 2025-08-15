@@ -761,25 +761,21 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
     }
 
     private void loadSelectedDetail(int fnRow) throws SQLException, GuanzonException, CloneNotSupportedException {
-        System.out.print(fnRow);
-
-        tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
-        tfClassification.setText(poAppController.getDetail(fnRow).getClassification());
-        tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
-
-        int RowForTable = fnRow - 1;
-        tfBranchName.setText(tblColBranch.getCellData(RowForTable));
-        tfBrand.setText(tblColBrand.getCellData(RowForTable));
-        tfModel.setText(tblColModel.getCellData(RowForTable));
-        tfVariant.setText(tblColVariant.getCellData(RowForTable));
-        tfColor.setText(tblColColor.getCellData(RowForTable));
-        tfInventoryType.setText(tblColInventoryType.getCellData(RowForTable));
-        tfClassification.setText(tblColClassification.getCellData(RowForTable));
-        tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
-        tfQOH.setText(tblColQOH.getCellData(RowForTable));
-        tfRequestQty.setText(tblColRequestQty.getCellData(RowForTable));
-        tfCancelQty.setText(tblColCancelQty.getCellData(RowForTable));
-        tfApprovedQty.setText(tblColApprovedQty.getCellData(RowForTable));
+        if(fnRow > 0){
+            tfBranchName.setText(tblColBranch.getCellData(fnRow));
+            tfBrand.setText(tblColBrand.getCellData(fnRow));
+            tfModel.setText(tblColModel.getCellData(fnRow));
+            tfVariant.setText(tblColVariant.getCellData(fnRow));
+            tfColor.setText(tblColColor.getCellData(fnRow));
+            tfInventoryType.setText(tblColInventoryType.getCellData(fnRow));
+            tfClassification.setText(tblColClassification.getCellData(fnRow));
+            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
+            tfQOH.setText(tblColQOH.getCellData(fnRow));
+            tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
+            tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));
+            tfApprovedQty.setText(tblColApprovedQty.getCellData(fnRow));
+        
+        }
     }
 
     private void getLoadedTransaction() throws CloneNotSupportedException, SQLException, GuanzonException {
