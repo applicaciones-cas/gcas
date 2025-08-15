@@ -4821,8 +4821,8 @@ public class DashboardController implements Initializable {
                 + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Stock Request Approval LP Food\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLPFood.fxml\",\"controller_path\":\"\",\"menu_id\":\"019\",\"menu_parent\":\"008\"},"
                 //Stock Transfer
                 + "{\"access_level\":\"01 02 03 04 05 06 07\",\"menu_name\":\"Stock Transfer\",\"fxml_path\":\"Stock Transfer\",\"controller_path\":\"stocktransfer.controller\",\"menu_id\":\"020\",\"menu_parent\":\"001\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml\",\"controller_path\":\"\",\"menu_id\":\"021\",\"menu_parent\":\"019\"},"
-                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance with ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml\",\"controller_path\":\"\",\"menu_id\":\"022\",\"menu_parent\":\"019\"}"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance without ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml\",\"controller_path\":\"\",\"menu_id\":\"021\",\"menu_parent\":\"020\"},"
+                + "{\"access_level\":\"01 02 03 04 05 00 06 07\",\"menu_name\":\"Issuance with ROQ\",\"fxml_path\":\"/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuance.fxml\",\"controller_path\":\"\",\"menu_id\":\"022\",\"menu_parent\":\"020\"}"
                 + "]";
         JSONParser parser = new JSONParser();
         try {

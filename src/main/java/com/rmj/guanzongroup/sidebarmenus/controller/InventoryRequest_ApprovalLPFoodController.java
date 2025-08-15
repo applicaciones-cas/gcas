@@ -97,7 +97,7 @@ public class InventoryRequest_ApprovalLPFoodController implements Initializable,
     
     @FXML
     private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription,  tblColMeasure, tblColInventoryType, tblColQOH,
-            tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
+            tblColClassification, tblColROQ, tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -691,67 +691,74 @@ public class InventoryRequest_ApprovalLPFoodController implements Initializable,
                     return new SimpleStringProperty(String.valueOf(index));
                 });
 
-                tblColBrand.setCellValueFactory(loModel -> {
-                try {
-                    return new SimpleStringProperty(loModel.getValue().Inventory().Brand().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
+            tblColBrand.setCellValueFactory(loModel -> {
+            try {
+                return new SimpleStringProperty(loModel.getValue().Inventory().Brand().getDescription());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
 
-                tblColBarcode.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().getBarCode());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
+            tblColBarcode.setCellValueFactory(loModel -> {
+            try {
+                 return new SimpleStringProperty(loModel.getValue().Inventory().getBarCode());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
 
-                tblColDescription.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
+            tblColDescription.setCellValueFactory(loModel -> {
+            try {
+                 return new SimpleStringProperty(loModel.getValue().Inventory().getDescription());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
 
-                tblColMeasure.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().Measure().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
+            tblColMeasure.setCellValueFactory(loModel -> {
+            try {
+                 return new SimpleStringProperty(loModel.getValue().Inventory().Measure().getDescription());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
 
-                tblColInventoryType.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().InventoryType().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
+            tblColInventoryType.setCellValueFactory(loModel -> {
+            try {
+                 return new SimpleStringProperty(loModel.getValue().Inventory().InventoryType().getDescription());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
+            
+            tblColClassification.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(loModel.getValue().getClassification());
+            });
+            
+            tblColROQ.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getRecommendedOrder()));
+            });
 
-                tblColQOH.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
-                });
+            tblColQOH.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
+            });
 
-                tblColRequestQty.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantity()));
-                });
+            tblColRequestQty.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantity()));
+            });
 
-                tblColCancelQty.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getCancelled()));
-                });
+            tblColCancelQty.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getCancelled()));
+            });
 
-                tblColApprovedQty.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getApproved()));
-                });
-
+            tblColApprovedQty.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getApproved()));
+            });
         }
     }
     
@@ -762,9 +769,9 @@ public class InventoryRequest_ApprovalLPFoodController implements Initializable,
             tfBarcode.setText(tblColBarcode.getCellData(fnRow));
             tfDescription.setText(tblColDescription.getCellData(fnRow));
             tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
-            tfClassification.setText(poAppController.getDetail(fnRow).getClassification());
-            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
-            tfMeasure.setText(poAppController.getDetail(fnRow).Inventory().Measure().getDescription());
+            tfClassification.setText(tblColClassification.getCellData(fnRow));
+            tfROQ.setText(String.valueOf(tblColROQ.getCellData(fnRow)));
+            tfMeasure.setText(tblColMeasure.getCellData(fnRow));
             tfQOH.setText(tblColQOH.getCellData(fnRow));
             tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
             tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));

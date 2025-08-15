@@ -58,3 +58,17 @@ Aug 11, 2025 4:21:12 PM org.guanzon.appdriver.base.LogWrapper severe
 SEVERE: Stock Request Approval Car SP :null
 Aug 11, 2025 4:21:12 PM org.guanzon.appdriver.base.LogWrapper info
 INFO: Stock Request Approval Car SP : Success on Initialize Transaction
+Aug 15, 2025 2:33:17 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Car SP :null
+Aug 15, 2025 2:33:17 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Car SP : Success on Stock Request Approval Car SP
+Aug 15, 2025 2:33:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Car SP :Record loaded successfully.
+Aug 15, 2025 2:33:32 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Car SP : Success on  Search Cluster! 
+Aug 15, 2025 2:33:32 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Car SP :No record found.
+Aug 15, 2025 2:34:34 PM org.guanzon.appdriver.base.LogWrapper severe
+SEVERE: Stock Request Approval Car SP :null
+Aug 15, 2025 2:34:34 PM org.guanzon.appdriver.base.LogWrapper info
+INFO: Stock Request Approval Car SP : Success on Stock Request Approval Car SP

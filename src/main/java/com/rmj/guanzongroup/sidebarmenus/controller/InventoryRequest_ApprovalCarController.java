@@ -78,6 +78,9 @@ public class InventoryRequest_ApprovalCarController implements Initializable, Sc
     @FXML
     private TextField tfClusterName, tfBranchName, tfBrand, tfModel, tfVariant, tfInventoryType, tfRequestQty,
             tfApprovedQty, tfQOH, tfColor, tfClassification, tfROQ, tfCancelQty;
+    
+    @FXML
+    private Button btnSearch, btnUpdate, btnSave, btnCancel, btnPrint, btnRetrieve, btnClose;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -90,7 +93,7 @@ public class InventoryRequest_ApprovalCarController implements Initializable, Sc
 
     @FXML
     private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColNo, tblColModel, tblColVariant, tblColColor, tblColQOH,
-            tblColInventoryType, tblColClassification, tblColRequestQty, tblColCancelQty, tblColApprovedQty;
+            tblColInventoryType, tblColClassification, tblColROQ, tblColRequestQty, tblColCancelQty, tblColApprovedQty;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -743,6 +746,10 @@ public class InventoryRequest_ApprovalCarController implements Initializable, Sc
             tblColClassification.setCellValueFactory(loModel -> {
                 return new SimpleStringProperty(loModel.getValue().getClassification());
             });
+            
+            tblColROQ.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getRecommendedOrder()));
+            });
 
             tblColQOH.setCellValueFactory(loModel -> {
                 return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
@@ -772,7 +779,7 @@ public class InventoryRequest_ApprovalCarController implements Initializable, Sc
             tfColor.setText(tblColColor.getCellData(fnRow));
             tfInventoryType.setText(tblColInventoryType.getCellData(fnRow));
             tfClassification.setText(tblColClassification.getCellData(fnRow));
-            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
+            tfROQ.setText(String.valueOf(tblColROQ.getCellData(fnRow)));
             tfQOH.setText(tblColQOH.getCellData(fnRow));
             tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
             tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));

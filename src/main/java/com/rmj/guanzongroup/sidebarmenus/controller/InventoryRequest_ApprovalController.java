@@ -78,6 +78,9 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
 
     @FXML
     private Label lblSource;
+    
+    @FXML
+    private Button btnSearch, btnUpdate, btnSave, btnCancel, btnPrint, btnRetrieve, btnClose;
 
     @FXML
     private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfRequestQty, 
@@ -93,8 +96,8 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
     private TableColumn<Model_Inv_Stock_Request_Master, String> tblColStockRequestNo, tblColBranch, tblColTransaction, tblColTransactionDate; 
     
     @FXML
-    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColQOH,
-            tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
+    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColROQ, tblColQOH,
+            tblColClassification, tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -728,6 +731,14 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
                     return new SimpleStringProperty("");
                 }
                 });
+                
+                tblColClassification.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(loModel.getValue().getClassification());
+                });
+                
+                tblColROQ.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getRecommendedOrder()));
+                });
 
                 tblColQOH.setCellValueFactory(loModel -> {
                     return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
@@ -756,8 +767,8 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
             tfDescription.setText(tblColDescription.getCellData(fnRow));
             tfModel.setText(tblColModel.getCellData(fnRow));
             tfVariant.setText(tblColVariant.getCellData(fnRow));
-            tfClassification.setText(poAppController.getDetail(fnRow).getClassification() == null ? "NONE" : poAppController.getDetail(fnRow).getClassification());
-            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
+            tfClassification.setText(tblColClassification.getCellData(fnRow));
+            tfROQ.setText(String.valueOf(tblColROQ.getCellData(fnRow)));
 
             tfQOH.setText(tblColQOH.getCellData(fnRow));
             tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));

@@ -90,7 +90,7 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
 
     @FXML
     private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColNo, tblColModel, tblColVariant, tblColColor, tblColQOH,
-            tblColInventoryType, tblColClassification, tblColRequestQty, tblColCancelQty, tblColApprovedQty;
+            tblColInventoryType, tblColClassification, tblColROQ, tblColRequestQty, tblColCancelQty, tblColApprovedQty;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -740,6 +740,10 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
             tblColClassification.setCellValueFactory(loModel -> {
                 return new SimpleStringProperty(loModel.getValue().getClassification());
             });
+            
+            tblColROQ.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getRecommendedOrder()));
+            });
 
             tblColQOH.setCellValueFactory(loModel -> {
                 return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
@@ -769,7 +773,7 @@ public class InventoryRequest_ApprovalMCController implements Initializable, Scr
             tfColor.setText(tblColColor.getCellData(fnRow));
             tfInventoryType.setText(tblColInventoryType.getCellData(fnRow));
             tfClassification.setText(tblColClassification.getCellData(fnRow));
-            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
+            tfROQ.setText(tblColROQ.getCellData(fnRow));
             tfQOH.setText(tblColQOH.getCellData(fnRow));
             tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
             tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));

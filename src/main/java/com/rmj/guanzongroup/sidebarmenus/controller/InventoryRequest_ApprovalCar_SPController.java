@@ -83,6 +83,9 @@ public class InventoryRequest_ApprovalCar_SPController implements Initializable,
     @FXML
     private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfRequestQty, 
             tfApprovedQty, tfQOH, tfClassification, tfROQ, tfCancelQty;
+    
+    @FXML
+    private Button btnSearch, btnUpdate, btnSave, btnCancel, btnPrint, btnRetrieve, btnClose;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -95,7 +98,7 @@ public class InventoryRequest_ApprovalCar_SPController implements Initializable,
     
     @FXML
     private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColQOH,
-            tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
+            tblColRequestQty, tblColClassification, tblColROQ, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -733,6 +736,14 @@ public class InventoryRequest_ApprovalCar_SPController implements Initializable,
                     return new SimpleStringProperty("");
                 }
                 });
+                
+                tblColClassification.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(loModel.getValue().getClassification());
+                });
+                
+                tblColROQ.setCellValueFactory(loModel -> {
+                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getRecommendedOrder()));
+                });
 
                 tblColQOH.setCellValueFactory(loModel -> {
                     return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
@@ -761,8 +772,8 @@ public class InventoryRequest_ApprovalCar_SPController implements Initializable,
             tfDescription.setText(tblColDescription.getCellData(fnRow));
             tfModel.setText(tblColModel.getCellData(fnRow));
             tfVariant.setText(tblColVariant.getCellData(fnRow));
-            tfClassification.setText(poAppController.getDetail(fnRow).getClassification() == null ? "NONE" : poAppController.getDetail(fnRow).getClassification());
-            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
+            tfClassification.setText(tblColClassification.getCellData(fnRow));
+            tfROQ.setText(tblColROQ.getCellData(fnRow));
             tfQOH.setText(tblColQOH.getCellData(fnRow));
             tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
             tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));

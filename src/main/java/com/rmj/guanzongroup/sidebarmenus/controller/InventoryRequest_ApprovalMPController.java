@@ -78,6 +78,9 @@ public class InventoryRequest_ApprovalMPController implements Initializable, Scr
 
     @FXML
     private Label lblSource;
+    
+    @FXML
+    private Button btnSearch, btnUpdate, btnSave, btnCancel, btnPrint, btnRetrieve, btnClose;
 
     @FXML
     private TextField tfClusterName, tfBranchName, tfBrand, tfModel, tfBarcode, tfDescription, tfVariant, tfColor, tfInventoryType, tfClassification,
@@ -94,7 +97,7 @@ public class InventoryRequest_ApprovalMPController implements Initializable, Scr
     
     @FXML
     private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColNo, tblColBrand, tblColBarcode, tblColDescription, tblColModel, tblColVariant, tblColColor,
-            tblColQOH, tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
+            tblColInventoryType, tblColClassification, tblColROQ, tblColQOH, tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -489,13 +492,11 @@ public class InventoryRequest_ApprovalMPController implements Initializable, Scr
 
         // Always show these buttons
         initButtonControls(true, "btnSearch", "btnClose");
-        
-        System.out.print(!lbShow);
-        System.out.print(!lbShow);
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
         initButtonControls(!lbShow, "btnPrint", "btnUpdate");
+        
         apDetail.setDisable(!lbShow);
     }
     
@@ -626,6 +627,7 @@ public class InventoryRequest_ApprovalMPController implements Initializable, Scr
 
                     tblColTransaction.setCellValueFactory(loModel
                             -> new SimpleStringProperty(loModel.getValue().getTransactionNo()));
+                    
                     tblColBranch.setCellValueFactory(loModel
                             -> {
                         try {
@@ -636,6 +638,7 @@ public class InventoryRequest_ApprovalMPController implements Initializable, Scr
                         }
                        }
                     );
+                    
                     tblColTransactionDate.setCellValueFactory(loModel
                             -> new SimpleStringProperty(SQLUtil.dateFormat(loModel.getValue().getTransactionDate(), SQLUtil.FORMAT_LONG_DATE)));
 
@@ -741,6 +744,23 @@ public class InventoryRequest_ApprovalMPController implements Initializable, Scr
                 return new SimpleStringProperty("");
             }
             });
+            
+            tblColInventoryType.setCellValueFactory(loModel -> {
+            try {
+                 return new SimpleStringProperty(loModel.getValue().Inventory().InventoryType().getDescription());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
+            
+            tblColClassification.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(loModel.getValue().getClassification());
+            });
+            
+            tblColROQ.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getRecommendedOrder()));
+            });
 
             tblColQOH.setCellValueFactory(loModel -> {
                 return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
@@ -770,9 +790,9 @@ public class InventoryRequest_ApprovalMPController implements Initializable, Scr
             tfDescription.setText(tblColDescription.getCellData(fnRow));
             tfVariant.setText(tblColVariant.getCellData(fnRow));
             tfColor.setText(tblColColor.getCellData(fnRow));
-            tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
-            tfClassification.setText(poAppController.getDetail(fnRow).getClassification() == null ? "NONE" : poAppController.getDetail(fnRow).getClassification());
-            tfROQ.setText(String.valueOf(poAppController.getDetail(fnRow).getRecommendedOrder()));
+            tfInventoryType.setText(tblColInventoryType.getCellData(fnRow));
+            tfClassification.setText(tblColClassification.getCellData(fnRow));
+            tfROQ.setText(String.valueOf(tblColROQ.getCellData(fnRow)));
             tfQOH.setText(tblColQOH.getCellData(fnRow));
             tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
             tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));
