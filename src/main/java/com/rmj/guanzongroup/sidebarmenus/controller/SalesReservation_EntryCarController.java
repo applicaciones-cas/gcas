@@ -65,7 +65,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import ph.com.guanzongroup.cas.sales.services.SalesReservationControllers;
-import ph.com.guanzongroup.cas.sales.status.Sales_Reservation_Static;
+import ph.com.guanzongroup.cas.sales.constant.Sales_Reservation_Static;
 
 /**
  * FXML Controller class
@@ -629,7 +629,7 @@ public class SalesReservation_EntryCarController implements Initializable, Scree
                             clearMaster();
                             clearDetail();
                             detail_data.clear();
-                            pnEditMode = EditMode.READY;
+                            pnEditMode = EditMode.UNKNOWN;
                             initButton(pnEditMode);
                         }
                         break;
@@ -1145,8 +1145,8 @@ public class SalesReservation_EntryCarController implements Initializable, Scree
     
     private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        btnRetrieve.setVisible(lbShow);
-        btnRetrieve.setManaged(lbShow);
+        btnRetrieve.setVisible(true);
+        btnRetrieve.setManaged(true);
         btnCancel.setVisible(lbShow);
         btnCancel.setManaged(lbShow);
         btnSave.setVisible(lbShow);
@@ -1277,7 +1277,7 @@ public class SalesReservation_EntryCarController implements Initializable, Scree
                         
                         if (selectedLocalDate.isBefore(dateNow)) {
                             boolean proceed = ShowMessageFX.YesNo(
-                                    "You selected a backdate with a reference number.\n\n"
+                                    "The selected date is earlier than today and requires system approval.\n"
                                             + "If YES, seek approval to proceed with the backdate.\n"
                                             + "If NO, the transaction date will be reset to today.",
                                     "Backdate Confirmation", null

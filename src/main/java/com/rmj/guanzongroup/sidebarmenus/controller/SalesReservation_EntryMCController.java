@@ -65,7 +65,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import ph.com.guanzongroup.cas.sales.services.SalesReservationControllers;
-import ph.com.guanzongroup.cas.sales.status.Sales_Reservation_Static;
+import ph.com.guanzongroup.cas.sales.constant.Sales_Reservation_Static;
 
 /**
  * FXML Controller class
@@ -944,7 +944,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
         new Thread(task).start(); // Run task in background
     }
     private void tblSourceList_Clicked(MouseEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+        if (pnEditMode == EditMode.ADDNEW ) {
             pnSourceRow = tblSourceList.getSelectionModel().getSelectedIndex();
 //            if (event.getClickCount() == 2) {
               
@@ -1270,7 +1270,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                         
                         if (selectedLocalDate.isBefore(dateNow)) {
                             boolean proceed = ShowMessageFX.YesNo(
-                                    "You selected a backdate with a reference number.\n\n"
+                                     "The selected date is earlier than today and requires system approval.\n"
                                             + "If YES, seek approval to proceed with the backdate.\n"
                                             + "If NO, the transaction date will be reset to today.",
                                     "Backdate Confirmation", null

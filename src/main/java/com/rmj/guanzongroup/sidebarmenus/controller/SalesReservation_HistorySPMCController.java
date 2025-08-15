@@ -75,11 +75,11 @@ import ph.com.guanzongroup.cas.sales.constant.Sales_Reservation_Static;
  *
  * @author user
  */
-public class SalesReservation_HistoryMCController implements Initializable, ScreenInterface {
+public class SalesReservation_HistorySPMCController implements Initializable, ScreenInterface {
 
     private GRiderCAS poApp;
     private SalesReservationControllers poSalesReservationControllers;
-    private String psFormName = "Sales Reservation History MC";
+    private String psFormName = "Sales Reservation History SPMC";
     private LogWrapper logWrapper;
     private JSONObject poJSON;
     
@@ -92,7 +92,6 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
     private int pnDetailRow = -1;
     private String prevCustomer ="";
     private String psOldDate = "";
-    private static final int ROWS_PER_PAGE = 50;
     
     private ObservableList<ModelSalesReservationSource> source_data = FXCollections.observableArrayList();
     private ObservableList<ModelSalesReservationDetail> detail_data = FXCollections.observableArrayList();
@@ -138,15 +137,18 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
     @FXML private Button btnSearch;
     @FXML private Button btnHistory;
     @FXML private Button btnClose;
-
-    // ──────────────────────────────
-    // Transaction Fields
+  // ──────────────────────────────
+    // SEARCH Fields
     // ──────────────────────────────
     @FXML private TextField tfsTransactionNo;
+    @FXML private TextField tfsCustomerName;
+ // ──────────────────────────────
+    // Transaction Fields
+    // ──────────────────────────────
     @FXML private TextField tfTransactionNo;
     @FXML private DatePicker dpTransaction;
     @FXML private DatePicker dpExpedtedDate;
-    @FXML private TextField tfsCustomerName;
+
     @FXML private TextField tfCustomerName;
     @FXML private TextField tfAddress;
     @FXML private TextField tfContact;
@@ -159,13 +161,17 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
     @FXML private TextField tfTotal;
     @FXML private TextField tfAmountPaid;
     @FXML private TextField tfDownPayment;
+    
+   
 
     // ──────────────────────────────
     // Item / Product Fields
     // ──────────────────────────────
+    @FXML private TextField tfBarcode;
+    @FXML private TextField tfDescription;
     @FXML private TextField tfBrand;
     @FXML private TextField tfModel;
-    @FXML private TextField tfVariant;
+    @FXML private TextField tfMeasure;
     @FXML private TextField tfInvType;
     @FXML private TextField tfCategory;
     @FXML private TextField tfColor;
@@ -222,7 +228,7 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
                     //                loadRecordSearch();
                
                 } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_HistoryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
                 }
     }
     
@@ -242,7 +248,6 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
             tfUnitPrice,
             tfQuantity,
             tfDownPayment,
-            tfVariant,
             tfInvType,
             tfCategory,
             tfColor
@@ -254,14 +259,9 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
         };
 
         TextInputControl[] keyPressFields = {
+           
             tfsTransactionNo,
-            tfsCustomerName,
-            tfTransactionNo,
-            tfCustomerName,
-            tfAmountPaid,
-            tfQuantity,
-            tfModel,
-            tfBrand
+            tfsCustomerName
         };
         for (TextInputControl input : keyPressFields) {
             input.setOnKeyPressed(this::txtField_KeyPressed);
@@ -423,7 +423,7 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
                         break;   
                 }
             } catch (CloneNotSupportedException | SQLException | GuanzonException  ex) {
-                Logger.getLogger(SalesReservation_HistoryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(SalesReservation_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -494,22 +494,30 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
             dpExpedtedDate.setValue(CustomCommonUtil.parseDateStringToLocalDate(SQLUtil.dateFormat(
                     poSalesReservationControllers.SalesReservation().Master().getExpectedDate(), SQLUtil.FORMAT_SHORT_DATE)));
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_HistoryMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }
     private void loadRecordDetail(){
         try {
+            tfBarcode.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getBarCode()!= null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getBarCode() : "");
+            tfDescription.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getDescription() : "");
+            
             tfBrand.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Brand().getDescription() : "");
             tfModel.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Model().getDescription() : "");
-            tfVariant.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Variant().getDescription() != null
-                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Variant().getDescription() : "");
-            tfCategory.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() != null
-                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() : "");
             tfColor.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Color().getDescription() != null
                     ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Color().getDescription() : "");
+            
+            tfCategory.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Category().getDescription() : "");
+            tfInvType.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().InventoryType().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().InventoryType().getDescription() : "");
+            tfMeasure.setText(poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Measure().getDescription() != null
+                    ? poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().Measure().getDescription() : "");
             
             tfUnitPrice.setText(CustomCommonUtil.setIntegerValueToDecimalFormat(
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).Inventory().getCost(), true));
@@ -519,7 +527,7 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
                     poSalesReservationControllers.SalesReservation().Detail(pnDetailRow).getQuantity(), false));
            
         } catch (SQLException | GuanzonException ex) {
-            Logger.getLogger(SalesReservation_HistoryMCController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SalesReservation_ConfirmationSPMCController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -572,7 +580,7 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
                         }
                         loadRecordDetail();
                     } catch (SQLException | GuanzonException | CloneNotSupportedException ex) {
-                        Logger.getLogger(SalesReservation_HistoryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
                 return null;
@@ -634,20 +642,23 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
         btnHistory.setVisible(!lbShow);
         btnHistory.setManaged(!lbShow);
     }
-    
+        
+
     
     private void clearDetail(){
         lblStatus.setText("UNKNOWN");
             TextInputControl[] txtFieldInputs = {
+            tfBarcode,
+            tfDescription,
             tfBrand,
             tfModel,
-            tfVariant,
-            tfInvType,
-            tfCategory,
             tfColor,
+            tfCategory,
+            tfInvType,
+            tfMeasure,
             tfUnitPrice,
             tfDownPayment,
-            tfQuantity
+            tfQuantity,
         };
 
         for (TextInputControl txtInput : txtFieldInputs) {
@@ -761,9 +772,9 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
                     dpTransaction.setValue(CustomCommonUtil.parseDateStringToLocalDate(
                             SQLUtil.dateFormat(poSalesReservationControllers.SalesReservation().Master().getTransactionDate(), SQLUtil.FORMAT_SHORT_DATE)));
                 } catch (SQLException ex) {
-                    Logger.getLogger(SalesReservation_HistoryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (GuanzonException ex) {
-                    Logger.getLogger(SalesReservation_HistoryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SalesReservation_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -788,7 +799,7 @@ public class SalesReservation_HistoryMCController implements Initializable, Scre
                         
                         poSalesReservationControllers.SalesReservation().Master().setExpectedDate(selectedDate);
                     } catch (SQLException | GuanzonException ex) {
-                        Logger.getLogger(SalesReservation_HistoryMCController.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SalesReservation_HistorySPMCController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }

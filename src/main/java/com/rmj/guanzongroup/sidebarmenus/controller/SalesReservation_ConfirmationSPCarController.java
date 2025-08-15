@@ -69,7 +69,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import ph.com.guanzongroup.cas.sales.services.SalesReservationControllers;
-import ph.com.guanzongroup.cas.sales.status.Sales_Reservation_Static;
+import ph.com.guanzongroup.cas.sales.constant.Sales_Reservation_Static;
 
 /**
  * FXML Controller class
@@ -117,12 +117,7 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
    public void setCategoryID(String fsValue) {
         psCategoryID = fsValue;
     }
-         
-    // ──────────────────────────────
-    // SEARCH Fields
-    // ──────────────────────────────
-    @FXML private TextField tfsTransactionNo;
-    @FXML private TextField tfsCustomerName;
+    
 
     // ──────────────────────────────
     // Containers
@@ -151,7 +146,12 @@ public class SalesReservation_ConfirmationSPCarController implements Initializab
     @FXML private Button btnRetrieve;
     @FXML private Button btnHistory;
     @FXML private Button btnClose;
-
+     
+    // ──────────────────────────────
+    // SEARCH Fields
+    // ──────────────────────────────
+    @FXML private TextField tfsTransactionNo;
+    @FXML private TextField tfsCustomerName;
  // ──────────────────────────────
     // Transaction Fields
     // ──────────────────────────────
