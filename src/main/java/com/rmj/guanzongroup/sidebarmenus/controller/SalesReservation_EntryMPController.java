@@ -663,6 +663,7 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
                             return;
                         }
                         
+                        loadTableDetailList();
                         pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
                         initButton(pnEditMode);
                         break;
@@ -990,7 +991,7 @@ public class SalesReservation_EntryMPController implements Initializable, Screen
         new Thread(task).start(); // Run task in background
     }
     private void tblSourceList_Clicked(MouseEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+        if (pnEditMode == EditMode.ADDNEW ) {
             pnSourceRow = tblSourceList.getSelectionModel().getSelectedIndex();
             if (event.getClickCount() == 2) {
               

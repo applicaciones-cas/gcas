@@ -667,6 +667,7 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                             return;
                         }
                         
+                        loadTableDetailList();
                         pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
                         initButton(pnEditMode);
                         break;
@@ -1002,7 +1003,7 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
         new Thread(task).start(); // Run task in background
     }
     private void tblSourceList_Clicked(MouseEvent event) {
-        if (pnEditMode == EditMode.ADDNEW || pnEditMode == EditMode.UPDATE) {
+        if (pnEditMode == EditMode.ADDNEW ) {
             pnSourceRow = tblSourceList.getSelectionModel().getSelectedIndex();
             if (event.getClickCount() == 2) {
               
@@ -1330,7 +1331,7 @@ public class SalesReservation_EntryMonarchFoodController implements Initializabl
                         
                         if (selectedLocalDate.isBefore(dateNow)) {
                             boolean proceed = ShowMessageFX.YesNo(
-                                     "The selected date is earlier than today and requires system approval.\n"
+                                    "You selected a backdate with a reference number.\n\n"
                                             + "If YES, seek approval to proceed with the backdate.\n"
                                             + "If NO, the transaction date will be reset to today.",
                                     "Backdate Confirmation", null

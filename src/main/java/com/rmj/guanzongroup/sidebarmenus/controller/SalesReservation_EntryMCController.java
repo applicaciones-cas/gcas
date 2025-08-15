@@ -620,7 +620,7 @@ public class SalesReservation_EntryMCController implements Initializable, Screen
                             ShowMessageFX.Warning( (String) poJSON.get("message"), psFormName,null);
                             return;
                         }
-                        
+                        loadTableDetailList();
                         pnEditMode = poSalesReservationControllers.SalesReservation().getEditMode();
                         initButton(pnEditMode);
                         break;
