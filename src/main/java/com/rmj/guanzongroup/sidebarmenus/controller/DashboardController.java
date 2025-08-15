@@ -1662,20 +1662,20 @@ public class DashboardController implements Initializable {
                     psCategoryID = "0003";
                     return "Stock Request Approval";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalAppliance.fxml":
-                    psIndustryID = "02";
-                    psCategoryID = "0003";
+                    psIndustryID = "07";
+                    psCategoryID = "0002";
                     return "Stock Request Approval Appliance";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalCar.fxml":
-                    psIndustryID = "02";
-                    psCategoryID = "0003";
+                    psIndustryID = "03";
+                    psCategoryID = "0005";
                     return "Stock Request Approval Car";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalCar_SP.fxml":
-                    psIndustryID = "02";
-                    psCategoryID = "0003";
+                    psIndustryID = "03";
+                    psCategoryID = "0006";
                     return "Stock Request Approval Car SP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLP.fxml":
-                    psIndustryID = "02";
-                    psCategoryID = "0003";
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
                     return "Stock Request Approval LP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMC.fxml":
                     psIndustryID = "02";
@@ -1683,23 +1683,23 @@ public class DashboardController implements Initializable {
                     return "Stock Request Approval MC";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMC_SP.fxml":
                     psIndustryID = "02";
-                    psCategoryID = "0003";
+                    psCategoryID = "0004";
                     return "Stock Request Approval MC SP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMP.fxml":
-                    psIndustryID = "02";
-                    psCategoryID = "0003";
+                    psIndustryID = "01";
+                    psCategoryID = "0001";
                     return "Stock Request Approval MP";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchFood.fxml":
-                    psIndustryID = "02";
-                    psCategoryID = "0003";
-                    return "Stock Request Approval LP Food";
-                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLPFood.fxml":
-                    psIndustryID = "02";
-                    psCategoryID = "0003";
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
                     return "Stock Request Approval Monarch Food";
+                case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalLPFood.fxml":
+                    psIndustryID = "05";
+                    psCategoryID = "0008";
+                    return "Stock Request Approval LP Food";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryRequest_ApprovalMonarchHospitality.fxml":
-                    psIndustryID = "02";
-                    psCategoryID = "0003";
+                    psIndustryID = "04";
+                    psCategoryID = "0009";
                     return "Stock Request Approval Monarch Hospitality";
                 case "/com/rmj/guanzongroup/sidebarmenus/views/InventoryStockTransferIssuanceNeo.fxml":
                     psIndustryID = "02";
