@@ -247,18 +247,18 @@
                                                                   </Label>
                                                                           <TextField fx:id="tfTransactionNo" disable="true" editable="false" maxHeight="25.0" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="139.0" style="-fx-font-weight: bold;" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" />
                                                                               <DatePicker fx:id="dpTransactionDate" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                          <TextField fx:id="tfBranch" disable="true" editable="false" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-                                                                  <TextField fx:id="tfSalesPerson" layoutX="100.0" layoutY="135.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                                  <TextField fx:id="tfReferralAgent" layoutX="100.0" layoutY="105.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
-                                                                          <TextField fx:id="tfInquiryStatus" disable="true" editable="false" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfInquiryType" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                                                                          <TextField fx:id="tfBranch" disable="true" editable="false" maxHeight="25.0"  GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                  <TextField fx:id="tfSalesPerson" layoutX="100.0" layoutY="135.0" maxHeight="25.0"  GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                                  <TextField fx:id="tfReferralAgent" layoutX="100.0" layoutY="105.0" maxHeight="25.0"  GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="5" />
+                                                                          <TextField fx:id="tfInquiryStatus" disable="true" editable="false"  GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="tfInquiryType"  GridPane.columnIndex="7" GridPane.rowIndex="3" />
                                                                   <ComboBox fx:id="cmbPurchaseType" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="4" />
                                                                   <ComboBox fx:id="cmbCategoryType" layoutX="580.0" layoutY="105.0" prefWidth="150.0" GridPane.columnIndex="7" GridPane.rowIndex="5" />
                                                                         <DatePicker fx:id="dpTargetDate" maxWidth="139.0" GridPane.columnIndex="7" GridPane.rowIndex="7" />
                                                                   <ComboBox fx:id="cmbClientType" prefWidth="150.0" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-                                                                  <TextField fx:id="tfClient" layoutX="85.0" layoutY="78.0" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="8" />
-                                                                  <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="85.0" layoutY="203.0" maxHeight="25.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="9" />
-                                                                  <TextField fx:id="tfContactNo" disable="true" editable="false" layoutX="489.0" layoutY="203.0" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.rowIndex="9" />
+                                                                  <TextField fx:id="tfClient" layoutX="85.0" layoutY="78.0" maxHeight="25.0"  GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                                                                  <TextField fx:id="tfAddress" disable="true" editable="false" layoutX="85.0" layoutY="203.0" maxHeight="25.0"  GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="9" />
+                                                                  <TextField fx:id="tfContactNo" disable="true" editable="false" layoutX="489.0" layoutY="203.0"  GridPane.columnIndex="7" GridPane.rowIndex="9" />
                                                       <TextArea fx:id="taRemarks" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="27.0" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="10">
                                                          <GridPane.margin>
                                                             <Insets top="1.0" />
@@ -309,11 +309,11 @@
                                                                         <Font size="12.0" />
                                                                      </font>
                                                                   </Label>
-                                                                          <TextField fx:id="tfBrand" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="2" />
-                                                                              <TextField fx:id="tfModel" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                                          <TextField fx:id="tfColor" maxHeight="25.0" promptText="Press F3: Search" GridPane.columnIndex="7" GridPane.rowIndex="1" />
-                                                                  <TextField fx:id="tfModelVariant" disable="true" layoutX="100.0" layoutY="41.0" styleClass="DisabledTextField" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfSellingPrice" alignment="CENTER_RIGHT" disable="true" layoutX="100.0" layoutY="67.0" maxWidth="139.0" promptText="0.0000" styleClass="DisabledTextField" GridPane.columnIndex="7" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+                                                                          <TextField fx:id="tfBrand" maxHeight="25.0"  GridPane.columnIndex="2" />
+                                                                              <TextField fx:id="tfModel"  GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                                          <TextField fx:id="tfColor" maxHeight="25.0"  GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                                                                  <TextField fx:id="tfModelVariant" disable="true" layoutX="100.0" layoutY="41.0"  GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                                  <TextField fx:id="tfSellingPrice" alignment="CENTER_RIGHT" disable="true" layoutX="100.0" layoutY="67.0" maxWidth="139.0" promptText="0.0000"  GridPane.columnIndex="7" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
                                                                       </children>
                                                                   </GridPane>
                                                               </children>
@@ -384,7 +384,7 @@
                                                                   <Label layoutX="56.0" layoutY="87.0" text="Received Date" GridPane.columnIndex="5" GridPane.rowIndex="3" />
                                                                   <ComboBox fx:id="cmbCustomerGroup" prefWidth="150.0" GridPane.columnIndex="2" />
                                                                   <TextField fx:id="tfRequirement" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfReceivedBy" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                  <TextField fx:id="tfReceivedBy"  GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                   <DatePicker fx:id="dpReceivedDate" GridPane.columnIndex="7" GridPane.rowIndex="3" />
                                                                </children>
                                                             </GridPane>
@@ -462,9 +462,9 @@
                                                                   <Label layoutX="56.0" layoutY="87.0" text="Date Approved" GridPane.columnIndex="5" GridPane.rowIndex="3" />
                                                                   <Label layoutX="30.0" layoutY="67.0" text="Payment Mode" />
                                                                   <Label layoutX="410.0" layoutY="97.0" text="Date Applied" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfPaymentMode" disable="true" editable="false" layoutX="120.0" layoutY="23.0" styleClass="DisabledTextField" GridPane.columnIndex="2" />
+                                                                  <TextField fx:id="tfPaymentMode" disable="true" editable="false" layoutX="120.0" layoutY="23.0"  GridPane.columnIndex="2" />
                                                                   <TextField fx:id="tfApplicationNo" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <TextField fx:id="tfBank" promptText="Press F3: Search" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                                  <TextField fx:id="tfBank"  GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                                   <DatePicker fx:id="dpAppliedDate" layoutX="490.0" layoutY="93.0" GridPane.columnIndex="7" GridPane.rowIndex="2" />
                                                                   <DatePicker fx:id="dpApprovedDate" GridPane.columnIndex="7" GridPane.rowIndex="3" />
                                                                   <TextArea fx:id="taBankAppRemarks" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.columnSpan="6" GridPane.rowIndex="4" GridPane.rowSpan="2" />
