@@ -296,7 +296,7 @@ public class InvRequest_HistoryMPController implements Initializable, ScreenInte
                             invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                            invRequestController.StockRequest().setTransactionStatus("102");
+                            invRequestController.StockRequest().setTransactionStatus("1024");
                             poJSON = invRequestController.StockRequest().searchTransaction();
                             if (!"error".equals((String) poJSON.get("result"))) {
                                 pnTblInvDetailRow = -1;
@@ -315,7 +315,7 @@ public class InvRequest_HistoryMPController implements Initializable, ScreenInte
                             invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                             invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                             invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                            invRequestController.StockRequest().setTransactionStatus("102");
+                            invRequestController.StockRequest().setTransactionStatus("1024");
                             poJSON = invRequestController.StockRequest().searchTransaction();
                             if (!"error".equals((String) poJSON.get("result"))) {
                                 pnTblInvDetailRow = -1;
@@ -356,27 +356,14 @@ public class InvRequest_HistoryMPController implements Initializable, ScreenInte
                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                    if (tfSearchTransNo.getText().isEmpty() && tfSearchReferenceNo.getText().isEmpty()) {
-                        // Empty criteria - show both OPEN and CONFIRMED
-                        invRequestController.StockRequest().setTransactionStatus(
-                            StockRequestStatus.OPEN + "," + StockRequestStatus.CONFIRMED
-                        );
-                    } else {
-                        // Specific search - include VOIDED also
-                        invRequestController.StockRequest().setTransactionStatus(
-                        StockRequestStatus.OPEN + "," + StockRequestStatus.CONFIRMED + "," + StockRequestStatus.VOID);
-//                    invRequestController.StockRequest().setTransactionStatus("102");
-                    }
+                    invRequestController.StockRequest().setTransactionStatus("1024");
                     loadTableList();
                     break;
                 case "btnBrowse":
                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                    //invRequestController.StockRequest().setTransactionStatus("102");
-                    invRequestController.StockRequest().setTransactionStatus(
-                    StockRequestStatus.OPEN + "," + StockRequestStatus.CONFIRMED + "," + StockRequestStatus.VOID
-                    );
+                    invRequestController.StockRequest().setTransactionStatus("1024");
                     loJSON = invRequestController.StockRequest().searchTransaction();
 
                     if (!"error".equals((String) loJSON.get("result"))) {
@@ -408,7 +395,6 @@ public class InvRequest_HistoryMPController implements Initializable, ScreenInte
 
         }
     }
-
     private void loadTableList() {
         btnRetrieve.setDisable(true);
         ProgressIndicator progressIndicator = new ProgressIndicator();

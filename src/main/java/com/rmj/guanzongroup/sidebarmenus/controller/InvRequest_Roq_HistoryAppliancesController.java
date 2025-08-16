@@ -344,7 +344,7 @@ public class InvRequest_Roq_HistoryAppliancesController implements Initializable
         }
     }
 
-    private void handleButtonAction(ActionEvent event) {
+     private void handleButtonAction(ActionEvent event) {
         System.out.print("handle trigger reached");
         try {
             JSONObject loJSON = new JSONObject();
@@ -355,27 +355,14 @@ public class InvRequest_Roq_HistoryAppliancesController implements Initializable
                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                    if (tfSearchTransNo.getText().isEmpty() && tfSearchReferenceNo.getText().isEmpty()) {
-                        // Empty criteria - show both OPEN and CONFIRMED
-                        invRequestController.StockRequest().setTransactionStatus(
-                            StockRequestStatus.OPEN + "," + StockRequestStatus.CONFIRMED
-                        );
-                    } else {
-                        // Specific search - include VOIDED also
-                        invRequestController.StockRequest().setTransactionStatus(
-                        StockRequestStatus.OPEN + "," + StockRequestStatus.CONFIRMED + "," + StockRequestStatus.VOID);
-//                    invRequestController.StockRequest().setTransactionStatus("102");
-                    }
+                    invRequestController.StockRequest().setTransactionStatus("102");
                     loadTableList();
                     break;
                 case "btnBrowse":
                     invRequestController.StockRequest().Master().setIndustryId(psIndustryID);
                     invRequestController.StockRequest().Master().setCompanyID(psCompanyID);
                     invRequestController.StockRequest().Master().setCategoryId(psCategoryID);
-                    //invRequestController.StockRequest().setTransactionStatus("102");
-                    invRequestController.StockRequest().setTransactionStatus(
-                    StockRequestStatus.OPEN + "," + StockRequestStatus.CONFIRMED + "," + StockRequestStatus.VOID
-                    );
+                    invRequestController.StockRequest().setTransactionStatus("102");
                     loJSON = invRequestController.StockRequest().searchTransaction();
 
                     if (!"error".equals((String) loJSON.get("result"))) {
