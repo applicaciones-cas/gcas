@@ -53,7 +53,7 @@ import org.guanzon.appdriver.base.SQLUtil;
 import org.guanzon.appdriver.constant.EditMode;
 import org.json.simple.JSONObject;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.DeliverySchedule;
-import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryScheduleControllers;
+import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceControllers;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleStatus;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.constant.DeliveryScheduleTruck;
 import ph.com.guanzongroup.cas.inv.warehouse.t4.model.Model_Delivery_Schedule_Detail;
@@ -75,7 +75,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
     private LogWrapper poLogWrapper;
     private int pnEditMode;
     private DeliverySchedule poAppController;
-    private String psFormName = "Delivery Schedule Entry";
+    private String psFormName = "Delivery Schedule Request";
 
     private String psClusterNameOld = "";
 
@@ -147,7 +147,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
 
         try {
             poLogWrapper = new LogWrapper(psFormName, psFormName + "Log");
-            poAppController = new DeliveryScheduleControllers(poApp, poLogWrapper).DeliverySchedule();
+            poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).DeliverySchedule();
             poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
             if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
                 unloadForm appUnload = new unloadForm();
@@ -181,7 +181,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
             switch (lsButton) {
                 case "btnUpdate":
                     if (tfTransactionNo.getText().isEmpty()) {
-                        ShowMessageFX.Information("Please load transaction before proceeding..", "Search Transaction! by Trasaction", "Delivery Schedule Encoding");
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Delivery Schedule Encoding", "");
                         return;
                     }
 
@@ -268,6 +268,11 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     pnEditMode = poAppController.getEditMode();
                     break;
                 case "btnSave":
+                    if (tfTransactionNo.getText().isEmpty()) {
+                        ShowMessageFX.Information("Please load transaction before proceeding..", "Delivery Schedule Encoding", "");
+                        return;
+                    }
+                    
                     if (!isJSONSuccess(poAppController.saveTransaction(), "Initialize Save Transaction")) {
                         return;
                     }
@@ -277,7 +282,7 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     break;
                 case "btnCancel":
                     if (ShowMessageFX.OkayCancel(null, psFormName, "Do you want to disregard changes?") == true) {
-                        poAppController = new DeliveryScheduleControllers(poApp, poLogWrapper).DeliverySchedule();
+                        poAppController = new DeliveryIssuanceControllers(poApp, poLogWrapper).DeliverySchedule();
                         poAppController.setTransactionStatus(DeliveryScheduleStatus.OPEN);
 
                         if (!isJSONSuccess(poAppController.initTransaction(), "Initialize Transaction")) {
@@ -333,10 +338,8 @@ public class DeliverySchedule_EntryController implements Initializable, ScreenIn
                     break;
                 case "btnClose":
                     unloadForm appUnload = new unloadForm();
-                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
+                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?")) {
                         appUnload.unloadForm(apMainAnchor, poApp, psFormName);
-                    } else {
-                        return;
                     }
                     break;
 

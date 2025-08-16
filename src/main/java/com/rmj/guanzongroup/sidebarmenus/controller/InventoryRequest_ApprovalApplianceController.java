@@ -62,12 +62,12 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceC
  *
  * @author User
  */
-public class InventoryRequest_ApprovalController implements Initializable, ScreenInterface{
+public class InventoryRequest_ApprovalApplianceController implements Initializable, ScreenInterface{
     
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
     private InventoryRequestApproval poAppController;
-    private String psFormName = "Stock Request Approval";
+    private String psFormName = "Stock Request Approval Appliance";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private ObservableList<Model_Inv_Stock_Request_Detail> laTransactionDetail;
@@ -78,13 +78,13 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
 
     @FXML
     private Label lblSource;
-    
-    @FXML
-    private Button btnSearch, btnUpdate, btnSave, btnCancel, btnPrint, btnRetrieve, btnClose;
 
     @FXML
     private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfRequestQty, 
             tfApprovedQty, tfQOH, tfClassification, tfROQ, tfCancelQty;
+    
+    @FXML
+    private Button btnSearch, btnUpdate, btnSave, btnCancel, btnPrint, btnRetrieve, btnClose;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -96,8 +96,8 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
     private TableColumn<Model_Inv_Stock_Request_Master, String> tblColStockRequestNo, tblColBranch, tblColTransaction, tblColTransactionDate; 
     
     @FXML
-    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColROQ, tblColQOH,
-            tblColClassification, tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
+    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColQOH,
+            tblColClassification, tblColROQ, tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -735,7 +735,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
                 tblColClassification.setCellValueFactory(loModel -> {
                     return new SimpleStringProperty(loModel.getValue().getClassification());
                 });
-                
+
                 tblColROQ.setCellValueFactory(loModel -> {
                     return new SimpleStringProperty(String.valueOf(loModel.getValue().getRecommendedOrder()));
                 });

@@ -62,12 +62,12 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceC
  *
  * @author User
  */
-public class InventoryRequest_ApprovalController implements Initializable, ScreenInterface{
+public class InventoryRequest_ApprovalLPFoodController implements Initializable, ScreenInterface{
     
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
     private InventoryRequestApproval poAppController;
-    private String psFormName = "Stock Request Approval";
+    private String psFormName = "Stock Request Approval LP Food";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private ObservableList<Model_Inv_Stock_Request_Detail> laTransactionDetail;
@@ -78,13 +78,13 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
 
     @FXML
     private Label lblSource;
-    
-    @FXML
-    private Button btnSearch, btnUpdate, btnSave, btnCancel, btnPrint, btnRetrieve, btnClose;
 
     @FXML
-    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfRequestQty, 
+    private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfMeasure, tfInventoryType, tfRequestQty, 
             tfApprovedQty, tfQOH, tfClassification, tfROQ, tfCancelQty;
+    
+    @FXML
+    private Button btnSearch, btnSave, btnCancel, btnUpdate, btnPrint, btnClose;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -96,8 +96,8 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
     private TableColumn<Model_Inv_Stock_Request_Master, String> tblColStockRequestNo, tblColBranch, tblColTransaction, tblColTransactionDate; 
     
     @FXML
-    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColROQ, tblColQOH,
-            tblColClassification, tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
+    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription,  tblColMeasure, tblColInventoryType, tblColQOH,
+            tblColClassification, tblColROQ, tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -208,8 +208,9 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
 
                 case "btnClose":
                     unloadForm appUnload = new unloadForm();
-                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?")) {
+                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
                         appUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                        break;
                     }
                     break;
             }
@@ -491,6 +492,9 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
 
         // Always show these buttons
         initButtonControls(true, "btnSearch", "btnClose");
+        
+        System.out.print(!lbShow);
+        System.out.print(!lbShow);
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
@@ -687,89 +691,87 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
                     return new SimpleStringProperty(String.valueOf(index));
                 });
 
-                tblColBrand.setCellValueFactory(loModel -> {
-                try {
-                    return new SimpleStringProperty(loModel.getValue().Inventory().Brand().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
+            tblColBrand.setCellValueFactory(loModel -> {
+            try {
+                return new SimpleStringProperty(loModel.getValue().Inventory().Brand().getDescription());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
 
-                tblColBarcode.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().getBarCode());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
+            tblColBarcode.setCellValueFactory(loModel -> {
+            try {
+                 return new SimpleStringProperty(loModel.getValue().Inventory().getBarCode());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
 
-                tblColDescription.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
+            tblColDescription.setCellValueFactory(loModel -> {
+            try {
+                 return new SimpleStringProperty(loModel.getValue().Inventory().getDescription());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
 
-                tblColModel.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().Model().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
+            tblColMeasure.setCellValueFactory(loModel -> {
+            try {
+                 return new SimpleStringProperty(loModel.getValue().Inventory().Measure().getDescription());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
 
-                tblColVariant.setCellValueFactory(loModel -> {
-                try {
-                     return new SimpleStringProperty(loModel.getValue().Inventory().Variant().getDescription());
-                } catch (SQLException | GuanzonException ex) {
-                    Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
-                    return new SimpleStringProperty("");
-                }
-                });
-                
-                tblColClassification.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(loModel.getValue().getClassification());
-                });
-                
-                tblColROQ.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getRecommendedOrder()));
-                });
+            tblColInventoryType.setCellValueFactory(loModel -> {
+            try {
+                 return new SimpleStringProperty(loModel.getValue().Inventory().InventoryType().getDescription());
+            } catch (SQLException | GuanzonException ex) {
+                Logger.getLogger(InventoryRequest_ApprovalController.class.getName()).log(Level.SEVERE, null, ex);
+                return new SimpleStringProperty("");
+            }
+            });
+            
+            tblColClassification.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(loModel.getValue().getClassification());
+            });
+            
+            tblColROQ.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getRecommendedOrder()));
+            });
 
-                tblColQOH.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
-                });
+            tblColQOH.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantityOnHand()));
+            });
 
-                tblColRequestQty.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantity()));
-                });
+            tblColRequestQty.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getQuantity()));
+            });
 
-                tblColCancelQty.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getCancelled()));
-                });
+            tblColCancelQty.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getCancelled()));
+            });
 
-                tblColApprovedQty.setCellValueFactory(loModel -> {
-                    return new SimpleStringProperty(String.valueOf(loModel.getValue().getApproved()));
-                });
-
+            tblColApprovedQty.setCellValueFactory(loModel -> {
+                return new SimpleStringProperty(String.valueOf(loModel.getValue().getApproved()));
+            });
         }
     }
     
     private void loadSelectedDetail(int fnRow) throws SQLException, GuanzonException, CloneNotSupportedException {
-        if(fnRow > 0){
+        if (fnRow > 0) {
             tfBranchName.setText(tblColBranch.getCellData(fnRow));
             tfBrand.setText(tblColBrand.getCellData(fnRow));
             tfBarcode.setText(tblColBarcode.getCellData(fnRow));
             tfDescription.setText(tblColDescription.getCellData(fnRow));
-            tfModel.setText(tblColModel.getCellData(fnRow));
-            tfVariant.setText(tblColVariant.getCellData(fnRow));
+            tfInventoryType.setText(poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription() == null ? "NONE" : poAppController.getDetail(fnRow).Inventory().InventoryType().getDescription());
             tfClassification.setText(tblColClassification.getCellData(fnRow));
             tfROQ.setText(String.valueOf(tblColROQ.getCellData(fnRow)));
-
+            tfMeasure.setText(tblColMeasure.getCellData(fnRow));
             tfQOH.setText(tblColQOH.getCellData(fnRow));
             tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
             tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));
@@ -778,7 +780,6 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
     }
 
     private void getLoadedTransaction() throws CloneNotSupportedException, SQLException, GuanzonException {
-        tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
         tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
         lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "": (poAppController.getMaster().Company().getCompanyName() + " - ") + 
                 poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());

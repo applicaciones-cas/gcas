@@ -62,12 +62,12 @@ import ph.com.guanzongroup.cas.inv.warehouse.t4.model.services.DeliveryIssuanceC
  *
  * @author User
  */
-public class InventoryRequest_ApprovalController implements Initializable, ScreenInterface{
+public class InventoryRequest_ApprovalCar_SPController implements Initializable, ScreenInterface{
     
     private GRiderCAS poApp;
     private LogWrapper poLogWrapper;
     private InventoryRequestApproval poAppController;
-    private String psFormName = "Stock Request Approval";
+    private String psFormName = "Stock Request Approval Car SP";
     private String psIndustryID, psCompanyID, psCategoryID;
     private Control lastFocusedControl;
     private ObservableList<Model_Inv_Stock_Request_Detail> laTransactionDetail;
@@ -78,13 +78,14 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
 
     @FXML
     private Label lblSource;
-    
-    @FXML
-    private Button btnSearch, btnUpdate, btnSave, btnCancel, btnPrint, btnRetrieve, btnClose;
+   
 
     @FXML
     private TextField tfClusterName, tfBranchName, tfBrand, tfBarcode, tfDescription, tfModel, tfVariant, tfRequestQty, 
             tfApprovedQty, tfQOH, tfClassification, tfROQ, tfCancelQty;
+    
+    @FXML
+    private Button btnSearch, btnUpdate, btnSave, btnCancel, btnPrint, btnRetrieve, btnClose;
 
     @FXML
     private TableView<Model_Inv_Stock_Request_Master> tblTransaction;
@@ -96,8 +97,8 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
     private TableColumn<Model_Inv_Stock_Request_Master, String> tblColStockRequestNo, tblColBranch, tblColTransaction, tblColTransactionDate; 
     
     @FXML
-    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColROQ, tblColQOH,
-            tblColClassification, tblColRequestQty, tblColCancelQty, tblColApprovedQty ;
+    private TableColumn<Model_Inv_Stock_Request_Detail, String> tblColBrand, tblColBarcode, tblColNo, tblColDescription, tblColModel, tblColVariant, tblColQOH,
+            tblColRequestQty, tblColClassification, tblColROQ, tblColCancelQty, tblColApprovedQty ;
 
     @FXML
     void cmdButton_Click(ActionEvent event) {
@@ -208,8 +209,9 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
 
                 case "btnClose":
                     unloadForm appUnload = new unloadForm();
-                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?")) {
+                    if (ShowMessageFX.OkayCancel(null, "Close Tab", "Are you sure you want to close this Tab?") == true) {
                         appUnload.unloadForm(apMainAnchor, poApp, psFormName);
+                        break;
                     }
                     break;
             }
@@ -491,6 +493,9 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
 
         // Always show these buttons
         initButtonControls(true, "btnSearch", "btnClose");
+        
+        System.out.print(!lbShow);
+        System.out.print(!lbShow);
 
         // Show-only based on mode
         initButtonControls(lbShow, "btnSave", "btnCancel");
@@ -768,8 +773,7 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
             tfModel.setText(tblColModel.getCellData(fnRow));
             tfVariant.setText(tblColVariant.getCellData(fnRow));
             tfClassification.setText(tblColClassification.getCellData(fnRow));
-            tfROQ.setText(String.valueOf(tblColROQ.getCellData(fnRow)));
-
+            tfROQ.setText(tblColROQ.getCellData(fnRow));
             tfQOH.setText(tblColQOH.getCellData(fnRow));
             tfRequestQty.setText(tblColRequestQty.getCellData(fnRow));
             tfCancelQty.setText(tblColCancelQty.getCellData(fnRow));
@@ -779,10 +783,6 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
 
     private void getLoadedTransaction() throws CloneNotSupportedException, SQLException, GuanzonException {
         tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
-        tfClusterName.setText(poAppController.getBranchCluster().getClusterDescription());
-        lblSource.setText(poAppController.getMaster().Company().getCompanyName() == null ? "": (poAppController.getMaster().Company().getCompanyName() + " - ") + 
-                poAppController.getMaster().Industry().getDescription() == null ? "" : poAppController.getMaster().Industry().getDescription());
-        
         reloadTableDetail();
         loadSelectedDetail(pnCTransactionDetail);
     }
@@ -792,12 +792,12 @@ public class InventoryRequest_ApprovalController implements Initializable, Scree
         laTransactionDetail.setAll(rawDetail);
 
         // Restore or select last row
-        int indexToSelect = (pnCTransactionDetail >= 0 && pnCTransactionDetail < laTransactionDetail.size())
-                ? pnCTransactionDetail
+        int indexToSelect = (pnCTransactionDetail - 1 >= 0 && pnCTransactionDetail - 1 < laTransactionDetail.size())
+                ? pnCTransactionDetail - 1
                 : laTransactionDetail.size() - 1;
-  
+
         tblRequestDetail.getSelectionModel().select(indexToSelect);
-    
+
         pnCTransactionDetail = tblRequestDetail.getSelectionModel().getSelectedIndex() + 1; // Not focusedIndex
 
         tblRequestDetail.refresh();
